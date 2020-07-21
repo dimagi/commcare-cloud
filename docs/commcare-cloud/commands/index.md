@@ -156,12 +156,12 @@ commcare-cloud <env> lookup [server]
 
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
-specific user and may be terminated with ':<n>' to choose one of
+specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers:0 will pick the first webworker. May also be
+example: webworkers[0] will pick the first webworker. May also be
 omitted for environments with only a single server.
 
-Use '-' for default (django_manage:0)
+Use '-' for default (django_manage[0])
 
 ---
 
@@ -184,12 +184,12 @@ All trailing arguments are passed directly to `ssh`.
 
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
-specific user and may be terminated with ':<n>' to choose one of
+specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers:0 will pick the first webworker. May also be
+example: webworkers[0] will pick the first webworker. May also be
 omitted for environments with only a single server.
 
-Use '-' for default (django_manage:0)
+Use '-' for default (django_manage[0])
 
 ---
 
@@ -213,12 +213,12 @@ All trailing arguments are passed directly to `mosh`
 
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
-specific user and may be terminated with ':<n>' to choose one of
+specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers:0 will pick the first webworker. May also be
+example: webworkers[0] will pick the first webworker. May also be
 omitted for environments with only a single server.
 
-Use '-' for default (django_manage:0)
+Use '-' for default (django_manage[0])
 
 ---
 
@@ -560,12 +560,12 @@ commcare-cloud <env> tmux -
 
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
-specific user and may be terminated with ':<n>' to choose one of
+specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers:0 will pick the first webworker. May also be
+example: webworkers[0] will pick the first webworker. May also be
 omitted for environments with only a single server.
 
-Use '-' for default (django_manage:0)
+Use '-' for default (django_manage[0])
 
 ###### `remote_command`
 
@@ -978,7 +978,8 @@ Use `-l` instead of a command to see the full list of commands.
 Deploy CommCare
 
 ```
-commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_REV] [{commcare,formplayer}]
+commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_REV] [--set FAB_SETTINGS]
+                            [{commcare,formplayer}]
 ```
 
 ##### Positional Arguments
@@ -1001,6 +1002,10 @@ Skip the steps involved in recording and announcing the fact of the deploy.
 ###### `--commcare-rev COMMCARE_REV`
 
 The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
+
+###### `--set FAB_SETTINGS`
+
+fab settings in k1=v1,k2=v2 format to be passed down to fab
 
 ---
 

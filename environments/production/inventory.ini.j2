@@ -1,7 +1,7 @@
-{{ __proxy1__ }} public_ip={{ aws_resources['proxy1-production.public_ip'] }}
+{{ __proxy2__ }} public_ip={{ aws_resources['proxy2-production.public_ip'] }}
 
 [proxy:children]
-proxy1
+proxy2
 
 {{ __web2__ }}
 
@@ -26,7 +26,7 @@ proxy1
 {{ __web13__ }}
 
 [logproxy:children]
-proxy1
+proxy2
 
 [hq_webworkers:children]
 web2
@@ -47,7 +47,7 @@ web13
 hq_webworkers
 mobile_webworkers
 
-{{ __pgbouncer2__ }}
+{{ __pgbouncer3__ }}
 
 {{ __rds_pgmain0__ }}
 
@@ -76,7 +76,7 @@ rds_pgshard5
 rds_pgsynclog0
 
 [postgresql:children]
-pgbouncer2
+pgbouncer3
 remote_postgresql
 
 [ansible_skip:children]
@@ -121,24 +121,41 @@ swap_size=8G
 [pillowtop:children]
 pillow1
 
-{{ __formplayer2__ }} swap_size=8G
-{{ __formplayer3__ }} swap_size=8G
-{{ __formplayer4__ }} swap_size=8G
-{{ __formplayer5__ }} swap_size=8G
-{{ __formplayer6__ }} swap_size=8G
-{{ __formplayer7__ }} swap_size=8G
-{{ __formplayer8__ }} swap_size=8G
-{{ __formplayer9__ }} swap_size=8G
+{{ __formplayer10__ }} swap_size=8G
+{{ __formplayer11__ }} swap_size=8G
+{{ __formplayer12__ }} swap_size=8G
+{{ __formplayer13__ }} swap_size=8G
+{{ __formplayer14__ }} swap_size=8G
+{{ __formplayer15__ }} swap_size=8G
+{{ __formplayer16__ }} swap_size=8G
+{{ __formplayer17__ }} swap_size=8G
+{{ __formplayer18__ }} swap_size=8G
+{{ __formplayer19__ }} swap_size=8G
+{{ __formplayer20__ }} swap_size=8G
+{{ __formplayer21__ }} swap_size=8G
+{{ __formplayer22__ }} swap_size=8G
+{{ __formplayer23__ }} swap_size=8G
+{{ __formplayer24__ }} swap_size=8G
+{{ __formplayer25__ }} swap_size=8G
 
 [formplayer:children]
-formplayer2
-formplayer3
-formplayer4
-formplayer5
-formplayer6
-formplayer7
-formplayer8
-formplayer9
+
+formplayer10
+formplayer11
+formplayer12
+formplayer13
+formplayer14
+formplayer15
+formplayer16
+formplayer17
+formplayer18
+formplayer19
+formplayer20
+formplayer21
+formplayer22
+formplayer23
+formplayer24
+formplayer25
 
 {{ __redis0__ }} swap_size=1G
 
@@ -159,6 +176,10 @@ shareddir1
 {{ __es23__ }} elasticsearch_node_name=es23
 
 {{ __es24__ }} elasticsearch_node_name=es24
+
+{{ __es25__ }} elasticsearch_node_name=es25
+
+{{ __es26__ }} elasticsearch_node_name=es26
 
 {{ __esmaster3__ }} elasticsearch_node_name=esmaster3
 
@@ -181,6 +202,8 @@ es21
 es22
 es23
 es24
+es25
+es26
 
 [es_data:vars]
 elasticsearch_node_zone=aws
@@ -201,10 +224,10 @@ couch14
 [couchdb2:vars]
 swap_size=8G
 
-{{ __couchproxy1__ }}
+{{ __couchproxy2__ }}
 
 [couchdb2_proxy:children]
-couchproxy1
+couchproxy2
 
 {{ __control1__ }}
 

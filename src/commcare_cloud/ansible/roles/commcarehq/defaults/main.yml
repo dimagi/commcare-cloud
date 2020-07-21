@@ -1,4 +1,2 @@
 commcarehq_repository: https://github.com/dimagi/commcare-hq.git
 commcarehq_version: master
-
-LOCAL_APPS: []

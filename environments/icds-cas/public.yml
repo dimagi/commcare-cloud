@@ -26,8 +26,10 @@ nginx_dynamic_limits:
     from_minute: 30
     zone_args: "--overall_restore 40 --incremental_restore 50"
 
+rabbitmq_version: 3.8.5-1
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
+rabbitmq_create_cluster: true
 RABBITMQ_CLUSTER_NAME: 'rabbit0.internal-icds-cloud.commcarehq.org'
 
 # ElasticSearch Backup on Swift API
@@ -52,6 +54,10 @@ redis_auto_aof_rewrite_percentage: "50"
 redis_password: "{{ localsettings_private.REDIS_PASSWORD }}"
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
+kafka_version: 2.4.1
+kafka_scala_version: 2.12
+kafka_inter_broker_protocol_version: 2.4
+kafka_log_message_format_version: 2.4
 
 KSPLICE_ACTIVE: no
 
@@ -73,6 +79,19 @@ filebeat_output_logstash_hosts:
 
 lpar2rrd_agent_enabled: True
 lpar2rrd_master_address: 100.71.188.129
+
+#Sentry config
+sentry_dbuser: "{{ secrets.POSTGRES_USERS.commcare.username }}"
+sentry_dbpassword: "{{ secrets.POSTGRES_USERS.commcare.password }}"
+sentry_database: 'sentrydb'
+sentry_url_prefix: "https://icds-sentry.commcarehq.org"
+sentry_system_secret_key: "{{ secrets.SENTRY_SYSTEM_SECRET_KEY }}"
+clickhouse_data_dir: "{{ encrypted_root }}/clickhouse"
+default_sentry_from_email: sentry-noreply@icds-cas.gov.in
+sentry_slack_integration:
+  slack.client-id: "{{ secrets.sentry_slack_client_id }}"
+  slack.client-secret: "{{ secrets.sentry_slack_client_secrets }}"
+  slack.verification-token: "{{ secrets.sentry_slack_verification_token }}"
 
 etc_hosts_lines:
   - '127.0.0.1        localhost'
@@ -168,10 +187,76 @@ kafka_log_retention: 504 # 21 days
 localsettings:
   ALLOWED_HOSTS:
     - '{{ CAS_SITE_HOST }}'
-  ASYNC_INDICATORS_TO_QUEUE: 120000
+  ASYNC_INDICATORS_TO_QUEUE: 200000
+  ASYNC_INDICATOR_CHUNK_SIZE: 200
   AUDIT_MODEL_SAVE: []
   AUDIT_MODULES: []
   AUDIT_VIEWS: []
+  AVAILABLE_CUSTOM_SCHEDULING_CONTENT:
+    ICDS_AWW_1:
+      - custom.icds.messaging.custom_content.aww_1
+      - 'ICDS: Weekly AWC Submission Performance to AWW'
+    ICDS_AWW_2:
+      - custom.icds.messaging.custom_content.aww_2
+      - 'ICDS: Monthly AWC Aggregate Performance to AWW'
+    ICDS_CF_VISITS_COMPLETE:
+      - custom.icds.messaging.custom_content.cf_visits_complete
+      - 'ICDS: CF Visits Complete'
+    ICDS_CHILD_ILLNESS_REPORTED:
+      - custom.icds.messaging.custom_content.child_illness_reported
+      - 'ICDS: Child Illness Reported'
+    ICDS_LS_1:
+      - custom.icds.messaging.custom_content.ls_1
+      - 'ICDS: Monthly AWC Aggregate Performance to LS'
+    ICDS_LS_2:
+      - custom.icds.messaging.custom_content.ls_2
+      - 'ICDS: Weekly AWC VHND Performance to LS'
+    ICDS_LS_6:
+      - custom.icds.messaging.custom_content.ls_6
+      - 'ICDS: Weekly AWC Submission Performance to LS'
+    ICDS_MISSED_CF_VISIT_TO_AWW:
+      - custom.icds.messaging.custom_content.missed_cf_visit_to_aww
+      - 'ICDS: Missed CF Visit for AWW recipient'
+    ICDS_MISSED_CF_VISIT_TO_LS:
+      - custom.icds.messaging.custom_content.missed_cf_visit_to_ls
+      - 'ICDS: Missed CF Visit for LS recipient'
+    ICDS_MISSED_PNC_VISIT_TO_LS:
+      - custom.icds.messaging.custom_content.missed_pnc_visit_to_ls
+      - 'ICDS: Missed PNC Visit for LS recipient'
+    ICDS_PHASE2_AWW_1:
+      - custom.icds.messaging.custom_content.phase2_aww_1
+      - 'ICDS: AWC VHND Performance to AWW'
+    ICDS_STATIC_NEGATIVE_GROWTH_MESSAGE:
+      - custom.icds.messaging.custom_content.static_negative_growth_indicator
+      - 'ICDS: Static/Negative Growth Indicator'
+  AVAILABLE_CUSTOM_SCHEDULING_RECIPIENTS:
+    ICDS_MOTHER_PERSON_CASE_FROM_CCS_RECORD_CASE:
+      - custom.icds.messaging.custom_recipients.recipient_mother_person_case_from_ccs_record_case
+      - 'ICDS: Mother person case from ccs_record case'
+    ICDS_MOTHER_PERSON_CASE_FROM_CCS_RECORD_CASE_EXCL_MIGRATED_OR_OPTED_OUT:
+      - custom.icds.messaging.custom_recipients.recipient_mother_person_case_from_ccs_record_case_excl_migrated_or_opted_out
+      - 'ICDS: Mother person case from ccs_record case (excluding migrated and not registered
+      mothers)'
+    ICDS_MOTHER_PERSON_CASE_FROM_CHILD_HEALTH_CASE:
+      - custom.icds.messaging.custom_recipients.recipient_mother_person_case_from_child_health_case
+      - 'ICDS: Mother person case from child_health case'
+    ICDS_MOTHER_PERSON_CASE_FROM_CHILD_PERSON_CASE:
+      - custom.icds.messaging.custom_recipients.recipient_mother_person_case_from_child_person_case
+      - 'ICDS: Mother person case from child person case'
+    ICDS_SUPERVISOR_FROM_AWC_OWNER:
+      - custom.icds.messaging.custom_recipients.supervisor_from_awc_owner
+      - 'ICDS: Supervisor Location from AWC Owner'
+  AVAILABLE_CUSTOM_RULE_CRITERIA:
+    ICDS_CCS_RECORD_CASE_CHILD_AVAILING_SERVICES: custom.icds.rules.custom_criteria.ccs_record_case_is_availing_services
+    ICDS_CCS_RECORD_CASE_HAS_FUTURE_EDD: custom.icds.rules.custom_criteria.ccs_record_case_has_future_edd
+    ICDS_CCS_RECORD_MOTHER_CASE_AVAILING_SERVICES_HAS_CONTACT_PHONE_NUMBER: custom.icds.rules.custom_criteria.ccs_record_mother_case_availing_services_has_phone_number
+    ICDS_CHILD_HEALTH_CASE_CHILD_AVAILING_SERVICES: custom.icds.rules.custom_criteria.child_health_case_is_availing_services
+    ICDS_IS_USERCASE_OF_AWW: custom.icds.rules.custom_criteria.is_usercase_of_aww
+    ICDS_IS_USERCASE_OF_LS: custom.icds.rules.custom_criteria.is_usercase_of_ls
+    ICDS_PERSON_CASE_IS_UNDER_19_YEARS_OLD: custom.icds.rules.custom_criteria.person_case_is_under_19_years_old
+    ICDS_PERSON_CASE_IS_UNDER_6_YEARS_OLD: custom.icds.rules.custom_criteria.person_case_is_under_6_years_old
+  AVAILABLE_CUSTOM_RULE_ACTIONS:
+    ICDS_ESCALATE_TECH_ISSUE: custom.icds.rules.custom_actions.escalate_tech_issue
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
@@ -212,7 +297,6 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
-  KAFKA_API_VERSION: [0, 8, 2]
   LOCAL_LOGGING_CONFIG:
     formatters:
       kafka_audit:
@@ -262,6 +346,33 @@ localsettings:
         params:
           topics:
             - 'form-sql'
+  LOCAL_STATIC_DATA_SOURCES:
+    - custom/icds_reports/ucr/data_sources/*.json
+    - custom/icds_reports/ucr/data_sources/dashboard/*.json
+  LOCAL_STATIC_UCR_REPORTS:
+    - custom/icds_reports/ucr/reports/dashboard/*.json
+    - custom/icds_reports/ucr/reports/asr/*.json
+    - custom/icds_reports/ucr/reports/asr/ucr_v2/*.json
+    - custom/icds_reports/ucr/reports/mpr/*.json
+    - custom/icds_reports/ucr/reports/mpr/dashboard/*.json
+    - custom/icds_reports/ucr/reports/ls/*.json
+    - custom/icds_reports/ucr/reports/other/*.json
+  LOCAL_CUSTOM_UCR_EXPRESSION_LISTS:
+    - custom.icds_reports.ucr.expressions.CUSTOM_UCR_EXPRESSIONS
+  LOCAL_CUSTOM_UCR_REPORT_FILTERS:
+   - ['village_choice_list', 'custom.icds_reports.ucr.filter_spec.build_village_choice_list_filter_spec']
+  LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES:
+    - ['village_choice_list', 'custom.icds_reports.ucr.filter_value.VillageFilterValue']
+  LOCAL_DOMAIN_MODULE_MAP:
+    icds-test: custom.icds_reports
+    icds-cas: custom.icds_reports
+    icds-dashboard-qa: custom.icds_reports
+  LOCAL_APPS:
+    - {name: "custom.icds", host: "all"}
+    - {name: "custom.icds.data_management", host: "all"}
+    - {name: "custom.icds_reports", host: "all"}
+  LOCAL_CUSTOM_DB_ROUTING:
+    icds_reports: icds-ucr-citus
   MESSAGING_RULE_CASE_CHUNK_SIZE: 200
   RUN_CASE_SEARCH_PILLOW: False
   RUN_FORM_META_PILLOW: False

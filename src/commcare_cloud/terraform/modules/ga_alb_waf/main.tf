@@ -7,7 +7,9 @@ locals {
     ap-south-1 = "718504428378"
   }
   log_bucket_name = "dimagi-commcare-${var.environment}-logs"
-  log_bucket_prefix = "frontend-alb-${var.environment}"
+  log_bucket_alb_prefix = "frontend-alb-${var.environment}"
+  log_bucket_waf_prefix = "frontend-waf-${var.environment}"
+  log_bucket_waf_error_prefix = "frontend-waf-${var.environment}-error"
 }
 
 data "aws_region" "current" {}
@@ -30,6 +32,27 @@ resource "aws_wafv2_regex_pattern_set" "allow_xml_querystring_urls" {
   scope       = "REGIONAL"
 
   regular_expression = ["${var.commcarehq_xml_querystring_urls_regex}"]
+
+  tags = {
+  }
+}
+
+resource "aws_wafv2_ip_set" "temp_block" {
+  name               = "TempBlock"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = []
+
+  tags = {
+  }
+}
+
+resource "aws_wafv2_ip_set" "permanent_block" {
+  name               = "ManualDenyList"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  description        = "Manually Added IPs for denial"
+  addresses          = ["195.54.160.21/32"]
 
   tags = {
   }
@@ -102,6 +125,337 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
   }
 }
 
+resource "aws_wafv2_rule_group" "dimagi_block_rules" {
+  name = "DimagiBlockRules"
+  capacity = "25"
+  scope = "REGIONAL"
+  visibility_config {
+    cloudwatch_metrics_enabled = true
+    metric_name                = "DimagiBlockRules"
+    sampled_requests_enabled   = true
+  }
+  rule {
+    name = "BlockTemporaryIPs"
+    priority = 0
+
+    action {
+      block {}
+    }
+
+    statement {
+      ip_set_reference_statement {
+        arn = "${aws_wafv2_ip_set.temp_block.arn}"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name = "BlockTemporaryIPs"
+      sampled_requests_enabled = true
+    }
+  }
+  rule {
+    name = "BlockManualDenyList"
+    priority = 1
+
+    action {
+      block {}
+    }
+
+    statement {
+      ip_set_reference_statement {
+        arn = "${aws_wafv2_ip_set.permanent_block.arn}"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name = "BlockManualDenyList"
+      sampled_requests_enabled = true
+    }
+  }
+}
+
+resource "aws_wafv2_web_acl" "front_end" {
+  default_action {
+    allow {}
+  }
+  name = "frontend-waf-${var.environment}"
+  scope = "REGIONAL"
+
+  rule {
+    priority = "0"
+    name = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesKnownBadInputsRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "1"
+    name = "AWS-AWSManagedRulesLinuxRuleSet"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesLinuxRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesLinuxRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "2"
+    name = "AWS-AWSManagedRulesSQLiRuleSet"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesSQLiRuleSet"
+        vendor_name = "AWS"
+        excluded_rule { name = "SQLi_BODY" }
+        excluded_rule { name = "SQLi_QUERYARGUMENTS" }
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesSQLiRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "3"
+    name = "AWS-AWSManagedRulesAmazonIpReputationList"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesAmazonIpReputationList"
+        vendor_name = "AWS"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesAmazonIpReputationList"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    priority = "4"
+    name = "CommCareWhitelistRules"
+    override_action { none {} }
+    statement {
+      rule_group_reference_statement {
+        arn = "${aws_wafv2_rule_group.commcare_whitelist_rules.arn}"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "CommCareWhitelistRules"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "5"
+    name = "AWS-AWSManagedRulesCommonRuleSet"
+    override_action { none {} }
+    statement {
+      managed_rule_group_statement {
+        name = "AWSManagedRulesCommonRuleSet"
+        vendor_name = "AWS"
+        excluded_rule { name = "EC2MetaDataSSRF_COOKIE" }
+        excluded_rule { name = "GenericRFI_BODY" }
+        excluded_rule { name = "SizeRestrictions_BODY" }
+        excluded_rule { name = "GenericLFI_BODY" }
+        excluded_rule { name = "GenericRFI_QUERYARGUMENTS" }
+        excluded_rule { name = "NoUserAgent_HEADER" }
+        excluded_rule { name = "SizeRestrictions_QUERYSTRING" }
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWS-AWSManagedRulesCommonRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "6"
+    name = "DimagiBlockRules"
+    override_action { none {} }
+    statement {
+      rule_group_reference_statement {
+        arn = "${aws_wafv2_rule_group.dimagi_block_rules.arn}"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "DimagiBlockRules"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  visibility_config {
+    cloudwatch_metrics_enabled = true
+    metric_name                = "frontend-waf-${var.environment}"
+    sampled_requests_enabled   = true
+  }
+
+}
+
+resource "aws_wafv2_web_acl_association" "front_end" {
+  resource_arn = "${aws_lb.front_end.arn}"
+  web_acl_arn  = "${aws_wafv2_web_acl.front_end.arn}"
+}
+
+resource "aws_kinesis_firehose_delivery_stream" "front_end_waf_logs" {
+  name = "aws-waf-logs-frontend-waf-${var.environment}"
+  destination = "extended_s3"
+  server_side_encryption {
+    enabled = true
+  }
+  extended_s3_configuration {
+    compression_format = "GZIP"
+    prefix = "${local.log_bucket_waf_prefix}/"
+    error_output_prefix = "${local.log_bucket_waf_error_prefix}/"
+    kms_key_arn = "arn:aws:kms:${data.aws_region.current.name}:${var.account_id}:alias/aws/s3"
+    bucket_arn = "${aws_s3_bucket.front_end_alb_logs.arn}"
+    role_arn = "${aws_iam_role.firehose_role.arn}"
+  }
+  tags {
+    Environment = "${var.environment}"
+  }
+}
+
+resource "aws_iam_role" "firehose_role" {
+  name = "firehose_delivery_role"
+
+  assume_role_policy = <<EOF
+{"Version":"2012-10-17","Statement":[{"Sid":"","Effect":"Allow","Principal":{"Service":"firehose.amazonaws.com"},"Action":"sts:AssumeRole","Condition":{"StringEquals":{"sts:ExternalId":"${var.account_id}"}}}]}
+EOF
+}
+
+resource "aws_iam_role_policy" "firehose_role" {
+  name = "firehose_delivery_role_policy"
+  role = "${aws_iam_role.firehose_role.id}"
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetTable",
+        "glue:GetTableVersion",
+        "glue:GetTableVersions"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:ListBucketMultipartUploads",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::${local.log_bucket_name}",
+        "arn:aws:s3:::${local.log_bucket_name}/*",
+        "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%",
+        "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%/*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction",
+        "lambda:GetFunctionConfiguration"
+      ],
+      "Resource": "arn:aws:lambda:us-east-1:${var.account_id}:function:%FIREHOSE_DEFAULT_FUNCTION%:%FIREHOSE_DEFAULT_VERSION%"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:${var.account_id}:alias/aws/s3"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "s3.us-east-1.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:s3:arn": [
+            "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_waf_prefix}*",
+            "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_waf_error_prefix}*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "logs:PutLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:us-east-1:${var.account_id}:log-group:/aws/kinesisfirehose/${aws_kinesis_firehose_delivery_stream.front_end_waf_logs.name}:log-stream:*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:DescribeStream",
+        "kinesis:GetShardIterator",
+        "kinesis:GetRecords",
+        "kinesis:ListShards"
+      ],
+      "Resource": "arn:aws:kinesis:us-east-1:${var.account_id}:stream/%FIREHOSE_STREAM_NAME%"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:${var.account_id}:key/%SSE_KEY_ID%"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "kinesis.%REGION_NAME%.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:kinesis:arn": "arn:aws:kinesis:%REGION_NAME%:${var.account_id}:stream/%FIREHOSE_STREAM_NAME%"
+        }
+      }
+    }
+  ]
+}EOF
+}
+
+resource "aws_wafv2_web_acl_logging_configuration" "front_end" {
+  log_destination_configs = ["${aws_kinesis_firehose_delivery_stream.front_end_waf_logs.arn}"]
+  resource_arn            = "${aws_wafv2_web_acl.front_end.arn}"
+}
+
 resource "aws_s3_bucket" "front_end_alb_logs" {
   bucket = "${local.log_bucket_name}"
   acl = "private"
@@ -113,6 +467,15 @@ resource "aws_s3_bucket" "front_end_alb_logs" {
       }
     }
   }
+}
+
+resource "aws_s3_bucket_public_access_block" "front_end_alb_logs" {
+  bucket = "${aws_s3_bucket.front_end_alb_logs.id}"
+
+  block_public_acls   = true
+  block_public_policy = true
+  ignore_public_acls = true
+  restrict_public_buckets = true
 }
 
 // To analyze logs, see https://docs.aws.amazon.com/athena/latest/ug/application-load-balancer-logs.html
@@ -129,7 +492,7 @@ resource "aws_s3_bucket_policy" "front_end_alb_logs" {
         "AWS": "arn:aws:iam::${local.aws_elb_account_map[data.aws_region.current.name]}:root"
       },
       "Action": "s3:PutObject",
-      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_prefix}/AWSLogs/${var.account_id}/*",
+      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_alb_prefix}/AWSLogs/${var.account_id}/*",
       "Sid": "AWSConsoleStmt-1589489332145"
     },
     {
@@ -138,7 +501,7 @@ resource "aws_s3_bucket_policy" "front_end_alb_logs" {
         "Service": "delivery.logs.amazonaws.com"
       },
       "Action": "s3:PutObject",
-      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_prefix}/AWSLogs/${var.account_id}/*",
+      "Resource": "arn:aws:s3:::${local.log_bucket_name}/${local.log_bucket_alb_prefix}/AWSLogs/${var.account_id}/*",
       "Condition": {
         "StringEquals": {
           "s3:x-amz-acl": "bucket-owner-full-control"
@@ -160,6 +523,19 @@ resource "aws_s3_bucket_policy" "front_end_alb_logs" {
 POLICY
 }
 
+resource "aws_athena_workgroup" "primary" {
+  name = "primary"
+  configuration {
+    enforce_workgroup_configuration = false
+    result_configuration {
+      output_location = "s3://${local.log_bucket_name}/athena/"
+
+      encryption_configuration {
+        encryption_option = "SSE_S3"
+      }
+    }
+  }
+}
 
 resource "aws_lb" "front_end" {
   name               = "frontend-alb-${var.environment}"
@@ -175,7 +551,7 @@ resource "aws_lb" "front_end" {
 
   access_logs {
     bucket  = "${aws_s3_bucket.front_end_alb_logs.id}"
-    prefix  = "${local.log_bucket_prefix}"
+    prefix  = "${local.log_bucket_alb_prefix}"
     enabled = true
   }
 

@@ -1,0 +1,31 @@
+[program:sentry-web]
+directory={{ sentry_virtualenv_path }}
+environment=SENTRY_CONF="{{ sentry_app_config }}"
+command={{ sentry_virtualenv_path }}/bin/python  {{ sentry_virtualenv_path }}/bin/sentry run web
+autostart=true
+autorestart=true
+redirect_stderr=true
+user=sentry
+stdout_logfile=syslog
+stderr_logfile=syslog
+ 
+[program:sentry-worker]
+directory={{ sentry_virtualenv_path }}
+environment=SENTRY_CONF="{{ sentry_app_config }}"
+command={{ sentry_virtualenv_path }}/bin/python {{ sentry_virtualenv_path }}/bin/sentry run worker
+autostart=true
+autorestart=true
+redirect_stderr=true
+user=sentry
+stdout_logfile=syslog
+stderr_logfile=syslog
+
+[program:sentry-cron]
+directory={{ sentry_virtualenv_path }}
+environment=SENTRY_CONF="{{ sentry_app_config }}"
+command={{ sentry_virtualenv_path }}/bin/python {{ sentry_virtualenv_path }}/bin/sentry run cron
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=syslog
+stderr_logfile=syslog

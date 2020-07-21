@@ -21,10 +21,18 @@ alertmanager_route:
   repeat_interval: 4h
   receiver: slack
 grafana_data_dir: "{{ encrypted_root }}/grafana"
-grafana_url: "http://0.0.0.0:3000/grafana/"
+grafana_domain: "cas.commcarehq.org"
+grafana_url: "https://cas.commcarehq.org/grafana/"
 grafana_security:
   admin_user: "{{ secrets.grafana_admin_user }}"
   admin_password: "{{ secrets.grafana_admin_password }}"
+grafana_version: 7.0.3
+grafana_smtp:
+  host: "{{ localsettings.EMAIL_SMTP_HOST }}:{{ localsettings.EMAIL_SMTP_PORT }}"
+  username: "{{ localsettings_private.EMAIL_LOGIN }}"
+  password: "{{ localsettings_private.EMAIL_PASSWORD }}"
+  skip_verify: true
+  from_address: grafana-noreply@icds-cas.gov.in
 node_exporter_enabled_collectors: ['systemd','processes']
 couchdb_username: "{{ couchdb2.username }}"
 couchdb_password: "{{ couchdb2.password }}"

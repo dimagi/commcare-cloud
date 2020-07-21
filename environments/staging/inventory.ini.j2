@@ -3,23 +3,23 @@
 # As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
 # using the aws-fill-inventory command.
 
-{{ __proxy0__ }} public_ip={{ aws_resources['proxy0-staging.public_ip'] }}
+{{ __proxy1__ }} public_ip={{ aws_resources['proxy1-staging.public_ip'] }}
 
 [proxy:children]
 # Amazon EC2
-proxy0
+proxy1
 
 [logproxy:children]
-proxy0
+proxy1
 
-{{ __web3__ }} swap_size=1G
+{{ __web5__ }} swap_size=1G
 
-{{ __web4__ }} swap_size=1G
+{{ __web6__ }} swap_size=1G
 
 [webworkers:children]
 # Amazon EC2
-web3
-web4
+web5
+web6
 
 {{ __pgproxy1__ }} datavol_fstype=xfs
 
@@ -62,17 +62,17 @@ kafka1
 # Amazon EC2
 kafka1
 
-{{ __celery1__ }}
+{{ __celery2__ }} swap_size=8G
 
 [celery:children]
 # Amazon EC2
-celery1
+celery2
 
-{{ __pillow1__ }}
+{{ __pillow2__ }}
 
 [pillowtop:children]
 # Amazon EC2
-pillow1
+pillow2
 
 {{ __formplayer1__ }} datavol_fstype=xfs formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/ use_formplayer_efs=true
 
@@ -110,4 +110,4 @@ rds_pg0
 
 [django_manage:children]
 # Amazon EC2
-web3
+web5

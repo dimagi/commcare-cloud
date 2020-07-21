@@ -16,6 +16,14 @@ citus2-india: 10.203.10.190
 citus2-india.instance_id: i-01d3a813f449ef321
 citus2standby-india: 10.203.10.105
 citus2standby-india.instance_id: i-0e1bd37fa4288cb05
+citusmaster0-india: 10.203.10.175
+citusmaster0-india.instance_id: i-0c9cfa08ee44ff64b
+citusworker0-india: 10.203.10.21
+citusworker0-india.instance_id: i-01e9392ce60c664cf
+citusworker1-india: 10.203.10.84
+citusworker1-india.instance_id: i-0e8cf091d0f78edb4
+citusworker2-india: 10.203.10.151
+citusworker2-india.instance_id: i-02d9652cc9df716a7
 control0-india: 10.203.10.246
 control0-india.instance_id: i-0e0fc5019d73f5e4d
 couch5-india: 10.203.40.178
@@ -43,6 +51,8 @@ kafka1-india.instance_id: i-030605a66f963c250
 pgbouncer0-india: 10.203.40.199
 pgbouncer0-india.instance_id: i-05aabe9136e92475c
 pgmain0-india: pgmain0-india.ccqpd1xrju8m.ap-south-1.rds.amazonaws.com
+pgmain0-jun30-p1-18-45: pgmain0-jun30-p1-18-45.ccqpd1xrju8m.ap-south-1.rds.amazonaws.com
+pgmain0-jun30-p1-point-in-time: pgmain0-jun30-p1-point-in-time.ccqpd1xrju8m.ap-south-1.rds.amazonaws.com
 pillow2-india: 10.203.10.9
 pillow2-india.instance_id: i-0c3daf0e2c06ff5e8
 proxy1-india: 10.203.20.59

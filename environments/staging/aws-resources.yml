@@ -1,5 +1,5 @@
-celery1-staging: 10.201.10.108
-celery1-staging.instance_id: i-04e26421dfb5b63ad
+celery2-staging: 10.201.10.230
+celery2-staging.instance_id: i-08299eefc63d74e3c
 control0-staging: 10.201.10.116
 control0-staging.instance_id: i-026b188d133e068a1
 couch3-staging: 10.201.40.182
@@ -22,11 +22,11 @@ kafka1-staging.instance_id: i-08b3574d73b6e99b4
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgproxy1-staging: 10.201.40.187
 pgproxy1-staging.instance_id: i-027696cdedd3f4fc1
-pillow1-staging: 10.201.10.103
-pillow1-staging.instance_id: i-08eaa147d100141e1
-proxy0-staging: 10.201.20.89
-proxy0-staging.instance_id: i-030576f40d5d964e1
-proxy0-staging.public_ip: 3.216.37.252
+pillow2-staging: 10.201.10.163
+pillow2-staging.instance_id: i-0672c9637735b0a3e
+proxy1-staging: 10.201.20.208
+proxy1-staging.instance_id: i-02e1fe640296f8db9
+proxy1-staging.public_ip: 3.216.37.252
 rabbit1-staging: 10.201.10.129
 rabbit1-staging.instance_id: i-09708e15359fb9c67
 redis1-staging: 10.201.40.219
@@ -34,7 +34,7 @@ redis1-staging.instance_id: i-053cff522459cac90
 vpn-staging: 10.201.20.112
 vpn-staging.instance_id: i-0e43738c0151d44b7
 vpn-staging.public_ip: 54.227.170.89
-web3-staging: 10.201.11.246
-web3-staging.instance_id: i-009a5fe8b8ff08cab
-web4-staging: 10.201.11.252
-web4-staging.instance_id: i-07ccdbe12f7782c54
+web5-staging: 10.201.11.173
+web5-staging.instance_id: i-073638892d7b5bdf4
+web6-staging: 10.201.11.180
+web6-staging.instance_id: i-0a142adb617637842

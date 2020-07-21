@@ -1,0 +1,9 @@
+[program:snuba-api]
+directory={{ snuba_virtualenv_path }}
+command={{ snuba_virtualenv_path }}/bin/snuba api
+autostart=true
+autorestart=true
+redirect_stderr=true
+user=sentry
+stdout_logfile=syslog
+stderr_logfile=syslog

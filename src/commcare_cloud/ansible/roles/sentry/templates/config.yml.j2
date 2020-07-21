@@ -1,0 +1,61 @@
+###############
+# Mail Server #
+###############
+
+mail.backend: 'smtp'  # Use dummy if you want to disable email entirely
+mail.host: '{{ localsettings.EMAIL_SMTP_HOST }}'
+mail.port: {{ localsettings.EMAIL_SMTP_PORT }}
+mail.username: '{{ localsettings_private.EMAIL_LOGIN | default(None) }}'
+mail.password: '{{ localsettings_private.EMAIL_PASSWORD | default(None) }}'
+mail.use-tls: yes
+# The email address to send on behalf of
+mail.from: '{{ default_sentry_from_email }}'
+
+# If you'd like to configure email replies, enable this.
+# mail.enable-replies: false
+
+# When email-replies are enabled, this value is used in the Reply-To header
+# mail.reply-hostname: ''
+
+# If you're using mailgun for inbound mail, set your API key and configure a
+# route to forward to /api/hooks/mailgun/inbound/
+# mail.mailgun-api-key: ''
+
+###################
+# System Settings #
+###################
+
+system.secret-key: '{{ sentry_system_secret_key }}'
+redis.clusters:
+  default:
+    hosts:
+      0:
+        host: 127.0.0.1
+        port: 6379
+{% if localsettings_private.REDIS_PASSWORD is defined %}
+        password: '{{ localsettings_private.REDIS_PASSWORD }}'
+{% endif %}
+
+{% if sentry_url_prefix is defined %}
+system.url-prefix: {{ sentry_url_prefix }}
+{% endif %}
+
+################
+# File storage #
+################
+
+filestore.backend: 'filesystem'
+filestore.options:
+  location: '{{ sentry_home_dir }}/sentry-files'
+
+
+#########
+# Slack #
+#########
+
+{% if sentry_slack_integration is defined %}
+slack.legacy-app: False
+{% for k,v in sentry_slack_integration.items() %}
+{{k}}: '{{v}}'
+{% endfor %}
+{% endif %}

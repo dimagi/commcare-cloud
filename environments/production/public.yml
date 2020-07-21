@@ -31,8 +31,6 @@ DATADOG_TRACE:
   TAGS:
     env: production
 
-LOCAL_APPS: []
-
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
 elasticsearch_version: 2.4.6
@@ -62,6 +60,7 @@ filebeat_inputs:
 
 formplayer_archive_time_spec: '100m'
 formplayer_purge_time_spec: '8d'
+formplayer_sensitive_data_logging: true
 
 KSPLICE_ACTIVE: yes
 
@@ -145,7 +144,6 @@ localsettings:
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
-  KAFKA_API_VERSION: [0, 8, 2]
   PILLOWTOP_MACHINE_ID: hqdb0
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes

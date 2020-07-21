@@ -224,8 +224,8 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ MOBILE_INTEGRATION_TEST_TOKEN }}'
 LOCAL_APPS = (
     'dimagi.utils',
     'gunicorn',
-    {% for entry in LOCAL_APPS %}
-    {% if inventory_hostname in groups[entry.host] %}
+    {% for entry in localsettings.LOCAL_APPS|default([]) %}
+    {% if entry.host == 'all' or inventory_hostname in groups[entry.host] %}
     '{{ entry.name }}',
     {% endif %}
     {% endfor %}
@@ -376,6 +376,7 @@ CELERY_TIMEZONE = '{{ localsettings.CELERY_TIMEZONE }}'
 
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
+MAPBOX_ACCESS_TOKEN = '{{ MAPBOX_ACCESS_TOKEN }}'
 FORMTRANSLATE_TIMEOUT = 5
 
 CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
@@ -940,8 +941,8 @@ UCR_COMPARISONS = {
 }
 {% endif %}
 
-{% if localsettings.KAFKA_API_VERSION is defined %}
-KAFKA_API_VERSION = tuple({{ localsettings.KAFKA_API_VERSION }})
+{% if localsettings.KAFKA_API_VERSION is defined or kafka_version is defined %}
+KAFKA_API_VERSION = tuple({{ localsettings.KAFKA_API_VERSION|default(kafka_version.split('.')|map('int')|list) }})
 {% endif %}
 
 {% if localsettings.ICDS_USE_CITUS is defined %}
@@ -979,4 +980,56 @@ MESSAGING_RULE_CASE_CHUNK_SIZE = {{ localsettings.MESSAGING_RULE_CASE_CHUNK_SIZE
 
 {% if localsettings.TRACK_ES_REPORT_LOAD is defined %}
 TRACK_ES_REPORT_LOAD = {{ localsettings.TRACK_ES_REPORT_LOAD }}
+{% endif %}
+
+{% if localsettings.ASYNC_INDICATOR_CHUNK_SIZE is defined %}
+ASYNC_INDICATOR_CHUNK_SIZE = {{ localsettings.ASYNC_INDICATOR_CHUNK_SIZE }}
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_SCHEDULING_CONTENT is defined %}
+LOCAL_AVAILABLE_CUSTOM_SCHEDULING_CONTENT = json.loads('{{ localsettings.AVAILABLE_CUSTOM_SCHEDULING_CONTENT|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_REMINDER_RECIPIENTS is defined %}
+LOCAL_AVAILABLE_CUSTOM_REMINDER_RECIPIENTS = json.loads('{{ localsettings.AVAILABLE_CUSTOM_REMINDER_RECIPIENTS|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_SCHEDULING_RECIPIENTS is defined %}
+LOCAL_AVAILABLE_CUSTOM_SCHEDULING_RECIPIENTS = json.loads('{{ localsettings.AVAILABLE_CUSTOM_SCHEDULING_RECIPIENTS|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_RULE_CRITERIA is defined %}
+LOCAL_AVAILABLE_CUSTOM_RULE_CRITERIA = json.loads('{{ localsettings.AVAILABLE_CUSTOM_RULE_CRITERIA|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_RULE_ACTIONS is defined %}
+LOCAL_AVAILABLE_CUSTOM_RULE_ACTIONS = json.loads('{{ localsettings.AVAILABLE_CUSTOM_RULE_ACTIONS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_STATIC_DATA_SOURCES is defined %}
+LOCAL_STATIC_DATA_SOURCES = json.loads('{{ localsettings.LOCAL_STATIC_DATA_SOURCES|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_STATIC_UCR_REPORTS is defined %}
+LOCAL_STATIC_UCR_REPORTS = json.loads('{{ localsettings.LOCAL_STATIC_UCR_REPORTS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_UCR_EXPRESSION_LISTS is defined %}
+LOCAL_CUSTOM_UCR_EXPRESSION_LISTS = json.loads('{{ localsettings.LOCAL_CUSTOM_UCR_EXPRESSION_LISTS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTERS is defined %}
+LOCAL_CUSTOM_UCR_REPORT_FILTERS = json.loads('{{ localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTERS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES is defined %}
+LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES = json.loads('{{ localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_DOMAIN_MODULE_MAP is defined %}
+LOCAL_DOMAIN_MODULE_MAP = json.loads('{{ localsettings.LOCAL_DOMAIN_MODULE_MAP|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_DB_ROUTING is defined %}
+LOCAL_CUSTOM_DB_ROUTING = json.loads('{{ localsettings.LOCAL_CUSTOM_DB_ROUTING|to_json }}')
 {% endif %}
