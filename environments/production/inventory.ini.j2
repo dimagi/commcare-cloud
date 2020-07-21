@@ -4,26 +4,24 @@
 proxy2
 
 {{ __web2__ }}
-
 {{ __web3__ }}
-
 {{ __web4__ }} datadog_integration_tcp_check=yes
-
 {{ __web5__ }}
-
 {{ __web6__ }}
-
 {{ __web7__ }}
-
 {{ __web8__ }}
-
 {{ __web9__ }}
+{{ __web20__ }}
+{{ __web21__ }}
+{{ __web22__ }}
+{{ __web23__ }}
 
 {{ __web11__ }} datadog_integration_tcp_check=yes
-
 {{ __web12__ }}
-
 {{ __web13__ }}
+{{ __web14__ }}
+{{ __web15__ }}
+{{ __web16__ }}
 
 [logproxy:children]
 proxy2
@@ -37,11 +35,18 @@ web6
 web7
 web8
 web9
+web20
+web21
+web22
+web23
 
 [mobile_webworkers:children]
 web11
 web12
 web13
+web14
+web15
+web16
 
 [webworkers:children]
 hq_webworkers
