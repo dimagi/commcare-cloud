@@ -18,6 +18,25 @@ variable "openvpn_instance_type" {
 }
 
 
+data "aws_ami" "ubuntu_pro_bionic" {
+  // should match what is on
+  // https://aws.amazon.com/marketplace/server/configuration?productId=fc15dd7b-2aa0-47e5-bb05-94c75950b5de
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu-pro/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["679593333241"] # Canonical
+}
+
+
 data "aws_ami" "ubuntu_bionic" {
   # Should match what is in
   # https://cloud-images.ubuntu.com/locator/ec2/

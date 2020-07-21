@@ -57,8 +57,7 @@ class ServerConfig(jsonobject.JsonObject):
     volume_encrypted = jsonobject.BooleanProperty(default=True, required=True)
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
-    # todo: invert this so that all new machines are bionic unless otherwise specified
-    os = jsonobject.StringProperty(required=True)
+    os = jsonobject.StringProperty(required=True, choices=['trusty', 'bionic', 'ubuntu_pro_bionic'])
 
 
 class BlockDevice(jsonobject.JsonObject):

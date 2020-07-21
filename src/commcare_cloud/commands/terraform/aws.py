@@ -187,7 +187,7 @@ class AwsFillInventoryHelper(object):
 
         servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
         for server in servers:
-            is_bionic = server.os == 'bionic'
+            is_bionic = server.os in ('bionic', 'ubuntu_pro_bionic')
             inventory_vars = [
                 ('hostname', server.server_name),
                 ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
