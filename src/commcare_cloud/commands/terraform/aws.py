@@ -187,35 +187,44 @@ class AwsFillInventoryHelper(object):
 
         servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
         for server in servers:
-            is_bionic = server.os in ('bionic', 'ubuntu_pro_bionic')
-            inventory_vars = [
-                ('hostname', server.server_name),
-                ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
-                ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
-            ]
-            if server.block_device:
-                inventory_vars.extend([
-                    ('datavol_device', '/dev/sdf'),
-                    ('datavol_device1', '/dev/sdf'),
-                    ('is_datavol_ebsnvme', 'yes'),
-                ])
-                if server.block_device.encrypted:
+            for server_name in server.get_all_server_names():
+                is_bionic = server.os in ('bionic', 'ubuntu_pro_bionic')
+                inventory_vars = [
+                    ('hostname', server_name),
+                    ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
+                    ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
+                ]
+                if server.block_device:
+                    inventory_vars.extend([
+                        ('datavol_device', '/dev/sdf'),
+                        ('datavol_device1', '/dev/sdf'),
+                        ('is_datavol_ebsnvme', 'yes'),
+                    ])
+                    if server.block_device.encrypted:
+                        inventory_vars.append(
+                            ('root_encryption_mode', 'aws'),
+                        )
+                elif server.volume_encrypted:
                     inventory_vars.append(
                         ('root_encryption_mode', 'aws'),
                     )
-            elif server.volume_encrypted:
-                inventory_vars.append(
-                    ('root_encryption_mode', 'aws'),
-                )
 
-            context.update(
-                self.get_host_group_definition(resource_name=server.server_name, vars=inventory_vars)
-            )
+                context.update(
+                    self.get_host_group_definition(resource_name=server_name, vars=inventory_vars)
+                )
+            if server.count is not None:
+                context.update(
+                    self.get_multi_host_group_definition(
+                        server.get_host_group_name(), server.get_all_host_names(),
+                        existing_context=context
+                    )
+                )
 
         for rds_instance in self.environment.terraform_config.rds_instances:
             context.update(
                 self.get_host_group_definition(resource_name=rds_instance.identifier, prefix='rds_')
             )
+
         return context
 
     @property
@@ -247,6 +256,16 @@ class AwsFillInventoryHelper(object):
                 '[{}]\n'.format(group_name),
                 self.resources[resource_name],
             ]) + ''.join([' {}={}'.format(key, value) for key, value in vars if value])
+        return context
+
+    def get_multi_host_group_definition(self, host_group_name, host_names, existing_context):
+        context = {}
+        context['__{}__'.format(host_group_name)] = '\n'.join([
+            existing_context['__{}__'.format(host_name)]
+            for host_name in host_names
+        ]) + '\n[{}:children]\n'.format(host_group_name) + '\n'.join([
+            host_name for host_name in host_names
+        ])
         return context
 
 
