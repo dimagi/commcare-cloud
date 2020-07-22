@@ -15,6 +15,27 @@
     line: "PS1={{ bash_PS1 }}"
     state: present
 
+- name: Add cchq group
+  become: yes
+  group:
+    name: "{{ cchq_group }}"
+    state: present
+    gid: "{{ cchq_gid }}"
+  tags: commcarehq
+  when: "cchq_gid is not none"
+
+- name: Add cchq user
+  become: yes
+  user:
+    name: "{{ cchq_user }}"
+    state: present
+    shell: /bin/bash
+    group: "{{ cchq_group if cchq_gid else omit }}"
+    groups: "{{ dev_group }}"
+    uid: "{{ cchq_uid if cchq_uid else omit }}"
+    append: yes
+  tags: commcarehq
+
 - name: Add dev group
   become: yes
   group: name="{{ dev_group }}" state=present
@@ -30,11 +51,6 @@
   authorized_key: user="{{ item }}" state=present key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
   ignore_errors: "{{ ansible_check_mode }}"
-
-- name: Add cchq user
-  become: yes
-  user: name="{{ cchq_user }}" state=present shell=/bin/bash groups={{ dev_group }} append=yes
-  tags: commcarehq
 
 - name: Remove public key for cchq user  # todo: remove after applied to all envs
   become: yes

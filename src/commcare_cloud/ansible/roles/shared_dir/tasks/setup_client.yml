@@ -20,8 +20,8 @@
   when: shared_drive_enabled|bool
   file:
     path: "{{ shared_mount_dir }}"
-    owner: "nobody"
-    group: "{{ shared_dir_gid }}"
+    owner: "{{ shared_dir_user }}"
+    group: "{{ shared_dir_group }}"
     mode: 0775
     state: directory
   run_once: yes
