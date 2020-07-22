@@ -1,29 +1,30 @@
 from __future__ import absolute_import
 from __future__ import print_function
+
 import datetime
 import os
 import pickle
+import re
 import sys
 import traceback
-from fabric.operations import sudo
-from fabric.context_managers import cd, settings
-from fabric.api import local
-import re
-from getpass import getpass
-from memoized import memoized_property, memoized
-
-from github import Github, UnknownObjectException
-from fabric.api import execute, env
-from fabric.colors import magenta, red
-from gevent.pool import Pool
 from collections import defaultdict
+from getpass import getpass
+
+from gevent.pool import Pool
+from github import Github, UnknownObjectException
+from memoized import memoized, memoized_property
+
+from fabric.api import env, execute, local
+from fabric.colors import blue, cyan, red, yellow
+from fabric.context_managers import cd, settings
+from fabric.operations import sudo
 
 from .const import (
-    PROJECT_ROOT,
     CACHED_DEPLOY_CHECKPOINT_FILENAME,
     CACHED_DEPLOY_ENV_FILENAME,
     DATE_FMT,
     OFFLINE_STAGING_DIR,
+    PROJECT_ROOT,
     RELEASE_RECORD,
 )
 
@@ -275,7 +276,7 @@ class DeployDiff:
         pool = Pool(5)
         pr_infos = [_f for _f in pool.map(self._get_pr_info, pr_numbers) if _f]
 
-        print("List of PRs since last deploy:")
+        print(blue("\nList of PRs since last deploy:"))
         self._print_prs_formatted(pr_infos)
 
         prs_by_label = self._get_prs_by_label(pr_infos)
@@ -316,10 +317,9 @@ class DeployDiff:
         return dict(prs_by_label)
 
     def _print_prs_formatted(self, pr_list):
-        i = 1
         for pr in pr_list:
-            print("{0}. ".format(i), end="")
-            print("{title} {url} | ".format(**pr), end="")
-            print(" ".join(label for label in pr['labels']))
-            i += 1
-
+            print(
+                cyan(pr['title']),
+                yellow(pr['url']),
+                ", ".join(label for label in pr['labels']),
+            )
