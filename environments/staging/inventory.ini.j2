@@ -21,7 +21,7 @@ proxy1
 web5
 web6
 
-{{ __pgproxy1__ }} datavol_fstype=xfs
+{{ __pgproxy2__ }}
 
 {{ __rds_pg0__ }}
 
@@ -29,7 +29,7 @@ web6
 rds_pg0
 
 [postgresql:children]
-pgproxy1
+pgproxy2
 remote_postgresql
 
 {{ __couch3__ }} datavol_fstype=xfs
