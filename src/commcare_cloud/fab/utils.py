@@ -264,10 +264,14 @@ class DeployDiff:
         return "{}/compare/{}...{}".format(self.repo.html_url, self.last_commit, self.deploy_commit)
 
     def warn_of_migrations(self):
-        if not _github_auth_provided():
+        if not (_github_auth_provided() and self.last_commit and self.deploy_commit):
             return
 
         pr_numbers = self._get_pr_numbers()
+        if len(pr_numbers) > 500:
+            print(red("There are too many PRs to display"))
+            return
+
         pool = Pool(5)
         pr_infos = [_f for _f in pool.map(self._get_pr_info, pr_numbers) if _f]
 
