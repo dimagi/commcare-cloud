@@ -143,8 +143,7 @@ pillow1
 {{ __formplayer24__ }} swap_size=8G
 {{ __formplayer25__ }} swap_size=8G
 
-[formplayer:children]
-
+[formplayer_z:children]
 formplayer10
 formplayer11
 formplayer12
@@ -161,6 +160,15 @@ formplayer22
 formplayer23
 formplayer24
 formplayer25
+
+{{ __formplayer_a__ }}
+
+[formplayer_a:vars]
+swap_size=8G
+
+[formplayer:children]
+formplayer_a
+
 
 {{ __redis0__ }} swap_size=1G
 

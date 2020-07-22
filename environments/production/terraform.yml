@@ -495,6 +495,15 @@ servers:
     group: "formplayer"
     os: bionic
 
+  - server_name: "formplayer_a{i}-production"
+    server_instance_type: r5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 600
+    group: "formplayer"
+    os: bionic
+    count: 32
+
   - server_name: "redis0-production"
     server_instance_type: r5.xlarge
     network_tier: "db-private"
