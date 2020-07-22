@@ -30,6 +30,12 @@ class TerraformConfig(jsonobject.JsonObject):
             data['aws_profile'] = data.get('account_alias')
         return super(TerraformConfig, cls).wrap(data)
 
+    def to_generated_json(self):
+        obj = self.to_json()
+        obj['servers'] = [server.to_generated_json() for server in self.servers]
+        obj['proxy_servers'] = [server.to_generated_json() for server in self.proxy_servers]
+        return obj
+
 
 class VpnConnectionConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
@@ -58,6 +64,39 @@ class ServerConfig(jsonobject.JsonObject):
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
     os = jsonobject.StringProperty(required=True, choices=['trusty', 'bionic', 'ubuntu_pro_bionic'])
+    count = jsonobject.IntegerProperty(default=None)
+
+    @classmethod
+    def wrap(cls, data):
+        self = super(cls, ServerConfig).wrap(data)
+        if self.count is not None and not self.server_name.split('-', 1)[0].endswith('{i}'):
+            raise ValueError('To use count, server_name must be a template string using {i}, '
+                             'and {i} must be the final part before the env suffix')
+        return self
+
+    def get_all_server_names(self):
+        if self.count is None:
+            return [self.server_name]
+        else:
+            return [self.server_name.format(i='{:03d}'.format(i)) for i in range(self.count)]
+
+    def get_all_host_names(self):
+        host_name = self.server_name.split('-', 1)[0]
+        if self.count is None:
+            return [host_name]
+        else:
+            return [host_name.format(i='{:03d}'.format(i)) for i in range(self.count)]
+
+    def get_host_group_name(self):
+        if self.count is None:
+            raise ValueError("Can only call get_host_group_name() on a server with count")
+        else:
+            return self.server_name.split('-', 1)[0][:-3]
+
+    def to_generated_json(self):
+        obj = self.to_json()
+        obj['get_all_server_names'] = self.get_all_server_names()
+        return obj
 
 
 class BlockDevice(jsonobject.JsonObject):

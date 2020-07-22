@@ -126,41 +126,15 @@ swap_size=8G
 [pillowtop:children]
 pillow1
 
-{{ __formplayer10__ }} swap_size=8G
-{{ __formplayer11__ }} swap_size=8G
-{{ __formplayer12__ }} swap_size=8G
-{{ __formplayer13__ }} swap_size=8G
-{{ __formplayer14__ }} swap_size=8G
-{{ __formplayer15__ }} swap_size=8G
-{{ __formplayer16__ }} swap_size=8G
-{{ __formplayer17__ }} swap_size=8G
-{{ __formplayer18__ }} swap_size=8G
-{{ __formplayer19__ }} swap_size=8G
-{{ __formplayer20__ }} swap_size=8G
-{{ __formplayer21__ }} swap_size=8G
-{{ __formplayer22__ }} swap_size=8G
-{{ __formplayer23__ }} swap_size=8G
-{{ __formplayer24__ }} swap_size=8G
-{{ __formplayer25__ }} swap_size=8G
+{{ __formplayer_a__ }}
+
+[formplayer_a:vars]
+swap_size=8G
+formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 
 [formplayer:children]
+formplayer_a
 
-formplayer10
-formplayer11
-formplayer12
-formplayer13
-formplayer14
-formplayer15
-formplayer16
-formplayer17
-formplayer18
-formplayer19
-formplayer20
-formplayer21
-formplayer22
-formplayer23
-formplayer24
-formplayer25
 
 {{ __redis0__ }} swap_size=1G
 
