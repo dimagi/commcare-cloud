@@ -190,7 +190,7 @@ class AwsFillInventoryHelper(object):
             for server_name in server.get_all_server_names():
                 is_bionic = server.os in ('bionic', 'ubuntu_pro_bionic')
                 inventory_vars = [
-                    ('hostname', server_name),
+                    ('hostname', server_name.replace('_', '-')),
                     ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
                     ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
                 ]
