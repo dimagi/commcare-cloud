@@ -161,13 +161,18 @@ formplayer23
 formplayer24
 formplayer25
 
+[formplayer_z:vars]
+formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
+
 {{ __formplayer_a__ }}
 
 [formplayer_a:vars]
 swap_size=8G
+formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 
 [formplayer:children]
 formplayer_a
+formplayer_z
 
 
 {{ __redis0__ }} swap_size=1G
