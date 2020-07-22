@@ -80,10 +80,11 @@ resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
 }
 
 {% for server in servers + proxy_servers %}
-module "server__{{ server.server_name }}" {
+{%- for server_name in server.get_all_server_names %}
+module "server__{{ server_name }}" {
   source = "./modules/server"
 
-  server_name = {{ server.server_name|tojson }}
+  server_name = {{ server_name|tojson }}
   server_instance_type = {{ server.server_instance_type|tojson }}
   network_tier = {{ server.network_tier|tojson }}
   az = {{ server.az|tojson }}
@@ -93,8 +94,10 @@ module "server__{{ server.server_name }}" {
   secondary_volume_type = {{ server.block_device.volume_type|default("")|tojson }}
   secondary_volume_encrypted = {{ server.block_device.encrypted|default(False)|tojson }}
 
-{% if server.os == 'bionic' %}
-  server_image = "${var.bionic_server_image}"
+{% if server.os == 'ubuntu_pro_bionic' %}
+  server_image = "${data.aws_ami.ubuntu_pro_bionic.id}"
+{% elif server.os == 'bionic' %}
+  server_image = "${data.aws_ami.ubuntu_bionic.id}"
 {% else %}
   server_image = "${var.server_image}"
 {% endif %}
@@ -105,6 +108,7 @@ module "server__{{ server.server_name }}" {
   key_name = "${var.key_name}"
   group_tag= {{ server.group|tojson }}
 }
+{%- endfor %}
 {% endfor %}
 
 {% for server in proxy_servers %}

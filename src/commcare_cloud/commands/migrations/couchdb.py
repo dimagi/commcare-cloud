@@ -1,6 +1,7 @@
 import difflib
 import json
 import os
+from collections import defaultdict
 from contextlib import contextmanager
 
 import yaml
@@ -13,6 +14,7 @@ from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_
     print_db_info
 from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list, check_connection, \
     get_membership
+from tabulate import tabulate
 
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_warning, color_notice, color_summary, color_error, \
@@ -309,17 +311,47 @@ def describe(migration):
     print_db_info(migration.target_couch_config)
 
     puts(u'\nShard allocation')
-    diff_with_db = diff_plan(migration)
-    if diff_with_db:
-        puts(color_highlight('DB allocation differs from plan:\n'))
-        puts("{}\n\n".format(diff_with_db))
-    else:
-        puts(color_success('DB allocation matches plan.'))
+    diff_with_db = None
+    if os.path.exists(migration.shard_plan_path):
+        diff_with_db = diff_plan(migration)
+        if diff_with_db:
+            puts(color_highlight(u'DB allocation differs from plan:\n'))
+            puts(u"{}\n\n".format(diff_with_db))
+        else:
+            puts(color_success(u'DB allocation matches plan.'))
+
+    if not diff_with_db:
         print_shard_table([
             get_shard_allocation(migration.target_couch_config, db_name)
             for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
         ])
+
+    puts(u'\nShard count by node')
+    print_shard_allocation_by_node([
+        get_shard_allocation(migration.target_couch_config, db_name)
+        for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
+    ])
     return 0
+
+
+def print_shard_allocation_by_node(shard_allocation_docs):
+    db_names = [shard_allocation_doc.db_name for shard_allocation_doc in shard_allocation_docs]
+    by_node = defaultdict(dict)
+    for shard_allocation_doc in shard_allocation_docs:
+        for node, shards in sorted(shard_allocation_doc.by_node.items()):
+            node = shard_allocation_doc.config.format_node_name(node)
+            by_node[node][shard_allocation_doc.db_name] = shards
+
+    nodes = sorted(list(by_node))
+    headers = ["DB"] + nodes
+    rows = []
+    for db_name in db_names:
+        row = [db_name]
+        for node in nodes:
+            row.append(len(by_node[node].get(db_name, [])))
+        rows.append(row)
+    rows.append(["TOTAL"] + map(sum, zip(*rows)[1:]))
+    print(tabulate(rows, headers=headers, tablefmt='simple'))
 
 
 def get_files_for_assertion(alloc_docs_by_db):

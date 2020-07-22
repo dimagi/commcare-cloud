@@ -2,7 +2,6 @@
     supervisor_websockets: "{{ service_home }}/{{ deploy_env }}_supervisor_websockets.conf"
 
 - set_fact:
-    :
     proxy_managed_files:
       - "{{ supervisor_websockets }}"
 

@@ -1,32 +1,30 @@
-{{ __proxy1__ }} public_ip={{ aws_resources['proxy1-production.public_ip'] }}
+{{ __proxy2__ }} public_ip={{ aws_resources['proxy2-production.public_ip'] }}
 
 [proxy:children]
-proxy1
+proxy2
 
 {{ __web2__ }}
-
 {{ __web3__ }}
-
 {{ __web4__ }} datadog_integration_tcp_check=yes
-
 {{ __web5__ }}
-
 {{ __web6__ }}
-
 {{ __web7__ }}
-
 {{ __web8__ }}
-
 {{ __web9__ }}
+{{ __web20__ }}
+{{ __web21__ }}
+{{ __web22__ }}
+{{ __web23__ }}
 
 {{ __web11__ }} datadog_integration_tcp_check=yes
-
 {{ __web12__ }}
-
 {{ __web13__ }}
+{{ __web14__ }}
+{{ __web15__ }}
+{{ __web16__ }}
 
 [logproxy:children]
-proxy1
+proxy2
 
 [hq_webworkers:children]
 web2
@@ -37,17 +35,24 @@ web6
 web7
 web8
 web9
+web20
+web21
+web22
+web23
 
 [mobile_webworkers:children]
 web11
 web12
 web13
+web14
+web15
+web16
 
 [webworkers:children]
 hq_webworkers
 mobile_webworkers
 
-{{ __pgbouncer2__ }}
+{{ __pgbouncer3__ }}
 
 {{ __rds_pgmain0__ }}
 
@@ -76,7 +81,7 @@ rds_pgshard5
 rds_pgsynclog0
 
 [postgresql:children]
-pgbouncer2
+pgbouncer3
 remote_postgresql
 
 [ansible_skip:children]
@@ -121,24 +126,15 @@ swap_size=8G
 [pillowtop:children]
 pillow1
 
-{{ __formplayer2__ }} swap_size=8G
-{{ __formplayer3__ }} swap_size=8G
-{{ __formplayer4__ }} swap_size=8G
-{{ __formplayer5__ }} swap_size=8G
-{{ __formplayer6__ }} swap_size=8G
-{{ __formplayer7__ }} swap_size=8G
-{{ __formplayer8__ }} swap_size=8G
-{{ __formplayer9__ }} swap_size=8G
+{{ __formplayer_a__ }}
+
+[formplayer_a:vars]
+swap_size=8G
+formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 
 [formplayer:children]
-formplayer2
-formplayer3
-formplayer4
-formplayer5
-formplayer6
-formplayer7
-formplayer8
-formplayer9
+formplayer_a
+
 
 {{ __redis0__ }} swap_size=1G
 
@@ -207,10 +203,10 @@ couch14
 [couchdb2:vars]
 swap_size=8G
 
-{{ __couchproxy1__ }}
+{{ __couchproxy2__ }}
 
 [couchdb2_proxy:children]
-couchproxy1
+couchproxy2
 
 {{ __control1__ }}
 

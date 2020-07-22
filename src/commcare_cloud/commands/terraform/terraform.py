@@ -140,7 +140,7 @@ def get_postgresql_params_by_rds_instance(environment):
 
 
 def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediately):
-    context = environment.terraform_config.to_json()
+    context = environment.terraform_config.to_generated_json()
     if key_name not in environment.users_config.dev_users.present:
         raise UnauthorizedUser(key_name)
 

@@ -10,7 +10,12 @@ This document will walk you through the process of setting up a new monolith ser
     * If you are using VirtualBox, you can follow the instructions on [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md).
     * A domain name which directs to your server.
 * Access to the monolith via SSH with a user who has sudo access. If you installed the base Ubuntu 18.04 image yourself, this should be the default.
-
+* [This table](../Commcare_Ports_information.md) lists the ports that must be accessible in your network configuration. Please enable these ports in the Iptables/Firewall/Security groups.
+  * Run this command to verify that these ports are accessible:
+      ```bash
+      $ for PORT in 22 443 80 9010 8181 9092 2181 6379 5432 6432 5672 9200 9300 5984 4369 5555 25 465 587; do nc -zv localhost $PORT; done
+      ```
+    
 ## Step 1: Prepare system for automated deploy
 
 1. Enable root login via ssh
@@ -84,6 +89,34 @@ This document will walk you through the process of setting up a new monolith ser
      - `server_email`
      - `default_from_email`
       - `root_email`
+
+
+### Install commcare-cloud
+
+Install commcare-cloud onto the monolith:
+
+```bash
+$ git clone https://github.com/dimagi/commcare-cloud.git
+$ source commcare-cloud/control/init.sh
+```
+
+and when you see it ask you this:
+
+```bash
+Do you want to have the CommCare Cloud environment setup on login?
+(y/n):
+```
+answer with `y`.
+
+For more information, see [Installing commcare-cloud](installation.md#step-2)
+
+### Generate secured passwords for the vault
+
+```bash
+$ python ~/commcare-cloud/commcare-cloud-bootstrap/generate_vault_passwords.py --env='monolith'
+```
+
+
 1. Next, we're going to set up an encrypted "ansible vault" file.  This will store all the passwords used in this CommCare environment.  You'll need to create a strong password and save it somewhere safe.  This is the master password that grants access to the vault.  You'll need it for any future changes to this file, as well as when you deploy or make configuration changes to this machine.
 
     Encrypt the provided vault file, using that password:
@@ -166,25 +199,6 @@ Even though we will be running all commands locally, we still need to add the us
     ``` bash
     $ nano ~/environments/_users/admins.yml
     ```
-
-### Install commcare-cloud
-
-Install commcare-cloud onto the monolith:
-
-```bash
-$ git clone https://github.com/dimagi/commcare-cloud.git
-$ source commcare-cloud/control/init.sh
-```
-
-and when you see it ask you this:
-
-```bash
-Do you want to have the CommCare Cloud environment setup on login?
-(y/n):
-```
-answer with `y`.
-
-For more information, see [Installing commcare-cloud](installation.md#step-2)
 
 ### Run first-time configuration
 

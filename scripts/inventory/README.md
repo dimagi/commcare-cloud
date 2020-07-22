@@ -31,9 +31,9 @@ hqdjango12.internal.commcarehq.org
 hqdjango13.internal.commcarehq.org
 hqdjango14.internal.commcarehq.org
 
-Use `scripts/inventory/ssh production webworkers:0` to get the first
+Use `scripts/inventory/ssh production webworkers[0]` to get the first
 ```
 
-And then you can run `scripts/inventory/ssh production webworkers:0` to get the first (or `1` for the second, etc.).
+And then you can run `scripts/inventory/ssh production webworkers[0]` to get the first (or `1` for the second, etc.).
 
 All commands work with `scripts/inventory/mosh` instead as well.

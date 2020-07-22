@@ -3,7 +3,7 @@ locals {
 }
 module "postgresql" {
   source = "terraform-aws-modules/rds/aws"
-  version = "1.28.0"
+  version = "~> v1.37.0"
 
   create_db_instance = "${local.create}"
   create_db_option_group = "${local.create}"
@@ -11,10 +11,13 @@ module "postgresql" {
   create_db_subnet_group = "${local.create}"
   identifier = "${var.rds_instance["identifier"]}"
 
+  ca_cert_identifier = "rds-ca-2015"
+
   engine            = "postgres"
   engine_version    = "${var.rds_instance["engine_version"]}"
   instance_class    = "${var.rds_instance["instance_type"]}"
   allocated_storage = "${var.rds_instance["storage"]}"
+  max_allocated_storage = "${var.rds_instance["max_storage"]}"
 
   apply_immediately     = "${var.apply_immediately}"
   auto_minor_version_upgrade = false

@@ -18,16 +18,50 @@ variable "openvpn_instance_type" {
 }
 
 
+data "aws_ami" "ubuntu_pro_bionic" {
+  // should match what is on
+  // https://aws.amazon.com/marketplace/server/configuration?productId=fc15dd7b-2aa0-47e5-bb05-94c75950b5de
+  // (Product detail: https://aws.amazon.com/marketplace/pp/B0821T9RL2)
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu-pro/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["679593333241"] # Amazon Web Services
+}
+
+
+data "aws_ami" "ubuntu_bionic" {
+  # Should match what is in
+  # https://cloud-images.ubuntu.com/locator/ec2/
+  # with search hvm:ebs-ssd bionic amd64
+
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
+
+
 variable "server_image" {
   # Use 'hvm:ebs-ssd' AMIs from https://cloud-images.ubuntu.com/locator/ec2/
   default = "{{ {'us-east-1': 'ami-07cf43e1798df5582', 'ap-south-1': 'ami-04242e05c1ebface0'}[region] }}"
-}
-
-variable "bionic_server_image" {
-  # https://cloud-images.ubuntu.com/locator/ec2/
-  # Using search hvm:ebs-ssd bionic amd64
-  # Current release: 20200611
-  default = "{{ {'us-east-1': 'ami-0ac80df6eff0e70b5', 'ap-south-1': 'ami-02d55cb47e83a99a0'}[region] }}"
 }
 
 variable "dns_zone_id" {}

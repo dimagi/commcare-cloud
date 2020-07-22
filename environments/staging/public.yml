@@ -11,6 +11,8 @@ kafka_scala_version: 2.12
 kafka_inter_broker_protocol_version: 2.4
 kafka_log_message_format_version: 2.4
 
+TWO_FACTOR_GATEWAY_ENABLED: True
+
 rabbitmq_version: 3.8.5-1
 
 run_websockets_wsgi: True
@@ -120,6 +122,7 @@ localsettings:
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
+  ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes
   SES_CONFIGURATION_SET: staging-email-events
   SNS_EMAIL_EVENT_SECRET: "{{ localsettings_private.SNS_EMAIL_EVENT_SECRET }}"
