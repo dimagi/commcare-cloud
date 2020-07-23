@@ -3,24 +3,15 @@
 - name: Formplayer EFS
   hosts: formplayer
   become: true
-  tasks:
-    - import_tasks: roles/shared_dir/tasks/install.yml
-      when: 'formplayer_efs_dns|default(False)'
+  roles:
+    - role: aws-efs
       vars:
-        shared_drive_enabled: yes
-        shared_mount_dir: /opt/formplayer_data
-        shared_mount_address: "{{ formplayer_efs_dns }}"
-    - import_tasks: roles/shared_dir/tasks/setup_client.yml
-      when: 'formplayer_efs_dns|default(False)'
-      vars:
-        shared_drive_enabled: yes
-        shared_mount_dir: /opt/formplayer_data
-        shared_mount_address: "{{ formplayer_efs_dns }}"
-        shared_mount_opts: "nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
-  vars_files:
-    - ./group_vars/all.yml
-    - roles/shared_dir/vars/main.yml
-
+        efs_mount_dir: /opt/formplayer_data
+        efs_mount_uid: "{{ cchq_uid|default(None) }}"
+        efs_mount_gid: "{{ cchq_gid|default(None) }}"
+      when: "formplayer_efs_dns|default(False)"
+      tags:
+        - efs
 
 - name: Formplayer
   hosts: formplayer
