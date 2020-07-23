@@ -8,10 +8,10 @@ couch4-staging: 10.201.40.62
 couch4-staging.instance_id: i-016d844313ee8538e
 couch5-staging: 10.201.40.147
 couch5-staging.instance_id: i-01c1e735fcb24d9bf
-es2-staging: 10.201.40.143
-es2-staging.instance_id: i-05945f7d6292a7dd1
-es3-staging: 10.201.40.171
-es3-staging.instance_id: i-02232b9be65252b30
+es4-staging: 10.201.40.127
+es4-staging.instance_id: i-051efce29812eac7a
+es5-staging: 10.201.40.26
+es5-staging.instance_id: i-036c688e6ec7d6eac
 formplayer-efs: fs-ba70cd39.efs.us-east-1.amazonaws.com
 formplayer1-staging: 10.201.10.234
 formplayer1-staging.instance_id: i-0857403021d156bf8

@@ -88,14 +88,14 @@ formplayer2
 [redis:children]
 redis1
 
-{{ __es2__ }} elasticsearch_node_name=es2-staging elasticsearch_node_zone=aws elasticsearch_master=true datavol_fstype=xfs
+{{ __es4__ }} elasticsearch_node_name=es4-staging elasticsearch_node_zone=aws elasticsearch_master=true
 
-{{ __es3__ }} elasticsearch_node_name=es3-staging elasticsearch_node_zone=aws elasticsearch_master=true datavol_fstype=xfs
+{{ __es5__ }} elasticsearch_node_name=es5-staging elasticsearch_node_zone=aws elasticsearch_master=true
 
 [elasticsearch:children]
 # Amazon EC2
-es2
-es3
+es4
+es5
 
 [shared_dir_host:children]
 redis1
