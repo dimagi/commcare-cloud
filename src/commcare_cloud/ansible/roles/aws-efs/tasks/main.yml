@@ -6,6 +6,8 @@
     fail_msg: "efs_mount_uid={{ efs_mount_uid }} efs_mount_gid={{ efs_mount_gid }} efs_mount_dir={{ efs_mount_dir }}"
     success_msg: "efs_mount_uid={{ efs_mount_uid }} efs_mount_gid={{ efs_mount_gid }} efs_mount_dir={{ efs_mount_dir }}"
 
+
+
 - import_tasks: roles/shared_dir/tasks/setup_client.yml
   vars:
     shared_drive_enabled: yes
@@ -13,4 +15,5 @@
     shared_dir_user: "{{ efs_mount_uid }}"
     shared_dir_group: "{{ efs_mount_gid }}"
     shared_mount_address: "{{ formplayer_efs_dns }}"
-    shared_mount_opts: "nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
+    shared_mount_opts: "tls,_netdev"
+    shared_mount_fstype: "efs"
