@@ -24,6 +24,11 @@
   tags: commcarehq
   when: "cchq_gid is not none"
 
+- name: Add dev group
+  become: yes
+  group: name="{{ dev_group }}" state=present
+  tags: commcarehq
+
 - name: Add cchq user
   become: yes
   user:
@@ -34,11 +39,6 @@
     groups: "{{ dev_group }}"
     uid: "{{ cchq_uid if cchq_uid else omit }}"
     append: yes
-  tags: commcarehq
-
-- name: Add dev group
-  become: yes
-  group: name="{{ dev_group }}" state=present
   tags: commcarehq
 
 - name: Add users for current devs
