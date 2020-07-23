@@ -580,31 +580,31 @@ rds_instances:
     engine_version: 9.6.15
 
   - identifier: "pgshard1-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard2-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard3-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard4-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard5-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true
