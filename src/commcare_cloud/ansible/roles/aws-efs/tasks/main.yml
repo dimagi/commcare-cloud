@@ -13,4 +13,4 @@
     shared_dir_user: "{{ efs_mount_uid }}"
     shared_dir_group: "{{ efs_mount_gid }}"
     shared_mount_address: "{{ formplayer_efs_dns }}"
-    shared_mount_opts: "nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
+    shared_mount_opts: "_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
