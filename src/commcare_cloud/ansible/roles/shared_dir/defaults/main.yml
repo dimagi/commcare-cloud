@@ -1,2 +1,0 @@
-shared_dir_user: nobody
-shared_dir_group: "{{ shared_dir_gid }}"
