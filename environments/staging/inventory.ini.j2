@@ -74,14 +74,20 @@ celery2
 # Amazon EC2
 pillow2
 
-{{ __formplayer1__ }} datavol_fstype=xfs formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/ use_formplayer_efs=true
+{{ __formplayer1__ }} datavol_fstype=xfs
 
-{{ __formplayer2__ }} datavol_fstype=xfs formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/ use_formplayer_efs=true
+{{ __formplayer2__ }} datavol_fstype=xfs
 
 [formplayer:children]
 # Amazon EC2
 formplayer1
 formplayer2
+
+[formplayer:vars]
+formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
+use_formplayer_efs=true
+cchq_uid=1026
+cchq_gid=1027
 
 {{ __redis1__ }} datavol_fstype=xfs
 
