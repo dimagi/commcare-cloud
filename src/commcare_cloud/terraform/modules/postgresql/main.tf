@@ -11,8 +11,6 @@ module "postgresql" {
   create_db_subnet_group = "${local.create}"
   identifier = "${var.rds_instance["identifier"]}"
 
-  ca_cert_identifier = "rds-ca-2015"
-
   engine            = "postgres"
   engine_version    = "${var.rds_instance["engine_version"]}"
   instance_class    = "${var.rds_instance["instance_type"]}"
