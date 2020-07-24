@@ -111,6 +111,10 @@ localsettings:
   ANALYTICS_DEBUG: False
   ANALYTICS_LOG_LEVEL: "warning"
   AUDIT_ALL_VIEWS: True
+  AVAILABLE_CUSTOM_RULE_CRITERIA:
+    COVID_US_ASSOCIATED_USER_CASES: custom.covid.rules.custom_criteria.associated_user_case_closed
+  AVAILABLE_CUSTOM_RULE_ACTIONS:
+    COVID_US_CLOSE_CASES_ASSIGNED_CHECKIN: custom.covid.rules.custom_actions.close_cases_assigned_to_checkin
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
