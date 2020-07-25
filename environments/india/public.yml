@@ -42,6 +42,8 @@ kafka_inter_broker_protocol_version: 2.4
 kafka_log_message_format_version: 2.4
 kafka_log_dir: "{{ encrypted_root }}/kafka"
 
+rabbitmq_version: 3.8.5-1
+
 control_machine_ip: 10.162.36.196
 
 run_websockets_wsgi: True
