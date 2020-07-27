@@ -12,8 +12,10 @@ node.name: "{{ elasticsearch_node_name }}"
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/allocation-awareness.html
 {% if elasticsearch_version == '1.7.6' or  elasticsearch_version == '2.4.6'%}
 node.zone: "{{ elasticsearch_node_zone }}"
-{% elif elasticsearch_version =='7.6.2' %}
+{% endif %}
+{% if elasticsearch_version =='7.6.2' %}
 node.attr.zone: "{{ elasticsearch_node_zone }}"
+{% endif %}
 {% endif %}
 
 # disable multiple nodes starting from the same installation location
@@ -35,7 +37,8 @@ path.logs: {{ elasticsearch_data_dir }}/logs
 discovery.zen.minimum_master_nodes: {{ [2, groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list | length] | min }}
 {% if elasticsearch_version == '1.7.6' or  elasticsearch_version == '2.4.6'%}
 discovery.zen.ping.timeout: 90s
-{% elif elasticsearch_version =='7.6.2' %}
+{% endif %}
+{% if elasticsearch_version =='7.6.2' %}
 discovery.zen.ping_timeout: 90s
 {% endif %}
 discovery.zen.fd.ping_timeout: 90s
@@ -96,7 +99,8 @@ cloud:
 # Only allow indices to be created by an explicit "create" command
 {% if elasticsearch_version == '1.7.6' or  elasticsearch_version == '2.4.6'%}
 action.auto_create_index: false
-{% elif elasticsearch_version == '7.6.2' %}
+{% endif %}
+{% if elasticsearch_version == '7.6.2' %}
 action.auto_create_index: .watches,.triggered_watches,.watcher-history-*
 {% endif %}
 

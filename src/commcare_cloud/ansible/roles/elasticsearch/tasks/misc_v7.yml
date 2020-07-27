@@ -1,9 +1,11 @@
 
 - name: Copy Elasticsearch logging config
   become: yes
-  template:
-    src: config/log4j2.properties.j2
+  copy:
+    src: log4j2.properties
     dest: "{{ elasticsearch_conf_dir }}/log4j2.properties"
+    owner: elasticsearch
+    group: elasticsearch
   register: copy_elasticsearch_logging_result
   tags:
     - es_conf
@@ -13,6 +15,8 @@
   template:
     src: config/jvm.options.j2
     dest: "{{ elasticsearch_conf_dir }}/jvm.options"
+    owner: elasticsearch
+    group: elasticsearch
   register: copy_elasticsearch_logging_result
   tags:
     - es_conf

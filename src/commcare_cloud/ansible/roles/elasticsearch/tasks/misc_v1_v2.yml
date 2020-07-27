@@ -4,6 +4,8 @@
   template:
     src: config/logging.yml.j2
     dest: "{{ elasticsearch_conf_dir }}/logging.yml"
+    owner: elasticsearch
+    group: elasticsearch
   register: copy_elasticsearch_logging_result
   tags:
     - es_conf

@@ -7,3 +7,6 @@ instances:
   - url: http://{{ inventory_hostname }}:9200
     tags:
       - environment:{{ env_monitoring_id }}
+{% if elasticsearch_version == '7.6.2' %}
+      - es_version: {{ elasticsearch_version }}
+{% endif %}
