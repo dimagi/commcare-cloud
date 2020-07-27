@@ -1036,3 +1036,7 @@ LOCAL_CUSTOM_DB_ROUTING = json.loads('{{ localsettings.LOCAL_CUSTOM_DB_ROUTING|t
 {% if localsettings.CUSTOM_DOMAIN_SPECIFIC_URL_MODULES is defined %}
 CUSTOM_DOMAIN_SPECIFIC_URL_MODULES = json.loads('{{ localsettings.CUSTOM_DOMAIN_SPECIFIC_URL_MODULES|to_json }}')
 {% endif %}
+
+{% if localsettings.ENABLE_ES_INTERFACE_LOGGING is defined %}
+ENABLE_ES_INTERFACE_LOGGING = {{ localsettings.ENABLE_ES_INTERFACE_LOGGING }}
+{% endif %}
