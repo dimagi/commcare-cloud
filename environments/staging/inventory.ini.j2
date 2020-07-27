@@ -89,10 +89,10 @@ use_formplayer_efs=true
 cchq_uid=1026
 cchq_gid=1027
 
-{{ __redis1__ }} datavol_fstype=xfs
+{{ __redis2__ }}
 
 [redis:children]
-redis1
+redis2
 
 {{ __es4__ }} elasticsearch_node_name=es4-staging elasticsearch_node_zone=aws elasticsearch_master=true
 
@@ -104,7 +104,7 @@ es4
 es5
 
 [shared_dir_host:children]
-redis1
+redis2
 
 {{ __control0__ }}
 
