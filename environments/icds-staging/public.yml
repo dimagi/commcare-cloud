@@ -3,8 +3,8 @@ daily_deploy_email: tech-announce-daily@dimagi.com
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'icds-staging'
-elasticsearch_version: 2.4.6
-elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
+elasticsearch_version: 7.6.2
+elasticsearch_download_sha256: 63543cfafbb2b1eae39dc38052acc75dc4ca2e1579259a1c47722116e31af577 
 elasticsearch_enable_inline_groovy_scripts: False
 
 nofile_limit: 65536

@@ -4,13 +4,10 @@
 - name: Create elasticsearch user
   user: name=elasticsearch createhome=no password=no state=present
 
-- name: Elasticsearch User
-  user: name=elasticsearch state=present
-
 - name: Download Elasticsearch
   become: yes
   get_url:
-    url: "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+    url: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}-linux-x86_64.tar.gz"
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     sha256sum: "{{ elasticsearch_download_sha256 }}"
 
@@ -49,14 +46,11 @@
   tags:
     - es_conf
 
-- name: Copy Elasticsearch logging config
-  become: yes
-  template:
-    src: config/logging.yml.j2
-    dest: "{{ elasticsearch_conf_dir }}/logging.yml"
-  register: copy_elasticsearch_logging_result
-  tags:
-    - es_conf
+- include: misc_v1_v2.yml
+  when: elasticsearch_version == '1.7.6' or elasticsearch_version == '2.4.6'
+
+- include: misc_v7.yml
+  when: elasticsearch_version == '7.6.2'
 
 - name: Copy Elasticsearch Upstart Conf
   become: yes
@@ -91,12 +85,6 @@
 - debug: msg="If you're just updating the ES conf then you sill need to restart the cluster. Use  the 'es_rolling_restart' playbook."
   when: copy_elasticsearch_conf_result.changed
 
-- name: Disable Java Heap Dump
-  replace:
-    path: "{{ elasticsearch_home }}/bin/elasticsearch.in.sh"
-    regexp: '^JAVA_OPTS="\$JAVA_OPTS -XX:\+HeapDumpOnOutOfMemoryError"'
-    replace: '#JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"'
-
 - name: Create Elasticsearch data directories
   become: yes
   file:
@@ -109,31 +97,6 @@
     - "{{ elasticsearch_data_dir }}"
     - "{{ elasticsearch_data_dir }}/data"
     - "{{ elasticsearch_data_dir }}/logs"
-
-- name: Install elasticsearch python client
-  become: yes
-  pip:
-    name: elasticsearch
-    version: 1.9.0
-
-- name: Check for installed plugins
-  shell: "{{ elasticsearch_home }}/bin/plugin list"
-  register: installed_plugins
-
-- name: Install elasticsearch aws plugin
-  become: yes
-  shell: "{{ elasticsearch_home }}/bin/plugin install elasticsearch/elasticsearch-cloud-aws/{{ aws_plugin_version }}"
-  when: (backup_es_s3) and (installed_plugins.stdout is defined) and ('cloud-aws' not in installed_plugins.stdout) and elasticsearch_version == '1.7.6'
-  
-- name: Install elasticsearch aws plugin
-  become: yes
-  shell: "{{ elasticsearch_home }}/bin/plugin install cloud-aws"
-  when: (backup_es_s3) and (installed_plugins.stdout is defined) and ('cloud-aws' not in installed_plugins.stdout) and elasticsearch_version == '2.4.6'
-
-- name: Install elasticsearch swift plugin
-  become: yes
-  shell: "{{ elasticsearch_home }}/bin/plugin install org.wikimedia.elasticsearch.swift/swift-repository-plugin/{{ swift_plugin_version }}"
-  when: (backup_es_swift) and (installed_plugins.stdout is defined) and ('swift-repository-plugin' not in installed_plugins.stdout)
 
 - name: Reload upstart
   become: yes
@@ -252,3 +215,10 @@
     mode: 0640
   notify: reload monit
   tags: monit
+
+- name: Change index settings
+  uri:
+    url: 'http://{{groups.elasticsearch.0}}:9200/_all/_settings?preserve_existing=true'
+    method: PUT
+    body: ' { "index.max_result_window" : "1000000","index.search.slowlog.threshold.query.debug" : "2s","index.search.slowlog.threshold.query.info" : "5s", "index.search.slowlog.threshold.query.trace" : "500ms", "index.search.slowlog.threshold.query.warn" : "10s"}'
+  when: inventory_hostname == groups.elasticsearch.0 and elasticsearch_version == '7.6.2'
