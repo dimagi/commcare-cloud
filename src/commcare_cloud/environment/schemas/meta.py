@@ -6,6 +6,7 @@ class GitRepository(jsonobject.JsonObject):
     dest = jsonobject.StringProperty(required=True)  # relative to the code_source/external directory
     version = jsonobject.StringProperty(default="master")
     requirements_path = jsonobject.StringProperty(default="requirements.txt")
+    deploy_key = jsonobject.StringProperty()  # name of the deploy key file to use
 
     @property
     def relative_dest(self):
@@ -26,3 +27,4 @@ class MetaConfig(jsonobject.JsonObject):
     slack_alerts_channel = jsonobject.StringProperty()
     bare_non_cchq_environment = jsonobject.BooleanProperty(default=False)
     git_repositories = jsonobject.ListProperty(GitRepository)
+    deploy_keys = jsonobject.DictProperty(unicode)

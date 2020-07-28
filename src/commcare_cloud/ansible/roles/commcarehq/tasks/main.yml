@@ -18,6 +18,16 @@
     owner: cchq
     group: cchq
 
+- name: add deploy keys
+  become: yes
+  copy:
+    src: "{{ env_files_dir }}/{{ item.key }}"
+    dest: "{{ cchq_home }}/.ssh/{{ item.value }}"
+    owner: cchq
+    group: cchq
+  loop: "{{ deploy_keys|dict2items }}"
+  when: deploy_keys is defined
+
 - name: create required directories
   become: yes
   file:

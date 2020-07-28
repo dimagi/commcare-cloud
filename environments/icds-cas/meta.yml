@@ -3,3 +3,9 @@ env_monitoring_id: icds
 users:
   - dimagi
 slack_alerts_channel: alerts-icds
+git_repositories:
+  - url: git@github.com:snopoke/private-repo-test.git
+    dest: test_private_repo
+    deploy_key: deploy_key.pem
+deploy_keys:
+  - deploy_key.vault: deploy_key.pem

@@ -418,6 +418,7 @@ class Environment(object):
             'dev_users': self.users_config.dev_users.to_json(),
             'authorized_keys_dir': '{}/'.format(os.path.realpath(self.paths.authorized_keys_dir)),
             'known_hosts_file': self.paths.known_hosts,
+            'env_files_dir': self.paths.known_hosts,
             'commcarehq_repository': (
                 self.fab_settings_config.code_repo
                 if not self.meta_config.bare_non_cchq_environment else {}
