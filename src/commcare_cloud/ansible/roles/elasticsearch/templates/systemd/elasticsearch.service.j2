@@ -9,7 +9,7 @@ Type=simple
 Environment=ES_HOME={{ elasticsearch_home }}
 Environment=CONF_DIR={{ elasticsearch_conf_dir}}
 Environment=ES_PATH_CONF={{ elasticsearch_conf_dir}}
-{% if elasticsearch_version == '1.7.6' or  elasticsearch_version == '2.4.6'%}
+{% if elasticsearch_version == '2.4.6'%}
 Environment=ES_HEAP_SIZE={{ elasticsearch_memory }}
 {% endif %}
 WorkingDirectory={{ elasticsearch_home }}
@@ -18,7 +18,7 @@ User=elasticsearch
 Group=elasticsearch
 
 ExecStart={{ elasticsearch_home }}/bin/elasticsearch \
-{% if elasticsearch_version == '1.7.6' or  elasticsearch_version == '2.4.6'%}
+{% if elasticsearch_version == '2.4.6'%}
                                               --path.conf=${CONF_DIR} \
                                               --path.home=${ES_HOME}
 {% endif %}

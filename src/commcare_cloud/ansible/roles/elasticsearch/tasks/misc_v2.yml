@@ -29,11 +29,6 @@
 
 - name: Install elasticsearch aws plugin
   become: yes
-  shell: "{{ elasticsearch_home }}/bin/plugin install elasticsearch/elasticsearch-cloud-aws/{{ aws_plugin_version }}"
-  when: (backup_es_s3) and (installed_plugins.stdout is defined) and ('cloud-aws' not in installed_plugins.stdout) and elasticsearch_version == '1.7.6'
-  
-- name: Install elasticsearch aws plugin
-  become: yes
   shell: "{{ elasticsearch_home }}/bin/plugin install cloud-aws"
   when: (backup_es_s3) and (installed_plugins.stdout is defined) and ('cloud-aws' not in installed_plugins.stdout) and elasticsearch_version == '2.4.6'
 

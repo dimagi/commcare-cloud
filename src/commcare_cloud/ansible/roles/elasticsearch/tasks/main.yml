@@ -1,15 +1,31 @@
+- name: "Check if Cluster Name is updated for Elasticsearch V7"
+  assert:
+    that:
+      - "'es7_' in elasticsearch_cluster_name"
+    fail_msg: "Elasticsearch V7 cluster name should start with es7_ prefix"
+  when: elasticsearch_version  == "7.6.2"
+
 - name: Downloads Directory
   file: path="/home/{{ cchq_user }}/downloads/" state=directory
 
 - name: Create elasticsearch user
   user: name=elasticsearch createhome=no password=no state=present
 
-- name: Download Elasticsearch
+- name: Download Elasticsearch 2.4.x
+  become: yes
+  get_url:
+    url: "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+    dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+    sha256sum: "{{ elasticsearch_download_sha256 }}"
+  when: elasticsearch_version == "2.4.6"
+
+- name: Download Elasticsearch 7.6.x
   become: yes
   get_url:
     url: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}-linux-x86_64.tar.gz"
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     sha256sum: "{{ elasticsearch_download_sha256 }}"
+  when: elasticsearch_version == "7.6.2"
 
 - name: Unarchive Elasticsearch
   become: yes
@@ -46,8 +62,8 @@
   tags:
     - es_conf
 
-- include: misc_v1_v2.yml
-  when: elasticsearch_version == '1.7.6' or elasticsearch_version == '2.4.6'
+- include: misc_v2.yml
+  when: elasticsearch_version == '2.4.6'
 
 - include: misc_v7.yml
   when: elasticsearch_version == '7.6.2'

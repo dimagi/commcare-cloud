@@ -10,7 +10,7 @@ node.name: "{{ elasticsearch_node_name }}"
 {% if elasticsearch_node_zone is defined %}
 # Used for shard allocation awareness
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/allocation-awareness.html
-{% if elasticsearch_version == '1.7.6' or  elasticsearch_version == '2.4.6'%}
+{% if elasticsearch_version == '2.4.6'%}
 node.zone: "{{ elasticsearch_node_zone }}"
 {% endif %}
 {% if elasticsearch_version =='7.6.2' %}
@@ -35,7 +35,7 @@ path.logs: {{ elasticsearch_data_dir }}/logs
 # Best practice is to set it to M/2 + 1 where M is the number of master-eligible nodes,
 # but (todo) we DO NOT follow best practice.
 discovery.zen.minimum_master_nodes: {{ [2, groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list | length] | min }}
-{% if elasticsearch_version == '1.7.6' or  elasticsearch_version == '2.4.6'%}
+{% if elasticsearch_version == '2.4.6'%}
 discovery.zen.ping.timeout: 90s
 {% endif %}
 {% if elasticsearch_version =='7.6.2' %}
@@ -45,7 +45,7 @@ discovery.zen.fd.ping_timeout: 90s
 discovery.zen.fd.ping_interval: 10s
 discovery.zen.fd.ping_retries: 20
 
-{% if elasticsearch_version == '1.7.6' or  elasticsearch_version == '2.4.6'%}
+{% if elasticsearch_version == '2.4.6'%}
 discovery.zen.ping.multicast.enabled: false
 {% endif %}
 discovery.zen.ping.unicast.hosts: [
@@ -64,7 +64,7 @@ network.host: "{{ inventory_hostname }}"
 network.host: "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}"
 {% endif %}
 
-{% if elasticsearch_version == '1.7.6' or  elasticsearch_version == '2.4.6'%}
+{% if elasticsearch_version == '2.4.6'%}
 index.search.slowlog.threshold.query.warn: 10s
 index.search.slowlog.threshold.query.info: 5s
 index.search.slowlog.threshold.query.debug: 2s
@@ -77,7 +77,7 @@ indices.fielddata.cache.size:  {{ elasticsearch_fielddata_cache_size }}
 {% endif %}
 
 {% if elasticsearch_enable_inline_groovy_scripts %}
-{% if elasticsearch_version == '1.7.6' or  elasticsearch_version == '2.4.6'%}
+{% if elasticsearch_version == '2.4.6'%}
 # somewhat of a security risk but required by pact custom reports
 script.engine.groovy.inline.aggs: true
 script.engine.groovy.inline.search: true
@@ -97,7 +97,7 @@ cloud:
 {% endif %}
 
 # Only allow indices to be created by an explicit "create" command
-{% if elasticsearch_version == '1.7.6' or  elasticsearch_version == '2.4.6'%}
+{% if elasticsearch_version == '2.4.6'%}
 action.auto_create_index: false
 {% endif %}
 {% if elasticsearch_version == '7.6.2' %}
