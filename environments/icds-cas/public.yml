@@ -26,6 +26,7 @@ nginx_dynamic_limits:
     from_minute: 30
     zone_args: "--overall_restore 40 --incremental_restore 50"
 
+redis_version: 6.0.5
 rabbitmq_version: 3.8.5-1
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
