@@ -64,4 +64,5 @@
         http_proxy: "{% if http_proxy_address is defined %}http://{{ http_proxy_address }}:{{ http_proxy_port }}{% endif %}"
         https_proxy: "{% if http_proxy_address is defined %}https://{{ http_proxy_address }}:{{ http_proxy_port }}{% endif %}"
         no_proxy: "{% if http_proxy_address is defined %}{{ groups['all'] | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}{% endif %}"
+        PROMETHEUS_PUSHGATEWAY_HOST: "{% if prometheus_celery_pushgateway is defined %}{{ prometheus_celery_pushgateway }}{% endif %}"
         TMPDIR: '{{ encrypted_tmp }}'
