@@ -412,7 +412,7 @@ def _setup_release(keep_days=0, full_cluster=True):
     update_code = release.update_code(full_cluster)
     execute_with_timing(update_code, deploy_ref)
     for repo in env.ccc_environment.meta_config.git_repositories:
-        execute_with_timing(update_code, repo.version, repo.relative_dest, repo.url)
+        execute_with_timing(update_code, repo.version, repo.relative_dest, repo.url, repo.deploy_key)
 
     execute_with_timing(release.update_virtualenv(full_cluster))
 
