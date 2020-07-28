@@ -76,21 +76,26 @@ class ServerConfig(jsonobject.JsonObject):
 
     def get_all_server_names(self):
         if self.count is None:
+            # e.g. server0-test => ["server0-test"]
             return [self.server_name]
         else:
+            # e.g. server_a{i}-test => ["server_a000-test", "server_a001-test", ...]
             return [self.server_name.format(i='{:03d}'.format(i)) for i in range(self.count)]
 
     def get_all_host_names(self):
         host_name = self.server_name.split('-', 1)[0]
         if self.count is None:
+            # e.g. server0-test => ["server0"]
             return [host_name]
         else:
+            # e.g. server_a{i}-test => ["server_a000", "server_a001", ...]
             return [host_name.format(i='{:03d}'.format(i)) for i in range(self.count)]
 
     def get_host_group_name(self):
         if self.count is None:
             raise ValueError("Can only call get_host_group_name() on a server with count")
         else:
+            # e.g. server_a{i}-test => ["server_a"]
             return self.server_name.split('-', 1)[0][:-3]
 
     def to_generated_json(self):
