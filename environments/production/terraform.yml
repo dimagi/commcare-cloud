@@ -298,10 +298,10 @@ servers:
     os: bionic
 
   - server_name: "couch12-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: c5.12xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 30
+    volume_size: 40
     volume_encrypted: no
     block_device:
       volume_size: 6650
@@ -309,24 +309,24 @@ servers:
     group: "couchdb2"
     os: bionic
   - server_name: "couch13-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: c5.12xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 30
+    volume_size: 40
     volume_encrypted: no
     block_device:
-      volume_size: 5000
+      volume_size: 6650
       encrypted: no
     group: "couchdb2"
     os: bionic
   - server_name: "couch14-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: c5.12xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 30
+    volume_size: 40
     volume_encrypted: no
     block_device:
-      volume_size: 5000
+      volume_size: 6650
       encrypted: no
     group: "couchdb2"
     os: bionic
@@ -580,31 +580,31 @@ rds_instances:
     engine_version: 9.6.15
 
   - identifier: "pgshard1-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard2-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard3-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard4-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard5-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true

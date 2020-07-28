@@ -2,6 +2,9 @@
 #shared_data_dir: ...
 #shared_dir_gid: ...
 
+shared_dir_user: nobody
+shared_dir_group: "{{ shared_dir_gid }}"
+
 shared_dir_groupname: nfs
 
 shared_mount_address: "{{ groups.shared_dir_host[0] }}:{{ shared_data_dir }}"

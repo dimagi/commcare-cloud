@@ -131,6 +131,7 @@ resource "aws_efs_file_system" "formplayer" {
 resource "aws_efs_mount_target" "formplayer-{{ az }}" {
   file_system_id = "${aws_efs_file_system.formplayer.id}"
   subnet_id      = "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+  security_groups = ["${module.network.app-private-sg}"]
 }
 {% endfor %}
 

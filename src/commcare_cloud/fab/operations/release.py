@@ -353,7 +353,7 @@ def record_successful_deploy():
             'virtualenv_current': env.py3_virtualenv_current,
             'user': env.user,
             'environment': env.deploy_env,
-            'url': env.deploy_metadata.diff_url,
+            'url': env.deploy_metadata.diff.url,
             'minutes': str(int(delta.total_seconds() // 60))
         })
 
