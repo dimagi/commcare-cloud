@@ -34,6 +34,7 @@ shared_temp_dir_name: "temp"
 public_site_path: /opt/commcare-hq-public/site/output
 commtrack_public_site_path: /opt/commtrack-static/site/output/
 cchq_user: cchq
+cchq_group: cchq
 dev_group: dimagidev
 
 etc_hosts_lines: []

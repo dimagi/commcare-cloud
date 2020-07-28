@@ -269,6 +269,10 @@ localsettings:
   COMMCARE_NAME: 'ICDS-CAS'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
+  CUSTOM_DOMAIN_SPECIFIC_URL_MODULES:
+    - custom.icds_reports.urls
+    - custom.icds.urls
+    - custom.icds.data_management.urls
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ alt_hostname|default(ansible_hostname) }}"
   EMAIL_SMTP_HOST: relay.sendermile.com
@@ -373,6 +377,9 @@ localsettings:
     - {name: "custom.icds_reports", host: "all"}
   LOCAL_CUSTOM_DB_ROUTING:
     icds_reports: icds-ucr-citus
+  LOCAL_REPEATER_CLASSES:
+    - custom.icds.repeaters.phi.SearchByParamsRepeater
+    - custom.icds.repeaters.phi.ValidatePHIDRepeater
   MESSAGING_RULE_CASE_CHUNK_SIZE: 200
   RUN_CASE_SEARCH_PILLOW: False
   RUN_FORM_META_PILLOW: False

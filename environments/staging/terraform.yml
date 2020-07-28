@@ -39,28 +39,28 @@ servers:
     group: webworkers
     os: bionic
 
-  - server_name: "es2-staging"
+  - server_name: "es4-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
     az: "a"
-    volume_size: 80
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
       volume_size: 80
       encrypted: true
     group: "elasticsearch"
-    os: bionic
-  - server_name: "es3-staging"
+    os: ubuntu_pro_bionic
+  - server_name: "es5-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
     az: "a"
-    volume_size: 80
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
       volume_size: 80
       encrypted: true
     group: "elasticsearch"
-    os: bionic
+    os: ubuntu_pro_bionic
 
   - server_name: "pillow2-staging"
     server_instance_type: "t3.xlarge"
@@ -159,29 +159,29 @@ servers:
     group: "kafka"
     os: bionic
 
-  - server_name: "pgproxy1-staging"
+  - server_name: "pgproxy2-staging"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "a"
-    volume_size: 80
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
       volume_size: 80
       encrypted: true
     group: postgresql
-    os: bionic
+    os: ubuntu_pro_bionic
 
-  - server_name: "redis1-staging"
+  - server_name: "redis2-staging"
     server_instance_type: t3.medium
     network_tier: "db-private"
     az: "a"
-    volume_size: 60
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
       volume_size: 60
       encrypted: true
     group: "redis"
-    os: bionic
+    os: ubuntu_pro_bionic
 
 
 proxy_servers:

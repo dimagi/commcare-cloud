@@ -58,7 +58,6 @@ filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
     tags: nginx-error
 
-formplayer_archive_time_spec: '100m'
 formplayer_purge_time_spec: '8d'
 formplayer_sensitive_data_logging: true
 
@@ -112,6 +111,10 @@ localsettings:
   ANALYTICS_DEBUG: False
   ANALYTICS_LOG_LEVEL: "warning"
   AUDIT_ALL_VIEWS: True
+  AVAILABLE_CUSTOM_RULE_CRITERIA:
+    COVID_US_ASSOCIATED_USER_CASES: custom.covid.rules.custom_criteria.associated_user_case_closed
+  AVAILABLE_CUSTOM_RULE_ACTIONS:
+    COVID_US_CLOSE_CASES_ASSIGNED_CHECKIN: custom.covid.rules.custom_actions.close_cases_assigned_to_checkin
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
@@ -144,6 +147,31 @@ localsettings:
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
+  LOCAL_STATIC_DATA_SOURCES:
+    - custom/icds_reports/ucr/data_sources/*.json
+    - custom/icds_reports/ucr/data_sources/dashboard/*.json
+  LOCAL_STATIC_UCR_REPORTS:
+    - custom/icds_reports/ucr/reports/dashboard/*.json
+    - custom/icds_reports/ucr/reports/asr/*.json
+    - custom/icds_reports/ucr/reports/asr/ucr_v2/*.json
+    - custom/icds_reports/ucr/reports/mpr/*.json
+    - custom/icds_reports/ucr/reports/mpr/dashboard/*.json
+    - custom/icds_reports/ucr/reports/ls/*.json
+    - custom/icds_reports/ucr/reports/other/*.json
+  LOCAL_CUSTOM_UCR_EXPRESSION_LISTS:
+    - custom.icds_reports.ucr.expressions.CUSTOM_UCR_EXPRESSIONS
+  LOCAL_CUSTOM_UCR_REPORT_FILTERS:
+    - ['village_choice_list', 'custom.icds_reports.ucr.filter_spec.build_village_choice_list_filter_spec']
+  LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES:
+    - ['village_choice_list', 'custom.icds_reports.ucr.filter_value.VillageFilterValue']
+  LOCAL_DOMAIN_MODULE_MAP:
+    icds-test: custom.icds_reports
+    icds-cas: custom.icds_reports
+    icds-dashboard-qa: custom.icds_reports
+  LOCAL_APPS:
+    - {name: "custom.icds", host: "all"}
+    - {name: "custom.icds.data_management", host: "all"}
+    - {name: "custom.icds_reports", host: "all"}
   PILLOWTOP_MACHINE_ID: hqdb0
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes

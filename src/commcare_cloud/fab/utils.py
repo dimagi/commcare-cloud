@@ -1,29 +1,30 @@
 from __future__ import absolute_import
 from __future__ import print_function
+
 import datetime
 import os
 import pickle
+import re
 import sys
 import traceback
-from fabric.operations import sudo
-from fabric.context_managers import cd, settings
-from fabric.api import local
-import re
-from getpass import getpass
-from memoized import memoized_property, memoized
-
-from github import Github, UnknownObjectException
-from fabric.api import execute, env
-from fabric.colors import magenta, red
-from gevent.pool import Pool
 from collections import defaultdict
+from getpass import getpass
+
+from gevent.pool import Pool
+from github import Github, UnknownObjectException
+from memoized import memoized, memoized_property
+
+from fabric.api import env, execute, local
+from fabric.colors import blue, cyan, red, yellow
+from fabric.context_managers import cd, settings
+from fabric.operations import sudo
 
 from .const import (
-    PROJECT_ROOT,
     CACHED_DEPLOY_CHECKPOINT_FILENAME,
     CACHED_DEPLOY_ENV_FILENAME,
     DATE_FMT,
     OFFLINE_STAGING_DIR,
+    PROJECT_ROOT,
     RELEASE_RECORD,
 )
 
@@ -60,7 +61,6 @@ class DeployMetadata(object):
         self.timestamp = datetime.datetime.utcnow().strftime(DATE_FMT)
         self._deploy_tag = None
         self._max_tags = 100
-        self._last_tag = None
         self._code_branch = code_branch
         self._environment = environment
 
@@ -70,24 +70,8 @@ class DeployMetadata(object):
 
     @memoized_property
     def last_commit_sha(self):
-        if self.last_tag:
-            return self.last_tag.commit.sha
-
         with cd(env.code_current):
             return sudo('git rev-parse HEAD')
-
-    @memoized_property
-    def last_tag(self):
-        pattern = ".*-{}-deploy".format(re.escape(self._environment))
-        for tag in self.repo.get_tags()[:self._max_tags]:
-            if re.match(pattern, tag.name):
-                return tag
-
-        print(magenta('Warning: No previous tag found in last {} tags for {}'.format(
-            self._max_tags,
-            self._environment
-        )))
-        return None
 
     def tag_commit(self):
         if env.offline:
@@ -124,25 +108,6 @@ class DeployMetadata(object):
                 tag=tag_name,
             ))
 
-    @property
-    def diff_url(self):
-        if env.offline:
-            return '"No diff url for offline deploy"'
-        if not env.tag_deploy_commits:
-            return '"Diff URLs are not enabled for this environment"'
-
-        if _github_auth_provided() and self._deploy_tag is None:
-            raise Exception("You haven't tagged anything yet.")
-
-        from_ = self.last_tag.name if self.last_tag and self.last_tag.name else self.last_commit_sha
-        if not from_:
-            return '"Previous deploy not found, cannot make comparison"'
-
-        return "https://github.com/dimagi/commcare-hq/compare/{}...{}".format(
-            from_,
-            self._deploy_tag or self.deploy_ref,
-        )
-
     @memoized_property
     def deploy_ref(self):
         if env.offline:
@@ -172,20 +137,27 @@ class DeployMetadata(object):
     def current_ref_is_different_than_last(self):
         return self.deploy_ref != self.last_commit_sha
 
+    @memoized_property
+    def diff(self):
+        return DeployDiff(self.repo, self.last_commit_sha, self.deploy_ref)
+
 
 @memoized
 def _get_github_credentials():
-    if not env.tag_deploy_commits:
-        return (None, None)
     try:
         from .config import GITHUB_APIKEY
     except ImportError:
+        print(red("Github credentials not found!"))
+        print("This deploy script uses the Github API to display a summary of changes to be deployed.")
+        if env.tag_deploy_commits:
+            print("You're deploying an environment which uses release tags. "
+                  "Provide Github auth details to enable release tags.")
         print((
             "You can add a config file to automate this step:\n"
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
         ).format(project_root=PROJECT_ROOT))
-        username = input('Github username (leave blank for no auth): ') or None
+        username = input('Github username (leave blank to skip): ') or None
         password = getpass('Github password: ') if username else None
         return (username, password)
     else:
@@ -195,11 +167,6 @@ def _get_github_credentials():
 @memoized
 def _get_github():
     login_or_token, password = _get_github_credentials()
-    if env.tag_deploy_commits and not login_or_token:
-        print(magenta(
-            "Warning: Creation of release tags is disabled. "
-            "Provide Github auth details to enable release tags."
-        ))
     return Github(login_or_token=login_or_token, password=password)
 
 
@@ -286,62 +253,73 @@ def bower_command(command, production=True, config=None):
     sudo(cmd)
 
 
-def warn_of_migrations(last_deploy_sha, current_deploy_sha):
-    pr_numbers = _get_pr_numbers(last_deploy_sha, current_deploy_sha)
-    pool = Pool(5)
-    pr_infos = [_f for _f in pool.map(_get_pr_info, pr_numbers) if _f]
+class DeployDiff:
+    def __init__(self, repo, last_commit, deploy_commit):
+        self.repo = repo
+        self.last_commit = last_commit
+        self.deploy_commit = deploy_commit
 
-    print("List of PRs since last deploy:")
-    _print_prs_formatted(pr_infos)
+    @property
+    def url(self):
+        """Human-readable diff URL"""
+        return "{}/compare/{}...{}".format(self.repo.html_url, self.last_commit, self.deploy_commit)
 
-    prs_by_label = _get_prs_by_label(pr_infos)
-    if prs_by_label:
-        print(red('You are about to deploy the following PR(s), which will trigger a reindex or migration. Click the URL for additional context.'))
-        _print_prs_formatted(prs_by_label['reindex/migration'])
+    def warn_of_migrations(self):
+        if not (_github_auth_provided() and self.last_commit and self.deploy_commit):
+            return
 
+        pr_numbers = self._get_pr_numbers()
+        if len(pr_numbers) > 500:
+            print(red("There are too many PRs to display"))
+            return
 
-def _get_pr_numbers(last_deploy_sha, current_deploy_sha):
-    repo = _get_github().get_organization('dimagi').get_repo('commcare-hq')
-    comparison = repo.compare(last_deploy_sha, current_deploy_sha)
+        pool = Pool(5)
+        pr_infos = [_f for _f in pool.map(self._get_pr_info, pr_numbers) if _f]
 
-    return [
-        int(re.search(r'Merge pull request #(\d+)',
-                      repo_commit.commit.message).group(1))
-        for repo_commit in comparison.commits
-        if repo_commit.commit.message.startswith('Merge pull request')
-    ]
+        print(blue("\nList of PRs since last deploy:"))
+        self._print_prs_formatted(pr_infos)
 
+        prs_by_label = self._get_prs_by_label(pr_infos)
+        if prs_by_label:
+            print(red('You are about to deploy the following PR(s), which will trigger a reindex or migration. Click the URL for additional context.'))
+            self._print_prs_formatted(prs_by_label['reindex/migration'])
 
-def _get_pr_info(pr_number):
-    repo = _get_github().get_organization('dimagi').get_repo('commcare-hq')
-    pr_response = repo.get_pull(pr_number)
-    if not pr_response.number:
-        # Likely rate limited by Github API
-        return None
-    assert pr_number == pr_response.number, (pr_number, pr_response.number)
+    def _get_pr_numbers(self):
+        comparison = self.repo.compare(self.last_commit, self.deploy_commit)
+        return [
+            int(re.search(r'Merge pull request #(\d+)',
+                          repo_commit.commit.message).group(1))
+            for repo_commit in comparison.commits
+            if repo_commit.commit.message.startswith('Merge pull request')
+        ]
 
-    labels = [label.name for label in pr_response.labels]
+    def _get_pr_info(self, pr_number):
+        pr_response = self.repo.get_pull(pr_number)
+        if not pr_response.number:
+            # Likely rate limited by Github API
+            return None
+        assert pr_number == pr_response.number, (pr_number, pr_response.number)
 
-    return {
-        'title': pr_response.title,
-        'url': pr_response.html_url,
-        'labels': labels,
-    }
+        labels = [label.name for label in pr_response.labels]
 
+        return {
+            'title': pr_response.title,
+            'url': pr_response.html_url,
+            'labels': labels,
+        }
 
-def _get_prs_by_label(pr_infos):
-    prs_by_label = defaultdict(list)
-    for pr in pr_infos:
-        for label in pr['labels']:
-            if label in LABELS_TO_EXPAND:
-                prs_by_label[label].append(pr)
-    return dict(prs_by_label)
+    def _get_prs_by_label(self, pr_infos):
+        prs_by_label = defaultdict(list)
+        for pr in pr_infos:
+            for label in pr['labels']:
+                if label in LABELS_TO_EXPAND:
+                    prs_by_label[label].append(pr)
+        return dict(prs_by_label)
 
-
-def _print_prs_formatted(pr_list):
-    i = 1
-    for pr in pr_list:
-        print("{0}. ".format(i), end="")
-        print("{title} {url} | ".format(**pr), end="")
-        print(" ".join(label for label in pr['labels']))
-        i += 1
+    def _print_prs_formatted(self, pr_list):
+        for pr in pr_list:
+            print(
+                cyan(pr['title']),
+                yellow(pr['url']),
+                ", ".join(label for label in pr['labels']),
+            )

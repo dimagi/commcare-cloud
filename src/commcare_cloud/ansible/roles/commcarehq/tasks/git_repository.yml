@@ -1,0 +1,34 @@
+- set_fact:
+    repo_dest: "{{ [code_source, item.dest|default('')]|reject('eq', '')|join('/') }}"
+
+- name: register git repo ({{ item.url }})
+  stat: path="{{ repo_dest }}/.git"
+  register: gitdir
+
+- block:
+  - name: Pull source repo ({{ item.url }})
+    git:
+      repo: "{{ item.url }}"
+      dest: "{{ repo_dest }}"
+      version: "{{ item.version }}"
+      recursive: yes
+      accept_hostkey: yes
+      update: yes
+    become_user: "{{ cchq_user }}"
+    tags:
+      - git
+      - slow
+
+  - name: install pip requirements ({{ item.url }})
+    pip:
+      requirements: "{{ repo_dest }}/{{ item.requirements_path }}"
+      virtualenv: "{{ py3_virtualenv_source }}"
+      virtualenv_python: "python3.6"
+      chdir: "{{ code_source }}"
+    when: not testing|default(False)
+    tags:
+      - slow
+      - py3
+
+  when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists
+  become: true

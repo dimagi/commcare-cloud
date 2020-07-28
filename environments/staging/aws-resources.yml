@@ -8,10 +8,10 @@ couch4-staging: 10.201.40.62
 couch4-staging.instance_id: i-016d844313ee8538e
 couch5-staging: 10.201.40.147
 couch5-staging.instance_id: i-01c1e735fcb24d9bf
-es2-staging: 10.201.40.143
-es2-staging.instance_id: i-05945f7d6292a7dd1
-es3-staging: 10.201.40.171
-es3-staging.instance_id: i-02232b9be65252b30
+es4-staging: 10.201.40.127
+es4-staging.instance_id: i-051efce29812eac7a
+es5-staging: 10.201.40.26
+es5-staging.instance_id: i-036c688e6ec7d6eac
 formplayer-efs: fs-ba70cd39.efs.us-east-1.amazonaws.com
 formplayer1-staging: 10.201.10.234
 formplayer1-staging.instance_id: i-0857403021d156bf8
@@ -20,8 +20,8 @@ formplayer2-staging.instance_id: i-03cc17028c54f7ee7
 kafka1-staging: 10.201.40.14
 kafka1-staging.instance_id: i-08b3574d73b6e99b4
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
-pgproxy1-staging: 10.201.40.187
-pgproxy1-staging.instance_id: i-027696cdedd3f4fc1
+pgproxy2-staging: 10.201.40.16
+pgproxy2-staging.instance_id: i-0638ff6218ed9f753
 pillow2-staging: 10.201.10.163
 pillow2-staging.instance_id: i-0672c9637735b0a3e
 proxy1-staging: 10.201.20.208
@@ -29,8 +29,8 @@ proxy1-staging.instance_id: i-02e1fe640296f8db9
 proxy1-staging.public_ip: 3.216.37.252
 rabbit1-staging: 10.201.10.129
 rabbit1-staging.instance_id: i-09708e15359fb9c67
-redis1-staging: 10.201.40.219
-redis1-staging.instance_id: i-053cff522459cac90
+redis2-staging: 10.201.40.121
+redis2-staging.instance_id: i-0ba9234c3f9c17993
 vpn-staging: 10.201.20.112
 vpn-staging.instance_id: i-0e43738c0151d44b7
 vpn-staging.public_ip: 54.227.170.89

@@ -13,8 +13,9 @@ kafka_log_dir: "{{ encrypted_root }}/kafka"
 kafka_version: 2.4.1
 kafka_scala_version: 2.12
 kafka_inter_broker_protocol_version: 2.4
-kafka_inter_broker_protocol_version: 2.4
+kafka_log_message_format_version: 2.4
 
+redis_version: 6.0.5
 rabbitmq_version: 3.8.5-1
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
@@ -179,6 +180,10 @@ localsettings:
   COMMCARE_NAME: 'ICDS-CAS Staging'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
+  CUSTOM_DOMAIN_SPECIFIC_URL_MODULES:
+    - custom.icds_reports.urls
+    - custom.icds.urls
+    - custom.icds.data_management.urls
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ alt_hostname|default(ansible_hostname) }}"
@@ -235,6 +240,9 @@ localsettings:
     - {name: "custom.icds_reports", host: "all"}
   LOCAL_CUSTOM_DB_ROUTING:
     icds_reports: icds-ucr-citus
+  LOCAL_REPEATER_CLASSES:
+    - custom.icds.repeaters.phi.SearchByParamsRepeater
+    - custom.icds.repeaters.phi.ValidatePHIDRepeater
   PILLOWTOP_MACHINE_ID: icds-staging
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
