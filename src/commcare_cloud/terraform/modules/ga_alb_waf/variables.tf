@@ -27,3 +27,6 @@ variable "commcarehq_xml_post_urls_regex" {
 variable "commcarehq_xml_querystring_urls_regex" {
   type = "list"
 }
+
+variable "log_bucket_name" {}
+variable "log_bucket_arn" {}

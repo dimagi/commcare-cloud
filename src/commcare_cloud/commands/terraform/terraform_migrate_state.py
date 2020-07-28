@@ -95,7 +95,7 @@ class RemoteMigrationStateManager(object):
     @memoized_property
     def s3_client(self):
 
-        return boto3.session.Session(profile_name=aws_sign_in(self.aws_profile)).client('s3')
+        return boto3.session.Session(profile_name=aws_sign_in(get_environment(self.environment))).client('s3')
 
     def fetch(self):
         """
