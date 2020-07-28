@@ -1040,3 +1040,7 @@ LOCAL_CUSTOM_DB_ROUTING = json.loads('{{ localsettings.LOCAL_CUSTOM_DB_ROUTING|t
 {% if localsettings.CUSTOM_DOMAIN_SPECIFIC_URL_MODULES is defined %}
 CUSTOM_DOMAIN_SPECIFIC_URL_MODULES = json.loads('{{ localsettings.CUSTOM_DOMAIN_SPECIFIC_URL_MODULES|to_json }}')
 {% endif %}
+
+{% if localsettings.LOCAL_REPEATER_CLASSES is defined %}
+LOCAL_REPEATER_CLASSES = json.loads('{{ localsettings.LOCAL_REPEATER_CLASSES|to_json }}')
+{% endif %}
