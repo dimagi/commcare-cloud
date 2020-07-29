@@ -6,6 +6,8 @@ celery12-production: 10.202.12.101
 celery12-production.instance_id: i-075292a6ce33e76ed
 celery9-production: 10.202.12.80
 celery9-production.instance_id: i-0e3c30a63d5c94ac3
+celery_a000-production: 10.202.12.152
+celery_a000-production.instance_id: i-0b5e3397da9cd4594
 control1-production: 10.202.10.158
 control1-production.instance_id: i-0cff282a9692b2f47
 couch12-production: 10.202.40.52
