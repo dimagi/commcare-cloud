@@ -193,7 +193,7 @@ def _update_code_from_previous_release(code_repo, subdir=None):
         with cd(code_current):
             sudo('git submodule foreach "git fetch origin"')
         _clone_code_from_local_path(code_current, code_root)
-        with cd(code_current):
+        with cd(code_root):
             sudo('git remote set-url origin {}'.format(code_repo))
     else:
         sudo('git clone {} {}'.format(code_repo, code_root))
