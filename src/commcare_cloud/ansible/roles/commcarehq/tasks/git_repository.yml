@@ -15,7 +15,7 @@
       recursive: yes
       accept_hostkey: yes
       update: yes
-      key_file: "{{ deploy_key }}"
+      key_file: "{{ deploy_key|default(omit) }}"
     become_user: "{{ cchq_user }}"
     tags:
       - git
