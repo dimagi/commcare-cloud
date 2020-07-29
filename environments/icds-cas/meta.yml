@@ -4,8 +4,8 @@ users:
   - dimagi
 slack_alerts_channel: alerts-icds
 git_repositories:
-  - url: git@github.com:snopoke/private-repo-test.git
-    dest: test_private_repo
+  - url: git@github.com:dimagi/commcarehq-icds.git
+    dest: icds
     deploy_key: deploy_key.pem
 deploy_keys:
   - deploy_key.vault: deploy_key.pem
