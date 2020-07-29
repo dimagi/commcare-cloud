@@ -186,25 +186,25 @@ class AwsFillInventoryHelper(object):
         }
 
         servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
-        for server in servers:
-            for server_name in server.get_all_server_names():
-                is_bionic = server.os in ('bionic', 'ubuntu_pro_bionic')
+        for server_spec in servers:
+            for server_name in server_spec.get_all_server_names():
+                is_bionic = server_spec.os in ('bionic', 'ubuntu_pro_bionic')
                 inventory_vars = [
                     ('hostname', server_name.replace('_', '-')),
                     ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
                     ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
                 ]
-                if server.block_device:
+                if server_spec.block_device:
                     inventory_vars.extend([
                         ('datavol_device', '/dev/sdf'),
                         ('datavol_device1', '/dev/sdf'),
                         ('is_datavol_ebsnvme', 'yes'),
                     ])
-                    if server.block_device.encrypted:
+                    if server_spec.block_device.encrypted:
                         inventory_vars.append(
                             ('root_encryption_mode', 'aws'),
                         )
-                elif server.volume_encrypted:
+                elif server_spec.volume_encrypted:
                     inventory_vars.append(
                         ('root_encryption_mode', 'aws'),
                     )
@@ -212,10 +212,10 @@ class AwsFillInventoryHelper(object):
                 context.update(
                     self.get_host_group_definition(resource_name=server_name, vars=inventory_vars)
                 )
-            if server.count is not None:
+            if server_spec.count is not None:
                 context.update(
                     self.get_multi_host_group_definition(
-                        server.get_host_group_name(), server.get_all_host_names(),
+                        server_spec.get_host_group_name(), server_spec.get_all_host_names(),
                         existing_context=context
                     )
                 )
