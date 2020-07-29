@@ -23,7 +23,7 @@ class GitRepository(jsonobject.JsonObject):
     url = jsonobject.StringProperty(required=True)
     dest = jsonobject.StringProperty(required=True)  # relative to the code_source/external directory
     version = jsonobject.StringProperty(default="master")
-    requirements_path = jsonobject.StringProperty(default="requirements.txt")
+    requirements_path = jsonobject.StringProperty()
     deploy_key = jsonobject.StringProperty()  # name of the deploy key file to use
     is_private = jsonobject.BooleanProperty(default=False)
 

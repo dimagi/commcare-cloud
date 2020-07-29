@@ -333,11 +333,12 @@ def update_virtualenv(full_cluster=True):
             )
 
         for repo in env.ccc_environment.meta_config.git_repositories:
-            _update_virtualenv(
-                env.py3_virtualenv_current, env.py3_virtualenv_root,
-                posixpath.join(env.code_root, repo.relative_dest, repo.requirements_path),
-                "install", {}
-            )
+            if repo.requirements_path:
+                _update_virtualenv(
+                    env.py3_virtualenv_current, env.py3_virtualenv_root,
+                    posixpath.join(env.code_root, repo.relative_dest, repo.requirements_path),
+                    "install", {}
+                )
 
     return update
 
