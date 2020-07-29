@@ -25,6 +25,7 @@
     dest: "{{ cchq_home }}/.ssh/{{ item.value }}"
     owner: cchq
     group: cchq
+    mode: 0600
   loop: "{{ deploy_keys|dict2items }}"
   when: deploy_keys is defined
 
