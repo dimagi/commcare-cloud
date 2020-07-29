@@ -143,15 +143,12 @@ class DeployMetadata(object):
 
 
 @memoized
-def _get_github_credentials():
+def _get_github_credentials(message):
     try:
         from .config import GITHUB_APIKEY
     except ImportError:
         print(red("Github credentials not found!"))
-        print("This deploy script uses the Github API to display a summary of changes to be deployed.")
-        if env.tag_deploy_commits:
-            print("You're deploying an environment which uses release tags. "
-                  "Provide Github auth details to enable release tags.")
+        print(message)
         print((
             "You can add a config file to automate this step:\n"
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
@@ -165,14 +162,26 @@ def _get_github_credentials():
 
 
 @memoized
+def get_github_credentials(message=None):
+    if not message:
+        message = "This deploy script uses the Github API to display a summary of changes to be deployed."
+        if env.tag_deploy_commits:
+            message += (
+                "\nYou're deploying an environment which uses release tags. "
+                "Provide Github auth details to enable release tags."
+            )
+    return _get_github_credentials(message)
+
+
+@memoized
 def _get_github():
-    login_or_token, password = _get_github_credentials()
+    login_or_token, password = get_github_credentials()
     return Github(login_or_token=login_or_token, password=password)
 
 
 @memoized
 def _github_auth_provided():
-    return bool(_get_github_credentials()[0])
+    return bool(get_github_credentials()[0])
 
 
 def _get_checkpoint_filename():
