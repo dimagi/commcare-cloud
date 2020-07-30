@@ -12,6 +12,10 @@ es4-staging: 10.201.40.127
 es4-staging.instance_id: i-051efce29812eac7a
 es5-staging: 10.201.40.26
 es5-staging.instance_id: i-036c688e6ec7d6eac
+es6-staging: 10.201.40.126
+es6-staging.instance_id: i-0161d2187f667e405
+es7-staging: 10.201.40.107
+es7-staging.instance_id: i-087ff77521605d9b9
 formplayer-efs: fs-ba70cd39.efs.us-east-1.amazonaws.com
 formplayer1-staging: 10.201.10.234
 formplayer1-staging.instance_id: i-0857403021d156bf8

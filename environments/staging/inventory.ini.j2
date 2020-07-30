@@ -98,10 +98,16 @@ redis2
 
 {{ __es5__ }} elasticsearch_node_name=es5-staging elasticsearch_node_zone=aws elasticsearch_master=true
 
+{{ __es6__ }} elasticsearch_node_name=es6-staging elasticsearch_node_zone=aws elasticsearch_master=true
+
+{{ __es7__ }} elasticsearch_node_name=es7-staging elasticsearch_node_zone=aws elasticsearch_master=true
+
 [elasticsearch:children]
 # Amazon EC2
 es4
 es5
+#es6 this is intentional until testing is over, please contact sravan before modifying these
+#es7
 
 [shared_dir_host:children]
 redis2

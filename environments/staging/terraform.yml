@@ -61,6 +61,28 @@ servers:
       encrypted: true
     group: "elasticsearch"
     os: ubuntu_pro_bionic
+  - server_name: "es6-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
+  - server_name: "es7-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
 
   - server_name: "pillow2-staging"
     server_instance_type: "t3.xlarge"
