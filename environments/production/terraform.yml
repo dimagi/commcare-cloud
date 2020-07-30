@@ -204,7 +204,7 @@ servers:
     volume_encrypted: no
 
   - server_name: "es20-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: m5.8xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -215,7 +215,7 @@ servers:
     group: "elasticsearch"
     os: bionic
   - server_name: "es21-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: m5.8xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -226,7 +226,7 @@ servers:
     group: "elasticsearch"
     os: bionic
   - server_name: "es22-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: m5.8xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -237,7 +237,7 @@ servers:
     group: "elasticsearch"
     os: bionic
   - server_name: "es23-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: m5.8xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -248,7 +248,7 @@ servers:
     group: "elasticsearch"
     os: bionic
   - server_name: "es24-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: m5.8xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -259,7 +259,7 @@ servers:
     group: "elasticsearch"
     os: bionic
   - server_name: "es25-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: m5.8xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -270,7 +270,18 @@ servers:
     group: "elasticsearch"
     os: bionic
   - server_name: "es26-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: m5.8xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1400
+      encrypted: yes
+    group: "elasticsearch"
+    os: bionic
+  - server_name: "es27-production"
+    server_instance_type: m5.8xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -372,6 +383,16 @@ servers:
     volume_encrypted: no
     group: "celery"
     os: bionic
+
+  - server_name: "celery_a{i}-production"
+    server_instance_type: r5.2xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 200
+    volume_encrypted: yes
+    group: "celery"
+    os: ubuntu_pro_bionic
+    count: 3
 
   - server_name: "pillow1-production"
     server_instance_type: r5a.4xlarge
