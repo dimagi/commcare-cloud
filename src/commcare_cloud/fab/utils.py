@@ -142,8 +142,16 @@ class DeployMetadata(object):
         return DeployDiff(self.repo, self.last_commit_sha, self.deploy_ref)
 
 
-@memoized
-def _get_github_credentials(message):
+GITHUB_CREDENTIALS = None
+
+
+def _get_github_credentials(message, force=False):
+    global GITHUB_CREDENTIALS
+
+    if GITHUB_CREDENTIALS is not None:
+        if not force or GITHUB_CREDENTIALS[0]:
+            return GITHUB_CREDENTIALS
+
     try:
         from .config import GITHUB_APIKEY
     except ImportError:
@@ -154,15 +162,15 @@ def _get_github_credentials(message):
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
         ).format(project_root=PROJECT_ROOT))
-        username = input('Github username (leave blank to skip): ') or None
+        username = input('Github username or token (leave blank to skip): ') or None
         password = getpass('Github password: ') if username else None
-        return (username, password)
+        GITHUB_CREDENTIALS = (username, password)
     else:
-        return (GITHUB_APIKEY, None)
+        GITHUB_CREDENTIALS = (GITHUB_APIKEY, None)
+    return GITHUB_CREDENTIALS
 
 
-@memoized
-def get_github_credentials(message=None):
+def get_github_credentials(message=None, force=False):
     if not message:
         message = "This deploy script uses the Github API to display a summary of changes to be deployed."
         if env.tag_deploy_commits:
@@ -170,7 +178,7 @@ def get_github_credentials(message=None):
                 "\nYou're deploying an environment which uses release tags. "
                 "Provide Github auth details to enable release tags."
             )
-    return _get_github_credentials(message)
+    return _get_github_credentials(message, force)
 
 
 @memoized

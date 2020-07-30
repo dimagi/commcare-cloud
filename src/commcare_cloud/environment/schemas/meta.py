@@ -13,7 +13,7 @@ def get_github(repo):
     login_or_token, password = None, None
     if repo.is_private:
         message = "This environment references a private repository: {}".format(repo.url)
-        login_or_token, password = get_github_credentials(message)
+        login_or_token, password = get_github_credentials(message, force=True)
         if not login_or_token and not password:
             raise EnvironmentException("Github credentials required")
     return Github(login_or_token=login_or_token, password=password)
