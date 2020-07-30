@@ -415,7 +415,7 @@ resource "aws_iam_role_policy" "firehose_role" {
         "logs:PutLogEvents"
       ],
       "Resource": [
-        "arn:aws:logs:us-east-1:${var.account_id}:log-group:/aws/kinesisfirehose/${aws_kinesis_firehose_delivery_stream.front_end_waf_logs.name}:log-stream:*"
+        "arn:aws:logs:us-east-1:${var.account_id}:log-group:/aws/kinesisfirehose/%FIREHOSE_STREAM_NAME%:log-stream:*"
       ]
     },
     {
