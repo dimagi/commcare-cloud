@@ -411,7 +411,6 @@ redis_cache = {
 {% endif %}
     'OPTIONS': {
         'PARSER_CLASS': 'redis.connection.HiredisParser',
-        'PICKLE_VERSION': 2,  # After PY3 migration: remove
 {% if is_redis_cluster %}
         'REDIS_CLIENT_CLASS': 'rediscluster.RedisCluster',
         'CONNECTION_POOL_CLASS': 'rediscluster.connection.ClusterConnectionPool',
@@ -721,6 +720,10 @@ METRICS_PROVIDERS = {{ metrics_providers | to_json }}
 WS4REDIS_CONNECTION = {
     'host': '{{ localsettings.WS4REDIS_CONNECTION_HOST }}'
 }
+{% endif %}
+
+{% if prometheus_celery_pushgateway is defined %}
+PROMETHEUS_PUSHGATEWAY_HOST = os.environ.get('PROMETHEUS_PUSHGATEWAY_HOST', None)
 {% endif %}
 
 {% if TWO_FACTOR_GATEWAY_ENABLED %}
@@ -1036,4 +1039,8 @@ LOCAL_CUSTOM_DB_ROUTING = json.loads('{{ localsettings.LOCAL_CUSTOM_DB_ROUTING|t
 
 {% if localsettings.CUSTOM_DOMAIN_SPECIFIC_URL_MODULES is defined %}
 CUSTOM_DOMAIN_SPECIFIC_URL_MODULES = json.loads('{{ localsettings.CUSTOM_DOMAIN_SPECIFIC_URL_MODULES|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_REPEATER_CLASSES is defined %}
+LOCAL_REPEATER_CLASSES = json.loads('{{ localsettings.LOCAL_REPEATER_CLASSES|to_json }}')
 {% endif %}

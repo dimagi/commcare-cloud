@@ -19,6 +19,21 @@
   tags:
     - cron
 
+- name: Create cron job to delete empty sqlite db dirs
+  become: yes
+  cron:
+    name: 'Purge empty sqlite db dirs'
+    special_time: daily
+    # delete any empty directories so they don't just build up (to literally 100,000+)
+    # but leaving any that have been modified in the last 20m
+    # (to avoid a race condition on newly created dirs)
+    job: 'find {{ formplayer_data_dir }} -empty -type d -mmin +20 -delete'
+    user: '{{ cchq_user }}'
+    state: present
+  tags:
+    - cron
+
+
 - name: Copy formplayer's archive_dbs
   become: yes
   copy:

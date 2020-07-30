@@ -42,6 +42,8 @@ kafka_inter_broker_protocol_version: 2.4
 kafka_log_message_format_version: 2.4
 kafka_log_dir: "{{ encrypted_root }}/kafka"
 
+rabbitmq_version: 3.8.5-1
+
 control_machine_ip: 10.162.36.196
 
 run_websockets_wsgi: True
@@ -129,6 +131,31 @@ localsettings:
   INVOICE_PREFIX: India-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
+  LOCAL_STATIC_DATA_SOURCES:
+    - custom/icds_reports/ucr/data_sources/*.json
+    - custom/icds_reports/ucr/data_sources/dashboard/*.json
+  LOCAL_STATIC_UCR_REPORTS:
+    - custom/icds_reports/ucr/reports/dashboard/*.json
+    - custom/icds_reports/ucr/reports/asr/*.json
+    - custom/icds_reports/ucr/reports/asr/ucr_v2/*.json
+    - custom/icds_reports/ucr/reports/mpr/*.json
+    - custom/icds_reports/ucr/reports/mpr/dashboard/*.json
+    - custom/icds_reports/ucr/reports/ls/*.json
+    - custom/icds_reports/ucr/reports/other/*.json
+  LOCAL_CUSTOM_UCR_EXPRESSION_LISTS:
+    - custom.icds_reports.ucr.expressions.CUSTOM_UCR_EXPRESSIONS
+  LOCAL_CUSTOM_UCR_REPORT_FILTERS:
+    - ['village_choice_list', 'custom.icds_reports.ucr.filter_spec.build_village_choice_list_filter_spec']
+  LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES:
+    - ['village_choice_list', 'custom.icds_reports.ucr.filter_value.VillageFilterValue']
+  LOCAL_DOMAIN_MODULE_MAP:
+    icds-test: custom.icds_reports
+    icds-cas: custom.icds_reports
+    icds-dashboard-qa: custom.icds_reports
+  LOCAL_APPS:
+    - {name: "custom.icds", host: "all"}
+    - {name: "custom.icds.data_management", host: "all"}
+    - {name: "custom.icds_reports", host: "all"}
   PILLOWTOP_MACHINE_ID: indiacloud
   RATE_LIMIT_SUBMISSIONS: yes
   SES_CONFIGURATION_SET: india-email-events

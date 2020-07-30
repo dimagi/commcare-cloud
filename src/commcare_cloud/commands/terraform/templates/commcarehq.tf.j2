@@ -79,24 +79,24 @@ resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
   }
 }
 
-{% for server in servers + proxy_servers %}
-{%- for server_name in server.get_all_server_names %}
+{% for server_spec in servers + proxy_servers %}
+{%- for server_name in server_spec.get_all_server_names %}
 module "server__{{ server_name }}" {
   source = "./modules/server"
 
   server_name = {{ server_name|tojson }}
-  server_instance_type = {{ server.server_instance_type|tojson }}
-  network_tier = {{ server.network_tier|tojson }}
-  az = {{ server.az|tojson }}
-  volume_size = {{ server.volume_size|tojson }}
-  volume_encrypted = {{ server.volume_encrypted|tojson }}
-  secondary_volume_size = {{ server.block_device.volume_size|default(0)|tojson }}
-  secondary_volume_type = {{ server.block_device.volume_type|default("")|tojson }}
-  secondary_volume_encrypted = {{ server.block_device.encrypted|default(False)|tojson }}
+  server_instance_type = {{ server_spec.server_instance_type|tojson }}
+  network_tier = {{ server_spec.network_tier|tojson }}
+  az = {{ server_spec.az|tojson }}
+  volume_size = {{ server_spec.volume_size|tojson }}
+  volume_encrypted = {{ server_spec.volume_encrypted|tojson }}
+  secondary_volume_size = {{ server_spec.block_device.volume_size|default(0)|tojson }}
+  secondary_volume_type = {{ server_spec.block_device.volume_type|default("")|tojson }}
+  secondary_volume_encrypted = {{ server_spec.block_device.encrypted|default(False)|tojson }}
 
-{% if server.os == 'ubuntu_pro_bionic' %}
+{% if server_spec.os == 'ubuntu_pro_bionic' %}
   server_image = "${data.aws_ami.ubuntu_pro_bionic.id}"
-{% elif server.os == 'bionic' %}
+{% elif server_spec.os == 'bionic' %}
   server_image = "${data.aws_ami.ubuntu_bionic.id}"
 {% else %}
   server_image = "${var.server_image}"
@@ -106,21 +106,24 @@ module "server__{{ server_name }}" {
   subnet_options = "${local.subnet_options}"
   security_group_options = "${local.security_group_options}"
   key_name = "${var.key_name}"
-  group_tag= {{ server.group|tojson }}
+  group_tag= {{ server_spec.group|tojson }}
 }
 {%- endfor %}
 {% endfor %}
 
-{% for server in proxy_servers %}
-resource "aws_eip" "proxy__{{ server.server_name }}" {
+{% for server_spec in proxy_servers %}
+resource "aws_eip" "proxy__{{ server_spec.server_name }}" {
   vpc = true
-  instance = "${module.server__{{ server.server_name }}.server}"
-  associate_with_private_ip = "${module.server__{{ server.server_name }}.server_private_ip}"
+  instance = "${module.server__{{ server_spec.server_name }}.server}"
+  associate_with_private_ip = "${module.server__{{ server_spec.server_name }}.server_private_ip}"
 }
 {% endfor %}
 
 resource "aws_efs_file_system" "formplayer" {
   encrypted = true
+  lifecycle_policy {
+    transition_to_ia = "AFTER_7_DAYS"
+  }
   tags = {
     Name = "formplayer"
   }
@@ -184,6 +187,11 @@ module "iam_user__{{ user.username }}" {
 {% endif %}
 {%- endfor %}
 
+module "logshipping" {
+  environment = "${var.environment}"
+  source = "./modules/logshipping"
+}
+
 module "ga_alb_waf" {
   source = "./modules/ga_alb_waf"
   environment = "${var.environment}"
@@ -193,13 +201,15 @@ module "ga_alb_waf" {
     "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
     {%- endfor %}
   ]
+  log_bucket_name = "${module.logshipping.log_bucket_name}"
+  log_bucket_arn = "${module.logshipping.log_bucket_arn}"
   vpc_id = "${module.network.vpc-id}"
   SITE_HOST = {{ SITE_HOST|tojson }}
   NO_WWW_SITE_HOST = {{ NO_WWW_SITE_HOST|tojson }}
   ALTERNATE_HOSTS = {{ ALTERNATE_HOSTS|tojson }}
   proxy_server_ids = [
-    {%- for server in proxy_servers %}{% if not loop.first %}, {% endif %}
-    "${module.server__{{ server.server_name }}.server}"
+    {%- for server_spec in proxy_servers %}{% if not loop.first %}, {% endif %}
+    "${module.server__{{ server_spec.server_name }}.server}"
     {%- endfor %}
   ]
   account_id = {{ account_id|tojson }}

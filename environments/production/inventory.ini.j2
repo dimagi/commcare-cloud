@@ -111,12 +111,14 @@ kafka1
 
 {{ __celery12__ }}
 
+{{ __celery_a__ }}
 
 [celery:children]
 celery9
 celery10
 celery11
 celery12
+celery_a
 
 [celery:vars]
 swap_size=8G
@@ -133,9 +135,6 @@ swap_size=8G
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 cchq_uid=1025
 cchq_gid=1026
-
-[formplayer_a031:vars]
-use_formplayer_efs=true
 
 [formplayer:children]
 formplayer_a
@@ -165,6 +164,8 @@ shareddir1
 
 {{ __es26__ }} elasticsearch_node_name=es26
 
+{{ __es27__ }} elasticsearch_node_name=es27
+
 {{ __esmaster3__ }} elasticsearch_node_name=esmaster3
 
 {{ __esmaster4__ }} elasticsearch_node_name=esmaster4
@@ -188,6 +189,7 @@ es23
 es24
 es25
 es26
+es27
 
 [es_data:vars]
 elasticsearch_node_zone=aws
