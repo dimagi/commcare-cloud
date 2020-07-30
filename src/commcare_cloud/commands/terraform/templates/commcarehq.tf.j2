@@ -121,6 +121,9 @@ resource "aws_eip" "proxy__{{ server_spec.server_name }}" {
 
 resource "aws_efs_file_system" "formplayer" {
   encrypted = true
+  lifecycle_policy {
+    transition_to_ia = "AFTER_7_DAYS"
+  }
   tags = {
     Name = "formplayer"
   }
