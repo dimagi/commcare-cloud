@@ -11,6 +11,20 @@
 - name: Create elasticsearch user
   user: name=elasticsearch createhome=no password=no state=present
 
+- name: "Tune vm.max_map_count"
+  lineinfile:
+    dest: /etc/sysctl.conf
+    line: "vm.max_map_count=262144"
+    state: present
+  become: yes
+
+- name: "Tune vm.max_map_count (for current session)"
+  sysctl:
+    name: vm.max_map_count
+    value: '262144'
+    state: present
+  become: yes
+  
 - name: Download Elasticsearch 2.4.x
   become: yes
   get_url:
@@ -206,20 +220,6 @@
   tags:
     - cron
     - backups
-
-- name: "Tune vm.max_map_count"
-  lineinfile:
-    dest: /etc/sysctl.conf
-    line: "vm.max_map_count=262144"
-    state: present
-  become: yes
-
-- name: "Tune vm.max_map_count (for current session)"
-  sysctl:
-    name: vm.max_map_count
-    value: '262144'
-    state: present
-  become: yes
   
 - name: Elasticsearch monit config
   become: yes

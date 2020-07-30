@@ -110,6 +110,14 @@ path.repo: ["{{ elasticsearch_data_dir }}/snapshot"]
 {% endif %}
 
 
+
+cluster.initial_master_nodes:
+{% for item in groups.elasticsearch %}
+{% if hostvars[item].elasticsearch_master is defined %}
+  - {{ hostvars[item].elasticsearch_node_name }}
+{% endif %}
+{% endfor %}
+
 # see also discovery.zen.minimum_master_nodes above for how a master gets elected
 {# only include master eligibility if it is set on at least one node in the cluster #}
 {% if groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list %}

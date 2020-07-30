@@ -17,11 +17,11 @@ WorkingDirectory={{ elasticsearch_home }}
 User=elasticsearch
 Group=elasticsearch
 
-ExecStart={{ elasticsearch_home }}/bin/elasticsearch \
-{% if elasticsearch_version == '2.4.6'%}
+ExecStart={{ elasticsearch_home }}/bin/elasticsearch {% if elasticsearch_version == '2.4.6'%} \
                                               --path.conf=${CONF_DIR} \
                                               --path.home=${ES_HOME}
 {% endif %}
+
 Restart=always
 RestartSec=10
 
