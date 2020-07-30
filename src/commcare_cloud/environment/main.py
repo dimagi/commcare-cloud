@@ -427,6 +427,7 @@ class Environment(object):
                 if not self.meta_config.bare_non_cchq_environment else {}
             ),
             'new_release_name': datetime.utcnow().strftime('%Y-%m-%d_%H.%M'),
+            'git_repositories': [repo.to_generated_variables() for repo in self.meta_config.git_repositories]
         }
         if not self.meta_config.bare_non_cchq_environment:
             generated_variables.update(self.app_processes_config.to_generated_variables())
