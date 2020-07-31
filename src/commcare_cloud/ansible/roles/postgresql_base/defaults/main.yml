@@ -36,7 +36,7 @@ allow_dump_from_pgstandby: "{{ postgres_users.get('netvault') != None }}"
 # defaults should match the postgresql defaults
 postgresql_max_connections: 20
 postgresql_work_mem: '8MB'
-postgresql_shared_buffers: '1024MB'
+postgresql_shared_buffers: "{{ (ansible_memtotal_mb/1024*0.25)|int|abs }}GB"
 postgresql_max_stack_depth: '2MB'
 postgresql_effective_cache_size: '128MB'
 postgresql_max_standby_delay: ''  # empty means don't set in postgresql.conf (leaving default value)
