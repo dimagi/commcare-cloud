@@ -133,7 +133,15 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     group: formplayer
-    os: bionic
+    os: ubuntu_pro_bionic
+  - server_name: "formplayer4-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    group: formplayer
+    os: ubuntu_pro_bionic
 
   - server_name: "couch3-staging"
     server_instance_type: "t3.large"
