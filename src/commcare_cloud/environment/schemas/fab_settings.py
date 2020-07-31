@@ -19,6 +19,8 @@ class FabSettingsConfig(jsonobject.JsonObject):
     acceptable_maintenance_window = jsonobject.ObjectProperty(lambda: AcceptableMaintenanceWindow)
     email_enabled = jsonobject.BooleanProperty()
     tag_deploy_commits = jsonobject.BooleanProperty(default=False)
+    use_shared_dir_for_staticfiles = jsonobject.BooleanProperty(default=False)
+    shared_dir_for_staticfiles = jsonobject.StringProperty(default=None)
 
     @classmethod
     def wrap(cls, data):
@@ -33,6 +35,9 @@ class FabSettingsConfig(jsonobject.JsonObject):
                 del data[deprecated_property]
 
         obj = super(FabSettingsConfig, cls).wrap(data)
+        if obj.use_shared_dir_for_staticfiles:
+            assert obj.shared_dir_for_staticfiles, \
+                "Cannot have use_shared_dir_for_staticfiles without shared_dir_for_staticfiles"
         return obj
 
 
