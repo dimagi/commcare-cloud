@@ -103,6 +103,8 @@ etc_hosts_lines:
 etc_hosts_lines_removed: []
 ssh_allow_password_users:
   - unixadmin
+  - anilr 
+  - ranjeet 
 
 default_from_email: commcarehq-noreply@icds-cas.gov.in
 server_email: commcarehq-noreply@icds-cas.gov.in
