@@ -21,6 +21,8 @@ formplayer1-staging: 10.201.10.234
 formplayer1-staging.instance_id: i-0857403021d156bf8
 formplayer2-staging: 10.201.10.198
 formplayer2-staging.instance_id: i-03cc17028c54f7ee7
+formplayer3-staging: 10.201.10.13
+formplayer3-staging.instance_id: i-08b553be702d09b46
 kafka1-staging: 10.201.40.14
 kafka1-staging.instance_id: i-08b3574d73b6e99b4
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
