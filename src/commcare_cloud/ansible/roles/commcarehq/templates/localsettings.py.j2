@@ -1044,3 +1044,7 @@ CUSTOM_DOMAIN_SPECIFIC_URL_MODULES = json.loads('{{ localsettings.CUSTOM_DOMAIN_
 {% if localsettings.LOCAL_REPEATER_CLASSES is defined %}
 LOCAL_REPEATER_CLASSES = json.loads('{{ localsettings.LOCAL_REPEATER_CLASSES|to_json }}')
 {% endif %}
+
+{% if localsettings.COMMCARE_EXTENSIONS is defined %}
+COMMCARE_EXTENSIONS = json.loads('{{ localsettings.COMMCARE_EXTENSIONS|to_json }}')
+{% endif %}
