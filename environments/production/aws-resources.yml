@@ -111,6 +111,8 @@ formplayer_a030-production: 10.202.10.118
 formplayer_a030-production.instance_id: i-005ad07e90819533d
 formplayer_a031-production: 10.202.10.225
 formplayer_a031-production.instance_id: i-068604cd6c18b8f53
+formplayer_a032-production: 10.202.10.94
+formplayer_a032-production.instance_id: i-08aac5db0f962dd02
 kafka1-production: 10.202.40.200
 kafka1-production.instance_id: i-0c8af5576e2c8e7a2
 pgbouncer3-production: 10.202.40.153
