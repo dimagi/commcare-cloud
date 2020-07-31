@@ -15,17 +15,6 @@ couch_s3: False
 backup_couch: False
 nadir_hour: 16
 
-#NGINX dynamic Conf
-nginx_dynamic_limits:
-  - name: "nginx_dynamic_peak"
-    from_hour: 4
-    from_minute: 30
-    zone_args: "--overall_restore 30 --incremental_restore 25"
-  - name: "nginx_dynamic_offpeak"
-    from_hour: 11
-    from_minute: 30
-    zone_args: "--overall_restore 40 --incremental_restore 50"
-
 redis_version: 6.0.5
 rabbitmq_version: 3.8.5-1
 #RabbitMQ Broker URL
