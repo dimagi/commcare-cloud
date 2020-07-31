@@ -88,3 +88,15 @@
 
 - name: Add Kafka binaries to PATH
   copy: src=kafka.sh dest=/etc/profile.d/ owner=root group=root mode=644
+
+- name: Create clean kafka old logs cron
+  become: yes
+  cron:
+    name: "Clean kafka system logs"
+    job: "find {{ kafka_log_dir }} -maxdepth 1 -type f -name '*.log.*' -mtime +7 -delete"
+    user: root
+    hour: 23
+    minute: "5"
+    cron_file: clean_kafka_sys_logs
+    state: present
+
