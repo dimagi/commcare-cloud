@@ -292,14 +292,6 @@ servers:
     group: "elasticsearch"
     os: bionic
 
-  - server_name: "couchproxy1-production"
-    server_instance_type: "t3.medium"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    volume_encrypted: no
-    group: "couchdb2_proxy"
-    os: bionic
   - server_name: "couchproxy2-production"
     server_instance_type: m5.large
     network_tier: "db-private"
@@ -403,119 +395,6 @@ servers:
     group: "pillowtop"
     os: bionic
 
-  - server_name: "formplayer10-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer11-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer12-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer13-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer14-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer15-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer16-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer17-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer18-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer19-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer20-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer21-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer22-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer23-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer24-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-  - server_name: "formplayer25-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 300
-    group: "formplayer"
-    os: bionic
-
   - server_name: "formplayer_a{i}-production"
     server_instance_type: r5.2xlarge
     network_tier: "app-private"
@@ -559,18 +438,6 @@ servers:
     volume_size: 80
     group: "postgresql"
     os: bionic
-
-  # keep this around for a short period
-  # but just as a normal server
-  - server_name: "proxy1-production"
-    server_instance_type: "t3.medium"
-    network_tier: "public"
-    az: "a"
-    volume_size: 80
-    volume_encrypted: no
-    group: "proxy"
-    os: bionic
-
 
 
 proxy_servers:
