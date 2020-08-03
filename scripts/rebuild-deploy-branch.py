@@ -1,38 +1,10 @@
 #!/usr/bin/env python
 """
-This file is meant to be used in the following manner:
+Usage:
 
 $ python rebuild-deploy-branch.py icds-staging [-v] [--no-push] [fetch] [sync] [rebuild]
 
-Where deploy_branches.yaml looks as follows:
-
-    trunk: master
-    name: autostaging
-    branches:
-      - feature1
-      - feature2
-      - forkowner:feature3 # branch from fork of repository
-    submodules:
-      submodules/module1:
-        branches:
-          - feature1
-          - forkowner:feature2 # branch from fork of repository
-      submodules/module2:
-        trunk: develop
-        branches:
-          - feature2
-
-Multile repositories can also be specified:
-
-   dimagi/commcare-hq:  # this repo is required
-     trunk: master
-     ...
-
-   another/repo:
-     trunk: master
-     ...
-
-When not specified, a submodule's trunk and name inherit from the parent
+See docs/commcare-cloud/deploy-branches.md
 """
 from __future__ import print_function
 from gevent import monkey
