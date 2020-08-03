@@ -15,7 +15,7 @@ UPLOAD_NAME="blobdb_${BACKUP_TYPE}_${HOSTNAME}.tar.gz"
 {% endif %}
 
 
-if [[ blobdb_backup_hourly && "$BACKUP_TYPE" == "hourly" ]]
+if [[ {{ blobdb_backup_hourly }} && "$BACKUP_TYPE" == "hourly" ]]
 then
 	tar -Pzcf "{{ blobdb_backup_dir }}/${HOURLY_BACKUP_FILE}" "{{ blobdb_dir_path }}"
 	# Remove old backups of this backup type of last x mins

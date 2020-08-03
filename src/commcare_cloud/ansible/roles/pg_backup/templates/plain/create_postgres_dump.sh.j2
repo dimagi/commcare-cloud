@@ -7,7 +7,7 @@ HOSTNAME=$(hostname)
 TODAY=$(date +"%Y_%m_%d")
 HOUR=$(date +"%Y_%m_%d_%H")
 
-if [[ postgres_backup_hourly && "$BACKUP_TYPE" == "hourly" ]] ; then
+if [[ {{ postgres_backup_hourly }} && "$BACKUP_TYPE" == "hourly" ]] ; then
     FILENAME="postgres_${ENV}_${BACKUP_TYPE}_${HOUR}"
 else
     FILENAME="postgres_${ENV}_${BACKUP_TYPE}_${TODAY}"
@@ -57,7 +57,7 @@ if [[ $? -ne 0 ]] ; then
     echo "Postgres Backup : Tar Failed"
     exit 2
 else
-    if [[ postgres_backup_hourly && "$BACKUP_TYPE" == "hourly" ]]; then
+    if [[ {{ postgres_backup_hourly }} && "$BACKUP_TYPE" == "hourly" ]]; then
         find {{ postgresql_backup_dir }} -mmin "+${HOURS_TO_RETAIN_BACKUPS}" -name "postgres_${ENV}_${BACKUP_TYPE}_*" ! -path "*weekly*" ! -path "*daily*" -delete;
     fi
 

@@ -15,7 +15,7 @@ UPLOAD_NAME="${BACKUP_FILE}"
 UPLOAD_NAME="couchdb_${BACKUP_TYPE}_${HOSTNAME}.tar.gz"
 {% endif %}
 
-if [[ couch_backup_hourly && "$BACKUP_TYPE" == "hourly" ]]
+if [[ {{ couch_backup_hourly }} && "$BACKUP_TYPE" == "hourly" ]]
 then
 	tar -Pzcf "{{ couch_backup_dir }}/${HOURLY_BACKUP_FILE}" "{{ couch_data_dir }}"
 	# Remove old backups of this backup type of last x mins
