@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 from fabric.api import roles, parallel, sudo, env, run, local
 from fabric.colors import red
-from fabric.context_managers import cd
+from fabric.context_managers import cd, shell_env
 from fabric.contrib import files
 from fabric.contrib.project import rsync_project
 from fabric.operations import put
@@ -39,13 +39,18 @@ def update_code(full_cluster=True):
 
     @roles(roles_to_use)
     @parallel
-    def update(git_tag, subdir=None, code_repo=None):
+    def update(git_tag, subdir=None, code_repo=None, deploy_key=None):
+        git_env = {}
+        if deploy_key:
+            git_env["GIT_SSH_COMMAND"] = "ssh -i {} -o IdentitiesOnly=yes".format(
+                os.path.join(env.home, ".ssh", deploy_key)
+            )
         code_repo = code_repo or env.code_repo
         code_root = env.code_root
         if subdir:
             code_root = os.path.join(code_root, subdir)
-        _update_code_from_previous_release(code_repo, subdir)
-        with cd(code_root):
+        _update_code_from_previous_release(code_repo, subdir, git_env)
+        with cd(code_root), shell_env(**git_env):
             sudo('git remote prune origin')
             # this can get into a state where running it once fails
             # but primes it to succeed the next time it runs
@@ -182,7 +187,7 @@ def _upload_and_extract(zippath, strip_components=0):
     ))
 
 
-def _update_code_from_previous_release(code_repo, subdir=None):
+def _update_code_from_previous_release(code_repo, subdir, git_env):
     code_current = env.code_current
     code_root = env.code_root
     if subdir:
@@ -190,13 +195,14 @@ def _update_code_from_previous_release(code_repo, subdir=None):
         code_root = os.path.join(code_root, subdir)
 
     if files.exists(code_root):
-        with cd(code_current):
+        with cd(code_current), shell_env(**git_env):
             sudo('git submodule foreach "git fetch origin"')
         _clone_code_from_local_path(code_current, code_root)
         with cd(code_root):
             sudo('git remote set-url origin {}'.format(code_repo))
     else:
-        sudo('git clone {} {}'.format(code_repo, code_root))
+        with shell_env(**git_env):
+            sudo('git clone {} {}'.format(code_repo, code_root))
 
 
 def _get_submodule_list():
@@ -327,11 +333,12 @@ def update_virtualenv(full_cluster=True):
             )
 
         for repo in env.ccc_environment.meta_config.git_repositories:
-            _update_virtualenv(
-                env.py3_virtualenv_current, env.py3_virtualenv_root,
-                posixpath.join(env.code_root, repo.relative_dest, repo.requirements_path),
-                "install", {}
-            )
+            if repo.requirements_path:
+                _update_virtualenv(
+                    env.py3_virtualenv_current, env.py3_virtualenv_root,
+                    posixpath.join(env.code_root, repo.relative_dest, repo.requirements_path),
+                    "install", {}
+                )
 
     return update
 

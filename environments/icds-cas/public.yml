@@ -259,6 +259,8 @@ localsettings:
   CELERY_TIMEZONE: 'Asia/Kolkata'
   COMMCARE_HQ_NAME: 'ICDS-CAS Server'
   COMMCARE_NAME: 'ICDS-CAS'
+  COMMCARE_EXTENSIONS:
+    - custom.icds.commcare_extensions
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   CUSTOM_DOMAIN_SPECIFIC_URL_MODULES:

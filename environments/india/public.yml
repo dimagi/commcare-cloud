@@ -169,8 +169,6 @@ localsettings:
   SMS_QUEUE_ENABLED: True
   SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
   SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
-  LOCAL_MIDDLEWARE:
-    - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
 #  STATIC_ROOT:
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True

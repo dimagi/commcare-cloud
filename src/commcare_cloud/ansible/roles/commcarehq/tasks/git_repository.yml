@@ -1,5 +1,6 @@
 - set_fact:
     repo_dest: "{{ [code_source, item.dest|default('')]|reject('eq', '')|join('/') }}"
+    deploy_key: "{% if item.deploy_key|default('') %}{{ cchq_home }}/.ssh/{{ item.deploy_key }}{% else %}{% endif %}"
 
 - name: register git repo ({{ item.url }})
   stat: path="{{ repo_dest }}/.git"
@@ -14,6 +15,7 @@
       recursive: yes
       accept_hostkey: yes
       update: yes
+      key_file: "{{ deploy_key|default(omit, true) }}"
     become_user: "{{ cchq_user }}"
     tags:
       - git
