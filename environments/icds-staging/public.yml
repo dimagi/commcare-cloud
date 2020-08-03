@@ -245,6 +245,8 @@ localsettings:
   LOCAL_REPEATER_CLASSES:
     - custom.icds.repeaters.phi.SearchByParamsRepeater
     - custom.icds.repeaters.phi.ValidatePHIDRepeater
+  COMMCARE_EXTENSIONS:
+    - custom.icds.commcare_extensions
   PILLOWTOP_MACHINE_ID: icds-staging
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
