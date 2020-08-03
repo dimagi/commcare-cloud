@@ -36,6 +36,7 @@ from distutils.util import strtobool
 from getpass import getpass
 
 import pytz
+from github import GithubException
 
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
@@ -405,6 +406,16 @@ def _setup_release(keep_days=0, full_cluster=True):
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
+    for repo in env.ccc_environment.meta_config.git_repositories:
+        try:
+            repo.deploy_ref  # noqa
+        except GithubException as e:
+            utils.abort(
+                "\nUnable to access Git repository. Please check your authentication credentials.\n"
+                "Error: {}\n"
+                "Repository: {}\n".format(e.data["message"], repo.url)
+            )
+
     if env.full_deploy:
         env.deploy_metadata.tag_setup_release()
     execute_with_timing(release.create_code_dir(full_cluster))
@@ -412,7 +423,7 @@ def _setup_release(keep_days=0, full_cluster=True):
     update_code = release.update_code(full_cluster)
     execute_with_timing(update_code, deploy_ref)
     for repo in env.ccc_environment.meta_config.git_repositories:
-        execute_with_timing(update_code, repo.version, repo.relative_dest, repo.url)
+        execute_with_timing(update_code, repo.deploy_ref, repo.relative_dest, repo.url, repo.deploy_key)
 
     execute_with_timing(release.update_virtualenv(full_cluster))
 

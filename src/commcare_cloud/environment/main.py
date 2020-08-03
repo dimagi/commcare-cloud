@@ -418,6 +418,7 @@ class Environment(object):
             'dev_users': self.users_config.dev_users.to_json(),
             'authorized_keys_dir': '{}/'.format(os.path.realpath(self.paths.authorized_keys_dir)),
             'known_hosts_file': self.paths.known_hosts,
+            'env_files_dir': self.paths.files_dir,
             'commcarehq_repository': (
                 self.fab_settings_config.code_repo
                 if not self.meta_config.bare_non_cchq_environment else {}
@@ -427,7 +428,8 @@ class Environment(object):
                 if not self.meta_config.bare_non_cchq_environment else {}
             ),
             'new_release_name': datetime.utcnow().strftime('%Y-%m-%d_%H.%M'),
-            'git_repositories': [repo.to_generated_variables() for repo in self.meta_config.git_repositories]
+            'git_repositories': [repo.to_generated_variables() for repo in self.meta_config.git_repositories],
+            'deploy_keys': dict(self.meta_config.deploy_keys.items()),
         }
         if not self.meta_config.bare_non_cchq_environment:
             generated_variables.update(self.app_processes_config.to_generated_variables())
