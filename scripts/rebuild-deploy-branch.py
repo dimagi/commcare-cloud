@@ -370,7 +370,6 @@ def main():
         print("Checking branch config for modifications")
         if git.diff("origin/master", "--", config_path):
             print(red("'{}' on this branch different from the one on master".format(config_path)))
-    exit(0)
 
     with open(config_path) as config_yaml:
         config = yaml.safe_load(config_yaml)
