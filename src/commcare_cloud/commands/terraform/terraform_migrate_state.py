@@ -17,7 +17,7 @@ from memoized import memoized_property
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, print_command
-from commcare_cloud.commands.command_base import CommandBase, CommandError
+from commcare_cloud.commands.command_base import CommandBase, CommandError, Argument
 from commcare_cloud.commands.terraform.aws import aws_sign_in
 from commcare_cloud.environment.main import get_environment
 
@@ -39,10 +39,18 @@ class TerraformMigrateState(CommandBase):
     This command helps fill this gap.
     """
 
+    arguments = [
+        Argument('--replay-from', type=int, default=None,
+                 help="Set the last applied migration value to this number before running."
+                      " Will begin running migrations after this number, not including it.")
+    ]
+
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         remote_migration_state_manager = RemoteMigrationStateManager(environment.terraform_config)
         remote_migration_state = remote_migration_state_manager.fetch()
+        if args.replay_from is not None:
+            remote_migration_state.number = args.replay_from
         migrations = get_migrations()
 
         applied_migrations = migrations[:remote_migration_state.number]
