@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 """
 This file is meant to be used in the following manner:
 
-$ python rebuildstaging.py < staging.yaml [-v] [--no-push] [fetch] [sync] [rebuild]
+$ python rebuild-deploy-branch.py icds-staging [-v] [--no-push] [fetch] [sync] [rebuild]
 
-Where staging.yaml looks as follows:
+Where deploy_branches.yaml looks as follows:
 
     trunk: master
     name: autostaging
@@ -21,16 +22,25 @@ Where staging.yaml looks as follows:
         branches:
           - feature2
 
+Multile repositories can also be specified:
+
+   dimagi/commcare-hq:  # this repo is required
+     trunk: master
+     ...
+
+   another/repo:
+     trunk: master
+     ...
+
 When not specified, a submodule's trunk and name inherit from the parent
 """
-
+from __future__ import print_function
 from gevent import monkey
 monkey.patch_all()
 
 import os
 import re
-import sys
-from contextlib import ExitStack
+from contextlib2 import ExitStack
 
 import gevent
 import jsonobject
@@ -65,19 +75,19 @@ class BranchConfig(jsonobject.JsonObject):
                 yield item
         yield os.path.join(*path), self
 
-    def check_trunk_is_recent(self):
+    def check_trunk_is_recent(self, path=None):
         # if it doesn't match our tag format
         if re.match(r'[\d-]+_[\d\.]+-\w+-deploy', self.trunk) is None:
             return True
 
-        return self.trunk in git_recent_tags()
+        return self.trunk in git_recent_tags(path)
 
 
 def fetch_remote(base_config, name="origin"):
     jobs = []
     seen = set()
     fetched = set()
-    for path, config in base_config.span_configs():
+    for path, config in base_config.span_configs((base_config.root,)):
         if path in seen:
             continue
         seen.add(path)
@@ -145,7 +155,7 @@ def sync_local_copies(config, push=True):
     def _count_commits(compare_spec):
         return int(sh.wc(git.log(compare_spec, '--oneline', _piped=True), '-l'))
 
-    for path, config in base_config.span_configs():
+    for path, config in base_config.span_configs((base_config.root,)):
         git = get_git(path)
         with OriginalBranch(git):
             for branch in [config.trunk] + config.branches:
@@ -184,7 +194,7 @@ def sync_local_copies(config, push=True):
 def rebuild_staging(config, print_details=True, push=True):
     merge_conflicts = []
     not_found = []
-    all_configs = list(config.span_configs())
+    all_configs = list(config.span_configs((config.root,)))
     with ExitStack() as stack:
         for path, _ in all_configs:
             stack.enter_context(OriginalBranch(get_git(path)))
@@ -360,30 +370,87 @@ red = _wrap_with('31')
 
 
 def main():
+    import argparse
     import yaml
-    with open(sys.argv[1]) as staging_yaml:
-        config = yaml.safe_load(staging_yaml)
-    config = BranchConfig.wrap(config)
-    config.normalize()
-    if not config.check_trunk_is_recent():
-        print("The trunk is not based on a very recent commit")
-        print("Consider using one of the following:")
-        print(git_recent_tags())
+
+    parser = argparse.ArgumentParser(description='Rebuild the deploy branch for an environment')
+    parser.add_argument("env", help="Name of the environment")
+    parser.add_argument("actions", nargs="*")
+    parser.add_argument("--commcare-hq-root", help="Path to cloned commcare-hq repository",
+                        default=os.environ.get("COMMCARE_HQ_ROOT"))
+    parser.add_argument("-v", "--verbose")
+    parser.add_argument("--no-push", action="store_true", help="Do not push the changes to remote git repository.")
+    args = parser.parse_args()
+
+    if not args.commcare_hq_root:
+        print(red(
+            "Path to commcare-hq repository must be provided.\n"
+            "Use '--commcare-hq-root=[path]' or set the 'COMMCARE_HQ_ROOT' environment variable."
+        ))
         exit(1)
-    args = set(sys.argv[2:])
-    verbose = '-v' in args
-    do_push = '--no-push' not in args
-    args.discard('-v')
-    args.discard('--no-push')
-    if not args:
-        args = set('fetch sync rebuild'.split())
-    with DisableGitHooks(), ShVerbose(verbose):
-        if 'fetch' in args:
-            fetch_remote(config)
-        if 'sync' in args:
-            sync_local_copies(config, push=do_push)
-        if 'rebuild' in args:
-            rebuild_staging(config, push=do_push)
+
+    config_path = os.path.join("environments", args.env, "deploy_branches.yml")
+
+    git = get_git()
+    print("Fetching master")
+    git.fetch("origin", "master")
+    if not args.no_push:
+        print("Checking branch config for modifications")
+        if git.diff("origin/master", "--", config_path):
+            print(red("'{}' on this branch different from the one on master".format(config_path)))
+    exit(0)
+
+    with open(config_path) as config_yaml:
+        config = yaml.safe_load(config_yaml)
+
+    if "trunk" in config:
+        config = BranchConfig.wrap(config)
+        config.normalize()
+        repositories = {"dimagi/commcare-hq": config}
+    elif "dimagi/commcare-hq" in config:
+        repositories = {
+            repo: BranchConfig.wrap(repo_config)
+            for repo, repo_config in config.items()
+        }
+        for repo, repo_config in repositories.items():
+            repo_config.normalize()
+            if repo == "dimagi/commcare-hq":
+                repo_config.root = os.path.abspath(args.commcare_hq_root)
+            else:
+                env_var = "{}_ROOT".format(re.sub("[/-]", "_", repo).upper())
+                code_root = os.environ.get(env_var)
+                if not code_root:
+                    code_root = raw_input("Please supply the location of the '{}' repo: ".format(repo))
+
+                if not code_root or not os.path.exists(code_root):
+                    print(red(
+                        "Repo path must be supplied. "
+                        "Consider setting the '{}' environment variable".format(env_var)
+                    ))
+                    exit(1)
+                repo_config.root = os.path.abspath(code_root)
+    else:
+        print(red("Unexpected format for config file."))
+        exit(1)
+
+    for config in repositories.values():
+        if not config.check_trunk_is_recent(config.root):
+            print("The trunk is not based on a very recent commit")
+            print("Consider using one of the following:")
+            print(git_recent_tags(config.root))
+            exit(1)
+    if not args.actions:
+        args.actions = 'fetch sync rebuild'.split()
+    push = not args.no_push
+    with DisableGitHooks(), ShVerbose(args.verbose):
+        for repo, config in repositories.items():
+            print("\nRebuilding '{}' branch in '{}' repo.".format(config.name, repo))
+            if 'fetch' in args.actions:
+                fetch_remote(config)
+            if 'sync' in args.actions:
+                sync_local_copies(config, push=push)
+            if 'rebuild' in args.actions:
+                rebuild_staging(config, push=push)
 
 
 if __name__ == '__main__':
