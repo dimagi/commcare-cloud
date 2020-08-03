@@ -6,8 +6,8 @@
 # From your commcare-hq directory with the virtualenv turned on
 #     $ git checkout master
 # Update this config file and add your branch that you want to deploy
-# Push the updates of icds-staging.yaml to master by using
-#     $ scripts/commit-deploy-branches --push
+# Push the updates of this file to master by using
+#     $ scripts/commit-deploy-branches icds-staging --push
 # To check if your branch causes any conflicts before rebuilding
 #     $ scripts/rebuild-deploy-branch icds-staging --no-push
 # To rebuild from your new spec and deploy
