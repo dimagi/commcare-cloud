@@ -49,9 +49,12 @@ class TerraformMigrateState(CommandBase):
         environment = get_environment(args.env_name)
         remote_migration_state_manager = RemoteMigrationStateManager(environment.terraform_config)
         remote_migration_state = remote_migration_state_manager.fetch()
-        if args.replay_from is not None:
-            remote_migration_state.number = args.replay_from
         migrations = get_migrations()
+        if args.replay_from is not None:
+            migration = migrations[args.replay_from - 1]
+            assert (migration.number == args.replay_from), migration.number
+            remote_migration_state.number = migration.number
+            remote_migration_state.slug = migration.slug
 
         applied_migrations = migrations[:remote_migration_state.number]
         unapplied_migrations = migrations[remote_migration_state.number:]
