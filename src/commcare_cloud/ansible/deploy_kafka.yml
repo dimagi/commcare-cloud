@@ -31,3 +31,20 @@
     - after-reboot
   roles:
     - role: kernel_tune
+ 
+- name: Kafka system logs rolling configurations
+  hosts: kafka
+  roles:
+    - role: ansible-logrotate
+      logrotate_scripts:
+        - name: "{{ deploy_env }}_kafka"
+          paths:
+            - "{{ kafka_log_dir }}*.log.*"
+            - "{{ kafka_log_dir }}*.out.*"
+          options:
+            - daily
+            - rotate 10
+            - missingok
+            - compress
+            - nocreate
+            - notifempty
