@@ -373,12 +373,14 @@ def record_successful_deploy():
             '%(virtualenv_current)s/bin/python manage.py '
             'record_deploy_success --user "%(user)s" --environment '
             '"%(environment)s" --url %(url)s --minutes %(minutes)s --mail_admins'
+            '--commit %(commit)s'
         ) % {
             'virtualenv_current': env.py3_virtualenv_current,
             'user': env.user,
             'environment': env.deploy_env,
             'url': env.deploy_metadata.diff.url,
-            'minutes': str(int(delta.total_seconds() // 60))
+            'minutes': str(int(delta.total_seconds() // 60)),
+            'commit': env.deploy_metadata.deploy_ref
         })
 
 
