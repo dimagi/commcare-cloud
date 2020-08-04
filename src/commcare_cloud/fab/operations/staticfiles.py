@@ -12,9 +12,9 @@ from ..const import (
     ROLES_STATIC,
     ROLES_DJANGO,
     ROLES_ALL_SRC,
-    ROLES_DEPLOY,
     ROLES_CELERY,
     YARN_LOCK,
+    ROLES_STATIC_PRIMARY,
 )
 
 
@@ -97,7 +97,7 @@ def collectstatic(use_current_release=False):
 
 
 @parallel
-@roles(ROLES_STATIC)
+@roles(ROLES_STATIC_PRIMARY)
 def compress(use_current_release=False):
     """Run Django Compressor after a code update"""
     venv = env.py3_virtualenv_root if not use_current_release else env.py3_virtualenv_current
@@ -134,6 +134,18 @@ def pull_manifest(use_current_release=False):
                  .format(env=env, git_hash=git_hash))
     else:
         return update_manifest(save=False, soft=False, use_current_release=use_current_release)
+
+
+@roles(ROLES_STATIC)
+@parallel
+def pull_staticfiles_cache(use_current_release=False):
+    if env.use_shared_dir_for_staticfiles:
+        with cd(env.code_root if not use_current_release else env.code_current):
+            git_hash = sudo('git rev-parse HEAD').strip()
+            sudo('mkdir -p staticfiles/CACHE/')
+            sudo('rsync -r --delete {env.shared_dir_for_staticfiles}/{git_hash}/staticfiles/CACHE/ '
+                 'staticfiles/CACHE/'
+                 .format(env=env, git_hash=git_hash))
 
 
 def update_manifest(save=False, soft=False, use_current_release=False):
