@@ -372,7 +372,7 @@ def record_successful_deploy():
         sudo((
             '%(virtualenv_current)s/bin/python manage.py '
             'record_deploy_success --user "%(user)s" --environment '
-            '"%(environment)s" --url %(url)s --minutes %(minutes)s --mail_admins'
+            '"%(environment)s" --url %(url)s --minutes %(minutes)s --mail_admins '
             '--commit %(commit)s'
         ) % {
             'virtualenv_current': env.py3_virtualenv_current,
