@@ -1,7 +1,7 @@
 data "aws_region" "current" {}
 
 resource "aws_kinesis_firehose_delivery_stream" "firehose_stream" {
-  name = "aws-waf-logs-frontend-waf-${var.environment}"
+  name = "${var.firehose_stream_name}"
   destination = "extended_s3"
   server_side_encryption {
     enabled = true
@@ -20,7 +20,7 @@ resource "aws_kinesis_firehose_delivery_stream" "firehose_stream" {
 }
 
 resource "aws_iam_role" "firehose_role" {
-  name = "${var.firehose_role_name}"
+  name = "${var.firehose_stream_name}-role"
 
   assume_role_policy = <<EOF
 {"Version":"2012-10-17","Statement":[{"Sid":"","Effect":"Allow","Principal":{"Service":"firehose.amazonaws.com"},"Action":"sts:AssumeRole","Condition":{"StringEquals":{"sts:ExternalId":"${var.account_id}"}}}]}
@@ -28,7 +28,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "firehose_role" {
-  name = "${var.firehose_role_name}-role-policy"
+  name = "${var.firehose_stream_name}-role-policy"
   role = "${aws_iam_role.firehose_role.id}"
   policy = <<EOF
 {
