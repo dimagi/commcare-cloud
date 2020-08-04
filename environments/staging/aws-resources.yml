@@ -31,8 +31,8 @@ pillow2-staging.instance_id: i-0672c9637735b0a3e
 proxy1-staging: 10.201.20.208
 proxy1-staging.instance_id: i-02e1fe640296f8db9
 proxy1-staging.public_ip: 3.216.37.252
-rabbit1-staging: 10.201.10.129
-rabbit1-staging.instance_id: i-09708e15359fb9c67
+rabbit2-staging: 10.201.10.239
+rabbit2-staging.instance_id: i-01bfeae5f4febaddf
 redis2-staging: 10.201.40.121
 redis2-staging.instance_id: i-0ba9234c3f9c17993
 vpn-staging: 10.201.20.112

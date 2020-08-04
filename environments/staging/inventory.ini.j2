@@ -46,11 +46,11 @@ couch5
 [couchdb2_proxy:children]
 couch3
 
-{{ __rabbit1__ }}
+{{ __rabbit2__ }}
 
 [rabbitmq:children]
 # Amazon EC2
-rabbit1
+rabbit2
 
 {{ __kafka1__ }} kafka_broker_id=0 datavol_fstype=xfs
 
