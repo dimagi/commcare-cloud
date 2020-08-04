@@ -1,0 +1,16 @@
+# See docs/commcare-cloud/deploy-branches.md
+
+dimagi/commcare-hq:
+  trunk: master
+  name: icds-autostaging
+  deploy_env: icds-staging
+  branches:
+  - ap/restrict-unauthorized-users
+  - sk/remove-icds  # SK Aug 3
+  submodules: {}
+
+dimagi/commcare-icds:
+  trunk: master
+  name: icds-autostaging
+  branches:
+    - sb/icds-1686-logout-fix #SB July 31

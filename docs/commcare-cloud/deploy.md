@@ -137,3 +137,4 @@ Sometimes changes are made to the system which require new settings to be deploy
 # Other topics of interest
 
 * [Resolving issues encountered during deploy](deploy-debug.md)
+* [Deploying specific branches](deploy-branches.md)
