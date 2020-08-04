@@ -324,6 +324,10 @@ If you ever reboot this machine, make sure to follow the [after reboot procedure
 $ commcare-cloud monolith after-reboot all
 ```
 
+### Ongoing maintenance
+
+You should be familiar with [Expectations for Ongoing Maintenance](../system/maintenance-expectations.md)
+
 
 ## Step 7: Setting set up valid SSL certificates 
 If you wish to set up valid SSL certificate please follow below instructions 
