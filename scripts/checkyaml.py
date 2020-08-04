@@ -1,17 +1,19 @@
 from __future__ import print_function
+
+import io
 import sys
 import yaml
 
 
 def checkyaml(filename):
     try:
-        yaml.safe_load(open(filename))
+        yaml.safe_load(io.open(filename, encoding='utf-8'))
     except yaml.YAMLError as e:
         print("Error in file {}".format(filename), end=' ')
         if hasattr(e, "problem_mark"):
             mark = e.problem_mark
             print("on line {} (column {}):".format(mark.line + 1, mark.column + 1))
-            f = open(filename)
+            f = io.open(filename, encoding='utf-8')
             for _ in range(mark.line + 1):
                 print('    ' + f.readline().rstrip('\n'))
             print('    ' + (' ' * mark.column) + '^')
