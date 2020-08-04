@@ -25,4 +25,5 @@ module "formplayer_request_response_logs_firehose_stream" {
   log_bucket_arn = "${aws_s3_bucket.log_bucket.arn}"
   log_bucket_prefix = "${local.formplayer_request_response_log_bucket_prefix}"
   log_bucket_error_prefix = "${local.formplayer_request_response_log_bucket_error_prefix}"
+  firehose_role_name = "${local.formplayer_request_response_log_bucket_prefix}"
 }
