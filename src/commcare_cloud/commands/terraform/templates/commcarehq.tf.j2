@@ -190,6 +190,7 @@ module "iam_user__{{ user.username }}" {
 module "logshipping" {
   environment = "${var.environment}"
   source = "./modules/logshipping"
+  account_id = {{ account_id|tojson }}
 }
 
 module "ga_alb_waf" {
