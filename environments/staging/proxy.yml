@@ -1,3 +1,4 @@
+fake_ssl_cert: yes
 SITE_HOST: 'staging.commcarehq.org'
 J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
 primary_ssl_env: "staging"

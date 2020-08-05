@@ -1301,7 +1301,7 @@ or else the username of the user running the command.
 Apply unapplied state migrations in commcare_cloud/commands/terraform/migrations
 
 ```
-commcare-cloud <env> terraform-migrate-state
+commcare-cloud <env> terraform-migrate-state [--replay-from REPLAY_FROM]
 ```
 
 This migration tool should exist as a generic tool for terraform,
@@ -1314,6 +1314,12 @@ so you can tell it how existing resources map to your new code.
 
 This is a tedious task, and often follows a very predictable renaming pattern.
 This command helps fill this gap.
+
+##### Optional Arguments
+
+###### `--replay-from REPLAY_FROM`
+
+Set the last applied migration value to this number before running. Will begin running migrations after this number, not including it.
 
 ---
 
