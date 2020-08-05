@@ -111,7 +111,7 @@ def compress(use_current_release=False):
 def push_manifest(use_current_release=False):
     if env.use_shared_dir_for_staticfiles:
         with cd(env.code_root if not use_current_release else env.code_current):
-            git_hash = sudo('git rev-parse HEAD').strip()
+            git_hash = _get_git_hash()
             sudo('mkdir -p {env.shared_dir_for_staticfiles}/{git_hash}')
             # copy staticfiles/CACHE/** to {env.shared_dir_for_staticfiles}/{git_hash}/staticfiles/CACHE/**
             sudo("rsync -r --delete"
@@ -127,7 +127,7 @@ def push_manifest(use_current_release=False):
 def pull_manifest(use_current_release=False):
     if env.use_shared_dir_for_staticfiles:
         with cd(env.code_root if not use_current_release else env.code_current):
-            git_hash = sudo('git rev-parse HEAD').strip()
+            git_hash = _get_git_hash()
             sudo('mkdir -p staticfiles/CACHE/')
             sudo('cp {env.shared_dir_for_staticfiles}/{git_hash}/staticfiles/CACHE/manifest.json '
                  'staticfiles/CACHE/manifest.json'
@@ -141,11 +141,15 @@ def pull_manifest(use_current_release=False):
 def pull_staticfiles_cache(use_current_release=False):
     if env.use_shared_dir_for_staticfiles:
         with cd(env.code_root if not use_current_release else env.code_current):
-            git_hash = sudo('git rev-parse HEAD').strip()
+            git_hash = _get_git_hash()
             sudo('mkdir -p staticfiles/CACHE/')
             sudo('rsync -r --delete {env.shared_dir_for_staticfiles}/{git_hash}/staticfiles/CACHE/ '
                  'staticfiles/CACHE/'
                  .format(env=env, git_hash=git_hash))
+
+
+def _get_git_hash():
+    return sudo('git rev-parse HEAD').strip()
 
 
 def update_manifest(save=False, soft=False, use_current_release=False):
