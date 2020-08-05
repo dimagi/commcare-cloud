@@ -319,6 +319,7 @@ module "firehose_stream" {
   log_bucket_arn = "${var.log_bucket_arn}"
   log_bucket_prefix = "${local.log_bucket_waf_prefix}"
   log_bucket_error_prefix = "${local.log_bucket_waf_error_prefix}"
+  firehose_stream_name= "aws-waf-logs-frontend-waf-${var.environment}"
 }
 
 resource "aws_wafv2_web_acl_association" "front_end" {

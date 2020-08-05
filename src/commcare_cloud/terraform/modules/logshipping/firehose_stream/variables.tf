@@ -7,3 +7,5 @@ variable "log_bucket_arn" {}
 
 variable "log_bucket_prefix" {}
 variable "log_bucket_error_prefix" {}
+
+variable "firehose_stream_name" {}
