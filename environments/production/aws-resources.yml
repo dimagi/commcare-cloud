@@ -130,6 +130,8 @@ pillow1-production.instance_id: i-0354a00e5ace39eb2
 proxy2-production: 10.202.20.123
 proxy2-production.instance_id: i-08707523172eb37bf
 proxy2-production.public_ip: 100.24.216.221
+proxy3-production: 10.202.10.237
+proxy3-production.instance_id: i-0eb4444059792b400
 rabbit1-production: 10.202.42.80
 rabbit1-production.instance_id: i-065e9bf2d358cd1ca
 redis0-production: 10.202.40.233
