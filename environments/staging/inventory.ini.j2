@@ -4,13 +4,15 @@
 # using the aws-fill-inventory command.
 
 {{ __proxy1__ }} public_ip={{ aws_resources['proxy1-staging.public_ip'] }}
+{{ __proxy2__ }}
 
 [proxy:children]
 # Amazon EC2
 proxy1
+proxy2
 
 [logproxy:children]
-proxy1
+proxy
 
 {{ __web5__ }} swap_size=1G
 
