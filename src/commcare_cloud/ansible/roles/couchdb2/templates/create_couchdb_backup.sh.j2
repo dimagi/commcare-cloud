@@ -1,7 +1,7 @@
 #!/bin/bash
 BACKUP_TYPE=$1
 DAYS_TO_RETAIN_BACKUPS=$2
-HOURS_TO_RETAIN_BACKUPS=$2
+MINUTES_TO_RETAIN_BACKUPS=$2
 HOSTNAME=$(hostname)
 TODAY=$(date +"%Y_%m_%d")
 HOUR=$(date +"%Y_%m_%d_%H")
@@ -9,17 +9,20 @@ HOUR=$(date +"%Y_%m_%d_%H")
 BACKUP_FILE="couchdb_${BACKUP_TYPE}_${TODAY}.tar.gz"
 HOURLY_BACKUP_FILE="couchdb_${BACKUP_TYPE}_${HOUR}.tar.gz"
 
+COUCHDB_BACKUP_HOURLY={{ couch_backup_hourly }}
+
 {% if not aws_versioning_enabled%}
 UPLOAD_NAME="${BACKUP_FILE}"
 {% else %}
 UPLOAD_NAME="couchdb_${BACKUP_TYPE}_${HOSTNAME}.tar.gz"
 {% endif %}
 
-if [[ {{ couch_backup_hourly }} && "$BACKUP_TYPE" == "hourly" ]]
+
+if [ "$COUCHDB_BACKUP_HOURLY" == True ] && [ "$BACKUP_TYPE" == "hourly" ]; 
 then
 	tar -Pzcf "{{ couch_backup_dir }}/${HOURLY_BACKUP_FILE}" "{{ couch_data_dir }}"
 	# Remove old backups of this backup type of last x mins
-	find {{ couch_backup_dir }} -mmin "+${HOURS_TO_RETAIN_BACKUPS}" -name "couchdb_${BACKUP_TYPE}_*" ! -path "*weekly*" ! -path "*daily*" -delete;
+	find {{ couch_backup_dir }} -mmin "+${MINUTES_TO_RETAIN_BACKUPS}" -name "couchdb_${BACKUP_TYPE}_*" ! -path "*weekly*" ! -path "*daily*" -delete;
 else
 	tar -Pzcf "{{ couch_backup_dir }}/${BACKUP_FILE}" "{{ couch_data_dir }}"
 

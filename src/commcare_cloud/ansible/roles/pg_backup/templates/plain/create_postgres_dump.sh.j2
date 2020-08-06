@@ -1,13 +1,15 @@
 #!/bin/bash
 BACKUP_TYPE=$1
 DAYS_TO_RETAIN_BACKUPS=$2
-HOURS_TO_RETAIN_BACKUPS=$2
+MINUTES_TO_RETAIN_BACKUPS=$2
 ENV="{{ deploy_env }}"
 HOSTNAME=$(hostname)
 TODAY=$(date +"%Y_%m_%d")
 HOUR=$(date +"%Y_%m_%d_%H")
 
-if [[ {{ postgres_backup_hourly }} && "$BACKUP_TYPE" == "hourly" ]] ; then
+POSTGRES_BACKUP_HOURLY={{ postgres_backup_hourly }}
+
+if [ "$POSTGRES_BACKUP_HOURLY" == True ] && [ "$BACKUP_TYPE" == "hourly" ]; then
     FILENAME="postgres_${ENV}_${BACKUP_TYPE}_${HOUR}"
 else
     FILENAME="postgres_${ENV}_${BACKUP_TYPE}_${TODAY}"
@@ -57,8 +59,8 @@ if [[ $? -ne 0 ]] ; then
     echo "Postgres Backup : Tar Failed"
     exit 2
 else
-    if [[ {{ postgres_backup_hourly }} && "$BACKUP_TYPE" == "hourly" ]]; then
-        find {{ postgresql_backup_dir }} -mmin "+${HOURS_TO_RETAIN_BACKUPS}" -name "postgres_${ENV}_${BACKUP_TYPE}_*" ! -path "*weekly*" ! -path "*daily*" -delete;
+    if [ "$POSTGRES_BACKUP_HOURLY" == True ] && [ "$BACKUP_TYPE" == "hourly" ]; then
+        find {{ postgresql_backup_dir }} -mmin "+${MINUTES_TO_RETAIN_BACKUPS}" -name "postgres_${ENV}_${BACKUP_TYPE}_*" ! -path "*weekly*" ! -path "*daily*" -delete;
     fi
 
     # Remove old backups of this backup type, if backup succeded
