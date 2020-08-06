@@ -64,7 +64,7 @@
   become: yes
   cron:
     name: "Backup blobdb hourly"
-    job: "/usr/local/sbin/create_blobdb_backup_hourly.sh hourly {{ blobdb_backup_hours * 60 }}"
+    job: "/usr/local/sbin/create_blobdb_backup.sh hourly {{ blobdb_backup_hours * 60 }}"
     minute: 15
     hour: "*/{{ nadir_hour_frequency|default(3) }}"
     weekday: "1,2,3,4,5,6"
