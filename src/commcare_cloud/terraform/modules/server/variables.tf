@@ -12,6 +12,7 @@ variable "server_image" {}
 variable "environment" {}
 variable "vpc_id" {}
 
+variable "iam_instance_profile" {}
 variable "server_name" {}
 variable "server_instance_type" {}
 variable "network_tier" {}
