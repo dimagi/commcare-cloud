@@ -448,6 +448,13 @@ proxy_servers:
     volume_size: 80
     group: "proxy"
     os: bionic
+  - server_name: "proxy3-production"
+    server_instance_type: "c5.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "proxy"
+    os: ubuntu_pro_bionic
 
 
 rds_instances:

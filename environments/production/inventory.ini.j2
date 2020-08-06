@@ -1,7 +1,9 @@
 {{ __proxy2__ }}
+{{ __proxy3__ }}
 
 [proxy:children]
 proxy2
+proxy3
 
 {{ __web2__ }}
 {{ __web3__ }}
@@ -24,7 +26,7 @@ proxy2
 {{ __web16__ }}
 
 [logproxy:children]
-proxy2
+proxy
 
 [hq_webworkers:children]
 web2
