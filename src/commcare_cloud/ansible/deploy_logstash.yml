@@ -1,18 +1,3 @@
-- name: FileBeat
-  hosts: proxy
-  become: yes
-  gather_facts: true
-  vars:
-    sansible_java_version: 8
-    sansible_java_apt_keyserver: 'http://keys.gnupg.net'
-    filebeat_version: 7.x
-  tasks:
-    - include_role:
-        name: geerlingguy.filebeat
-    - import_role:
-        name: dimagi.commcare_logstash.filebeat
-  tags: filebeat
-
 - name: Logstash
   hosts: logproxy
   become: yes
@@ -30,7 +15,7 @@
   tasks:
     - include_role:
         name: sansible.logstash
-    - import_role: 
+    - import_role:
         name: dimagi.commcare_logstash.logstash
     - sysctl:
         name: net.core.rmem_max
@@ -38,3 +23,17 @@
         state: present
   tags: logstash
 
+- name: FileBeat
+  hosts: proxy
+  become: yes
+  gather_facts: true
+  vars:
+    sansible_java_version: 8
+    sansible_java_apt_keyserver: 'http://keys.gnupg.net'
+    filebeat_version: 7.x
+  tasks:
+    - include_role:
+        name: geerlingguy.filebeat
+    - import_role:
+        name: dimagi.commcare_logstash.filebeat
+  tags: filebeat
