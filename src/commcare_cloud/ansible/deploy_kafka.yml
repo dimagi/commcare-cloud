@@ -34,16 +34,17 @@
  
 - name: Kafka system logs rolling configurations
   hosts: kafka
+  become: true
   roles:
     - role: ansible-logrotate
       logrotate_scripts:
         - name: "{{ deploy_env }}_kafka"
           paths:
-            - "{{ kafka_log_dir }}*.log.*"
-            - "{{ kafka_log_dir }}*.out.*"
+            - "{{ kafka_log_dir }}/*.log.????-??-??-??"
+            - "{{ kafka_log_dir }}/*.out.*"
           options:
             - daily
-            - rotate 10
+            - rotate 4
             - missingok
             - compress
             - nocreate
