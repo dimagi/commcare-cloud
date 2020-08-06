@@ -17,16 +17,16 @@
     update_cache: yes
   ignore_errors: '{{ ansible_check_mode }}'
 
+- name: Add trusted key
+  apt_key:
+    url: https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+    state: present
+
 - name: Add rabbitmq official apt repository
   apt_repository:
     repo: 'deb https://dl.bintray.com/rabbitmq/debian {{ ansible_distribution_release|lower }} main'
     state: present
     update_cache: yes
-
-- name: Add trusted key
-  apt_key:
-    url: https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
-    state: present
 
 - name: Install package
   apt:

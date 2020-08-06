@@ -135,6 +135,10 @@ AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 AMQP_NAME: commcarehq
 AMQP_PASSWORD: "{{ secrets.AMQP_PASSWORD | default(None) }}"
 AMQP_USER: "{{ secrets.AMQP_USER | default(None) }}"
+OLD_AMQP_HOST: null
+OLD_AMQP_NAME: commcarehq
+OLD_AMQP_PASSWORD: "{{ secrets.OLD_AMQP_PASSWORD | default(secrets.AMQP_PASSWORD) | default(None) }}"
+OLD_AMQP_USER: "{{ secrets.OLD_AMQP_USER | default(secrets.AMQP_USER) | default(None) }}"
 APPCUES_ID: "{{ localsettings_private.APPCUES_ID | default('', true) }}"
 APPCUES_KEY: "{{ localsettings_private.APPCUES_KEY | default('', true) }}"
 BANK_ACCOUNT_NUMBER: "{{ localsettings_private.BANK_ACCOUNT_NUMBER | default(None) }}"
