@@ -111,14 +111,6 @@ module "server__{{ server_name }}" {
 {%- endfor %}
 {% endfor %}
 
-{% for server_spec in proxy_servers %}
-resource "aws_eip" "proxy__{{ server_spec.server_name }}" {
-  vpc = true
-  instance = "${module.server__{{ server_spec.server_name }}.server}"
-  associate_with_private_ip = "${module.server__{{ server_spec.server_name }}.server_private_ip}"
-}
-{% endfor %}
-
 resource "aws_efs_file_system" "formplayer" {
   encrypted = true
   lifecycle_policy {
