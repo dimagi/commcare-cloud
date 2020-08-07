@@ -295,11 +295,31 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
     $ commcare-cloud monolith deploy --resume
     ```
 
-## Step 5: Cleanup
+
+## Step 5: Setting set up valid SSL certificates
+
+Run the playbook to request a letsencrypt cert:
+```bash
+cchq <env> ansible-playbook letsencrypt_cert.yml --skip-check
+```
+
+Update settings to take advantage of new certs:
+In `proxy.yml`:
+- set `fake_ssl_cert` to `no`
+
+and deploy proxy again:
+
+```bash
+cchq <env> ansible-playbook deploy_proxy.yml
+```
+
+
+## Step 6: Cleanup
 
 CommCare Cloud will no longer need the root user to be accessible via the password. The password can be removed if you wish.
 
-## Step 6: Running CommCareHQ
+
+## Step 7: Running CommCareHQ
 
 ### Learning `commcare-cloud` basics
 
@@ -323,27 +343,9 @@ If you ever reboot this machine, make sure to follow the [after reboot procedure
 $ commcare-cloud monolith after-reboot all
 ```
 
+### Ongoing maintenance
 
-## Step 7: Setting set up valid SSL certificates 
-If you wish to set up valid SSL certificate please follow below instructions 
-
-### 1. Request a letsencrypt cert
-
-Run the playbook to request a letsencrypt cert:
-```bash
-cchq <env> ansible-playbook letsencrypt_cert.yml --skip-check
-```
-
-### 2. Update settings to take advantage of new certs
-
-In `proxy.yml`:
-- set `fake_ssl_cert` to `no`
-
-and deploy proxy again.
-
-```bash
-cchq <env> ansible-playbook deploy_proxy.yml
-```
+You should be familiar with [Expectations for Ongoing Maintenance](../system/maintenance-expectations.md)
 
 
 ## Step 8: Getting started with CommCareHQ
