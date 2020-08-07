@@ -214,8 +214,6 @@ Even though we will be running all commands locally, we still need to add the us
     ```bash
     $ commcare-cloud monolith update-local-known-hosts
     ```
-    You may be prompted for the ansible vault password that you entered earlier.
-
 
 ### Generate secured passwords for the vault
 
