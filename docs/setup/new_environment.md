@@ -110,33 +110,6 @@ answer with `y`.
 
 For more information, see [Installing commcare-cloud](installation.md#step-2)
 
-### Generate secured passwords for the vault
-
-```bash
-$ python ~/commcare-cloud/commcare-cloud-bootstrap/generate_vault_passwords.py --env='monolith'
-```
-
-
-1. Next, we're going to set up an encrypted "ansible vault" file.  This will store all the passwords used in this CommCare environment.  You'll need to create a strong password and save it somewhere safe.  This is the master password that grants access to the vault.  You'll need it for any future changes to this file, as well as when you deploy or make configuration changes to this machine.
-
-    Encrypt the provided vault file, using that password:
-
-    ``` bash
-    $ ansible-vault encrypt ~/environments/monolith/vault.yml
-    ```
-    
-    More information on ansible vault can be found in the [Ansible help pages](https://docs.ansible.com/ansible/latest/user_guide/vault.html).
-    
-    You can read more about how we use this vault file [here](https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md#managing-secrets-with-vault).
-
-### Add passwords to the vault file
-
-In the vault file, change each field that has the value `CHANGE ME` to a strong, unique password or a unique, useful username for that service. These usernames and passwords will be used by the `commcare-cloud` script to create the required database and system users, and no action is needed to create these users yourself.
-
-``` bash
-$ ansible-vault edit ~/environments/monolith/vault.yml
-```
-
 ### Set the network interface name and ipaddress
 
 1. Find the name and IP address of the network interface of your machine, and note it down. You can do this by running
@@ -241,7 +214,33 @@ Even though we will be running all commands locally, we still need to add the us
     ```bash
     $ commcare-cloud monolith update-local-known-hosts
     ```
-    You may be prompted for the ansible vault password that you entered earlier.
+
+### Generate secured passwords for the vault
+
+```bash
+$ python ~/commcare-cloud/commcare-cloud-bootstrap/generate_vault_passwords.py --env='monolith'
+```
+
+
+1. Next, we're going to set up an encrypted "ansible vault" file.  This will store all the passwords used in this CommCare environment.  You'll need to create a strong password and save it somewhere safe.  This is the master password that grants access to the vault.  You'll need it for any future changes to this file, as well as when you deploy or make configuration changes to this machine.
+
+    Encrypt the provided vault file, using that password:
+
+    ``` bash
+    $ ansible-vault encrypt ~/environments/monolith/vault.yml
+    ```
+    
+    More information on ansible vault can be found in the [Ansible help pages](https://docs.ansible.com/ansible/latest/user_guide/vault.html).
+    
+    You can read more about how we use this vault file [here](https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md#managing-secrets-with-vault).
+
+### Add passwords to the vault file
+
+In the vault file, change each field that has the value `CHANGE ME` to a strong, unique password or a unique, useful username for that service. These usernames and passwords will be used by the `commcare-cloud` script to create the required database and system users, and no action is needed to create these users yourself.
+
+``` bash
+$ ansible-vault edit ~/environments/monolith/vault.yml
+```
 
 
 ## Step 3: Install all the services onto the monolith
