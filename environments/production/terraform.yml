@@ -442,7 +442,7 @@ servers:
 
 proxy_servers:
   - server_name: "proxy2-production"
-    server_instance_type: "m5.large"
+    server_instance_type: "c5.large"
     network_tier: "public"
     az: "a"
     volume_size: 80
