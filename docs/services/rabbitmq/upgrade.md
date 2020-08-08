@@ -47,3 +47,7 @@ Refer to [RabbitMQ Upgrade documentation](https://www.rabbitmq.com/upgrade.html#
     ```
     $ cchq <env> ap deploy_rabbitmq.yml
     ```
+
+----
+
+## Alternative strategy: migrate to new RabbitMQ instance

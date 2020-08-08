@@ -83,6 +83,11 @@ s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-staging-blobdb'
 
+OLD_BROKER_URL: 'amqp://{{ secrets.OLD_AMQP_USER }}:{{ secrets.OLD_AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
+BROKER_URL:
+  - 'amqps://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@b-5aab7d2b-5525-4cb2-9835-865c9f9cd271-1.mq.us-east-1.amazonaws.com:5671'
+  - 'amqps://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@b-5aab7d2b-5525-4cb2-9835-865c9f9cd271-2.mq.us-east-1.amazonaws.com:5671'
+
 localsettings:
   ALLOWED_HOSTS:
     - j2mestaging.commcarehq.org
