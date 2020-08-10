@@ -5,7 +5,8 @@ users:
   - fissionlabs
 slack_alerts_channel: icds-staging
 git_repositories:
-  - url: git@github.com:dimagi/commcare-icds.git
+  - name: icds
+    url: git@github.com:dimagi/commcare-icds.git
     dest: icds
     version: icds-autostaging
     deploy_key: deploy_key.pem

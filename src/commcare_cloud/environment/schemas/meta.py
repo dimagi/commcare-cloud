@@ -20,6 +20,7 @@ def get_github(repo):
 
 
 class GitRepository(jsonobject.JsonObject):
+    name = jsonobject.StringProperty(required=True)
     url = jsonobject.StringProperty(required=True)
     dest = jsonobject.StringProperty(required=True)  # relative to the code_source/external directory
     version = jsonobject.StringProperty(default="master")

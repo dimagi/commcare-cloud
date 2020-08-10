@@ -53,6 +53,9 @@ $ scripts/rebuild-deploy-branch <env> --commcare-hq-root=/path/to/commcare/repo/
 Once the branch has been built you can deploy it using the normal deploy workflow and either
 specifying the branch via `--commcare-rev` or by setting `default_branch` in `<env>/fab-settings.yml`.
 
+If you are using multiple repositories you can override the default branch for additional repositories
+by passing arguments names as follows: `--{repository name}-rev`
+
 ## Conflict Resolution
 
 First, determine where the conflict lies.
