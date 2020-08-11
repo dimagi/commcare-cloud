@@ -194,7 +194,7 @@ def _update_code_from_previous_release(code_repo, subdir, git_env):
         code_current = os.path.join(code_current, subdir)
         code_root = os.path.join(code_root, subdir)
 
-    if files.exists(code_root):
+    if files.exists(code_current):
         with cd(code_current), shell_env(**git_env):
             sudo('git submodule foreach "git fetch origin"')
         _clone_code_from_local_path(code_current, code_root)
@@ -205,9 +205,9 @@ def _update_code_from_previous_release(code_repo, subdir, git_env):
             sudo('git clone {} {}'.format(code_repo, code_root))
 
 
-def _get_submodule_list():
-    if files.exists(env.code_current):
-        with cd(env.code_current):
+def _get_submodule_list(path):
+    if files.exists(path):
+        with cd(path):
             return sudo("git submodule | awk '{ print $2 }'").split()
     else:
         return []
@@ -215,7 +215,7 @@ def _get_submodule_list():
 
 def _get_local_submodule_urls(path):
     local_submodule_config = []
-    for submodule in _get_submodule_list():
+    for submodule in _get_submodule_list(path):
         local_submodule_config.append(
             GitConfig(
                 key='submodule.{submodule}.url'.format(submodule=submodule),
@@ -229,7 +229,7 @@ def _get_local_submodule_urls(path):
 
 
 def _get_remote_submodule_urls(path):
-    submodule_list = _get_submodule_list()
+    submodule_list = _get_submodule_list(path)
     with cd(path):
         remote_submodule_config = [
             GitConfig(
@@ -259,9 +259,11 @@ def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
 
     with cd(to_path):
         cmd_fn('git config receive.denyCurrentBranch updateInstead')
-        cmd_fn(' && '.join(git_local_submodule_config))
+        if git_local_submodule_config:
+            cmd_fn(' && '.join(git_local_submodule_config))
         cmd_fn('git submodule update --init --recursive')
-        cmd_fn(' && '.join(git_remote_submodule_config))
+        if git_remote_submodule_config:
+            cmd_fn(' && '.join(git_remote_submodule_config))
 
 
 def _clone_virtual_env(virtualenv_current, virtualenv_root):

@@ -1,4 +1,7 @@
+import sys
 from textwrap import dedent
+
+from clint.textui import indent
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, check_branch
@@ -9,6 +12,7 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.environment.main import get_environment
+from commcare_cloud.environment.paths import get_available_envs
 
 
 class Deploy(CommandBase):
@@ -38,21 +42,37 @@ class Deploy(CommandBase):
         shared_args.BRANCH_ARG,
     )
 
+    def modify_parser(self):
+        env_name = sys.argv[1]
+        if env_name not in get_available_envs():
+            return
+
+        environment = get_environment(env_name)
+        if environment.meta_config.git_repositories:
+            for repo in environment.meta_config.git_repositories:
+                Argument('--{}-rev'.format(repo.name), help="""
+                    The name of the git branch, tag, or SHA-1 commit hash to deploy for the
+                    '{}' ({}) repository
+                """.format(repo.name, repo.url)).add_to_parser(self.parser)
+
     def run(self, args, unknown_args):
         check_branch(args)
         environment = get_environment(args.env_name)
-        commcare_rev = self._confirm_commcare_rev(environment, args.commcare_rev, quiet=args.quiet)
+        deploy_revs = self._confirm_deploy_revs(environment, args, quiet=args.quiet)
 
         deploy_component = args.component
         if deploy_component == None:
             deploy_component = 'both' if environment.meta_config.always_deploy_formplayer else 'commcare'
 
         if deploy_component in ['commcare', 'both']:
-            print(color_summary("You are about to deploy commcare from {}".format(commcare_rev)))
-            if ask('Deploy commcare?', quiet=args.quiet):
+            print(color_summary("You are about to deploy the following code:"))
+            with indent():
+                for name, rev in deploy_revs:
+                    print(color_summary("{}: {}".format(name, rev)))
+            if ask('Continue with deploy?', quiet=args.quiet):
                 if deploy_component != 'both':
                     _warn_no_formplayer()
-                self.deploy_commcare(environment, commcare_rev, args, unknown_args)
+                self.deploy_commcare(environment, deploy_revs, args, unknown_args)
         if deploy_component in ['formplayer', 'both']:
             if deploy_component != 'both':
                 if args.commcare_rev:
@@ -62,14 +82,14 @@ class Deploy(CommandBase):
             self._announce_formplayer_deploy_start(environment)
             self.deploy_formplayer(environment, args, unknown_args)
 
-    def deploy_commcare(self, environment, commcare_rev, args, unknown_args):
+    def deploy_commcare(self, environment, deploy_revs, args, unknown_args):
         fab_func_args = self.get_deploy_commcare_fab_func_args(args)
-        fab_settings = 'code_branch={}{}'.format(
-            commcare_rev,
-            ',{}'.format(args.fab_settings) if args.fab_settings else ''
-        )
+        fab_settings = [args.fab_settings] if args.fab_settings else []
+        for name, rev in deploy_revs:
+            var = 'code_branch' if name == 'commcare' else '{}_code_branch'.format(name)
+            fab_settings.append('{}={}'.format(var, rev))
         commcare_cloud(environment.name, 'fab', 'deploy_commcare{}'.format(fab_func_args),
-                       '--set', fab_settings,
+                       '--set', ','.join(fab_settings),
                        branch=args.branch, *unknown_args)
 
     def deploy_formplayer(self, environment, args, unknown_args):
@@ -115,20 +135,32 @@ class Deploy(CommandBase):
             return ''
 
     @staticmethod
-    def _confirm_commcare_rev(environment, commcare_rev, quiet=False):
+    def _confirm_deploy_revs(environment, args, quiet=False):
         default_branch = environment.fab_settings_config.default_branch
-        if not commcare_rev:
-            return default_branch
+        branches = [
+            ('commcare', 'commcare_rev', default_branch),
+        ]
+        for repo in environment.meta_config.git_repositories:
+            branches.append((repo.name, '{}_rev'.format(repo.name), repo.version))
 
-        if commcare_rev != default_branch:
+        diffs = []
+        actuals = []
+        for repo_name, arg_name, default in branches:
+            actual = getattr(args, arg_name, None)
+            actuals.append((repo_name, actual or default))
+            if actual and actual != default:
+                diffs.append("'{}' repo: {} != {}".format(repo_name, default, actual))
+
+        if diffs:
             message = (
-                "Whoa there bud! You're deploying from {commcare_rev}. "
+                "Whoa there bud! You're deploying non-default. "
+                "\n{}\n"
                 "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
-            ).format(commcare_rev=commcare_rev)
+            ).format('/n'.join(diffs))
             if not ask(message, quiet=quiet):
                 exit(-1)
 
-        return commcare_rev
+        return actuals
 
     @staticmethod
     def _announce_formplayer_deploy_start(environment):
