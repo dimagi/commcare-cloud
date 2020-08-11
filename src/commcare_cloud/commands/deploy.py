@@ -12,6 +12,7 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.environment.main import get_environment
+from commcare_cloud.environment.paths import get_available_envs
 
 
 class Deploy(CommandBase):
@@ -42,7 +43,11 @@ class Deploy(CommandBase):
     )
 
     def modify_parser(self):
-        environment = get_environment(sys.argv[1])
+        env_name = sys.argv[1]
+        if env_name not in get_available_envs():
+            return
+
+        environment = get_environment(env_name)
         if environment.meta_config.git_repositories:
             for repo in environment.meta_config.git_repositories:
                 Argument('--{}-rev'.format(repo.name), help="""
