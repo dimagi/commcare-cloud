@@ -259,9 +259,11 @@ def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
 
     with cd(to_path):
         cmd_fn('git config receive.denyCurrentBranch updateInstead')
-        cmd_fn(' && '.join(git_local_submodule_config))
+        if git_local_submodule_config:
+            cmd_fn(' && '.join(git_local_submodule_config))
         cmd_fn('git submodule update --init --recursive')
-        cmd_fn(' && '.join(git_remote_submodule_config))
+        if git_remote_submodule_config:
+            cmd_fn(' && '.join(git_remote_submodule_config))
 
 
 def _clone_virtual_env(virtualenv_current, virtualenv_root):
