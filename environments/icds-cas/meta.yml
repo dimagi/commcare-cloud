@@ -4,7 +4,8 @@ users:
   - dimagi
 slack_alerts_channel: alerts-icds
 git_repositories:
-  - url: git@github.com:dimagi/commcare-icds.git
+  - name: icds
+    url: git@github.com:dimagi/commcare-icds.git
     dest: icds
     deploy_key: deploy_key.pem
     is_private: true
