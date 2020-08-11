@@ -40,8 +40,8 @@
       logrotate_scripts:
         - name: "{{ deploy_env }}_kafka"
           paths:
-            - "{{ kafka_log_dir }}/*.log.????-??-??-??"
-            - "{{ kafka_log_dir }}/*.out.*"
+            - "{{ kafka_log_dir | default('/var/log/kafka')}}/*.log.????-??-??-??"
+            - "{{ kafka_log_dir | default('/var/log/kafka') }}/*.out.*"
           options:
             - daily
             - rotate 4
@@ -49,3 +49,4 @@
             - compress
             - nocreate
             - notifempty
+  tags: testit
