@@ -205,9 +205,9 @@ def _update_code_from_previous_release(code_repo, subdir, git_env):
             sudo('git clone {} {}'.format(code_repo, code_root))
 
 
-def _get_submodule_list():
-    if files.exists(env.code_current):
-        with cd(env.code_current):
+def _get_submodule_list(path):
+    if files.exists(path):
+        with cd(path):
             return sudo("git submodule | awk '{ print $2 }'").split()
     else:
         return []
@@ -215,7 +215,7 @@ def _get_submodule_list():
 
 def _get_local_submodule_urls(path):
     local_submodule_config = []
-    for submodule in _get_submodule_list():
+    for submodule in _get_submodule_list(path):
         local_submodule_config.append(
             GitConfig(
                 key='submodule.{submodule}.url'.format(submodule=submodule),
@@ -229,7 +229,7 @@ def _get_local_submodule_urls(path):
 
 
 def _get_remote_submodule_urls(path):
-    submodule_list = _get_submodule_list()
+    submodule_list = _get_submodule_list(path)
     with cd(path):
         remote_submodule_config = [
             GitConfig(
