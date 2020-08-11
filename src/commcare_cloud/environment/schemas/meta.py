@@ -40,9 +40,9 @@ class GitRepository(jsonobject.JsonObject):
         repo = match.group(1)
         return get_github(self).get_repo(repo)
 
-    @memoized_property
-    def deploy_ref(self):
-        return self.repo.get_commit(self.version).sha
+    @memoized
+    def deploy_ref(self, code_branch):
+        return self.repo.get_commit(code_branch or self.version).sha
 
     def to_generated_variables(self):
         vars = self.to_json()

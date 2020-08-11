@@ -426,7 +426,7 @@ def _setup_release(keep_days=0, full_cluster=True):
     execute_with_timing(update_code, deploy_ref)
     for repo in env.ccc_environment.meta_config.git_repositories:
         var_name = "{}_code_branch".format(repo.name)
-        repo_deploy_ref = repo.deploy_ref(getattr(env, var_name, deploy_ref))
+        repo_deploy_ref = repo.deploy_ref(getattr(env, var_name, None))
         execute_with_timing(update_code, repo_deploy_ref, repo.relative_dest, repo.url, repo.deploy_key)
 
     execute_with_timing(release.update_virtualenv(full_cluster))
