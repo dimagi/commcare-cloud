@@ -1,0 +1,14 @@
+{
+  "cloudwatch.emitMetrics": true,
+  "kinesis.endpoint": "{{ kinesis_endpoint }}",
+  "firehose.endpoint": "{{ firehose_endpoint }}",
+
+  "flows": [
+    {% for flow in kinesis_flows -%}
+    {
+      "filePattern": "{{ flow.file_pattern }}",
+      "deliveryStream": "{{ flow.delivery_stream }}"
+    }
+    {% endfor -%}
+  ]
+}

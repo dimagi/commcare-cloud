@@ -21,3 +21,5 @@
       vars:
         formplayer_data_dir: "{{ '/opt/formplayer_data' if use_formplayer_efs|default(False) else (encrypted_root + '/formplayer') }}"
       tags: formplayer
+    - role: kinesis_agent
+      tags: kinesis-agent
