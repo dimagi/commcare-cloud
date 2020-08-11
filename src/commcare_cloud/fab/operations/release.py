@@ -194,7 +194,7 @@ def _update_code_from_previous_release(code_repo, subdir, git_env):
         code_current = os.path.join(code_current, subdir)
         code_root = os.path.join(code_root, subdir)
 
-    if files.exists(code_root):
+    if files.exists(code_current):
         with cd(code_current), shell_env(**git_env):
             sudo('git submodule foreach "git fetch origin"')
         _clone_code_from_local_path(code_current, code_root)
