@@ -12,4 +12,5 @@ dimagi/commcare-hq:
 dimagi/commcare-icds:
   trunk: master
   name: icds-autostaging
-  branches: []
+  branches:
+  - rn_apply_location_restrictions_to_MPR_ASR
