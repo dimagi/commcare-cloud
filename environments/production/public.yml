@@ -98,6 +98,8 @@ kafka_log_message_format_version: 2.4
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
+rabbitmq_version: 3.8.5-1
+
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-production-blobdb'
