@@ -402,7 +402,7 @@ servers:
     volume_size: 600
     group: "formplayer"
     os: bionic
-    count: 33
+    count: 41
 
   - server_name: "redis0-production"
     server_instance_type: r5.xlarge
