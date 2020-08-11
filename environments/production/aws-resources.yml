@@ -150,6 +150,8 @@ proxy3-production: 10.202.10.237
 proxy3-production.instance_id: i-0eb4444059792b400
 rabbit1-production: 10.202.42.80
 rabbit1-production.instance_id: i-065e9bf2d358cd1ca
+rabbit2-production: 10.202.42.100
+rabbit2-production.instance_id: i-0afd113aa270a774d
 redis0-production: 10.202.40.233
 redis0-production.instance_id: i-055334f56a475b851
 shareddir1-production: 10.202.40.218
