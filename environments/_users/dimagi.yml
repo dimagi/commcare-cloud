@@ -19,7 +19,6 @@ dev_users:
     - schauhan
     - sbansal
     - spokhriyal
-    - sgoswami
     - aphulera
     - knguyen
   absent:
@@ -32,3 +31,4 @@ dev_users:
     - npellegrino
     - gbova
     - jemord
+    - sgoswami
