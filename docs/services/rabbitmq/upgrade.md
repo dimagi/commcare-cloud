@@ -47,3 +47,59 @@ Refer to [RabbitMQ Upgrade documentation](https://www.rabbitmq.com/upgrade.html#
     ```
     $ cchq <env> ap deploy_rabbitmq.yml
     ```
+
+----
+
+## Alternative strategy: migrate to new RabbitMQ instance
+
+If you want to do the migration with no downtime, another method is to set up a new rabbitmq machine
+with the target version and gracefully drain the old one while directing traffic to the new one.
+
+1. Set up the new machine using the normal process (make sure it's under [rabbitmq] in the inventory).
+2. It will be important at each point in the transition to have a good read on where messages are going
+    or accumulating. To do that, run
+    ```
+    (local) $ cchq production ssh ansible@<machine>
+    (server) $ tmux
+    (server|tmux) $ sudo watch "rabbitmqctl list_queues -p commcarehq name messages | grep -v '[^0-9]0$' | sort"
+    ```
+    in a tmux session on each machine (old and new).
+3. Assuming you have multiple celery machines, pick some to be the "bridge" machines that
+    will read from the old and write to the new, eventually draining them; the remaining machines will get
+    all new traffic.
+4. Make sure that the new machine comes first in inventory.ini, and then run
+    ```
+    cchq <env> update-config
+    ```
+    don't restart services yet.
+5. Temporarily edit public.yml to have
+    ```
+    OLD_AMQP_HOST: "{{ <old rabbitmq ip> }}"
+    ```
+    but don't commit it. Then run
+    ```
+    cchq <env> update-config --limit <bridge celery machines>
+    ```
+   don't restart services yet.
+6. Check to make sure the connection to the new rabbitmq machine is working by running
+    ```
+    $ cchq production django-manage shell
+    >>> from corehq.celery_monitoring.tasks import *
+    >>> heartbeat__analytics_queue.delay()
+    ```
+    which will trigger a task and should write to the new machine. Check the tmux watch command you have running
+    on the new machine to make sure a task went there.
+7. Restart services with
+    ```
+    cchq <env> fab restart_services
+    ```
+    to pick up the changes from 4 & 5. All machines will now read from and write to the new machine,
+    except for the "bridge celery machines" you chose, which will now read from the old and write to the new.
+8. Watch the "watch" command on the old machine until all of the queues are fully drained. 
+9. Finally (make sure you've removed the OLD_AMQP_HOST variable), run
+    ```
+    cchq <env> update-config
+    ```
+    to bring the (former) bridge machines back into line with the rest of the machines.
+    At this point all other machines are reading from and writing to the new rabbitmq machine,
+    and you can stop the old one.
