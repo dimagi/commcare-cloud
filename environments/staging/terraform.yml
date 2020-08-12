@@ -179,7 +179,7 @@ servers:
       volume_size: 80
       encrypted: true
     group: "kafka"
-    os: ubuntu_pro_bionic
+    os: bionic
 
   - server_name: "pgproxy2-staging"
     server_instance_type: t3.small
