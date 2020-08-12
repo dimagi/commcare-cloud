@@ -13,11 +13,11 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <fileNamePattern>{{ formplayer_logging_dir }}/request_response.%i.log</fileNamePattern>
             <minIndex>1</minIndex>
-            <maxIndex>1</maxIndex>
+            <maxIndex>3</maxIndex>
         </rollingPolicy>
         <!-- Limit the log file size. -->
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>1MB</maxFileSize>
+            <maxFileSize>1GB</maxFileSize>
         </triggeringPolicy>
         <encoder>
             <pattern>%msg%n</pattern>
