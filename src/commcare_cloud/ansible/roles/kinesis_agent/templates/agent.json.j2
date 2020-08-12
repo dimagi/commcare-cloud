@@ -9,6 +9,7 @@
       "filePattern": "{{ flow.file_pattern }}",
       "deliveryStream": "{{ flow.delivery_stream }}"
     }
-    {% endfor -%}
+    {%- if not loop.last %}, {% endif %}
+    {%- endfor %}
   ]
 }
