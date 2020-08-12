@@ -90,8 +90,10 @@ remote_postgresql
 remote_postgresql
 
 {{ __rabbit1__ }}
+{{ __rabbit2__ }}
 
 [rabbitmq:children]
+rabbit2
 rabbit1
 
 [rabbitmq:vars]
