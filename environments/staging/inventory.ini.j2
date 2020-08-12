@@ -54,15 +54,15 @@ couch3
 # Amazon EC2
 rabbit2
 
-{{ __kafka1__ }} kafka_broker_id=0 datavol_fstype=xfs
+{{ __kafka2__ }} kafka_broker_id=1
 
 [zookeeper:children]
 # Amazon EC2
-kafka1
+kafka2
 
 [kafka:children]
 # Amazon EC2
-kafka1
+kafka2
 
 {{ __celery2__ }} swap_size=8G
 
