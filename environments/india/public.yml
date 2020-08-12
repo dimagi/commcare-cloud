@@ -246,5 +246,5 @@ airflow_parallelism: 8
 firehose_endpoint: "firehose.ap-south-1.amazonaws.com"
 kinesis_endpoint: "kinesis.ap-south-1.amazonaws.com"
 kinesis_flows:
-  - file_pattern: "/opt/data/formplayer/log/request_response.log"
+  - file_pattern: "/opt/data/formplayer/log/request_response.*log"
     delivery_stream: "formplayer-request-response-logs-india"
