@@ -1,0 +1,4 @@
+firehose_endpoint: "firehose.us-east-1.amazonaws.com"
+kinesis_endpoint: "kinesis.us-east-1.amazonaws.com"
+kinesis_flows: []
+
