@@ -7,6 +7,8 @@ dimagi/commcare-hq:
   branches:
   - ap/restrict-unauthorized-users
   - sk/remove-icdsI  # SK Aug 3
+  - rn_hotfix_for_staging_angular_upgrade_deps
+  - bmb/SAAS-11163
   submodules: {}
 
 dimagi/commcare-icds:
@@ -14,3 +16,5 @@ dimagi/commcare-icds:
   name: icds-autostaging
   branches:
   - rn_apply_location_restrictions_to_MPR_ASR
+  - sp/angularjs-migration
+  - orangejenny-patch-1
