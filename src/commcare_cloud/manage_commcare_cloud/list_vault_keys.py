@@ -1,5 +1,9 @@
 from __future__ import print_function
+
+from collections import defaultdict
 from itertools import chain
+
+from tabulate import tabulate
 
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.main import get_environment
@@ -12,24 +16,44 @@ class ListVaultKeys(CommandBase):
     Audit the structure of vault.yml files.
 
     A password will be required for each encrypted vault file in the env.
+    
+    For each vault key a value will be printed for each environments:
+      * '' (blank)  : indicates that the key does not exist for this environment or is empty
+      * 'x'         : indicates that the value exists and is unique among the environments that were analysed
+      * 'enva,envb' : indicates that this value is shared with the listed environments
     """
 
     def run(self, args, unknown_args):
         envs = sorted(get_available_envs(exclude_symlinks=True))
         var_keys = {}
         for env in envs:
-            print('[{}] '.format(env), end='')
+            print('[{} (blank to skip)] '.format(env), end='')
             environment = get_environment(env)
-            var_keys[env] = set(get_flat_list_of_keys(environment.get_vault_variables()))
+            passwd = environment._get_ansible_vault_password()
+            if passwd:
+                var_keys[env] = dict(get_flat_list_of_keys(environment.get_vault_variables()))
 
-        for env in envs:
-            print('\t{}'.format(env), end='')
-        print()
+        headers = ["key"] + [env for env in envs if env in var_keys]
+
+        rows = []
         for key in sorted(set(chain.from_iterable(var_keys.values()))):
-            print('.'.join(part if part is not None else '*' for part in key), end='')
+            row = ['.'.join(part if part is not None else '*' for part in key)]
+            by_var = defaultdict(set)
             for env in envs:
-                print('\t{}'.format('x' if key in var_keys[env] else ''), end='')
-            print()
+                value = var_keys.get(env, {}).get(key, None)
+                if value:
+                    by_var[value].add(env)
+
+            for env in envs:
+                if env not in var_keys:
+                    continue
+                if key in var_keys[env]:
+                    duplicates = by_var[var_keys[env][key]] - set([env])
+                    row.append(','.join(duplicates) if duplicates else 'x')
+                else:
+                    row.append('')
+            rows.append(row)
+        print(tabulate(rows, headers=headers, tablefmt='simple'))
 
 
 def get_flat_list_of_keys(nested_config, path=()):
@@ -42,4 +66,4 @@ def get_flat_list_of_keys(nested_config, path=()):
             for key_ in get_flat_list_of_keys(value, path=path + (None,)):
                 yield key_
     else:
-        yield path
+        yield path, nested_config
