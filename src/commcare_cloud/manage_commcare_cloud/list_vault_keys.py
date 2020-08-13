@@ -16,6 +16,11 @@ class ListVaultKeys(CommandBase):
     Audit the structure of vault.yml files.
 
     A password will be required for each encrypted vault file in the env.
+    
+    For each vault key a value will be printed for each environments:
+      * '' (blank)  : indicates that the key does not exist for this environment or is empty
+      * 'x'         : indicates that the value exists and is unique among the environments that were analysed
+      * 'enva,envb' : indicates that this value is shared with the listed environments
     """
 
     def run(self, args, unknown_args):
