@@ -34,19 +34,19 @@ rds_pg0
 pgproxy2
 remote_postgresql
 
-{{ __couch3__ }} datavol_fstype=xfs
+{{ __couch6__ }}
 
-{{ __couch4__ }} datavol_fstype=xfs
+{{ __couch7__ }}
 
-{{ __couch5__ }} datavol_fstype=xfs
+{{ __couch8__ }}
 
 [couchdb2:children]
-couch3
-couch4
-couch5
+couch6
+couch7
+couch8
 
 [couchdb2_proxy:children]
-couch3
+couch6
 
 {{ __rabbit2__ }}
 
