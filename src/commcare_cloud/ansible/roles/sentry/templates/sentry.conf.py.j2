@@ -103,5 +103,5 @@ KAFKA_CLUSTERS["default"] = DEFAULT_KAFKA_OPTIONS
 SENTRY_WEB_HOST = '{{ sentry_web_host }}'
 SENTRY_WEB_PORT = {{ sentry_web_port }}
 SENTRY_WEB_OPTIONS = {
-    'workers': 4,
+    'workers': {{ sentry_workers_count }},
 }
