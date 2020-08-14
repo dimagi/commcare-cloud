@@ -63,7 +63,7 @@ def main():
             action="store")
     args = parser.parse_args()
 
-    calculateKey(args.secret,args.region)
+    calculateKey(args.secret.strip(), args.region)
 
 
 main()
