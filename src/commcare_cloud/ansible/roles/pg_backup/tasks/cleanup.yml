@@ -1,3 +1,4 @@
+## Cleanup task is mainly to update the script with latest changes and set new cron tasks without removing all backup storages.
 - include_vars: 'roles/pg_backup/defaults/main.yml'
 
 - name: create backup directory (cleanup)
@@ -11,5 +12,6 @@
   debug: msg="WARNING PostgreSQL backup directory {{ postgresql_backup_dir }} is present in this machine."
   when: "'pg_backup' not in group_names and backup_dir.stat.exists"
 
+# not triggering cleanup task when 'postgres_backup_hourly' is set to false since it will clear all postgres cron tasks
 - include_tasks: backup_plain_clean.yml
   when: "('pg_backup' not in group_names) or (backup_postgres not in ['plain', 'dump'])"

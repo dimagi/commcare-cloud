@@ -55,7 +55,7 @@
     weekday: "1,2,3,4,5,6"
     user: "{{ blobdb_user }}"
     cron_file: backup_blobdb
-  when: "backup_blobdb and 'shared_dir_host' in group_names"
+    state: "{{ 'present' if backup_blobdb and 'shared_dir_host' in group_names else 'absent' }}"
   tags:
     - cron
     - backups
@@ -70,7 +70,7 @@
     weekday: "1,2,3,4,5,6"
     user: "{{ blobdb_user }}"
     cron_file: backup_blobdb
-  when: "backup_blobdb and blobdb_backup_hourly and 'shared_dir_host' in group_names"
+    state: "{{ 'present' if backup_blobdb and blobdb_backup_hourly and 'shared_dir_host' in group_names else 'absent' }}"
   tags:
     - cron
     - backups
@@ -85,7 +85,7 @@
     weekday: 0
     user: "{{ blobdb_user }}"
     cron_file: backup_blobdb
-  when: "backup_blobdb and 'shared_dir_host' in group_names"
+    state: "{{ 'present' if backup_blobdb and 'shared_dir_host' in group_names else 'absent' }}"
   tags:
     - cron
     - backups

@@ -49,7 +49,7 @@
     weekday: "1,2,3,4,5,6"
     user: postgres
     cron_file: backup_postgres
-  when: postgres_backup_hourly
+    state: "{{ 'present' if postgres_backup_hourly and 'pg_backup' in group_names else 'absent' }}"
 
 - name: Create Daily Cron job
   become: yes

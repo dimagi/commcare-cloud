@@ -210,3 +210,7 @@ airflow_flask_key: '{{ secrets.AIRFLOW_FLASK_KEY | default(None) }}'
 
 nofile_limit: 4096
 keepalived_recepient_email: '{{ root_email }}'
+
+# this parameter is to set backups hour frequency, by default it will take backups for every '3' hours 
+# if hourly backups are enabled. 
+nadir_hour_frequency: 3

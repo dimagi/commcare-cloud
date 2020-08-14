@@ -1,3 +1,4 @@
+## Cleanup task is mainly to update the script with latest changes and set new cron tasks without removing all backup storages.
 
 - name: Cleanup old script
   become: yes
