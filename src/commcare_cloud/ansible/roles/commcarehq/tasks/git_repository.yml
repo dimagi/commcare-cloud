@@ -27,7 +27,7 @@
       virtualenv: "{{ py3_virtualenv_source }}"
       virtualenv_python: "python3.6"
       chdir: "{{ code_source }}"
-    when: not testing|default(False)
+    when: item.requirements_path|default(None) and not testing|default(False)
     tags:
       - slow
       - py3
