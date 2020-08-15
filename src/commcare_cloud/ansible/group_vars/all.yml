@@ -208,6 +208,7 @@ SIMPLE_API_KEYS: "{{ localsettings_private.SIMPLE_API_KEYS | default(None) }}"
 SNS_EMAIL_EVENT_SECRET: "{{ localsettings_private.SNS_EMAIL_EVENT_SECRET | default(None) }}"
 STRIPE_PRIVATE_KEY: "{{ localsettings_private.STRIPE_PRIVATE_KEY | default(None) }}"
 STRIPE_PUBLIC_KEY: "{{ localsettings_private.STRIPE_PUBLIC_KEY | default(None) }}"
+SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL | default(None) }}"
 TRANSIFEX_API_TOKEN: "{{ localsettings_private.TRANSIFEX_API_TOKEN | default(None) }}"
 airflow_flask_key: '{{ secrets.AIRFLOW_FLASK_KEY | default(None) }}'
 airflow_secret_key: '{{ secrets.AIRFLOW_SECRET_KEY | default(None) }}'
