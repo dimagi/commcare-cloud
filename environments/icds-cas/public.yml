@@ -41,7 +41,7 @@ nofile_limit: 65536
 redis_maxmemory: 12gb
 redis_maxmemory_policy: allkeys-lfu
 redis_auto_aof_rewrite_percentage: "50"
-redis_password: "{{ localsettings_private.REDIS_PASSWORD }}"
+redis_password: "{{ REDIS_PASSWORD }}"
 
 kafka_log_dir: '{{ encrypted_root }}/kafka'
 kafka_version: 2.4.1
@@ -383,7 +383,7 @@ localsettings:
   REDIS_DB: '0'
   REDIS_HOST: "{{ hostvars[groups.keepalived_redis.0].keepalived_shared_ip }}" 
   REDIS_PORT: '6379'
-  REDIS_PASSWORD: '{{ localsettings_private.REDIS_PASSWORD }}'
+  REDIS_PASSWORD: '{{ REDIS_PASSWORD }}'
   REMINDERS_QUEUE_ENABLED: True
   REPEATERS_WHITELIST: []  # disable all repeaters on ICDS
   SMS_GATEWAY_URL:

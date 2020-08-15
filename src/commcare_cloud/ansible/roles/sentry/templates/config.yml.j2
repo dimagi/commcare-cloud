@@ -32,8 +32,8 @@ redis.clusters:
       0:
         host: 127.0.0.1
         port: 6379
-{% if localsettings_private.REDIS_PASSWORD is defined %}
-        password: '{{ localsettings_private.REDIS_PASSWORD }}'
+{% if REDIS_PASSWORD %}
+        password: '{{ REDIS_PASSWORD }}'
 {% endif %}
 
 {% if sentry_url_prefix is defined %}

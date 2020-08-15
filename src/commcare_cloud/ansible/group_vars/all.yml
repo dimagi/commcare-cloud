@@ -195,6 +195,7 @@ MOBILE_INTEGRATION_TEST_TOKEN: "{{ localsettings_private.MOBILE_INTEGRATION_TEST
 OLD_AMQP_PASSWORD: "{{ secrets.OLD_AMQP_PASSWORD | default(secrets.AMQP_PASSWORD) | default(None) }}"
 OLD_AMQP_USER: "{{ secrets.OLD_AMQP_USER | default(secrets.AMQP_USER) | default(None) }}"
 OPEN_EXCHANGE_RATES_API_ID: "{{ localsettings_private.OPEN_EXCHANGE_RATES_API_ID | default(None) }}"
+REDIS_PASSWORD: "{{ localsettings_private.REDIS_PASSWORD | default(None) }}"
 RETURN_PATH_EMAIL_PASSWORD: "{{ localsettings_private.RETURN_PATH_EMAIL_PASSWORD | default(None) }}"
 SECRET_KEY: "{{ localsettings_private.SECRET_KEY }}"
 SENTRY_API_KEY: "{{ localsettings_private.SENTRY_API_KEY | default(None) }}"
