@@ -132,16 +132,16 @@ couchdb_compaction_settings:
   _default: '[{db_fragmentation, "10%"}, {view_fragmentation, "10%"}, {from, "17:00"}, {to, "05:00"}, {strict_window, true}]'
 
 couchdb2:
-  username: "{{ localsettings_private.COUCH_USERNAME }}"
-  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+  username: "{{ COUCH_USERNAME }}"
+  password: "{{ COUCH_PASSWORD }}"
 
 couch_dbs:
   default:
     host: "{{ hostvars[groups.couchdb2_proxy.0].keepalived_shared_ip }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    username: "{{ COUCH_USERNAME }}"
+    password: "{{ COUCH_PASSWORD }}"
     is_https: False
 
 s3_blob_db_enabled: yes

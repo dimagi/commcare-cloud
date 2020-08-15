@@ -48,7 +48,7 @@ couchdb_use_haproxy: False
 couchdb2_port: 15984
 couchdb2_proxy_port: "{{ 35984 if couchdb_use_haproxy else 25984 }}"
 couchdb_admins: "{
-  '{{ localsettings_private.COUCH_USERNAME }}': '{{ localsettings_private.COUCH_PASSWORD }}',
+  '{{ COUCH_USERNAME }}': '{{ COUCH_PASSWORD }}',
 }"
 is_redis_cluster: '{{ "redis_cluster_master" in groups and groups["redis_cluster_master"]|length > 1 }}'
 redis_bind: 0.0.0.0
