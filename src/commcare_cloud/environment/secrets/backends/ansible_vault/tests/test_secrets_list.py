@@ -3,7 +3,7 @@ import os
 
 import yaml
 
-from commcare_cloud.secrets.backends.ansible_vault.main import AnsibleVaultSecretsBackend
+from commcare_cloud.environment.secrets.backends.ansible_vault.main import AnsibleVaultSecretsBackend
 
 
 def test_generated_variables_as_expected():

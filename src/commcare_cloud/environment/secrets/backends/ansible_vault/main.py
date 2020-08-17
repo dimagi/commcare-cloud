@@ -1,4 +1,4 @@
-from commcare_cloud.secrets.secrets_schema import get_known_secret_specs
+from commcare_cloud.environment.secrets.secrets_schema import get_known_secret_specs
 
 
 class AnsibleVaultSecretsBackend(object):

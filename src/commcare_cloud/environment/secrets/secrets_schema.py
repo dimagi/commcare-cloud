@@ -31,5 +31,5 @@ class SecretSpec(jsonobject.JsonObject):
 
 
 def get_known_secret_specs():
-    with open(os.path.join(PACKAGE_BASE, 'secrets', 'secrets.yml')) as f:
+    with open(os.path.join(PACKAGE_BASE, 'environment', 'secrets', 'secrets.yml')) as f:
         return [SecretSpec.wrap(secret_spec) for secret_spec in yaml.safe_load(f)]
