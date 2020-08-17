@@ -56,6 +56,7 @@ class AnsibleVaultSecretsBackend(object):
         self.get_vault_variables()
         return self._get_ansible_vault_password()
 
+    @memoized
     def get_vault_variables(self):
         """Get ansible vault variables
 

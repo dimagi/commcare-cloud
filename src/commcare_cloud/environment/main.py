@@ -85,9 +85,6 @@ class Environment(object):
     def get_ansible_vault_password(self):
         return self.secrets_backend.get_ansible_vault_password()
 
-    def get_vault_variables(self):
-        return self.secrets_backend.get_vault_variables()
-
     def get_vault_var(self, var):
         return self.secrets_backend.get_vault_var(var)
 
@@ -99,7 +96,7 @@ class Environment(object):
         return AnsibleVaultSecretsBackend(self.name, self.paths.vault_yml)
 
     def get_ansible_user_password(self):
-        return self.get_vault_variables()['ansible_sudo_pass']
+        return self.get_vault_var('ansible_sudo_pass')
 
     @memoized_property
     def public_vars(self):
