@@ -92,7 +92,7 @@ class RunAnsibleModule(CommandBase):
             )
 
         def run_check():
-            with environment.suppress_vault_loaded_event():
+            with environment.secrets_backend.suppress_vault_loaded_event():
                 return _run_ansible(args, '--check', *unknown_args)
 
         def run_apply():
@@ -132,7 +132,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
 
     ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
     if ask_vault_pass:
-        cmd_parts += ('--vault-password-file={}/echo_vault_password.sh'.format(ANSIBLE_DIR),)
+        cmd_parts += environment.secrets_backend.get_extra_ansible_args()
     cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
