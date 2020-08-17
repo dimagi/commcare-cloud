@@ -368,6 +368,8 @@ class Environment(object):
         if os.path.exists(self.paths.dimagi_key_store_vault):
             generated_variables.update({'keystore_file': self.paths.dimagi_key_store_vault})
 
+        generated_variables.update(self.secrets_backend.get_generated_variables())
+
         with open(self.paths.generated_yml, 'w') as f:
             f.write(yaml.safe_dump(generated_variables))
 
