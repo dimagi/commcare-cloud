@@ -11,6 +11,7 @@ from collections import defaultdict, namedtuple
 from datetime import datetime
 
 import psycopg2
+from psycopg2.extras import LoggingConnection
 
 import logging
 
@@ -64,7 +65,8 @@ def fetchall_as_namedtuple(cursor):
 
 def get_table_info(dbname, table_names=None):
     tables = defaultdict(dict)
-    connection = psycopg2.connect(dbname=dbname)
+    connection = psycopg2.connect(connection_factory=LoggingConnection, dbname=dbname)
+    connection.initialize(logger)
     try:
         with connection.cursor() as cursor:
             if table_names:
