@@ -9,6 +9,7 @@ pg_repack:
       tables:
         - sms_messagingsubevent
         - sms_messagingevent
+        - userreports_invaliducrdata
 
 REPORTING_DATABASES:
   ucr: ucr
