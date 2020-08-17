@@ -65,7 +65,7 @@
   become: yes
   cron:
     name: "pg_repack {{ item }}"
-    job: "{{ pg_repack_script_path }} --pg-repack {{ postgres_install_dir }}/bin/pg_repack --dead-tup-ratio 0.05 -d {{ item.database }}{% if item.tables|default(None) %} --tables {{ item.tables|join(' ') }}{% endif %}"
+    job: "{{ pg_repack_script_path }} --pg-repack {{ postgres_install_dir }}/bin/pg_repack --dead-tup-ratio {{ item.ratio|default(0.05) }} -d {{ item.database }}{% if item.tables|default(None) %} --tables {{ item.tables|join(' ') }}{% endif %}"
     minute: "30"
     hour: "{{ nadir_hour + 2 }}"
     user: postgres

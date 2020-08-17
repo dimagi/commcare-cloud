@@ -5,6 +5,7 @@ pg_repack:
     - database: commcarehq_synclogs
   pgmain1:
     - database: commcarehq
+      ratio: 0.01
       tables:
         - sms_messagingsubevent
         - sms_messagingevent
