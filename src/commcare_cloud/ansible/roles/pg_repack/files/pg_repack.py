@@ -75,7 +75,7 @@ def get_table_info(dbname, table_names=None):
                 tables[row.table_name] = row._asdict()
 
             if table_names:
-                cursor.execute(FILTERED_SIZE_QUERY, table_names)
+                cursor.execute(FILTERED_SIZE_QUERY, [table_names])
             else:
                 cursor.execute(SIZE_QUERY)
             for row in fetchall_as_namedtuple(cursor):
