@@ -94,7 +94,7 @@ class AnsibleVaultSecretsBackend(object):
                 print('incorrect password')
                 self._get_ansible_vault_password.reset_cache(self)
 
-    def get_vault_var(self, var):
+    def get_secret(self, var):
         path = var.split('.')
         context = self.get_vault_variables()
         for node in path:

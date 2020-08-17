@@ -75,7 +75,7 @@ class Terraform(CommandBase):
 
         if not args.skip_secrets and unknown_args and unknown_args[0] in ('plan', 'apply'):
             rds_password = (
-                environment.get_vault_var('secrets.POSTGRES_USERS.root.password')
+                environment.get_secret('secrets.POSTGRES_USERS.root.password')
                 if environment.terraform_config.rds_instances
                 else ''
             )

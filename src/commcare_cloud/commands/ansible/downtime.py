@@ -186,7 +186,7 @@ def initialize_datadog(environment):
     datadog_enabled = environment.public_vars.get('DATADOG_ENABLED', False)
     if datadog_enabled:
         datadog.initialize(
-            environment.get_vault_var('secrets.DATADOG_API_KEY'),
-            environment.get_vault_var('secrets.DATADOG_APP_KEY')
+            environment.get_secret('secrets.DATADOG_API_KEY'),
+            environment.get_secret('secrets.DATADOG_APP_KEY')
         )
         return True
