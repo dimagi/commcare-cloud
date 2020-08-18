@@ -307,11 +307,12 @@ def update_virtualenv(full_cluster=True):
     @roles(roles_to_use)
     @parallel
     def update():
-        def _update_virtualenv(virtualenv_current, virtualenv_root, filepath, action, kwargs):
-            # Optimization if we have current setup (i.e. not the first deploy)
-            if files.exists(virtualenv_current) and not files.exists(virtualenv_root):
-                _clone_virtual_env(virtualenv_current, virtualenv_root)
 
+        # Optimization if we have current setup (i.e. not the first deploy)
+        if files.exists(env.py3_virtualenv_current) and not files.exists(env.py3_virtualenv_root):
+            _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
+
+        def _update_virtualenv(virtualenv_root, filepath, action, kwargs):
             with cd(env.code_root):
                 cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
                     env.sudo_user, virtualenv_root)
@@ -329,7 +330,7 @@ def update_virtualenv(full_cluster=True):
         ]
         for filename, action, kwargs in requirements_files:
             _update_virtualenv(
-                env.py3_virtualenv_current, env.py3_virtualenv_root,
+                env.py3_virtualenv_root,
                 posixpath.join(env.code_root, 'requirements', filename),
                 action, kwargs
             )
@@ -337,7 +338,7 @@ def update_virtualenv(full_cluster=True):
         for repo in env.ccc_environment.meta_config.git_repositories:
             if repo.requirements_path:
                 _update_virtualenv(
-                    env.py3_virtualenv_current, env.py3_virtualenv_root,
+                    env.py3_virtualenv_root,
                     posixpath.join(env.code_root, repo.relative_dest, repo.requirements_path),
                     "install", {}
                 )
