@@ -21,6 +21,11 @@ class AnsibleVaultSecretsBackend(object):
         self.record_to_datadog = record_to_datadog
         self.should_send_vault_loaded_event = True
 
+    def prompt_user_input(self):
+        # call this for its side-effect: asking the user for the vault password
+        # (and thus not requiring that thereafter)
+        self._get_ansible_vault_password_and_record()
+
     @staticmethod
     def get_extra_ansible_args():
         return (
@@ -29,7 +34,7 @@ class AnsibleVaultSecretsBackend(object):
 
     def get_extra_ansible_env_vars(self):
         return {
-            'ANSIBLE_VAULT_PASSWORD': self.get_ansible_vault_password(),
+            'ANSIBLE_VAULT_PASSWORD': self._get_ansible_vault_password_and_record(),
         }
 
     @staticmethod
@@ -53,7 +58,7 @@ class AnsibleVaultSecretsBackend(object):
             generated_variables[ansible_var_name] = "{{{{ {} }}}}".format(expression)
         return generated_variables
 
-    def get_ansible_vault_password(self):
+    def _get_ansible_vault_password_and_record(self):
         """Get ansible vault password
 
         This method has a side-effect: it records a Datadog event with

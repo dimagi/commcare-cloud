@@ -82,9 +82,6 @@ class Environment(object):
                 )
             )
 
-    def get_ansible_vault_password(self):
-        return self.secrets_backend.get_ansible_vault_password()
-
     def get_secret(self, var):
         return self.secrets_backend.get_secret(var)
 
