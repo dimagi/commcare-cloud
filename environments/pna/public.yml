@@ -25,8 +25,8 @@ couch_s3: True
 aws_region: 'us-east-1'
 
 couchdb2:
-  username: "{{ localsettings_private.COUCH_USERNAME }}"
-  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+  username: "{{ COUCH_USERNAME }}"
+  password: "{{ COUCH_PASSWORD }}"
 
 couchdb_cluster_settings:
   q: 8
@@ -39,8 +39,8 @@ couch_dbs:
     host: 127.0.0.1
     port: 25984
     name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    username: "{{ COUCH_USERNAME }}"
+    password: "{{ COUCH_PASSWORD }}"
     is_https: False
 
 server_email: commcare@commcare.pna.sn
@@ -83,9 +83,9 @@ localsettings:
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_HTTPS: False
-  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
   COUCH_SERVER_ROOT: "127.0.0.1"
-  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
+  COUCH_USERNAME: "{{ COUCH_USERNAME }}"
   COUCH_PORT: 5984
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   EMAIL_SMTP_HOST: 'localhost'

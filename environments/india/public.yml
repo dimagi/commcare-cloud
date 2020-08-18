@@ -1,6 +1,6 @@
 couchdb2:
-  username: "{{ localsettings_private.COUCH_USERNAME }}"
-  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+  username: "{{ COUCH_USERNAME }}"
+  password: "{{ COUCH_PASSWORD }}"
 
 DATADOG_ENABLED: True
 
@@ -53,8 +53,8 @@ couch_dbs:
     host: "{{ groups.couchdb2_proxy[0] }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    username: "{{ COUCH_USERNAME }}"
+    password: "{{ COUCH_PASSWORD }}"
     is_https: False
 
 couchdb_reduce_limit: False
@@ -105,8 +105,8 @@ localsettings:
   BANK_SWIFT_CODE: 'CTZIUS33'
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
-  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  COUCH_USERNAME: "{{ COUCH_USERNAME }}"
+  COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
@@ -134,7 +134,7 @@ localsettings:
   PILLOWTOP_MACHINE_ID: indiacloud
   RATE_LIMIT_SUBMISSIONS: yes
   SES_CONFIGURATION_SET: india-email-events
-  SNS_EMAIL_EVENT_SECRET: "{{ localsettings_private.SNS_EMAIL_EVENT_SECRET }}"
+  SNS_EMAIL_EVENT_SECRET: "{{ SNS_EMAIL_EVENT_SECRET }}"
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
@@ -142,7 +142,7 @@ localsettings:
   SAVED_EXPORT_ACCESS_CUTOFF: 180
   SMS_GATEWAY_URL: ''
   SMS_QUEUE_ENABLED: True
-  SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
+  SUMOLOGIC_URL: "{{ SUMOLOGIC_URL }}"
   SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
 #  STATIC_ROOT:
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"

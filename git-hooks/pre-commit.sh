@@ -6,7 +6,7 @@
 #
 # File should be .git/hooks/pre-commit and executable
 VAULT_FILE_INCLUDE_PATTERN='(/vault.yml|.*.vault|.*vault.*)$'
-VAULT_FILE_EXCLUDE_PATTERN='^tests|development'
+VAULT_FILE_EXCLUDE_PATTERN='^tests|development|^src/commcare_cloud/environment/secrets/backends/ansible_vault/|src/commcare_cloud/manage_commcare_cloud/list_vault_keys.py'
 REQUIRED='ANSIBLE_VAULT'
 
 EXIT_STATUS=0

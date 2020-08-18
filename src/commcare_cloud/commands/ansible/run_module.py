@@ -92,7 +92,7 @@ class RunAnsibleModule(CommandBase):
             )
 
         def run_check():
-            with environment.suppress_vault_loaded_event():
+            with environment.secrets_backend.suppress_vault_loaded_event():
                 return _run_ansible(args, '--check', *unknown_args)
 
         def run_apply():
@@ -132,14 +132,14 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
 
     ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
     if ask_vault_pass:
-        cmd_parts += ('--vault-password-file={}/echo_vault_password.sh'.format(ANSIBLE_DIR),)
+        cmd_parts += environment.secrets_backend.get_extra_ansible_args()
     cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
     print_command(cmd)
     env_vars = ansible_context.env_vars
     if ask_vault_pass:
-        env_vars['ANSIBLE_VAULT_PASSWORD'] = environment.get_ansible_vault_password()
+        env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
     return subprocess.call(cmd_parts, env=env_vars)
 
 
@@ -206,7 +206,7 @@ class SendDatadogEvent(CommandBase):
     def run(self, args, unknown_args):
         args.module = 'datadog_event'
         environment = get_environment(args.env_name)
-        vault = environment.get_vault_variables()['secrets']
+        vault = environment.get_secret('secrets')
         tags = "environment:{}".format(args.env_name)
         args.module_args = "api_key={api_key} app_key={app_key} " \
             "tags='{tags}' text='{text}' title='{title}' aggregation_key={agg}".format(

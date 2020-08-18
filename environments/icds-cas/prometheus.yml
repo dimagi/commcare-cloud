@@ -31,8 +31,8 @@ grafana_security:
 grafana_version: 7.1.1
 grafana_smtp:
   host: "{{ localsettings.EMAIL_SMTP_HOST }}:{{ localsettings.EMAIL_SMTP_PORT }}"
-  username: "{{ localsettings_private.EMAIL_LOGIN }}"
-  password: "{{ localsettings_private.EMAIL_PASSWORD }}"
+  username: "{{ EMAIL_LOGIN }}"
+  password: "{{ EMAIL_PASSWORD }}"
   skip_verify: true
   from_address: grafana-noreply@icds-cas.gov.in
 node_exporter_enabled_collectors: ['systemd','processes']

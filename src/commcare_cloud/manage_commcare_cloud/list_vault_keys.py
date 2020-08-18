@@ -29,9 +29,9 @@ class ListVaultKeys(CommandBase):
         for env in envs:
             print('[{} (blank to skip)] '.format(env), end='')
             environment = get_environment(env)
-            passwd = environment._get_ansible_vault_password()
+            passwd = environment.secrets_backend._get_ansible_vault_password()
             if passwd:
-                var_keys[env] = dict(get_flat_list_of_keys(environment.get_vault_variables()))
+                var_keys[env] = dict(get_flat_list_of_keys(environment.secrets_backend.get_vault_variables()))
 
         headers = ["key"] + [env for env in envs if env in var_keys]
 
