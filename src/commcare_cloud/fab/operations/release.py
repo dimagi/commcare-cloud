@@ -352,8 +352,8 @@ def create_code_dir(full_cluster=True):
     @parallel
     def create():
         sudo('mkdir -p {}'.format(env.code_root))
-        sudo('chown cchq:cchq {}'.format(env.code_root))
-        sudo('chmod 0755 {}'.format(env.code_root))
+        sudo('chown cchq:cchq {}'.format(env.code_root), user="root")
+        sudo('chmod 0755 {}'.format(env.code_root), user="root")
 
     return create
 
