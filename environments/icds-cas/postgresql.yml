@@ -2,7 +2,14 @@ DEFAULT_POSTGRESQL_HOST: pgmain1
 
 pg_repack:
   pgsynclog1:
-    - commcarehq_synclogs
+    - database: commcarehq_synclogs
+  pgmain1:
+    - database: commcarehq
+      ratio: 0.01
+      tables:
+        - sms_messagingsubevent
+        - sms_messagingevent
+        - userreports_invaliducrdata
 
 REPORTING_DATABASES:
   ucr: ucr

@@ -11,6 +11,7 @@ from collections import defaultdict, namedtuple
 from datetime import datetime
 
 import psycopg2
+from psycopg2.extras import LoggingConnection
 
 import logging
 
@@ -21,15 +22,18 @@ GB = 1024**3
 TUPLE_QUERY = """
     SELECT relname AS table_name, n_live_tup AS live_tup, n_dead_tup AS dead_tup
     FROM pg_stat_user_tables where schemaname = 'public'
-    """
+"""
+
+FILTERED_TUPLE_QUERY = "{} AND relname = ANY(%s)".format(TUPLE_QUERY)
 
 SIZE_QUERY = """
     SELECT relname AS table_name, pg_total_relation_size(c.oid) AS total_bytes
     FROM pg_class c
     LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
     WHERE relkind = 'r' AND nspname = 'public'
-    """
+"""
 
+FILTERED_SIZE_QUERY = "{} AND relname = ANY(%s)".format(SIZE_QUERY)
 
 def log_state(pre_table_infos, post_table_infos):
     run_date = datetime.utcnow()
@@ -59,16 +63,23 @@ def fetchall_as_namedtuple(cursor):
     return (Result(*row) for row in cursor)
 
 
-def get_table_info(dbname):
+def get_table_info(dbname, table_names=None):
     tables = defaultdict(dict)
-    connection = psycopg2.connect(dbname=dbname)
+    connection = psycopg2.connect(connection_factory=LoggingConnection, dbname=dbname)
+    connection.initialize(logger)
     try:
         with connection.cursor() as cursor:
-            cursor.execute(TUPLE_QUERY)
+            if table_names:
+                cursor.execute(FILTERED_TUPLE_QUERY, [table_names])
+            else:
+                cursor.execute(TUPLE_QUERY)
             for row in fetchall_as_namedtuple(cursor):
                 tables[row.table_name] = row._asdict()
 
-            cursor.execute(SIZE_QUERY)
+            if table_names:
+                cursor.execute(FILTERED_SIZE_QUERY, [table_names])
+            else:
+                cursor.execute(SIZE_QUERY)
             for row in fetchall_as_namedtuple(cursor):
                 tables[row.table_name].update(row._asdict())
     finally:
@@ -103,6 +114,7 @@ def setup_logging(verbosity):
 
 def main():
     parser = argparse.ArgumentParser('PG Repack Script')
+    parser.add_argument('--tables', nargs="*")
     parser.add_argument('--table-size-limit', dest='size_limit', type=int, default=10,
                         help='Only consider tables larger than this size (GB)')
     parser.add_argument('--dead-tup-ratio', dest='dead_tup_ratio_limit', type=float, default=0.1,
@@ -120,15 +132,15 @@ def main():
 
     size_limit_bytes = args.size_limit * GB
     tables = [
-        table for table in get_table_info(args.database)
+        table for table in get_table_info(args.database, args.tables)
         if table.should_repack(size_limit_bytes, args.dead_tup_ratio_limit)
     ]
+    table_names = [table.table_name for table in tables]
 
-    if not tables:
+    if not table_names:
         logger.info('No tables to pack')
         sys.exit(0)
 
-    table_names = [table.table_name for table in tables]
     logger.info('Preparing to repack: %s', table_names)
     for table in tables:
         logger.debug('\t%s', table)
