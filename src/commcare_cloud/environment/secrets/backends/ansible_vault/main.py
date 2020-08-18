@@ -132,7 +132,7 @@ class AnsibleVaultSecretsBackend(object):
             )
 
     @contextmanager
-    def suppress_vault_loaded_event(self):
+    def suppress_datadog_event(self):
         """Prevent "run event" from being sent to datadog
 
         This is only effective if `self.get_vault_variables()` has not

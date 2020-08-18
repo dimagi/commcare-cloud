@@ -140,7 +140,7 @@ def run_ansible_playbook(
         return subprocess.call(cmd_parts, env=env_vars)
 
     def run_check():
-        with environment.secrets_backend.suppress_vault_loaded_event():
+        with environment.secrets_backend.suppress_datadog_event():
             return ansible_playbook(environment, playbook, '--check', *unknown_args)
 
     def run_apply():
