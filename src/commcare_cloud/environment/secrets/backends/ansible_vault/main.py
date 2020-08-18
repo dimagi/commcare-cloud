@@ -27,6 +27,11 @@ class AnsibleVaultSecretsBackend(object):
             '--vault-password-file={}/echo_vault_password.sh'.format(ANSIBLE_DIR),
         )
 
+    def get_extra_ansible_env_vars(self):
+        return {
+            'ANSIBLE_VAULT_PASSWORD': self.get_ansible_vault_password(),
+        }
+
     @staticmethod
     def get_generated_variables():
         secret_specs = get_known_secret_specs()

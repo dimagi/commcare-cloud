@@ -139,7 +139,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     print_command(cmd)
     env_vars = ansible_context.env_vars
     if ask_vault_pass:
-        env_vars['ANSIBLE_VAULT_PASSWORD'] = environment.get_ansible_vault_password()
+        env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
     return subprocess.call(cmd_parts, env=env_vars)
 
 
