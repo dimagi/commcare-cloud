@@ -11,10 +11,11 @@ from memoized import memoized
 from six.moves import shlex_quote
 
 from commcare_cloud.environment.paths import ANSIBLE_DIR
+from commcare_cloud.environment.secrets.backends.abstract_backend import AbstractSecretsBackend
 from commcare_cloud.environment.secrets.secrets_schema import get_known_secret_specs
 
 
-class AnsibleVaultSecretsBackend(object):
+class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
     def __init__(self, name, vault_file_path, record_to_datadog=False):
         self.name = name
         self.vault_file_path = vault_file_path
