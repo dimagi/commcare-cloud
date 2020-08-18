@@ -85,9 +85,6 @@ class Environment(object):
     def get_secret(self, var):
         return self.secrets_backend.get_secret(var)
 
-    def record_vault_loaded_event(self, secrets):
-        return self.secrets_backend.record_vault_loaded_event(secrets)
-
     @memoized_property
     def secrets_backend(self):
         return AnsibleVaultSecretsBackend(

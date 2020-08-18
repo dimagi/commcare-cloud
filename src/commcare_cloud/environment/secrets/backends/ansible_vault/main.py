@@ -76,7 +76,7 @@ class AnsibleVaultSecretsBackend(object):
         """
         vault_vars = self._get_vault_variables()
         if "secrets" in vault_vars:
-            self.record_vault_loaded_event(vault_vars["secrets"])
+            self._record_vault_loaded_event(vault_vars["secrets"])
         return vault_vars
 
     @memoized
@@ -112,7 +112,7 @@ class AnsibleVaultSecretsBackend(object):
             context = context[node]
         return context
 
-    def record_vault_loaded_event(self, secrets):
+    def _record_vault_loaded_event(self, secrets):
         if (
             self.should_send_vault_loaded_event and
             secrets.get('DATADOG_API_KEY') and
