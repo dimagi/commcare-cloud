@@ -55,7 +55,8 @@ class AnsibleVaultSecretsBackend(object):
                     expression += ' | default({}, true)'.format(repr(secret_spec.default).strip('u'))
                 else:
                     expression += ' | default({})'.format(repr(secret_spec.default).strip('u'))
-            generated_variables[ansible_var_name] = "{{{{ {} }}}}".format(expression)
+            if expression != secret_spec.name:  # avoid redundant `x: {{ x }}`
+                generated_variables[ansible_var_name] = "{{{{ {} }}}}".format(expression)
         return generated_variables
 
     def _get_ansible_vault_password_and_record(self):
