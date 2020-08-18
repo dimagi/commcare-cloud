@@ -87,9 +87,15 @@ class Environment(object):
 
     @memoized_property
     def secrets_backend(self):
+        try:
+            datadog_enabled = self.public_vars.get('DATADOG_ENABLED')
+        except IOError:
+            # some test envs don't have public.yml
+            datadog_enabled = False
+
         return AnsibleVaultSecretsBackend(
             self.name, self.paths.vault_yml,
-            record_to_datadog=self.public_vars.get('DATADOG_ENABLED')
+            record_to_datadog=datadog_enabled,
         )
 
     def get_ansible_user_password(self):
