@@ -15,9 +15,10 @@ from commcare_cloud.environment.secrets.secrets_schema import get_known_secret_s
 
 
 class AnsibleVaultSecretsBackend(object):
-    def __init__(self, name, vault_file_path):
+    def __init__(self, name, vault_file_path, record_to_datadog=False):
         self.name = name
         self.vault_file_path = vault_file_path
+        self.record_to_datadog = record_to_datadog
         self.should_send_vault_loaded_event = True
 
     @staticmethod
@@ -105,7 +106,7 @@ class AnsibleVaultSecretsBackend(object):
         if (
             self.should_send_vault_loaded_event and
             secrets.get('DATADOG_API_KEY') and
-            self.public_vars.get('DATADOG_ENABLED')
+            self.record_to_datadog
         ):
             self.should_send_vault_loaded_event = False
             datadog.initialize(

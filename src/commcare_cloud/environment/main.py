@@ -93,7 +93,10 @@ class Environment(object):
 
     @memoized_property
     def secrets_backend(self):
-        return AnsibleVaultSecretsBackend(self.name, self.paths.vault_yml)
+        return AnsibleVaultSecretsBackend(
+            self.name, self.paths.vault_yml,
+            record_to_datadog=self.public_vars.get('DATADOG_ENABLED')
+        )
 
     def get_ansible_user_password(self):
         return self.get_secret('ansible_sudo_pass')
