@@ -65,11 +65,11 @@ class AnsibleVaultSecretsBackend(object):
         This method has a side-effect: it records a Datadog event with
         the commcare-cloud command that is currently being run.
         """
-        self.get_vault_variables()
+        self._get_vault_variables_and_record()
         return self._get_ansible_vault_password()
 
     @memoized
-    def get_vault_variables(self):
+    def _get_vault_variables_and_record(self):
         """Get ansible vault variables
 
         This method has a side-effect: it records a Datadog event with
@@ -108,7 +108,7 @@ class AnsibleVaultSecretsBackend(object):
 
     def get_secret(self, var):
         path = var.split('.')
-        context = self.get_vault_variables()
+        context = self._get_vault_variables_and_record()
         for node in path:
             context = context[node]
         return context
