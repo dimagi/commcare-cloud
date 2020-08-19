@@ -104,34 +104,17 @@
     - cron
     - backups
 
-- name: Create Daily Cron job (cleanup blobdb)
+- name: Create Hourly Cron job 
   become: yes
   cron:
-    name: "Backup blobdb daily"
-    job: "/usr/local/sbin/create_couchdb_backup.sh daily {{ couchdb_backup_days }}"
+    name: "Backup couchdb hourly"
+    job: "/usr/local/sbin/create_couchdb_backup.sh hourly {{ couchdb_backup_hours * 60 }}"
     minute: 0
-    hour: "{{ nadir_hour|default(0) }}"
+    hour: "*/{{ nadir_hour_frequency|default(3) }}"
     weekday: "1,2,3,4,5,6"
     user: couchdb
     cron_file: backup_couch
-    state: absent
-  when: backup_couch|bool
-  tags:
-    - cron
-    - backups
-
-- name: Create Weekly Cron job (cleanup blobdb)
-  become: yes
-  cron:
-    name: "Backup blobdb weekly"
-    job: "/usr/local/sbin/create_couchdb_backup.sh weekly {{ couchdb_backup_weeks * 7 }}"
-    minute: 0
-    hour: "{{ nadir_hour|default(0) }}"
-    weekday: 0
-    user: couchdb
-    cron_file: backup_couch
-    state: absent
-  when: backup_couch|bool
+    state: '{{ "present" if backup_couch and couch_backup_hourly else "absent"}}' 
   tags:
     - cron
     - backups
