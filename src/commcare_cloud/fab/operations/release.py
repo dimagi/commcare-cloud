@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
+
+import functools
 import os
 import posixpath
 from collections import namedtuple
@@ -194,7 +196,7 @@ def _update_code_from_previous_release(code_repo, subdir, git_env):
         code_current = os.path.join(code_current, subdir)
         code_root = os.path.join(code_root, subdir)
 
-    if files.exists(code_current):
+    if files.exists(code_current, use_sudo=True):
         with cd(code_current), shell_env(**git_env):
             sudo('git submodule foreach "git fetch origin"')
         _clone_code_from_local_path(code_current, code_root)
@@ -206,7 +208,7 @@ def _update_code_from_previous_release(code_repo, subdir, git_env):
 
 
 def _get_submodule_list(path):
-    if files.exists(path):
+    if files.exists(path, use_sudo=True):
         with cd(path):
             return sudo("git submodule | awk '{ print $2 }'").split()
     else:
@@ -298,7 +300,7 @@ def update_virtualenv(full_cluster=True):
         assert requirements
         r_flags = []
         for requirements_file in requirements:
-            if fail_if_absent or files.exists(requirements_file):
+            if fail_if_absent or files.exists(requirements_file, use_sudo=True):
                 r_flags.extend(['-r', requirements_file])
         if r_flags:
             r_flags = " ".join(r_flags)
@@ -308,8 +310,10 @@ def update_virtualenv(full_cluster=True):
     @parallel
     def update():
 
+        exists = functools.partial(files.exists, use_sudo=True)
+
         # Optimization if we have current setup (i.e. not the first deploy)
-        if files.exists(env.py3_virtualenv_current) and not files.exists(env.py3_virtualenv_root):
+        if exists(env.py3_virtualenv_current) and not exists(env.py3_virtualenv_root):
             _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
 
         def _update_virtualenv(virtualenv_root, filepath, action, kwargs):
@@ -401,8 +405,8 @@ def update_current(release=None):
     """
     Updates the current release to the one specified or to the code_root
     """
-    if ((not release and not files.exists(env.code_root)) or
-            (release and not files.exists(release))):
+    if ((not release and not files.exists(env.code_root, use_sudo=True)) or
+            (release and not files.exists(release, use_sudo=True))):
         utils.abort('About to update current to non-existant release')
 
     sudo('ln -nfs {} {}'.format(release or env.code_root, env.code_current))
@@ -434,11 +438,11 @@ def clean_releases(keep=3):
         for index, release in enumerate(reversed(releases)):
             if (release == current_release or release == os.path.basename(env.code_root)):
                 valid_releases += 1
-            elif (files.contains(RELEASE_RECORD, release)):
+            elif files.contains(RELEASE_RECORD, release, use_sudo=True):
                 valid_releases += 1
                 if valid_releases > keep:
                     to_remove.append(release)
-            elif files.exists(os.path.join(env.releases, release, KEEP_UNTIL_PREFIX + '*')):
+            elif files.exists(os.path.join(env.releases, release, KEEP_UNTIL_PREFIX + '*'), use_sudo=True):
                 # This has a KEEP_UNTIL file, so let's not delete until time is up
                 with cd(os.path.join(env.releases, release)):
                     filepath = sudo('find . -name {}*'.format(KEEP_UNTIL_PREFIX))
@@ -493,7 +497,7 @@ def copy_formplayer_properties():
 @parallel
 @roles(ROLES_ALL_SRC)
 def copy_components():
-    if files.exists('{}/bower_components'.format(env.code_current)):
+    if files.exists('{}/bower_components'.format(env.code_current), use_sudo=True):
         sudo('cp -r {}/bower_components {}/bower_components'.format(env.code_current, env.code_root))
     else:
         sudo('mkdir {}/bower_components'.format(env.code_root))
@@ -502,7 +506,7 @@ def copy_components():
 @parallel
 @roles(ROLES_ALL_SRC)
 def copy_node_modules():
-    if files.exists('{}/node_modules'.format(env.code_current)):
+    if files.exists('{}/node_modules'.format(env.code_current), use_sudo=True):
         sudo('cp -r {}/node_modules {}/node_modules'.format(env.code_current, env.code_root))
     else:
         sudo('mkdir {}/node_modules'.format(env.code_root))
@@ -511,7 +515,7 @@ def copy_node_modules():
 @parallel
 @roles(ROLES_STATIC)
 def copy_compressed_js_staticfiles():
-    if files.exists('{}/staticfiles/CACHE/js'.format(env.code_current)):
+    if files.exists('{}/staticfiles/CACHE/js'.format(env.code_current), use_sudo=True):
         sudo('mkdir -p {}/staticfiles/CACHE'.format(env.code_root))
         sudo('cp -r {}/staticfiles/CACHE/js {}/staticfiles/CACHE/js'.format(env.code_current, env.code_root))
 
@@ -534,7 +538,7 @@ def get_number_of_releases():
 @roles(ROLES_ALL_SRC)
 @parallel
 def ensure_release_exists(release):
-    return files.exists(release)
+    return files.exists(release, use_sudo=True)
 
 
 def mark_keep_until(full_cluster=True):

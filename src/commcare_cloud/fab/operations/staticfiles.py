@@ -41,7 +41,7 @@ def version_static():
 @roles(set(ROLES_STATIC + ROLES_DJANGO))
 def bower_install():
     yarn_lock = os.path.join(env.code_root, YARN_LOCK)
-    if files.exists(yarn_lock):
+    if files.exists(yarn_lock, use_sudo=True):
         return
 
     with cd(env.code_root):
@@ -61,7 +61,7 @@ def bower_install():
 @roles(ROLES_STATIC + ROLES_DJANGO + ROLES_CELERY)
 def npm_install():
     yarn_lock = os.path.join(env.code_root, YARN_LOCK)
-    if files.exists(yarn_lock):
+    if files.exists(yarn_lock, use_sudo=True):
         return
 
     with cd(env.code_root):
@@ -74,7 +74,7 @@ def npm_install():
 @roles(ROLES_STATIC + ROLES_DJANGO + ROLES_CELERY)
 def yarn_install():
     yarn_lock = os.path.join(env.code_root, YARN_LOCK)
-    if not files.exists(yarn_lock):
+    if not files.exists(yarn_lock, use_sudo=True):
         return
 
     with cd(env.code_root):
