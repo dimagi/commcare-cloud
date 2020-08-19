@@ -128,7 +128,22 @@ You cannot use ssh forwarding with `mosh`, so you cannot use mosh for ansible.
 ### Setting up a dev account on ansible control machine
 See main [README](../../../README.md) file.
 
-## Managing secrets with Vault
+## Secrets management
+
+Every environment will have to come with secrets that can't (or at least really shouldn't!) go into public.yml.
+You can see the full list of secrets you can define are listed in
+[`src/commcare_cloud/environment/secrets/secrets.yml`](https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/environment/secrets/secrets.yml).
+Secrets are managed through a "secrets backend" that gives commcare-cloud an interface through which to get
+the secrets values and to pass them to ansible. Currently the only available secrets backend is ansible-vault.
+
+**Instructions for commcare-cloud developers only**: if in the course of developing a new commcare-cloud feature
+you need to define a new secret, please add it to src/commcare_cloud/environment/secrets/secrets.yml.
+This will let the secrets management system know that that secret exists,
+and will let you give it a default value (usually `None`).
+This is especially important for maintaining compatibility between different secrets backends.
+
+
+### Managing secrets with Vault
 **IMPORTANT**: Install the git hooks to help ensure you never commit secrets into the repo: `./git-hooks/install.sh`
 
 All the secret variables and private data required for the different environments is included
