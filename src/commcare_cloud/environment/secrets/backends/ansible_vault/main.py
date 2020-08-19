@@ -11,10 +11,11 @@ from memoized import memoized
 from six.moves import shlex_quote
 
 from commcare_cloud.environment.paths import ANSIBLE_DIR
+from commcare_cloud.environment.secrets.backends.abstract_backend import AbstractSecretsBackend
 from commcare_cloud.environment.secrets.secrets_schema import get_known_secret_specs
 
 
-class AnsibleVaultSecretsBackend(object):
+class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
     def __init__(self, name, vault_file_path, record_to_datadog=False):
         self.name = name
         self.vault_file_path = vault_file_path
@@ -65,11 +66,11 @@ class AnsibleVaultSecretsBackend(object):
         This method has a side-effect: it records a Datadog event with
         the commcare-cloud command that is currently being run.
         """
-        self.get_vault_variables()
+        self._get_vault_variables_and_record()
         return self._get_ansible_vault_password()
 
     @memoized
-    def get_vault_variables(self):
+    def _get_vault_variables_and_record(self):
         """Get ansible vault variables
 
         This method has a side-effect: it records a Datadog event with
@@ -108,7 +109,7 @@ class AnsibleVaultSecretsBackend(object):
 
     def get_secret(self, var):
         path = var.split('.')
-        context = self.get_vault_variables()
+        context = self._get_vault_variables_and_record()
         for node in path:
             context = context[node]
         return context
@@ -132,7 +133,7 @@ class AnsibleVaultSecretsBackend(object):
             )
 
     @contextmanager
-    def suppress_vault_loaded_event(self):
+    def suppress_datadog_event(self):
         """Prevent "run event" from being sent to datadog
 
         This is only effective if `self.get_vault_variables()` has not

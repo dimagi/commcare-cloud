@@ -92,7 +92,7 @@ class RunAnsibleModule(CommandBase):
             )
 
         def run_check():
-            with environment.secrets_backend.suppress_vault_loaded_event():
+            with environment.secrets_backend.suppress_datadog_event():
                 return _run_ansible(args, '--check', *unknown_args)
 
         def run_apply():
