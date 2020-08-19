@@ -33,7 +33,6 @@ def version_static():
             '{venv}/bin/python manage.py {cmd}'.format(
                 venv=env.py3_virtualenv_root, cmd=cmd
             ),
-            user=env.sudo_user
         )
 
 
@@ -171,10 +170,7 @@ def update_manifest(save=False, soft=False, use_current_release=False):
         args = ' soft'
     cmd = 'update_manifest%s' % args
     with cd(withpath):
-        sudo(
-            '{venv}/bin/python manage.py {cmd}'.format(venv=venv, cmd=cmd),
-            user=env.sudo_user
-        )
+        sudo('{venv}/bin/python manage.py {cmd}'.format(venv=venv, cmd=cmd))
 
 
 @roles(ROLES_ALL_SRC)

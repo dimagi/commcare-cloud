@@ -304,7 +304,7 @@ def update_virtualenv(full_cluster=True):
                 r_flags.extend(['-r', requirements_file])
         if r_flags:
             r_flags = " ".join(r_flags)
-            sudo("{} pip uninstall {} --yes".format(cmd_prefix, r_flags), user=env.sudo_user)
+            sudo("{} pip uninstall {} --yes".format(cmd_prefix, r_flags))
 
     @roles(roles_to_use)
     @parallel
