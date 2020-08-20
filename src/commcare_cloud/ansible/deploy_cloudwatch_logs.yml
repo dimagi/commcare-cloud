@@ -1,0 +1,118 @@
+
+- name: formplayer
+  hosts: formplayer
+  become: true
+  roles:
+    - role: cloudwatch_logs
+      vars:
+        log_files_collect_list:
+          - file_path: "/home/cchq/www/{{ deploy_env }}/log/formplayer**.log"
+            log_group_name: "formplayer"
+            log_stream_name_suffix: ""
+      tags:
+        - formplayer
+        - cloudwatch_logs
+
+- name: webworkers
+  hosts: webworkers
+  become: true
+  roles:
+    - role: cloudwatch_logs
+      vars:
+        log_files_collect_list:
+          - file_path: "/home/cchq/www/{{ deploy_env }}/log/**.log"
+            log_group_name: "webworkers"
+            log_stream_name_suffix: ""
+      tags:
+        - webworkers
+        - cloudwatch_logs
+
+- name: elasticsearch
+  hosts: elasticsearch
+  become: true
+  roles:
+    - role: cloudwatch_logs
+      vars:
+        log_files_collect_list:
+          - file_path: "/opt/data/elasticsearch-2.4.6/logs/**es.log**"
+            log_group_name: "elasticsearch"
+            log_stream_name_suffix: "{{ deploy_env }}_es"
+          - file_path: "/opt/data/elasticsearch-2.4.6/logs/**es_index_search_slowlog.log**"
+            log_group_name: "elasticsearch"
+            log_stream_name_suffix: "{{ deploy_env }}_es_index_search_slowlog"
+      tags:
+        - elasticsearch
+        - cloudwatch_logs
+
+- name: couchdb2_proxy
+  hosts: couchdb2_proxy
+  become: true
+  roles:
+    - role: cloudwatch_logs
+      vars:
+        log_files_collect_list:
+          - file_path: "/home/cchq/www/{{ deploy_env }}/log/**-nginx_access.log**"
+            log_group_name: "couchdb2_proxy"
+            log_stream_name_suffix: "nginx_access"
+          - file_path: "/home/cchq/www/{{ deploy_env }}/log/**-nginx_error.log**"
+            log_group_name: "couchdb2_proxy"
+            log_stream_name_suffix: "nginx_error"
+      tags:
+        - couchdb2_proxy
+        - cloudwatch_logs
+
+- name: couchdb2
+  hosts: couchdb2
+  become: true
+  roles:
+    - role: cloudwatch_logs
+      vars:
+        log_files_collect_list:
+          - file_path: "/home/cchq/www/{{ deploy_env }}/log/couchdb.stderr**"
+            log_group_name: "couchdb"
+            log_stream_name_suffix: "stderr"
+      tags:
+        - couchdb2
+        - cloudwatch_logs
+
+- name: celery
+  hosts: celery
+  become: true
+  roles:
+    - role: cloudwatch_logs
+      vars:
+        log_files_collect_list:
+          - file_path: "/home/cchq/www/{{ deploy_env }}/log/**.log**"
+            log_group_name: "celery"
+            log_stream_name_suffix: ""
+      tags:
+        - celery
+        - cloudwatch_logs
+
+- name: pillowtop
+  hosts: pillowtop
+  become: true
+  roles:
+    - role: cloudwatch_logs
+      vars:
+        log_files_collect_list:
+          - file_path: "/home/cchq/www/{{ deploy_env }}/log/**.log**"
+            log_group_name: "pillowtop"
+            log_stream_name_suffix: ""
+      tags:
+        - pillowtop
+        - cloudwatch_logs
+
+- name: proxy
+  hosts: proxy
+  become: true
+  roles:
+    - role: cloudwatch_logs
+      vars:
+        log_files_collect_list:
+          - file_path: "/home/cchq/www/{{ deploy_env }}/log/**.log**"
+            log_group_name: "proxy"
+            log_stream_name_suffix: ""
+      tags:
+        - proxy
+        - cloudwatch_logs
