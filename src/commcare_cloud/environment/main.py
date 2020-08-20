@@ -285,8 +285,11 @@ class Environment(object):
         inventory = self.inventory_manager
         var_manager = self._ansible_inventory_variable_manager
         # use the ip address specified by ansible_host to ssh in if it's given
+        def get_ssh_host(host):
+            host_vars = var_manager.get_vars(host=host)
+            return host_vars.get('ec2_instance_id', host_vars.get('ansible_host', host.name))
         ssh_addr_map = {
-            host.name: var_manager.get_vars(host=host).get('ansible_host', host.name)
+            host.name: get_ssh_host(host)
             for host in inventory.get_hosts(ignore_limits=True)}
         # use the port specified by ansible_port to ssh in if it's given
         port_map = {host.name: var_manager.get_vars(host=host).get('ansible_port')

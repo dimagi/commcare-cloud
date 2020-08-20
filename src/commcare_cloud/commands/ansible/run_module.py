@@ -12,6 +12,7 @@ from commcare_cloud.commands.ansible.helpers import (
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.terraform.aws import aws_sign_in
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message, ANSIBLE_HELP_OPTIONS_PREFIX
 from commcare_cloud.environment.paths import ANSIBLE_DIR
@@ -132,6 +133,18 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
         )
         cmd_parts += environment.secrets_backend.get_extra_ansible_args()
         env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
+    env_vars.update({'AWS_PROFILE': aws_sign_in(environment)})
+
+    aws_ssh_common_args = \
+        "-o StrictHostKeyChecking=no -o ProxyCommand='sh -c \"" \
+        "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters portNumber=%p\"'"
+
+    cmd_parts += (
+        '-e', json.dumps({
+            'aws_ssh_common_args': aws_ssh_common_args,
+            'ansible_ssh_common_args': '{{ aws_ssh_common_args if ec2_instance_id is defined else omit }}',
+        }),
+    )
 
     cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args

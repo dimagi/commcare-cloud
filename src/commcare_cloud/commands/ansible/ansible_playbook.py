@@ -1,4 +1,5 @@
 # coding=utf-8
+import json
 import os
 import re
 import subprocess
@@ -16,6 +17,7 @@ from commcare_cloud.commands.ansible.helpers import (
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.terraform.aws import aws_sign_in
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message, ANSIBLE_HELP_OPTIONS_PREFIX
@@ -106,12 +108,22 @@ def run_ansible_playbook(
             playbook_path = playbook
         else:
             playbook_path = os.path.join(ANSIBLE_DIR, '{playbook}'.format(playbook=playbook))
+
+        # https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-getting-started-enable-ssh-connections.html
+        aws_ssh_common_args = \
+            "-o StrictHostKeyChecking=no -o ProxyCommand='sh -c \"" \
+            "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters portNumber=%p\"'"
         cmd_parts = (
             'ansible-playbook',
             playbook_path,
             '-i', environment.paths.inventory_source,
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
+            '-e', 'ansible_ssh_host={{ ec2_instance_id|default(inventory_hostname) }}',
+            '-e', json.dumps({
+                'aws_ssh_common_args': aws_ssh_common_args,
+                'ansible_ssh_common_args': '{{ aws_ssh_common_args if ec2_instance_id is defined else omit }}',
+            }),
             '--diff',
         ) + get_limit() + cmd_args
 
@@ -133,6 +145,7 @@ def run_ansible_playbook(
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
         env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
+        env_vars.update({'AWS_PROFILE': aws_sign_in(environment)})
         return subprocess.call(cmd_parts, env=env_vars)
 
     def run_check():

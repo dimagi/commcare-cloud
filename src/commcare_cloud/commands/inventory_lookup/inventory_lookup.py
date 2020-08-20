@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import os
 import subprocess
 import sys
 
@@ -9,6 +10,7 @@ from six.moves import shlex_quote
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.environment.main import get_environment
+from ..terraform.aws import aws_sign_in
 
 from ...colors import color_error
 from .getinventory import (get_monolith_address, get_server_address,
@@ -51,7 +53,7 @@ class Lookup(CommandBase):
 
 class _Ssh(Lookup):
 
-    def run(self, args, ssh_args):
+    def run(self, args, ssh_args, env_vars=None):
         if args.server == '-':
             args.server = 'django_manage[0]'
         address = self.lookup_server_address(args)
@@ -61,7 +63,7 @@ class _Ssh(Lookup):
         cmd_parts = [self.command, address] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
-        return subprocess.call(cmd_parts)
+        return subprocess.call(cmd_parts, env=env_vars or {})
 
 
 class Ssh(_Ssh):
@@ -81,10 +83,13 @@ class Ssh(_Ssh):
             # Always include ssh agent forwarding on control machine
             ssh_args = ['-A'] + ssh_args
         ukhf = "UserKnownHostsFile="
-        if not any(a.startswith((ukhf, "-o" + ukhf)) for a in ssh_args):
-            environment = get_environment(args.env_name)
-            ssh_args = ["-o", ukhf + environment.paths.known_hosts] + ssh_args
-        return super(Ssh, self).run(args, ssh_args)
+        # if not any(a.startswith((ukhf, "-o" + ukhf)) for a in ssh_args):
+        #     environment = get_environment(args.env_name)
+        #     ssh_args = ["-o", ukhf + environment.paths.known_hosts] + ssh_args
+        ssh_args += ['-o', 'StrictHostKeyChecking=no', '-o', 'ProxyCommand=sh -c "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters portNumber=%p"']
+        env_vars = os.environ.copy()
+        env_vars.update({'AWS_PROFILE': aws_sign_in(get_environment(args.env_name))})
+        return super(Ssh, self).run(args, ssh_args, env_vars=env_vars)
 
 
 class Mosh(_Ssh):
