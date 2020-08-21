@@ -40,7 +40,7 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
 
     @staticmethod
     def get_generated_variables():
-        return get_generated_variables()
+        return get_generated_variables(lambda secret_spec: secret_spec.get_legacy_reference())
 
     def _get_ansible_vault_password_and_record(self):
         """Get ansible vault password

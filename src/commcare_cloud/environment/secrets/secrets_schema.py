@@ -35,7 +35,19 @@ def get_known_secret_specs():
         return [SecretSpec.wrap(secret_spec) for secret_spec in yaml.safe_load(f)]
 
 
-def get_generated_variables():
+def get_generated_variables(expression_base_function):
+    """
+    expression_base_function is a function that takes in a secret_spec
+    and returns an expression for fetching the value
+
+    This function then returns something like
+    {'VAR_NAME': '{{ <base expression to fetch VAR_NAME> | default(None) }}', ...}
+    based on the parameters of each secret_spec.
+
+    expression_base_function is passed in like this because the base expression for fetching
+    the value of the secret in ansible tends to change with different secrets backends,
+    whereas the logic for the rest of each expression does not.
+    """
     secret_specs = get_known_secret_specs()
     secret_specs_by_name = {secret_spec.name: secret_spec for secret_spec in secret_specs}
     generated_variables = {}
@@ -44,7 +56,7 @@ def get_generated_variables():
             ansible_var_name = secret_spec.name.lower()
         else:
             ansible_var_name = secret_spec.name
-        expression = secret_spec.get_legacy_reference()
+        expression = expression_base_function(secret_spec)
         for var_name in secret_spec.fall_back_to_vars:
             expression += ' | default({})'.format(secret_specs_by_name[var_name].get_legacy_reference())
         if not secret_spec.required:
