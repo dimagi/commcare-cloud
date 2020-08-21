@@ -23,7 +23,6 @@ from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
 from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.schemas.terraform import TerraformConfig
 from commcare_cloud.environment.schemas.prometheus import PrometheusConfig
-from commcare_cloud.environment.secrets.backends.ansible_vault.main import AnsibleVaultSecretsBackend
 from commcare_cloud.environment.users import UsersConfig
 
 
@@ -87,7 +86,7 @@ class Environment(object):
 
     @memoized_property
     def secrets_backend(self):
-        return AnsibleVaultSecretsBackend.from_environment(self)
+        return self.meta_config.get_secrets_backend_class().from_environment(self)
 
     def get_ansible_user_password(self):
         return self.get_secret('ansible_sudo_pass')

@@ -11,6 +11,10 @@ class AbstractSecretsBackend(object):
     @abc.abstractmethod
     def from_environment(cls, environment):
         """Each secrets backend must be able to instantiate itself from an environment object"""
+
+    @abc.abstractproperty
+    def name(self):
+        """The value to use in meta.yml to reference this secrets backend"""
         pass
 
     @staticmethod

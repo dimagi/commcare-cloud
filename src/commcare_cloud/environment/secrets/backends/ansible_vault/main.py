@@ -16,6 +16,8 @@ from commcare_cloud.environment.secrets.secrets_schema import get_generated_vari
 
 
 class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
+    name = 'ansible-vault'
+
     def __init__(self, env_name, vault_file_path, record_to_datadog=False):
         self.env_name = env_name
         self.vault_file_path = vault_file_path
