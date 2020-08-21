@@ -12,7 +12,7 @@ from six.moves import shlex_quote
 
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from commcare_cloud.environment.secrets.backends.abstract_backend import AbstractSecretsBackend
-from commcare_cloud.environment.secrets.secrets_schema import get_known_secret_specs, get_generated_variables
+from commcare_cloud.environment.secrets.secrets_schema import get_generated_variables
 
 
 class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
