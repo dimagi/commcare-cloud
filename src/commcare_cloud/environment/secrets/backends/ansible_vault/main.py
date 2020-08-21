@@ -22,6 +22,19 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
         self.record_to_datadog = record_to_datadog
         self.should_send_vault_loaded_event = True
 
+    @classmethod
+    def from_environment(cls, environment):
+        try:
+            datadog_enabled = environment.public_vars.get('DATADOG_ENABLED')
+        except IOError:
+            # some test envs don't have public.yml
+            datadog_enabled = False
+
+        return cls(
+            environment.name, environment.paths.vault_yml,
+            record_to_datadog=datadog_enabled,
+        )
+
     def prompt_user_input(self):
         # call this for its side-effect: asking the user for the vault password
         # (and thus not requiring that thereafter)
