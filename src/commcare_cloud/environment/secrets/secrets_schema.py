@@ -61,7 +61,7 @@ def get_generated_variables(expression_base_function):
         ansible_var_name = secret_spec.get_ansible_var_name()
         expression = expression_base_function(secret_spec)
         for var_name in secret_spec.fall_back_to_vars:
-            expression += ' | default({})'.format(secret_specs_by_name[var_name].get_legacy_reference())
+            expression += ' | default({})'.format(secret_specs_by_name[var_name].get_ansible_var_name())
         if not secret_spec.required:
             if secret_spec.default_overrides_falsy_values:
                 expression += ' | default({}, true)'.format(repr(secret_spec.default).strip('u'))
