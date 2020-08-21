@@ -29,6 +29,12 @@ class SecretSpec(jsonobject.JsonObject):
         else:
             return self.name
 
+    def get_ansible_var_name(self):
+        if self.ansible_var_lowercase:
+            return self.name.lower()
+        else:
+            return self.name
+
 
 def get_known_secret_specs():
     with open(os.path.join(PACKAGE_BASE, 'environment', 'secrets', 'secrets.yml')) as f:
@@ -52,10 +58,7 @@ def get_generated_variables(expression_base_function):
     secret_specs_by_name = {secret_spec.name: secret_spec for secret_spec in secret_specs}
     generated_variables = {}
     for secret_spec in secret_specs:
-        if secret_spec.ansible_var_lowercase:
-            ansible_var_name = secret_spec.name.lower()
-        else:
-            ansible_var_name = secret_spec.name
+        ansible_var_name = secret_spec.get_ansible_var_name()
         expression = expression_base_function(secret_spec)
         for var_name in secret_spec.fall_back_to_vars:
             expression += ' | default({})'.format(secret_specs_by_name[var_name].get_legacy_reference())
