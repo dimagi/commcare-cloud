@@ -18,11 +18,12 @@ from commcare_cloud.environment.secrets.secrets_schema import get_generated_vari
 class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
     name = 'ansible-vault'
 
-    def __init__(self, env_name, vault_file_path, record_to_datadog=False):
+    def __init__(self, env_name, vault_file_path, record_to_datadog=False, ask_vault_pass=True):
         self.env_name = env_name
         self.vault_file_path = vault_file_path
         self.record_to_datadog = record_to_datadog
         self.should_send_vault_loaded_event = True
+        self.ask_vault_pass = ask_vault_pass
 
     @classmethod
     def from_environment(cls, environment):
@@ -32,9 +33,15 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
             # some test envs don't have public.yml
             datadog_enabled = False
 
+        try:
+            commcare_cloud_use_vault = environment.public_vars.get('commcare_cloud_use_vault', True)
+        except IOError:
+            commcare_cloud_use_vault = True
+
         return cls(
             environment.name, environment.paths.vault_yml,
             record_to_datadog=datadog_enabled,
+            ask_vault_pass=commcare_cloud_use_vault,
         )
 
     def prompt_user_input(self):
@@ -42,16 +49,21 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
         # (and thus not requiring that thereafter)
         self._get_ansible_vault_password_and_record()
 
-    @staticmethod
-    def get_extra_ansible_args():
-        return (
-            '--vault-password-file={}/echo_vault_password.sh'.format(ANSIBLE_DIR),
-        )
+    def get_extra_ansible_args(self):
+        extra_ansible_args = ('-e', '@{}'.format(self.vault_file_path))
+        if self.ask_vault_pass:
+            extra_ansible_args += (
+                '--vault-password-file={}/echo_vault_password.sh'.format(ANSIBLE_DIR),
+            )
+        return extra_ansible_args
 
     def get_extra_ansible_env_vars(self):
-        return {
-            'ANSIBLE_VAULT_PASSWORD': self._get_ansible_vault_password_and_record(),
-        }
+        if self.ask_vault_pass:
+            return {
+                'ANSIBLE_VAULT_PASSWORD': self._get_ansible_vault_password_and_record(),
+            }
+        else:
+            return {}
 
     @staticmethod
     def get_generated_variables():

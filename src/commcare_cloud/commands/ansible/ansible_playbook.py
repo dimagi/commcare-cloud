@@ -110,13 +110,13 @@ def run_ansible_playbook(
             'ansible-playbook',
             playbook_path,
             '-i', environment.paths.inventory_source,
-            '-e', '@{}'.format(environment.paths.vault_yml),
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
             '--diff',
         ) + get_limit() + cmd_args
 
         public_vars = environment.public_vars
+        env_vars = ansible_context.env_vars
         cmd_parts += get_user_arg(public_vars, unknown_args, use_factory_auth)
 
         if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
@@ -126,17 +126,13 @@ def run_ansible_playbook(
                              "by commcare-cloud and cannot be set manually."))
             return 2  # exit code
 
-        ask_vault_pass = public_vars.get('commcare_cloud_use_vault', True)
-        if ask_vault_pass:
-            cmd_parts += environment.secrets_backend.get_extra_ansible_args()
+        cmd_parts += environment.secrets_backend.get_extra_ansible_args()
 
         cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
         cmd_parts += cmd_parts_with_common_ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
-        env_vars = ansible_context.env_vars
-        if ask_vault_pass:
-            env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
+        env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
         return subprocess.call(cmd_parts, env=env_vars)
 
     def run_check():
