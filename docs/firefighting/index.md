@@ -805,6 +805,21 @@ Resources:
 
 Formplayer sometimes fails on deploy due to a startup task (which will hopefully be resolved soon).  The process may not fail, but formplayer will still return failure responses. You can try just restarting the process with `sudo supervisorctl restart all` (or specify the name if it's a monolithic environment)
 
+## Lock issues
+
+If there are many persistent lock timeouts that aren't going away by themselves,
+it can be a sign of a socket connection hanging and Java not having a timeout
+for the connection and just hanging.
+
+In that case, it can be helpful to kill all active socket connections:
+
+```
+cchq <env> run-shell-command formplayer 'ss src {{ inventory_hostname }} | grep ESTAB | grep tcp | grep ffff | grep https | cut -d: -f5 | cut -d\  -f1 | xargs -n1 ss -K sport = ' -b
+```
+
+It will kill more socket connections than necessary, but anecdotally this
+doesn't cause any user-facing problems.
+(I still wouldn't do it unless you have to to solve this issue though!)
 
 # Full Drives / Out of Disk Space
 
