@@ -35,6 +35,21 @@ class SecretSpec(jsonobject.JsonObject):
         else:
             return self.name
 
+    def get_ansible_expression(self, expression_base_function, other_secret_specs_by_name):
+        expression = expression_base_function(self)
+        for var_name in self.fall_back_to_vars:
+            expression += ' | default({})'.format(other_secret_specs_by_name[var_name].get_ansible_var_name())
+        if not self.required:
+            if self.default_overrides_falsy_values:
+                expression += ' | default({}, true)'.format(repr(self.default).strip('u'))
+            else:
+                expression += ' | default({})'.format(repr(self.default).strip('u'))
+        if expression == self.name:
+            # avoid redundant/cyclical `x: {{ x }}`
+            return None
+        else:
+            return "{{{{ {} }}}}".format(expression)
+
 
 def get_known_secret_specs():
     with open(os.path.join(PACKAGE_BASE, 'environment', 'secrets', 'secrets.yml')) as f:
@@ -58,15 +73,10 @@ def get_generated_variables(expression_base_function):
     secret_specs_by_name = {secret_spec.name: secret_spec for secret_spec in secret_specs}
     generated_variables = {}
     for secret_spec in secret_specs:
-        ansible_var_name = secret_spec.get_ansible_var_name()
-        expression = expression_base_function(secret_spec)
-        for var_name in secret_spec.fall_back_to_vars:
-            expression += ' | default({})'.format(secret_specs_by_name[var_name].get_ansible_var_name())
-        if not secret_spec.required:
-            if secret_spec.default_overrides_falsy_values:
-                expression += ' | default({}, true)'.format(repr(secret_spec.default).strip('u'))
-            else:
-                expression += ' | default({})'.format(repr(secret_spec.default).strip('u'))
-        if expression != secret_spec.name:  # avoid redundant `x: {{ x }}`
-            generated_variables[ansible_var_name] = "{{{{ {} }}}}".format(expression)
+        ansible_expression = secret_spec.get_ansible_expression(
+            expression_base_function=expression_base_function,
+            other_secret_specs_by_name=secret_specs_by_name,
+        )
+        if ansible_expression:
+            generated_variables[secret_spec.get_ansible_var_name()] = ansible_expression
     return generated_variables
