@@ -16,8 +16,8 @@ from commcare_cloud.environment.secrets.secrets_schema import get_generated_vari
 
 
 class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
-    def __init__(self, name, vault_file_path, record_to_datadog=False):
-        self.name = name
+    def __init__(self, env_name, vault_file_path, record_to_datadog=False):
+        self.env_name = env_name
         self.vault_file_path = vault_file_path
         self.record_to_datadog = record_to_datadog
         self.should_send_vault_loaded_event = True
@@ -80,7 +80,7 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
     def _get_ansible_vault_password(self):
         return (
             os.environ.get('ANSIBLE_VAULT_PASSWORD') or
-            getpass.getpass("Vault Password for '{}': ".format(self.name))
+            getpass.getpass("Vault Password for '{}': ".format(self.env_name))
         )
 
     @memoized
@@ -123,7 +123,7 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
             datadog.api.Event.create(
                 title="commcare-cloud vault loaded",
                 text=' '.join([shlex_quote(arg) for arg in sys.argv]),
-                tags=["environment:{}".format(self.name)],
+                tags=["environment:{}".format(self.env_name)],
                 source_type_name='ansible',
             )
 
