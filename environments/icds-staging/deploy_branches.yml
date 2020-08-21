@@ -9,6 +9,7 @@ dimagi/commcare-hq:
   - sk/remove-icdsI  # SK Aug 3
   - rn_hotfix_for_staging_angular_upgrade_deps
   - bmb/SAAS-11163
+  - mk/validate-file-extensions # MK Aug 21
   submodules: {}
 
 dimagi/commcare-icds:
