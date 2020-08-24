@@ -22,3 +22,5 @@ dimagi/commcare-icds:
   - rn_QA_mpr_report_1
   - adding-awc-site-code
   - cr/alive_status_fix
+  - updating-release-apks # Sai branch
+  - location_restriction_MPR_AST # Rohit N
