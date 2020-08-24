@@ -16,7 +16,6 @@ dimagi/commcare-icds:
   trunk: master
   name: icds-autostaging
   branches:
-  - rn_apply_location_restrictions_to_MPR_ASR
   - sp/angularjs-migration
   - orangejenny-patch-1
   - rn_QA_mpr_report_1
