@@ -811,15 +811,16 @@ If there are many persistent lock timeouts that aren't going away by themselves,
 it can be a sign of a socket connection hanging and Java not having a timeout
 for the connection and just hanging.
 
-In that case, it can be helpful to kill all active socket connections:
+In that case, it can be helpful to kill the offending socket connections. The following command queries for socket connections
+that look like the ones that would be hanging and kills them:
 
 ```
 cchq <env> run-shell-command formplayer 'ss src {{ inventory_hostname }} | grep ESTAB | grep tcp | grep ffff | grep https | cut -d: -f5 | cut -d\  -f1 | xargs -n1 ss -K sport = ' -b
 ```
 
-It will kill more socket connections than necessary, but anecdotally this
-doesn't cause any user-facing problems.
-(I still wouldn't do it unless you have to to solve this issue though!)
+Because it's filtered, it won't kill _all_ socket connections, but it will kill more socket connections than strictly necessary,
+since it is difficult to determine which specific connections are the problematic ones. But anecdotally this
+doesn't cause any user-facing problems. (I still wouldn't do it unless you have to to solve this issue though!)
 
 # Full Drives / Out of Disk Space
 
