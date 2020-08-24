@@ -10,6 +10,7 @@ dimagi/commcare-hq:
   - rn_hotfix_for_staging_angular_upgrade_deps
   - bmb/SAAS-11163
   - mk/validate-file-extensions # MK Aug 21
+  - revert-28331-revert-28323-mk/add-captcha # MK Aug 24
   submodules: {}
 
 dimagi/commcare-icds:
