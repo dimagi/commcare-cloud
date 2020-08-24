@@ -25,3 +25,4 @@ dimagi/commcare-icds:
   - updating-release-apks # Sai branch
   - location_restriction_MPR_AST # Rohit N
   - sp/fix-reassignment-message
+  - sb/fix-icds-1735
