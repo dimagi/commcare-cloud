@@ -17,6 +17,9 @@ class AwsSecretsBackend(AbstractSecretsBackend):
         return get_generated_variables(
             lambda secret_spec: "lookup('aws_secret', '{}/{}')".format(self.secret_name_prefix, secret_spec.name))
 
+    def get_extra_ansible_env_vars(self):
+        return {'AWS_REGION': self.environment.terraform_config.region}
+
     def get_secret(self, var):
         # Will implement this shortly
         raise NotImplementedError
