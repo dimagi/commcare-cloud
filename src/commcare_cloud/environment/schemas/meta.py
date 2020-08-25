@@ -5,6 +5,8 @@ from github.MainClass import Github
 from memoized import memoized_property, memoized
 
 from commcare_cloud.environment.exceptions import EnvironmentException
+from commcare_cloud.environment.secrets.backends import all_secrets_backends_by_name
+from commcare_cloud.environment.secrets.backends.abstract_backend import AbstractSecretsBackend
 from commcare_cloud.fab.utils import get_github_credentials
 
 
@@ -60,3 +62,11 @@ class MetaConfig(jsonobject.JsonObject):
     bare_non_cchq_environment = jsonobject.BooleanProperty(default=False)
     git_repositories = jsonobject.ListProperty(GitRepository)
     deploy_keys = jsonobject.DictProperty(unicode)
+    secrets_backend = jsonobject.StringProperty(
+        choices=all_secrets_backends_by_name.keys(),
+        default='ansible-vault',
+    )
+
+    def get_secrets_backend_class(self):
+        # guaranteed to succeed because of the validation above on secrets_backend
+        return all_secrets_backends_by_name[self.secrets_backend]

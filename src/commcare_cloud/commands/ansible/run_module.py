@@ -116,30 +116,27 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     cmd_parts += get_user_arg(public_vars, extra_args, use_factory_auth=factory_auth)
     become = become or bool(become_user)
     become_user = become_user
-    include_vars = False
+    needs_secrets = False
+    env_vars = ansible_context.env_vars
+
     if become:
         cmd_parts += ('--become',)
-        include_vars = True
+        needs_secrets = True
         if become_user:
             cmd_parts += ('--become-user', become_user)
 
-    if include_vars:
+    if needs_secrets:
         cmd_parts += (
-            '-e', '@{}'.format(environment.paths.vault_yml),
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
         )
-
-    ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
-    if ask_vault_pass:
         cmd_parts += environment.secrets_backend.get_extra_ansible_args()
+        env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
+
     cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
     print_command(cmd)
-    env_vars = ansible_context.env_vars
-    if ask_vault_pass:
-        env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
     return subprocess.call(cmd_parts, env=env_vars)
 
 
