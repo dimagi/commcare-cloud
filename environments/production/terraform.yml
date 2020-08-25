@@ -180,7 +180,7 @@ servers:
 
 
   - server_name: "esmaster3-production"
-    server_instance_type: r5.large
+    server_instance_type: r5.xlarge
     network_tier: "db-private"
     az: "b"
     group: "elasticsearch"
@@ -188,7 +188,7 @@ servers:
     volume_size: 40
     volume_encrypted: no
   - server_name: "esmaster4-production"
-    server_instance_type: r5.large
+    server_instance_type: r5.xlarge
     network_tier: "db-private"
     az: "b"
     group: "elasticsearch"
@@ -196,7 +196,7 @@ servers:
     volume_size: 40
     volume_encrypted: no
   - server_name: "esmaster5-production"
-    server_instance_type: r5.large
+    server_instance_type: r5.xlarge
     network_tier: "db-private"
     az: "a"
     group: "elasticsearch"
