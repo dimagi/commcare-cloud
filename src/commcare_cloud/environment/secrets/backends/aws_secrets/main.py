@@ -24,10 +24,13 @@ class AwsSecretsBackend(AbstractSecretsBackend):
 
     def get_extra_ansible_env_vars(self):
         from commcare_cloud.commands.terraform.aws import aws_sign_in
-        return {
+        aws_profile = aws_sign_in(self.environment)
+        env_vars = {
             'AWS_REGION': self.environment.terraform_config.region,
-            'AWS_PROFILE': aws_sign_in(self.environment),
         }
+        if aws_profile:
+            env_vars.update({'AWS_PROFILE': aws_profile})
+        return env_vars
 
     def get_secret(self, var):
         from commcare_cloud.commands.terraform.aws import aws_sign_in
