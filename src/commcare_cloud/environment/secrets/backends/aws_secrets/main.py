@@ -23,7 +23,11 @@ class AwsSecretsBackend(AbstractSecretsBackend):
             lambda secret_spec: "lookup('aws_secret', '{}/{}')".format(self.secret_name_prefix, secret_spec.name))
 
     def get_extra_ansible_env_vars(self):
-        return {'AWS_REGION': self.environment.terraform_config.region}
+        from commcare_cloud.commands.terraform.aws import aws_sign_in
+        return {
+            'AWS_REGION': self.environment.terraform_config.region,
+            'AWS_PROFILE': aws_sign_in(self.environment),
+        }
 
     def get_secret(self, var):
         from commcare_cloud.commands.terraform.aws import aws_sign_in
