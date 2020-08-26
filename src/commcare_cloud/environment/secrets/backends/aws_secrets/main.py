@@ -1,3 +1,5 @@
+import boto3
+
 from commcare_cloud.environment.secrets.backends.abstract_backend import AbstractSecretsBackend
 from commcare_cloud.environment.secrets.secrets_schema import get_generated_variables
 
@@ -21,5 +23,13 @@ class AwsSecretsBackend(AbstractSecretsBackend):
         return {'AWS_REGION': self.environment.terraform_config.region}
 
     def get_secret(self, var):
-        # Will implement this shortly
+        from commcare_cloud.commands.terraform.aws import aws_sign_in
+        return (
+            boto3.session.Session(profile_name=aws_sign_in(self.environment)).client(
+                'secretsmanager', region_name=self.environment.terraform_config.region
+            )
+            .get_secret_value(SecretId='commcare-{}/{}'.format(self.environment.name, var))['SecretString']
+        )
+
+    def set_secret(self, var, value):
         raise NotImplementedError
