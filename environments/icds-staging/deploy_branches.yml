@@ -26,3 +26,5 @@ dimagi/commcare-icds:
   - sp/fix-reassignment-message
   - sb/fix-icds-1735
   - rn_hotfix_for_all_MPR_Changes
+  - sp/minor-ui-fixes
+  - sp/location-redirect-changes
