@@ -1,4 +1,5 @@
 import boto3
+from memoized import memoized_property
 
 from commcare_cloud.environment.secrets.backends.abstract_backend import AbstractSecretsBackend
 from commcare_cloud.environment.secrets.secrets_schema import get_generated_variables
@@ -32,4 +33,20 @@ class AwsSecretsBackend(AbstractSecretsBackend):
         )
 
     def set_secret(self, var, value):
-        raise NotImplementedError
+        try:
+            self._secrets_client.put_secret_value(
+                SecretId='commcare-{}/{}'.format(self.environment.name, var),
+                SecretString=value,
+            )
+        except self._secrets_client.exceptions.ResourceNotFoundException:
+            self._secrets_client.create_secret(
+                Name='commcare-{}/{}'.format(self.environment.name, var),
+                SecretString=value,
+            )
+
+    @memoized_property
+    def _secrets_client(self):
+        from commcare_cloud.commands.terraform.aws import aws_sign_in
+        return boto3.session.Session(profile_name=aws_sign_in(self.environment)).client(
+            'secretsmanager', region_name=self.environment.terraform_config.region
+        )
