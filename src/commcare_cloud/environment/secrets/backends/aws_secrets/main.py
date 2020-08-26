@@ -20,7 +20,7 @@ class AwsSecretsBackend(AbstractSecretsBackend):
 
     def get_generated_variables(self):
         return get_generated_variables(
-            lambda secret_spec: "lookup('aws_secret', '{}/{}')".format(self.secret_name_prefix, secret_spec.name))
+            lambda secret_spec: "lookup('aws_secret', '{}/{}', errors='ignore') | default('null', true) | from_json".format(self.secret_name_prefix, secret_spec.name))
 
     def get_extra_ansible_env_vars(self):
         from commcare_cloud.commands.terraform.aws import aws_sign_in
