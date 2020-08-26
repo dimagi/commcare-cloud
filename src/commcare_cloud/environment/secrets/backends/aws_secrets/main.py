@@ -1,3 +1,5 @@
+import json
+
 import boto3
 from memoized import memoized_property
 
@@ -25,7 +27,7 @@ class AwsSecretsBackend(AbstractSecretsBackend):
 
     def get_secret(self, var):
         from commcare_cloud.commands.terraform.aws import aws_sign_in
-        return (
+        return json.loads(
             boto3.session.Session(profile_name=aws_sign_in(self.environment)).client(
                 'secretsmanager', region_name=self.environment.terraform_config.region
             )
@@ -33,6 +35,7 @@ class AwsSecretsBackend(AbstractSecretsBackend):
         )
 
     def set_secret(self, var, value):
+        value = json.dumps(value)
         try:
             self._secrets_client.put_secret_value(
                 SecretId='commcare-{}/{}'.format(self.environment.name, var),
