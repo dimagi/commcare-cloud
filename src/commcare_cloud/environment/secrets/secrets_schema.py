@@ -2,6 +2,7 @@ import os
 
 import jsonobject
 import yaml
+from memoized import memoized
 
 from commcare_cloud.environment.paths import PACKAGE_BASE
 
@@ -56,6 +57,11 @@ def get_known_secret_specs():
         return [SecretSpec.wrap(secret_spec) for secret_spec in yaml.safe_load(f)]
 
 
+@memoized
+def get_known_secret_specs_by_name():
+    return {secret_spec.name: secret_spec for secret_spec in get_known_secret_specs()}
+
+
 def get_generated_variables(expression_base_function):
     """
     expression_base_function is a function that takes in a secret_spec
@@ -69,10 +75,9 @@ def get_generated_variables(expression_base_function):
     the value of the secret in ansible tends to change with different secrets backends,
     whereas the logic for the rest of each expression does not.
     """
-    secret_specs = get_known_secret_specs()
-    secret_specs_by_name = {secret_spec.name: secret_spec for secret_spec in secret_specs}
+    secret_specs_by_name = get_known_secret_specs_by_name()
     generated_variables = {}
-    for secret_spec in secret_specs:
+    for secret_spec in secret_specs_by_name.values():
         ansible_expression = secret_spec.get_ansible_expression(
             expression_base_function=expression_base_function,
             other_secret_specs_by_name=secret_specs_by_name,

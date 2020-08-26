@@ -12,7 +12,8 @@ from six.moves import shlex_quote
 
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from commcare_cloud.environment.secrets.backends.abstract_backend import AbstractSecretsBackend
-from commcare_cloud.environment.secrets.secrets_schema import get_generated_variables
+from commcare_cloud.environment.secrets.secrets_schema import get_generated_variables, \
+    get_known_secret_specs_by_name
 
 
 class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
@@ -119,6 +120,11 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
     def get_secret(self, var):
         path = var.split('.')
         context = self._get_vault_variables_and_record()
+        known_secret_specs_by_name = get_known_secret_specs_by_name()
+        if path[0] in known_secret_specs_by_name:
+            legacy_namespace = known_secret_specs_by_name[path[0]].legacy_namespace
+            if legacy_namespace in context and path[0] in context[legacy_namespace]:
+                path.insert(0, legacy_namespace)
         for node in path:
             context = context[node]
         return context
