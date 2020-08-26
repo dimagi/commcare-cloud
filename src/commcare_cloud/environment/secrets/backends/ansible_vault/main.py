@@ -129,6 +129,9 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
             context = context[node]
         return context
 
+    def set_secret(self, var, value):
+        raise NotImplementedError
+
     def _record_vault_loaded_event(self, secrets):
         if (
             self.should_send_vault_loaded_event and

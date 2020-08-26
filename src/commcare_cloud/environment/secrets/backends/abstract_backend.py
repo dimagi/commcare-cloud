@@ -57,6 +57,10 @@ class AbstractSecretsBackend(object):
     def get_secret(self, var):
         pass
 
+    @abc.abstractmethod
+    def set_secret(self, var, value):
+        pass
+
     @contextmanager
     def suppress_datadog_event(self):
         yield
