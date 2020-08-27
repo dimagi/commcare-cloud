@@ -203,12 +203,13 @@ class SendDatadogEvent(CommandBase):
     def run(self, args, unknown_args):
         args.module = 'datadog_event'
         environment = get_environment(args.env_name)
-        vault = environment.get_secret('secrets')
+        datadog_api_key = environment.get_secret('DATADOG_API_KEY')
+        datadog_app_key = environment.get_secret('DATADOG_APP_KEY')
         tags = "environment:{}".format(args.env_name)
         args.module_args = "api_key={api_key} app_key={app_key} " \
             "tags='{tags}' text='{text}' title='{title}' aggregation_key={agg}".format(
-                api_key=vault['DATADOG_API_KEY'],
-                app_key=vault['DATADOG_APP_KEY'],
+                api_key=datadog_api_key,
+                app_key=datadog_app_key,
                 tags=tags,
                 text=args.event_text,
                 title=args.event_title,
