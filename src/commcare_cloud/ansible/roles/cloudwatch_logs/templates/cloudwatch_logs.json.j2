@@ -7,8 +7,8 @@
                 {% for cfg in log_files_collect_list -%}
                 {
                     "file_path": "{{ cfg.file_path }}",
-                    "log_group_name": "{{ cfg.log_group_name }}",
-                    "log_stream_name": "{instance_id}-{local_hostname}-{{ cfg.log_stream_name_suffix }}"
+                    "log_group_name": "{{ deploy_env }}-{{ cfg.log_group_name_suffix }}",
+                    "log_stream_name": "{instance_id}-{local_hostname}{%- if 'log_stream_name_suffix' in cfg %}-{{ cfg.log_stream_name_suffix }}{% endif %}"
                 }
                 {%- if not loop.last %}, {% endif %}
                 {%- endfor %}
