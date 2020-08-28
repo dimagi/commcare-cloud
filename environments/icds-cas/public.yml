@@ -94,6 +94,9 @@ ssh_allow_password_users:
   - unixadmin
   - anilr 
   - ranjeet 
+  - Test1
+  - Test2
+  - Test3
 
 default_from_email: commcarehq-noreply@icds-cas.gov.in
 server_email: commcarehq-noreply@icds-cas.gov.in
