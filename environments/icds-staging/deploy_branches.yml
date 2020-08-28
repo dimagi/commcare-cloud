@@ -17,13 +17,11 @@ dimagi/commcare-icds:
   trunk: master
   name: icds-autostaging
   branches:
-  - sp/angularjs-migration
   - orangejenny-patch-1
   - adding-awc-site-code
   - cr/alive_status_fix
   - updating-release-apks # Sai branch
   - location_restriction_MPR_AST # Rohit N
-  - sp/fix-reassignment-message
   - sb/fix-icds-1735
   - rn_hotfix_for_all_MPR_Changes
   - sp/minor-ui-fixes
