@@ -29,3 +29,4 @@ dimagi/commcare-icds:
   - sp/minor-ui-fixes
   - sp/location-redirect-changes
   - rn_hotfix_thr_photos
+  - sb_fix_apply_btn
