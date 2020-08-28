@@ -43,6 +43,9 @@ ssh_allow_password_users:
   - unixadmin
   - anilr 
   - ranjeet 
+  - Test1
+  - Test2
+  - Test3
 
 lpar2rrd_agent_enabled: True
 lpar2rrd_master_address: 100.71.188.129
