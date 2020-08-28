@@ -561,7 +561,7 @@ def unlink_current():
     if not console.confirm(message, default=False):
         utils.abort('Deployment aborted.')
 
-    if files.exists(env.code_current):
+    if files.exists(env.code_current, use_sudo=True):
         sudo('unlink {}'.format(env.code_current))
 
 
