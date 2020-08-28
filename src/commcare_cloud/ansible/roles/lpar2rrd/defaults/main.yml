@@ -1,5 +1,5 @@
 lpar2rrd_agent_version: 6.15-0
-lpar2rrd_server_version: 6.15
+lpar2rrd_server_version: 6.20
 lpar2rrd_server_dir: "{{ encrypted_root }}/lpar2rrd-{{ lpar2rrd_server_version }}"
 perl_packages:
   - perl
