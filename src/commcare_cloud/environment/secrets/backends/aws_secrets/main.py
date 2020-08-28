@@ -37,7 +37,7 @@ class AwsSecretsBackend(AbstractSecretsBackend):
             env_vars.update({'OBJC_DISABLE_INITIALIZE_FORK_SAFETY': 'YES'})
         return env_vars
 
-    def get_secret(self, var):
+    def _get_secret(self, var):
         from commcare_cloud.commands.terraform.aws import aws_sign_in
         return json.loads(
             boto3.session.Session(profile_name=aws_sign_in(self.environment)).client(

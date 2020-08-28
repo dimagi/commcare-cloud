@@ -2,6 +2,7 @@ import abc
 from contextlib import contextmanager
 
 import six
+from commcare_cloud.environment.secrets.secrets_schema import get_known_secret_specs_by_name
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -53,8 +54,17 @@ class AbstractSecretsBackend(object):
         """
         pass
 
-    @abc.abstractmethod
     def get_secret(self, var):
+        path = var.split('.')
+        var_name = path[0]
+        sub_path = path[1:]
+        value = self._get_secret(var_name)
+        for node in sub_path:
+            value = value[node]
+        return value
+
+    @abc.abstractmethod
+    def _get_secret(self, var):
         pass
 
     @abc.abstractmethod
