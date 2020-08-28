@@ -1,5 +1,5 @@
 # Promethues,Alertmanager,grafana,exporter settings
-prometheus_version: 2.19.3
+prometheus_version: 2.20.1
 prometheus_db_dir: "{{ encrypted_root }}/prometheus"
 prometheus_storage_retention: "365d"
 prometheus_web_external_url: "http://0.0.0.0:9090/prometheus"
@@ -28,13 +28,16 @@ grafana_url: "https://cas.commcarehq.org/grafana/"
 grafana_security:
   admin_user: "{{ secrets.grafana_admin_user }}"
   admin_password: "{{ secrets.grafana_admin_password }}"
-grafana_version: 7.1.1
+grafana_version: 7.1.5
 grafana_smtp:
   host: "{{ localsettings.EMAIL_SMTP_HOST }}:{{ localsettings.EMAIL_SMTP_PORT }}"
   username: "{{ EMAIL_LOGIN }}"
   password: "{{ EMAIL_PASSWORD }}"
   skip_verify: true
   from_address: grafana-noreply@icds-cas.gov.in
+
+_node_exporter_system_group: "root"
+_node_exporter_system_user: "root"
 node_exporter_enabled_collectors: ['systemd','processes']
 couchdb_username: "{{ couchdb2.username }}"
 couchdb_password: "{{ couchdb2.password }}"
