@@ -198,8 +198,8 @@ def get_data_to_update(monitor, keys_to_update):
 def initialize_datadog(config):
     env = get_environment(config.env_with_datadog_auth)
     initialize(
-        api_key=env.get_secret('secrets.DATADOG_API_KEY'),
-        app_key=env.get_secret('secrets.DATADOG_APP_KEY')
+        api_key=env.get_secret('DATADOG_API_KEY'),
+        app_key=env.get_secret('DATADOG_APP_KEY')
     )
 
 

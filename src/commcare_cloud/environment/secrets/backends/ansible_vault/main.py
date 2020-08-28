@@ -12,53 +12,63 @@ from six.moves import shlex_quote
 
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from commcare_cloud.environment.secrets.backends.abstract_backend import AbstractSecretsBackend
-from commcare_cloud.environment.secrets.secrets_schema import get_known_secret_specs
+from commcare_cloud.environment.secrets.secrets_schema import get_generated_variables, \
+    get_known_secret_specs_by_name
 
 
 class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
-    def __init__(self, name, vault_file_path, record_to_datadog=False):
-        self.name = name
+    name = 'ansible-vault'
+
+    def __init__(self, env_name, vault_file_path, record_to_datadog=False, ask_vault_pass=True):
+        self.env_name = env_name
         self.vault_file_path = vault_file_path
         self.record_to_datadog = record_to_datadog
         self.should_send_vault_loaded_event = True
+        self.ask_vault_pass = ask_vault_pass
+
+    @classmethod
+    def from_environment(cls, environment):
+        try:
+            datadog_enabled = environment.public_vars.get('DATADOG_ENABLED')
+        except IOError:
+            # some test envs don't have public.yml
+            datadog_enabled = False
+
+        try:
+            commcare_cloud_use_vault = environment.public_vars.get('commcare_cloud_use_vault', True)
+        except IOError:
+            commcare_cloud_use_vault = True
+
+        return cls(
+            environment.name, environment.paths.vault_yml,
+            record_to_datadog=datadog_enabled,
+            ask_vault_pass=commcare_cloud_use_vault,
+        )
 
     def prompt_user_input(self):
         # call this for its side-effect: asking the user for the vault password
         # (and thus not requiring that thereafter)
         self._get_ansible_vault_password_and_record()
 
-    @staticmethod
-    def get_extra_ansible_args():
-        return (
-            '--vault-password-file={}/echo_vault_password.sh'.format(ANSIBLE_DIR),
-        )
+    def get_extra_ansible_args(self):
+        extra_ansible_args = ('-e', '@{}'.format(self.vault_file_path))
+        if self.ask_vault_pass:
+            extra_ansible_args += (
+                '--vault-password-file={}/echo_vault_password.sh'.format(ANSIBLE_DIR),
+            )
+        return extra_ansible_args
 
     def get_extra_ansible_env_vars(self):
-        return {
-            'ANSIBLE_VAULT_PASSWORD': self._get_ansible_vault_password_and_record(),
-        }
+        if self.ask_vault_pass:
+            return {
+                'ANSIBLE_VAULT_PASSWORD': self._get_ansible_vault_password_and_record(),
+            }
+        else:
+            return {}
 
     @staticmethod
     def get_generated_variables():
-        secret_specs = get_known_secret_specs()
-        secret_specs_by_name = {secret_spec.name: secret_spec for secret_spec in secret_specs}
-        generated_variables = {}
-        for secret_spec in secret_specs:
-            if secret_spec.ansible_var_lowercase:
-                ansible_var_name = secret_spec.name.lower()
-            else:
-                ansible_var_name = secret_spec.name
-            expression = secret_spec.get_legacy_reference()
-            for var_name in secret_spec.fall_back_to_vars:
-                expression += ' | default({})'.format(secret_specs_by_name[var_name].get_legacy_reference())
-            if not secret_spec.required:
-                if secret_spec.default_overrides_falsy_values:
-                    expression += ' | default({}, true)'.format(repr(secret_spec.default).strip('u'))
-                else:
-                    expression += ' | default({})'.format(repr(secret_spec.default).strip('u'))
-            if expression != secret_spec.name:  # avoid redundant `x: {{ x }}`
-                generated_variables[ansible_var_name] = "{{{{ {} }}}}".format(expression)
-        return generated_variables
+        return get_generated_variables(lambda secret_spec: secret_spec.get_legacy_reference())
 
     def _get_ansible_vault_password_and_record(self):
         """Get ansible vault password
@@ -85,7 +95,7 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
     def _get_ansible_vault_password(self):
         return (
             os.environ.get('ANSIBLE_VAULT_PASSWORD') or
-            getpass.getpass("Vault Password for '{}': ".format(self.name))
+            getpass.getpass("Vault Password for '{}': ".format(self.env_name))
         )
 
     @memoized
@@ -110,9 +120,17 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
     def get_secret(self, var):
         path = var.split('.')
         context = self._get_vault_variables_and_record()
+        known_secret_specs_by_name = get_known_secret_specs_by_name()
+        if path[0] in known_secret_specs_by_name:
+            legacy_namespace = known_secret_specs_by_name[path[0]].legacy_namespace
+            if legacy_namespace in context and path[0] in context[legacy_namespace]:
+                path.insert(0, legacy_namespace)
         for node in path:
             context = context[node]
         return context
+
+    def set_secret(self, var, value):
+        raise NotImplementedError
 
     def _record_vault_loaded_event(self, secrets):
         if (
@@ -128,7 +146,7 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
             datadog.api.Event.create(
                 title="commcare-cloud vault loaded",
                 text=' '.join([shlex_quote(arg) for arg in sys.argv]),
-                tags=["environment:{}".format(self.name)],
+                tags=["environment:{}".format(self.env_name)],
                 source_type_name='ansible',
             )
 

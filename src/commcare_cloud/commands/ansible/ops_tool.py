@@ -239,12 +239,12 @@ def get_couch_config(environment, nodes=None):
         control_node_ip=couch_nodes[0],
         control_node_port=15984,
         control_node_local_port=15986,
-        username=environment.get_secret('localsettings_private.COUCH_USERNAME'),
+        username=environment.get_secret('COUCH_USERNAME'),
         aliases={
             'couchdb@{}'.format(node): get_machine_alias(environment, node) for node in couch_nodes
         }
     )
-    config.set_password(environment.get_secret('localsettings_private.COUCH_PASSWORD'))
+    config.set_password(environment.get_secret('COUCH_PASSWORD'))
     return config
 
 

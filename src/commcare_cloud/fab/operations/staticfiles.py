@@ -37,45 +37,8 @@ def version_static():
 
 
 @parallel
-@roles(set(ROLES_STATIC + ROLES_DJANGO))
-def bower_install():
-    yarn_lock = os.path.join(env.code_root, YARN_LOCK)
-    if files.exists(yarn_lock, use_sudo=True):
-        return
-
-    with cd(env.code_root):
-        config = {
-            'interactive': 'false',
-        }
-        if env.http_proxy:
-            config.update({
-                    'proxy': "http://{}".format(env.http_proxy),
-                    'https-proxy': "http://{}".format(env.http_proxy)
-            })
-        bower_command('prune', production=True, config=config)
-        bower_command('update', production=True, config=config)
-
-
-@parallel
-@roles(ROLES_STATIC + ROLES_DJANGO + ROLES_CELERY)
-def npm_install():
-    yarn_lock = os.path.join(env.code_root, YARN_LOCK)
-    if files.exists(yarn_lock, use_sudo=True):
-        return
-
-    with cd(env.code_root):
-        sudo('npm prune --production')
-        sudo('npm install --production')
-        sudo('npm update --production')
-
-
-@parallel
 @roles(ROLES_STATIC + ROLES_DJANGO + ROLES_CELERY)
 def yarn_install():
-    yarn_lock = os.path.join(env.code_root, YARN_LOCK)
-    if not files.exists(yarn_lock, use_sudo=True):
-        return
-
     with cd(env.code_root):
         sudo('yarn install --production')
 

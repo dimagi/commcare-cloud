@@ -1,0 +1,20 @@
+# See docs/commcare-cloud/deploy-branches.md
+
+dimagi/commcare-hq:
+  trunk: master
+  name: icds-autostaging
+  deploy_env: icds-staging
+  branches:
+  - ap/restrict-unauthorized-users
+  - sk/remove-icdsI  # SK Aug 3
+  - rn_hotfix_for_staging_angular_upgrade_deps
+  - bmb/SAAS-11163
+  submodules: {}
+
+dimagi/commcare-icds:
+  trunk: master
+  name: icds-autostaging
+  branches:
+  - rn_apply_location_restrictions_to_MPR_ASR
+  - sp/angularjs-migration
+  - orangejenny-patch-1

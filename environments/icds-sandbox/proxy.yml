@@ -1,0 +1,7 @@
+SITE_HOST: 'icds-sandbox.commcarehq.org'
+NO_WWW_SITE_HOST: 'icds-sandbox.commcarehq.org'
+
+fake_ssl_cert: True
+# Nginx only accepts on cert, so cat the site cert and chain:
+# $ cat india.commcarehq.org.crt intermediate.crt > india.commcarehq.org.combined.crt
+letsencrypt_cchq_ssl: True

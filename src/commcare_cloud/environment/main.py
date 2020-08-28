@@ -23,7 +23,6 @@ from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
 from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.schemas.terraform import TerraformConfig
 from commcare_cloud.environment.schemas.prometheus import PrometheusConfig
-from commcare_cloud.environment.secrets.backends.ansible_vault.main import AnsibleVaultSecretsBackend
 from commcare_cloud.environment.users import UsersConfig
 
 
@@ -87,16 +86,7 @@ class Environment(object):
 
     @memoized_property
     def secrets_backend(self):
-        try:
-            datadog_enabled = self.public_vars.get('DATADOG_ENABLED')
-        except IOError:
-            # some test envs don't have public.yml
-            datadog_enabled = False
-
-        return AnsibleVaultSecretsBackend(
-            self.name, self.paths.vault_yml,
-            record_to_datadog=datadog_enabled,
-        )
+        return self.meta_config.get_secrets_backend_class().from_environment(self)
 
     def get_ansible_user_password(self):
         return self.get_secret('ansible_sudo_pass')
