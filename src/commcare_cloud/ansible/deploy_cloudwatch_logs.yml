@@ -66,7 +66,7 @@
     - role: cloudwatch_logs
       vars:
         log_files_collect_list:
-          - file_path: "/home/cchq/www/{{ deploy_env }}/log/couchdb.stderr*"
+          - file_path: "/usr/local/couchdb2/apache-couchdb-2.3.1/var/log/couchdb.stderr*"
             log_group_name_suffix: "couchdb2"
             log_stream_name_suffix: "stderr"
       tags:
@@ -110,4 +110,18 @@
             log_group_name_suffix: "proxy"
       tags:
         - proxy
+        - cloudwatch_logs
+
+
+- name: control
+  hosts: control
+  become: true
+  roles:
+    - role: cloudwatch_logs
+      vars:
+        log_files_collect_list:
+          - file_path: "/var/log/ansible.log*"
+            log_group_name_suffix: "control"
+      tags:
+        - control
         - cloudwatch_logs
