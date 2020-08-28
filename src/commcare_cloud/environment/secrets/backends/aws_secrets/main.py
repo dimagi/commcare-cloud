@@ -1,4 +1,5 @@
 import json
+import sys
 
 import boto3
 from memoized import memoized_property
@@ -30,6 +31,10 @@ class AwsSecretsBackend(AbstractSecretsBackend):
         }
         if aws_profile:
             env_vars.update({'AWS_PROFILE': aws_profile})
+        if sys.platform == 'darwin':
+            # Needed to get the ansible aws_secrets lookup plugin to work on MacOS
+            # More on the underlying ansible issue: https://github.com/ansible/ansible/issues/49207
+            env_vars.update({'OBJC_DISABLE_INITIALIZE_FORK_SAFETY': 'YES'})
         return env_vars
 
     def get_secret(self, var):
