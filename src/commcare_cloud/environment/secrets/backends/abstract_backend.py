@@ -2,7 +2,6 @@ import abc
 from contextlib import contextmanager
 
 import six
-from commcare_cloud.environment.secrets.secrets_schema import get_known_secret_specs_by_name
 
 
 @six.add_metaclass(abc.ABCMeta)
