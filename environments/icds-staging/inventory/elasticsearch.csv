@@ -1,6 +1,0 @@
-hostname,host_address,group 1,group 2,var: elasticsearch_node_zone,var: hostname,var: elasticsearch_node_name,var: elasticsearch_master,var: elasticsearch_data,var: rabbitmq_nodename
-es0,100.71.185.16,elasticsearch,rabbitmq,zone_vmware,MUMGCCWCDSTGESV00,es0,true,,rabbit@MUMGCCWCDSTGESV00
-es1,100.71.185.17,elasticsearch,rabbitmq,zone_vmware,MUMGCCWCDSTGESV01,es1,,,rabbit@MUMGCCWCDSTGESV01
-,,,,,,,
-group,var,val,type,,,
-elasticsearch,ansible_python_interpreter,/usr/bin/python3,S,,,,
