@@ -2,6 +2,7 @@ import json
 import sys
 
 import boto3
+from botocore.exceptions import ClientError
 from memoized import memoized_property
 
 from commcare_cloud.environment.secrets.backends.abstract_backend import AbstractSecretsBackend
@@ -39,12 +40,17 @@ class AwsSecretsBackend(AbstractSecretsBackend):
 
     def _get_secret(self, var):
         from commcare_cloud.commands.terraform.aws import aws_sign_in
-        return json.loads(
-            boto3.session.Session(profile_name=aws_sign_in(self.environment)).client(
-                'secretsmanager', region_name=self.environment.terraform_config.region
+        try:
+            return json.loads(
+                boto3.session.Session(profile_name=aws_sign_in(self.environment)).client(
+                    'secretsmanager', region_name=self.environment.terraform_config.region
+                )
+                .get_secret_value(SecretId='commcare-{}/{}'.format(self.environment.name, var))['SecretString']
             )
-            .get_secret_value(SecretId='commcare-{}/{}'.format(self.environment.name, var))['SecretString']
-        )
+        except ClientError as e:
+            if e.response['Error']['Code'] == 'ResourceNotFoundException':
+                return None
+            raise
 
     def set_secret(self, var, value):
         value = json.dumps(value)
@@ -53,11 +59,14 @@ class AwsSecretsBackend(AbstractSecretsBackend):
                 SecretId='commcare-{}/{}'.format(self.environment.name, var),
                 SecretString=value,
             )
-        except self._secrets_client.exceptions.ResourceNotFoundException:
-            self._secrets_client.create_secret(
-                Name='commcare-{}/{}'.format(self.environment.name, var),
-                SecretString=value,
-            )
+        except ClientError as e:
+            if e.response['Error']['Code'] == 'ResourceNotFoundException':
+                self._secrets_client.create_secret(
+                    Name='commcare-{}/{}'.format(self.environment.name, var),
+                    SecretString=value,
+                )
+            else:
+                raise
 
     @memoized_property
     def _secrets_client(self):
