@@ -30,3 +30,4 @@ dimagi/commcare-icds:
   - sw/ucr_changes
   - sb_fix_apply_btn_fpr
   - sb_awc_opened_change
+  - rn_hotfix_thr_final_before_deploy
