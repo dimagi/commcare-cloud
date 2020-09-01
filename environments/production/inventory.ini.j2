@@ -132,25 +132,14 @@ pillow1
 
 {{ __formplayer_a__ }}
 
-[formplayer_a_new:children]
-formplayer_a033
-formplayer_a034
-formplayer_a035
-formplayer_a036
-formplayer_a037
-formplayer_a038
-formplayer_a039
-formplayer_a040
+[formplayer:children]
+formplayer_a
 
-
-[formplayer_a:vars]
+[formplayer:vars]
 swap_size=8G
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 cchq_uid=1025
 cchq_gid=1026
-
-[formplayer:children]
-formplayer_a
 
 
 {{ __redis0__ }} swap_size=1G
