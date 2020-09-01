@@ -3,6 +3,7 @@ import sys
 
 import boto3
 from botocore.exceptions import ClientError
+from cryptography.fernet import Fernet
 from memoized import memoized_property
 
 from commcare_cloud.environment.secrets.backends.abstract_backend import AbstractSecretsBackend
@@ -29,6 +30,9 @@ class AwsSecretsBackend(AbstractSecretsBackend):
         aws_profile = aws_sign_in(self.environment)
         env_vars = {
             'AWS_REGION': self.environment.terraform_config.region,
+            # generate one-time use encryption key
+            # for caching the secrets of this run to a file
+            'AWS_SECRETS_CACHE_KEY': Fernet.generate_key()
         }
         if aws_profile:
             env_vars.update({'AWS_PROFILE': aws_profile})

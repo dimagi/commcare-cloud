@@ -1,7 +1,6 @@
 /commcare-cloud-bootstrap/specs
 !/commcare-cloud-bootstrap/specs/example*.yml
-.generated.yml
-.generated-terraform
+.generated*
 !tests/test_envs/*/.generated.yml
 tests/migration_config/plans/new_node/migration_build_env1_plan/
 tests/file_migration_data/.generated_data
