@@ -58,7 +58,7 @@ filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
     tags: nginx-error
 
-formplayer_purge_time_spec: '8d'
+formplayer_purge_time_spec: '5d'
 formplayer_sensitive_data_logging: true
 
 KSPLICE_ACTIVE: yes
