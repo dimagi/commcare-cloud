@@ -1053,3 +1053,9 @@ LOCAL_REPEATER_CLASSES = json.loads('{{ localsettings.LOCAL_REPEATER_CLASSES|to_
 {% if localsettings.COMMCARE_EXTENSIONS is defined %}
 COMMCARE_EXTENSIONS = json.loads('{{ localsettings.COMMCARE_EXTENSIONS|to_json }}')
 {% endif %}
+
+{% if localsettings.DEVICE_LOGS_ENABLED|default(True) %}
+NO_DEVICE_LOG_ENVS = []
+{% else %}
+NO_DEVICE_LOG_ENVS = [{{ env_monitoring_id|to_json }}]
+{% endif %}

@@ -404,6 +404,15 @@ servers:
     os: bionic
     count: 41
 
+  - server_name: "formplayer_b{i}-production"
+    server_instance_type: t3a.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 100
+    group: "formplayer"
+    os: ubuntu_pro_bionic
+    count: 1
+
   - server_name: "redis0-production"
     server_instance_type: r5.xlarge
     network_tier: "db-private"

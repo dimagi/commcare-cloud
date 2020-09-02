@@ -58,7 +58,7 @@ filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
     tags: nginx-error
 
-formplayer_purge_time_spec: '8d'
+formplayer_purge_time_spec: '5d'
 formplayer_sensitive_data_logging: true
 
 KSPLICE_ACTIVE: yes
@@ -129,6 +129,7 @@ localsettings:
   COUCH_REINDEX_SCHEDULE: {'timedelta': {'minutes': 20}}
   CUSTOM_SYNCLOGS_DB: "synclogs_2017-11-01"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
+  DEVICE_LOGS_ENABLED: no
   EULA_COMPLIANCE: True
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
