@@ -127,7 +127,7 @@ localsettings:
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: False
   SES_CONFIGURATION_SET: swiss-email-events
-  SNS_EMAIL_EVENT_SECRET: "{{ localsettings_private.SNS_EMAIL_EVENT_SECRET }}"
+  SNS_EMAIL_EVENT_SECRET: "{{ SNS_EMAIL_EVENT_SECRET }}"
 #  STATIC_ROOT:
 
 commcare_cloud_root_user: ubuntu
