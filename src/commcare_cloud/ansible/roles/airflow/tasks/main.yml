@@ -29,7 +29,7 @@
     recursive: yes
     accept_hostkey: yes
     update: yes
-    deploy_key: deploy_key.pem
+    deploy_key: deploy_key_airflow.pem
     is_private: true
   become: yes
   become_user: "{{ cchq_user }}"

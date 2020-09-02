@@ -10,7 +10,7 @@ from ..const import ROLES_AIRFLOW
 
 @roles(ROLES_AIRFLOW)
 def update_airflow():
-    deploy_key = env.ccc_environment.meta_config.deploy_keys.deploy_key.vault
+    deploy_key = 'deploy_key_airflow.pem'
     git_env = {"GIT_SSH_COMMAND": "ssh -i {} -o IdentitiesOnly=yes".format(
         os.path.join(env.home, ".ssh", deploy_key)
     )}
