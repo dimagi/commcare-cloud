@@ -11,3 +11,4 @@ git_repositories:
     is_private: true
 deploy_keys:
   deploy_key.vault: deploy_key.pem
+  deploy_key_airflow.vault: deploy_key_airflow.pem
