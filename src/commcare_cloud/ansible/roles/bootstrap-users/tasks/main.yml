@@ -51,6 +51,8 @@
   authorized_key: user="{{ item }}" state=present key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}" exclusive=yes
   with_items: '{{ dev_users.present }}'
   ignore_errors: "{{ ansible_check_mode }}"
+  tags:
+    - pubkey
 
 - name: Remove public key for cchq user  # todo: remove after applied to all envs
   become: yes

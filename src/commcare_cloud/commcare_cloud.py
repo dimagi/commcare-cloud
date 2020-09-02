@@ -28,7 +28,7 @@ from .argparse14 import ArgumentParser, RawTextHelpFormatter
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
     UpdateConfig, AfterReboot, BootstrapUsers, DeployStack,
-    UpdateUsers, UpdateSupervisorConfs,
+    UpdateUsers, UpdateUserPublicKey, UpdateSupervisorConfs,
 )
 from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping, SendDatadogEvent
@@ -69,6 +69,7 @@ COMMAND_GROUPS = OrderedDict([
         AfterReboot,
         BootstrapUsers,
         UpdateUsers,
+        UpdateUserPublicKey,
         UpdateSupervisorConfs,
         Fab,
         Deploy,
