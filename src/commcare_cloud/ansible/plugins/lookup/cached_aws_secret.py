@@ -14,7 +14,14 @@ RETURN = aws_secret.RETURN
 
 
 class LookupModule(aws_secret.LookupModule):
+    """
+    Adds commcare-cloud specific caching to aws_secret lookup plugin for big speedup
 
+    To cache even between forks of the same process/run, we use a one-time process-wide key
+    to encrypt values and write them to disk in files <env_dir>/.generated/.
+    After the run is over, the encryption key is lost to time and the files are useless
+    and indecipherable even by the person who ran it.
+    """
     def run(self, terms, variables, **kwargs):
         terms = tuple(terms)
         term, = terms
