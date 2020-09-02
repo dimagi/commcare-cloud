@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import cPickle
@@ -15,7 +16,10 @@ RETURN = aws_secret.RETURN
 
 class LookupModule(aws_secret.LookupModule):
     """
+    commcare-cloud's wrapper around aws_secret
+
     Adds commcare-cloud specific caching to aws_secret lookup plugin for big speedup
+    Also assumes the value is json and returns the string json-decoded unlike aws_secret.
 
     To cache even between forks of the same process/run, we use a one-time process-wide key
     to encrypt values and write them to disk in files <env_dir>/.generated/.
@@ -42,7 +46,7 @@ class LookupModule(aws_secret.LookupModule):
         if isinstance(value, Exception):
             raise value
         else:
-            return value
+            return [json.loads(item) for item in value]
 
     def get_cache(self, term, inventory_dir):
         try:
