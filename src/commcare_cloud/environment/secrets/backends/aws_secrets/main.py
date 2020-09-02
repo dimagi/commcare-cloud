@@ -21,6 +21,13 @@ class AwsSecretsBackend(AbstractSecretsBackend):
     def from_environment(cls, environment):
         return AwsSecretsBackend(secret_name_prefix='commcare-{}'.format(environment.name), environment=environment)
 
+    def prompt_user_input(self):
+        from commcare_cloud.commands.terraform.aws import aws_sign_in
+        # make sure this happens upfront and not lazily
+        # Often there will be no prompt at all, but the first time you run it in a while
+        # it'll trigger the AWS SSO process to refresh the temporary credentials
+        aws_sign_in(self.environment)
+
     def get_generated_variables(self):
         return get_generated_variables(
             lambda secret_spec: "lookup('cchq_aws_secret', '{}/{}', errors='ignore')".format(self.secret_name_prefix, secret_spec.name))
