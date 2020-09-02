@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,pillow-topic-assignments,openvpn-activate-user,deploy-stack,export-sentry-events,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,couchdb-cluster-info,deploy,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,secrets,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
+               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,pillow-topic-assignments,migrate-secrets,openvpn-activate-user,deploy-stack,export-sentry-events,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,couchdb-cluster-info,deploy,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,secrets,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
                ...
 ```
 
@@ -642,6 +642,20 @@ commcare-cloud <env> secrets {view,edit} secret_name
 ###### `{view,edit}`
 
 ###### `secret_name`
+
+---
+
+#### `migrate-secrets`
+
+Migrate secrets from one backend to another
+
+```
+commcare-cloud <env> migrate-secrets from_backend
+```
+
+##### Positional Arguments
+
+###### `from_backend`
 
 ---
 
