@@ -1,7 +1,6 @@
-import json
+import logging
 import os
 import cPickle
-import random
 import time
 
 from ansible.plugins.lookup import aws_secret
@@ -22,15 +21,15 @@ class LookupModule(aws_secret.LookupModule):
         value = self.get_cache(term, inventory_dir=variables['inventory_dir'])
         try:
             if value is Ellipsis:
-                print('Fetching', terms)
+                logging.debug('Fetching secret {}'.format(terms))
                 try:
                     value = super(LookupModule, self).run(terms, variables, **kwargs)
                 except Exception as e:
-                    print('Caching error: ', e)
+                    logging.debug('Caching error fetching secret: {}'.format(e))
                     value = e
                 self.set_cache(term, value, inventory_dir=variables['inventory_dir'])
         except Exception as e:
-            print('The error: ', e)
+            logging.warn('There was an error fetching or caching the secret: {}'.format(e))
             raise
 
         if isinstance(value, Exception):
@@ -56,7 +55,8 @@ class LookupModule(aws_secret.LookupModule):
             with open(self._secrets_cache_filename(term, inventory_dir=inventory_dir), 'wb') as f:
                 f.write(Fernet(self._encryption_key()).encrypt(cPickle.dumps(value)))
         except Exception as e:
-            print("it is ", e)
+            logging.warn('There was an error caching the secret {}'.format(e))
+            raise
 
     def _encryption_key(self):
         return os.environ['AWS_SECRETS_CACHE_KEY']
