@@ -272,6 +272,7 @@ localsettings:
     - custom.icds.data_management.urls
   DAYS_TO_KEEP_DEVICE_LOGS: 45
   DEPLOY_MACHINE_NAME: "{{ alt_hostname|default(ansible_hostname) }}"
+  DEVICE_LOGS_ENABLED: no
   EMAIL_SMTP_HOST: relay.sendermile.com
   EMAIL_SMTP_PORT: 26
   EMAIL_USE_TLS: yes
