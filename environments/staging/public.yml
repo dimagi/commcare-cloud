@@ -130,6 +130,11 @@ localsettings:
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   LOCAL_APPS:
     - {name: 'ddtrace.contrib.django', host: webworkers}
+  LOCAL_MIDDLEWARE:
+    - 'django.middleware.security.SecurityMiddleware'
+  SECURE_HSTS_SECONDS: 300
+  SILENCED_SYSTEM_CHECKS:
+    - 'security.W008'
   PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes
