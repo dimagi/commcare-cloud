@@ -71,8 +71,8 @@ lpar2rrd_agent_enabled: True
 lpar2rrd_master_address: 100.71.188.129
 
 #Sentry config
-sentry_dbuser: "{{ secrets.POSTGRES_USERS.commcare.username }}"
-sentry_dbpassword: "{{ secrets.POSTGRES_USERS.commcare.password }}"
+sentry_dbuser: "{{ postgres_users.commcare.username }}"
+sentry_dbpassword: "{{ postgres_users.commcare.password }}"
 sentry_database: 'sentrydb'
 sentry_url_prefix: "https://icds-sentry.commcarehq.org"
 sentry_system_secret_key: "{{ secrets.SENTRY_SYSTEM_SECRET_KEY }}"

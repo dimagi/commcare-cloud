@@ -13,8 +13,8 @@ rabbit_password: "{{ AMQP_PASSWORD }}"
 airflow_prometheus_database_host: "{{ postgresql_dbs.main.pgbouncer_host }}"
 airflow_prometheus_database_user: "{{ postgres_users.commcare.username }}"
 airflow_prometheus_database_password: "{{ postgres_users.commcare.password }}"
-pgbouncer_exporter_dbuser: "{{ secrets.POSTGRES_USERS.devreadonly.username }}"
-pgbouncer_exporter_dbpassword: "{{ secrets.POSTGRES_USERS.devreadonly.password }}"
+pgbouncer_exporter_dbuser: "{{ postgres_users.devreadonly.username }}"
+pgbouncer_exporter_dbpassword: "{{ postgres_users.devreadonly.password }}"
 celery_exporter_broker_url: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}"
 prometheus_http_probe_urls:
   - http://icds-staging.commcarehq.org/
