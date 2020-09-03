@@ -10,6 +10,17 @@
     - "{{ airflow_home }}"
     - "{{ airflow_code_dir }}"
 
+- name: add deploy keys
+  become: yes
+  copy:
+    src: "{{ env_files_dir }}/{{ item.key }}"
+    dest: "{{ cchq_home }}/.ssh/{{ item.value }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0600
+  loop: "{{ deploy_keys|dict2items }}"
+  when: deploy_keys is defined
+
 - name: Pull full Airflow source
   git:
     repo: "{{ airflow_repository }}"
@@ -18,6 +29,7 @@
     recursive: yes
     accept_hostkey: yes
     update: yes
+    key_file: "{{ cchq_home }}/.ssh/deploy_key_airflow.pem"
   become: yes
   become_user: "{{ cchq_user }}"
 

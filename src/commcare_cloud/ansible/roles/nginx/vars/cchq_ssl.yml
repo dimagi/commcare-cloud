@@ -32,6 +32,7 @@ nginx_sites:
    - "X-Forwarded-For $proxy_add_x_forwarded_for"
    - "X-Forwarded-Protocol  $scheme"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
+   add_header: X-XSS-Protection "1; mode=block"
    locations:
     - name: /
       balancer: "{{ deploy_env }}_commcare"
