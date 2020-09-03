@@ -1,6 +1,6 @@
 airflow_code_dir: "{{ airflow_home }}/pipes"
 airflow_dag_dir: "{{ airflow_home }}/dags"
 airflow_version: "master"
-airflow_repository: https://github.com/dimagi/pipes.git
+airflow_repository: git@github.com:dimagi/pipes.git
 airflow_dag_concurrency: 16
 airflow_parallelism: 32
