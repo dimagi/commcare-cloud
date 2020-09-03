@@ -1,8 +1,0 @@
-hostname,host_address,group 1,group 2,group 3,group 4,group 5,group 6,var: hostname
-web0,100.71.188.145,webworkers,celery,pillowtop,django_manage,,,MUMGCCWCDSTGWV00
-web1,100.71.188.146,webworkers,celery,pillowtop,shared_dir_host,airflow,airflow_scheduler,MUMGCCWCDSTGWV01
-,,,,,,
-group,var,val,type,,,
-webworkers,ansible_python_interpreter,/usr/bin/python3,S,,,
-celery,ansible_python_interpreter,/usr/bin/python3,S,,,
-pillowtop,ansible_python_interpreter,/usr/bin/python3,S,,,

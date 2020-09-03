@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,pillow-topic-assignments,migrate-secrets,openvpn-activate-user,deploy-stack,export-sentry-events,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,couchdb-cluster-info,deploy,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,secrets,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
+               {bootstrap-users,ansible-playbook,django-manage,update-user-key,aps,aws-sign-in,tmux,ap,validate-environment-settings,pillow-topic-assignments,migrate-secrets,openvpn-activate-user,deploy-stack,export-sentry-events,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,couchdb-cluster-info,deploy,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,secrets,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
                ...
 ```
 
@@ -918,6 +918,28 @@ commcare-cloud <env> update-users [--use-factory-auth]
 In steady state this command (and not `bootstrap-users`) should be used
 to keep machine user accounts, permissions, and login information
 up to date.
+
+##### Optional Arguments
+
+###### `--use-factory-auth`
+
+authenticate using the pem file (or prompt for root password if there is no pem file)
+
+---
+
+#### `update-user-key`
+
+Update a single user's public key (because update-users takes forever).
+
+```
+commcare-cloud <env> update-user-key [--use-factory-auth] username
+```
+
+##### Positional Arguments
+
+###### `username`
+
+username who owns the public key
 
 ##### Optional Arguments
 
