@@ -76,14 +76,14 @@ celery2
 # Amazon EC2
 pillow2
 
-{{ __formplayer1__ }} datavol_fstype=xfs
+{{ __formplayer3__ }}
 
-{{ __formplayer2__ }} datavol_fstype=xfs
+{{ __formplayer4__ }}
 
 [formplayer:children]
 # Amazon EC2
-formplayer1
-formplayer2
+formplayer3
+formplayer4
 
 [formplayer:vars]
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
