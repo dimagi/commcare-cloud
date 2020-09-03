@@ -10,7 +10,6 @@ from ..const import ROLES_AIRFLOW
 
 @roles(ROLES_AIRFLOW)
 def update_airflow():
-    sudo('echo $GIT_SSH_COMMAND')
     deploy_key = 'deploy_key_airflow.pem'
     git_env = {"GIT_SSH_COMMAND": "ssh -i {} -o IdentitiesOnly=yes".format(
         os.path.join(env.home, ".ssh", deploy_key)
