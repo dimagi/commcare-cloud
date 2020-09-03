@@ -63,7 +63,8 @@ class AwsSecretsBackend(AbstractSecretsBackend):
                 return None
             raise
 
-    def set_secret(self, var, value):
+    def _set_secret(self, var, value):
+
         value = json.dumps(value)
         try:
             self._secrets_client.put_secret_value(

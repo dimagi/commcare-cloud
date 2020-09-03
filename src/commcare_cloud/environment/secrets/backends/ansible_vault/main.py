@@ -126,7 +126,7 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
                 return context[legacy_namespace][var_name]
         return context[var_name]
 
-    def set_secret(self, var, value):
+    def _set_secret(self, var, value):
         raise NotImplementedError
 
     def _record_vault_loaded_event(self, secrets):
