@@ -29,7 +29,7 @@
     recursive: yes
     accept_hostkey: yes
     update: yes
-    key_file: deploy_key_airflow.pem
+    key_file: "{{ cchq_home }}/.ssh/deploy_key_airflow.pem"
   become: yes
   become_user: "{{ cchq_user }}"
 
