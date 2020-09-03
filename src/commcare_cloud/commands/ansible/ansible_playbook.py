@@ -334,6 +334,22 @@ class UpdateUsers(_AnsiblePlaybookAlias):
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
+class UpdateUserPublicKey(_AnsiblePlaybookAlias):
+    command = 'update-user-key'
+    help = "Update a single user's public key (because update-users takes forever)."
+    arguments = _AnsiblePlaybookAlias.arguments + (
+        Argument("username", help="username who owns the public key"),
+    )
+
+    def run(self, args, unknown_args):
+        args.playbook = 'deploy_stack.yml'
+        unknown_args += (
+            '--tags=pubkey',
+            '--extra-vars={{"dev_users": {{"present": [{}]}}}}'.format(args.username),
+        )
+        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+
+
 class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
     command = 'update-supervisor-confs'
     help = """
