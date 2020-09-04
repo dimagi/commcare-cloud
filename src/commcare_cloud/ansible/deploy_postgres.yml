@@ -51,6 +51,7 @@
         is_pg_standby: no
   tags:
     - remote_postgresql
+    - postgres_db_setup
 
 - name: PostgreSQL Backup
   hosts: postgresql:pg_backup

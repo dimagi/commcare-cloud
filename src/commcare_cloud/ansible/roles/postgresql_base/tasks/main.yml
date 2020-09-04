@@ -134,6 +134,7 @@
     postgresql_host: "{{ inventory_hostname }}"
   tags:
     - configure
+    - postgres_db_setup
 
 # restart / reload if necessary to make sure replication slot config updated
 - meta: flush_handlers
