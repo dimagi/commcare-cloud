@@ -53,31 +53,6 @@
   retries: 5
   delay: 20
 
-- name: Add user privs
-  become: yes
-  become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
-  vars:
-    ansible_ssh_pipelining: true
-  postgresql_privs:
-    db: postgres
-    state: present
-    type: "{{ item.1.type|default(omit) }}"
-    privs: "{{ item.1.privs|default(omit) }}"
-    objs: "{{ item.1.objs }}"
-    roles: "{{ item.0.username }}"
-    port: "{{ postgresql_port }}"
-    login_host: "{{ db_is_remote and postgresql_host or omit }}"
-    login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
-    login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
-  when: not is_pg_standby
-  with_subelements:
-    - "{{ postgres_users.values() }}"
-    - privs
-    - flags:
-      skip_missing: True
-  tags:
-    - postgres_users
-
 - name: Create PostgreSQL databases
   become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
   vars:
@@ -97,6 +72,30 @@
 
   with_items: "{{ postgresql_dbs.all }}"
   when: item.create and ((item.host == postgresql_host) or is_monolith|bool)
+
+- name: Add user privs
+  become: yes
+  become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
+  vars:
+    ansible_ssh_pipelining: true
+  postgresql_privs:
+    db: "{{ item.2.name }}"
+    state: present
+    type: "{{ item.1.type|default(omit) }}"
+    privs: "{{ item.1.privs|default(omit) }}"
+    objs: "{{ item.1.objs }}"
+    roles: "{{ item.0.username }}"
+    port: "{{ postgresql_port }}"
+    login_host: "{{ db_is_remote and postgresql_host or omit }}"
+    login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+    login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
+  when: not is_pg_standby and item.2.create and ((item.2.host == postgresql_host) or is_monolith|bool)
+  with_nested:
+    - "{{ postgres_users.values() | subelements('privs', skip_missing=True) }}"
+    - "{{ postgresql_dbs.all }}"
+  tags:
+    - postgres_users
+
 
 - name: Update PostgreSQL database config
   become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
