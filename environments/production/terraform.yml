@@ -402,7 +402,7 @@ servers:
     volume_size: 600
     group: "formplayer"
     os: bionic
-    count: 41
+    count: 36
 
   - server_name: "formplayer_b{i}-production"
     server_instance_type: t3a.2xlarge
