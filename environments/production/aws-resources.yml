@@ -131,6 +131,16 @@ formplayer_a040-production: 10.202.10.167
 formplayer_a040-production.instance_id: i-0f9a0669e827fba2a
 formplayer_b000-production: 10.202.10.90
 formplayer_b000-production.instance_id: i-0c9febdec3cdd571e
+formplayer_b001-production: 10.202.10.153
+formplayer_b001-production.instance_id: i-0f0e468c6ed8d6744
+formplayer_b002-production: 10.202.10.20
+formplayer_b002-production.instance_id: i-003e1bafc3879f9f9
+formplayer_b003-production: 10.202.10.228
+formplayer_b003-production.instance_id: i-05f155fd5fe0d688a
+formplayer_b004-production: 10.202.10.209
+formplayer_b004-production.instance_id: i-0c445819f50a1407b
+formplayer_b005-production: 10.202.10.240
+formplayer_b005-production.instance_id: i-0814112114ffaca60
 kafka1-production: 10.202.40.200
 kafka1-production.instance_id: i-0c8af5576e2c8e7a2
 pgbouncer3-production: 10.202.40.153
