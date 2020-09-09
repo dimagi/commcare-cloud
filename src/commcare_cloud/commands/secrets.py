@@ -2,7 +2,9 @@ import getpass
 
 import six
 import yaml
+from clint.textui import puts
 
+from commcare_cloud.colors import color_error
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.secrets.backends import all_secrets_backends_by_name
@@ -54,6 +56,13 @@ class MigrateSecrets(CommandBase):
         environment = get_environment(args.env_name)
         from_backend = all_secrets_backends_by_name[args.from_backend].from_environment(environment)
         to_backend = environment.secrets_backend
+        if from_backend.name == to_backend.name:
+            puts(color_error(
+                'Refusing to copy from {from_backend.name} to {to_backend.name}: backends must differ'
+                .format(from_backend=from_backend, to_backend=to_backend)
+            ))
+            exit(-1)
+
         print("Copying data from {from_backend.name} to {to_backend.name}:".format(
             from_backend=from_backend, to_backend=to_backend))
         for secret_spec in get_known_secret_specs():
