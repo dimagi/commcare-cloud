@@ -402,7 +402,7 @@ servers:
     volume_size: 600
     group: "formplayer"
     os: bionic
-    count: 41
+    count: 36
 
   - server_name: "formplayer_b{i}-production"
     server_instance_type: t3a.2xlarge
@@ -411,7 +411,7 @@ servers:
     volume_size: 100
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 1
+    count: 6
 
   - server_name: "redis0-production"
     server_instance_type: r5.xlarge
