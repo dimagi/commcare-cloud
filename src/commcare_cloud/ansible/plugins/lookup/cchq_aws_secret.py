@@ -13,6 +13,8 @@ __metaclass__ = type
 DOCUMENTATION = aws_secret.DOCUMENTATION
 RETURN = aws_secret.RETURN
 
+LOOKUP_IN_PROGRESS_ON_ANOTHER_FORK = b'FETCHING'
+
 
 class LookupModule(aws_secret.LookupModule):
     """
@@ -49,17 +51,26 @@ class LookupModule(aws_secret.LookupModule):
             return [json.loads(item) for item in value]
 
     def get_cache(self, term, inventory_dir):
-        try:
-            with open(self._secrets_cache_filename(term, inventory_dir=inventory_dir), 'rb') as f:
-                contents = f.read()
-                if contents == b'FETCHING':
-                    time.sleep(1)
-                    return self.get_cache(term, inventory_dir=inventory_dir)
-                return cPickle.loads(Fernet(self._encryption_key()).decrypt(contents))
-        except (IOError, InvalidToken, cPickle.UnpicklingError):
-            with open(self._secrets_cache_filename(term, inventory_dir=inventory_dir), 'wb') as f:
-                f.write(b'FETCHING')
-            return Ellipsis
+        while True:
+            # - If this fork is the first one to do the lookup, it'll meet an empty cache
+            # and claim it by writing the special value LOOKUP_IN_PROGRESS_ON_ANOTHER_FORK to it,
+            # and then write the result to the cache when it's done.
+            # - If this fork is not the first one to do the lookup, it'll either
+            #   - see LOOKUP_IN_PROGRESS_ON_ANOTHER_FORK in the cache and wait to try again and then eventually
+            #   - see a value in the cache and use that value
+            try:
+                with open(self._secrets_cache_filename(term, inventory_dir=inventory_dir), 'rb') as f:
+                    contents = f.read()
+                    if contents == LOOKUP_IN_PROGRESS_ON_ANOTHER_FORK:
+                        # If another fork is in the progress of looking this up
+                        # wait a short while and then try again from the top of the while True loop
+                        time.sleep(.100)
+                        continue
+                    return cPickle.loads(Fernet(self._encryption_key()).decrypt(contents))
+            except (IOError, InvalidToken, cPickle.UnpicklingError):
+                with open(self._secrets_cache_filename(term, inventory_dir=inventory_dir), 'wb') as f:
+                    f.write(LOOKUP_IN_PROGRESS_ON_ANOTHER_FORK)
+                return Ellipsis
 
     def set_cache(self, term, value, inventory_dir):
         try:
