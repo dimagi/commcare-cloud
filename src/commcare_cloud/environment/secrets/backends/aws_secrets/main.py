@@ -50,13 +50,10 @@ class AwsSecretsBackend(AbstractSecretsBackend):
         return env_vars
 
     def _get_secret(self, var):
-        from commcare_cloud.commands.terraform.aws import aws_sign_in
         try:
             return json.loads(
-                boto3.session.Session(profile_name=aws_sign_in(self.environment)).client(
-                    'secretsmanager', region_name=self.environment.terraform_config.region
-                )
-                .get_secret_value(SecretId='{}/{}'.format(self.secret_name_prefix, var))['SecretString']
+                self._secrets_client.get_secret_value(
+                    SecretId='{}/{}'.format(self.secret_name_prefix, var))['SecretString']
             )
         except ClientError as e:
             if e.response['Error']['Code'] == 'ResourceNotFoundException':
