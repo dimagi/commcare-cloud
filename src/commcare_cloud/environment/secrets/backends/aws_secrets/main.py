@@ -56,7 +56,7 @@ class AwsSecretsBackend(AbstractSecretsBackend):
                 boto3.session.Session(profile_name=aws_sign_in(self.environment)).client(
                     'secretsmanager', region_name=self.environment.terraform_config.region
                 )
-                .get_secret_value(SecretId='commcare-{}/{}'.format(self.environment.name, var))['SecretString']
+                .get_secret_value(SecretId='{}/{}'.format(self.secret_name_prefix, var))['SecretString']
             )
         except ClientError as e:
             if e.response['Error']['Code'] == 'ResourceNotFoundException':
@@ -68,13 +68,13 @@ class AwsSecretsBackend(AbstractSecretsBackend):
         value = json.dumps(value)
         try:
             self._secrets_client.put_secret_value(
-                SecretId='commcare-{}/{}'.format(self.environment.name, var),
+                SecretId='{}/{}'.format(self.secret_name_prefix, var),
                 SecretString=value,
             )
         except ClientError as e:
             if e.response['Error']['Code'] == 'ResourceNotFoundException':
                 self._secrets_client.create_secret(
-                    Name='commcare-{}/{}'.format(self.environment.name, var),
+                    Name='{}/{}'.format(self.secret_name_prefix, var),
                     SecretString=value,
                 )
             else:
