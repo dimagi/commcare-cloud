@@ -1,4 +1,5 @@
 dev_users:
   present:
   - schinthala
+  - pkasha
   absent: []
