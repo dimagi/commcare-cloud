@@ -28,7 +28,7 @@ host   all	all	{{ lookup('dig', host, wantlist=True)[0] }}/32	trust
 
 {% if inventory_hostname in groups.main_dbs.0 and inventory_hostname not in groups.pg_standby %}
 # For airflow exporter
-host   all	all	{{ groups.airflow.0 }}/32   md5
+host   airflow	all	{{ groups.airflow.0 }}/32   md5
 {% endif %}
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
