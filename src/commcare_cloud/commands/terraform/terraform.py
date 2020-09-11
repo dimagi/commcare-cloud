@@ -46,6 +46,11 @@ class Terraform(CommandBase):
     )
 
     def run(self, args, unknown_args):
+        if 'destroy' in unknown_args:
+            puts(color_error("Refusing to run a terraform command containing the argument 'destroy'."))
+            puts(color_error("It's simply not worth the risk."))
+            exit(-1)
+
         environment = get_environment(args.env_name)
         run_dir = environment.paths.get_env_file_path('.generated-terraform')
         modules_dir = os.path.join(TERRAFORM_DIR, 'modules')
