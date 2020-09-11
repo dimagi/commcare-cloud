@@ -29,7 +29,6 @@ class LookupModule(aws_secret.LookupModule):
     and indecipherable even by the person who ran it.
     """
     def run(self, terms, variables, **kwargs):
-        terms = tuple(terms)
         term, = terms
         value = self.get_cache(term, inventory_dir=variables['inventory_dir'])
         try:
