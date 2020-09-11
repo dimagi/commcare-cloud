@@ -50,13 +50,19 @@ class LookupModule(aws_secret.LookupModule):
             return [json.loads(item) for item in value]
 
     def get_cache(self, term, inventory_dir):
-        while True:
+        start_time = time.time()
+
+        def elapsed_seconds():
+            return time.time() - start_time
+
+        while elapsed_seconds() < 5.0:
             # - If this fork is the first one to do the lookup, it'll meet an empty cache
             # and claim it by writing the special value LOOKUP_IN_PROGRESS_ON_ANOTHER_FORK to it,
             # and then write the result to the cache when it's done.
             # - If this fork is not the first one to do the lookup, it'll either
             #   - see LOOKUP_IN_PROGRESS_ON_ANOTHER_FORK in the cache and wait to try again and then eventually
             #   - see a value in the cache and use that value
+            #   - or if it waits longer than 5 seconds, will fail hard
             try:
                 with open(self._secrets_cache_filename(term, inventory_dir=inventory_dir), 'rb') as f:
                     contents = f.read()
@@ -70,6 +76,11 @@ class LookupModule(aws_secret.LookupModule):
                 with open(self._secrets_cache_filename(term, inventory_dir=inventory_dir), 'wb') as f:
                     f.write(LOOKUP_IN_PROGRESS_ON_ANOTHER_FORK)
                 return Ellipsis
+
+        logging.error("Timed out waiting for thread to look up secret")
+        # Because of the error-swallowing that happens in the ansible calling context,
+        # the error message that we get from exiting makes much more sense and is easier to trace back.
+        exit(-1)
 
     def set_cache(self, term, value, inventory_dir):
         try:
