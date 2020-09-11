@@ -109,10 +109,10 @@
   vars:
     ansible_service_mgr: "systemd"
     postgres_exporter_datasource: "postgresql://postgres@:5432/postgres?host=/var/run/postgresql/&sslmode=disable"
-    postgres_exporter_flags: ['--auto-discover-databases']
+    postgres_exporter_flags: ['--auto-discover-databases','--extend.query-path="{{ postgres_exporter_home }}/queries.yml"']
   tasks:
     - import_role:
-        name: bdellegrazie.postgres_exporter
+        name: dimagi.commcare_prometheus.postgres_exporter
   tags: postgres_exporter
 
 - name: Prometheus Pgbouncer Exporter
@@ -138,6 +138,10 @@
   tasks:
     - import_role:
         name: dimagi.commcare_prometheus.statsd_exporter
+    - sysctl:
+        name: net.core.rmem_max
+        value: '26214400'
+        state: present
   tags: statsd_exporter
 
 - name: Prometheus Celery Exporter
