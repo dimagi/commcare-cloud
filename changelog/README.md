@@ -19,5 +19,5 @@ If the answer to either is yes, then please complete all of the following steps:
 - Run `make` to compile the corresponding docs
 - Commit and PR that
 - Dimagi-Internal documentation also exists at
-  https://confluence.dimagi.com/display/internal/Announcing+commcare-cloud+changes.
+  https://confluence.dimagi.com/display/internal/Announcing+changes+affecting+third+parties.
   Notably, the change should be announced on the forum.
