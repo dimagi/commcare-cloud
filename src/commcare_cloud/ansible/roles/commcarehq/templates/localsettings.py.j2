@@ -374,6 +374,14 @@ CELERY_FLOWER_URL = '{{ CELERY_FLOWER_URL }}'
 CELERY_TIMEZONE = '{{ localsettings.CELERY_TIMEZONE }}'
 {% endif %}
 
+{% if 'CAPTCHA_LENGTH' in localsettings and localsettings.CAPTCHA_LENGTH %}
+CAPTCHA_LENGTH = {{ localsettings.CAPTCHA_LENGTH }}
+{% endif %}
+
+{% if 'CAPTCHA_CHALLENGE_FUNCT' in localsettings and localsettings.CAPTCHA_CHALLENGE_FUNCT %}
+CAPTCHA_CHALLENGE_FUNCT = '{{ localsettings.CAPTCHA_CHALLENGE_FUNCT }}'
+{% endif %}
+
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
 MAPBOX_ACCESS_TOKEN = '{{ MAPBOX_ACCESS_TOKEN }}'
