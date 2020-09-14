@@ -53,12 +53,34 @@ class AbstractSecretsBackend(object):
         """
         pass
 
-    @abc.abstractmethod
     def get_secret(self, var):
+        path = var.split('.')
+        var_name = path[0]
+        sub_path = path[1:]
+        value = self._get_secret(var_name)
+        for node in sub_path:
+            value = value[node]
+        return value
+
+    def set_secret(self, var, value):
+        path = var.split('.')
+        var_name = path[0]
+        sub_path = path[1:]
+        if sub_path:
+            updated_value = context = self._get_secret(var_name)
+            for node in sub_path[:-1]:
+                context = context[node]
+            context[sub_path[-1]] = value
+            self._set_secret(var_name, updated_value)
+        else:
+            self._set_secret(var, value)
+
+    @abc.abstractmethod
+    def _get_secret(self, var):
         pass
 
     @abc.abstractmethod
-    def set_secret(self, var, value):
+    def _set_secret(self, var, value):
         pass
 
     @contextmanager

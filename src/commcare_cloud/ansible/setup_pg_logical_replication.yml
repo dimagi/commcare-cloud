@@ -144,7 +144,7 @@
       postgres
       postgresql_query:
         db: '{{ item.target_db_name }}'
-        query: "GRANT USAGE ON SCHEMA pglogical TO {{ secrets.POSTGRES_USERS.commcare }};"
+        query: "GRANT USAGE ON SCHEMA pglogical TO {{ postgres_users.commcare }};"
       loop: "{{ replications }}"
       when: item.target_host == inventory_hostname
 

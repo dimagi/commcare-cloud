@@ -117,19 +117,16 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
                 print('incorrect password')
                 self._get_ansible_vault_password.reset_cache(self)
 
-    def get_secret(self, var):
-        path = var.split('.')
+    def _get_secret(self, var_name):
         context = self._get_vault_variables_and_record()
         known_secret_specs_by_name = get_known_secret_specs_by_name()
-        if path[0] in known_secret_specs_by_name:
-            legacy_namespace = known_secret_specs_by_name[path[0]].legacy_namespace
-            if legacy_namespace in context and path[0] in context[legacy_namespace]:
-                path.insert(0, legacy_namespace)
-        for node in path:
-            context = context[node]
-        return context
+        if var_name in known_secret_specs_by_name:
+            legacy_namespace = known_secret_specs_by_name[var_name].legacy_namespace
+            if legacy_namespace in context and var_name in context[legacy_namespace]:
+                return context[legacy_namespace][var_name]
+        return context[var_name]
 
-    def set_secret(self, var, value):
+    def _set_secret(self, var, value):
         raise NotImplementedError
 
     def _record_vault_loaded_event(self, secrets):

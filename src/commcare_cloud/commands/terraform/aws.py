@@ -10,6 +10,7 @@ from datetime import datetime
 
 import boto3
 import jinja2
+import requests
 import six
 import yaml
 from clint.textui import puts
@@ -334,6 +335,9 @@ AWS_CLI_CACHE_DIR = os.path.expanduser('~/.aws/cli/cache/')
 
 @memoized
 def aws_sign_in(environment, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES, force_new=False):
+    if is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id):
+        return None
+
     _ensure_all_dirs(AWS_DOT_DIR)
     if environment.aws_config.credential_style == 'sso':
         for path in (AWS_SSO_CACHE_DIR, AWS_CLI_CACHE_DIR):
@@ -342,6 +346,18 @@ def aws_sign_in(environment, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES, 
     else:
         return _aws_sign_in_with_iam(environment.terraform_config.aws_profile, duration_minutes=duration_minutes,
                                      force_new=force_new)
+
+
+def is_ec2_instance_in_account(account_id):
+    try:
+        aws_instance_identity_doc = requests.get(
+            'http://169.254.169.254/latest/dynamic/instance-identity/document',
+            timeout=.100
+        ).json()
+    except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
+        return False
+
+    return aws_instance_identity_doc.get('accountId') == account_id
 
 
 @memoized

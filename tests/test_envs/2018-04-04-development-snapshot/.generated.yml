@@ -7,12 +7,12 @@ postgresql_dbs:
     host: 192.168.33.16
     name: commcarehq
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 192.168.33.16
     port: 6432
     query_stats: false
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id002
     create: true
     django_alias: ucr
@@ -20,12 +20,12 @@ postgresql_dbs:
     host: 192.168.33.16
     name: commcarehq_ucr
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 192.168.33.16
     port: 6432
     query_stats: false
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id003
     create: true
     django_alias: null
@@ -33,12 +33,12 @@ postgresql_dbs:
     host: 192.168.33.16
     name: formplayer
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 192.168.33.16
     port: 6432
     query_stats: false
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   by_host:
     192.168.33.16:
     - *id001
@@ -53,12 +53,12 @@ postgresql_dbs:
     host: 192.168.33.16
     name: formplayer
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 192.168.33.16
     port: 6432
     query_stats: false
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   main:
     create: true
     django_alias: default
@@ -66,12 +66,12 @@ postgresql_dbs:
     host: 192.168.33.16
     name: commcarehq
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 192.168.33.16
     port: 6432
     query_stats: false
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   standby: []
   synclogs: null
   ucr:
@@ -81,9 +81,9 @@ postgresql_dbs:
     host: 192.168.33.16
     name: commcarehq_ucr
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 192.168.33.16
     port: 6432
     query_stats: false
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
