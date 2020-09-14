@@ -29,6 +29,17 @@
   loop: "{{ deploy_keys|dict2items }}"
   when: deploy_keys is defined
 
+- name: Force GIT SSH to use port 443
+  become: yes
+  become_user: "{{ cchq_user }}"
+  blockinfile:
+    dest: "{{ cchq_home }}/.ssh/config"
+    create: yes
+    block: |
+      Host github.com
+        Hostname ssh.github.com
+        Port 443
+
 - name: create required directories
   become: yes
   file:
