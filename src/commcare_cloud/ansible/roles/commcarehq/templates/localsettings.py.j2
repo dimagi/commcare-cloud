@@ -375,7 +375,7 @@ CELERY_TIMEZONE = '{{ localsettings.CELERY_TIMEZONE }}'
 {% endif %}
 
 {% if 'CAPTCHA_LENGTH' in localsettings and localsettings.CAPTCHA_LENGTH %}
-CAPTCHA_LENGTH = '{{ localsettings.CAPTCHA_LENGTH }}'
+CAPTCHA_LENGTH = {{ localsettings.CAPTCHA_LENGTH }}
 {% endif %}
 
 {% if 'CAPTCHA_CHALLENGE_FUNCT' in localsettings and localsettings.CAPTCHA_CHALLENGE_FUNCT %}
