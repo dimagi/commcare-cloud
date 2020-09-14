@@ -29,6 +29,9 @@ class AwsSecretsBackend(AbstractSecretsBackend):
         aws_sign_in(self.environment)
 
     def get_generated_variables(self):
+        # cchq_aws_secrets (unlike the built-in aws_secrets) assumes json encoded values
+        # and json decodes them for the caller.
+        # It's less elegant than doing it outside, but simplifies the error handling.
         return get_generated_variables(
             lambda secret_spec: "lookup('cchq_aws_secret', '{}/{}', errors='ignore')".format(self.secret_name_prefix, secret_spec.name))
 

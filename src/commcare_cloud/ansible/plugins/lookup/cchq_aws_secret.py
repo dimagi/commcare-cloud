@@ -47,6 +47,9 @@ class LookupModule(aws_secret.LookupModule):
         if isinstance(value, Exception):
             raise value
         else:
+            # This line makes this plugin not a drop-in replacement for the built-in aws_secret plugin.
+            # Doing the json decoding here (and thus assuming that the secrets are all json encoded)
+            # is less elegant than doing it outside this plugin, but greatly simplified the error handling.
             return [json.loads(item) for item in value]
 
     def get_cache(self, term, inventory_dir):
