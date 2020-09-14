@@ -18,6 +18,7 @@ DimagiKeyStore
 *~
 /build
 /dist
+/.vscode
 couchdb@*_files
 **/fab/config.py
 **/migrations/*/migration_build_*/
