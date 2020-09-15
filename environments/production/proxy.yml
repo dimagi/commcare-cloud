@@ -1,7 +1,6 @@
 fake_ssl_cert: yes
 SITE_HOST: 'www.commcarehq.org'
 NO_WWW_SITE_HOST: 'commcarehq.org'
-COMMTRACK_SITE_HOST: 'commtrack.org'
 J2ME_SITE_HOST: 'j2mewww.commcarehq.org'
 # This sets production_commcare as the default endpoint for ssl connections
 primary_ssl_env: "production"
@@ -19,13 +18,7 @@ letsencrypt_cchq_ssl: True
 nginx_block_ips:
   - '180.191.158.205'
 
-# commtrack.org
-commtrack_nginx_combined_cert_value: "{{ ssl_secrets.certs.commtrack_org }}"
-commtrack_key_value: "{{ ssl_secrets.private_keys.commtrack_org }}"
-
 special_sites:
-  - commtrack_ssl
-  - commtrack_http
   - tableau
   - wiki
   - wiki_http

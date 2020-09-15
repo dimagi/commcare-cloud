@@ -25,10 +25,6 @@ class ProxyConfig(jsonobject.JsonObject):
 
     nginx_block_ips = jsonobject.ListProperty(str)
 
-    COMMTRACK_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
-    commtrack_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
-    commtrack_key_value = jsonobject.StringProperty(exclude_if_none=True)
-
     CAS_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
     cas_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
     cas_key_value = jsonobject.StringProperty(exclude_if_none=True)

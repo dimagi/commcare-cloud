@@ -108,7 +108,6 @@ AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 
 localsettings:
   ALLOWED_HOSTS:
-    - www.commtrack.org
     - testserver
     - proxytest.commcarehq.org
     - "{{ J2ME_SITE_HOST }}"
