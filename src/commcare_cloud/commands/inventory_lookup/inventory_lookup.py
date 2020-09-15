@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import os
 import subprocess
 import sys
 
@@ -81,9 +82,13 @@ class Ssh(_Ssh):
             # Always include ssh agent forwarding on control machine
             ssh_args = ['-A'] + ssh_args
         environment = get_environment(args.env_name)
-        default_ssh_options = [
-            ('UserKnownHostsFile', environment.paths.known_hosts)
-        ]
+        strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
+        default_ssh_options = []
+        if not strict_host_key_checking:
+            default_ssh_options.append(('StrictHostKeyChecking', 'no'))
+        known_hosts_filepath = environment.paths.known_hosts
+        if os.path.exists(known_hosts_filepath):
+            default_ssh_options.append(('UserKnownHostsFile', known_hosts_filepath))
         for option_name, default_option_value in default_ssh_options:
             if not any(a.startswith(('{}='.format(option_name), "-o{}=" + option_name)) for a in ssh_args):
                 ssh_args = ["-o", '{}={}'.format(option_name, default_option_value)] + ssh_args
