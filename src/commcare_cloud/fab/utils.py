@@ -142,37 +142,54 @@ class DeployMetadata(object):
         return DeployDiff(self.repo, self.last_commit_sha, self.deploy_ref)
 
 
-@memoized
-def _get_github_credentials():
+GITHUB_CREDENTIALS = None
+
+
+def _get_github_credentials(message, force=False):
+    global GITHUB_CREDENTIALS
+
+    if GITHUB_CREDENTIALS is not None:
+        if not force or GITHUB_CREDENTIALS[0]:
+            return GITHUB_CREDENTIALS
+
     try:
         from .config import GITHUB_APIKEY
     except ImportError:
         print(red("Github credentials not found!"))
-        print("This deploy script uses the Github API to display a summary of changes to be deployed.")
-        if env.tag_deploy_commits:
-            print("You're deploying an environment which uses release tags. "
-                  "Provide Github auth details to enable release tags.")
+        print(message)
         print((
             "You can add a config file to automate this step:\n"
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
         ).format(project_root=PROJECT_ROOT))
-        username = input('Github username (leave blank to skip): ') or None
+        username = input('Github username or token (leave blank to skip): ') or None
         password = getpass('Github password: ') if username else None
-        return (username, password)
+        GITHUB_CREDENTIALS = (username, password)
     else:
-        return (GITHUB_APIKEY, None)
+        GITHUB_CREDENTIALS = (GITHUB_APIKEY, None)
+    return GITHUB_CREDENTIALS
+
+
+def get_github_credentials(message=None, force=False):
+    if not message:
+        message = "This deploy script uses the Github API to display a summary of changes to be deployed."
+        if env.tag_deploy_commits:
+            message += (
+                "\nYou're deploying an environment which uses release tags. "
+                "Provide Github auth details to enable release tags."
+            )
+    return _get_github_credentials(message, force)
 
 
 @memoized
 def _get_github():
-    login_or_token, password = _get_github_credentials()
+    login_or_token, password = get_github_credentials()
     return Github(login_or_token=login_or_token, password=password)
 
 
 @memoized
 def _github_auth_provided():
-    return bool(_get_github_credentials()[0])
+    return bool(get_github_credentials()[0])
 
 
 def _get_checkpoint_filename():

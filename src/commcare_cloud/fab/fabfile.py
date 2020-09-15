@@ -36,6 +36,7 @@ from distutils.util import strtobool
 from getpass import getpass
 
 import pytz
+from github import GithubException
 
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
@@ -223,7 +224,7 @@ def env_common():
     _setup_path()
 
     all = servers['all']
-    staticfiles = servers.get('staticfiles', [servers['proxy'][0]])
+    staticfiles = servers.get('staticfiles', servers['proxy'])
     webworkers = servers['webworkers']
     django_manage = servers.get('django_manage', [webworkers[0]])
     postgresql = servers['postgresql']
@@ -237,10 +238,11 @@ def env_common():
 
     deploy = servers.get('deploy', servers['webworkers'])[:1]
 
-    if len(staticfiles) > 1:
+    if len(staticfiles) > 1 and not env.use_shared_dir_for_staticfiles:
         utils.abort(
             "There should be only one 'staticfiles' host. "
-            "Ensure that only one host is assigned to the 'staticfiles' group"
+            "Ensure that only one host is assigned to the 'staticfiles' group, "
+            "or enable use_shared_dir_for_staticfiles."
         )
 
     env.roledefs = {
@@ -254,6 +256,7 @@ def env_common():
         'django_pillowtop': pillowtop,
         'formplayer': formplayer,
         'staticfiles': staticfiles,
+        'staticfiles_primary': [staticfiles[0]],
         'lb': [],
         # having deploy here makes it so that
         # we don't get prompted for a host or run deploy too many times
@@ -405,6 +408,16 @@ def _setup_release(keep_days=0, full_cluster=True):
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
+    for repo in env.ccc_environment.meta_config.git_repositories:
+        try:
+            repo.deploy_ref  # noqa
+        except GithubException as e:
+            utils.abort(
+                "\nUnable to access Git repository. Please check your authentication credentials.\n"
+                "Error: {}\n"
+                "Repository: {}\n".format(e.data["message"], repo.url)
+            )
+
     if env.full_deploy:
         env.deploy_metadata.tag_setup_release()
     execute_with_timing(release.create_code_dir(full_cluster))
@@ -412,7 +425,9 @@ def _setup_release(keep_days=0, full_cluster=True):
     update_code = release.update_code(full_cluster)
     execute_with_timing(update_code, deploy_ref)
     for repo in env.ccc_environment.meta_config.git_repositories:
-        execute_with_timing(update_code, repo.version, repo.relative_dest, repo.url)
+        var_name = "{}_code_branch".format(repo.name)
+        repo_deploy_ref = repo.deploy_ref(getattr(env, var_name, None))
+        execute_with_timing(update_code, repo_deploy_ref, repo.relative_dest, repo.url, repo.deploy_key)
 
     execute_with_timing(release.update_virtualenv(full_cluster))
 
@@ -546,7 +561,7 @@ def unlink_current():
     if not console.confirm(message, default=False):
         utils.abort('Deployment aborted.')
 
-    if files.exists(env.code_current):
+    if files.exists(env.code_current, use_sudo=True):
         sudo('unlink {}'.format(env.code_current))
 
 
@@ -716,7 +731,6 @@ def silent_services_restart(use_current_release=False):
     """
     execute(db.set_in_progress_flag, use_current_release)
     if not env.is_monolith:
-        execute(supervisor.restart_formplayer_if_it_is_running_from_old_release_location)
         execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
 
@@ -785,8 +799,6 @@ ONLINE_DEPLOY_COMMANDS = [
     db.ensure_preindex_completion,
     db.ensure_checkpoints_safe,
     staticfiles.yarn_install,
-    staticfiles.bower_install,
-    staticfiles.npm_install,
     staticfiles.version_static,     # run after any new bower code has been installed
     staticfiles.collectstatic,
     staticfiles.compress,
@@ -794,7 +806,8 @@ ONLINE_DEPLOY_COMMANDS = [
     conditionally_stop_pillows_and_celery_during_migrate,
     db.create_kafka_topics,
     db.flip_es_aliases,
-    staticfiles.update_manifest,
+    staticfiles.pull_manifest,
+    staticfiles.pull_staticfiles_cache,
     release.clean_releases,
 ]
 
@@ -811,7 +824,7 @@ OFFLINE_DEPLOY_COMMANDS = [
     conditionally_stop_pillows_and_celery_during_migrate,
     db.create_kafka_topics,
     db.flip_es_aliases,
-    staticfiles.update_manifest,
+    staticfiles.pull_manifest,
     release.clean_releases,
 ]
 

@@ -1,0 +1,28 @@
+- name: Configure and start cloudwatch agent
+  block:
+  - name: Check if cloudwatch-agent-ctl exists
+    shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a status
+    become: yes
+    register: ctl_status
+
+  - name: Create cloudwatch logs config
+    template:
+      src: "cloudwatch_logs.json.j2"
+      dest: "/opt/aws/amazon-cloudwatch-agent/etc/cloudwatch_logs.json"
+      group: cwagent
+      owner: cwagent
+      mode: 0644
+    become: yes
+    register: cloudwatch_logs_conf
+
+  - name: Reload cloudwatch agent if changed
+    shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a append-config -m ec2 -s
+      -c file:/opt/aws/amazon-cloudwatch-agent/etc/cloudwatch_logs.json
+    become: yes
+    when: cloudwatch_logs_conf.changed
+
+  - name: Ensure cloudwatch agent enabled
+    shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a start
+    become: yes
+  when: enable_cloudwatch_logs and log_files_collect_list | length
+  tags: cloudwatch-logs

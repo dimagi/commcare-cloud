@@ -5,8 +5,8 @@
 mail.backend: 'smtp'  # Use dummy if you want to disable email entirely
 mail.host: '{{ localsettings.EMAIL_SMTP_HOST }}'
 mail.port: {{ localsettings.EMAIL_SMTP_PORT }}
-mail.username: '{{ localsettings_private.EMAIL_LOGIN | default(None) }}'
-mail.password: '{{ localsettings_private.EMAIL_PASSWORD | default(None) }}'
+mail.username: '{{ EMAIL_LOGIN | default(None) }}'
+mail.password: '{{ EMAIL_PASSWORD | default(None) }}'
 mail.use-tls: yes
 # The email address to send on behalf of
 mail.from: '{{ default_sentry_from_email }}'
@@ -32,8 +32,8 @@ redis.clusters:
       0:
         host: 127.0.0.1
         port: 6379
-{% if localsettings_private.REDIS_PASSWORD is defined %}
-        password: '{{ localsettings_private.REDIS_PASSWORD }}'
+{% if REDIS_PASSWORD %}
+        password: '{{ REDIS_PASSWORD }}'
 {% endif %}
 
 {% if sentry_url_prefix is defined %}

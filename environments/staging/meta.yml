@@ -7,3 +7,4 @@ users:
   - g2
   - fissionlabs
   - fission-warehouse
+secrets_backend: aws-secrets

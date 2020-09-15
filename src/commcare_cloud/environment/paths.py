@@ -55,6 +55,10 @@ class DefaultPaths(object):
         return self.get_env_file_path('known_hosts')
 
     @lazy_immutable_property
+    def files_dir(self):
+        return self.get_env_file_path('files')
+
+    @lazy_immutable_property
     def inventory_ini(self):
         return self.get_env_file_path('inventory.ini')
 

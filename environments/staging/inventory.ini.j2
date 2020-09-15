@@ -3,14 +3,16 @@
 # As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
 # using the aws-fill-inventory command.
 
-{{ __proxy1__ }} public_ip={{ aws_resources['proxy1-staging.public_ip'] }}
+{{ __proxy1__ }}
+{{ __proxy2__ }}
 
 [proxy:children]
 # Amazon EC2
 proxy1
+proxy2
 
 [logproxy:children]
-proxy1
+proxy
 
 {{ __web5__ }} swap_size=1G
 
@@ -32,35 +34,35 @@ rds_pg0
 pgproxy2
 remote_postgresql
 
-{{ __couch3__ }} datavol_fstype=xfs
+{{ __couch6__ }}
 
-{{ __couch4__ }} datavol_fstype=xfs
+{{ __couch7__ }}
 
-{{ __couch5__ }} datavol_fstype=xfs
+{{ __couch8__ }}
 
 [couchdb2:children]
-couch3
-couch4
-couch5
+couch6
+couch7
+couch8
 
 [couchdb2_proxy:children]
-couch3
+couch6
 
-{{ __rabbit1__ }}
+{{ __rabbit2__ }}
 
 [rabbitmq:children]
 # Amazon EC2
-rabbit1
+rabbit2
 
-{{ __kafka1__ }} kafka_broker_id=0 datavol_fstype=xfs
+{{ __kafka2__ }} kafka_broker_id=1
 
 [zookeeper:children]
 # Amazon EC2
-kafka1
+kafka2
 
 [kafka:children]
 # Amazon EC2
-kafka1
+kafka2
 
 {{ __celery2__ }} swap_size=8G
 
@@ -74,18 +76,17 @@ celery2
 # Amazon EC2
 pillow2
 
-{{ __formplayer1__ }} datavol_fstype=xfs
+{{ __formplayer3__ }}
 
-{{ __formplayer2__ }} datavol_fstype=xfs
+{{ __formplayer4__ }}
 
 [formplayer:children]
 # Amazon EC2
-formplayer1
-formplayer2
+formplayer3
+formplayer4
 
 [formplayer:vars]
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
-use_formplayer_efs=true
 cchq_uid=1026
 cchq_gid=1027
 
@@ -104,10 +105,12 @@ redis2
 
 [elasticsearch:children]
 # Amazon EC2
-es4
-es5
-#es6 this is intentional until testing is over, please contact sravan before modifying these
-#es7
+# old ES v2 hosts
+# es4
+# es5
+# ES v7 hosts
+es6
+es7
 
 [shared_dir_host:children]
 redis2

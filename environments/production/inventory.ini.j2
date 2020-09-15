@@ -1,7 +1,9 @@
-{{ __proxy2__ }} public_ip={{ aws_resources['proxy2-production.public_ip'] }}
+{{ __proxy2__ }}
+{{ __proxy3__ }}
 
 [proxy:children]
 proxy2
+proxy3
 
 {{ __web2__ }}
 {{ __web3__ }}
@@ -24,7 +26,7 @@ proxy2
 {{ __web16__ }}
 
 [logproxy:children]
-proxy2
+proxy
 
 [hq_webworkers:children]
 web2
@@ -87,10 +89,10 @@ remote_postgresql
 [ansible_skip:children]
 remote_postgresql
 
-{{ __rabbit1__ }}
+{{ __rabbit2__ }}
 
 [rabbitmq:children]
-rabbit1
+rabbit2
 
 [rabbitmq:vars]
 swap_size=2G
@@ -103,11 +105,11 @@ kafka1
 [kafka:children]
 kafka1
 
-{{ __celery9__ }}
+{{ __celery9__ }} rabbitmq_migration_bridge=true
 
-{{ __celery10__ }}
+{{ __celery10__ }} rabbitmq_migration_bridge=true
 
-{{ __celery11__ }}
+{{ __celery11__ }} rabbitmq_migration_bridge=true
 
 {{ __celery12__ }}
 
@@ -128,16 +130,16 @@ swap_size=8G
 [pillowtop:children]
 pillow1
 
-{{ __formplayer_a__ }}
+{{ __formplayer_b__ }}
 
-[formplayer_a:vars]
+[formplayer:children]
+formplayer_b
+
+[formplayer:vars]
 swap_size=8G
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 cchq_uid=1025
 cchq_gid=1026
-
-[formplayer:children]
-formplayer_a
 
 
 {{ __redis0__ }} swap_size=1G

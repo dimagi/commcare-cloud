@@ -1,3 +1,4 @@
+fake_ssl_cert: yes
 SITE_HOST: 'www.commcarehq.org'
 NO_WWW_SITE_HOST: 'commcarehq.org'
 COMMTRACK_SITE_HOST: 'commtrack.org'

@@ -92,7 +92,7 @@ class RunAnsibleModule(CommandBase):
             )
 
         def run_check():
-            with environment.suppress_vault_loaded_event():
+            with environment.secrets_backend.suppress_datadog_event():
                 return _run_ansible(args, '--check', *unknown_args)
 
         def run_apply():
@@ -116,30 +116,27 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     cmd_parts += get_user_arg(public_vars, extra_args, use_factory_auth=factory_auth)
     become = become or bool(become_user)
     become_user = become_user
-    include_vars = False
+    needs_secrets = False
+    env_vars = ansible_context.env_vars
+
     if become:
         cmd_parts += ('--become',)
-        include_vars = True
+        needs_secrets = True
         if become_user:
             cmd_parts += ('--become-user', become_user)
 
-    if include_vars:
+    if needs_secrets:
         cmd_parts += (
-            '-e', '@{}'.format(environment.paths.vault_yml),
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
         )
+        cmd_parts += environment.secrets_backend.get_extra_ansible_args()
+        env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
 
-    ask_vault_pass = include_vars and public_vars.get('commcare_cloud_use_vault', True)
-    if ask_vault_pass:
-        cmd_parts += ('--vault-password-file={}/echo_vault_password.sh'.format(ANSIBLE_DIR),)
     cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
     print_command(cmd)
-    env_vars = ansible_context.env_vars
-    if ask_vault_pass:
-        env_vars['ANSIBLE_VAULT_PASSWORD'] = environment.get_ansible_vault_password()
     return subprocess.call(cmd_parts, env=env_vars)
 
 
@@ -206,12 +203,13 @@ class SendDatadogEvent(CommandBase):
     def run(self, args, unknown_args):
         args.module = 'datadog_event'
         environment = get_environment(args.env_name)
-        vault = environment.get_vault_variables()['secrets']
+        datadog_api_key = environment.get_secret('DATADOG_API_KEY')
+        datadog_app_key = environment.get_secret('DATADOG_APP_KEY')
         tags = "environment:{}".format(args.env_name)
         args.module_args = "api_key={api_key} app_key={app_key} " \
             "tags='{tags}' text='{text}' title='{title}' aggregation_key={agg}".format(
-                api_key=vault['DATADOG_API_KEY'],
-                app_key=vault['DATADOG_APP_KEY'],
+                api_key=datadog_api_key,
+                app_key=datadog_app_key,
                 tags=tags,
                 text=args.event_text,
                 title=args.event_title,

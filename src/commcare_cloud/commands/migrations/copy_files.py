@@ -97,9 +97,9 @@ class CopyFiles(CommandBase):
         working_directory = _get_working_dir(args.plan_path, environment)
         ansible_context = AnsibleContext(args)
 
-        environment.get_ansible_vault_password()
+        environment.secrets_backend.prompt_user_input()
         if plan.source_env != environment and args.action in ('prepare', 'cleanup'):
-            plan.source_env.get_ansible_vault_password()
+            plan.source_env.secrets_backend.prompt_user_input()
 
         if args.action == 'prepare':
             for target_host, source_configs in plan.configs.items():

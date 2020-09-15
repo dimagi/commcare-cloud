@@ -1,3 +1,4 @@
+fake_ssl_cert: yes
 SITE_HOST: 'india.commcarehq.org'
 CAS_SITE_HOST: 'cas.commcarehq.org'
 J2ME_SITE_HOST: 'j2me-india.commcarehq.org'

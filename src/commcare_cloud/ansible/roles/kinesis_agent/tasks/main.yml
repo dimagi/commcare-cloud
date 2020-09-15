@@ -1,0 +1,67 @@
+- name: Check if Service Exists
+  stat: 'path=/etc/init.d/aws-kinesis-agent'
+  register: kinesis_status
+
+- name: Install, configure kinesis-agent
+  block:
+    - name: create temporary build directory
+      tempfile:
+        state: directory
+        suffix: kinesis_repo
+      register: temp_dir
+
+    - name: Pull source repo
+      git:
+        repo: "https://github.com/awslabs/amazon-kinesis-agent.git"
+        dest: "{{ temp_dir.path }}"
+        version: "1.1.4.2"
+        recursive: yes
+        accept_hostkey: yes
+        update: yes
+      register: git_task
+      when: temp_dir.path is defined
+
+    - name: Install from script
+      shell:
+        cmd: "./setup --install"
+        chdir: "{{ temp_dir.path }}"
+      environment:
+        DEBUG: "1"
+      register: install_task
+      when: temp_dir.path is defined
+      become: yes
+
+    - name: use the registered var and the file module to remove the temporary file
+      file:
+        path: "{{ temp_dir.path }}"
+        state: absent
+      when: temp_dir.path is defined
+
+  when: (kinesis_flows | length) and (not kinesis_status.stat.exists)
+  tags: kinesis-agent
+
+- name: Install, configure kinesis-agent
+  block:
+  - name: Create kinesis config
+    template:
+      src: "agent.json.j2"
+      dest: "/etc/aws-kinesis/agent.json"
+      group: root
+      owner: root
+      mode: 0644
+    become: yes
+    register: kinesis_conf
+
+  - name: Restart kinesis agent service if changed
+    service:
+      name: aws-kinesis-agent
+      state: restarted
+    when: kinesis_conf.changed
+
+  - name: Ensure service kinesis agent turned on
+    service:
+      name: aws-kinesis-agent
+      state: started
+  when:  kinesis_flows | length
+  tags: kinesis-agent
+

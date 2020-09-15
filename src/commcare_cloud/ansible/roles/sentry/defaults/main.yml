@@ -8,7 +8,7 @@ sentry_system_secret_key: 'secret'
 sentry_home_dir: /home/sentry
 sentry_app_config: "{{ sentry_home_dir }}/config"
 sentry_virtualenv_path: "{{ sentry_home_dir }}/sentry_app"
-
+sentry_workers_count: 8
 
 # SNUBA 
 snuba_version: 20.6.0

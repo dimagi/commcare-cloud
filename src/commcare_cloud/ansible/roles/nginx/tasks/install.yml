@@ -69,24 +69,3 @@
 
 - set_fact: nginx_installed=True
 
-- name: Create dynamic config change script
-  become: yes
-  copy:
-    src: dynamic_cfg_change_nginx
-    dest: "/usr/local/bin"
-    owner: "root"
-    group: "root"
-    mode: 0755
-  when: nginx_dynamic_limits is defined
-
-- name: Add Dynamic config change cron
-  become: yes
-  cron:
-    name: "Dynamic conf change "
-    job: "/usr/local/bin/dynamic_cfg_change_nginx {{ item.zone_args }}"
-    minute: "{{ item.from_minute }}"
-    hour: "{{ item.from_hour }}"
-    user: root
-    cron_file: "{{ item.name }}"
-  loop: "{{ nginx_dynamic_limits }}"
-  when: nginx_dynamic_limits is defined

@@ -8,7 +8,7 @@ roles:
     version: 46f8e0b8b8f5732eecc68b08b5e0c392c418e3f3
     name: tmpreaper
   - src: git+https://github.com/nickhammond/ansible-logrotate.git
-    version: e7a498
+    version: v0.0.5
     name: ansible-logrotate
   - src: DavidWittman.redis
     version: 1.2.7
@@ -17,13 +17,13 @@ roles:
   - src: geerlingguy.filebeat
     version: 3.0.2 
   - src: cloudalchemy.prometheus
-    version: 2.13.2
+    version: 2.15.5
   - src: cloudalchemy.alertmanager
-    version: 0.16.0
-  - src: cloudalchemy.grafana
-    version: 0.16.2
-  - src: cloudalchemy.node-exporter
     version: 0.19.0
+  - src: cloudalchemy.grafana
+    version: 0.17.0
+  - src: cloudalchemy.node-exporter
+    version: 0.21.5
   - src: bdellegrazie.postgres_exporter
     version: v4.1.0
   - src: gantsign.golang
@@ -31,4 +31,4 @@ roles:
 
 collections:
   - name: https://github.com/dimagi/commcare-logstash/releases/download/V0.9.2/dimagi-commcare_logstash-0.9.2.tar.gz
-  - name: https://github.com/dimagi/commcare-prometheus/releases/download/V0.1.4/dimagi-commcare_prometheus-0.1.4.tar.gz
+  - name: https://github.com/dimagi/commcare-prometheus/releases/download/V0.1.9/dimagi-commcare_prometheus-0.1.9.tar.gz

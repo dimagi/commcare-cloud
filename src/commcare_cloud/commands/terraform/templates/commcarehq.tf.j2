@@ -79,6 +79,13 @@ resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
   }
 }
 
+module "server_iam_role" {
+  source = "./modules/server/iam"
+  environment = "${var.environment}"
+  account_id = {{ account_id|tojson }}
+  formplayer_request_response_logs_firehose_stream_arn = "${module.logshipping.formplayer_request_response_logs_firehose_stream_arn}"
+}
+
 {% for server_spec in servers + proxy_servers %}
 {%- for server_name in server_spec.get_all_server_names %}
 module "server__{{ server_name }}" {
@@ -93,6 +100,7 @@ module "server__{{ server_name }}" {
   secondary_volume_size = {{ server_spec.block_device.volume_size|default(0)|tojson }}
   secondary_volume_type = {{ server_spec.block_device.volume_type|default("")|tojson }}
   secondary_volume_encrypted = {{ server_spec.block_device.encrypted|default(False)|tojson }}
+  iam_instance_profile = "${module.server_iam_role.commcare_server_instance_profile}"
 
 {% if server_spec.os == 'ubuntu_pro_bionic' %}
   server_image = "${data.aws_ami.ubuntu_pro_bionic.id}"
@@ -109,14 +117,6 @@ module "server__{{ server_name }}" {
   group_tag= {{ server_spec.group|tojson }}
 }
 {%- endfor %}
-{% endfor %}
-
-{% for server_spec in proxy_servers %}
-resource "aws_eip" "proxy__{{ server_spec.server_name }}" {
-  vpc = true
-  instance = "${module.server__{{ server_spec.server_name }}.server}"
-  associate_with_private_ip = "${module.server__{{ server_spec.server_name }}.server_private_ip}"
-}
 {% endfor %}
 
 resource "aws_efs_file_system" "formplayer" {
@@ -190,6 +190,7 @@ module "iam_user__{{ user.username }}" {
 module "logshipping" {
   environment = "${var.environment}"
   source = "./modules/logshipping"
+  account_id = {{ account_id|tojson }}
 }
 
 module "ga_alb_waf" {

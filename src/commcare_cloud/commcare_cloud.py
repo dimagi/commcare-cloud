@@ -16,6 +16,7 @@ from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.deploy import Deploy
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
+from commcare_cloud.commands.secrets import Secrets, MigrateSecrets
 from commcare_cloud.commands.sentry import ExportSentryEvents
 from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory, AwsSignIn
 from commcare_cloud.commands.terraform.openvpn import OpenvpnActivateUser, OpenvpnClaimUser
@@ -27,7 +28,7 @@ from .argparse14 import ArgumentParser, RawTextHelpFormatter
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
     UpdateConfig, AfterReboot, BootstrapUsers, DeployStack,
-    UpdateUsers, UpdateSupervisorConfs,
+    UpdateUsers, UpdateUserPublicKey, UpdateSupervisorConfs,
 )
 from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping, SendDatadogEvent
@@ -60,6 +61,8 @@ COMMAND_GROUPS = OrderedDict([
         PillowTopicAssignments,
     ]),
     ('operational', [
+        Secrets,
+        MigrateSecrets,
         Ping,
         AnsiblePlaybook,
         DeployStack,
@@ -67,6 +70,7 @@ COMMAND_GROUPS = OrderedDict([
         AfterReboot,
         BootstrapUsers,
         UpdateUsers,
+        UpdateUserPublicKey,
         UpdateSupervisorConfs,
         Fab,
         Deploy,

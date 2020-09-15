@@ -374,12 +374,25 @@ CELERY_FLOWER_URL = '{{ CELERY_FLOWER_URL }}'
 CELERY_TIMEZONE = '{{ localsettings.CELERY_TIMEZONE }}'
 {% endif %}
 
+{% if 'CAPTCHA_LENGTH' in localsettings and localsettings.CAPTCHA_LENGTH %}
+CAPTCHA_LENGTH = {{ localsettings.CAPTCHA_LENGTH }}
+{% endif %}
+
+{% if 'CAPTCHA_CHALLENGE_FUNCT' in localsettings and localsettings.CAPTCHA_CHALLENGE_FUNCT %}
+CAPTCHA_CHALLENGE_FUNCT = '{{ localsettings.CAPTCHA_CHALLENGE_FUNCT }}'
+{% endif %}
+
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
 MAPBOX_ACCESS_TOKEN = '{{ MAPBOX_ACCESS_TOKEN }}'
 FORMTRANSLATE_TIMEOUT = 5
 
+{% if OLD_BROKER_URL and rabbitmq_migration_bridge|default(False) %}
+CELERY_BROKER_READ_URL = BROKER_READ_URL = '{{ OLD_BROKER_URL }}'
+CELERY_BROKER_WRITE_URL = BROKER_WRITE_URL = '{{ BROKER_URL }}'
+{% else %}
 CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
+{% endif %}
 CELERY_HEARTBEAT_THRESHOLDS = {
 {% for queue, threshold in CELERY_HEARTBEAT_THRESHOLDS.items() | sort %}
     {{ queue | to_json }}: {% if threshold == None %}None{% else %}{{ threshold | to_json }}{% endif %},
@@ -1043,4 +1056,14 @@ CUSTOM_DOMAIN_SPECIFIC_URL_MODULES = json.loads('{{ localsettings.CUSTOM_DOMAIN_
 
 {% if localsettings.LOCAL_REPEATER_CLASSES is defined %}
 LOCAL_REPEATER_CLASSES = json.loads('{{ localsettings.LOCAL_REPEATER_CLASSES|to_json }}')
+{% endif %}
+
+{% if localsettings.COMMCARE_EXTENSIONS is defined %}
+COMMCARE_EXTENSIONS = json.loads('{{ localsettings.COMMCARE_EXTENSIONS|to_json }}')
+{% endif %}
+
+{% if localsettings.DEVICE_LOGS_ENABLED|default(True) %}
+NO_DEVICE_LOG_ENVS = []
+{% else %}
+NO_DEVICE_LOG_ENVS = [{{ env_monitoring_id|to_json }}]
 {% endif %}

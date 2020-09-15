@@ -46,6 +46,11 @@ class Terraform(CommandBase):
     )
 
     def run(self, args, unknown_args):
+        if 'destroy' in unknown_args:
+            puts(color_error("Refusing to run a terraform command containing the argument 'destroy'."))
+            puts(color_error("It's simply not worth the risk."))
+            exit(-1)
+
         environment = get_environment(args.env_name)
         run_dir = environment.paths.get_env_file_path('.generated-terraform')
         modules_dir = os.path.join(TERRAFORM_DIR, 'modules')
@@ -75,7 +80,7 @@ class Terraform(CommandBase):
 
         if not args.skip_secrets and unknown_args and unknown_args[0] in ('plan', 'apply'):
             rds_password = (
-                environment.get_vault_variables()['secrets']['POSTGRES_USERS']['root']['password']
+                environment.get_secret('POSTGRES_USERS.root.password')
                 if environment.terraform_config.rds_instances
                 else ''
             )

@@ -1,6 +1,6 @@
 couchdb2:
-  username: "{{ localsettings_private.COUCH_USERNAME }}"
-  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+  username: "{{ COUCH_USERNAME }}"
+  password: "{{ COUCH_PASSWORD }}"
 
 DATADOG_ENABLED: True
 
@@ -53,8 +53,8 @@ couch_dbs:
     host: "{{ groups.couchdb2_proxy[0] }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    username: "{{ COUCH_USERNAME }}"
+    password: "{{ COUCH_PASSWORD }}"
     is_https: False
 
 couchdb_reduce_limit: False
@@ -105,9 +105,10 @@ localsettings:
   BANK_SWIFT_CODE: 'CTZIUS33'
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
-  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
-  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
+  COUCH_USERNAME: "{{ COUCH_USERNAME }}"
+  COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
+  DEVICE_LOGS_ENABLED: no
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
@@ -131,35 +132,10 @@ localsettings:
   INVOICE_PREFIX: India-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
-  LOCAL_STATIC_DATA_SOURCES:
-    - custom/icds_reports/ucr/data_sources/*.json
-    - custom/icds_reports/ucr/data_sources/dashboard/*.json
-  LOCAL_STATIC_UCR_REPORTS:
-    - custom/icds_reports/ucr/reports/dashboard/*.json
-    - custom/icds_reports/ucr/reports/asr/*.json
-    - custom/icds_reports/ucr/reports/asr/ucr_v2/*.json
-    - custom/icds_reports/ucr/reports/mpr/*.json
-    - custom/icds_reports/ucr/reports/mpr/dashboard/*.json
-    - custom/icds_reports/ucr/reports/ls/*.json
-    - custom/icds_reports/ucr/reports/other/*.json
-  LOCAL_CUSTOM_UCR_EXPRESSION_LISTS:
-    - custom.icds_reports.ucr.expressions.CUSTOM_UCR_EXPRESSIONS
-  LOCAL_CUSTOM_UCR_REPORT_FILTERS:
-    - ['village_choice_list', 'custom.icds_reports.ucr.filter_spec.build_village_choice_list_filter_spec']
-  LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES:
-    - ['village_choice_list', 'custom.icds_reports.ucr.filter_value.VillageFilterValue']
-  LOCAL_DOMAIN_MODULE_MAP:
-    icds-test: custom.icds_reports
-    icds-cas: custom.icds_reports
-    icds-dashboard-qa: custom.icds_reports
-  LOCAL_APPS:
-    - {name: "custom.icds", host: "all"}
-    - {name: "custom.icds.data_management", host: "all"}
-    - {name: "custom.icds_reports", host: "all"}
   PILLOWTOP_MACHINE_ID: indiacloud
   RATE_LIMIT_SUBMISSIONS: yes
   SES_CONFIGURATION_SET: india-email-events
-  SNS_EMAIL_EVENT_SECRET: "{{ localsettings_private.SNS_EMAIL_EVENT_SECRET }}"
+  SNS_EMAIL_EVENT_SECRET: "{{ SNS_EMAIL_EVENT_SECRET }}"
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
@@ -167,10 +143,8 @@ localsettings:
   SAVED_EXPORT_ACCESS_CUTOFF: 180
   SMS_GATEWAY_URL: ''
   SMS_QUEUE_ENABLED: True
-  SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
+  SUMOLOGIC_URL: "{{ SUMOLOGIC_URL }}"
   SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
-  LOCAL_MIDDLEWARE:
-    - 'custom.icds_reports.middleware.ICDSAuditMiddleware'
 #  STATIC_ROOT:
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
@@ -244,3 +218,11 @@ commcare_cloud_pem: ~/.ssh/id_rsa
 
 airflow_dag_concurrency: 4
 airflow_parallelism: 8
+
+firehose_endpoint: "firehose.ap-south-1.amazonaws.com"
+kinesis_endpoint: "kinesis.ap-south-1.amazonaws.com"
+kinesis_flows:
+  - file_pattern: "/opt/data/formplayer/log/request_response.*log"
+    delivery_stream: "formplayer-request-response-logs-india"
+
+enable_cloudwatch_logs: true

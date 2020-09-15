@@ -39,8 +39,8 @@ SENTRY_CACHE = 'sentry.cache.redis.RedisCache'
 #########
 # Queue #
 #########
-{% if localsettings_private.REDIS_PASSWORD is defined %}
-BROKER_URL = 'redis://:{{ localsettings.REDIS_PASSWORD }}@localhost:6379'
+{% if REDIS_PASSWORD %}
+BROKER_URL = 'redis://:{{ REDIS_PASSWORD }}@localhost:6379'
 {% else %}
 BROKER_URL = 'redis://localhost:6379'
 {% endif %}
@@ -103,5 +103,5 @@ KAFKA_CLUSTERS["default"] = DEFAULT_KAFKA_OPTIONS
 SENTRY_WEB_HOST = '{{ sentry_web_host }}'
 SENTRY_WEB_PORT = {{ sentry_web_port }}
 SENTRY_WEB_OPTIONS = {
-    'workers': 4,
+    'workers': {{ sentry_workers_count }},
 }

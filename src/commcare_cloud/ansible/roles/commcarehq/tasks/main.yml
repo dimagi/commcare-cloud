@@ -18,6 +18,28 @@
     owner: cchq
     group: cchq
 
+- name: add deploy keys
+  become: yes
+  copy:
+    src: "{{ env_files_dir }}/{{ item.key }}"
+    dest: "{{ cchq_home }}/.ssh/{{ item.value }}"
+    owner: cchq
+    group: cchq
+    mode: 0600
+  loop: "{{ deploy_keys|dict2items }}"
+  when: deploy_keys is defined
+
+- name: Force GIT SSH to use port 443
+  become: yes
+  become_user: "{{ cchq_user }}"
+  blockinfile:
+    dest: "{{ cchq_home }}/.ssh/config"
+    create: yes
+    block: |
+      Host github.com
+        Hostname ssh.github.com
+        Port 443
+
 - name: create required directories
   become: yes
   file:
@@ -41,52 +63,59 @@
     - "{{ service_home }}"
   tags: services
 
-- name: Clone CommCare source repository
-  include_tasks: git_repository.yml
-  loop:
-    - url: "{{ commcarehq_repository }}"
-      version: "{{ commcarehq_version }}"
-      requirements_path: "requirements/prod-requirements.txt"
+- name: check for existing release
+  stat: path="{{ code_home }}/localsettings.py"
+  register: current_release
 
-- name: Clone additional source repositories
-  include_tasks: git_repository.yml
-  loop: "{{ git_repositories }}"
-  when: git_repositories
+- block:
+  - name: Clone CommCare source repository
+    include_tasks: git_repository.yml
+    loop:
+      - url: "{{ commcarehq_repository }}"
+        version: "{{ commcarehq_version }}"
+        requirements_path: "requirements/prod-requirements.txt"
 
-- name: Link source to code_home
-  become: true
-  file:
-    state: link
-    src: "{{ code_source }}"
-    dest: "{{ code_home }}"
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
+  - name: Clone additional source repositories
+    include_tasks: git_repository.yml
+    loop: "{{ git_repositories }}"
+    when: git_repositories
 
-# This task has the additional effect of creating the virtualenv if it does not exist
-# i.e. on a python2 install that is getting a python3 env for the first time
-- name: Upgrade python packages
-  become: true
-  pip:
-    name:
-      - six
-      - pip
-      - setuptools
-    state: latest
-    virtualenv: "{{ py3_virtualenv_home }}"
-    virtualenv_python: "python3.6"
-  tags:
-    - py3
+  - name: Link source to code_home
+    become: true
+    file:
+      state: link
+      src: "{{ code_source }}"
+      dest: "{{ code_home }}"
+      owner: "{{ cchq_user }}"
+      group: "{{ cchq_user }}"
 
-- name: install pip requirements if py3 tag specified
-  become: true
-  pip:
-    requirements: "{{ code_home }}/requirements/prod-requirements.txt"
-    virtualenv: "{{ py3_virtualenv_home }}"
-    chdir: "{{ code_home }}"
-  tags:
-    - never  # means only when the following tag is specified
-    - py3
-  when: not testing|default(False)
+  # This task has the additional effect of creating the virtualenv if it does not exist
+  # i.e. on a python2 install that is getting a python3 env for the first time
+  - name: Upgrade python packages
+    become: true
+    pip:
+      name:
+        - six
+        - pip
+        - setuptools
+      state: latest
+      virtualenv: "{{ py3_virtualenv_home }}"
+      virtualenv_python: "python3.6"
+    tags:
+      - py3
+
+  - name: install pip requirements if py3 tag specified
+    become: true
+    pip:
+      requirements: "{{ code_home }}/requirements/prod-requirements.txt"
+      virtualenv: "{{ py3_virtualenv_home }}"
+      chdir: "{{ code_home }}"
+    tags:
+      - never  # means only when the following tag is specified
+      - py3
+    when: not testing|default(False)
+
+  when: not current_release.stat.exists
 
 - name: copy localsettings
   become: true
