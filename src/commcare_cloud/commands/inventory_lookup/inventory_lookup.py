@@ -80,10 +80,13 @@ class Ssh(_Ssh):
         if 'control' in split_host_group(args.server).group and '-A' not in ssh_args:
             # Always include ssh agent forwarding on control machine
             ssh_args = ['-A'] + ssh_args
-        ukhf = "UserKnownHostsFile="
-        if not any(a.startswith((ukhf, "-o" + ukhf)) for a in ssh_args):
-            environment = get_environment(args.env_name)
-            ssh_args = ["-o", ukhf + environment.paths.known_hosts] + ssh_args
+        environment = get_environment(args.env_name)
+        default_ssh_options = [
+            ('UserKnownHostsFile', environment.paths.known_hosts)
+        ]
+        for option_name, default_option_value in default_ssh_options:
+            if not any(a.startswith(('{}='.format(option_name), "-o{}=" + option_name)) for a in ssh_args):
+                ssh_args = ["-o", '{}={}'.format(option_name, default_option_value)] + ssh_args
         return super(Ssh, self).run(args, ssh_args)
 
 
