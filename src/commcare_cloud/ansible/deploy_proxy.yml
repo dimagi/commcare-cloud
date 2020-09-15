@@ -82,8 +82,6 @@
         - {name: wiki, vars_file: wiki}
         - {name: cas_sentry, vars_file: cas_sentry}
         - {name: wiki, vars_file: wiki_http}
-        - {name: commtrack_ssl, vars_file: commtrack_ssl}
-        - {name: commtrack_http, vars_file: commtrack_http}
         - {name: icds_tableau, vars_file: icds_tableau}
         - {name: icds_tableau, vars_file: icds_tableau_http}
       loop_control:
