@@ -10,21 +10,11 @@ env:
     - TRAVIS_TEST=1
   matrix:
     - TEST=main
-    - TEST=prove-deploy
 
 matrix:
   fast_finish: true
 
 before_install:
-  # The next line exits out of the prove-deploy test if
-  #   - the test is not running from a cron event
-  #   - the last commit that was merged in doesn't contain [prove-deploy]
-  - |
-    if [[ $TEST = 'prove-deploy' && $TRAVIS_EVENT_TYPE != 'cron' ]] &&
-    echo $(git log --pretty=format:'%s %b' -n1 HEAD^2) | grep -iv '\[prove-deploy\]'
-    then
-      exit 0
-    fi
   # Make sure everything's up to date.
   - sudo apt-get clean
   - sudo apt-get update -qq
@@ -34,21 +24,6 @@ install:
   # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
   # tries to install from the commcare-cloud-bootstrap.egg_info directory
   - "pip install -e .[test]"
-  - mkdir ~/.aws
-  - touch ~/.aws/config
-  - touch ~/.aws/credentials
-  - touch ~/.ssh/commcarehq_testing.pem
-  - |
-    if [[ $TEST = 'prove-deploy' ]]
-    then
-      echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.aws/config --output=~/.aws/config
-      echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.aws/credentials --output=~/.aws/credentials
-      echo $VAULT_PASSWORD | ansible-vault --vault-password-file=/bin/cat decrypt .travis/secrets/.ssh/commcarehq_testing.pem --output=~/.ssh/commcarehq_testing.pem
-      pip install -e commcare-cloud-bootstrap
-    fi
 
 script:
   - ".travis/tests.sh"
-
-after_script:
-  - "if [[ $TEST = 'prove-deploy' ]]; then commcare-cloud-bootstrap terminate hq-${TRAVIS_COMMIT}; fi"
