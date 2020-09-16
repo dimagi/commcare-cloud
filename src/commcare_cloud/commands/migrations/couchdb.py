@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from __future__ import print_function
+from __future__ import unicode_literals
 import difflib
 import json
 import os
@@ -308,21 +309,21 @@ def generate_shard_plan(migration):
 
 
 def describe(migration):
-    puts(u'\nMembership')
+    puts('\nMembership')
     with indent():
         puts(get_membership(migration.target_couch_config).get_printable())
-    puts(u'\nDB Info')
+    puts('\nDB Info')
     print_db_info(migration.target_couch_config)
 
-    puts(u'\nShard allocation')
+    puts('\nShard allocation')
     diff_with_db = None
     if os.path.exists(migration.shard_plan_path):
         diff_with_db = diff_plan(migration)
         if diff_with_db:
-            puts(color_highlight(u'DB allocation differs from plan:\n'))
-            puts(u"{}\n\n".format(diff_with_db))
+            puts(color_highlight('DB allocation differs from plan:\n'))
+            puts("{}\n\n".format(diff_with_db))
         else:
-            puts(color_success(u'DB allocation matches plan.'))
+            puts(color_success('DB allocation matches plan.'))
 
     if not diff_with_db:
         print_shard_table([
@@ -330,7 +331,7 @@ def describe(migration):
             for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
         ])
 
-    puts(u'\nShard count by node')
+    puts('\nShard count by node')
     print_shard_allocation_by_node([
         get_shard_allocation(migration.target_couch_config, db_name)
         for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))

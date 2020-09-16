@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import unicode_literals
 def get_new_resource_address(environment, old_resource_address):
     import re
     server_matcher = re.compile(r'module\.postgresql-(\d+)\.(.*)$')

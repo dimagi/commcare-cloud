@@ -1,5 +1,6 @@
 # coding=utf-8
 from __future__ import absolute_import
+from __future__ import unicode_literals
 import itertools
 import os
 from collections import namedtuple, defaultdict
@@ -133,11 +134,11 @@ def run_action_with_check_mode(run_check, run_apply, skip_check, quiet=False, al
             # this means there was an error before ansible was able to start running
             return exit_code
         elif exit_code == 0:
-            puts(color_success(u"✓ Check completed with status code {}".format(exit_code)))
+            puts(color_success("✓ Check completed with status code {}".format(exit_code)))
             user_wants_to_apply = ask('Do you want to apply these changes?',
                                       quiet=quiet)
         else:
-            puts(color_error(u"✗ Check failed with status code {}".format(exit_code)))
+            puts(color_error("✗ Check failed with status code {}".format(exit_code)))
             user_wants_to_apply = ask('Do you want to try to apply these changes anyway?',
                                       quiet=quiet)
 
@@ -145,9 +146,9 @@ def run_action_with_check_mode(run_check, run_apply, skip_check, quiet=False, al
     if user_wants_to_apply:
         exit_code = run_apply()
         if exit_code == 0:
-            puts(color_success(u"✓ Apply completed with status code {}".format(exit_code)))
+            puts(color_success("✓ Apply completed with status code {}".format(exit_code)))
         else:
-            puts(color_error(u"✗ Apply failed with status code {}".format(exit_code)))
+            puts(color_error("✗ Apply failed with status code {}".format(exit_code)))
 
     return exit_code
 

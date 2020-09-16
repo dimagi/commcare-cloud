@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import unicode_literals
 import jsonobject
 from commcare_cloud.environment.paths import get_role_defaults
 

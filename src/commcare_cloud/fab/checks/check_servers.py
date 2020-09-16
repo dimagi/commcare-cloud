@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from __future__ import print_function
+from __future__ import unicode_literals
 from fabric.api import roles, env, sudo, run, hide
 from fabric.context_managers import cd
 from fabric.decorators import runs_once

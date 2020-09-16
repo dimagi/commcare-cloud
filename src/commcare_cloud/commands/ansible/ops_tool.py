@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from __future__ import print_function
+from __future__ import unicode_literals
 import collections
 import csv
 import subprocess
@@ -220,14 +221,14 @@ class CouchDBClusterInfo(CommandBase):
         environment = get_environment(args.env_name)
         couch_config = get_couch_config(environment)
 
-        puts(u'\nMembership')
+        puts('\nMembership')
         with indent():
             puts(get_membership(couch_config).get_printable())
 
-        puts(u'\nDB Info')
+        puts('\nDB Info')
         print_db_info(couch_config)
 
-        puts(u'\nShard allocation')
+        puts('\nShard allocation')
         print_shard_table([
             get_shard_allocation(couch_config, db_name)
             for db_name in sorted(get_db_list(couch_config.get_control_node()))

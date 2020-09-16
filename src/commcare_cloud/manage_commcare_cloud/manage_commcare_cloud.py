@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+from __future__ import unicode_literals
 from commcare_cloud.manage_commcare_cloud.datadog_monitors import UpdateDatadogMonitors, ListDatadogMonitors
 from commcare_cloud.manage_commcare_cloud.test_environments import TestEnvironments
 from ..argparse14 import ArgumentParser

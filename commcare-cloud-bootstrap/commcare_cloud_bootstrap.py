@@ -1,5 +1,6 @@
 from __future__ import print_function
 from __future__ import absolute_import
+from __future__ import unicode_literals
 import argparse
 import json
 import os
@@ -109,7 +110,7 @@ class Group(StrictJsonObject):
 
 def provision_machines(spec, env_name=None, create_machines=True):
     if env_name is None:
-        env_name = u'hq-{}'.format(
+        env_name = 'hq-{}'.format(
             ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(7))
         )
     environment = get_environment(env_name)
