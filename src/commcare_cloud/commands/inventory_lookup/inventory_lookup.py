@@ -10,6 +10,7 @@ from six.moves import shlex_quote
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.environment.main import get_environment
+from ..ansible.helpers import get_default_ssh_options
 
 from ...colors import color_error
 from .getinventory import (get_monolith_address, get_server_address,
@@ -81,15 +82,9 @@ class Ssh(_Ssh):
         if 'control' in split_host_group(args.server).group and '-A' not in ssh_args:
             # Always include ssh agent forwarding on control machine
             ssh_args = ['-A'] + ssh_args
+
         environment = get_environment(args.env_name)
-        strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
-        default_ssh_options = []
-        if not strict_host_key_checking:
-            default_ssh_options.append(('StrictHostKeyChecking', 'no'))
-        known_hosts_filepath = environment.paths.known_hosts
-        if os.path.exists(known_hosts_filepath):
-            default_ssh_options.append(('UserKnownHostsFile', known_hosts_filepath))
-        for option_name, default_option_value in default_ssh_options:
+        for option_name, default_option_value in get_default_ssh_options(environment):
             if not any(a.startswith(('{}='.format(option_name), "-o{}=" + option_name)) for a in ssh_args):
                 ssh_args = ["-o", '{}={}'.format(option_name, default_option_value)] + ssh_args
         return super(Ssh, self).run(args, ssh_args)
