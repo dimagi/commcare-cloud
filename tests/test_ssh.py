@@ -29,6 +29,8 @@ class Args(object):
      ['ssh', '172.19.3.0', '-o', 'UserKnownHostsFile={}/simple_ssh/known_hosts'.format(TEST_ENVIRONMENTS_DIR)]),
     (Args(server='demo_server0', env_name='ssh_no_known_hosts'), [],
      ['ssh', '172.19.3.0', '-o', 'UserKnownHostsFile={}/ssh_no_known_hosts/known_hosts'.format(TEST_ENVIRONMENTS_DIR)]),
+    (Args(server='demo_server0', env_name='no_strict_known_hosts'), [],
+     ['ssh', '172.19.3.0', '-o', 'UserKnownHostsFile={}/no_strict_known_hosts/known_hosts'.format(TEST_ENVIRONMENTS_DIR)]),
 ])
 def test_ssh_args(args, ssh_args, expected_cmd_parts):
     _test_ssh_args(args, ssh_args, expected_cmd_parts)
