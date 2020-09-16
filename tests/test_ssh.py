@@ -12,6 +12,7 @@ TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'test_ssh_envs')
 
 @mock.patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
 @mock.patch.object(subprocess, 'call')
+@mock.patch('commcare_cloud.commands.inventory_lookup.inventory_lookup.print_command', lambda args: None)
 def _test_ssh_args(args, ssh_args, expected_cmd_parts, mock_call):
     os.environ['COMMCARE_CLOUD_DEFAULT_USERNAME'] = ''
     Ssh(ArgumentParser()).run(args, ssh_args)
