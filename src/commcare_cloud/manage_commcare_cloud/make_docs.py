@@ -6,7 +6,7 @@ import cgi
 import inspect
 import os
 import textwrap
-from StringIO import StringIO
+from io import StringIO
 
 import jinja2
 
