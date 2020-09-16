@@ -18,8 +18,10 @@ def get_defaults_jsonobject(role, **kwargs):
     :return: The new JsonObject subclass.
     """
     cls = type(jsonobject.JsonObject)(
-        '{}_Defaults'.format(role), (jsonobject.JsonObject,),
-        dict(get_role_defaults(role), _allow_dynamic_properties=False, **kwargs))
+        str('{}_Defaults'.format(role)),  # bytes in Python 2, text in Python 3
+        (jsonobject.JsonObject,),
+        dict(get_role_defaults(role), _allow_dynamic_properties=False, **kwargs),
+    )
 
     # exclude from to_json if set to the default value
     def exclude(self, value):
