@@ -71,9 +71,14 @@ def get_default_ssh_options(environment):
     if not strict_host_key_checking:
         default_ssh_options.append(('StrictHostKeyChecking', 'no'))
 
-    known_hosts_filepath = environment.paths.known_hosts
-    if os.path.exists(known_hosts_filepath):
-        default_ssh_options.append(('UserKnownHostsFile', known_hosts_filepath))
+    # known_hosts_filepath = environment.paths.known_hosts
+    # if os.path.exists(known_hosts_filepath):
+    #     default_ssh_options.append(('UserKnownHostsFile', known_hosts_filepath))
+
+    default_ssh_options.extend([
+        ('StrictHostKeyChecking', 'no'),
+        ('ProxyCommand', 'sh -c "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters portNumber=%p"'),
+    ])
 
     return default_ssh_options
 

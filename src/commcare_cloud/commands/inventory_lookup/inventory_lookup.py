@@ -13,6 +13,7 @@ from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.environment.main import get_environment
 from ..ansible.helpers import get_default_ssh_options_as_cmd_parts
+from ..terraform.aws import aws_sign_in
 
 from ...colors import color_error
 from .getinventory import (get_monolith_address, get_server_address,
@@ -56,6 +57,7 @@ class Lookup(CommandBase):
 class _Ssh(Lookup):
 
     def run(self, args, ssh_args):
+        environment = get_environment(args.env_name)
         if args.server == '-':
             args.server = 'django_manage[0]'
         address = self.lookup_server_address(args)
@@ -65,7 +67,9 @@ class _Ssh(Lookup):
         cmd_parts = [self.command, address, '-t'] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
-        return subprocess.call(cmd_parts)
+        env_vars = os.environ.copy()
+        env_vars.update({'AWS_PROFILE': aws_sign_in(environment)})
+        return subprocess.call(cmd_parts, env=env_vars)
 
 
 class Ssh(_Ssh):

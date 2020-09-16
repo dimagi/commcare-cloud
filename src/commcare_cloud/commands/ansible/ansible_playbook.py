@@ -19,6 +19,7 @@ from commcare_cloud.commands.ansible.helpers import (
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.terraform.aws import aws_sign_in
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from commcare_cloud.parse_help import add_to_help_text, filtered_help_message, ANSIBLE_HELP_OPTIONS_PREFIX
@@ -115,6 +116,7 @@ def run_ansible_playbook(
             '-i', environment.paths.inventory_source,
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
+            '-e', 'ansible_ssh_host={{ ec2_instance_id|default(inventory_hostname) }}',
             '--diff',
         ) + get_limit() + cmd_args
 
@@ -136,6 +138,7 @@ def run_ansible_playbook(
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
         env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
+        env_vars.update({'AWS_PROFILE': aws_sign_in(environment)})
         return subprocess.call(cmd_parts, env=env_vars)
 
     def run_check():
