@@ -3,4 +3,5 @@ SITE_HOST: 'staging.commcarehq.org'
 J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
 primary_ssl_env: "staging"
 
-letsencrypt_cchq_ssl: True
+trusted_proxies:
+  - 10.201.0.0/16
