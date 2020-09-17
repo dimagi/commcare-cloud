@@ -104,7 +104,7 @@ pillows:
     UCLAPatientFluffPillow:
       num_processes: 1
     UpdateUserSyncHistoryPillow:
-      num_processes: 1
+      num_processes: 2
     UserCacheInvalidatePillow:
       num_processes: 1
     UserGroupsDbKafkaPillow:
