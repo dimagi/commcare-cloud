@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import difflib
 import json
 import os
@@ -29,6 +31,8 @@ from commcare_cloud.commands.migrations.copy_files import SourceFiles, prepare_f
     copy_scripts_to_target_host, execute_file_copy_scripts
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
+from six.moves import map
+from six.moves import zip
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 PLAY_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'plays')
@@ -350,7 +354,7 @@ def print_shard_allocation_by_node(shard_allocation_docs):
         for node in nodes:
             row.append(len(by_node[node].get(db_name, [])))
         rows.append(row)
-    rows.append(["TOTAL"] + map(sum, zip(*rows)[1:]))
+    rows.append(["TOTAL"] + list(map(sum, zip(*rows))[1:]))
     print(tabulate(rows, headers=headers, tablefmt='simple'))
 
 

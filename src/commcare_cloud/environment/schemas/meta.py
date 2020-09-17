@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import re
 
 import jsonobject
@@ -8,6 +9,7 @@ from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.secrets.backends import all_secrets_backends_by_name
 from commcare_cloud.environment.secrets.backends.abstract_backend import AbstractSecretsBackend
 from commcare_cloud.fab.utils import get_github_credentials
+import six
 
 
 @memoized
@@ -57,13 +59,13 @@ class MetaConfig(jsonobject.JsonObject):
     deploy_env = jsonobject.StringProperty(required=True)
     always_deploy_formplayer = jsonobject.BooleanProperty(default=False)
     env_monitoring_id = jsonobject.StringProperty(required=True)
-    users = jsonobject.ListProperty(unicode, required=True)
+    users = jsonobject.ListProperty(six.text_type, required=True)
     slack_alerts_channel = jsonobject.StringProperty()
     bare_non_cchq_environment = jsonobject.BooleanProperty(default=False)
     git_repositories = jsonobject.ListProperty(GitRepository)
-    deploy_keys = jsonobject.DictProperty(unicode)
+    deploy_keys = jsonobject.DictProperty(six.text_type)
     secrets_backend = jsonobject.StringProperty(
-        choices=all_secrets_backends_by_name.keys(),
+        choices=list(all_secrets_backends_by_name),
         default='ansible-vault',
     )
 

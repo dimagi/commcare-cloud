@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import jsonobject
 
 from commcare_cloud.colors import color_notice, color_code

@@ -1,8 +1,10 @@
 from __future__ import print_function
+from __future__ import absolute_import
 from collections import namedtuple
 import os
 import subprocess
 import sys
+from six.moves import range
 
 ANSIBLE_HELP_OPTIONS_PREFIX='optional arguments:'
 _HELP_CACHE = os.path.join(os.path.dirname(__file__), 'help_cache')

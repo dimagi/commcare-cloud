@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from commcare_cloud.environment.schemas.terraform import ServerConfig
 
 

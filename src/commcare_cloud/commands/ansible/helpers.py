@@ -1,4 +1,5 @@
 # coding=utf-8
+from __future__ import absolute_import
 import itertools
 import os
 from collections import namedtuple, defaultdict
@@ -10,6 +11,7 @@ from commcare_cloud.cli_utils import has_arg, ask
 from commcare_cloud.colors import color_error, color_success
 from commcare_cloud.environment.paths import ANSIBLE_DIR, ANSIBLE_ROLES_PATH, ANSIBLE_COLLECTIONS_PATHS
 from six.moves import shlex_quote
+from six.moves import range
 
 DEPRECATED_ANSIBLE_ARGS = []
 

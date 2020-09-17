@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import absolute_import
 import argparse
 import json
 import os
@@ -16,6 +17,10 @@ import yaml
 import jsonobject
 
 from commcare_cloud.environment.main import get_environment
+import six
+from six.moves import range
+from six.moves import zip
+from six.moves import input
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'environment')
 j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
@@ -98,7 +103,7 @@ class Host(StrictJsonObject):
 
 class Group(StrictJsonObject):
     name = jsonobject.StringProperty()
-    host_names = jsonobject.ListProperty(unicode)
+    host_names = jsonobject.ListProperty(six.text_type)
     vars = jsonobject.DictProperty()
 
 
@@ -206,7 +211,7 @@ def bootstrap_inventory(spec, env_name):
 def ask_aws_for_instances(env_name, aws_config, count):
     cache_file = '{env}-aws-new-instances.json'.format(env=env_name)
     if os.path.exists(cache_file):
-        cache_file_response = raw_input("\n{} already exists. Enter: "
+        cache_file_response = input("\n{} already exists. Enter: "
                                         "\n(d) to delete the file AND environment directory containing it, and"
                                         " terminate the existing aws instances or "
                                         "\n(anything) to continue using this file and these instances."
@@ -228,7 +233,7 @@ def ask_aws_for_instances(env_name, aws_config, count):
         cmd_parts = [
             'aws', 'ec2', 'run-instances',
             '--image-id', aws_config.ami,
-            '--count', unicode(int(count)),
+            '--count', six.text_type(int(count)),
             '--instance-type', aws_config.type,
             '--key-name', aws_config.key_name,
             '--security-group-ids', aws_config.security_group_id,

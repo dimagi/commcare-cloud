@@ -1,7 +1,8 @@
+from __future__ import absolute_import
 import json
 import logging
 import os
-import cPickle
+import six.moves.cPickle
 import time
 
 from ansible.plugins.lookup import aws_secret
@@ -74,8 +75,8 @@ class LookupModule(aws_secret.LookupModule):
                         # wait a short while and then try again from the top of the while True loop
                         time.sleep(.100)
                         continue
-                    return cPickle.loads(Fernet(self._encryption_key()).decrypt(contents))
-            except (IOError, InvalidToken, cPickle.UnpicklingError):
+                    return six.moves.cPickle.loads(Fernet(self._encryption_key()).decrypt(contents))
+            except (IOError, InvalidToken, six.moves.cPickle.UnpicklingError):
                 with open(self._secrets_cache_filename(term, inventory_dir=inventory_dir), 'wb') as f:
                     f.write(LOOKUP_IN_PROGRESS_ON_ANOTHER_FORK)
                 return Ellipsis
@@ -88,7 +89,7 @@ class LookupModule(aws_secret.LookupModule):
     def set_cache(self, term, value, inventory_dir):
         try:
             with open(self._secrets_cache_filename(term, inventory_dir=inventory_dir), 'wb') as f:
-                f.write(Fernet(self._encryption_key()).encrypt(cPickle.dumps(value)))
+                f.write(Fernet(self._encryption_key()).encrypt(six.moves.cPickle.dumps(value)))
         except Exception as e:
             logging.warn('There was an error caching the secret {}'.format(e))
             raise

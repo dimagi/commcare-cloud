@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import absolute_import
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.paths import ANSIBLE_DIR, get_available_envs
 

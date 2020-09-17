@@ -1,6 +1,8 @@
+from __future__ import absolute_import
 import jsonobject
 from clint.textui import puts
 from commcare_cloud.colors import color_warning
+from six.moves import range
 
 
 class TerraformConfig(jsonobject.JsonObject):
