@@ -12,11 +12,13 @@ then
     cp .travis/environments/travis/private.yml .travis/environments/travis/vault.yml
 
     test_syntax() {
-        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --syntax-check
+        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments \
+        commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --syntax-check
     }
 
     test_localsettings() {
-        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --tags=py3,commcarehq
+        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments \
+        commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --tags=py3,commcarehq
         sudo python -m py_compile /home/cchq/www/travis/current/localsettings.py
     }
 
@@ -29,13 +31,9 @@ then
         COMMCARE_CLOUD_ENVIRONMENTS=commcare-environments ./tests/test_autogen_environments.sh
     }
 
-    test_autogen_docs() {
-        ./tests/test_autogen_docs.sh
-    }
-
     test_syntax
     test_localsettings
     test_dimagi_environments
     nosetests -v
-    test_autogen_docs
+    ./tests/test_autogen_docs.sh
 fi
