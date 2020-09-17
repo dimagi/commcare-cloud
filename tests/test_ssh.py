@@ -27,11 +27,11 @@ class Args(object):
 
 @parameterized([
     (Args(server='demo_server0', env_name='simple_ssh'), [],
-     ['ssh', '172.19.3.0', '-o', 'UserKnownHostsFile={}/simple_ssh/known_hosts'.format(TEST_ENVIRONMENTS_DIR)]),
+     ['ssh', '172.19.3.0', '-t', '-o', 'UserKnownHostsFile={}/simple_ssh/known_hosts'.format(TEST_ENVIRONMENTS_DIR)]),
     (Args(server='demo_server0', env_name='ssh_no_known_hosts'), [],
-     ['ssh', '172.19.3.0']),
+     ['ssh', '172.19.3.0', '-t']),
     (Args(server='demo_server0', env_name='no_strict_known_hosts'), [],
-     ['ssh', '172.19.3.0', '-o', 'StrictHostKeyChecking=no']),
+     ['ssh', '172.19.3.0', '-t', '-o', 'StrictHostKeyChecking=no']),
 ])
 def test_ssh_args(args, ssh_args, expected_cmd_parts):
     _test_ssh_args(args, ssh_args, expected_cmd_parts)
