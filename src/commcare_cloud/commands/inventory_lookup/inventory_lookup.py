@@ -60,7 +60,7 @@ class _Ssh(Lookup):
         if ':' in address:
             address, port = address.split(':')
             ssh_args = ['-p', port] + ssh_args
-        cmd_parts = [self.command, address] + ssh_args
+        cmd_parts = [self.command, address, '-t'] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
         return subprocess.call(cmd_parts)
@@ -144,7 +144,6 @@ class Tmux(_Ssh):
             # add bash as second command to keep tmux open after command exits
             remote_command = shlex_quote('{} ; bash'.format(args.remote_command))
             ssh_args = [
-                '-t',
                 r'tmux attach \; new-window -n {window_name} {remote_command} '
                 r'|| tmux new -n {window_name} {remote_command}'
                 .format(
@@ -154,7 +153,6 @@ class Tmux(_Ssh):
             ] + ssh_args
         else:
             ssh_args = [
-                '-t',
                 'tmux attach || tmux new -n {window_name} sudo -iu {cchq_user} '
                 .format(cchq_user=cchq_user, window_name=window_name_expression)
             ]
@@ -261,7 +259,4 @@ class DjangoManage(CommandBase):
             return Tmux(self.parser).run(args, [])
         else:
             ssh_args = _get_ssh_args(remote_command)
-            if manage_args and manage_args[0] in ["shell", "dbshell"]:
-                # force ssh to allocate a pseudo-terminal
-                ssh_args = ['-t'] + ssh_args
             return Ssh(self.parser).run(args, ssh_args)
