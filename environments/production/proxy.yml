@@ -4,6 +4,8 @@ NO_WWW_SITE_HOST: 'commcarehq.org'
 J2ME_SITE_HOST: 'j2mewww.commcarehq.org'
 # This sets production_commcare as the default endpoint for ssl connections
 primary_ssl_env: "production"
+trusted_proxies:
+  - 10.202.0.0/16
 
 nginx_hsts_max_age: 300 # 5 minutes
 nginx_ssl_protocols: "TLSv1.2"

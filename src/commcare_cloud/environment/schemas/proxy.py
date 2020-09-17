@@ -18,6 +18,7 @@ class ProxyConfig(jsonobject.JsonObject):
     letsencrypt_cchq_ssl = jsonobject.BooleanProperty(default=False)
     letsencrypt_cas_ssl = jsonobject.BooleanProperty(default=False)
     primary_ssl_env = jsonobject.StringProperty()
+    trusted_proxies = jsonobject.ListProperty(str)
 
     special_sites = jsonobject.ListProperty(str)
     
