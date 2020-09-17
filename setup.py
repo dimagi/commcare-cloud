@@ -56,6 +56,7 @@ setup(
         'pycryptodome>=3.6.6',  # security update
         'PyGithub>=1.43.3',
         'pytz==2017.2',
+        'simplejson',
         'six',
         'tabulate'
     ),
