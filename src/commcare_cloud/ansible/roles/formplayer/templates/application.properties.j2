@@ -55,3 +55,7 @@ management.port: 8081
 {% if formplayer_sensitive_data_logging %}
 sensitiveData.enableLogging=true
 {% endif %}
+
+{% if formplayer_forward_ip_proxy %}
+server.forward-headers-strategy=NATIVE
+{% endif %}
