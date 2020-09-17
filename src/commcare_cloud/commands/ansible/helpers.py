@@ -45,8 +45,6 @@ class AnsibleContext(object):
 
 
 def get_common_ssh_args(environment, use_factory_auth=False):
-    strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
-
     common_ssh_args = []
     cmd_parts_with_common_ssh_args = ()
 
@@ -54,16 +52,27 @@ def get_common_ssh_args(environment, use_factory_auth=False):
         auth_cmd_parts, auth_ssh_args = add_factory_auth_cmd(environment)
         cmd_parts_with_common_ssh_args += auth_cmd_parts
         common_ssh_args.extend(auth_ssh_args)
-    if not strict_host_key_checking:
-        common_ssh_args.append('-o StrictHostKeyChecking=no')
 
-    known_hosts_filepath = environment.paths.known_hosts
-    if os.path.exists(known_hosts_filepath):
-        common_ssh_args.append('-o=UserKnownHostsFile={}'.format(known_hosts_filepath))
+    for option_name, default_option_value in get_default_ssh_options(environment):
+        common_ssh_args.extend(["-o", '{}={}'.format(option_name, default_option_value)])
 
     if common_ssh_args:
         cmd_parts_with_common_ssh_args += ('--ssh-common-args={}'.format(' '.join(common_ssh_args)),)
     return cmd_parts_with_common_ssh_args
+
+
+def get_default_ssh_options(environment):
+    default_ssh_options = []
+
+    strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
+    if not strict_host_key_checking:
+        default_ssh_options.append(('StrictHostKeyChecking', 'no'))
+
+    known_hosts_filepath = environment.paths.known_hosts
+    if os.path.exists(known_hosts_filepath):
+        default_ssh_options.append(('UserKnownHostsFile', known_hosts_filepath))
+
+    return default_ssh_options
 
 
 def add_factory_auth_cmd(environment):
