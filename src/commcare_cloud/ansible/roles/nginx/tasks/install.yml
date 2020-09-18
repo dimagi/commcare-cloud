@@ -15,7 +15,7 @@
 
 - name: Install nginx
   become: yes
-  apt: name="nginx=1.17.3-1~bionic" state=present update_cache=yes cache_valid_time=3600
+  apt: name="nginx={{ nginx_version|default('1.17.3') }}-1~bionic" state=present update_cache=yes cache_valid_time=3600
   notify: 'quick start nginx'
 
 - meta: flush_handlers  # need to start nginx as quickly as possible for minimal downtime
