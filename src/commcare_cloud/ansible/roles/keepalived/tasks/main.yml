@@ -20,17 +20,6 @@
   tags: keepalived
   notify: restart keepalived
 
-- name: Create redis master check script
-  template:
-    src: redis_is_master.j2
-    dest: "{{ check_process_script }}/redis_is_master"
-    mode: 0755
-    owner: root
-    group: root
-  when: "'keepalived_redis' in group_names"
-  tags: keepalived
-  notify: restart keepalived
-
 - name: Start keepalived
   service: name=keepalived state=started
   tags: keepalived
