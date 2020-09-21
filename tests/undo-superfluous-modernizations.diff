@@ -20,6 +20,16 @@ index b4076b012..978f3af03 100644
  
      inventory = Inventory()
  
+diff --git a/setup.py b/setup.py
+index 5d3084fdb..0f12ba186 100644
+--- a/setup.py
++++ b/setup.py
+@@ -1,5 +1,4 @@
+ from __future__ import absolute_import
+-from __future__ import unicode_literals
+ from setuptools import setup, find_packages
+ 
+ test_deps = [
 diff --git a/src/commcare_cloud/commands/ansible/ops_tool.py b/src/commcare_cloud/commands/ansible/ops_tool.py
 index 430e17f9a..7d1af83b0 100644
 --- a/src/commcare_cloud/commands/ansible/ops_tool.py
