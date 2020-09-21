@@ -11,5 +11,4 @@ keepalived_priority: "200"
 keepalived_backup_priority: "100"
 script_user: "root"
 notify_script_path: "/etc/keepalived/notify_script"
-check_process_script: "/etc/keepalived"
 keepalived_check_interval: 2

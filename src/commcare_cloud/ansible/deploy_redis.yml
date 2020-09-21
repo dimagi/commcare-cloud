@@ -39,7 +39,7 @@
   hosts: keepalived_redis
   become: true
   vars:
-     keepalived_check_process: "{{check_process_script}}/redis_is_master"
+     keepalived_check_process: "{{ check_master_script_path }}"
      keepalived_check_interval: 15
      keepalived_router_id: 53
   roles:

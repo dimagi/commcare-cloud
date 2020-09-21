@@ -1,2 +1,2 @@
 ---
-
+check_master_script_path: /etc/redis/redis_is_master
