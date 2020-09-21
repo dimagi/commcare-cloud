@@ -14,7 +14,6 @@
   lineinfile:
     dest: "{{ couchdb_dir }}/etc/vm.args"
     line: "-kernel inet_dist_listen_min {{ couchdb_cluster_port }}"
-    line: "-kernel inet_dist_listen_max {{ couchdb_cluster_port }}"
     insertafter: '^-sasl sasl_error_logger false'   
     state: present
   when: couchdb_cluster_port is defined
