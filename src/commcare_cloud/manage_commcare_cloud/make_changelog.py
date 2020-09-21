@@ -115,4 +115,4 @@ class MakeChangelog(CommandBase):
         template = j2.get_template('changelog.md.j2')
 
         text = template.render(changelog_entry=changelog_entry, ordinal=ordinal)
-        print(text.rstrip().encode("utf-8").replace('{{', "{{ '{{' }}"))
+        print(text.rstrip().replace('{{', "{{ '{{' }}").encode("utf-8"))
