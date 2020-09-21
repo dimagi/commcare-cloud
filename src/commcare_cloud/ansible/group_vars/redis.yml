@@ -17,3 +17,4 @@ cluster_config:
   cluster-enabled: "yes"
   cluster-config-file: "nodes.conf" # Redis internal filename, never change this
   cluster-node-timeout: "5000"
+check_master_script_path: "{{ redis_install_dir }}/redis_is_master
