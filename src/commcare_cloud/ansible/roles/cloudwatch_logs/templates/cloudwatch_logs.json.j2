@@ -5,12 +5,15 @@
             "files": {
                 "collect_list": [
                 {% for cfg in log_files_collect_list -%}
+                {%- if cfg.should_include %}
+                {#- for the ',' logic to work, the first item in the list must apply to all -#}
+                {%- if not loop.first %}, {% endif -%}
                 {
                     "file_path": "{{ cfg.file_path }}",
                     "log_group_name": "{{ deploy_env }}-{{ cfg.log_group_name_suffix }}",
                     "log_stream_name": "{instance_id}-{local_hostname}{%- if 'log_stream_name_suffix' in cfg %}-{{ cfg.log_stream_name_suffix }}{% endif %}"
                 }
-                {%- if not loop.last %}, {% endif %}
+                {%- endif %}
                 {%- endfor %}
                ]
            }

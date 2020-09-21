@@ -1,127 +1,68 @@
-
-- name: formplayer
-  hosts: formplayer
+- name: OS logs
+  hosts: all
   become: true
   roles:
     - role: cloudwatch_logs
       vars:
         log_files_collect_list:
+          # for the ',' logic to work in cloudwatch_logs.json.j2
+          # the all section must come first (because the first thing in the list must always apply)
+          # all
+          - file_path: "/var/log/auth.log*"
+            log_group_name_suffix: "var-log-auth"
+            should_include: true
+          - file_path: "/var/log/audit/audit.log*"
+            log_group_name_suffix: "var-log-audit"
+            should_include: true
+          - file_path: "/var/log/syslog*"
+            log_group_name_suffix: "var-log-syslog"
+            should_include: true
+          # formplayer
           - file_path: "/home/cchq/www/{{ deploy_env }}/log/formplayer*.log"
             log_group_name_suffix: "formplayer"
-      tags:
-        - formplayer
-        - cloudwatch_logs
-
-- name: webworkers
-  hosts: webworkers
-  become: true
-  roles:
-    - role: cloudwatch_logs
-      vars:
-        log_files_collect_list:
+            should_include: "{{ 'formplayer' in group_names }}"
+          # webworkers
           - file_path: "/home/cchq/www/{{ deploy_env }}/log/*.log"
             log_group_name_suffix: "webworkers"
-      tags:
-        - webworkers
-        - cloudwatch_logs
-
-- name: elasticsearch
-  hosts: elasticsearch
-  become: true
-  roles:
-    - role: cloudwatch_logs
-      vars:
-        log_files_collect_list:
+            should_include: "{{ 'webworkers' in group_names }}"
+          # elasticsearch
           - file_path: "/opt/data/elasticsearch-2.4.6/logs/*es.log*"
             log_group_name_suffix: "elasticsearch"
             log_stream_name_suffix: "{{ deploy_env }}_es"
+            should_include: "{{ 'elasticsearch' in group_names }}"
           - file_path: "/opt/data/elasticsearch-2.4.6/logs/*es_index_search_slowlog.log*"
             log_group_name_suffix: "elasticsearch"
             log_stream_name_suffix: "{{ deploy_env }}_es_index_search_slowlog"
-      tags:
-        - elasticsearch
-        - cloudwatch_logs
-
-- name: couchdb2_proxy
-  hosts: couchdb2_proxy
-  become: true
-  roles:
-    - role: cloudwatch_logs
-      vars:
-        log_files_collect_list:
+            should_include: "{{ 'elasticsearch' in group_names }}"
+          # couchdb2_proxy
           - file_path: "/home/cchq/www/{{ deploy_env }}/log/*-nginx_access.log*"
             log_group_name_suffix: "couchdb2_proxy"
             log_stream_name_suffix: "nginx_access"
+            should_include: "{{ 'couchdb2_proxy' in group_names }}"
           - file_path: "/home/cchq/www/{{ deploy_env }}/log/*-nginx_error.log*"
             log_group_name_suffix: "couchdb2_proxy"
             log_stream_name_suffix: "nginx_error"
-      tags:
-        - couchdb2_proxy
-        - cloudwatch_logs
-
-- name: couchdb2
-  hosts: couchdb2
-  become: true
-  roles:
-    - role: cloudwatch_logs
-      vars:
-        log_files_collect_list:
+            should_include: "{{ 'couchdb2_proxy' in group_names }}"
+          # couchdb2
           - file_path: "/usr/local/couchdb2/apache-couchdb-2.3.1/var/log/couchdb.stderr*"
             log_group_name_suffix: "couchdb2"
             log_stream_name_suffix: "stderr"
-      tags:
-        - couchdb2
-        - cloudwatch_logs
-
-- name: celery
-  hosts: celery
-  become: true
-  roles:
-    - role: cloudwatch_logs
-      vars:
-        log_files_collect_list:
+            should_include: "{{ 'couchdb2' in group_names }}"
+          # celery
           - file_path: "/home/cchq/www/{{ deploy_env }}/log/*.log*"
             log_group_name_suffix: "celery"
-      tags:
-        - celery
-        - cloudwatch_logs
-
-- name: pillowtop
-  hosts: pillowtop
-  become: true
-  roles:
-    - role: cloudwatch_logs
-      vars:
-        log_files_collect_list:
+            should_include: "{{ 'celery' in group_names }}"
+          # pillowtop
           - file_path: "/home/cchq/www/{{ deploy_env }}/log/*.log*"
             log_group_name_suffix: "pillowtop"
-      tags:
-        - pillowtop
-        - cloudwatch_logs
-
-- name: proxy
-  hosts: proxy
-  become: true
-  roles:
-    - role: cloudwatch_logs
-      vars:
-        log_files_collect_list:
+            should_include: "{{ 'pillowtop' in group_names }}"
+          # proxy
           - file_path: "/home/cchq/www/{{ deploy_env }}/log/*.log*"
             log_group_name_suffix: "proxy"
-      tags:
-        - proxy
-        - cloudwatch_logs
-
-
-- name: control
-  hosts: control
-  become: true
-  roles:
-    - role: cloudwatch_logs
-      vars:
-        log_files_collect_list:
+            should_include: "{{ 'proxy' in group_names }}"
+          # control
           - file_path: "/var/log/ansible.log*"
             log_group_name_suffix: "control"
+            should_include: "{{ 'control' in group_names }}"
       tags:
-        - control
         - cloudwatch_logs
