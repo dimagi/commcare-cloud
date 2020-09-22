@@ -1,0 +1,27 @@
+# To remove celery tasks that are running for more than 36 hours.
+#
+- name: Celery cron jobs for soft kill tasks running from last 36h
+  become: true
+  cron:
+    name: "Sending SIGTERM to celery processes running morethan 36h"
+    job: "kill -15 $(ps -eo comm,pid,etimes | awk '/celeryd:/ {if ($4 > 129599) { print $3 }}')"
+    minute: 15
+    hour: "*"
+    weekday: "0,1,2,3,4,5,6"
+    user: root
+    cron_file: celery_sigterm
+  tags:
+    - cron
+
+- name: Cron job to Kill Celery tasks running from last 46h
+  become: true
+  cron:
+    name: "Sending SIGTERM to celery processes running morethan 46h"
+    job: "kill -9 $(ps -eo comm,pid,etimes | awk '/celeryd:/ {if ($4 > 165599) { print $3 }}')"
+    minute: 0
+    hour: "*"
+    weekday: "0,1,2,3,4,5,6"
+    user: root
+    cron_file: celery_sigkill
+  tags:
+    - cron
