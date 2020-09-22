@@ -5,6 +5,7 @@
 # See this doc for info on snapshot storage structure:
 #   https://www.elastic.co/blog/found-dive-into-elasticsearch-storage#storing-snapshots
 
+from __future__ import division
 import argparse
 import inspect
 import json
@@ -348,8 +349,8 @@ class Info(object):
                 suffix = f" ({total - success} of {total} shards failed)"
             print(f"    {snapshot} [{state}]{suffix}")
             if self.detail:
-                start = datetime.fromtimestamp(snap_info['start_time']/1000)
-                end = datetime.fromtimestamp(snap_info['end_time']/1000)
+                start = datetime.fromtimestamp(snap_info['start_time']//1000)
+                end = datetime.fromtimestamp(snap_info['end_time']//1000)
                 duration = str(end - start)
                 print(f"        Took {duration} from {start.strftime('%Y-%m-%d %H:%M:%S')} to {end.strftime('%Y-%m-%d %H:%M:%S')}")
                 if failure:
