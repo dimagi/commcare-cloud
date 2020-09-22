@@ -302,6 +302,17 @@ servers:
       encrypted: yes
     group: "elasticsearch"
     os: ubuntu_pro_bionic
+  - server_name: "es29-production"
+    server_instance_type: r5.4xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1400
+      encrypted: yes
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
     
   - server_name: "couchproxy2-production"
     server_instance_type: m5.large
