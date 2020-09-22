@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import os
 import re
 
@@ -24,6 +26,7 @@ from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.schemas.terraform import TerraformConfig
 from commcare_cloud.environment.schemas.prometheus import PrometheusConfig
 from commcare_cloud.environment.users import UsersConfig
+from six.moves import map
 
 
 class Environment(object):

@@ -1,6 +1,7 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
+from __future__ import unicode_literals
 import jsonobject
 
 import jinja2
@@ -114,4 +115,4 @@ class MakeChangelog(CommandBase):
         template = j2.get_template('changelog.md.j2')
 
         text = template.render(changelog_entry=changelog_entry, ordinal=ordinal)
-        print(text.rstrip().encode("utf-8").replace('{{', "{{ '{{' }}"))
+        print(text.rstrip().replace('{{', "{{ '{{' }}").encode("utf-8"))

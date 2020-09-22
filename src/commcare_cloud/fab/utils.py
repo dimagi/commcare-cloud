@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
+from __future__ import unicode_literals
 import datetime
 import os
 import pickle
@@ -230,7 +231,7 @@ def _retrieve_cached(filename):
 def traceback_string():
     exc_type, exc, tb = sys.exc_info()
     trace = "".join(traceback.format_tb(tb))
-    return u"Traceback:\n{trace}{type}: {exc}".format(
+    return "Traceback:\n{trace}{type}: {exc}".format(
         trace=trace,
         type=exc_type.__name__,
         exc=exc,

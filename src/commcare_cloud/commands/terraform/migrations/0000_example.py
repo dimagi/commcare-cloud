@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 def get_new_resource_address(environment, old_resource_address):
     """
     Specify migration by specifying for a given old address what the new address should be
