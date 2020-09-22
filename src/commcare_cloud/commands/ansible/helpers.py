@@ -11,6 +11,7 @@ from clint.textui import puts
 from commcare_cloud.cli_utils import has_arg, ask
 from commcare_cloud.colors import color_error, color_success
 from commcare_cloud.environment.paths import ANSIBLE_DIR, ANSIBLE_ROLES_PATH, ANSIBLE_COLLECTIONS_PATHS
+from six.moves import shlex_quote
 from six.moves import range
 
 DEPRECATED_ANSIBLE_ARGS = []
@@ -58,7 +59,7 @@ def get_common_ssh_args(environment, use_factory_auth=False):
     common_ssh_args.extend(get_default_ssh_options_as_cmd_parts(environment))
 
     if common_ssh_args:
-        cmd_parts_with_common_ssh_args += ('--ssh-common-args={}'.format(' '.join(common_ssh_args)),)
+        cmd_parts_with_common_ssh_args += ('--ssh-common-args={}'.format(' '.join(map(shlex_quote, common_ssh_args))),)
     return cmd_parts_with_common_ssh_args
 
 
