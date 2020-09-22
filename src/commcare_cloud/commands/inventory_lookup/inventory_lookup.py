@@ -87,7 +87,7 @@ class Ssh(_Ssh):
 
         environment = get_environment(args.env_name)
         for option_name, default_option_value in get_default_ssh_options(environment):
-            if not any(a.startswith(('{}='.format(option_name), "-o{}=" + option_name)) for a in ssh_args):
+            if not any(a.startswith(('{}='.format(option_name), "-o{}=".format(option_name))) for a in ssh_args):
                 ssh_args = ["-o", '{}={}'.format(option_name, default_option_value)] + ssh_args
         return super(Ssh, self).run(args, ssh_args)
 
