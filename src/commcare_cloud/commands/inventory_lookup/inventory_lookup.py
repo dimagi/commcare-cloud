@@ -2,7 +2,6 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import os
 import subprocess
 import sys
 
@@ -12,7 +11,7 @@ from six.moves import shlex_quote
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.environment.main import get_environment
-from ..ansible.helpers import get_default_ssh_options
+from ..ansible.helpers import get_default_ssh_options_as_cmd_parts
 
 from ...colors import color_error
 from .getinventory import (get_monolith_address, get_server_address,
@@ -86,9 +85,7 @@ class Ssh(_Ssh):
             ssh_args = ['-A'] + ssh_args
 
         environment = get_environment(args.env_name)
-        for option_name, default_option_value in get_default_ssh_options(environment):
-            if not any(a.startswith(('{}='.format(option_name), "-o{}=".format(option_name))) for a in ssh_args):
-                ssh_args = ["-o", '{}={}'.format(option_name, default_option_value)] + ssh_args
+        ssh_args = get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=ssh_args) + ssh_args
         return super(Ssh, self).run(args, ssh_args)
 
 
