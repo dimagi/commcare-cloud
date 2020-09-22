@@ -19,6 +19,7 @@ To run tests, first install the test dependencies
 ```
 pip install -e .[test]
 ```
+- if running on zsh `pip install -e '.[test]'`
 
 and then run
 
