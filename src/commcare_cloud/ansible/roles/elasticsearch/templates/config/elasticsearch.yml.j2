@@ -13,7 +13,7 @@ node.name: "{{ elasticsearch_node_name }}"
 {% if elasticsearch_version == '2.4.6'%}
 node.zone: "{{ elasticsearch_node_zone }}"
 {% endif %}
-{% if elasticsearch_version =='7.6.2' %}
+{% if elasticsearch_version =='7.9.1' %}
 node.attr.zone: "{{ elasticsearch_node_zone }}"
 {% endif %}
 {% endif %}
@@ -38,7 +38,7 @@ discovery.zen.minimum_master_nodes: {{ [2, groups.elasticsearch|map('extract', h
 {% if elasticsearch_version == '2.4.6'%}
 discovery.zen.ping.timeout: 90s
 {% endif %}
-{% if elasticsearch_version =='7.6.2' %}
+{% if elasticsearch_version =='7.9.1' %}
 discovery.zen.ping_timeout: 90s
 {% endif %}
 discovery.zen.fd.ping_timeout: 90s
@@ -100,7 +100,7 @@ cloud:
 {% if elasticsearch_version == '2.4.6'%}
 action.auto_create_index: false
 {% endif %}
-{% if elasticsearch_version == '7.6.2' %}
+{% if elasticsearch_version == '7.9.1' %}
 action.auto_create_index: .watches,.triggered_watches,.watcher-history-*
 {% endif %}
 
@@ -111,7 +111,7 @@ path.repo: ["{{ elasticsearch_data_dir }}/snapshot"]
 
 
 
-{% if elasticsearch_version == '7.6.2' %}
+{% if elasticsearch_version == '7.9.1' %}
 cluster.initial_master_nodes:
 {% for item in groups.elasticsearch %}
 {% if hostvars[item].elasticsearch_master is defined %}

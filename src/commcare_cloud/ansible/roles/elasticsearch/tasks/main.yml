@@ -3,7 +3,7 @@
     that:
       - "'es7_' in elasticsearch_cluster_name"
     fail_msg: "Elasticsearch V7 cluster name should start with es7_ prefix"
-  when: elasticsearch_version  == "7.6.2"
+  when: elasticsearch_version  == "7.9.1"
 
 - name: Downloads Directory
   file: path="/home/{{ cchq_user }}/downloads/" state=directory
@@ -80,7 +80,7 @@
   when: elasticsearch_version == '2.4.6'
 
 - include: misc_v7.yml
-  when: elasticsearch_version == '7.6.2'
+  when: elasticsearch_version == '7.9.1'
 
 - name: Copy Elasticsearch Upstart Conf
   become: yes
@@ -237,4 +237,4 @@
     url: 'http://{{groups.elasticsearch.0}}:9200/_all/_settings?preserve_existing=true'
     method: PUT
     body: ' { "index.max_result_window" : "1000000","index.search.slowlog.threshold.query.debug" : "2s","index.search.slowlog.threshold.query.info" : "5s", "index.search.slowlog.threshold.query.trace" : "500ms", "index.search.slowlog.threshold.query.warn" : "10s"}'
-  when: inventory_hostname == groups.elasticsearch.0 and elasticsearch_version == '7.6.2'
+  when: inventory_hostname == groups.elasticsearch.0 and elasticsearch_version == '7.9.1'
