@@ -13,6 +13,7 @@ from commcare_cloud.colors import color_error, color_success
 from commcare_cloud.environment.paths import ANSIBLE_DIR, ANSIBLE_ROLES_PATH, ANSIBLE_COLLECTIONS_PATHS
 from six.moves import shlex_quote
 from six.moves import range
+from six.moves import map
 
 DEPRECATED_ANSIBLE_ARGS = []
 
