@@ -33,13 +33,13 @@
     sha256sum: "{{ elasticsearch_download_sha256 }}"
   when: elasticsearch_version == "2.4.6"
 
-- name: Download Elasticsearch 7.6.x
+- name: Download Elasticsearch 7.9.1
   become: yes
   get_url:
     url: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}-linux-x86_64.tar.gz"
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     sha256sum: "{{ elasticsearch_download_sha256 }}"
-  when: elasticsearch_version == "7.6.2"
+  when: elasticsearch_version == "7.9.1"
 
 - name: Unarchive Elasticsearch
   become: yes
