@@ -99,18 +99,10 @@ redis2
 
 {{ __es5__ }} elasticsearch_node_name=es5-staging elasticsearch_node_zone=aws elasticsearch_master=true
 
-{{ __es6__ }} elasticsearch_node_name=es6-staging elasticsearch_node_zone=aws elasticsearch_master=true
-
-{{ __es7__ }} elasticsearch_node_name=es7-staging elasticsearch_node_zone=aws elasticsearch_master=true
-
 [elasticsearch:children]
 # Amazon EC2
-# old ES v2 hosts
-# es4
-# es5
-# ES v7 hosts
-es6
-es7
+es4
+es5
 
 [shared_dir_host:children]
 redis2
