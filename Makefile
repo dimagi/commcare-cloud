@@ -40,4 +40,4 @@ src/commcare_cloud/ansible/roles/ebsnvme/files/_vendor/ebsnvme-id:
 	  && mv src/commcare_cloud/ansible/roles/ebsnvme/files/_vendor/ebsnvme-id.raw src/commcare_cloud/ansible/roles/ebsnvme/files/_vendor/ebsnvme-id
 
 clean:
-	rm $(autogen)
+	rm -f $(autogen)
