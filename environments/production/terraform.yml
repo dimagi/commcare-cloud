@@ -407,7 +407,7 @@ servers:
     os: bionic
 
   - server_name: "formplayer_b{i}-production"
-    server_instance_type: t3a.2xlarge
+    server_instance_type: m5.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 100
