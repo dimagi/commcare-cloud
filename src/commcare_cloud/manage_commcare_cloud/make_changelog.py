@@ -10,6 +10,7 @@ import re
 import sys
 from io import open
 
+import six
 import yaml
 
 from commcare_cloud.commands.command_base import CommandBase, Argument
@@ -110,4 +111,7 @@ class MakeChangelog(CommandBase):
         template = j2.get_template('changelog.md.j2')
 
         text = template.render(changelog_entry=changelog_entry, ordinal=ordinal)
-        print(text.rstrip().replace('{{', "{{ '{{' }}").encode("utf-8"))
+        text = text.rstrip().replace('{{', "{{ '{{' }}")
+        if six.PY2:
+            text = text.encode("utf-8")
+        print(text)
