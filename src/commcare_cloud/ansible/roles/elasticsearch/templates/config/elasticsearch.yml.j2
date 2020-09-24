@@ -30,25 +30,25 @@ http.cors.allow-origin: "null"
 path.data: {{ elasticsearch_data_dir }}/data
 path.logs: {{ elasticsearch_data_dir }}/logs
 
+{% if elasticsearch_version == '2.4.6'%}
 # discovery.zen.minimum_master_nodes is the minimum number of
 # MASTER ELIGIBLE nodes that must be reachable before a master may be elected
 # Best practice is to set it to M/2 + 1 where M is the number of master-eligible nodes,
 # but (todo) we DO NOT follow best practice.
 discovery.zen.minimum_master_nodes: {{ [2, groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list | length] | min }}
-{% if elasticsearch_version == '2.4.6'%}
 discovery.zen.ping.timeout: 90s
-{% endif %}
-{% if elasticsearch_version =='7.9.1' %}
-discovery.zen.ping_timeout: 90s
-{% endif %}
 discovery.zen.fd.ping_timeout: 90s
 discovery.zen.fd.ping_interval: 10s
 discovery.zen.fd.ping_retries: 20
-
-{% if elasticsearch_version == '2.4.6'%}
 discovery.zen.ping.multicast.enabled: false
 {% endif %}
+
+{% if elasticsearch_version == '2.4.6' %}
 discovery.zen.ping.unicast.hosts: [
+{% endif %}
+{% if elasticsearch_version == '7.9.1' %}
+discovery.discovery_hosts: [
+{% endif %}
 {% for endpoint in groups.elasticsearch %}
   {% if endpoint|ipaddr %}
     "{{ endpoint }}:{{ elasticsearch_tcp_port }}",
@@ -115,11 +115,16 @@ path.repo: ["{{ elasticsearch_data_dir }}/snapshot"]
 cluster.initial_master_nodes:
 {% for item in groups.elasticsearch %}
 {% if hostvars[item].elasticsearch_master is defined %}
-  - {{ hostvars[item].elasticsearch_node_name }}
+  {% if item|ipaddr %}
+  - "{{ item }}"
+  {% else %}
+  - "{{ lookup('dig', item, wantlist=True)[0] }}"
 {% endif %}
 {% endfor %}
 {% endif %}
 
+
+{% if elasticsearch_version == '2.4.6'%}
 # see also discovery.zen.minimum_master_nodes above for how a master gets elected
 {# only include master eligibility if it is set on at least one node in the cluster #}
 {% if groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list %}
@@ -129,3 +134,16 @@ node.master: {{ elasticsearch_master|default('false') }}
 {% endif %}
 
 node.data: {{ elasticsearch_data|default('true') }}
+{% endif %}
+
+{% if elasticsearch_version == '7.9.1'%}
+{% if elasticsearch_data|default('true') and elasticsearch_master|default('false') %}
+node.roles: [ master data ]
+{% endif %}
+{% if elasticsearch_master|default('false') %}
+node.roles: [ master ]
+{% endif %}
+{% if elasticsearch_data|default('true') %}
+node.roles: [ data ]
+{% endif %}
+{% endif %}
