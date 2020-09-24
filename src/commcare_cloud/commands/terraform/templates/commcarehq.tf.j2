@@ -83,6 +83,7 @@ module "server_iam_role" {
   source = "./modules/server/iam"
   environment = "${var.environment}"
   account_id = {{ account_id|tojson }}
+  region_name = "${var.region}"
   formplayer_request_response_logs_firehose_stream_arn = "${module.logshipping.formplayer_request_response_logs_firehose_stream_arn}"
 }
 

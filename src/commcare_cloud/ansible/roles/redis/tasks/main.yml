@@ -25,6 +25,14 @@
     value: 65535
     state: present
 
+- name: Create redis master check script
+  template:
+    src: redis_is_master.j2
+    dest: "{{ check_master_script_path }}"
+    mode: 0755
+    owner: root
+    group: root
+
 - meta: flush_handlers
 
 - monit:

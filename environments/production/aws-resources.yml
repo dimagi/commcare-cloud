@@ -40,6 +40,10 @@ es26-production: 10.202.40.83
 es26-production.instance_id: i-0cc7d42b8bc1487ce
 es27-production: 10.202.40.212
 es27-production.instance_id: i-0952f8a8ce34177e9
+es28-production: 10.202.40.254
+es28-production.instance_id: i-05a8fbfef00c74f79
+es29-production: 10.202.40.124
+es29-production.instance_id: i-0ea88bbed3872134e
 esmaster3-production: 10.202.41.183
 esmaster3-production.instance_id: i-0f6242077a2a64971
 esmaster4-production: 10.202.41.247

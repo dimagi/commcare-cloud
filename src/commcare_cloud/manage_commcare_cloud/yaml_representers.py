@@ -1,10 +1,13 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import collections
 
 import yaml
 from yaml.representer import SafeRepresenter
+import six
 
 
-class LiteralUnicode(unicode):
+class LiteralUnicode(six.text_type):
     pass
 
 

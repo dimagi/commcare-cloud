@@ -27,6 +27,7 @@ Server layout:
 """
 from __future__ import absolute_import
 from __future__ import print_function
+from __future__ import unicode_literals
 import datetime
 import functools
 import os
@@ -397,7 +398,7 @@ def setup_release(keep_days=0):
     _setup_release(parse_int_or_exit(keep_days), full_cluster=True)
 
 
-def _setup_release(keep_days=0, full_cluster=True):
+def _setup_release(keep_days=2, full_cluster=True):
     """
     Setup a release in the releases directory with the most recent code.
     Useful for running management commands. These releases will automatically

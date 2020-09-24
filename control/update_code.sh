@@ -32,9 +32,19 @@ function update_repo() {
     git submodule update --init --recursive
 }
 
-for repo in "commcare-cloud"
+repos="$HOME/commcare-cloud"
+
+# if environments points to a separate Git repo, update that as well
+if [ -n "$COMMCARE_CLOUD_ENVIRONMENTS" ] && \
+   [ ! "$COMMCARE_CLOUD_ENVIRONMENTS" -ef "$HOME/commcare-cloud/environments" ] && \
+   [ -d "$(dirname $COMMCARE_CLOUD_ENVIRONMENTS)/.git" ]
+then
+  repos="${repos} $(dirname $COMMCARE_CLOUD_ENVIRONMENTS)"
+fi
+
+for repo in $repos
 do
-    cd ~/$repo
+    cd $repo
     pwd
     check_for_changes $repo
     update_repo

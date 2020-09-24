@@ -9,6 +9,25 @@
     mode: 0644
   notify: restart couchdb2
 
+- name: Ensure that the Erlang VM listens on a known minimum port no.
+  become: yes
+  lineinfile:
+    dest: "{{ couchdb_dir }}/etc/vm.args"
+    line: "-kernel inet_dist_listen_min {{ couchdb_cluster_port }}"
+    insertafter: '^-sasl sasl_error_logger false'   
+    state: present
+  when: couchdb_cluster_port is defined
+
+- name: Ensure that the Erlang VM listens on a known maximum port no.
+  become: yes
+  lineinfile:
+    dest: "{{ couchdb_dir }}/etc/vm.args"
+    line: "-kernel inet_dist_listen_max {{ couchdb_cluster_port }}"
+    insertafter: '^-kernel inet_dist_listen_min {{ couchdb_cluster_port }}'
+    state: present
+  when: couchdb_cluster_port is defined
+  notify: restart couchdb2
+
 - meta: flush_handlers
 
 - name: Add nodes

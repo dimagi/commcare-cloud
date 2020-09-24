@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
 from nose.tools import assert_equal, assert_raises
 from parameterized.test import assert_contains
 

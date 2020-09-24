@@ -1,5 +1,5 @@
-celery2-staging: 10.201.10.230
-celery2-staging.instance_id: i-08299eefc63d74e3c
+celery3-staging: 10.201.10.216
+celery3-staging.instance_id: i-0c544ab25e0364153
 control0-staging: 10.201.10.116
 control0-staging.instance_id: i-026b188d133e068a1
 couch3-staging: 10.201.40.182
@@ -32,8 +32,8 @@ kafka2-staging.instance_id: i-08a404d6bad630a35
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgproxy2-staging: 10.201.40.16
 pgproxy2-staging.instance_id: i-0638ff6218ed9f753
-pillow2-staging: 10.201.10.163
-pillow2-staging.instance_id: i-0672c9637735b0a3e
+pillow3-staging: 10.201.10.68
+pillow3-staging.instance_id: i-0ef555fec7fe64804
 proxy1-staging: 10.201.20.208
 proxy1-staging.instance_id: i-02e1fe640296f8db9
 proxy1-staging.public_ip: 3.89.61.176
@@ -46,7 +46,7 @@ redis2-staging.instance_id: i-0ba9234c3f9c17993
 vpn-staging: 10.201.20.112
 vpn-staging.instance_id: i-0e43738c0151d44b7
 vpn-staging.public_ip: 54.227.170.89
-web5-staging: 10.201.11.173
-web5-staging.instance_id: i-073638892d7b5bdf4
-web6-staging: 10.201.11.180
-web6-staging.instance_id: i-0a142adb617637842
+web7-staging: 10.201.11.170
+web7-staging.instance_id: i-00c29bc6df3a1f47b
+web8-staging: 10.201.11.222
+web8-staging.instance_id: i-0bd7718f045f89e11

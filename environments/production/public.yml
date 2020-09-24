@@ -60,6 +60,7 @@ filebeat_inputs:
 
 formplayer_purge_time_spec: '5d'
 formplayer_sensitive_data_logging: true
+formplayer_forward_ip_proxy: true
 
 KSPLICE_ACTIVE: yes
 
@@ -108,7 +109,6 @@ AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 
 localsettings:
   ALLOWED_HOSTS:
-    - www.commtrack.org
     - testserver
     - proxytest.commcarehq.org
     - "{{ J2ME_SITE_HOST }}"

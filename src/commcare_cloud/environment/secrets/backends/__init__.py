@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from commcare_cloud.environment.secrets.backends.ansible_vault.main import AnsibleVaultSecretsBackend
 from commcare_cloud.environment.secrets.backends.aws_secrets.main import AwsSecretsBackend
 

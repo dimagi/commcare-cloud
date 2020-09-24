@@ -1,4 +1,6 @@
 from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import json
 import sys
 import tempfile
@@ -211,7 +213,7 @@ class _SimulatedState(object):
         return self._address_to_resource[address]
 
     def list(self):
-        return self._address_to_resource.keys()
+        return list(self._address_to_resource.keys())
 
     def address_is_free(self, address):
         return address not in self._address_to_resource

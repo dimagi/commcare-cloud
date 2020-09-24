@@ -14,14 +14,14 @@ proxy2
 [logproxy:children]
 proxy
 
-{{ __web5__ }} swap_size=1G
+{{ __web7__ }} swap_size=1G
 
-{{ __web6__ }} swap_size=1G
+{{ __web8__ }} swap_size=1G
 
 [webworkers:children]
 # Amazon EC2
-web5
-web6
+web7
+web8
 
 {{ __pgproxy2__ }}
 
@@ -64,17 +64,17 @@ kafka2
 # Amazon EC2
 kafka2
 
-{{ __celery2__ }} swap_size=8G
+{{ __celery3__ }} swap_size=8G
 
 [celery:children]
 # Amazon EC2
-celery2
+celery3
 
-{{ __pillow2__ }}
+{{ __pillow3__ }}
 
 [pillowtop:children]
 # Amazon EC2
-pillow2
+pillow3
 
 {{ __formplayer3__ }}
 
@@ -125,4 +125,4 @@ rds_pg0
 
 [django_manage:children]
 # Amazon EC2
-web5
+web7

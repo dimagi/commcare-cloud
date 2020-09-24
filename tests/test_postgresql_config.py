@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import os
 from unittest import SkipTest
 
@@ -24,7 +26,7 @@ def test_postgresql_config(env_name):
 
     with open(env.paths.generated_yml) as f:
         generated = yaml.safe_load(f)
-        assert generated.keys() == ['postgresql_dbs']
+        assert list(generated.keys()) == ['postgresql_dbs']
 
     expected_json = generated['postgresql_dbs']
 

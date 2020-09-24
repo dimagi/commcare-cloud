@@ -22,22 +22,22 @@ servers:
     group: "control"
     os: bionic
 
-  - server_name: "web5-staging"
+  - server_name: "web7-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
     volume_encrypted: yes
     group: webworkers
-    os: bionic
-  - server_name: "web6-staging"
+    os: ubuntu_pro_bionic
+  - server_name: "web8-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
     volume_encrypted: yes
     group: webworkers
-    os: bionic
+    os: ubuntu_pro_bionic
 
   - server_name: "es4-staging"
     server_instance_type: "t3.medium"
@@ -84,23 +84,23 @@ servers:
     group: "elasticsearch"
     os: ubuntu_pro_bionic
 
-  - server_name: "pillow2-staging"
+  - server_name: "pillow3-staging"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
     volume_encrypted: yes
     group: pillowtop
-    os: bionic
+    os: ubuntu_pro_bionic
 
-  - server_name: "celery2-staging"
+  - server_name: "celery3-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
     volume_encrypted: yes
     group: celery
-    os: bionic
+    os: ubuntu_pro_bionic
 
   - server_name: "formplayer3-staging"
     server_instance_type: "t3.large"

@@ -1,8 +1,10 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import os
 
 from mock import patch
 from nose.tools import assert_equal, assert_raises
-from nose_parameterized import parameterized
+from parameterized import parameterized
 
 from commcare_cloud.commands.inventory_lookup.getinventory import (
     HostMatchException, HostPattern, get_server_address, split_host_group)

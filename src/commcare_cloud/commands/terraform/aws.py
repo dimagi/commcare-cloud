@@ -1,6 +1,8 @@
 # coding=utf-8
 from __future__ import print_function
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import getpass
 import json
 import os
@@ -483,7 +485,7 @@ def _aws_sign_in_with_iam(aws_profile, duration_minutes=DEFAULT_SIGN_IN_DURATION
     mfa_token = input("Enter your MFA token: ")
     generate_session_profile(aws_profile, username, mfa_token, duration_minutes)
 
-    puts(color_success(u"✓ Sign in accepted"))
+    puts(color_success("✓ Sign in accepted"))
     puts("You will be able to use AWS from the command line for the next {} minutes."
          .format(duration_minutes))
     puts(color_notice(
@@ -613,6 +615,6 @@ def _iter_files_in_dir(directory):
             yield filepath
 
 
-def _ensure_all_dirs(path, mode=0700):
+def _ensure_all_dirs(path, mode=0o700):
     if not os.path.exists(path):
         os.makedirs(path, mode=mode)

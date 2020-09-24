@@ -12,11 +12,13 @@ then
     cp .travis/environments/travis/private.yml .travis/environments/travis/vault.yml
 
     test_syntax() {
-        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --syntax-check
+        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments \
+        commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --syntax-check
     }
 
     test_localsettings() {
-        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --tags=py3,commcarehq
+        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments \
+        commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --tags=py3,commcarehq
         sudo python -m py_compile /home/cchq/www/travis/current/localsettings.py
     }
 
@@ -29,33 +31,10 @@ then
         COMMCARE_CLOUD_ENVIRONMENTS=commcare-environments ./tests/test_autogen_environments.sh
     }
 
-    test_autogen_docs() {
-        ./tests/test_autogen_docs.sh
-    }
-
     test_syntax
     test_localsettings
     test_dimagi_environments
     nosetests -v
-    test_autogen_docs
-
-elif [[ ${TEST} = 'prove-deploy' ]]
-then
-    bootstrap() {
-        ssh-keygen -f ~/.ssh/id_rsa -N "" -q
-        cp ~/.ssh/id_rsa.pub .travis/environments/_authorized_keys/travis.pub
-        (COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments \
-            timeout 45m \
-            bash commcare-cloud-bootstrap/bootstrap.sh hq-${TRAVIS_COMMIT} ${BRANCH} .travis/spec.yml) || {
-                rc=$?
-                if [[ "${rc}" = 124 ]]
-                then
-                    echo "The bootstrapping process ran successfully for 45 minutes before being killed."
-                    echo "For now, for the purposes of this test, we're calling that a success"
-                else
-                    exit ${rc}
-                fi
-            }
-    }
-    bootstrap
+    ./tests/test_autogen_docs.sh
+    ./tests/test_modernize.sh
 fi

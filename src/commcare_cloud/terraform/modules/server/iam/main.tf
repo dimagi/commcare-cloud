@@ -72,7 +72,7 @@ resource "aws_iam_role_policy" "commcare_secrets_access_policy" {
             "Sid": "VisualEditor1",
             "Effect": "Allow",
             "Action": "secretsmanager:*",
-            "Resource": "arn:aws:secretsmanager:us-east-1:${var.account_id}:secret:commcare-${var.environment}/*"
+            "Resource": "arn:aws:secretsmanager:${var.region_name}:${var.account_id}:secret:commcare-${var.environment}/*"
         }
     ]
 }
