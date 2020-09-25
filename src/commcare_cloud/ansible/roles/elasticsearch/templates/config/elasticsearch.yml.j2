@@ -119,6 +119,7 @@ cluster.initial_master_nodes:
   - "{{ item }}"
   {% else %}
   - "{{ lookup('dig', item, wantlist=True)[0] }}"
+  {% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
