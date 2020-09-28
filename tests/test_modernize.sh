@@ -6,6 +6,13 @@
 #
 # undo-modernizations.diff may need to be updated if new lines are added
 # that would be, but should not be modernized.
+
+PYVER=$(python --version 2>&1)
+[[ $PYVER =~ Python\ 2\. ]] || {
+    echo "Skipping modernize test on Python $PYVER"
+    exit 0
+}
+
 set -e
 function do_diff() {
     git --no-pager diff --quiet || echo -e "\nERROR: $1"
