@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from __future__ import division
 import re
 
 import six
@@ -106,8 +107,8 @@ def convert_to_unit(value, new_unit):
                          .format(value, type(new_unit).__name__))
 
     # Unit arithmetic: number * unit = x * new_unit
-    # So: x = number * unit / new_unit
-    return number * unit / new_unit
+    # So: x = number * unit // new_unit (returns integer)
+    return number * unit // new_unit
 
 
 def convert_to_standard_unit(param, value):
