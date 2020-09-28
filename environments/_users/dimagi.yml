@@ -21,6 +21,7 @@ dev_users:
     - aphulera
     - knguyen
     - gherceg
+    - sherbers
   absent:
     - astone
     - wpride
