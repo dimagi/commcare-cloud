@@ -10,7 +10,7 @@ from io import StringIO
 
 import jinja2
 
-from ..argparse14 import RawTextHelpFormatter
+from ..argparse14 import RawTextHelpFormatter, SubParsersAction
 from gettext import gettext as _
 
 from commcare_cloud.commands.command_base import CommandBase
@@ -152,7 +152,7 @@ class MarkdownFormatter(MarkdownFormatterBase):
         super(MarkdownFormatter, self).__init__(*args, **kwargs)
 
     def _format_action(self, action):
-        if action.__class__.__name__ == '_SubParsersAction':
+        if isinstance(action, SubParsersAction):
             return ''
         else:
             return super(MarkdownFormatter, self)._format_action(action)

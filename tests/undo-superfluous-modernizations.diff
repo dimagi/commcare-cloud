@@ -1,7 +1,7 @@
-diff --git a/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py b/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py
+diff --git b/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py a/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py
 index b4076b012..978f3af03 100644
---- a/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py
-+++ b/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py
+--- b/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py
++++ a/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py
 @@ -127,7 +127,7 @@ def provision_machines(spec, env_name=None, create_machines=True):
  
      hosts_by_name = {}
@@ -20,20 +20,21 @@ index b4076b012..978f3af03 100644
  
      inventory = Inventory()
  
-diff --git a/setup.py b/setup.py
-index 5d3084fdb..0f12ba186 100644
---- a/setup.py
-+++ b/setup.py
-@@ -1,5 +1,4 @@
+diff --git b/setup.py a/setup.py
+index 136fc83b7..ebdb93f5a 100644
+--- b/setup.py
++++ a/setup.py
+@@ -1,6 +1,5 @@
  from __future__ import absolute_import
+ 
 -from __future__ import unicode_literals
+ import six
  from setuptools import setup, find_packages
  
- test_deps = [
-diff --git a/src/commcare_cloud/commands/ansible/ops_tool.py b/src/commcare_cloud/commands/ansible/ops_tool.py
+diff --git b/src/commcare_cloud/commands/ansible/ops_tool.py a/src/commcare_cloud/commands/ansible/ops_tool.py
 index 430e17f9a..7d1af83b0 100644
---- a/src/commcare_cloud/commands/ansible/ops_tool.py
-+++ b/src/commcare_cloud/commands/ansible/ops_tool.py
+--- b/src/commcare_cloud/commands/ansible/ops_tool.py
++++ a/src/commcare_cloud/commands/ansible/ops_tool.py
 @@ -128,7 +128,7 @@ class CeleryResourceReport(CommandBase):
          if args.show_workers:
              headers.append('Worker Hosts')
@@ -52,10 +53,10 @@ index 430e17f9a..7d1af83b0 100644
          ]
  
          print_table(headers, rows, args.csv)
-diff --git a/src/commcare_cloud/commands/ansible/service.py b/src/commcare_cloud/commands/ansible/service.py
+diff --git b/src/commcare_cloud/commands/ansible/service.py a/src/commcare_cloud/commands/ansible/service.py
 index 848051193..c8c0c1c52 100644
---- a/src/commcare_cloud/commands/ansible/service.py
-+++ b/src/commcare_cloud/commands/ansible/service.py
+--- b/src/commcare_cloud/commands/ansible/service.py
++++ a/src/commcare_cloud/commands/ansible/service.py
 @@ -576,7 +576,7 @@ def optimize_process_operations(all_processes_by_host, process_host_mapping):
  
      processes_by_hosts = {}
@@ -65,10 +66,10 @@ index 848051193..c8c0c1c52 100644
      for processes, group in groupby(items, key=lambda hp: hp[1]):
          hosts = tuple(sorted([host_processes[0] for host_processes in group]))
          processes_by_hosts[hosts] = processes
-diff --git a/src/commcare_cloud/environment/main.py b/src/commcare_cloud/environment/main.py
+diff --git b/src/commcare_cloud/environment/main.py a/src/commcare_cloud/environment/main.py
 index 7e091c705..8bff10977 100644
---- a/src/commcare_cloud/environment/main.py
-+++ b/src/commcare_cloud/environment/main.py
+--- b/src/commcare_cloud/environment/main.py
++++ a/src/commcare_cloud/environment/main.py
 @@ -350,7 +350,7 @@ class Environment(object):
              ),
              'new_release_name': datetime.utcnow().strftime('%Y-%m-%d_%H.%M'),
@@ -78,10 +79,10 @@ index 7e091c705..8bff10977 100644
          }
          if not self.meta_config.bare_non_cchq_environment:
              generated_variables.update(self.app_processes_config.to_generated_variables())
-diff --git a/src/commcare_cloud/environment/schemas/postgresql.py b/src/commcare_cloud/environment/schemas/postgresql.py
-index 77b02363e..c3fcabe1d 100644
---- a/src/commcare_cloud/environment/schemas/postgresql.py
-+++ b/src/commcare_cloud/environment/schemas/postgresql.py
+diff --git b/src/commcare_cloud/environment/schemas/postgresql.py a/src/commcare_cloud/environment/schemas/postgresql.py
+index 757aaba55..27e46e9cb 100644
+--- b/src/commcare_cloud/environment/schemas/postgresql.py
++++ a/src/commcare_cloud/environment/schemas/postgresql.py
 @@ -349,7 +349,7 @@ class FormProcessingConfig(jsonobject.JsonObject):
          return (
              [self.proxy]
@@ -91,10 +92,10 @@ index 77b02363e..c3fcabe1d 100644
          )
  
  
-diff --git a/src/commcare_cloud/manage_commcare_cloud/list_vault_keys.py b/src/commcare_cloud/manage_commcare_cloud/list_vault_keys.py
+diff --git b/src/commcare_cloud/manage_commcare_cloud/list_vault_keys.py a/src/commcare_cloud/manage_commcare_cloud/list_vault_keys.py
 index c4821e8df..2e0eff6a2 100644
---- a/src/commcare_cloud/manage_commcare_cloud/list_vault_keys.py
-+++ b/src/commcare_cloud/manage_commcare_cloud/list_vault_keys.py
+--- b/src/commcare_cloud/manage_commcare_cloud/list_vault_keys.py
++++ a/src/commcare_cloud/manage_commcare_cloud/list_vault_keys.py
 @@ -37,7 +37,7 @@ class ListVaultKeys(CommandBase):
          headers = ["key"] + [env for env in envs if env in var_keys]
  
@@ -104,10 +105,10 @@ index c4821e8df..2e0eff6a2 100644
              row = ['.'.join(part if part is not None else '*' for part in key)]
              by_var = defaultdict(set)
              for env in envs:
-diff --git a/tests/test_schemas.py b/tests/test_schemas.py
+diff --git b/tests/test_schemas.py a/tests/test_schemas.py
 index c8881058f..36dcc370e 100644
---- a/tests/test_schemas.py
-+++ b/tests/test_schemas.py
+--- b/tests/test_schemas.py
++++ a/tests/test_schemas.py
 @@ -18,7 +18,7 @@ TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
  def test_get_machine_alias():
      env = get_environment('small_cluster')

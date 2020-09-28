@@ -247,7 +247,8 @@ def execute_file_copy_scripts(environment, target_hosts, check_mode=True):
 
 
 def get_file_list_filename(config):
-    dir_hash = hashlib.sha1('{}_{}'.format(config.source_dir, config.target_dir)).hexdigest()[:8]
+    data = '{}_{}'.format(config.source_dir, config.target_dir).encode("utf8")
+    dir_hash = hashlib.sha1(data).hexdigest()[:8]
     filename = '{}_{}__files'.format(config.source_host, dir_hash)
     return filename
 

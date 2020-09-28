@@ -10,6 +10,7 @@ import re
 import sys
 from io import open
 
+import six
 import yaml
 
 from commcare_cloud.commands.command_base import CommandBase, Argument
@@ -77,12 +78,7 @@ def _sort_files(directory):
     """
     Sorts filenames by descending alphanumeric order, userful for organizing the changelog index.md
     """
-    def _natural_keys(text):
-        retval = [int(c) if c.isdigit() else c for c in text[:4]]
-        return retval
-    unsorted_files = os.listdir(directory)
-    unsorted_files.sort(key=_natural_keys, reverse=True)
-    return unsorted_files
+    return sorted(os.listdir(directory), reverse=True)
 
 
 class MakeChangelogIndex(CommandBase):
@@ -115,4 +111,7 @@ class MakeChangelog(CommandBase):
         template = j2.get_template('changelog.md.j2')
 
         text = template.render(changelog_entry=changelog_entry, ordinal=ordinal)
-        print(text.rstrip().replace('{{', "{{ '{{' }}").encode("utf-8"))
+        text = text.rstrip().replace('{{', "{{ '{{' }}")
+        if six.PY2:
+            text = text.encode("utf-8")
+        print(text)

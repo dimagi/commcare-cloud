@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function realpath() {
-    python -c "import os,sys; print os.path.realpath(sys.argv[1])" $1
+    python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
 }
 
 function git_remote_get_url() {
