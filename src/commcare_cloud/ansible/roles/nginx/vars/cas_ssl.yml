@@ -131,7 +131,9 @@ nginx_sites:
    - "Host $host"
    - "X-Forwarded-For $remote_addr"
    - "X-Forwarded-Protocol  $scheme"
-   add_header: X-XSS-Protection "1; mode=block"
+   add_header:
+    - 'X-XSS-Protection "1; mode=block"'
+    - 'X-Content-Type-Options nosniff'
    access_log: "{{ log_home }}/{{ deploy_env }}_cas-timing.log timing"
    locations:
      - name: "/hq/multimedia/file"

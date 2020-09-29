@@ -35,7 +35,9 @@ nginx_sites:
    - "X-Forwarded-For $remote_addr"
    - "X-Forwarded-Protocol  $scheme"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
-   add_header: X-XSS-Protection "1; mode=block"
+   add_header:
+    - 'X-XSS-Protection "1; mode=block"'
+    - 'X-Content-Type-Options nosniff'
    locations:
     - name: /
       balancer: "{{ deploy_env }}_commcare"
