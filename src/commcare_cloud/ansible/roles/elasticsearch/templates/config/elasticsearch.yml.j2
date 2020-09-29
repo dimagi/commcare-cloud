@@ -47,7 +47,7 @@ discovery.zen.ping.multicast.enabled: false
 discovery.zen.ping.unicast.hosts: [
 {% endif %}
 {% if elasticsearch_version == '7.9.1' %}
-discovery.discovery_hosts: [
+discovery.seed_hosts: [
 {% endif %}
 {% for endpoint in groups.elasticsearch %}
   {% if endpoint|ipaddr %}
@@ -140,11 +140,9 @@ node.data: {{ elasticsearch_data|default('true') }}
 {% if elasticsearch_version == '7.9.1'%}
 {% if elasticsearch_data|default('true') and elasticsearch_master|default('false') %}
 node.roles: [ master data ]
-{% endif %}
-{% if elasticsearch_master|default('false') %}
+{% elif elasticsearch_master|default('false') %}
 node.roles: [ master ]
-{% endif %}
-{% if elasticsearch_data|default('true') %}
+{% elif elasticsearch_data|default('true') %}
 node.roles: [ data ]
 {% endif %}
 {% endif %}
