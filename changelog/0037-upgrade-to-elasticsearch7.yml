@@ -106,7 +106,7 @@ update_steps: |
           ```
           # to start user-pillow (replace with UserPillow if that's what you use)
             cchq <env> service pillowtop start --only user-pillow
-            cchq <env> service pillowtop stop --only user-pillow  
+            cchq <env> service pillowtop stop --only user-pillow
           ```
   3. At this point, your ES2 hosts should not be getting any HTTP requests.
       - You can confirm this by doing a tcpdump on Elasticsearch port on any of your Elasticsearch 2 hosts
@@ -120,7 +120,7 @@ update_steps: |
       - These can be run concurrently in different tmux/screen sessions
       - Note that these management commands are to be run from the release that was created in Setup phase, which is pointing to Elasticsearch 7
   5. At this point, all of the Elasticsearch 2 data should be in Elasticsearch 7.
-     - You can confirm this by running the `reindex_from_es2_to_es7` management command with `print_index_size` option which displays number of documents in both the ES clusters. 
+      - You can confirm this by running the `reindex_from_es2_to_es7` management command with `print_index_size` option which displays the number of documents in both ES clusters.
   6. Run below command to update Elasticsearch settings on ES7 indices for usage
       ```
       ./manage.py initialize_es_indices --set-for-usage
@@ -212,8 +212,8 @@ update_steps: |
       - If there are pending changes, you can start the relevant pillow, monitor the pending changes and stop the pillow after all the pending changes are processed.
         ```
         # to start user-pillow (replace with UserPillow if that's what you use)
-          cchq <env> service pillowtop start --only user-pillow
-          cchq <env> service pillowtop stop --only user-pillow  
+        cchq <env> service pillowtop start --only user-pillow
+        cchq <env> service pillowtop stop --only user-pillow
         ```
   3. At this point, your ES2 hosts should not be getting any HTTP requests.
       - You can confirm this by doing a tcpdump on Elasticsearch port on any of your Elasticsearch 2 hosts
