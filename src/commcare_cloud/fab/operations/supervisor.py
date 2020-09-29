@@ -68,11 +68,12 @@ def _decommission_host(host):
 
 @roles(ROLES_STATIC)
 def _recommission_host(host):
-    files.uncomment(
-        '/etc/nginx/sites-available/{}_commcare'.format(env.deploy_env),
-        'server[ ]+{}'.format(host),
-        use_sudo=True,
-    )
+    pass
+    # files.uncomment(
+    #     '/etc/nginx/sites-available/{}_commcare'.format(env.deploy_env),
+    #     'server[ ]+{}'.format(host),
+    #     use_sudo=True,
+    # )
     # _check_and_reload_nginx()
 
 
