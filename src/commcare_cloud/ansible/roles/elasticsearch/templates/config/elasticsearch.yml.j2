@@ -148,3 +148,7 @@ node.roles: [ master ]
 node.roles: [ data ]
 {% endif %}
 {% endif %}
+
+{% if elasticsearch_version == '7.9.1' and remote_es2_host is defined %}
+reindex.remote.whitelist: {{remote_es2_host}}
+{% endif %}
