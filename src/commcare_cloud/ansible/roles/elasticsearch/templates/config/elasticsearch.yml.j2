@@ -115,11 +115,11 @@ path.repo: ["{{ elasticsearch_data_dir }}/snapshot"]
 cluster.initial_master_nodes:
 {% for item in groups.elasticsearch %}
 {% if hostvars[item].elasticsearch_master is defined %}
-  {% if item|ipaddr %}
+{% if item|ipaddr %}
   - "{{ item }}"
-  {% else %}
+{% else %}
   - "{{ lookup('dig', item, wantlist=True)[0] }}"
-  {% endif %}
+{% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
@@ -139,7 +139,7 @@ node.data: {{ elasticsearch_data|default('true') }}
 
 {% if elasticsearch_version == '7.9.1'%}
 {% if elasticsearch_data|default('true') and elasticsearch_master|default('false') %}
-node.roles: [ master data ]
+node.roles: [ master, data ]
 {% elif elasticsearch_master|default('false') %}
 node.roles: [ master ]
 {% elif elasticsearch_data|default('true') %}
