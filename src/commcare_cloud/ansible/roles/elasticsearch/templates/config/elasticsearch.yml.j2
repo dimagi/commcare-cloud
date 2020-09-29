@@ -116,9 +116,9 @@ cluster.initial_master_nodes:
 {% for item in groups.elasticsearch %}
 {% if hostvars[item].elasticsearch_master is defined %}
 {% if item|ipaddr %}
-  - "{{ item }}"
+    - "{{ item }}"
 {% else %}
-  - "{{ lookup('dig', item, wantlist=True)[0] }}"
+    - "{{ lookup('dig', item, wantlist=True)[0] }}"
 {% endif %}
 {% endif %}
 {% endfor %}
