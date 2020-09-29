@@ -2,12 +2,6 @@ celery3-staging: 10.201.10.216
 celery3-staging.instance_id: i-0c544ab25e0364153
 control0-staging: 10.201.10.116
 control0-staging.instance_id: i-026b188d133e068a1
-couch3-staging: 10.201.40.182
-couch3-staging.instance_id: i-0e22f664dd2972a0f
-couch4-staging: 10.201.40.62
-couch4-staging.instance_id: i-016d844313ee8538e
-couch5-staging: 10.201.40.147
-couch5-staging.instance_id: i-01c1e735fcb24d9bf
 couch6-staging: 10.201.40.74
 couch6-staging.instance_id: i-01b32f8a2eebe07bc
 couch7-staging: 10.201.40.221
@@ -29,6 +23,8 @@ formplayer4-staging: 10.201.10.18
 formplayer4-staging.instance_id: i-07ad9548c23f0aa68
 kafka2-staging: 10.201.40.170
 kafka2-staging.instance_id: i-08a404d6bad630a35
+kafka3-staging: 10.201.40.102
+kafka3-staging.instance_id: i-0859f43db49978928
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgproxy2-staging: 10.201.40.16
 pgproxy2-staging.instance_id: i-0638ff6218ed9f753
@@ -41,6 +37,8 @@ proxy2-staging: 10.201.10.72
 proxy2-staging.instance_id: i-01e26fa1de2365635
 rabbit2-staging: 10.201.10.239
 rabbit2-staging.instance_id: i-01bfeae5f4febaddf
+rabbit3-staging: 10.201.10.175
+rabbit3-staging.instance_id: i-0b9337eaa43eb4d77
 redis2-staging: 10.201.40.121
 redis2-staging.instance_id: i-0ba9234c3f9c17993
 vpn-staging: 10.201.20.112
