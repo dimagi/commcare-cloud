@@ -3,6 +3,7 @@
 # Script run by cron to execute pg_repack under certain conditions
 # Must be run as the ``postgres`` user.
 #
+from __future__ import division
 import argparse
 import multiprocessing
 import subprocess
@@ -151,7 +152,7 @@ def main():
 
     try:
         cpu_count = multiprocessing.cpu_count()
-        jobs = min(len(table_names), cpu_count / 2)
+        jobs = min(len(table_names), cpu_count // 2)
     except NotImplementedError:
         jobs = 1
 

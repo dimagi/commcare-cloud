@@ -93,8 +93,10 @@ COMMAND_GROUPS = OrderedDict([
     ])
 ])
 
-COMMAND_TYPES = [command_type for command_types in COMMAND_GROUPS.values()
-                 for command_type in command_types]
+COMMAND_TYPES = sorted(
+    [cmd for group in COMMAND_GROUPS.values() for cmd in group],
+    key=lambda cmd: cmd.command,
+)
 
 
 def run_on_control_instead(args, sys_argv):

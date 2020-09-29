@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,update-user-key,aps,aws-sign-in,tmux,ap,validate-environment-settings,pillow-topic-assignments,migrate-secrets,openvpn-activate-user,deploy-stack,export-sentry-events,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,couchdb-cluster-info,deploy,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,secrets,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
+               {after-reboot,ansible-playbook,ap,aws-fill-inventory,aws-list,aws-sign-in,bootstrap-users,celery-resource-report,copy-files,couchdb-cluster-info,deploy,deploy-stack,aps,django-manage,downtime,export-sentry-events,fab,list-postgresql-dbs,lookup,migrate-couchdb,migrate_couchdb,migrate-secrets,mosh,openvpn-activate-user,openvpn-claim-user,pillow-resource-report,pillow-topic-assignments,ping,run-module,run-shell-command,secrets,send-datadog-event,service,ssh,terraform,terraform-migrate-state,tmux,update-config,update-local-known-hosts,update-supervisor-confs,update-user-key,update-users,validate-environment-settings}
                ...
 ```
 

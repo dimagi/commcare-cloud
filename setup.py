@@ -1,5 +1,41 @@
 from __future__ import absolute_import
+
+import six
 from setuptools import setup, find_packages
+
+install_deps = [
+    'ansible-vault==1.1.1',
+    'ansible~=2.9.7',
+    'argparse>=1.4',
+    'attrs>=18.1.0',
+    'boto3>=1.9.131',
+    'clint',
+    'couchdb-cluster-admin>={}'.format("0.5.0" if six.PY2 else "0.6.0"),
+    # 2.8 solves issue on MacOS Catalina
+    # https://github.com/pypa/pip/issues/7254
+    # but 2.9 fails to compile
+    'cryptography~=2.8.0',
+    'datadog==0.2.0',
+    'dimagi-memoized>=1.1.0',
+    'dnspython',
+    'Fabric3>=1.10.2,<1.11',
+    # can remove once requests bumps its version requirement
+    # https://github.com/requests/requests/issues/4681
+    'idna==2.6',
+    'jinja2-cli',
+    'jsonobject>=0.9.0',
+    'netaddr',
+    'passlib',
+    'pycryptodome>=3.6.6',  # security update
+    'PyGithub>=1.43.3',
+    'pytz==2017.2',
+    'simplejson',
+    'six',
+    'tabulate'
+]
+if six.PY2:
+    # moved from requirements-python-lt-2.7.9-ssl-issue.in
+    install_deps.extend(["pyOpenSSL", "ndg-httpsclient"])
 
 test_deps = [
     'mock>=2.0.0',
@@ -30,35 +66,7 @@ setup(
             'manage-commcare-cloud = commcare_cloud.manage_commcare_cloud.manage_commcare_cloud:main',
         ],
     },
-    install_requires=(
-        'ansible-vault==1.1.1',
-        'ansible>=2.9.4',
-        'argparse>=1.4',
-        'attrs>=18.1.0',
-        'boto3>=1.9.131',
-        'clint',
-        'couchdb-cluster-admin>=0.5.0',
-        # 2.8 solves issue on MacOS Catalina
-        # https://github.com/pypa/pip/issues/7254
-        # but 2.9 fails to compile
-        'cryptography~=2.8.0',
-        'datadog==0.2.0',
-        'dimagi-memoized>=1.1.0',
-        'dnspython',
-        'Fabric3>=1.10.2,<1.11',
-        # can remove once requests bumps its version requirement
-        # https://github.com/requests/requests/issues/4681
-        'idna==2.6',
-        'jinja2-cli',
-        'jsonobject>=0.9.0',
-        'netaddr',
-        'passlib',
-        'pycryptodome>=3.6.6',  # security update
-        'PyGithub>=1.43.3',
-        'pytz==2017.2',
-        'six',
-        'tabulate'
-    ),
+    install_requires=install_deps,
     tests_require=test_deps,
     extras_require=extras,
 )
