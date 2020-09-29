@@ -114,8 +114,8 @@ def _services_restart():
 
     supervisor_command('reread')
     supervisor_command('update')
-    time.sleep(5)
-    supervisor_command('start all')
+    # time.sleep(5)
+    # supervisor_command('start all')
 
 
 def supervisor_command(command):
