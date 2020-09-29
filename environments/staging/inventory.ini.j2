@@ -49,10 +49,12 @@ couch8
 couch6
 
 {{ __rabbit2__ }}
+{{ __rabbit3__ }}
 
 [rabbitmq:children]
 # Amazon EC2
 rabbit2
+rabbit3
 
 {{ __kafka2__ }} kafka_broker_id=1
 
@@ -105,12 +107,12 @@ redis2
 
 [elasticsearch:children]
 # Amazon EC2
-# old ES v2 hosts
-# es4
-# es5
-# ES v7 hosts
-es6
-es7
+# ES v7.9.1 hosts
+es4
+es5
+# ES v7.6.2 hosts
+# es6
+# es7
 
 [shared_dir_host:children]
 redis2

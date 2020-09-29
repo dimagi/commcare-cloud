@@ -40,7 +40,10 @@ class Fab(CommandBase):
             @property
             @memoized
             def epilog(self):
-                lines = subprocess.check_output(['fab', '-f', FABFILE, '-l']).splitlines()
+                lines = subprocess.check_output(
+                    ['fab', '-f', FABFILE, '-l'],
+                    universal_newlines=True,
+                ).splitlines()
                 return '\n'.join(
                     line for line in lines
                     if not re.match(r'^\s+({})'.format('|'.join(get_available_envs())), line)

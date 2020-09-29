@@ -9,7 +9,7 @@ fi
 
 
 function realpath() {
-    python -c "import os,sys; print os.path.realpath(sys.argv[1])" $1
+    python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
 }
 
 
@@ -89,12 +89,24 @@ if [ -d ${COMMCARE_CLOUD_REPO}/commcare-cloud ]; then
     rm -rf ${COMMCARE_CLOUD_REPO}/commcare-cloud
 fi
 
+REQUIREMENTS=$(python -c 'import sys; print("requirements%s.txt" % (3 if sys.version_info[0] == 3 else ""))')
 if [ -z "$(which manage-commcare-cloud)" ]; then
     # first time install need requirements installed in serial
     # installs strictly what's in requirements.txt, so versions are pre-pinned
-    cd ${COMMCARE_CLOUD_REPO} && pip install pip-tools && pip-sync && pip install -e . && cd -
+    cd ${COMMCARE_CLOUD_REPO}
+    pip install pip-tools
+    pip-sync $REQUIREMENTS
+    pip install -e .
+    cd -
 else
-    { COMMCARE= && cd ${COMMCARE_CLOUD_REPO} && pip install pip-tools && pip-sync && pip install -e . && cd - ; } &
+    {
+        COMMCARE=
+        cd ${COMMCARE_CLOUD_REPO}
+        pip install pip-tools
+        pip-sync $REQUIREMENTS
+        pip install -e .
+        cd -
+    } &
 fi
 
 echo "Downloading dependencies from galaxy and pip"

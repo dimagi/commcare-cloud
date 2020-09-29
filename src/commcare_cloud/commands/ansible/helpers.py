@@ -13,6 +13,7 @@ from commcare_cloud.colors import color_error, color_success
 from commcare_cloud.environment.paths import ANSIBLE_DIR, ANSIBLE_ROLES_PATH, ANSIBLE_COLLECTIONS_PATHS
 from six.moves import shlex_quote
 from six.moves import range
+from six.moves import map
 
 DEPRECATED_ANSIBLE_ARGS = []
 
@@ -56,11 +57,10 @@ def get_common_ssh_args(environment, use_factory_auth=False):
         cmd_parts_with_common_ssh_args += auth_cmd_parts
         common_ssh_args.extend(auth_ssh_args)
 
-    for option_name, default_option_value in get_default_ssh_options(environment):
-        common_ssh_args.extend(["-o", '{}={}'.format(option_name, default_option_value)])
+    common_ssh_args.extend(get_default_ssh_options_as_cmd_parts(environment))
 
     if common_ssh_args:
-        cmd_parts_with_common_ssh_args += ('--ssh-common-args={}'.format(' '.join(common_ssh_args)),)
+        cmd_parts_with_common_ssh_args += ('--ssh-common-args={}'.format(' '.join(map(shlex_quote, common_ssh_args))),)
     return cmd_parts_with_common_ssh_args
 
 
@@ -76,6 +76,14 @@ def get_default_ssh_options(environment):
         default_ssh_options.append(('UserKnownHostsFile', known_hosts_filepath))
 
     return default_ssh_options
+
+
+def get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=()):
+    ssh_args = []
+    for option_name, default_option_value in get_default_ssh_options(environment):
+        if not any(a.startswith(('{}='.format(option_name), "-o{}=".format(option_name))) for a in original_ssh_args):
+            ssh_args.extend(["-o", '{}={}'.format(option_name, default_option_value)])
+    return ssh_args
 
 
 def add_factory_auth_cmd(environment):
