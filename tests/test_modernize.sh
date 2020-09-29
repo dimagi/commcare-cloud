@@ -9,7 +9,7 @@
 
 PYVER=$(python --version 2>&1)
 [[ $PYVER =~ Python\ 2\. ]] || {
-    echo "Skipping modernize test on Python $PYVER"
+    echo "Skipping modernize test on $PYVER"
     exit 0
 }
 
