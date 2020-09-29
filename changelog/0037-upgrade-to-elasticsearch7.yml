@@ -55,9 +55,9 @@ update_steps: |
         elasticsearch_version: 7.9.1
         elasticsearch_cluster_name: es7_<cluster_name> # must start with es7_ prefix
         elasticsearch_download_sha256: a1b43a6e29d3ca91d08366f64007ce812646e4775524214f66330d447a4c6e3c
-        es2_host: <Link to your existing ES2 cluster in http://host:port format. This will be used to whitelisted in ES7 cluster for remote reindexing>
+        remote_es2_host: <Link to your existing ES2 cluster in http://host:port format. This will be used to whitelisted in ES7 cluster for remote reindexing>
         ```
-        **Todo: add support for es2_host field** You may make these environment changes in a dedicated git branch of commcare-cloud (referred to as `git-upgrade-branch` in this doc)
+        **Todo: add support for remote_es2_host field** You may make these environment changes in a dedicated git branch of commcare-cloud (referred to as `git-upgrade-branch` in this doc)
       - Run commcare-cloud ansible deploy on new hosts
         ```
         cchq env aps --limit=new_es7_nodes --branch=<git-upgrade-branch>

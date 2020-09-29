@@ -7,6 +7,11 @@ newest first.
 
 ## Changelog
 
+### **2020-10-01** [ES upgrade from 2.4.6 to 7.9.1](0037-upgrade-to-elasticsearch7.md)
+This change upgrade Elasticsearch from 2.4.6 to 7.9.1 version.
+CommCare HQ releases after **Todo; decide** will not continue to support Elasticsearch 2.4.6,
+so we strongly recommend applying this change before then.
+
 ### **2020-07-23** [Run command to clear sensitive information from Django sessions](0036-clean-2fa-sessions.md)
 It is stronly recommended to sanitize legacy Django sessions after upgrading
 to Django 2.2.
