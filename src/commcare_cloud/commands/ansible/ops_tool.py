@@ -197,8 +197,9 @@ class PillowTopicAssignments(CommandBase):
         if args.csv:
             manage_args.append('--csv')
         args.release = None
-        args.server = None
+        args.server = "django_manage[0]"
         args.tmux = None
+        args.tee_file = None
         return DjangoManage(self.parser).run(args, manage_args)
 
 
