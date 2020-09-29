@@ -98,6 +98,5 @@ localsettings:
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
   STATIC_CDN: ""
-  XFORMS_PLAYER_URL: "http://{{ groups.touchforms.0 }}:4444"
 
 commcare_cloud_use_vault: no
