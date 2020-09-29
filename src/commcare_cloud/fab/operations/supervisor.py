@@ -73,7 +73,7 @@ def _recommission_host(host):
         'server[ ]+{}'.format(host),
         use_sudo=True,
     )
-    _check_and_reload_nginx()
+    # _check_and_reload_nginx()
 
 
 def _check_and_reload_nginx():
@@ -114,8 +114,8 @@ def _services_restart():
 
     supervisor_command('reread')
     supervisor_command('update')
-    # time.sleep(5)
-    # supervisor_command('start all')
+    time.sleep(5)
+    supervisor_command('start all')
 
 
 def supervisor_command(command):
