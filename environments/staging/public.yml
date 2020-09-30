@@ -15,6 +15,9 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 
 rabbitmq_version: 3.8.5-1
 
+#RabbitMQ Broker URL
+BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
+
 run_websockets_wsgi: True
 
 backup_blobdb: False

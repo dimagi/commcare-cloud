@@ -57,7 +57,11 @@ def git_branch():
     # https://stackoverflow.com/a/19585361/10840
     try:
         git_status = subprocess.check_output(
-            "git status", cwd=ANSIBLE_DIR, shell=True, stderr=open('/dev/null', 'w'),
+            "git status",
+            cwd=ANSIBLE_DIR,
+            shell=True,
+            stderr=open('/dev/null', 'w'),
+            universal_newlines=True,
         )
     except subprocess.CalledProcessError as e:
         if e.returncode == 128:
