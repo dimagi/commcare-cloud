@@ -1,7 +1,7 @@
 celery3-staging: 10.201.10.216
 celery3-staging.instance_id: i-0c544ab25e0364153
-control0-staging: 10.201.10.116
-control0-staging.instance_id: i-026b188d133e068a1
+control1-staging: 10.201.10.170
+control1-staging.instance_id: i-04ed8ae39462cca8f
 couch3-staging: 10.201.40.182
 couch3-staging.instance_id: i-0e22f664dd2972a0f
 couch4-staging: 10.201.40.62
@@ -35,8 +35,8 @@ pgproxy2-staging.instance_id: i-0638ff6218ed9f753
 pillow3-staging: 10.201.10.68
 pillow3-staging.instance_id: i-0ef555fec7fe64804
 proxy1-staging: 10.201.20.208
-proxy1-staging.instance_id: i-02e1fe640296f8db9
-proxy1-staging.public_ip: 3.89.61.176
+proxy3-staging: 10.201.20.47
+proxy3-staging.instance_id: i-0a53d5199910fc2b7
 proxy2-staging: 10.201.10.72
 proxy2-staging.instance_id: i-01e26fa1de2365635
 rabbit2-staging: 10.201.10.239
