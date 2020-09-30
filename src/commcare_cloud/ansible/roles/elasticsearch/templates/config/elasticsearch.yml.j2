@@ -129,12 +129,12 @@ cluster.initial_master_nodes:
 # see also discovery.zen.minimum_master_nodes above for how a master gets elected
 {# only include master eligibility if it is set on at least one node in the cluster #}
 {% if groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list %}
-node.master: {{ elasticsearch_master|default(False) }}
+node.master: {{ elasticsearch_master|default('false') }}
 {% else %}
 # node.master: true
 {% endif %}
 
-node.data: {{ elasticsearch_data|default(True) }}
+node.data: {{ elasticsearch_data|default('true') }}
 {% endif %}
 
 {% if elasticsearch_version is version('7.0.0', '>=')%}
