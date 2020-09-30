@@ -21,7 +21,7 @@ index b4076b012..978f3af03 100644
      inventory = Inventory()
  
 diff --git b/setup.py a/setup.py
-index 136fc83b7..ebdb93f5a 100644
+index baf629a5d..66810654d 100644
 --- b/setup.py
 +++ a/setup.py
 @@ -1,6 +1,5 @@
@@ -32,7 +32,7 @@ index 136fc83b7..ebdb93f5a 100644
  from setuptools import setup, find_packages
  
 diff --git b/src/commcare_cloud/commands/ansible/ops_tool.py a/src/commcare_cloud/commands/ansible/ops_tool.py
-index 430e17f9a..7d1af83b0 100644
+index 1a01020da..93b45b0ec 100644
 --- b/src/commcare_cloud/commands/ansible/ops_tool.py
 +++ a/src/commcare_cloud/commands/ansible/ops_tool.py
 @@ -128,7 +128,7 @@ class CeleryResourceReport(CommandBase):
@@ -47,9 +47,9 @@ index 430e17f9a..7d1af83b0 100644
 @@ -168,7 +168,7 @@ class PillowResourceReport(CommandBase):
          headers = ['Pillow', 'Processes']
          rows = [
-             [queue_name, stats['num_processes']]
--            for queue_name, stats in sorted(list(by_process.items()), key=itemgetter(0))
-+            for queue_name, stats in sorted(by_process.items(), key=itemgetter(0))
+             [name, num_processes]
+-            for name, num_processes in sorted(list(by_process.items()), key=itemgetter(0))
++            for name, num_processes in sorted(by_process.items(), key=itemgetter(0))
          ]
  
          print_table(headers, rows, args.csv)

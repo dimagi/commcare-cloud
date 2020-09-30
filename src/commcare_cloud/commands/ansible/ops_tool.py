@@ -167,8 +167,8 @@ class PillowResourceReport(CommandBase):
 
         headers = ['Pillow', 'Processes']
         rows = [
-            [queue_name, stats['num_processes']]
-            for queue_name, stats in sorted(by_process.items(), key=itemgetter(0))
+            [name, num_processes]
+            for name, num_processes in sorted(by_process.items(), key=itemgetter(0))
         ]
 
         print_table(headers, rows, args.csv)
@@ -197,8 +197,9 @@ class PillowTopicAssignments(CommandBase):
         if args.csv:
             manage_args.append('--csv')
         args.release = None
-        args.server = None
+        args.server = "django_manage[0]"
         args.tmux = None
+        args.tee_file = None
         return DjangoManage(self.parser).run(args, manage_args)
 
 

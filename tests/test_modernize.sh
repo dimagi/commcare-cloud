@@ -26,5 +26,8 @@ find . -name '*.py' \
     ! -path ./scripts/es_snapshot.py \
     ! -path ./src/commcare_cloud/ansible/roles/pg_repack/files/pg_repack.py \
     -exec python-modernize --no-diffs -wnf default --future-unicode {} +
-git apply tests/undo-superfluous-modernizations.diff
+git apply tests/undo-superfluous-modernizations.diff || {
+    echo "See https://docs.google.com/document/d/17QQu5BAAwle5KHTMawTlsf4o78ZRXElIKlrBdHjrU8M/edit#bookmark=id.gv9c89h23noz"
+    exit 1
+}
 do_diff "Unexpected diff after modernize"
