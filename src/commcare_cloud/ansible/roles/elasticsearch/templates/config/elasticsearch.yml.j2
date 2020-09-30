@@ -13,7 +13,7 @@ node.name: "{{ elasticsearch_node_name }}"
 {% if elasticsearch_version == '2.4.6'%}
 node.zone: "{{ elasticsearch_node_zone }}"
 {% endif %}
-{% if elasticsearch_version =='7.9.1' %}
+{% if elasticsearch_version is version('7.0.0', '>=') %}
 node.attr.zone: "{{ elasticsearch_node_zone }}"
 {% endif %}
 {% endif %}
@@ -46,7 +46,7 @@ discovery.zen.ping.multicast.enabled: false
 {% if elasticsearch_version == '2.4.6' %}
 discovery.zen.ping.unicast.hosts: [
 {% endif %}
-{% if elasticsearch_version == '7.9.1' %}
+{% if elasticsearch_version is version('7.0.0', '>=') %}
 discovery.seed_hosts: [
 {% endif %}
 {% for endpoint in groups.elasticsearch %}
@@ -100,7 +100,7 @@ cloud:
 {% if elasticsearch_version == '2.4.6'%}
 action.auto_create_index: false
 {% endif %}
-{% if elasticsearch_version == '7.9.1' %}
+{% if elasticsearch_version is version('7.0.0', '>=') %}
 action.auto_create_index: .watches,.triggered_watches,.watcher-history-*
 {% endif %}
 
@@ -111,10 +111,10 @@ path.repo: ["{{ elasticsearch_data_dir }}/snapshot"]
 
 
 
-{% if elasticsearch_version == '7.9.1' %}
+{% if elasticsearch_version is version('7.0.0', '>=') %}
 cluster.initial_master_nodes:
 {% for item in groups.elasticsearch %}
-{% if hostvars[item].elasticsearch_master is defined %}
+{% if hostvars[item].elasticsearch_master is defined|default(False) %}
 {% if item|ipaddr %}
     - "{{ item }}"
 {% else %}
@@ -129,24 +129,24 @@ cluster.initial_master_nodes:
 # see also discovery.zen.minimum_master_nodes above for how a master gets elected
 {# only include master eligibility if it is set on at least one node in the cluster #}
 {% if groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list %}
-node.master: {{ elasticsearch_master|default('false') }}
+node.master: {{ elasticsearch_master|default(False) }}
 {% else %}
 # node.master: true
 {% endif %}
 
-node.data: {{ elasticsearch_data|default('true') }}
+node.data: {{ elasticsearch_data|default(True) }}
 {% endif %}
 
-{% if elasticsearch_version == '7.9.1'%}
-{% if elasticsearch_data|default('true') and elasticsearch_master|default('false') %}
+{% if elasticsearch_version is version('7.0.0', '>=')%}
+{% if elasticsearch_data|default(True) and elasticsearch_master|default(False) %}
 node.roles: [ master, data ]
-{% elif elasticsearch_master|default('false') %}
+{% elif elasticsearch_master|default(False) %}
 node.roles: [ master ]
-{% elif elasticsearch_data|default('true') %}
+{% elif elasticsearch_data|default(True) %}
 node.roles: [ data ]
 {% endif %}
 {% endif %}
 
-{% if elasticsearch_version == '7.9.1' and remote_es2_host is defined %}
+{% if elasticsearch_version is version('7.0.0', '>=') and remote_es2_host is defined %}
 reindex.remote.whitelist: {{remote_es2_host}}
 {% endif %}

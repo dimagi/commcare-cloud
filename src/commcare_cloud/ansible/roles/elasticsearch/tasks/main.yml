@@ -3,7 +3,7 @@
     that:
       - "'es7_' in elasticsearch_cluster_name"
     fail_msg: "Elasticsearch V7 cluster name should start with es7_ prefix"
-  when: elasticsearch_version  == "7.9.1"
+  when: elasticsearch_version is version('7.0.0', '>=')
 
 - name: Downloads Directory
   file: path="/home/{{ cchq_user }}/downloads/" state=directory
@@ -33,13 +33,13 @@
     sha256sum: "{{ elasticsearch_download_sha256 }}"
   when: elasticsearch_version == "2.4.6"
 
-- name: Download Elasticsearch 7.9.1
+- name: Download Elasticsearch 7
   become: yes
   get_url:
     url: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}-linux-x86_64.tar.gz"
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     sha256sum: "{{ elasticsearch_download_sha256 }}"
-  when: elasticsearch_version == "7.9.1"
+  when: elasticsearch_version is version('7.0.0', '>=')
 
 - name: Unarchive Elasticsearch
   become: yes
@@ -80,7 +80,7 @@
   when: elasticsearch_version == '2.4.6'
 
 - include: misc_v7.yml
-  when: elasticsearch_version == '7.9.1'
+  when: elasticsearch_version is version('7.0.0', '>=')
 
 - name: Copy Elasticsearch Upstart Conf
   become: yes

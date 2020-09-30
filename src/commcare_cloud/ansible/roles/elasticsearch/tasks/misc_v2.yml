@@ -20,8 +20,6 @@
   become: yes
   pip:
     name: elasticsearch>=2.0.0,<3.0.0
-  when: elasticsearch_version == '2.4.6'
-
 
 - name: Check for installed plugins
   shell: "{{ elasticsearch_home }}/bin/plugin list"
