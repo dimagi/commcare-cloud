@@ -3,13 +3,13 @@
 # As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
 # using the aws-fill-inventory command.
 
-{{ __proxy1__ }}
 {{ __proxy2__ }}
+{{ __proxy3__ }}
 
 [proxy:children]
 # Amazon EC2
-proxy1
 proxy2
+proxy3
 
 [logproxy:children]
 proxy
@@ -117,10 +117,10 @@ es5
 [shared_dir_host:children]
 redis2
 
-{{ __control0__ }}
+{{ __control1__ }}
 
 [control:children]
-control0
+control1
 
 [ansible_skip:children]
 rds_pg0
