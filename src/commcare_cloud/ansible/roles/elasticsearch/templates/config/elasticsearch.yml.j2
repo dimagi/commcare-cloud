@@ -10,7 +10,12 @@ node.name: "{{ elasticsearch_node_name }}"
 {% if elasticsearch_node_zone is defined %}
 # Used for shard allocation awareness
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/allocation-awareness.html
+{% if elasticsearch_version == '2.4.6'%}
 node.zone: "{{ elasticsearch_node_zone }}"
+{% endif %}
+{% if elasticsearch_version is version('7.0.0', '>=') %}
+node.attr.zone: "{{ elasticsearch_node_zone }}"
+{% endif %}
 {% endif %}
 
 # disable multiple nodes starting from the same installation location
@@ -25,6 +30,7 @@ http.cors.allow-origin: "null"
 path.data: {{ elasticsearch_data_dir }}/data
 path.logs: {{ elasticsearch_data_dir }}/logs
 
+{% if elasticsearch_version == '2.4.6'%}
 # discovery.zen.minimum_master_nodes is the minimum number of
 # MASTER ELIGIBLE nodes that must be reachable before a master may be elected
 # Best practice is to set it to M/2 + 1 where M is the number of master-eligible nodes,
@@ -34,9 +40,15 @@ discovery.zen.ping.timeout: 90s
 discovery.zen.fd.ping_timeout: 90s
 discovery.zen.fd.ping_interval: 10s
 discovery.zen.fd.ping_retries: 20
-
 discovery.zen.ping.multicast.enabled: false
+{% endif %}
+
+{% if elasticsearch_version == '2.4.6' %}
 discovery.zen.ping.unicast.hosts: [
+{% endif %}
+{% if elasticsearch_version is version('7.0.0', '>=') %}
+discovery.seed_hosts: [
+{% endif %}
 {% for endpoint in groups.elasticsearch %}
   {% if endpoint|ipaddr %}
     "{{ endpoint }}:{{ elasticsearch_tcp_port }}",
@@ -52,20 +64,24 @@ network.host: "{{ inventory_hostname }}"
 network.host: "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}"
 {% endif %}
 
+{% if elasticsearch_version == '2.4.6'%}
 index.search.slowlog.threshold.query.warn: 10s
 index.search.slowlog.threshold.query.info: 5s
 index.search.slowlog.threshold.query.debug: 2s
 index.search.slowlog.threshold.query.trace: 500ms
 index.max_result_window: 1000000
+{% endif %}
 
 {% if elasticsearch_fielddata_cache_size|default('') %}
 indices.fielddata.cache.size:  {{ elasticsearch_fielddata_cache_size }}
 {% endif %}
 
 {% if elasticsearch_enable_inline_groovy_scripts %}
+{% if elasticsearch_version == '2.4.6'%}
 # somewhat of a security risk but required by pact custom reports
 script.engine.groovy.inline.aggs: true
 script.engine.groovy.inline.search: true
+{% endif %}
 {% endif %}
 
 {% if backup_es_s3 and AMAZON_S3_ACCESS_KEY %}
@@ -81,7 +97,12 @@ cloud:
 {% endif %}
 
 # Only allow indices to be created by an explicit "create" command
+{% if elasticsearch_version == '2.4.6'%}
 action.auto_create_index: false
+{% endif %}
+{% if elasticsearch_version is version('7.0.0', '>=') %}
+action.auto_create_index: .watches,.triggered_watches,.watcher-history-*
+{% endif %}
 
 
 {% if es_local_repo and not backup_es_s3%}
@@ -89,6 +110,22 @@ path.repo: ["{{ elasticsearch_data_dir }}/snapshot"]
 {% endif %}
 
 
+
+{% if elasticsearch_version is version('7.0.0', '>=') %}
+cluster.initial_master_nodes:
+{% for item in groups.elasticsearch %}
+{% if hostvars[item].elasticsearch_master is defined|default(False) %}
+{% if item|ipaddr %}
+    - "{{ item }}"
+{% else %}
+    - "{{ lookup('dig', item, wantlist=True)[0] }}"
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+
+{% if elasticsearch_version == '2.4.6'%}
 # see also discovery.zen.minimum_master_nodes above for how a master gets elected
 {# only include master eligibility if it is set on at least one node in the cluster #}
 {% if groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list %}
@@ -98,3 +135,18 @@ node.master: {{ elasticsearch_master|default('false') }}
 {% endif %}
 
 node.data: {{ elasticsearch_data|default('true') }}
+{% endif %}
+
+{% if elasticsearch_version is version('7.0.0', '>=')%}
+{% if elasticsearch_data|default(True) and elasticsearch_master|default(False) %}
+node.roles: [ master, data ]
+{% elif elasticsearch_master|default(False) %}
+node.roles: [ master ]
+{% elif elasticsearch_data|default(True) %}
+node.roles: [ data ]
+{% endif %}
+{% endif %}
+
+{% if elasticsearch_version is version('7.0.0', '>=') and remote_es2_host is defined %}
+reindex.remote.whitelist: {{remote_es2_host}}
+{% endif %}

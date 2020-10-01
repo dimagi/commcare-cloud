@@ -1,6 +1,6 @@
 # http://engineering.datarank.com/2015/03/14/performing-rolling-restarts-of-elasticsearch-using-ansible.html
 - name: disable cluster routing
-  shell: "curl -XPUT {{ inventory_hostname }}:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"none\" }}'"
+  shell: "curl -H \"Content-Type: application/json\" -XPUT {{ inventory_hostname }}:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"none\" }}'"
   register: result
   until: result.stdout.find('"acknowledged"') != -1
   retries: 20
@@ -45,7 +45,7 @@
   tags: action_start
 
 - name: enable cluster routing
-  shell: "curl -XPUT {{es_host}}:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'"
+  shell: "curl -H \"Content-Type: application/json\" -XPUT {{es_host}}:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'"
   register: result
   until: result.stdout.find('"acknowledged"') != -1
   retries: 20
