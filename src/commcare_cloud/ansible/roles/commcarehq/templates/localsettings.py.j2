@@ -611,7 +611,7 @@ PILLOWTOP_MACHINE_ID = '{{ localsettings.PILLOWTOP_MACHINE_ID }}'
 {% endif %}
 
 ACTIVE_PILLOW_NAMES = [
-{% for pillow_name in app_processes_config.values() | map("dict2items") | flatten | map(attribute="key") | unique | sort %}
+{% for pillow_name in app_processes_config.pillows.values() | map("dict2items") | flatten | map(attribute="key") | unique | sort %}
     "{{ pillow_name }}",
 {% endfor %}
 ]
