@@ -48,7 +48,7 @@ update_steps: |
 
   ### Setup
 
-  1. Provision and setup a separate ES7 cluster of same size or larger than your current ES2 cluster using commcare-cloud. You may 
+  1. Provision and setup a separate ES7 cluster of same size or larger than your current ES2 cluster by doing below using commcare-cloud
       - Replace `elasticsearch` group in your inventory with new hosts 
       - Update below settings in your public.yml file
         ```
@@ -57,12 +57,11 @@ update_steps: |
         elasticsearch_download_sha256: a1b43a6e29d3ca91d08366f64007ce812646e4775524214f66330d447a4c6e3c
         remote_es2_host: <Link to your existing ES2 cluster in http://host:port format. This will be used to whitelisted in ES7 cluster for remote reindexing>
         ```
-        **Todo: add support for remote_es2_host field** You may make these environment changes in a dedicated git branch of commcare-cloud (referred to as `git-upgrade-branch` in this doc)
       - Run commcare-cloud ansible deploy on new hosts
         ```
         cchq env aps --limit=new_es7_nodes --branch=<git-upgrade-branch>
         ```
-          -  If you do not have buffer resources for separate ES7 cluster or if you have a monolith, you can setup ES7 on any of your existing machines other than ES2.
+          - If you do not have buffer resources for separate ES7 cluster or if you have a monolith, you can setup ES7 on any of your existing machines other than ES2.
           - If you have to setup ES7 exactly on the same machines as your current ES2 cluster, follow additional steps in Appendix Note 3 before proceeding to run ES2 and ES7 on same machines. This requires at least 60% free storage/memory
           - If you do not have extra 60% free storage/memory, follow Appendix Note 4 to upgrade to ES7 which requires full downtime and is a much slower process (suitable only for very small monoliths)
   2. Setup a private release from which to run reindex commands. Note down the release directory and the web worker where the release is setup
@@ -77,11 +76,11 @@ update_steps: |
         ]
         ELASTICSEARCH_PORT = 9200 # or whichever ES7 port you are using
        ```
-  4. Intialize HQ indices on ES7 cluster using below management command from the above release.
+  4. Intialize HQ indices on ES7 cluster by running this management command from the release directory created above
         ```
         ./manage.py initialize_es_indices
         ```
-       
+        - You can use an Elasticsearch monitoring tool such as https://www.elastichq.org/ to make sure the indices are created with expected number of shards. The tool will be useful to check reindex progress also.
 
   Once you have the cluster setup, if your index sizes are small you can [reindex and switchover in one go](#reindex-and-switchover-in-one-go) which is easy but requires full application downtime. If your index sizes are large you can reindex form/case indices [first without downtime and then proceed to switchover](#reindex-and-switchover-separately) with a small downtime.
 
@@ -115,12 +114,16 @@ update_steps: |
           ```
   4. Reindex by running below command for each of the index in`['forms', 'cases', 'users', 'domains', 'apps', 'groups', 'sms', 'report_cases', 'report_xforms', 'case_search']`
       ```
-      ./manage.py reindex_from_es2_to_es7 <index_name> <es2_host>
+      ./manage.py reindex_es_from_remote <index_name> <es2_host>
       ```
       - These can be run concurrently in different tmux/screen sessions
       - Note that these management commands are to be run from the release that was created in Setup phase, which is pointing to Elasticsearch 7
   5. At this point, all of the Elasticsearch 2 data should be in Elasticsearch 7.
-      - You can confirm this by running the `reindex_from_es2_to_es7` management command with `print_index_size` option which displays the number of documents in both ES clusters.
+      - You can confirm this by running this command to display the number of documents in both ES clusters:
+          ```
+          ./manage.py reindex_es_from_remote --print_index_size
+          ```
+      - Alternatively you may use an ES monitoring tool such as https://www.elastichq.org/
   6. Run below command to update Elasticsearch settings on ES7 indices for usage
       ```
       ./manage.py initialize_es_indices --set-for-usage
@@ -170,9 +173,9 @@ update_steps: |
       - Below is an example management command that reindexes forms index from Elasticsearch 2 cluster at `http://es2_cluster:9200` for a specific date range
         ```
           # to get help on usage
-        ./manage.py reindex_from_es2_to_es7 --help
+        ./manage.py reindex_es_from_remote --help
         # an example reindex command
-          ./manage.py reindex_from_es2_to_es7 forms http://es2_cluster:9200 --start_date=YYYY-MM-DD
+          ./manage.py reindex_es_from_remote forms http://es2_cluster:9200 --start_date=YYYY-MM-DD
         --end_date=YYYY-MM-DD 
         ``` 
       - Multiple reindex commands with different date ranges can be run in separate tmux/screen session to maximize reindex throughput.
@@ -183,13 +186,13 @@ update_steps: |
    3. Below is a sequence of commands for an example scenario 
       ```
       # reindex all of form data up to Jan 2016.
-      ./manage.py reindex_from_es2_to_es7 forms http://es2_cluster:9200 
+      ./manage.py reindex_es_from_remote forms http://es2_cluster:9200 
       --end_date=2016-01-01
       # reindex form data from Jan 2016 to October 2020
-      ./manage.py reindex_from_es2_to_es7 forms http://es2_cluster:9200 
+      ./manage.py reindex_es_from_remote forms http://es2_cluster:9200 
       --start_date=2016-01-01 --end_date=2020-10-01
       # reindex form data added newly since October 1st 2020 (this can be done in the switchover phase explained next) 
-      ./manage.py reindex_from_es2_to_es7 forms http://es2_cluster:9200 
+      ./manage.py reindex_es_from_remote forms http://es2_cluster:9200 
       --start_date=2020-10-01
       ```
 
@@ -199,8 +202,6 @@ update_steps: |
   #### Switchover
 
   The switchover phase requires downtime to reindex rest of ES indices and offset form/case index data. The duration depends on the amount of data in other indices and the offset data.
-
-  Optionally, to get an estimate of downtime required during switchover phase, you can execute step 5 prior to the actual switchover which doesn't require downtime in itself. You can see Appendix notes to reset those indices before actual upgrade.
 
   1. Start downtime
       ```
@@ -222,23 +223,23 @@ update_steps: |
         ```
   4. Reindex offset form/case data inserted after the Reindex phase.
       ```
-      ./manage.py reindex_from_es2_to_es7 forms http://es2_cluster:9200 
+      ./manage.py reindex_es_from_remote forms http://es2_cluster:9200 
         --start_date=<last_reindex_date>
-      ./manage.py reindex_from_es2_to_es7 cases http://es2_cluster:9200 
+      ./manage.py reindex_es_from_remote cases http://es2_cluster:9200 
         --start_date=<last_reindex_date>
       ```
       - last_reindex_date is the date up to which you have already reindexed in the Reindex phase
       - This and subsequent commands are to be run from the release directory that's pointing to Elasticsearch 7
   5. Reindex rest of the indices by running below command for each of the index in `['users', 'domains', 'apps', 'groups', 'sms', 'report_cases', 'report_xforms', 'case_search']`
       ```
-      ./manage.py reindex_from_es2_to_es7 <index_name> <es2_host>
+      ./manage.py reindex_es_from_remote <index_name> <es2_host>
       ```
       These can be run concurrently in different tmux/screen sessions
   6. Reprocess form and case deletes since your first reindex from the reindex phase.
       ```
       ./manage.py reprocess_form_case_es_deletes --from=<date-of-when-migration-is-initiated>
       ```
-  7. At this point, all of the Elasticsearch 2 data should be in Elasticsearch 7. You can confirm this by running the `reindex_from_es2_to_es7` management command with `print_index_size` option which displays number of documents in both the ES clusters. 
+  7. At this point, all of the Elasticsearch 2 data should be in Elasticsearch 7. You can confirm this by running the `reindex_es_from_remote` management command with `--print_index_size` option which displays number of documents in both the ES clusters. 
   8. Run below command to update Elasticsearch settings on ES7 indices for usage
       ```
       ./manage.py initialize_es_indices --set-for-usage
@@ -262,6 +263,17 @@ update_steps: |
       cchq <env> downtime end
       ```
   That's it, you are running HQ on Elasticsearch 7!
+
+  **Getting Estimate for switchover**
+
+  If you have large cluster you can get an estimate of downtime required for switchover. In most cases this is not necessary.
+  
+  The major downtime will be required in steps 4, 5 and 6. You might already have an estimate for step 4 based on the reindex phase. These can be run prior to get an estimate, but they will need to be run during actual switchover as well
+
+  To get the estimate:
+  - execute step 5. You can see Appendix notes to reset those (not form/case) indices before actual switchover. 
+  - execute step 4 and 6, but these shouldn't be reset since this affects already reindexed data from reindex phase
+
 
   ### Appendix 
 
@@ -328,6 +340,7 @@ update_steps: |
       elasticsearch_cluster_name: es7_<cluster_name> # must start with es7_ prefix
       elasticsearch_download_sha256: a1b43a6e29d3ca91d08366f64007ce812646e4775524214f66330d447a4c6e3c
       es2_host: <Link to your existing ES2 cluster in http://host:port format. This will be used to whitelisted in ES7 cluster for remote reindexing>
+      ELASTICSEARCH_MAJOR_VERSION: 7
       ```
     - Run `cchq <env> aps --limit=new_es7_nodes` to deploy ES7
   2. Start downtime `cchq <env> downtime start`
