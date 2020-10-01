@@ -73,6 +73,24 @@ citusworker0
 citusworker1
 citusworker2
 
+[citusdb_main:children]
+citus0
+citus1
+citus2
+citus1standby
+citus2standby
+
+[citusdb_test:children]
+citusmaster0
+citusworker0
+citusworker1
+citusworker2
+
+[citusdb_main:vars]
+citus_postgresql_version=12.4
+citus_postgresql_port=5433
+citus_version=9.4
+
 [pg_standby:children]
 citus1standby
 citus2standby
