@@ -13,3 +13,11 @@ celery_processes:
   celery:
 pillows:
   pillowtop:
+    case-pillow:
+      num_processes: 0
+    xform-pillow:
+      num_processes: 0
+    user-pillow:
+      num_processes: 0
+    group-pillow:
+      num_processes: 0
