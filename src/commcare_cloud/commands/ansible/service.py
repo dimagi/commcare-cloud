@@ -198,7 +198,7 @@ class SupervisorService(SubServicesMixin, ServiceBase):
 
 def _service_status_helper(service_name):
     if service_name in MONIT_MANAGED_SERVICES:
-        return 'monit status {}'.format(service_name)
+        return 'monit status -g {}'.format(service_name)
 
     return 'service {} status'.format(service_name)
 
