@@ -42,6 +42,13 @@
 
 - name: Install, configure kinesis-agent
   block:
+  - name: Create checkpoint file
+    file:
+      path: "{{ kinesis_agent_dir }}"
+      owner: aws-kinesis-agent-user
+      group: aws-kinesis-agent-user
+      state: directory
+
   - name: Create kinesis config
     template:
       src: "agent.json.j2"
