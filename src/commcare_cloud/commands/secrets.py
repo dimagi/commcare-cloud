@@ -2,10 +2,12 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 import getpass
+import json
 
 import six
 import yaml
 from clint.textui import puts
+from six.moves import input
 
 from commcare_cloud.colors import color_error
 from commcare_cloud.commands.command_base import CommandBase, Argument
@@ -42,6 +44,10 @@ class Secrets(CommandBase):
     def _secrets_edit(self, environment, secret_name):
         environment.secrets_backend.prompt_user_input()
         secret_value = getpass.getpass("New value for '{}' secret '{}': ".format(environment.name, secret_name))
+        try:
+            secret_value = json.loads(secret_value)
+        except ValueError:
+            pass
         environment.secrets_backend.set_secret(secret_name, secret_value)
 
 
