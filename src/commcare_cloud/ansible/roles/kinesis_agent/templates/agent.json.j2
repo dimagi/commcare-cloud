@@ -1,5 +1,5 @@
 {
-  "checkpointFile": "/opt/aws-kinesis-agent/run/checkpoints",
+  "checkpointFile": "{{ kinesis_agent_checkpoint_file }}",
   "cloudwatch.emitMetrics": true,
   "kinesis.endpoint": "{{ kinesis_endpoint }}",
   "firehose.endpoint": "{{ firehose_endpoint }}",

@@ -44,7 +44,7 @@
   block:
   - name: Create checkpoint file
     file:
-      path: "/opt/aws-kinesis-agent/"
+      path: "{{ kinesis_agent_dir }}"
       owner: aws-kinesis-agent-user
       group: aws-kinesis-agent-user
       state: directory

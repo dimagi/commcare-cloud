@@ -1,4 +1,5 @@
 firehose_endpoint: "firehose.us-east-1.amazonaws.com"
 kinesis_endpoint: "kinesis.us-east-1.amazonaws.com"
 kinesis_flows: []
-
+kinesis_agent_dir: '/opt/aws-kinesis-agent'
+kinesis_agent_checkpoint_file: '{{ kinesis_agent_dir }}/run/checkpoints'
