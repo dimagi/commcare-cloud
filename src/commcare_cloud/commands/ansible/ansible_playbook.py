@@ -95,12 +95,12 @@ def run_ansible_playbook(
     def get_limit():
         limit_parts = []
         if limit:
-            limit_parts.append(limit)
+            limit_parts = re.split('[,:]', limit)
         if 'ansible_skip' in environment.sshable_hostnames_by_group and respect_ansible_skip:
             limit_parts.append('!ansible_skip')
 
         if limit_parts:
-            return '--limit', ':'.join(limit_parts)
+            return '--limit', ','.join(limit_parts)
         else:
             return ()
 
