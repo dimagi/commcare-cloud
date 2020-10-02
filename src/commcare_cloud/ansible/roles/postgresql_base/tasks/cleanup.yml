@@ -11,7 +11,7 @@
   cron:
     name: "Rotate postgres logs"
     cron_file: rotate_postgres
-    state: abesent
+    state: absent
   tags: cron
 
 - name: Remove old monit config
