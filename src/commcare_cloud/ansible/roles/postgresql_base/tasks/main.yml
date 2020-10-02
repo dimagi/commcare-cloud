@@ -211,11 +211,11 @@
 - name: Create log rotation cron
   become: yes
   cron:
-    name: "Rotate postgres logs"
+    name: "Rotate postgres {{ postgresql_version }} logs"
     job: "/usr/local/sbin/rotate_postgres_logs_{{ postgresql_version }}.sh"
     minute: "*/15"
     user: postgres
-    cron_file: rotate_postgres
+    cron_file: "rotate_postgres_{{ postgresql_version }}"
   tags:
     - cron
 
@@ -229,6 +229,8 @@
     mode: 0640
   notify: reload monit
   tags: monit
+
+- import_tasks: cleanup.yml
 
 - meta: flush_handlers
 
