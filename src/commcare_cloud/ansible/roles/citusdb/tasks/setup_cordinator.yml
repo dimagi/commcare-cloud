@@ -5,6 +5,7 @@
    postgresql_ext:
      name: citus
      db: "{{ item.name }}"
+     version: "{{ citus_version }}"
    with_items: "{{ postgresql_dbs.all }}"
    when: item.host == inventory_hostname
 
