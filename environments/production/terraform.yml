@@ -421,7 +421,7 @@ servers:
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
     az: "a"
-    volume_size: 100
+    volume_size: 200
     group: "formplayer"
     os: ubuntu_pro_bionic
     count: 42
