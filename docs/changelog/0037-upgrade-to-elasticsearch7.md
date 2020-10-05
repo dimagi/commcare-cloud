@@ -263,11 +263,11 @@ That's it, you are running HQ on Elasticsearch 7!
 
 If you have large cluster you can get an estimate of downtime required for switchover. In most cases this is not necessary.
 
-The major downtime will be required in steps 4, 5 and 6. You might already have an estimate for step 4 based on the reindex phase. These can be run prior to get an estimate, but they will need to be run during actual switchover as well
+The major downtime will be required in steps 3, 4 and 5. You might already have an estimate for step 4 based on the reindex phase. These can be run prior to get an estimate, but they will need to be rerun during actual switchover as well
 
 To get the estimate:
-- execute step 5. You can see Appendix [Note 2](#note-2-resetting-es7-indices-after-dry-run) to reset those (not form/case) indices before actual switchover. 
-- execute step 4 and 6, but these shouldn't be reset since this affects already reindexed data from reindex phase
+- execute step 4 to get estimate for reindexing indices other than form/case. These indices need to be reset before actual switchover. You can see Appendix [Note 2](#note-2-resetting-es7-indices-after-dry-run)
+- execute step 3 and 5 to get estimate for offset form/case data and reprocessing form/case deletes, but these shouldn't be reset since this affects already reindexed data from reindex phase
 
 
 ### Appendix 
