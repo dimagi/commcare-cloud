@@ -40,8 +40,7 @@
   apt:
     name:
       - postgresql-9.6-pglogical
-  when: postgresql_wal_level == 'logical'
-
+  when: postgresql_version is version('10', '<') and postgresql_wal_level == 'logical'
 
 - name: Create service config folder
   become: yes
