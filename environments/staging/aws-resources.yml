@@ -34,9 +34,8 @@ pgproxy2-staging: 10.201.40.16
 pgproxy2-staging.instance_id: i-0638ff6218ed9f753
 pillow3-staging: 10.201.10.68
 pillow3-staging.instance_id: i-0ef555fec7fe64804
-proxy1-staging: 10.201.20.208
-proxy3-staging: 10.201.20.47
-proxy3-staging.instance_id: i-0a53d5199910fc2b7
+proxy3-staging: 10.201.10.97
+proxy3-staging.instance_id: i-015d3723f1019a4f7
 proxy2-staging: 10.201.10.72
 proxy2-staging.instance_id: i-01e26fa1de2365635
 rabbit2-staging: 10.201.10.239
