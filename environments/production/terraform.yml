@@ -95,16 +95,40 @@ servers:
     volume_encrypted: yes
     group: "hq_webworkers"
     os: bionic
-
-
-  - server_name: "web10-production"
+  - server_name: "web20-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
-    az: "b"
+    az: "a"
     volume_size: 40
-    volume_encrypted: no
-    group: "mobile_webworkers"
+    volume_encrypted: yes
+    group: "hq_webworkers"
     os: bionic
+  - server_name: "web21-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    group: "hq_webworkers"
+    os: bionic
+  - server_name: "web22-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    group: "hq_webworkers"
+    os: bionic
+  - server_name: "web23-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    group: "hq_webworkers"
+    os: bionic
+
+
   - server_name: "web11-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
@@ -127,6 +151,30 @@ servers:
     az: "a"
     volume_size: 40
     volume_encrypted: no
+    group: "mobile_webworkers"
+    os: bionic
+  - server_name: "web14-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    group: "mobile_webworkers"
+    os: bionic
+  - server_name: "web15-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    group: "mobile_webworkers"
+    os: bionic
+  - server_name: "web16-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
     group: "mobile_webworkers"
     os: bionic
 
@@ -155,49 +203,8 @@ servers:
     os: bionic
     volume_encrypted: no
 
-
-  - server_name: "es15-production"
-    server_instance_type: m5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 1000
-    volume_encrypted: no
-    group: "elasticsearch"
-    os: bionic
-  - server_name: "es16-production"
-    server_instance_type: m5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 1000
-    volume_encrypted: no
-    group: "elasticsearch"
-    os: bionic
-  - server_name: "es17-production"
-    server_instance_type: m5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 1000
-    volume_encrypted: no
-    group: "elasticsearch"
-    os: bionic
-  - server_name: "es18-production"
-    server_instance_type: m5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 1000
-    volume_encrypted: no
-    group: "elasticsearch"
-    os: bionic
-  - server_name: "es19-production"
-    server_instance_type: m5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 1000
-    volume_encrypted: no
-    group: "elasticsearch"
-    os: bionic
   - server_name: "es20-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: r5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -208,7 +215,7 @@ servers:
     group: "elasticsearch"
     os: bionic
   - server_name: "es21-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: r5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -219,7 +226,7 @@ servers:
     group: "elasticsearch"
     os: bionic
   - server_name: "es22-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: r5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -230,7 +237,7 @@ servers:
     group: "elasticsearch"
     os: bionic
   - server_name: "es23-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: r5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -241,7 +248,7 @@ servers:
     group: "elasticsearch"
     os: bionic
   - server_name: "es24-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: r5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -251,21 +258,75 @@ servers:
       encrypted: yes
     group: "elasticsearch"
     os: bionic
-
-  - server_name: "couchproxy1-production"
-    server_instance_type: "t3.medium"
+  - server_name: "es25-production"
+    server_instance_type: r5.4xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1400
+      encrypted: yes
+    group: "elasticsearch"
+    os: bionic
+  - server_name: "es26-production"
+    server_instance_type: r5.4xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1400
+      encrypted: yes
+    group: "elasticsearch"
+    os: bionic
+  - server_name: "es27-production"
+    server_instance_type: r5.4xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1400
+      encrypted: yes
+    group: "elasticsearch"
+    os: bionic
+  - server_name: "es28-production"
+    server_instance_type: r5.4xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1400
+      encrypted: yes
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
+  - server_name: "es29-production"
+    server_instance_type: r5.4xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1400
+      encrypted: yes
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
+    
+  - server_name: "couchproxy2-production"
+    server_instance_type: m5.large
     network_tier: "db-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
     group: "couchdb2_proxy"
     os: bionic
 
   - server_name: "couch12-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: c5.12xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 30
+    volume_size: 40
     volume_encrypted: no
     block_device:
       volume_size: 6650
@@ -273,36 +334,36 @@ servers:
     group: "couchdb2"
     os: bionic
   - server_name: "couch13-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: c5.12xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 30
+    volume_size: 40
     volume_encrypted: no
     block_device:
-      volume_size: 5000
+      volume_size: 6650
       encrypted: no
     group: "couchdb2"
     os: bionic
   - server_name: "couch14-production"
-    server_instance_type: c5.9xlarge
+    server_instance_type: c5.12xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 30
+    volume_size: 40
     volume_encrypted: no
     block_device:
-      volume_size: 5000
+      volume_size: 6650
       encrypted: no
     group: "couchdb2"
     os: bionic
 
-  - server_name: "rabbit1-production"
-    server_instance_type: t3.large
+  - server_name: "rabbit2-production"
+    server_instance_type: t3.2xlarge
     network_tier: "db-private"
     az: "c"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     group: "rabbitmq"
-    os: bionic
+    os: ubuntu_pro_bionic
 
   - server_name: "celery9-production"
     server_instance_type: r5.2xlarge
@@ -337,6 +398,16 @@ servers:
     group: "celery"
     os: bionic
 
+  - server_name: "celery_a{i}-production"
+    server_instance_type: r5.2xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 200
+    volume_encrypted: yes
+    group: "celery"
+    os: ubuntu_pro_bionic
+    count: 3
+
   - server_name: "pillow1-production"
     server_instance_type: r5a.4xlarge
     network_tier: "app-private"
@@ -346,59 +417,14 @@ servers:
     group: "pillowtop"
     os: bionic
 
-  - server_name: "formplayer2-production"
-    server_instance_type: r5.2xlarge
+  - server_name: "formplayer_b{i}-production"
+    server_instance_type: m5.2xlarge
     network_tier: "app-private"
     az: "a"
-    volume_size: 150
-    volume_encrypted: no
+    volume_size: 200
     group: "formplayer"
-    os: bionic
-
-  - server_name: "formplayer3-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 150
-    volume_encrypted: no
-    group: "formplayer"
-    os: bionic
-
-  - server_name: "formplayer4-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 150
-    volume_encrypted: no
-    group: "formplayer"
-    os: bionic
-
-  - server_name: "formplayer5-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 150
-    volume_encrypted: no
-    group: "formplayer"
-    os: bionic
-
-  - server_name: "formplayer6-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 150
-    volume_encrypted: no
-    group: "formplayer"
-    os: bionic
-
-  - server_name: "formplayer7-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 150
-    volume_encrypted: no
-    group: "formplayer"
-    os: bionic
+    os: ubuntu_pro_bionic
+    count: 42
 
   - server_name: "redis0-production"
     server_instance_type: r5.xlarge
@@ -427,32 +453,37 @@ servers:
     group: "kafka"
     os: bionic
 
-  - server_name: "pgbouncer2-production"
-    server_instance_type: t3.2xlarge
+  - server_name: "pgbouncer3-production"
+    server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
     group: "postgresql"
     os: bionic
 
 
-
 proxy_servers:
-  - server_name: "proxy1-production"
-    server_instance_type: "t3.medium"
+  - server_name: "proxy2-production"
+    server_instance_type: "c5.large"
     network_tier: "public"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
     group: "proxy"
     os: bionic
+  - server_name: "proxy3-production"
+    server_instance_type: "c5.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "proxy"
+    os: ubuntu_pro_bionic
 
 
 rds_instances:
   - identifier: "pgmain0-production"
     instance_type: "db.t3.2xlarge"
     storage: 500
+    max_storage: 5000
     multi_az: true
     engine_version: 9.6.15
     params:
@@ -461,38 +492,45 @@ rds_instances:
   - identifier: "pgucr0-production"
     instance_type: "db.t3.large"
     storage: 500
+    max_storage: 5000
     multi_az: true
     engine_version: 9.6.15
 
   - identifier: "pgshard1-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
+    max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard2-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
+    max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard3-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
+    max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard4-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
+    max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard5-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.xlarge"
     storage: 250
+    max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
 
   - identifier: "pgsynclog0-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.2xlarge"
     storage: 1000
+    max_storage: 20000
     multi_az: true
     engine_version: 9.6.15
     params:

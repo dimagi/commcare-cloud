@@ -1,34 +1,32 @@
-{{ __proxy1__ }} public_ip={{ aws_resources['proxy1-production.public_ip'] }}
+{{ __proxy2__ }}
+{{ __proxy3__ }}
 
 [proxy:children]
-proxy1
+proxy2
+proxy3
 
 {{ __web2__ }}
-
 {{ __web3__ }}
-
 {{ __web4__ }} datadog_integration_tcp_check=yes
-
 {{ __web5__ }}
-
 {{ __web6__ }}
-
 {{ __web7__ }}
-
 {{ __web8__ }}
-
 {{ __web9__ }}
-
-{{ __web10__ }}
+{{ __web20__ }}
+{{ __web21__ }}
+{{ __web22__ }}
+{{ __web23__ }}
 
 {{ __web11__ }} datadog_integration_tcp_check=yes
-
 {{ __web12__ }}
-
 {{ __web13__ }}
+{{ __web14__ }}
+{{ __web15__ }}
+{{ __web16__ }}
 
 [logproxy:children]
-proxy1
+proxy
 
 [hq_webworkers:children]
 web2
@@ -39,18 +37,24 @@ web6
 web7
 web8
 web9
+web20
+web21
+web22
+web23
 
 [mobile_webworkers:children]
-web10
 web11
 web12
 web13
+web14
+web15
+web16
 
 [webworkers:children]
 hq_webworkers
 mobile_webworkers
 
-{{ __pgbouncer2__ }}
+{{ __pgbouncer3__ }}
 
 {{ __rds_pgmain0__ }}
 
@@ -79,16 +83,16 @@ rds_pgshard5
 rds_pgsynclog0
 
 [postgresql:children]
-pgbouncer2
+pgbouncer3
 remote_postgresql
 
 [ansible_skip:children]
 remote_postgresql
 
-{{ __rabbit1__ }}
+{{ __rabbit2__ }}
 
 [rabbitmq:children]
-rabbit1
+rabbit2
 
 [rabbitmq:vars]
 swap_size=2G
@@ -101,20 +105,22 @@ kafka1
 [kafka:children]
 kafka1
 
-{{ __celery9__ }}
+{{ __celery9__ }} rabbitmq_migration_bridge=true
 
-{{ __celery10__ }}
+{{ __celery10__ }} rabbitmq_migration_bridge=true
 
-{{ __celery11__ }}
+{{ __celery11__ }} rabbitmq_migration_bridge=true
 
 {{ __celery12__ }}
 
+{{ __celery_a__ }}
 
 [celery:children]
 celery9
 celery10
 celery11
 celery12
+celery_a
 
 [celery:vars]
 swap_size=8G
@@ -124,20 +130,17 @@ swap_size=8G
 [pillowtop:children]
 pillow1
 
-{{ __formplayer2__ }} swap_size=8G
-{{ __formplayer3__ }} swap_size=8G
-{{ __formplayer4__ }} swap_size=8G
-{{ __formplayer5__ }} swap_size=8G
-{{ __formplayer6__ }} swap_size=8G
-{{ __formplayer7__ }} swap_size=8G
+{{ __formplayer_b__ }}
 
 [formplayer:children]
-formplayer2
-formplayer3
-formplayer4
-formplayer5
-formplayer6
-formplayer7
+formplayer_b
+
+[formplayer:vars]
+swap_size=8G
+formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
+cchq_uid=1025
+cchq_gid=1026
+
 
 {{ __redis0__ }} swap_size=1G
 
@@ -149,12 +152,6 @@ redis0
 [shared_dir_host:children]
 shareddir1
 
-{{ __es15__ }} elasticsearch_node_name=es15
-
-{{ __es18__ }} elasticsearch_node_name=es18
-
-{{ __es19__ }} elasticsearch_node_name=es19
-
 {{ __es20__ }} elasticsearch_node_name=es20 datavol_fstype=xfs
 
 {{ __es21__ }} elasticsearch_node_name=es21 datavol_fstype=xfs
@@ -164,6 +161,16 @@ shareddir1
 {{ __es23__ }} elasticsearch_node_name=es23
 
 {{ __es24__ }} elasticsearch_node_name=es24
+
+{{ __es25__ }} elasticsearch_node_name=es25
+
+{{ __es26__ }} elasticsearch_node_name=es26
+
+{{ __es27__ }} elasticsearch_node_name=es27
+
+{{ __es28__ }} elasticsearch_node_name=es28
+
+{{ __es29__ }} elasticsearch_node_name=es29
 
 {{ __esmaster3__ }} elasticsearch_node_name=esmaster3
 
@@ -181,14 +188,16 @@ elasticsearch_master=true
 elasticsearch_data=false
 
 [es_data:children]
-es15
-es18
-es19
 es20
 es21
 es22
 es23
 es24
+es25
+es26
+es27
+es28
+es29
 
 [es_data:vars]
 elasticsearch_node_zone=aws
@@ -209,10 +218,10 @@ couch14
 [couchdb2:vars]
 swap_size=8G
 
-{{ __couchproxy1__ }}
+{{ __couchproxy2__ }}
 
 [couchdb2_proxy:children]
-couchproxy1
+couchproxy2
 
 {{ __control1__ }}
 

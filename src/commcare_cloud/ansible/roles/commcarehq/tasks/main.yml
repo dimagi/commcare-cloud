@@ -18,6 +18,28 @@
     owner: cchq
     group: cchq
 
+- name: add deploy keys
+  become: yes
+  copy:
+    src: "{{ env_files_dir }}/{{ item.key }}"
+    dest: "{{ cchq_home }}/.ssh/{{ item.value }}"
+    owner: cchq
+    group: cchq
+    mode: 0600
+  loop: "{{ deploy_keys|dict2items }}"
+  when: deploy_keys is defined
+
+- name: Force GIT SSH to use port 443
+  become: yes
+  become_user: "{{ cchq_user }}"
+  blockinfile:
+    dest: "{{ cchq_home }}/.ssh/config"
+    create: yes
+    block: |
+      Host github.com
+        Hostname ssh.github.com
+        Port 443
+
 - name: create required directories
   become: yes
   file:
@@ -41,100 +63,59 @@
     - "{{ service_home }}"
   tags: services
 
-# Do not update source unless you're cloning for the first time
-
-- name: register git repo
-  stat: path="{{ code_home }}/.git"
-  register: gitdir
-  tags:
-    - py3
+- name: check for existing release
+  stat: path="{{ code_home }}/localsettings.py"
+  register: current_release
 
 - block:
-    - name: Pull full CommcareHQ source
-      git:
-        repo: "{{ commcarehq_repository }}"
-        dest: "{{ code_source }}"
+  - name: Clone CommCare source repository
+    include_tasks: git_repository.yml
+    loop:
+      - url: "{{ commcarehq_repository }}"
         version: "{{ commcarehq_version }}"
-        recursive: yes
-        accept_hostkey: yes
-        update: yes
-      become_user: "{{ cchq_user }}"
-      become: true
-      tags:
-        - git
-        - slow
+        requirements_path: "requirements/prod-requirements.txt"
 
-    - name: Link source to code_home
-      become: true
-      file:
-        state: link
-        src: "{{ code_source }}"
-        dest: "{{ code_home }}"
-        owner: "{{ cchq_user }}"
-        group: "{{ cchq_user }}"
+  - name: Clone additional source repositories
+    include_tasks: git_repository.yml
+    loop: "{{ git_repositories }}"
+    when: git_repositories
 
-    - name: install pip requirements
-      become: true
-      pip:
-        requirements: "{{ code_home }}/requirements/prod-requirements.txt"
-        virtualenv: "{{ py3_virtualenv_source }}"
-        virtualenv_python: "python3.6"
-        chdir: "{{ code_home }}"
-      tags:
-        - slow
-        - py3
-      when: not testing|default(False)
+  - name: Link source to code_home
+    become: true
+    file:
+      state: link
+      src: "{{ code_source }}"
+      dest: "{{ code_home }}"
+      owner: "{{ cchq_user }}"
+      group: "{{ cchq_user }}"
 
-    - name: chown clone
-      become: true
-      file:
-        path: "{{ item }}"
-        state: directory
-        owner: "{{ cchq_user }}"
-        group: "{{ cchq_user }}"
-        recurse: yes
-      with_items:
-        - "{{ code_source }}"
-        - "{{ py3_virtualenv_source }}"
+  # This task has the additional effect of creating the virtualenv if it does not exist
+  # i.e. on a python2 install that is getting a python3 env for the first time
+  - name: Upgrade python packages
+    become: true
+    pip:
+      name:
+        - six
+        - pip
+        - setuptools
+      state: latest
+      virtualenv: "{{ py3_virtualenv_home }}"
+      virtualenv_python: "python3.6"
+    tags:
+      - py3
 
-  when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists
+  - name: install pip requirements if py3 tag specified
+    become: true
+    pip:
+      requirements: "{{ code_home }}/requirements/prod-requirements.txt"
+      virtualenv: "{{ py3_virtualenv_home }}"
+      chdir: "{{ code_home }}"
+    tags:
+      - never  # means only when the following tag is specified
+      - py3
+    when: not testing|default(False)
 
-# This task has the additional effect of creating the virtualenv if it does not exist
-# i.e. on a python2 install that is getting a python3 env for the first time
-- name: Upgrade python packages
-  become: true
-  pip:
-    name:
-      - six
-      - pip
-      - setuptools
-    state: latest
-    virtualenv: "{{ py3_virtualenv_home }}"
-    virtualenv_python: "python3.6"
-  tags:
-    - py3
-
-- name: install pip requirements if py3 tag specified
-  become: true
-  pip:
-    requirements: "{{ code_home }}/requirements/prod-requirements.txt"
-    virtualenv: "{{ py3_virtualenv_home }}"
-    chdir: "{{ code_home }}"
-  tags:
-    - never  # means only when the following tag is specified
-    - py3
-  when: not testing|default(False)
-
-- name: chown virtualenv
-  become: true
-  file:
-    path: "{{ py3_virtualenv_home }}"
-    state: directory
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-    recurse: yes
-  tags:
-    - py3
+  when: not current_release.stat.exists
 
 - name: copy localsettings
   become: true
@@ -144,6 +125,20 @@
   tags:
     - localsettings
     - hq-localsettings
+
+- name: chown clone
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    recurse: yes
+  loop:
+    - "{{ code_source }}"
+    - "{{ py3_virtualenv_source }}"
+    - "{{ code_home }}"
+  tags:
+    - py3
 
 - name: chown localsettings
   become: true

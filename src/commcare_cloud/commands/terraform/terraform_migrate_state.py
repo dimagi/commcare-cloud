@@ -1,4 +1,6 @@
 from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import json
 import sys
 import tempfile
@@ -17,7 +19,7 @@ from memoized import memoized_property
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, print_command
-from commcare_cloud.commands.command_base import CommandBase, CommandError
+from commcare_cloud.commands.command_base import CommandBase, CommandError, Argument
 from commcare_cloud.commands.terraform.aws import aws_sign_in
 from commcare_cloud.environment.main import get_environment
 
@@ -39,11 +41,22 @@ class TerraformMigrateState(CommandBase):
     This command helps fill this gap.
     """
 
+    arguments = [
+        Argument('--replay-from', type=int, default=None,
+                 help="Set the last applied migration value to this number before running."
+                      " Will begin running migrations after this number, not including it.")
+    ]
+
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         remote_migration_state_manager = RemoteMigrationStateManager(environment.terraform_config)
         remote_migration_state = remote_migration_state_manager.fetch()
         migrations = get_migrations()
+        if args.replay_from is not None:
+            migration = migrations[args.replay_from - 1]
+            assert (migration.number == args.replay_from), migration.number
+            remote_migration_state.number = migration.number
+            remote_migration_state.slug = migration.slug
 
         applied_migrations = migrations[:remote_migration_state.number]
         unapplied_migrations = migrations[remote_migration_state.number:]
@@ -95,7 +108,7 @@ class RemoteMigrationStateManager(object):
     @memoized_property
     def s3_client(self):
 
-        return boto3.session.Session(profile_name=aws_sign_in(self.aws_profile)).client('s3')
+        return boto3.session.Session(profile_name=aws_sign_in(get_environment(self.environment))).client('s3')
 
     def fetch(self):
         """
@@ -200,7 +213,7 @@ class _SimulatedState(object):
         return self._address_to_resource[address]
 
     def list(self):
-        return self._address_to_resource.keys()
+        return list(self._address_to_resource.keys())
 
     def address_is_free(self, address):
         return address not in self._address_to_resource
@@ -281,7 +294,9 @@ def apply_migration_plans(environment, migration_plans, remote_migration_state_m
         log('  [{:0>4} {}]'.format(migration.number, migration.slug))
         for start_address, end_address in migration_plan.moves:
             log('    {} => {}'.format(start_address, end_address))
-            commcare_cloud(environment.name, 'terraform', 'state', 'mv',
+            rc = commcare_cloud(environment.name, 'terraform', 'state', 'mv',
                            start_address, end_address)
+            if rc != 0:
+                raise Exception('Failed applying migration')
         remote_migration_state_manager.push(
             RemoteMigrationState(number=migration.number, slug=migration.slug))

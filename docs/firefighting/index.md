@@ -717,7 +717,33 @@ $ tail -f /opt/data/elasticsearch-1.7.1/logs/prodhqes-1.x_index_search_slowlog.l
 ```
 
 ## Unassigned shards
-Currently on ICDS (maybe on prod/india) shard allocation is disabled. If there are unassigned shards you should run:
+Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a node goes down all the shards that were on the node get unassigned. Do not turn on automatic shard allocation immediately since that might cause lot of unexpected shards to move around. Instead follow below instructions (the last point is very important for large ES clusters)
+
+- Check which nodes are down and restart them.
+- Once all nodes are up, all the primary nodes should automatically get assigned.
+  - Shard assignment can be checked via Elasticsearch [shards API](https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-shards.html) or the shards graph on Elasticsearch datadog dashboard
+- If any primaries are not allocated. Use rereoute API ([official docs](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/cluster-reroute.html))
+  - Reroute according to existing shard allocation
+  - Example reroute command to allocate primary shard
+    ```
+    curl -XPOST 'http://<es_url>/_cluster/reroute' -d ' {"commands" :[{"allocate": {"shard": 0, "node": "es34", "allow_primary": true, "index": "xforms_2020-02-20"}}’
+    ```
+  - Example reroute command to allocate replica shard
+    ```
+    curl -XPOST 'http://<es_url>/_cluster/reroute' -d ' {"commands" :[{"allocate": {"shard": 0, "node": "es34", "index": "xforms_2020-02-20"}}’
+    ```
+- Replicas won’t get auto assigned. To assign replicas, auto shard allocation needs to be enabled
+  - Make sure no primaries are unassigned
+  - Turn on auto shard allocation using
+  ```
+  curl 'http://<es_url>/_cluster/settings/' -X PUT  --data '{"transient":{"cluster.routing.allocation.enable":"all"}}'
+  ```
+  - Wait for replicas to get assigned.
+- Finally **remember to turn off** auto shard allocation using
+    ```
+    curl 'http://<es_url>/_cluster/settings/' -X PUT  --data ‘{"persistent":{"cluster.routing.allocation.enable":"none"}}'
+    ```
+
 
 ```
 curl -XPUT '<es url/ip>:9200/_cluster/settings' -d '{ "transient":
@@ -779,6 +805,22 @@ Resources:
 
 Formplayer sometimes fails on deploy due to a startup task (which will hopefully be resolved soon).  The process may not fail, but formplayer will still return failure responses. You can try just restarting the process with `sudo supervisorctl restart all` (or specify the name if it's a monolithic environment)
 
+## Lock issues
+
+If there are many persistent lock timeouts that aren't going away by themselves,
+it can be a sign of a socket connection hanging and Java not having a timeout
+for the connection and just hanging.
+
+In that case, it can be helpful to kill the offending socket connections. The following command queries for socket connections
+that look like the ones that would be hanging and kills them:
+
+```
+cchq <env> run-shell-command formplayer 'ss src {{ inventory_hostname }} | grep ESTAB | grep tcp | grep ffff | grep https | cut -d: -f5 | cut -d\  -f1 | xargs -n1 ss -K sport = ' -b
+```
+
+Because it's filtered, it won't kill _all_ socket connections, but it will kill more socket connections than strictly necessary,
+since it is difficult to determine which specific connections are the problematic ones. But anecdotally this
+doesn't cause any user-facing problems. (I still wouldn't do it unless you have to to solve this issue though!)
 
 # Full Drives / Out of Disk Space
 

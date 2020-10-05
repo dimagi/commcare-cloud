@@ -1,0 +1,121 @@
+diff --git b/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py a/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py
+index b4076b012..978f3af03 100644
+--- b/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py
++++ a/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py
+@@ -127,7 +127,7 @@ def provision_machines(spec, env_name=None, create_machines=True):
+ 
+     hosts_by_name = {}
+ 
+-    for host, (public_ip, private_ip) in zip(inventory.all_hosts, list(instance_ip_addresses.values())):
++    for host, (public_ip, private_ip) in zip(inventory.all_hosts, instance_ip_addresses.values()):
+         host.public_ip = public_ip
+         host.private_ip = private_ip
+         host.vars['hostname'] = host.name
+@@ -170,7 +170,7 @@ def alphanumeric_sort_key(key):
+ 
+ 
+ def bootstrap_inventory(spec, env_name):
+-    incomplete = dict(list(spec.allocations.items()))
++    incomplete = dict(spec.allocations.items())
+ 
+     inventory = Inventory()
+ 
+diff --git b/setup.py a/setup.py
+index baf629a5d..66810654d 100644
+--- b/setup.py
++++ a/setup.py
+@@ -1,6 +1,5 @@
+ from __future__ import absolute_import
+ 
+-from __future__ import unicode_literals
+ import six
+ from setuptools import setup, find_packages
+ 
+diff --git b/src/commcare_cloud/commands/ansible/ops_tool.py a/src/commcare_cloud/commands/ansible/ops_tool.py
+index 1a01020da..93b45b0ec 100644
+--- b/src/commcare_cloud/commands/ansible/ops_tool.py
++++ a/src/commcare_cloud/commands/ansible/ops_tool.py
+@@ -128,7 +128,7 @@ class CeleryResourceReport(CommandBase):
+         if args.show_workers:
+             headers.append('Worker Hosts')
+         rows = []
+-        for queue_name, stats in sorted(list(by_queue.items()), key=itemgetter(0)):
++        for queue_name, stats in sorted(by_queue.items(), key=itemgetter(0)):
+             workers = stats['num_workers']
+             concurrency_ = stats['concurrency']
+             row = [list(stats['pooling'])[0], '`{}`'.format(queue_name), workers, concurrency_, concurrency_ // workers]
+@@ -168,7 +168,7 @@ class PillowResourceReport(CommandBase):
+         headers = ['Pillow', 'Processes']
+         rows = [
+             [name, num_processes]
+-            for name, num_processes in sorted(list(by_process.items()), key=itemgetter(0))
++            for name, num_processes in sorted(by_process.items(), key=itemgetter(0))
+         ]
+ 
+         print_table(headers, rows, args.csv)
+diff --git b/src/commcare_cloud/commands/ansible/service.py a/src/commcare_cloud/commands/ansible/service.py
+index 848051193..c8c0c1c52 100644
+--- b/src/commcare_cloud/commands/ansible/service.py
++++ a/src/commcare_cloud/commands/ansible/service.py
+@@ -576,7 +576,7 @@ def optimize_process_operations(all_processes_by_host, process_host_mapping):
+ 
+     processes_by_hosts = {}
+     # group hosts together so we do less calls to ansible
+-    items = sorted(list(processes_by_host.items()), key=lambda hp: hp[1])
++    items = sorted(processes_by_host.items(), key=lambda hp: hp[1])
+     for processes, group in groupby(items, key=lambda hp: hp[1]):
+         hosts = tuple(sorted([host_processes[0] for host_processes in group]))
+         processes_by_hosts[hosts] = processes
+diff --git b/src/commcare_cloud/environment/main.py a/src/commcare_cloud/environment/main.py
+index 7e091c705..8bff10977 100644
+--- b/src/commcare_cloud/environment/main.py
++++ a/src/commcare_cloud/environment/main.py
+@@ -350,7 +350,7 @@ class Environment(object):
+             ),
+             'new_release_name': datetime.utcnow().strftime('%Y-%m-%d_%H.%M'),
+             'git_repositories': [repo.to_generated_variables() for repo in self.meta_config.git_repositories],
+-            'deploy_keys': dict(list(self.meta_config.deploy_keys.items())),
++            'deploy_keys': dict(self.meta_config.deploy_keys.items()),
+         }
+         if not self.meta_config.bare_non_cchq_environment:
+             generated_variables.update(self.app_processes_config.to_generated_variables())
+diff --git b/src/commcare_cloud/environment/schemas/postgresql.py a/src/commcare_cloud/environment/schemas/postgresql.py
+index 757aaba55..27e46e9cb 100644
+--- b/src/commcare_cloud/environment/schemas/postgresql.py
++++ a/src/commcare_cloud/environment/schemas/postgresql.py
+@@ -349,7 +349,7 @@ class FormProcessingConfig(jsonobject.JsonObject):
+         return (
+             [self.proxy]
+             + ([self.proxy_standby] if self.proxy_standby.host else [])
+-            + sorted(list(self.partitions.values()), key=lambda db: alphanum_key(db.django_alias))
++            + sorted(self.partitions.values(), key=lambda db: alphanum_key(db.django_alias))
+         )
+ 
+ 
+diff --git b/src/commcare_cloud/manage_commcare_cloud/list_vault_keys.py a/src/commcare_cloud/manage_commcare_cloud/list_vault_keys.py
+index c4821e8df..2e0eff6a2 100644
+--- b/src/commcare_cloud/manage_commcare_cloud/list_vault_keys.py
++++ a/src/commcare_cloud/manage_commcare_cloud/list_vault_keys.py
+@@ -37,7 +37,7 @@ class ListVaultKeys(CommandBase):
+         headers = ["key"] + [env for env in envs if env in var_keys]
+ 
+         rows = []
+-        for key in sorted(set(chain.from_iterable(list(var_keys.values())))):
++        for key in sorted(set(chain.from_iterable(var_keys.values()))):
+             row = ['.'.join(part if part is not None else '*' for part in key)]
+             by_var = defaultdict(set)
+             for env in envs:
+diff --git b/tests/test_schemas.py a/tests/test_schemas.py
+index c8881058f..36dcc370e 100644
+--- b/tests/test_schemas.py
++++ a/tests/test_schemas.py
+@@ -18,7 +18,7 @@ TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
+ def test_get_machine_alias():
+     env = get_environment('small_cluster')
+ 
+-    all_hosts = set(itertools.chain.from_iterable(list(env.groups.values())))
++    all_hosts = set(itertools.chain.from_iterable(env.groups.values()))
+     assert_equal(all_hosts, {'172.19.3.0', '172.19.3.1', '172.19.3.2', '172.19.3.3'})
+     aliases = set([get_machine_alias(env, host) for host in all_hosts])
+     assert_equal(aliases, {'demo_server0', 'demo_server1', 'demo_server2', 'demo_server3'})
+\ No newline at end of file

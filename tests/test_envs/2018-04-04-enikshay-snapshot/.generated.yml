@@ -7,12 +7,12 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id002
     create: true
     django_alias: p1
@@ -20,7 +20,7 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_p1
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
@@ -28,7 +28,7 @@ postgresql_dbs:
     shards:
     - 0
     - 103
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id003
     create: true
     django_alias: p10
@@ -36,7 +36,7 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_p10
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
@@ -44,7 +44,7 @@ postgresql_dbs:
     shards:
     - 927
     - 1023
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id004
     create: true
     django_alias: p2
@@ -52,7 +52,7 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_p2
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
@@ -60,7 +60,7 @@ postgresql_dbs:
     shards:
     - 104
     - 205
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id005
     create: true
     django_alias: p3
@@ -68,7 +68,7 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_p3
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
@@ -76,7 +76,7 @@ postgresql_dbs:
     shards:
     - 206
     - 308
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id006
     create: true
     django_alias: p4
@@ -84,7 +84,7 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_p4
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
@@ -92,7 +92,7 @@ postgresql_dbs:
     shards:
     - 309
     - 411
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id007
     create: true
     django_alias: p5
@@ -100,7 +100,7 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_p5
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
@@ -108,7 +108,7 @@ postgresql_dbs:
     shards:
     - 412
     - 514
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id008
     create: true
     django_alias: p6
@@ -116,7 +116,7 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_p6
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
@@ -124,7 +124,7 @@ postgresql_dbs:
     shards:
     - 515
     - 617
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id009
     create: true
     django_alias: p7
@@ -132,7 +132,7 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_p7
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
@@ -140,7 +140,7 @@ postgresql_dbs:
     shards:
     - 618
     - 720
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id010
     create: true
     django_alias: p8
@@ -148,7 +148,7 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_p8
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
@@ -156,7 +156,7 @@ postgresql_dbs:
     shards:
     - 721
     - 823
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id011
     create: true
     django_alias: p9
@@ -164,7 +164,7 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_p9
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
@@ -172,7 +172,7 @@ postgresql_dbs:
     shards:
     - 824
     - 926
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id012
     create: true
     django_alias: proxy
@@ -180,12 +180,12 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_proxy
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id013
     create: true
     django_alias: synclogs
@@ -193,12 +193,12 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_synclogs
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id014
     create: true
     django_alias: ucr
@@ -206,12 +206,12 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_ucr
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: true
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   - &id015
     create: true
     django_alias: null
@@ -219,12 +219,12 @@ postgresql_dbs:
     host: 172.25.3.5
     name: formplayer
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   by_host:
     172.25.3.5:
     - *id001
@@ -252,7 +252,7 @@ postgresql_dbs:
         host: 172.25.3.5
         name: commcarehq_p1
         options: {}
-        password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        password: '{{ postgres_users.commcare.password }}'
         pg_config: []
         pgbouncer_host: 172.25.3.5
         port: 6432
@@ -260,7 +260,7 @@ postgresql_dbs:
         shards:
         - 0
         - 103
-        user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+        user: '{{ postgres_users.commcare.username }}'
       p10:
         create: true
         django_alias: p10
@@ -268,7 +268,7 @@ postgresql_dbs:
         host: 172.25.3.5
         name: commcarehq_p10
         options: {}
-        password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        password: '{{ postgres_users.commcare.password }}'
         pg_config: []
         pgbouncer_host: 172.25.3.5
         port: 6432
@@ -276,7 +276,7 @@ postgresql_dbs:
         shards:
         - 927
         - 1023
-        user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+        user: '{{ postgres_users.commcare.username }}'
       p2:
         create: true
         django_alias: p2
@@ -284,7 +284,7 @@ postgresql_dbs:
         host: 172.25.3.5
         name: commcarehq_p2
         options: {}
-        password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        password: '{{ postgres_users.commcare.password }}'
         pg_config: []
         pgbouncer_host: 172.25.3.5
         port: 6432
@@ -292,7 +292,7 @@ postgresql_dbs:
         shards:
         - 104
         - 205
-        user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+        user: '{{ postgres_users.commcare.username }}'
       p3:
         create: true
         django_alias: p3
@@ -300,7 +300,7 @@ postgresql_dbs:
         host: 172.25.3.5
         name: commcarehq_p3
         options: {}
-        password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        password: '{{ postgres_users.commcare.password }}'
         pg_config: []
         pgbouncer_host: 172.25.3.5
         port: 6432
@@ -308,7 +308,7 @@ postgresql_dbs:
         shards:
         - 206
         - 308
-        user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+        user: '{{ postgres_users.commcare.username }}'
       p4:
         create: true
         django_alias: p4
@@ -316,7 +316,7 @@ postgresql_dbs:
         host: 172.25.3.5
         name: commcarehq_p4
         options: {}
-        password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        password: '{{ postgres_users.commcare.password }}'
         pg_config: []
         pgbouncer_host: 172.25.3.5
         port: 6432
@@ -324,7 +324,7 @@ postgresql_dbs:
         shards:
         - 309
         - 411
-        user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+        user: '{{ postgres_users.commcare.username }}'
       p5:
         create: true
         django_alias: p5
@@ -332,7 +332,7 @@ postgresql_dbs:
         host: 172.25.3.5
         name: commcarehq_p5
         options: {}
-        password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        password: '{{ postgres_users.commcare.password }}'
         pg_config: []
         pgbouncer_host: 172.25.3.5
         port: 6432
@@ -340,7 +340,7 @@ postgresql_dbs:
         shards:
         - 412
         - 514
-        user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+        user: '{{ postgres_users.commcare.username }}'
       p6:
         create: true
         django_alias: p6
@@ -348,7 +348,7 @@ postgresql_dbs:
         host: 172.25.3.5
         name: commcarehq_p6
         options: {}
-        password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        password: '{{ postgres_users.commcare.password }}'
         pg_config: []
         pgbouncer_host: 172.25.3.5
         port: 6432
@@ -356,7 +356,7 @@ postgresql_dbs:
         shards:
         - 515
         - 617
-        user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+        user: '{{ postgres_users.commcare.username }}'
       p7:
         create: true
         django_alias: p7
@@ -364,7 +364,7 @@ postgresql_dbs:
         host: 172.25.3.5
         name: commcarehq_p7
         options: {}
-        password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        password: '{{ postgres_users.commcare.password }}'
         pg_config: []
         pgbouncer_host: 172.25.3.5
         port: 6432
@@ -372,7 +372,7 @@ postgresql_dbs:
         shards:
         - 618
         - 720
-        user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+        user: '{{ postgres_users.commcare.username }}'
       p8:
         create: true
         django_alias: p8
@@ -380,7 +380,7 @@ postgresql_dbs:
         host: 172.25.3.5
         name: commcarehq_p8
         options: {}
-        password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        password: '{{ postgres_users.commcare.password }}'
         pg_config: []
         pgbouncer_host: 172.25.3.5
         port: 6432
@@ -388,7 +388,7 @@ postgresql_dbs:
         shards:
         - 721
         - 823
-        user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+        user: '{{ postgres_users.commcare.username }}'
       p9:
         create: true
         django_alias: p9
@@ -396,7 +396,7 @@ postgresql_dbs:
         host: 172.25.3.5
         name: commcarehq_p9
         options: {}
-        password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+        password: '{{ postgres_users.commcare.password }}'
         pg_config: []
         pgbouncer_host: 172.25.3.5
         port: 6432
@@ -404,7 +404,7 @@ postgresql_dbs:
         shards:
         - 824
         - 926
-        user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+        user: '{{ postgres_users.commcare.username }}'
     proxy:
       create: true
       django_alias: proxy
@@ -412,12 +412,12 @@ postgresql_dbs:
       host: 172.25.3.5
       name: commcarehq_proxy
       options: {}
-      password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+      password: '{{ postgres_users.commcare.password }}'
       pg_config: []
       pgbouncer_host: 172.25.3.5
       port: 6432
       query_stats: false
-      user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+      user: '{{ postgres_users.commcare.username }}'
     proxy_standby:
       create: true
       django_alias: proxy_standby
@@ -438,12 +438,12 @@ postgresql_dbs:
     host: 172.25.3.5
     name: formplayer
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   main:
     create: true
     django_alias: default
@@ -451,12 +451,12 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   standby: []
   synclogs:
     create: true
@@ -465,12 +465,12 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_synclogs
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: false
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'
   ucr:
     create: true
     django_alias: ucr
@@ -478,9 +478,9 @@ postgresql_dbs:
     host: 172.25.3.5
     name: commcarehq_ucr
     options: {}
-    password: '{{ secrets.POSTGRES_USERS.commcare.password }}'
+    password: '{{ postgres_users.commcare.password }}'
     pg_config: []
     pgbouncer_host: 172.25.3.5
     port: 6432
     query_stats: true
-    user: '{{ secrets.POSTGRES_USERS.commcare.username }}'
+    user: '{{ postgres_users.commcare.username }}'

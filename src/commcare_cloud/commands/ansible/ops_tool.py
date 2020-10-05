@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
 import collections
 import csv
 import subprocess
@@ -164,8 +167,8 @@ class PillowResourceReport(CommandBase):
 
         headers = ['Pillow', 'Processes']
         rows = [
-            [queue_name, stats['num_processes']]
-            for queue_name, stats in sorted(by_process.items(), key=itemgetter(0))
+            [name, num_processes]
+            for name, num_processes in sorted(by_process.items(), key=itemgetter(0))
         ]
 
         print_table(headers, rows, args.csv)
@@ -194,8 +197,9 @@ class PillowTopicAssignments(CommandBase):
         if args.csv:
             manage_args.append('--csv')
         args.release = None
-        args.server = None
+        args.server = "django_manage[0]"
         args.tmux = None
+        args.tee_file = None
         return DjangoManage(self.parser).run(args, manage_args)
 
 
@@ -218,14 +222,14 @@ class CouchDBClusterInfo(CommandBase):
         environment = get_environment(args.env_name)
         couch_config = get_couch_config(environment)
 
-        puts(u'\nMembership')
+        puts('\nMembership')
         with indent():
             puts(get_membership(couch_config).get_printable())
 
-        puts(u'\nDB Info')
+        puts('\nDB Info')
         print_db_info(couch_config)
 
-        puts(u'\nShard allocation')
+        puts('\nShard allocation')
         print_shard_table([
             get_shard_allocation(couch_config, db_name)
             for db_name in sorted(get_db_list(couch_config.get_control_node()))
@@ -239,12 +243,12 @@ def get_couch_config(environment, nodes=None):
         control_node_ip=couch_nodes[0],
         control_node_port=15984,
         control_node_local_port=15986,
-        username=environment.get_vault_var('localsettings_private.COUCH_USERNAME'),
+        username=environment.get_secret('COUCH_USERNAME'),
         aliases={
             'couchdb@{}'.format(node): get_machine_alias(environment, node) for node in couch_nodes
         }
     )
-    config.set_password(environment.get_vault_var('localsettings_private.COUCH_PASSWORD'))
+    config.set_password(environment.get_secret('COUCH_PASSWORD'))
     return config
 
 

@@ -8,7 +8,7 @@ postgres_override:
 
 pgbouncer_override:
   pgbouncer_default_pool: 290
-  pgbouncer_max_connections: 3000
+  pgbouncer_max_connections: 10000
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
@@ -30,38 +30,38 @@ pgbouncer_override:
 dbs:
   main:
     host: rds_pgmain0
-    pgbouncer_host: pgbouncer2
+    pgbouncer_host: pgbouncer3
   formplayer:
     host: rds_pgmain0
-    pgbouncer_host: pgbouncer2
+    pgbouncer_host: pgbouncer3
   ucr:
     host: rds_pgucr0
-    pgbouncer_host: pgbouncer2
+    pgbouncer_host: pgbouncer3
     query_stats: True
   synclogs:
     host: rds_pgsynclog0
-    pgbouncer_host: pgbouncer2
+    pgbouncer_host: pgbouncer3
   form_processing:
     proxy:
-      host: pgbouncer2
+      host: pgbouncer3
     partitions:
       p1:
         shards: [0, 204]
         host: rds_pgshard1
-        pgbouncer_host: pgbouncer2
+        pgbouncer_host: pgbouncer3
       p2:
         shards: [205, 409]
         host: rds_pgshard2
-        pgbouncer_host: pgbouncer2
+        pgbouncer_host: pgbouncer3
       p3:
         shards: [410, 614]
         host: rds_pgshard3
-        pgbouncer_host: pgbouncer2
+        pgbouncer_host: pgbouncer3
       p4:
         shards: [615, 819]
         host: rds_pgshard4
-        pgbouncer_host: pgbouncer2
+        pgbouncer_host: pgbouncer3
       p5:
         shards: [820, 1023]
         host: rds_pgshard5
-        pgbouncer_host: pgbouncer2
+        pgbouncer_host: pgbouncer3

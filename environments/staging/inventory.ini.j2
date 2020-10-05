@@ -3,25 +3,27 @@
 # As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
 # using the aws-fill-inventory command.
 
-{{ __proxy0__ }} public_ip={{ aws_resources['proxy0-staging.public_ip'] }}
+{{ __proxy2__ }}
+{{ __proxy3__ }}
 
 [proxy:children]
 # Amazon EC2
-proxy0
+proxy2
+proxy3
 
 [logproxy:children]
-proxy0
+proxy
 
-{{ __web3__ }} swap_size=1G
+{{ __web7__ }} swap_size=1G
 
-{{ __web4__ }} swap_size=1G
+{{ __web8__ }} swap_size=1G
 
 [webworkers:children]
 # Amazon EC2
-web3
-web4
+web7
+web8
 
-{{ __pgproxy1__ }} datavol_fstype=xfs
+{{ __pgproxy2__ }}
 
 {{ __rds_pg0__ }}
 
@@ -29,85 +31,92 @@ web4
 rds_pg0
 
 [postgresql:children]
-pgproxy1
+pgproxy2
 remote_postgresql
 
-{{ __couch3__ }} datavol_fstype=xfs
+{{ __couch6__ }}
 
-{{ __couch4__ }} datavol_fstype=xfs
+{{ __couch7__ }}
 
-{{ __couch5__ }} datavol_fstype=xfs
+{{ __couch8__ }}
 
 [couchdb2:children]
-couch3
-couch4
-couch5
+couch6
+couch7
+couch8
 
 [couchdb2_proxy:children]
-couch3
+couch6
 
-{{ __rabbit1__ }}
+{{ __rabbit2__ }}
+{{ __rabbit3__ }}
 
 [rabbitmq:children]
 # Amazon EC2
-rabbit1
+rabbit2
+rabbit3
 
-{{ __kafka1__ }} kafka_broker_id=0 datavol_fstype=xfs
+{{ __kafka2__ }} kafka_broker_id=1
 
 [zookeeper:children]
 # Amazon EC2
-kafka1
+kafka2
 
 [kafka:children]
 # Amazon EC2
-kafka1
+kafka2
 
-{{ __celery1__ }}
+{{ __celery3__ }} swap_size=8G
 
 [celery:children]
 # Amazon EC2
-celery1
+celery3
 
-{{ __pillow1__ }}
+{{ __pillow3__ }}
 
 [pillowtop:children]
 # Amazon EC2
-pillow1
+pillow3
 
-{{ __formplayer1__ }} datavol_fstype=xfs
+{{ __formplayer3__ }}
 
-{{ __formplayer2__ }} datavol_fstype=xfs
+{{ __formplayer4__ }}
 
 [formplayer:children]
 # Amazon EC2
-formplayer1
-formplayer2
+formplayer3
+formplayer4
 
-{{ __redis1__ }} datavol_fstype=xfs
+[formplayer:vars]
+formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
+cchq_uid=1026
+cchq_gid=1027
+
+{{ __redis2__ }}
 
 [redis:children]
-redis1
+redis2
 
-{{ __es2__ }} elasticsearch_node_name=es2-staging elasticsearch_node_zone=aws elasticsearch_master=true datavol_fstype=xfs
+{{ __es4__ }} elasticsearch_node_name=es4-staging elasticsearch_node_zone=aws elasticsearch_master=true
 
-{{ __es3__ }} elasticsearch_node_name=es3-staging elasticsearch_node_zone=aws elasticsearch_master=true datavol_fstype=xfs
+{{ __es5__ }} elasticsearch_node_name=es5-staging elasticsearch_node_zone=aws elasticsearch_master=true
 
 [elasticsearch:children]
 # Amazon EC2
-es2
-es3
+es4
+es5
 
 [shared_dir_host:children]
-redis1
+redis2
 
-{{ __control0__ }}
+{{ __control1__ }}
 
 [control:children]
-control0
+control1
 
 [ansible_skip:children]
 rds_pg0
 
 [django_manage:children]
 # Amazon EC2
-web3
+web7

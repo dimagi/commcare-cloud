@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import unicode_literals
 import os
 
 PROJECT_ROOT = os.path.dirname(__file__)
@@ -30,6 +31,7 @@ ROLES_PILLOWTOP = ['django_monolith', 'django_pillowtop']
 ROLES_DJANGO = ['django_monolith', 'django_app']
 ROLES_FORMPLAYER = ['django_monolith', 'formplayer']
 ROLES_STATIC = ['django_monolith', 'staticfiles']
+ROLES_STATIC_PRIMARY = ['django_monolith', 'staticfiles_primary']
 ROLES_POSTGRESQL = ['pg', 'pgstandby', 'django_monolith']
 ROLES_ELASTICSEARCH = ['elasticsearch', 'django_monolith']
 ROLES_DEPLOY = ['deploy', 'django_monolith']
@@ -58,3 +60,5 @@ OFFLINE_STAGING_DIR = 'offline-staging'
 BOWER_ZIP_NAME = 'bower.tar.gz'
 NPM_ZIP_NAME = 'npm.tar.gz'
 WHEELS_ZIP_NAME = 'wheels.tar.gz'
+
+YARN_LOCK = 'yarn.lock'

@@ -109,10 +109,10 @@
   vars:
     ansible_service_mgr: "systemd"
     postgres_exporter_datasource: "postgresql://postgres@:5432/postgres?host=/var/run/postgresql/&sslmode=disable"
-    postgres_exporter_flags: ['--auto-discover-databases']
+    postgres_exporter_flags: ['--auto-discover-databases','--extend.query-path="{{ postgres_exporter_home }}/queries.yml"']
   tasks:
     - import_role:
-        name: bdellegrazie.postgres_exporter
+        name: dimagi.commcare_prometheus.postgres_exporter
   tags: postgres_exporter
 
 - name: Prometheus Pgbouncer Exporter
@@ -138,6 +138,10 @@
   tasks:
     - import_role:
         name: dimagi.commcare_prometheus.statsd_exporter
+    - sysctl:
+        name: net.core.rmem_max
+        value: '26214400'
+        state: present
   tags: statsd_exporter
 
 - name: Prometheus Celery Exporter
@@ -166,4 +170,22 @@
         name: dimagi.commcare_prometheus.swift_exporter
       when: swift_accounts is defined and inventory_hostname == groups.prometheus.0
   tags: swift_exporter
+
+- name: Prometheus Aggregation Push Gateway
+  hosts: celery
+  become: true
+  tasks:
+    - import_role:
+        name: dimagi.commcare_prometheus.agg_pushgateway_exporter
+      when: inventory_hostname == groups.celery.0 
+  tags: agg_pushgateway_exporter
+
+- name: Prometheus Zookeeper Exporter
+  hosts: zookeeper
+  become: true
+  tasks:
+    - import_role:
+        name: dimagi.commcare_prometheus.zookeeper_exporter
+  tags: zookeeper_exporter
+ 
 

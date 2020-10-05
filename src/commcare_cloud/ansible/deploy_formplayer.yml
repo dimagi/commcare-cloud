@@ -1,6 +1,25 @@
 ---
+
+- name: Formplayer EFS
+  hosts: formplayer
+  become: true
+  roles:
+    - role: aws-efs
+      vars:
+        efs_mount_dir: /opt/formplayer_data
+        efs_mount_uid: "{{ cchq_uid|default(None) }}"
+        efs_mount_gid: "{{ cchq_gid|default(None) }}"
+      when: "formplayer_efs_dns|default(False)"
+      tags:
+        - efs
+
 - name: Formplayer
   hosts: formplayer
   become: true
   roles:
-    - {role: formplayer, tags: formplayer}
+    - role: formplayer
+      vars:
+        formplayer_data_dir: "{{ '/opt/formplayer_data' if use_formplayer_efs|default(False) else (encrypted_root + '/formplayer') }}"
+      tags: formplayer
+    - role: kinesis_agent
+      tags: kinesis-agent

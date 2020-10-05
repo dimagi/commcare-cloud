@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
 import os
 import sys
 from distutils.sysconfig import get_python_lib
@@ -53,6 +56,10 @@ class DefaultPaths(object):
     @lazy_immutable_property
     def known_hosts(self):
         return self.get_env_file_path('known_hosts')
+
+    @lazy_immutable_property
+    def files_dir(self):
+        return self.get_env_file_path('files')
 
     @lazy_immutable_property
     def inventory_ini(self):

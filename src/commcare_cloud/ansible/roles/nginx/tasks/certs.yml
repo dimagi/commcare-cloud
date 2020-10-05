@@ -33,27 +33,6 @@
     - update-cert
     - letsencrypt
 
-- name: Copy commtrack SSL cert
-  become: yes
-  copy:
-    content: "{{ commtrack_nginx_combined_cert_value }}"
-    dest: "{{ ssl_certs_dir }}/{{ commtrack_nginx_ssl_cert }}"
-    mode: 0400
-    owner: root
-    group: root
-  when: not fake_ssl_cert and commtrack_nginx_combined_cert_value is defined
-
-- name: Copy commtrack SSL Key
-  become: yes
-  copy:
-    content: "{{ commtrack_key_value }}"
-    dest: "{{ ssl_keys_dir }}/{{ commtrack_nginx_ssl_key }}"
-    mode: 0400
-    owner: root
-    group: root
-  no_log: true
-  when: not fake_ssl_cert and commtrack_key_value is defined
-
 - name: Link CAS SSL cert
   become: yes
   file:

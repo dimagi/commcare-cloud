@@ -1,15 +1,14 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import os
-from tempfile import gettempdir
 
 import jsonobject
 import yaml
-from couchdb_cluster_admin.utils import Config
+from couchdb_cluster_admin.doc_models import ShardAllocationDoc
 from memoized import memoized_property
 
 from commcare_cloud.commands.ansible.ops_tool import get_couch_config
-from commcare_cloud.commands.inventory_lookup.getinventory import get_server_address
 from commcare_cloud.environment.main import get_environment
-from couchdb_cluster_admin.doc_models import ShardAllocationDoc
 
 lazy_immutable_property = memoized_property
 
@@ -106,8 +105,8 @@ class CouchMigrationPlan(jsonobject.JsonObject):
     target_allocation = jsonobject.ListProperty()
 
     def get_all_nodes(self):
-        return {
+        return [
             node
             for nodes, _ in (group.split(':', 1) for group in self.target_allocation)
             for node in nodes.split(',')
-        }
+        ]

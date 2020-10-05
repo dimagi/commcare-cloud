@@ -16,7 +16,7 @@ Datadog provides API to import dashboards from one account to another account us
 - [hq-vitals.json](datadog_dashboards/hq-vitals.json) gives a glance of all components of CommCare
 - [mobile-success.json](datadog_dashboards/mobile-success.json) for monitoring success rate of mobile requests to the server
 - [postgres-overview.json](datadog_dashboards/postgres-overview.json) for Postgres monitoring
-- [celery-overview.json](datadog_dashboards/celery-overview.json) for monitoring bakcground application tasks
+- [celery.json](datadog_dashboards/celery.json) for monitoring bakcground application tasks of celery
 - [couchdb.json](datadog_dashboards/couchdb.json) for CouchDB monitoring
 
 You may import them to your own account by running relevant datadog API requests. For example to import hq-vitals

@@ -10,7 +10,12 @@ This document will walk you through the process of setting up a new monolith ser
     * If you are using VirtualBox, you can follow the instructions on [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md).
     * A domain name which directs to your server.
 * Access to the monolith via SSH with a user who has sudo access. If you installed the base Ubuntu 18.04 image yourself, this should be the default.
-
+* [This table](../Commcare_Ports_information.md) lists the ports that must be accessible in your network configuration. Please enable these ports in the Iptables/Firewall/Security groups.
+  * Run this command to verify that these ports are accessible:
+      ```bash
+      $ for PORT in 22 443 80 9010 8181 9092 2181 6379 5432 6432 5672 9200 9300 5984 4369 5555 25 465 587; do nc -zv localhost $PORT; done
+      ```
+    
 ## Step 1: Prepare system for automated deploy
 
 1. Enable root login via ssh
@@ -84,25 +89,26 @@ This document will walk you through the process of setting up a new monolith ser
      - `server_email`
      - `default_from_email`
       - `root_email`
-1. Next, we're going to set up an encrypted "ansible vault" file.  This will store all the passwords used in this CommCare environment.  You'll need to create a strong password and save it somewhere safe.  This is the master password that grants access to the vault.  You'll need it for any future changes to this file, as well as when you deploy or make configuration changes to this machine.
 
-    Encrypt the provided vault file, using that password:
 
-    ``` bash
-    $ ansible-vault encrypt ~/environments/monolith/vault.yml
-    ```
-    
-    More information on ansible vault can be found in the [Ansible help pages](https://docs.ansible.com/ansible/latest/user_guide/vault.html).
-    
-    You can read more about how we use this vault file [here](https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md#managing-secrets-with-vault).
+### Install commcare-cloud
 
-### Add passwords to the vault file
+Install commcare-cloud onto the monolith:
 
-In the vault file, change each field that has the value `CHANGE ME` to a strong, unique password or a unique, useful username for that service. These usernames and passwords will be used by the `commcare-cloud` script to create the required database and system users, and no action is needed to create these users yourself.
-
-``` bash
-$ ansible-vault edit ~/environments/monolith/vault.yml
+```bash
+$ git clone https://github.com/dimagi/commcare-cloud.git
+$ source commcare-cloud/control/init.sh
 ```
+
+and when you see it ask you this:
+
+```bash
+Do you want to have the CommCare Cloud environment setup on login?
+(y/n):
+```
+answer with `y`.
+
+For more information, see [Installing commcare-cloud](installation.md#step-2)
 
 ### Set the network interface name and ipaddress
 
@@ -167,25 +173,6 @@ Even though we will be running all commands locally, we still need to add the us
     $ nano ~/environments/_users/admins.yml
     ```
 
-### Install commcare-cloud
-
-Install commcare-cloud onto the monolith:
-
-```bash
-$ git clone https://github.com/dimagi/commcare-cloud.git
-$ source commcare-cloud/control/init.sh
-```
-
-and when you see it ask you this:
-
-```bash
-Do you want to have the CommCare Cloud environment setup on login?
-(y/n):
-```
-answer with `y`.
-
-For more information, see [Installing commcare-cloud](installation.md#step-2)
-
 ### Run first-time configuration
 
 1. Configure `commcare-cloud`
@@ -227,7 +214,33 @@ For more information, see [Installing commcare-cloud](installation.md#step-2)
     ```bash
     $ commcare-cloud monolith update-local-known-hosts
     ```
-    You may be prompted for the ansible vault password that you entered earlier.
+
+### Generate secured passwords for the vault
+
+```bash
+$ python ~/commcare-cloud/commcare-cloud-bootstrap/generate_vault_passwords.py --env='monolith'
+```
+
+
+1. Next, we're going to set up an encrypted "ansible vault" file.  This will store all the passwords used in this CommCare environment.  You'll need to create a strong password and save it somewhere safe.  This is the master password that grants access to the vault.  You'll need it for any future changes to this file, as well as when you deploy or make configuration changes to this machine.
+
+    Encrypt the provided vault file, using that password:
+
+    ``` bash
+    $ ansible-vault encrypt ~/environments/monolith/vault.yml
+    ```
+    
+    More information on ansible vault can be found in the [Ansible help pages](https://docs.ansible.com/ansible/latest/user_guide/vault.html).
+    
+    You can read more about how we use this vault file [here](https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md#managing-secrets-with-vault).
+
+### Add passwords to the vault file
+
+In the vault file, change each field that has the value `CHANGE ME` to a strong, unique password or a unique, useful username for that service. These usernames and passwords will be used by the `commcare-cloud` script to create the required database and system users, and no action is needed to create these users yourself.
+
+``` bash
+$ ansible-vault edit ~/environments/monolith/vault.yml
+```
 
 
 ## Step 3: Install all the services onto the monolith
@@ -282,11 +295,31 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
     $ commcare-cloud monolith deploy --resume
     ```
 
-## Step 5: Cleanup
+
+## Step 5: Setting set up valid SSL certificates
+
+Run the playbook to request a letsencrypt cert:
+```bash
+cchq <env> ansible-playbook letsencrypt_cert.yml --skip-check
+```
+
+Update settings to take advantage of new certs:
+In `proxy.yml`:
+- set `fake_ssl_cert` to `no`
+
+and deploy proxy again:
+
+```bash
+cchq <env> ansible-playbook deploy_proxy.yml
+```
+
+
+## Step 6: Cleanup
 
 CommCare Cloud will no longer need the root user to be accessible via the password. The password can be removed if you wish.
 
-## Step 6: Running CommCareHQ
+
+## Step 7: Running CommCareHQ
 
 ### Learning `commcare-cloud` basics
 
@@ -310,27 +343,9 @@ If you ever reboot this machine, make sure to follow the [after reboot procedure
 $ commcare-cloud monolith after-reboot all
 ```
 
+### Ongoing maintenance
 
-## Step 7: Setting set up valid SSL certificates 
-If you wish to set up valid SSL certificate please follow below instructions 
-
-### 1. Request a letsencrypt cert
-
-Run the playbook to request a letsencrypt cert:
-```bash
-cchq <env> ansible-playbook letsencrypt_cert.yml --skip-check
-```
-
-### 2. Update settings to take advantage of new certs
-
-In `proxy.yml`:
-- set `fake_ssl_cert` to `no`
-
-and deploy proxy again.
-
-```bash
-cchq <env> ansible-playbook deploy_proxy.yml
-```
+You should be familiar with [Expectations for Ongoing Maintenance](../system/maintenance-expectations.md)
 
 
 ## Step 8: Getting started with CommCareHQ

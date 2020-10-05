@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from __future__ import print_function
+from __future__ import unicode_literals
 import time
 from contextlib import contextmanager
 
@@ -105,15 +106,6 @@ def restart_formplayer():
     # since this just restarts "all"
     # on a monolith this actually restarts all services
     _services_restart()
-
-
-@roles(ROLES_FORMPLAYER)
-def restart_formplayer_if_it_is_running_from_old_release_location():
-    from commcare_cloud.fab.operations.formplayer import \
-        formplayer_is_running_from_old_release_location
-
-    if formplayer_is_running_from_old_release_location():
-        _services_restart()
 
 
 def _services_restart():

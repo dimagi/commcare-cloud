@@ -1,18 +1,21 @@
 from __future__ import print_function
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import cgi
 import inspect
 import os
 import textwrap
-from StringIO import StringIO
+from io import StringIO
 
 import jinja2
 
-from ..argparse14 import RawTextHelpFormatter
+from ..argparse14 import RawTextHelpFormatter, SubParsersAction
 from gettext import gettext as _
 
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commcare_cloud import make_command_parser, COMMAND_GROUPS
+from six.moves import range
 
 
 class _Section(RawTextHelpFormatter._Section):
@@ -149,7 +152,7 @@ class MarkdownFormatter(MarkdownFormatterBase):
         super(MarkdownFormatter, self).__init__(*args, **kwargs)
 
     def _format_action(self, action):
-        if action.__class__.__name__ == '_SubParsersAction':
+        if isinstance(action, SubParsersAction):
             return ''
         else:
             return super(MarkdownFormatter, self)._format_action(action)

@@ -13,186 +13,225 @@ vpc_begin_range: "10.201"
 openvpn_image: ami-5e73b923
 
 servers:
-  - server_name: "control0-staging"
+  - server_name: "control1-staging"
     server_instance_type: "t3.small"
     network_tier: "app-private"
     az: "a"
     volume_size: 50
-    volume_encrypted: no
+    volume_encrypted: yes
     group: "control"
-    os: bionic
+    os: ubuntu_pro_bionic
 
-  - server_name: "web3-staging"
+  - server_name: "web7-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     group: webworkers
-    os: bionic
-  - server_name: "web4-staging"
+    os: ubuntu_pro_bionic
+  - server_name: "web8-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     group: webworkers
-    os: bionic
+    os: ubuntu_pro_bionic
 
-  - server_name: "es2-staging"
+  - server_name: "es4-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
     az: "a"
-    volume_size: 80
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
       volume_size: 80
       encrypted: true
     group: "elasticsearch"
-    os: bionic
-  - server_name: "es3-staging"
+    os: ubuntu_pro_bionic
+  - server_name: "es5-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
     az: "a"
-    volume_size: 80
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
       volume_size: 80
       encrypted: true
     group: "elasticsearch"
-    os: bionic
+    os: ubuntu_pro_bionic
+  - server_name: "es6-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
+  - server_name: "es7-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
 
-  - server_name: "pillow1-staging"
+  - server_name: "pillow3-staging"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     group: pillowtop
-    os: bionic
+    os: ubuntu_pro_bionic
 
-  - server_name: "celery1-staging"
+  - server_name: "celery3-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     group: celery
-    os: bionic
+    os: ubuntu_pro_bionic
 
-  - server_name: "formplayer1-staging"
+  - server_name: "formplayer3-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
-    volume_size: 80
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
       volume_size: 80
       encrypted: true
     group: formplayer
-    os: bionic
-    
-  - server_name: "formplayer2-staging"
+    os: ubuntu_pro_bionic
+
+  - server_name: "formplayer4-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
-    volume_size: 50
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
       volume_size: 80
       encrypted: true
     group: formplayer
-    os: bionic
+    os: ubuntu_pro_bionic
 
-  - server_name: "couch3-staging"
+  - server_name: "couch6-staging"
     server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "a"
-    volume_size: 400
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
-      volume_size: 50
+      volume_size: 80
       encrypted: true
     group: "couchdb2"
-    os: bionic
-  - server_name: "couch4-staging"
+    os: ubuntu_pro_bionic
+  - server_name: "couch7-staging"
     server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "a"
-    volume_size: 400
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
-      volume_size: 50
+      volume_size: 80
       encrypted: true
     group: "couchdb2"
-    os: bionic
-  - server_name: "couch5-staging"
+    os: ubuntu_pro_bionic
+  - server_name: "couch8-staging"
     server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "a"
-    volume_size: 400
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
-      volume_size: 50
+      volume_size: 80
       encrypted: true
     group: "couchdb2"
-    os: bionic
+    os: ubuntu_pro_bionic
 
-  - server_name: "rabbit1-staging"
+  - server_name: "rabbit2-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     group: "rabbitmq"
-    os: bionic
+    os: ubuntu_pro_bionic
 
-  - server_name: "kafka1-staging"
+  - server_name: "rabbit3-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "rabbitmq"
+    os: ubuntu_pro_bionic
+
+  - server_name: "kafka2-staging"
     server_instance_type: t3.medium
     network_tier: "db-private"
     az: "a"
-    volume_size: 80
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
       volume_size: 80
       encrypted: true
     group: "kafka"
     os: bionic
 
-  - server_name: "pgproxy1-staging"
+  - server_name: "pgproxy2-staging"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "a"
-    volume_size: 80
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
       volume_size: 80
       encrypted: true
     group: postgresql
-    os: bionic
+    os: ubuntu_pro_bionic
 
-  - server_name: "redis1-staging"
+  - server_name: "redis2-staging"
     server_instance_type: t3.medium
     network_tier: "db-private"
     az: "a"
-    volume_size: 60
-    volume_encrypted: no
+    volume_size: 30
+    volume_encrypted: yes
     block_device:
       volume_size: 60
       encrypted: true
     group: "redis"
-    os: bionic
+    os: ubuntu_pro_bionic
 
 
 proxy_servers:
-  - server_name: "proxy0-staging"
+  - server_name: "proxy2-staging"
     server_instance_type: "t3.medium"
-    network_tier: "public"
+    network_tier: "app-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     group: "proxy"
-    os: bionic
+    os: ubuntu_pro_bionic
+  - server_name: "proxy3-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "proxy"
+    os: ubuntu_pro_bionic
 
 
 rds_instances:

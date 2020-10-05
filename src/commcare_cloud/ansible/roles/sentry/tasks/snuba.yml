@@ -1,0 +1,68 @@
+
+- name: Install snuba python dependencies
+  apt: 
+    name: 
+      - python3.7
+      - python3.7-dev
+    state: present 
+
+- name: Create virtualenv  directory for snuba
+  file:
+    path: "{{ snuba_virtualenv_path }}"
+    state: directory
+
+- name: Install virtualenv via pip
+  pip:
+    name: virtualenv
+    executable: pip3
+
+- name: Create virtual env for Snuba
+  pip:
+    name: pyuwsgi
+    virtualenv: "{{ snuba_virtualenv_path }}"
+    virtualenv_python: python3.7
+
+- name: Download Snuba source code
+  unarchive:
+    src: "{{ snuba_get_url }}"
+    dest: "{{ snuba_virtualenv_path }}"
+    remote_src: yes
+
+- name: Rename snuba version directory
+  shell: "mv snuba-{{ snuba_version }} snuba"
+  args:
+    chdir: "{{ snuba_virtualenv_path }}"
+    executable: /bin/bash
+
+- name: Run Make commands for snuba 
+  shell: "source {{ snuba_virtualenv_path }}/bin/activate && make install-python-dependencies"
+  args:
+    executable: /bin/bash
+    chdir: "{{ snuba_virtualenv_path }}/snuba"
+
+- name: Update Redis Password
+  replace:
+    path: "{{ snuba_virtualenv_path }}/snuba/snuba/settings.py"
+    regexp: "^REDIS_PASSWORD = None"
+    replace: "REDIS_PASSWORD = '{{ localsettings.REDIS_PASSWORD }}'"
+  when: localsettings.REDIS_PASSWORD is defined
+
+- name: Create supervisor file
+  template:
+    src: snuba_service.conf.j2
+    dest: "/etc/supervisor/conf.d/snuba_service.conf"
+  notify: 
+    - restart supervisor
+    - restart snuba
+
+- name: Cleanup clickhouse partition
+  cron:
+    name: Cleanup clickhouse partition
+    minute: "0"
+    hour: "*/1"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    user: sentry
+    job: "{{ snuba_virtualenv_path }}/bin/snuba cleanup"
+    cron_file: snuba_cleanup

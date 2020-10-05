@@ -1,0 +1,107 @@
+from sentry.conf.server import *
+
+import os.path
+
+CONF_ROOT = os.path.dirname(__file__)
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'sentry.db.postgres',
+        'NAME': '{{ sentry_database }}',
+        'USER': '{{ sentry_dbuser }}',
+        'PASSWORD': '{{ sentry_dbpassword }}',
+        'HOST': '{{ sentry_dbhost | default('127.0.0.1') }}',
+        'PORT': '{{sentry_dbport | default('5432') }}',
+        'AUTOCOMMIT': True,
+        'ATOMIC_REQUESTS': False,
+    }
+}
+
+# You should not change this setting after your database has been created
+# unless you have altered all schemas first
+SENTRY_USE_BIG_INTS = True
+
+###########
+# General #
+###########
+
+SENTRY_SINGLE_ORGANIZATION = True
+DEBUG = False
+SENTRY_FEATURES['auth:register'] = False
+
+#########
+# Cache #
+#########
+
+# A primary cache is required for things such as processing events
+SENTRY_CACHE = 'sentry.cache.redis.RedisCache'
+
+#########
+# Queue #
+#########
+{% if REDIS_PASSWORD %}
+BROKER_URL = 'redis://:{{ REDIS_PASSWORD }}@localhost:6379'
+{% else %}
+BROKER_URL = 'redis://localhost:6379'
+{% endif %}
+###############
+# Rate Limits #
+###############
+
+SENTRY_RATELIMITER = 'sentry.ratelimits.redis.RedisRateLimiter'
+
+##################
+# Update Buffers #
+##################
+
+SENTRY_BUFFER = 'sentry.buffer.redis.RedisBuffer'
+
+##########
+# Quotas #
+##########
+
+SENTRY_QUOTAS = 'sentry.quotas.redis.RedisQuota'
+
+########
+# TSDB #
+########
+
+SENTRY_TSDB = 'sentry.tsdb.redis.RedisTSDB'
+
+###########
+# Digests #
+###########
+
+SENTRY_DIGESTS = 'sentry.digests.backends.redis.RedisBackend'
+
+#########
+# Snuba #
+#########
+
+SENTRY_SEARCH = "sentry.search.snuba.EventsDatasetSnubaSearchBackend"
+SENTRY_SEARCH_OPTIONS = {}
+SENTRY_TAGSTORE_OPTIONS = {}
+
+#########
+# Kafka #
+#########
+
+DEFAULT_KAFKA_OPTIONS = {
+    "bootstrap.servers": "localhost:9092",
+    "message.max.bytes": 50000000,
+    "socket.timeout.ms": 1000,
+}
+SENTRY_EVENTSTREAM = "sentry.eventstream.kafka.KafkaEventStream"
+SENTRY_EVENTSTREAM_OPTIONS = {"producer_configuration": DEFAULT_KAFKA_OPTIONS}
+KAFKA_CLUSTERS["default"] = DEFAULT_KAFKA_OPTIONS
+
+
+##############
+# Web Server #
+##############
+
+SENTRY_WEB_HOST = '{{ sentry_web_host }}'
+SENTRY_WEB_PORT = {{ sentry_web_port }}
+SENTRY_WEB_OPTIONS = {
+    'workers': {{ sentry_workers_count }},
+}

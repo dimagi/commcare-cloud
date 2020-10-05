@@ -1,0 +1,41 @@
+
+- name: Copy Elasticsearch logging config
+  become: yes
+  copy:
+    src: log4j2.properties
+    dest: "{{ elasticsearch_conf_dir }}/log4j2.properties"
+    owner: elasticsearch
+    group: elasticsearch
+  register: copy_elasticsearch_logging_result
+  tags:
+    - es_conf
+
+- name: Copy Elasticsearch JVM Options
+  become: yes
+  template:
+    src: config/jvm.options.j2
+    dest: "{{ elasticsearch_conf_dir }}/jvm.options"
+    owner: elasticsearch
+    group: elasticsearch
+  register: copy_elasticsearch_logging_result
+  tags:
+    - es_conf
+
+- name: Install elasticsearch python client
+  become: yes
+  pip:
+    name: elasticsearch>=7.0.0,<8.0.0
+
+- name: Check for installed plugins
+  shell: "{{ elasticsearch_home }}/bin/elasticsearch-plugin list"
+  register: installed_plugins
+
+- name: Install elasticsearch aws plugin
+  become: yes
+  shell: "{{ elasticsearch_home }}/bin/elasticsearch-plugin install elasticsearch/elasticsearch-cloud-aws/{{ aws_plugin_version }}"
+  when: (backup_es_s3) and (installed_plugins.stdout is defined) and ('cloud-aws' not in installed_plugins.stdout)
+
+- name: Install elasticsearch swift plugin
+  become: yes
+  shell: "{{ elasticsearch_home }}/bin/elasticsearch-plugin install https://github.com/dimagi/elasticsearch-repository-swift/releases/download/swift-repository-plugin-{{ swift_plugin_version }}/repository-swift-3.0.0-es{{ swift_plugin_version }}.zip"
+  when: (backup_es_swift) and (installed_plugins.stdout is defined) and ('repository-swift' not in installed_plugins.stdout)

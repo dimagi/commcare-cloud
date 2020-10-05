@@ -47,6 +47,11 @@
       command: "certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -n -d {{SITE_HOST}}{% if ALTERNATE_HOSTS %} -d {{ ALTERNATE_HOSTS | join(' -d ') }}{% endif %} --expand"
       when: not NO_WWW_SITE_HOST
 
+    - name: Run Certbot command when there is special host
+      command: "certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -n -d {{ item }} --expand"
+      with_items: "{{ extra_sites }}"
+      when: extra_sites is defined
+    
     - name: Reload Nginx
       service:
         name: nginx

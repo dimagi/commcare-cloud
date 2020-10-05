@@ -1,0 +1,14 @@
+---
+- name: Add rabbitmq official apt key
+  become: true
+  apt_key: id=0x0A9AF2115F4687BD29803A206B73A36E6026DFCA keyserver=hkps.pool.sks-keyservers.net state=present
+
+- name: Add rabbitmq official apt repository
+  become: true
+  apt_repository: repo='deb http://www.rabbitmq.com/debian/ testing main' state=present
+
+- name: Install rabbitmq
+  become: true
+  apt: name=rabbitmq-server state=present
+  notify:
+  - restart rabbitmq

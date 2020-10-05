@@ -3,6 +3,7 @@
 #   ./manage.py list_waf_allow_patterns
 #
 # to replace the contents of the multiline string
+from __future__ import unicode_literals
 COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/api/v([\d\.]+)/form/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/app_logo/([\w\-]+)/$
@@ -10,6 +11,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/apps/edit_form_attr/([\w-]+)/([\w-]+)/([\w-]+)/$
 ^/a/([\w\.:-]+)/apps/edit_form_attr_api/([\w-]+)/([\w-]+)/([\w-]+)/$
 ^/a/([\w\.:-]+)/apps/patch_xform/([\w-]+)/([\w-]+)/$
+^/a/([\w\.:-]+)/apps/view/([\w-]+)/languages/bulk_app_translations/upload/$
 ^/a/([\w\.:-]+)/cloudcare/api/readable_questions/$
 ^/a/([\w\.:-]+)/cloudcare/apps/report_formplayer_error
 ^/a/([\w\.:-]+)/data/export/custom/download_data_files/$

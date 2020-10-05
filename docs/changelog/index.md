@@ -7,6 +7,14 @@ newest first.
 
 ## Changelog
 
+### **2020-07-23** [Run command to clear sensitive information from Django sessions](0036-clean-2fa-sessions.md)
+It is stronly recommended to sanitize legacy Django sessions after upgrading
+to Django 2.2.
+
+### **2020-07-09** [Switch to new package manager](0035-new-js-package-manager.md)
+To stay up to date with javascript package security alerts, we need to make sure we are using a javascript package manager
+that is supported by Github.
+
 ### **2020-04-16** [Update git to the latest version](0034-update-git.md)
 Due to a [high-severity security advisory](https://github.com/git/git/security/advisories/GHSA-qm7j-c969-7j4q) on the popular version control software program `git`,
 observing security best practices dictates upgrading to one of the git versions designated as "Patched"

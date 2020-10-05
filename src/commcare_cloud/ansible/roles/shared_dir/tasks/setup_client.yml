@@ -1,14 +1,30 @@
 ---
 
+- name: Update the apt cache
+  when: shared_drive_enabled|bool
+  apt:
+    update_cache: yes
+    cache_valid_time: 7200
+
+- name: Install NFS client package
+  become: yes
+  when: shared_drive_enabled|bool
+  apt:
+    name:
+      - nfs-common
+  tags:
+    - nfs
+
 - name: Create shared mount dir
   become: yes
   when: shared_drive_enabled|bool
   file:
     path: "{{ shared_mount_dir }}"
-    owner: "nobody"
-    group: "{{ shared_dir_gid }}"
+    owner: "{{ shared_dir_user }}"
+    group: "{{ shared_dir_group }}"
     mode: 0775
     state: directory
+  run_once: yes
   tags:
     - nfs
 
@@ -17,7 +33,8 @@
   when: shared_drive_enabled|bool
   mount:
     name: "{{ shared_mount_dir }}"
-    src: "{{ groups.shared_dir_host[0] }}:{{ shared_data_dir }}"
+    src: "{{ shared_mount_address }}"
+    opts: "{{ shared_mount_opts|default(omit) }}"
     fstype: nfs
     state: mounted
   tags:

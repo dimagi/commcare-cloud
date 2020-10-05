@@ -2,14 +2,21 @@ DATADOG_ENABLED: True
 monitor_celery_heartbeat: False
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_cluster_name: 'staginges'
-elasticsearch_version: 2.4.6
-elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
+elasticsearch_cluster_name: 'es7_staginges'
+elasticsearch_version: 7.9.1
+elasticsearch_download_sha256: a1b43a6e29d3ca91d08366f64007ce812646e4775524214f66330d447a4c6e3c
 
 kafka_version: 2.4.1
 kafka_scala_version: 2.12
 kafka_inter_broker_protocol_version: 2.4
 kafka_log_message_format_version: 2.4
+
+TWO_FACTOR_GATEWAY_ENABLED: True
+
+rabbitmq_version: 3.8.5-1
+
+#RabbitMQ Broker URL
+BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
 
 run_websockets_wsgi: True
 
@@ -27,6 +34,7 @@ filebeat_inputs:
 aws_region: 'us-east-1'
 
 formplayer_archive_time_spec: '10m'
+formplayer_sensitive_data_logging: true
 
 KSPLICE_ACTIVE: yes
 
@@ -58,13 +66,13 @@ couch_dbs:
     host: "{{ groups.couchdb2_proxy.0 }}"
     port: "{{ couchdb2_proxy_port }}"
     name: staging_commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    username: "{{ COUCH_USERNAME }}"
+    password: "{{ COUCH_PASSWORD }}"
     is_https: False
 
 couchdb2:
-  username: "{{ localsettings_private.COUCH_USERNAME }}"
-  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+  username: "{{ COUCH_USERNAME }}"
+  password: "{{ COUCH_PASSWORD }}"
 couchdb_reduce_limit: False
 couchdb_cluster_settings:
   q: 8
@@ -85,16 +93,20 @@ localsettings:
   ANALYTICS_DEBUG: True
   ANALYTICS_LOG_LEVEL: "debug"
   AUDIT_ALL_VIEWS: True
+  AVAILABLE_CUSTOM_RULE_CRITERIA:
+    COVID_US_ASSOCIATED_USER_CASES: custom.covid.rules.custom_criteria.associated_user_case_closed
+  AVAILABLE_CUSTOM_RULE_ACTIONS:
+    COVID_US_CLOSE_CASES_ASSIGNED_CHECKIN: custom.covid.rules.custom_actions.close_cases_assigned_to_checkin
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
   CELERY_PERIODIC_QUEUE: 'celery_null'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
-  COUCH_PASSWORD: "{{ localsettings_private.COUCH_PASSWORD }}"
-  COUCH_USERNAME: "{{ localsettings_private.COUCH_USERNAME }}"
+  COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
+  COUCH_USERNAME: "{{ COUCH_USERNAME }}"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  ELASTICSEARCH_MAJOR_VERSION: 2
+  ELASTICSEARCH_MAJOR_VERSION: 7
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
@@ -117,9 +129,10 @@ localsettings:
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
+  ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes
   SES_CONFIGURATION_SET: staging-email-events
-  SNS_EMAIL_EVENT_SECRET: "{{ localsettings_private.SNS_EMAIL_EVENT_SECRET }}"
+  SNS_EMAIL_EVENT_SECRET: "{{ SNS_EMAIL_EVENT_SECRET }}"
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
@@ -135,3 +148,9 @@ localsettings:
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa
+
+kinesis_flows:
+  - file_pattern: "/opt/data/formplayer/log/request_response.*log"
+    delivery_stream: "formplayer-request-response-logs-staging"
+
+enable_cloudwatch_logs: true

@@ -55,7 +55,7 @@ auth_file = {{ pgbouncer_users }}
 ;;;
 
 ; comma-separated list of users, who are allowed to change settings
-admin_users = postgres,{{ secrets.POSTGRES_USERS.commcare.username }},{{ postgres_users.devreadonly.username }}
+admin_users = postgres,{{ postgres_users.commcare.username }},{{ postgres_users.devreadonly.username }}
 
 ; comma-separated list of users who are just allowed to use SHOW command
 ;stats_users = stats, root

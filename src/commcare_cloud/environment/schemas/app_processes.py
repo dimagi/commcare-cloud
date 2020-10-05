@@ -1,11 +1,14 @@
 from __future__ import print_function
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
 from collections import Counter, namedtuple
 
 import jsonobject
 from clint.textui import puts, indent
 
 from commcare_cloud.colors import color_warning
+import six
 
 IpAddressProperty = jsonobject.StringProperty
 IpAddressAndPortProperty = jsonobject.StringProperty
@@ -45,7 +48,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     datadog_pythonagent = jsonobject.BooleanProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
-    service_blacklist = jsonobject.ListProperty(unicode)
+    service_blacklist = jsonobject.ListProperty(six.text_type)
     management_commands = jsonobject.DictProperty(jsonobject.DictProperty())
     celery_processes = jsonobject.DictProperty(jsonobject.DictProperty(CeleryOptions))
     pillows = jsonobject.DictProperty(jsonobject.DictProperty(PillowOptions))
@@ -101,7 +104,7 @@ CELERY_PROCESSES = [
     CeleryProcess("async_restore_queue", required=False, blockage_threshold=60),
     CeleryProcess("background_queue", blockage_threshold=10 * 60),
     CeleryProcess("beat", required=False, is_queue=False),
-    CeleryProcess("case_rule_queue", blockage_threshold=10 * 60),
+    CeleryProcess("case_rule_queue", blockage_threshold=60 * 60),
     CeleryProcess("case_import_queue", blockage_threshold=60),
     CeleryProcess("celery", blockage_threshold=60),
     CeleryProcess("celery_periodic", required=False, blockage_threshold=10 * 60),

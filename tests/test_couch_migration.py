@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import os
 import shutil
 
@@ -7,14 +9,14 @@ import yaml
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
 from mock.mock import patch
 from nose.tools import assert_equal
-from nose_parameterized import parameterized
+from parameterized import parameterized
 
 from commcare_cloud.commands.migrations.config import CouchMigration, PRUNE_PLAYBOOK_NAME, COUCH_SHARD_PLAN
 from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists, \
     generate_shard_prune_playbook, generate_shard_plan, get_migration_file_configs
 from commcare_cloud.commands.migrations.copy_files import get_file_list_filename
 from commcare_cloud.environment.main import get_environment
-from tests.test_utils import get_file_contents
+from tests.utils import get_file_contents
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'couch_migration_config')
 PLANS_DIR = os.path.join(TEST_ENVIRONMENTS_DIR, 'plans')

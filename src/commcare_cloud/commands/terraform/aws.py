@@ -1,6 +1,8 @@
 # coding=utf-8
 from __future__ import print_function
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import getpass
 import json
 import os
@@ -10,6 +12,7 @@ from datetime import datetime
 
 import boto3
 import jinja2
+import requests
 import six
 import yaml
 from clint.textui import puts
@@ -48,33 +51,28 @@ def get_aws_resources(environment):
     config = environment.terraform_config
 
     # Private IP addresses
-    private_ip_query = aws_cli(environment, [
+    ec2_instances_query = aws_cli(environment, [
         'aws', 'ec2', 'describe-instances',
         '--filter', "Name=tag-key,Values=Name", "Name=tag-value,Values=*",
         "Name=instance-state-name,Values=running",
         "Name=tag-key,Values=Environment",
         "Name=tag-value,Values={}".format(config.environment),
         "--query",
-        "Reservations[*].Instances[*][Tags[?Key=='Name'].Value, NetworkInterfaces[0].PrivateIpAddresses[0].PrivateIpAddress]",
+        ("Reservations[*].Instances[*]["
+         "Tags[?Key=='Name'].Value, "
+         "NetworkInterfaces[0].PrivateIpAddresses[0].PrivateIpAddress, "
+         "NetworkInterfaces[0].Association.PublicIp, "
+         "InstanceId"
+         "]"),
         "--output", "json",
         "--region", config.region,
     ])
-    name_private_ip_pairs = [(item[0][0][0], item[0][1]) for item in private_ip_query]
-
-    # Public IP addresses
-    public_ip_query = aws_cli(environment, [
-        'aws', 'ec2', 'describe-instances',
-        '--filter', "Name=tag-key,Values=Name", "Name=tag-value,Values=*",
-        "Name=instance-state-name,Values=running",
-        "Name=tag-key,Values=Environment",
-        "Name=tag-value,Values={}".format(config.environment),
-        "--query",
-        "Reservations[*].Instances[*][Tags[?Key=='Name'].Value[],NetworkInterfaces[0].Association.PublicIp]",
-        "--output", "json",
-        "--region", config.region,
-    ])
-    name_public_ip_pairs = [(item[0][0][0], item[0][1]) for item in public_ip_query
-                            if item[0][1] is not None]
+    ec2_instances_info = [{
+        'name': item[0][0][0],
+        'private_ip': item[0][1],
+        'public_ip': item[0][2],
+        'instance_id': item[0][3],
+    } for item in ec2_instances_query]
 
     rds_endpoints = aws_cli(environment, [
         'aws', 'rds', 'describe-db-instances',
@@ -82,16 +80,30 @@ def get_aws_resources(environment):
         '--output', 'json', '--region', config.region,
     ])
 
-    resources = {}
-    for name, ip in name_private_ip_pairs:
-        resources[name] = ip
+    efs_info = [{
+        'name': name,
+        'efs_id': efs_id,
+        'efs_dns': '{efs_id}.efs.{config.region}.amazonaws.com'.format(efs_id=efs_id, config=config)
+    } for (name,), efs_id in aws_cli(environment, [
+        'aws', 'efs', 'describe-file-systems', '--query', "FileSystems[*][Tags[?Key=='Name'].Value,FileSystemId]",
+        "--output", "json",
+        "--region", config.region,
+    ])]
 
-    for name, ip in name_public_ip_pairs:
-        resources['{}.public_ip'.format(name)] = ip
+    resources = {}
+    for info in ec2_instances_info:
+        name = info['name']
+        resources[name] = info['private_ip']
+        if info['public_ip']:
+            resources['{}.public_ip'.format(name)] = info['public_ip']
+        resources['{}.instance_id'.format(name)] = info['instance_id']
 
     for name, endpoint in rds_endpoints:
         assert name not in resources
         resources[name] = endpoint
+
+    for info in efs_info:
+        resources['{name}-efs'.format(**info)] = info['efs_dns']
 
     return resources
 
@@ -177,36 +189,46 @@ class AwsFillInventoryHelper(object):
         }
 
         servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
-        for server in servers:
-            is_bionic = server.os == 'bionic'
-            inventory_vars = [
-                ('hostname', server.server_name),
-                ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
-                ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
-            ]
-            if server.block_device:
-                inventory_vars.extend([
-                    ('datavol_device', '/dev/sdf'),
-                    ('datavol_device1', '/dev/sdf'),
-                    ('is_datavol_ebsnvme', 'yes'),
-                ])
-                if server.block_device.encrypted:
+        for server_spec in servers:
+            for server_name in server_spec.get_all_server_names():
+                is_bionic = server_spec.os in ('bionic', 'ubuntu_pro_bionic')
+                inventory_vars = [
+                    ('hostname', server_name.replace('_', '-')),
+                    ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
+                    ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
+                    ('ec2_instance_id', self.resources['{}.instance_id'.format(server_name)])
+                ]
+                if server_spec.block_device:
+                    inventory_vars.extend([
+                        ('datavol_device', '/dev/sdf'),
+                        ('datavol_device1', '/dev/sdf'),
+                        ('is_datavol_ebsnvme', 'yes'),
+                    ])
+                    if server_spec.block_device.encrypted:
+                        inventory_vars.append(
+                            ('root_encryption_mode', 'aws'),
+                        )
+                elif server_spec.volume_encrypted:
                     inventory_vars.append(
                         ('root_encryption_mode', 'aws'),
                     )
-            elif server.volume_encrypted:
-                inventory_vars.append(
-                    ('root_encryption_mode', 'aws'),
-                )
 
-            context.update(
-                self.get_host_group_definition(resource_name=server.server_name, vars=inventory_vars)
-            )
+                context.update(
+                    self.get_host_group_definition(resource_name=server_name, vars=inventory_vars)
+                )
+            if server_spec.count is not None:
+                context.update(
+                    self.get_multi_host_group_definition(
+                        server_spec.get_host_group_name(), server_spec.get_all_host_names(),
+                        existing_context=context
+                    )
+                )
 
         for rds_instance in self.environment.terraform_config.rds_instances:
             context.update(
                 self.get_host_group_definition(resource_name=rds_instance.identifier, prefix='rds_')
             )
+
         return context
 
     @property
@@ -238,6 +260,16 @@ class AwsFillInventoryHelper(object):
                 '[{}]\n'.format(group_name),
                 self.resources[resource_name],
             ]) + ''.join([' {}={}'.format(key, value) for key, value in vars if value])
+        return context
+
+    def get_multi_host_group_definition(self, host_group_name, host_names, existing_context):
+        context = {}
+        context['__{}__'.format(host_group_name)] = '\n'.join([
+            existing_context['__{}__'.format(host_name)]
+            for host_name in host_names
+        ]) + '\n[{}:children]\n'.format(host_group_name) + '\n'.join([
+            host_name for host_name in host_names
+        ])
         return context
 
 
@@ -305,6 +337,9 @@ AWS_CLI_CACHE_DIR = os.path.expanduser('~/.aws/cli/cache/')
 
 @memoized
 def aws_sign_in(environment, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES, force_new=False):
+    if is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id):
+        return None
+
     _ensure_all_dirs(AWS_DOT_DIR)
     if environment.aws_config.credential_style == 'sso':
         for path in (AWS_SSO_CACHE_DIR, AWS_CLI_CACHE_DIR):
@@ -313,6 +348,18 @@ def aws_sign_in(environment, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES, 
     else:
         return _aws_sign_in_with_iam(environment.terraform_config.aws_profile, duration_minutes=duration_minutes,
                                      force_new=force_new)
+
+
+def is_ec2_instance_in_account(account_id):
+    try:
+        aws_instance_identity_doc = requests.get(
+            'http://169.254.169.254/latest/dynamic/instance-identity/document',
+            timeout=.100
+        ).json()
+    except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
+        return False
+
+    return aws_instance_identity_doc.get('accountId') == account_id
 
 
 @memoized
@@ -438,7 +485,7 @@ def _aws_sign_in_with_iam(aws_profile, duration_minutes=DEFAULT_SIGN_IN_DURATION
     mfa_token = input("Enter your MFA token: ")
     generate_session_profile(aws_profile, username, mfa_token, duration_minutes)
 
-    puts(color_success(u"✓ Sign in accepted"))
+    puts(color_success("✓ Sign in accepted"))
     puts("You will be able to use AWS from the command line for the next {} minutes."
          .format(duration_minutes))
     puts(color_notice(
@@ -568,6 +615,6 @@ def _iter_files_in_dir(directory):
             yield filepath
 
 
-def _ensure_all_dirs(path, mode=0700):
+def _ensure_all_dirs(path, mode=0o700):
     if not os.path.exists(path):
         os.makedirs(path, mode=mode)

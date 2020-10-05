@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import jsonobject
 
 
@@ -18,14 +20,13 @@ class ProxyConfig(jsonobject.JsonObject):
     letsencrypt_cchq_ssl = jsonobject.BooleanProperty(default=False)
     letsencrypt_cas_ssl = jsonobject.BooleanProperty(default=False)
     primary_ssl_env = jsonobject.StringProperty()
+    trusted_proxies = jsonobject.ListProperty(str)
 
     special_sites = jsonobject.ListProperty(str)
+    
+    extra_sites = jsonobject.ListProperty(str)
 
     nginx_block_ips = jsonobject.ListProperty(str)
-
-    COMMTRACK_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
-    commtrack_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
-    commtrack_key_value = jsonobject.StringProperty(exclude_if_none=True)
 
     CAS_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
     cas_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)

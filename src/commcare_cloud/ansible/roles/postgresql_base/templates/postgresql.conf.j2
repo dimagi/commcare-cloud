@@ -20,7 +20,11 @@ ssl = {% if postgresql_ssl_enabled %}true{% else %}false{% endif %}
 
 
 # RESOURCE USAGE (except WAL)
-shared_buffers = {{ (ansible_memtotal_mb/1024*0.25)|int|abs }}GB
+{% if postgresql_shared_buffers == '0GB' %}
+shared_buffers = '1024MB'
+{% else %}
+shared_buffers = {{ postgresql_shared_buffers }}
+{% endif %}
 work_mem = {{ postgresql_work_mem }}
 max_stack_depth = {{ postgresql_max_stack_depth }}
 maintenance_work_mem = {{ postgresql_maintenance_work_mem }}

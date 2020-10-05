@@ -2,8 +2,8 @@ datadog_pythonagent: True
 django_command_prefix: ''
 celery_command_prefix: ''
 gunicorn_workers_static_factor: 0
-gunicorn_workers_factor: 1
-formplayer_memory: "30g"
+gunicorn_workers_factor: 2
+formplayer_memory: "15g"
 management_commands:
   celery12:
     run_submission_reprocessing_queue:
@@ -13,7 +13,7 @@ management_commands:
   pillow1:
     run_pillow_retry_queue:
 celery_processes:
-  celery9,celery10,celery11:
+  celery9,celery10,celery11,celery_a000,celery_a001,celery_a002:
     analytics_queue:
       pooling: gevent
       concurrency: 4
@@ -24,7 +24,7 @@ celery_processes:
     case_import_queue:
       concurrency: 3
     case_rule_queue:
-      concurrency: 8
+      concurrency: 4
     celery:
       concurrency: 4
     celery_periodic:
@@ -36,7 +36,7 @@ celery_processes:
       concurrency: 5
     reminder_case_update_queue:
       pooling: gevent
-      concurrency: 64
+      concurrency: 32
       num_workers: 2
     reminder_queue:
       pooling: gevent
@@ -47,7 +47,7 @@ celery_processes:
       pooling: gevent
       concurrency: 200
     saved_exports_queue:
-      concurrency: 12
+      concurrency: 4
     sms_queue:
       pooling: gevent
       concurrency: 20
@@ -104,7 +104,7 @@ pillows:
     UCLAPatientFluffPillow:
       num_processes: 1
     UpdateUserSyncHistoryPillow:
-      num_processes: 1
+      num_processes: 2
     UserCacheInvalidatePillow:
       num_processes: 1
     UserGroupsDbKafkaPillow:

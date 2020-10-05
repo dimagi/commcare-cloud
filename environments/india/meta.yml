@@ -5,3 +5,4 @@ users:
   - fissionlabs
   - consultants
 slack_alerts_channel: alerts-india
+secrets_backend: aws-secrets

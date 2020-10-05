@@ -30,4 +30,14 @@
     - kernel_tuning
     - after-reboot
   roles:
-    - role: thp
+    - role: kernel_tune
+ 
+- name: cleanup
+  hosts: kafka
+  become: true
+  tasks:
+    - name: remove legacy logrotate configs
+      file:
+        path: "/etc/logrotate.d/{{ deploy_env }}_kafka"
+        state: absent
+  tags: cleanup

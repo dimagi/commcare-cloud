@@ -224,8 +224,8 @@ MOBILE_INTEGRATION_TEST_TOKEN = '{{ MOBILE_INTEGRATION_TEST_TOKEN }}'
 LOCAL_APPS = (
     'dimagi.utils',
     'gunicorn',
-    {% for entry in LOCAL_APPS %}
-    {% if inventory_hostname in groups[entry.host] %}
+    {% for entry in localsettings.LOCAL_APPS|default([]) %}
+    {% if entry.host == 'all' or inventory_hostname in groups[entry.host] %}
     '{{ entry.name }}',
     {% endif %}
     {% endfor %}
@@ -374,11 +374,25 @@ CELERY_FLOWER_URL = '{{ CELERY_FLOWER_URL }}'
 CELERY_TIMEZONE = '{{ localsettings.CELERY_TIMEZONE }}'
 {% endif %}
 
+{% if 'CAPTCHA_LENGTH' in localsettings and localsettings.CAPTCHA_LENGTH %}
+CAPTCHA_LENGTH = {{ localsettings.CAPTCHA_LENGTH }}
+{% endif %}
+
+{% if 'CAPTCHA_CHALLENGE_FUNCT' in localsettings and localsettings.CAPTCHA_CHALLENGE_FUNCT %}
+CAPTCHA_CHALLENGE_FUNCT = '{{ localsettings.CAPTCHA_CHALLENGE_FUNCT }}'
+{% endif %}
+
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
+MAPBOX_ACCESS_TOKEN = '{{ MAPBOX_ACCESS_TOKEN }}'
 FORMTRANSLATE_TIMEOUT = 5
 
+{% if OLD_BROKER_URL and rabbitmq_migration_bridge|default(False) %}
+CELERY_BROKER_READ_URL = BROKER_READ_URL = '{{ OLD_BROKER_URL }}'
+CELERY_BROKER_WRITE_URL = BROKER_WRITE_URL = '{{ BROKER_URL }}'
+{% else %}
 CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
+{% endif %}
 CELERY_HEARTBEAT_THRESHOLDS = {
 {% for queue, threshold in CELERY_HEARTBEAT_THRESHOLDS.items() | sort %}
     {{ queue | to_json }}: {% if threshold == None %}None{% else %}{{ threshold | to_json }}{% endif %},
@@ -410,7 +424,9 @@ redis_cache = {
 {% endif %}
     'OPTIONS': {
         'PARSER_CLASS': 'redis.connection.HiredisParser',
-        'PICKLE_VERSION': 2,  # After PY3 migration: remove
+        'REDIS_CLIENT_KWARGS': {
+            'health_check_interval': 30,
+        },
 {% if is_redis_cluster %}
         'REDIS_CLIENT_CLASS': 'rediscluster.RedisCluster',
         'CONNECTION_POOL_CLASS': 'rediscluster.connection.ClusterConnectionPool',
@@ -597,13 +613,11 @@ MAPS_LAYERS = json.loads('{{ MAPS_LAYERS|to_json }}')
 PILLOWTOP_MACHINE_ID = '{{ localsettings.PILLOWTOP_MACHINE_ID }}'
 {% endif %}
 
-ACTIVE_PILLOW_NAMES = list(set([
-{% for _, pillows in app_processes_config.pillows.items() %}
-    {% for pillow_name in pillows.keys()|unique %}
-        "{{ pillow_name }}",
-    {% endfor %}
+ACTIVE_PILLOW_NAMES = [
+{% for pillow_name in app_processes_config.pillows.values() | map("dict2items") | flatten | map(attribute="key") | unique | sort %}
+    "{{ pillow_name }}",
 {% endfor %}
-]))
+]
 
 {% if SIMPLE_API_KEYS %}
 SIMPLE_API_KEYS = {{ SIMPLE_API_KEYS|to_json }}
@@ -720,6 +734,10 @@ METRICS_PROVIDERS = {{ metrics_providers | to_json }}
 WS4REDIS_CONNECTION = {
     'host': '{{ localsettings.WS4REDIS_CONNECTION_HOST }}'
 }
+{% endif %}
+
+{% if prometheus_celery_pushgateway is defined %}
+PROMETHEUS_PUSHGATEWAY_HOST = os.environ.get('PROMETHEUS_PUSHGATEWAY_HOST', None)
 {% endif %}
 
 {% if TWO_FACTOR_GATEWAY_ENABLED %}
@@ -940,8 +958,8 @@ UCR_COMPARISONS = {
 }
 {% endif %}
 
-{% if localsettings.KAFKA_API_VERSION is defined %}
-KAFKA_API_VERSION = tuple({{ localsettings.KAFKA_API_VERSION }})
+{% if localsettings.KAFKA_API_VERSION is defined or kafka_version is defined %}
+KAFKA_API_VERSION = tuple({{ localsettings.KAFKA_API_VERSION|default(kafka_version.split('.')|map('int')|list) }})
 {% endif %}
 
 {% if localsettings.ICDS_USE_CITUS is defined %}
@@ -979,4 +997,74 @@ MESSAGING_RULE_CASE_CHUNK_SIZE = {{ localsettings.MESSAGING_RULE_CASE_CHUNK_SIZE
 
 {% if localsettings.TRACK_ES_REPORT_LOAD is defined %}
 TRACK_ES_REPORT_LOAD = {{ localsettings.TRACK_ES_REPORT_LOAD }}
+{% endif %}
+
+{% if localsettings.ASYNC_INDICATOR_CHUNK_SIZE is defined %}
+ASYNC_INDICATOR_CHUNK_SIZE = {{ localsettings.ASYNC_INDICATOR_CHUNK_SIZE }}
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_SCHEDULING_CONTENT is defined %}
+LOCAL_AVAILABLE_CUSTOM_SCHEDULING_CONTENT = json.loads('{{ localsettings.AVAILABLE_CUSTOM_SCHEDULING_CONTENT|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_REMINDER_RECIPIENTS is defined %}
+LOCAL_AVAILABLE_CUSTOM_REMINDER_RECIPIENTS = json.loads('{{ localsettings.AVAILABLE_CUSTOM_REMINDER_RECIPIENTS|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_SCHEDULING_RECIPIENTS is defined %}
+LOCAL_AVAILABLE_CUSTOM_SCHEDULING_RECIPIENTS = json.loads('{{ localsettings.AVAILABLE_CUSTOM_SCHEDULING_RECIPIENTS|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_RULE_CRITERIA is defined %}
+LOCAL_AVAILABLE_CUSTOM_RULE_CRITERIA = json.loads('{{ localsettings.AVAILABLE_CUSTOM_RULE_CRITERIA|to_json }}')
+{% endif %}
+
+{% if localsettings.AVAILABLE_CUSTOM_RULE_ACTIONS is defined %}
+LOCAL_AVAILABLE_CUSTOM_RULE_ACTIONS = json.loads('{{ localsettings.AVAILABLE_CUSTOM_RULE_ACTIONS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_STATIC_DATA_SOURCES is defined %}
+LOCAL_STATIC_DATA_SOURCES = json.loads('{{ localsettings.LOCAL_STATIC_DATA_SOURCES|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_STATIC_UCR_REPORTS is defined %}
+LOCAL_STATIC_UCR_REPORTS = json.loads('{{ localsettings.LOCAL_STATIC_UCR_REPORTS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_UCR_EXPRESSION_LISTS is defined %}
+LOCAL_CUSTOM_UCR_EXPRESSION_LISTS = json.loads('{{ localsettings.LOCAL_CUSTOM_UCR_EXPRESSION_LISTS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTERS is defined %}
+LOCAL_CUSTOM_UCR_REPORT_FILTERS = json.loads('{{ localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTERS|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES is defined %}
+LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES = json.loads('{{ localsettings.LOCAL_CUSTOM_UCR_REPORT_FILTER_VALUES|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_DOMAIN_MODULE_MAP is defined %}
+LOCAL_DOMAIN_MODULE_MAP = json.loads('{{ localsettings.LOCAL_DOMAIN_MODULE_MAP|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_CUSTOM_DB_ROUTING is defined %}
+LOCAL_CUSTOM_DB_ROUTING = json.loads('{{ localsettings.LOCAL_CUSTOM_DB_ROUTING|to_json }}')
+{% endif %}
+
+{% if localsettings.CUSTOM_DOMAIN_SPECIFIC_URL_MODULES is defined %}
+CUSTOM_DOMAIN_SPECIFIC_URL_MODULES = json.loads('{{ localsettings.CUSTOM_DOMAIN_SPECIFIC_URL_MODULES|to_json }}')
+{% endif %}
+
+{% if localsettings.LOCAL_REPEATER_CLASSES is defined %}
+LOCAL_REPEATER_CLASSES = json.loads('{{ localsettings.LOCAL_REPEATER_CLASSES|to_json }}')
+{% endif %}
+
+{% if localsettings.COMMCARE_EXTENSIONS is defined %}
+COMMCARE_EXTENSIONS = json.loads('{{ localsettings.COMMCARE_EXTENSIONS|to_json }}')
+{% endif %}
+
+{% if localsettings.DEVICE_LOGS_ENABLED|default(True) %}
+NO_DEVICE_LOG_ENVS = []
+{% else %}
+NO_DEVICE_LOG_ENVS = [{{ env_monitoring_id|to_json }}]
 {% endif %}

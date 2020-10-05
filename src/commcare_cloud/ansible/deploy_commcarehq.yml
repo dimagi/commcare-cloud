@@ -133,3 +133,9 @@
       with_items: "{{ contents.stdout_lines }}"
       when: item not in supervisor_files|sum(start=[])
   tags: services
+
+- name: Celery tasks cleanup Cron job
+  hosts: celery
+  tasks:
+    - include_tasks: roles/commcarehq/tasks/celery_cron.yml
+  tags: services

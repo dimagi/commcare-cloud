@@ -1,6 +1,10 @@
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
 import difflib
 import json
 import os
+from collections import defaultdict
 from contextlib import contextmanager
 
 import yaml
@@ -13,6 +17,7 @@ from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_
     print_db_info
 from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list, check_connection, \
     get_membership
+from tabulate import tabulate
 
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_warning, color_notice, color_summary, color_error, \
@@ -27,6 +32,8 @@ from commcare_cloud.commands.migrations.copy_files import SourceFiles, prepare_f
     copy_scripts_to_target_host, execute_file_copy_scripts
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
+from six.moves import map
+from six.moves import zip
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 PLAY_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'plays')
@@ -302,24 +309,54 @@ def generate_shard_plan(migration):
 
 
 def describe(migration):
-    puts(u'\nMembership')
+    puts('\nMembership')
     with indent():
         puts(get_membership(migration.target_couch_config).get_printable())
-    puts(u'\nDB Info')
+    puts('\nDB Info')
     print_db_info(migration.target_couch_config)
 
-    puts(u'\nShard allocation')
-    diff_with_db = diff_plan(migration)
-    if diff_with_db:
-        puts(color_highlight('DB allocation differs from plan:\n'))
-        puts("{}\n\n".format(diff_with_db))
-    else:
-        puts(color_success('DB allocation matches plan.'))
+    puts('\nShard allocation')
+    diff_with_db = None
+    if os.path.exists(migration.shard_plan_path):
+        diff_with_db = diff_plan(migration)
+        if diff_with_db:
+            puts(color_highlight('DB allocation differs from plan:\n'))
+            puts("{}\n\n".format(diff_with_db))
+        else:
+            puts(color_success('DB allocation matches plan.'))
+
+    if not diff_with_db:
         print_shard_table([
             get_shard_allocation(migration.target_couch_config, db_name)
             for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
         ])
+
+    puts('\nShard count by node')
+    print_shard_allocation_by_node([
+        get_shard_allocation(migration.target_couch_config, db_name)
+        for db_name in sorted(get_db_list(migration.target_couch_config.get_control_node()))
+    ])
     return 0
+
+
+def print_shard_allocation_by_node(shard_allocation_docs):
+    db_names = [shard_allocation_doc.db_name for shard_allocation_doc in shard_allocation_docs]
+    by_node = defaultdict(dict)
+    for shard_allocation_doc in shard_allocation_docs:
+        for node, shards in sorted(shard_allocation_doc.by_node.items()):
+            node = shard_allocation_doc.config.format_node_name(node)
+            by_node[node][shard_allocation_doc.db_name] = shards
+
+    nodes = sorted(list(by_node))
+    headers = ["DB"] + nodes
+    rows = []
+    for db_name in db_names:
+        row = [db_name]
+        for node in nodes:
+            row.append(len(by_node[node].get(db_name, [])))
+        rows.append(row)
+    rows.append(["TOTAL"] + list(map(sum, zip(*rows))[1:]))
+    print(tabulate(rows, headers=headers, tablefmt='simple'))
 
 
 def get_files_for_assertion(alloc_docs_by_db):

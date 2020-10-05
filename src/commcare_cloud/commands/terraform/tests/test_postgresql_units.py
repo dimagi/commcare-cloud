@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
 from nose.tools import assert_equal, assert_raises
 from parameterized.test import assert_contains
 
@@ -21,14 +23,14 @@ def test_convert_to_unit__bad_input():
     # number part must be an int
     with assert_raises(ValueError) as context:
         convert_to_unit('12.5 GB', BLOCK_8KB)
-    assert_contains(context.exception.message, '12.5 GB')
+    assert_contains(context.exception.args[0], '12.5 GB')
 
 
 def test_convert_to_unit__mixed_units():
     with assert_raises(ValueError) as context:
         convert_to_unit('1kB', MS)
-    assert_contains(context.exception.message, '1kB')
-    assert_contains(context.exception.message, 'TimeInMilliseconds')
+    assert_contains(context.exception.args[0], '1kB')
+    assert_contains(context.exception.args[0], 'TimeInMilliseconds')
 
 
 def test_convert_to_standard_unit__time():
@@ -46,6 +48,6 @@ def test_convert_to_standard_unit__mixed_units():
     # authentication_timeout is measured in seconds
     with assert_raises(ValueError) as context:
         convert_to_standard_unit('authentication_timeout', '1kB')
-    assert_contains(context.exception.message, '1kB')
-    assert_contains(context.exception.message, 'TimeInMilliseconds')
-    assert_contains(context.exception.message, ' (authentication_timeout)')
+    assert_contains(context.exception.args[0], '1kB')
+    assert_contains(context.exception.args[0], 'TimeInMilliseconds')
+    assert_contains(context.exception.args[0], ' (authentication_timeout)')

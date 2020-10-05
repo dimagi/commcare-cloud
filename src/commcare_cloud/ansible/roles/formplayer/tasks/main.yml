@@ -19,6 +19,21 @@
   tags:
     - cron
 
+- name: Create cron job to delete empty sqlite db dirs
+  become: yes
+  cron:
+    name: 'Purge empty sqlite db dirs'
+    special_time: daily
+    # delete any empty directories so they don't just build up (to literally 100,000+)
+    # but leaving any that have been modified in the last 20m
+    # (to avoid a race condition on newly created dirs)
+    job: 'find {{ formplayer_data_dir }} -empty -type d -mmin +20 -delete'
+    user: '{{ cchq_user }}'
+    state: present
+  tags:
+    - cron
+
+
 - name: Copy formplayer's archive_dbs
   become: yes
   copy:
@@ -35,9 +50,9 @@
   cron:
     # should run every minute by default
     name: 'Archive sqlite db files'
-    job: '/usr/local/sbin/archive_dbs.sh {{ formplayer_data_dir }} +{{ formplayer_archive_time_spec }}'
+    job: '/usr/local/sbin/archive_dbs.sh {{ formplayer_data_dir }} +{{ formplayer_archive_time_spec|default(None) }}'
     user: '{{ cchq_user }}'
-  when: formplayer_archive_time_spec is defined
+    state: '{{ "present" if formplayer_archive_time_spec is defined else "absent" }}'
   tags:
     - cron
 
@@ -55,6 +70,14 @@
     - "{{ formplayer_build_dir }}"
     - "{{ [] if _should_update_formplayer_in_place else formplayer_release_dir }}"
     - "{{ formplayer_data_dir }}"
+
+- name: Formplayer request-response logging directory
+  file:
+    path: "{{ formplayer_logging_dir }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0755
 
 - name: Download formplayer release
   get_url:
@@ -82,9 +105,13 @@
     remote_src: yes
     src: "{{ formplayer_current_dir }}/{{ item.filename }}"
     dest: "{{ formplayer_release_dir }}/{{ item.filename }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0644
   with_items:
     - filename: application.properties
     - filename: sentry.properties
+    - filename: logback-spring.xml
   tags:
     - formplayer_deploy
   when: not _should_update_formplayer_in_place and current_stat.stat.exists
@@ -94,14 +121,16 @@
   template:
     src: "{{ item.template }}"
     dest: "{{ _formplayer_target_dir }}/{{ item.filename }}"
-    group: cchq
-    owner: cchq
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
     mode: 0644
   with_items:
     - template: application.properties.j2
       filename: application.properties
     - template: sentry.properties.j2
       filename: sentry.properties
+    - template: logback-spring.xml.j2
+      filename: logback-spring.xml
   tags:
     - localsettings
 

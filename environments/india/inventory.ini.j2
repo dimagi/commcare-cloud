@@ -20,6 +20,10 @@
 {{ __esmaster4__ }} elasticsearch_node_name=esmaster4 elasticsearch_node_zone=aws
 {{ __es0__ }} elasticsearch_node_name=es0 elasticsearch_node_zone=aws
 {{ __es1__ }} elasticsearch_node_name=es1 elasticsearch_node_zone=aws
+{{ __citusmaster0__ }}
+{{ __citusworker0__ }}
+{{ __citusworker1__ }}
+{{ __citusworker2__ }}
 
 [es_master:children]
 esmaster2
@@ -42,7 +46,7 @@ es_data
 {{ __pillow2__ }}
 {{ __kafka1__ }} kafka_broker_id=0
 {{ __pgbouncer0__ }}
-{{ __proxy1__ }} public_ip={{ aws_resources['proxy1-india.public_ip'] }}
+{{ __proxy1__ }}
 {{ __rds_pgmain0__ }}
 
 [citusdb_worker:children]
@@ -50,9 +54,13 @@ citus1
 citus2
 citus1standby
 citus2standby
+citusworker0
+citusworker1
+citusworker2
 
 [citusdb_master:children]
 citus0
+citusmaster0
 
 [citusdb:children]
 citus0
@@ -60,6 +68,10 @@ citus1
 citus2
 citus1standby
 citus2standby
+citusmaster0
+citusworker0
+citusworker1
+citusworker2
 
 [pg_standby:children]
 citus1standby

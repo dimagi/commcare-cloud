@@ -1,16 +1,21 @@
+from __future__ import absolute_import
 from __future__ import print_function
+from __future__ import unicode_literals
+
 import subprocess
 import sys
 
 from clint.textui import puts
-
-from commcare_cloud.cli_utils import print_command
-from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.environment.main import get_environment
-from .getinventory import get_server_address, get_monolith_address
 from six.moves import shlex_quote
 
+from commcare_cloud.cli_utils import print_command
+from commcare_cloud.commands.command_base import Argument, CommandBase
+from commcare_cloud.environment.main import get_environment
+from ..ansible.helpers import get_default_ssh_options_as_cmd_parts
+
 from ...colors import color_error
+from .getinventory import (get_monolith_address, get_server_address,
+                           split_host_group)
 
 
 class Lookup(CommandBase):
@@ -22,21 +27,22 @@ class Lookup(CommandBase):
         Argument("server", nargs="?", help="""
             Server name/group: postgresql, proxy, webworkers, ... The server
             name/group may be prefixed with 'username@' to login as a
-            specific user and may be terminated with ':<n>' to choose one of
+            specific user and may be terminated with '[<n>]' to choose one of
             multiple servers if there is more than one in the group. For
-            example: webworkers:0 will pick the first webworker. May also be
+            example: webworkers[0] will pick the first webworker. May also be
             omitted for environments with only a single server.
 
-            Use '-' for default (django_manage:0)
+            Use '-' for default (django_manage[0])
         """),
     )
 
     def lookup_server_address(self, args):
-        def exit(message):
-            self.parser.error("\n" + message)
-        if not args.server:
-            return get_monolith_address(args.env_name, exit)
-        return get_server_address(args.env_name, args.server, exit)
+        try:
+            if not args.server:
+                return get_monolith_address(args.env_name)
+            return get_server_address(args.env_name, args.server)
+        except Exception as e:
+            self.parser.error("\n" + e.message)
 
     def run(self, args, unknown_args):
         if unknown_args:
@@ -50,12 +56,12 @@ class _Ssh(Lookup):
 
     def run(self, args, ssh_args):
         if args.server == '-':
-            args.server = 'django_manage:0'
+            args.server = 'django_manage[0]'
         address = self.lookup_server_address(args)
         if ':' in address:
             address, port = address.split(':')
             ssh_args = ['-p', port] + ssh_args
-        cmd_parts = [self.command, address] + ssh_args
+        cmd_parts = [self.command, address, '-t'] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         print_command(cmd)
         return subprocess.call(cmd_parts)
@@ -73,13 +79,13 @@ class Ssh(_Ssh):
     """
 
     def run(self, args, ssh_args):
-        if args.server.split(':')[0] == 'control' and '-A' not in ssh_args:
+
+        if 'control' in split_host_group(args.server).group and '-A' not in ssh_args:
             # Always include ssh agent forwarding on control machine
             ssh_args = ['-A'] + ssh_args
-        ukhf = "UserKnownHostsFile="
-        if not any(a.startswith((ukhf, "-o" + ukhf)) for a in ssh_args):
-            environment = get_environment(args.env_name)
-            ssh_args = ["-o", ukhf + environment.paths.known_hosts] + ssh_args
+
+        environment = get_environment(args.env_name)
+        ssh_args = get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=ssh_args) + ssh_args
         return super(Ssh, self).run(args, ssh_args)
 
 
@@ -137,7 +143,6 @@ class Tmux(_Ssh):
             # add bash as second command to keep tmux open after command exits
             remote_command = shlex_quote('{} ; bash'.format(args.remote_command))
             ssh_args = [
-                '-t',
                 r'tmux attach \; new-window -n {window_name} {remote_command} '
                 r'|| tmux new -n {window_name} {remote_command}'
                 .format(
@@ -147,7 +152,6 @@ class Tmux(_Ssh):
             ] + ssh_args
         else:
             ssh_args = [
-                '-t',
                 'tmux attach || tmux new -n {window_name} sudo -iu {cchq_user} '
                 .format(cchq_user=cchq_user, window_name=window_name_expression)
             ]
@@ -189,7 +193,7 @@ class DjangoManage(CommandBase):
         Argument('--server', help="""
             Server to run management command on.
             Defaults to first server under django_manage inventory group
-        """, default='django_manage:0'),
+        """, default='django_manage[0]'),
         Argument('--release', help="""
             Name of release to run under.
             E.g. '2018-04-13_18.16'.
@@ -254,7 +258,4 @@ class DjangoManage(CommandBase):
             return Tmux(self.parser).run(args, [])
         else:
             ssh_args = _get_ssh_args(remote_command)
-            if manage_args and manage_args[0] in ["shell", "dbshell"]:
-                # force ssh to allocate a pseudo-terminal
-                ssh_args = ['-t'] + ssh_args
             return Ssh(self.parser).run(args, ssh_args)

@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import hashlib
 import os
 import shutil
@@ -97,9 +99,9 @@ class CopyFiles(CommandBase):
         working_directory = _get_working_dir(args.plan_path, environment)
         ansible_context = AnsibleContext(args)
 
-        environment.get_ansible_vault_password()
+        environment.secrets_backend.prompt_user_input()
         if plan.source_env != environment and args.action in ('prepare', 'cleanup'):
-            plan.source_env.get_ansible_vault_password()
+            plan.source_env.secrets_backend.prompt_user_input()
 
         if args.action == 'prepare':
             for target_host, source_configs in plan.configs.items():
@@ -245,7 +247,8 @@ def execute_file_copy_scripts(environment, target_hosts, check_mode=True):
 
 
 def get_file_list_filename(config):
-    dir_hash = hashlib.sha1('{}_{}'.format(config.source_dir, config.target_dir)).hexdigest()[:8]
+    data = '{}_{}'.format(config.source_dir, config.target_dir).encode("utf8")
+    dir_hash = hashlib.sha1(data).hexdigest()[:8]
     filename = '{}_{}__files'.format(config.source_host, dir_hash)
     return filename
 

@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from __future__ import print_function
+from __future__ import unicode_literals
 import os
 from datetime import datetime
 
@@ -13,6 +14,7 @@ from commcare_cloud.fab.const import (
     WHEELS_ZIP_NAME,
     BOWER_ZIP_NAME,
     NPM_ZIP_NAME,
+    YARN_LOCK,
 )
 
 
@@ -29,13 +31,20 @@ def prepare_files():
 
     # Let's create bower and npm zip files
 
-    # Bower
-    local('cd {}/commcare-hq && {}'.format(OFFLINE_STAGING_DIR, generate_bower_command('install', {
-        'interactive': 'false',
-    })))
+    yarn_lock = os.path.join(env.code_root, YARN_LOCK)
 
-    # NPM
-    local('cd {}/commcare-hq && npm install --production'.format(OFFLINE_STAGING_DIR))
+    # Bower
+    if not files.exists(yarn_lock):
+        local('cd {}/commcare-hq && {}'.format(OFFLINE_STAGING_DIR, generate_bower_command('install', {
+            'interactive': 'false',
+        })))
+
+    # NPM or Yarn
+    local('cd {}/commcare-hq'.format(OFFLINE_STAGING_DIR))
+    if files.exists(yarn_lock):
+        local('yarn install --production')
+    else:
+        local('npm install --production')
 
     prepare_pip_wheels(os.path.join('requirements', 'requirements.txt'))
     prepare_pip_wheels(os.path.join('requirements', 'prod-requirements.txt'))

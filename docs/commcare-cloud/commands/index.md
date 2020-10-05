@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {bootstrap-users,ansible-playbook,django-manage,aps,aws-sign-in,tmux,ap,validate-environment-settings,pillow-topic-assignments,openvpn-activate-user,deploy-stack,export-sentry-events,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,copy-files,couchdb-cluster-info,deploy,mosh,list-postgresql-dbs,after-reboot,ssh,downtime,fab,update-local-known-hosts,send-datadog-event,pillow-resource-report,aws-list,aws-fill-inventory,migrate-couchdb,terraform,openvpn-claim-user,celery-resource-report,run-shell-command,terraform-migrate-state}
+               {after-reboot,ansible-playbook,ap,aws-fill-inventory,aws-list,aws-sign-in,bootstrap-users,celery-resource-report,copy-files,couchdb-cluster-info,deploy,deploy-stack,aps,django-manage,downtime,export-sentry-events,fab,list-postgresql-dbs,lookup,migrate-couchdb,migrate_couchdb,migrate-secrets,mosh,openvpn-activate-user,openvpn-claim-user,pillow-resource-report,pillow-topic-assignments,ping,run-module,run-shell-command,secrets,send-datadog-event,service,ssh,terraform,terraform-migrate-state,tmux,update-config,update-local-known-hosts,update-supervisor-confs,update-user-key,update-users,validate-environment-settings}
                ...
 ```
 
@@ -156,12 +156,12 @@ commcare-cloud <env> lookup [server]
 
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
-specific user and may be terminated with ':<n>' to choose one of
+specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers:0 will pick the first webworker. May also be
+example: webworkers[0] will pick the first webworker. May also be
 omitted for environments with only a single server.
 
-Use '-' for default (django_manage:0)
+Use '-' for default (django_manage[0])
 
 ---
 
@@ -184,12 +184,12 @@ All trailing arguments are passed directly to `ssh`.
 
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
-specific user and may be terminated with ':<n>' to choose one of
+specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers:0 will pick the first webworker. May also be
+example: webworkers[0] will pick the first webworker. May also be
 omitted for environments with only a single server.
 
-Use '-' for default (django_manage:0)
+Use '-' for default (django_manage[0])
 
 ---
 
@@ -213,12 +213,12 @@ All trailing arguments are passed directly to `mosh`
 
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
-specific user and may be terminated with ':<n>' to choose one of
+specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers:0 will pick the first webworker. May also be
+example: webworkers[0] will pick the first webworker. May also be
 omitted for environments with only a single server.
 
-Use '-' for default (django_manage:0)
+Use '-' for default (django_manage[0])
 
 ---
 
@@ -560,12 +560,12 @@ commcare-cloud <env> tmux -
 
 Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
-specific user and may be terminated with ':<n>' to choose one of
+specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers:0 will pick the first webworker. May also be
+example: webworkers[0] will pick the first webworker. May also be
 omitted for environments with only a single server.
 
-Use '-' for default (django_manage:0)
+Use '-' for default (django_manage[0])
 
 ###### `remote_command`
 
@@ -629,6 +629,36 @@ Output as CSV
 ### Operational
 
 ---
+#### `secrets`
+
+View and edit secrets through the CLI
+
+```
+commcare-cloud <env> secrets {view,edit} secret_name
+```
+
+##### Positional Arguments
+
+###### `{view,edit}`
+
+###### `secret_name`
+
+---
+
+#### `migrate-secrets`
+
+Migrate secrets from one backend to another
+
+```
+commcare-cloud <env> migrate-secrets from_backend
+```
+
+##### Positional Arguments
+
+###### `from_backend`
+
+---
+
 #### `ping`
 
 Ping specified or all machines to see if they have been provisioned yet.
@@ -897,6 +927,28 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
+#### `update-user-key`
+
+Update a single user's public key (because update-users takes forever).
+
+```
+commcare-cloud <env> update-user-key [--use-factory-auth] username
+```
+
+##### Positional Arguments
+
+###### `username`
+
+username who owns the public key
+
+##### Optional Arguments
+
+###### `--use-factory-auth`
+
+authenticate using the pem file (or prompt for root password if there is no pem file)
+
+---
+
 #### `update-supervisor-confs`
 
 Updates the supervisor configuration files for services required by CommCare.
@@ -978,14 +1030,16 @@ Use `-l` instead of a command to see the full list of commands.
 Deploy CommCare
 
 ```
-commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_REV] [{commcare,formplayer}]
+commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_REV] [--set FAB_SETTINGS]
+                            [{commcare,formplayer}]
 ```
 
 ##### Positional Arguments
 
 ###### `{commcare,formplayer}`
 
-The component to deploy.
+The component to deploy. If not specified, will deploy CommCare, or
+both, if always_deploy_formplayer is set in meta.yml
 
 ##### Optional Arguments
 
@@ -1000,6 +1054,10 @@ Skip the steps involved in recording and announcing the fact of the deploy.
 ###### `--commcare-rev COMMCARE_REV`
 
 The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
+
+###### `--set FAB_SETTINGS`
+
+fab settings in k1=v1,k2=v2 format to be passed down to fab
 
 ---
 
@@ -1295,7 +1353,7 @@ or else the username of the user running the command.
 Apply unapplied state migrations in commcare_cloud/commands/terraform/migrations
 
 ```
-commcare-cloud <env> terraform-migrate-state
+commcare-cloud <env> terraform-migrate-state [--replay-from REPLAY_FROM]
 ```
 
 This migration tool should exist as a generic tool for terraform,
@@ -1308,6 +1366,12 @@ so you can tell it how existing resources map to your new code.
 
 This is a tedious task, and often follows a very predictable renaming pattern.
 This command helps fill this gap.
+
+##### Optional Arguments
+
+###### `--replay-from REPLAY_FROM`
+
+Set the last applied migration value to this number before running. Will begin running migrations after this number, not including it.
 
 ---
 

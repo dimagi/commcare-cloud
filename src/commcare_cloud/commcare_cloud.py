@@ -2,6 +2,7 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
+from __future__ import unicode_literals
 import inspect
 import os
 import sys
@@ -16,6 +17,7 @@ from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.deploy import Deploy
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
+from commcare_cloud.commands.secrets import Secrets, MigrateSecrets
 from commcare_cloud.commands.sentry import ExportSentryEvents
 from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory, AwsSignIn
 from commcare_cloud.commands.terraform.openvpn import OpenvpnActivateUser, OpenvpnClaimUser
@@ -27,7 +29,7 @@ from .argparse14 import ArgumentParser, RawTextHelpFormatter
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
     UpdateConfig, AfterReboot, BootstrapUsers, DeployStack,
-    UpdateUsers, UpdateSupervisorConfs,
+    UpdateUsers, UpdateUserPublicKey, UpdateSupervisorConfs,
 )
 from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping, SendDatadogEvent
@@ -60,6 +62,8 @@ COMMAND_GROUPS = OrderedDict([
         PillowTopicAssignments,
     ]),
     ('operational', [
+        Secrets,
+        MigrateSecrets,
         Ping,
         AnsiblePlaybook,
         DeployStack,
@@ -67,6 +71,7 @@ COMMAND_GROUPS = OrderedDict([
         AfterReboot,
         BootstrapUsers,
         UpdateUsers,
+        UpdateUserPublicKey,
         UpdateSupervisorConfs,
         Fab,
         Deploy,
@@ -88,8 +93,10 @@ COMMAND_GROUPS = OrderedDict([
     ])
 ])
 
-COMMAND_TYPES = [command_type for command_types in COMMAND_GROUPS.values()
-                 for command_type in command_types]
+COMMAND_TYPES = sorted(
+    [cmd for group in COMMAND_GROUPS.values() for cmd in group],
+    key=lambda cmd: cmd.command,
+)
 
 
 def run_on_control_instead(args, sys_argv):
@@ -98,7 +105,7 @@ def run_on_control_instead(args, sys_argv):
     executable = 'commcare-cloud'
     branch = getattr(args, 'branch', 'master')
     cmd_parts = [
-        executable, args.env_name, 'ssh', 'control:0', '-t',
+        executable, args.env_name, 'ssh', 'control[0]', '-t',
         'cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
         '&& git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
         .format(branch=branch, cchq=executable, cchq_args=' '.join([shlex_quote(arg) for arg in argv]))

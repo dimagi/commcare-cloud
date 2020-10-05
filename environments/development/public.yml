@@ -40,8 +40,8 @@ nofile_limit: 65536
 
 couchdb_use_haproxy: True
 couchdb2:
-  username: "{{ localsettings_private.COUCH_USERNAME }}"
-  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+  username: "{{ COUCH_USERNAME }}"
+  password: "{{ COUCH_PASSWORD }}"
 
 couchdb_bind:
   ty: static
@@ -52,8 +52,8 @@ couch_dbs:
     host: "{{ groups.couchdb2.0 }}"
     port: 15984
     name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    username: "{{ COUCH_USERNAME }}"
+    password: "{{ COUCH_PASSWORD }}"
     is_https: False
 
 couchdb_cluster_settings:

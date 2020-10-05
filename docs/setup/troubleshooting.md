@@ -58,7 +58,7 @@ Some other processes if affected by a similar issue may (or may not) be reportin
 To dig into a particular error, you can log into the machine and tail one of the logs:
 
 ```bash
-commcare-cloud <env> ssh webworkers:0
+commcare-cloud <env> ssh webworkers[0]
 $ tail -n100 /home/cchq/www/<env>/log/django.log
 ```
 

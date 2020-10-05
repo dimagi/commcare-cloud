@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import json
 import os
 import subprocess
@@ -46,6 +48,11 @@ class Terraform(CommandBase):
     )
 
     def run(self, args, unknown_args):
+        if 'destroy' in unknown_args:
+            puts(color_error("Refusing to run a terraform command containing the argument 'destroy'."))
+            puts(color_error("It's simply not worth the risk."))
+            exit(-1)
+
         environment = get_environment(args.env_name)
         run_dir = environment.paths.get_env_file_path('.generated-terraform')
         modules_dir = os.path.join(TERRAFORM_DIR, 'modules')
@@ -75,7 +82,7 @@ class Terraform(CommandBase):
 
         if not args.skip_secrets and unknown_args and unknown_args[0] in ('plan', 'apply'):
             rds_password = (
-                environment.get_vault_variables()['secrets']['POSTGRES_USERS']['root']['password']
+                environment.get_secret('POSTGRES_USERS.root.password')
                 if environment.terraform_config.rds_instances
                 else ''
             )
@@ -140,12 +147,14 @@ def get_postgresql_params_by_rds_instance(environment):
 
 
 def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediately):
-    context = environment.terraform_config.to_json()
+    context = environment.terraform_config.to_generated_json()
     if key_name not in environment.users_config.dev_users.present:
         raise UnauthorizedUser(key_name)
 
     context.update({
         'SITE_HOST': environment.proxy_config.SITE_HOST,
+        'NO_WWW_SITE_HOST': environment.proxy_config.NO_WWW_SITE_HOST or '',
+        'ALTERNATE_HOSTS': environment.public_vars.get('ALTERNATE_HOSTS', []),
         'account_id': environment.aws_config.sso_config.sso_account_id,
         'users': [{
             'username': username,

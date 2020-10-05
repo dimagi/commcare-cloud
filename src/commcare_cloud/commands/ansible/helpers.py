@@ -1,4 +1,6 @@
 # coding=utf-8
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import itertools
 import os
 from collections import namedtuple, defaultdict
@@ -10,6 +12,8 @@ from commcare_cloud.cli_utils import has_arg, ask
 from commcare_cloud.colors import color_error, color_success
 from commcare_cloud.environment.paths import ANSIBLE_DIR, ANSIBLE_ROLES_PATH, ANSIBLE_COLLECTIONS_PATHS
 from six.moves import shlex_quote
+from six.moves import range
+from six.moves import map
 
 DEPRECATED_ANSIBLE_ARGS = []
 
@@ -45,8 +49,6 @@ class AnsibleContext(object):
 
 
 def get_common_ssh_args(environment, use_factory_auth=False):
-    strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
-
     common_ssh_args = []
     cmd_parts_with_common_ssh_args = ()
 
@@ -54,16 +56,34 @@ def get_common_ssh_args(environment, use_factory_auth=False):
         auth_cmd_parts, auth_ssh_args = add_factory_auth_cmd(environment)
         cmd_parts_with_common_ssh_args += auth_cmd_parts
         common_ssh_args.extend(auth_ssh_args)
+
+    common_ssh_args.extend(get_default_ssh_options_as_cmd_parts(environment))
+
+    if common_ssh_args:
+        cmd_parts_with_common_ssh_args += ('--ssh-common-args={}'.format(' '.join(map(shlex_quote, common_ssh_args))),)
+    return cmd_parts_with_common_ssh_args
+
+
+def get_default_ssh_options(environment):
+    default_ssh_options = []
+
+    strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
     if not strict_host_key_checking:
-        common_ssh_args.append('-o StrictHostKeyChecking=no')
+        default_ssh_options.append(('StrictHostKeyChecking', 'no'))
 
     known_hosts_filepath = environment.paths.known_hosts
     if os.path.exists(known_hosts_filepath):
-        common_ssh_args.append('-o=UserKnownHostsFile={}'.format(known_hosts_filepath))
+        default_ssh_options.append(('UserKnownHostsFile', known_hosts_filepath))
 
-    if common_ssh_args:
-        cmd_parts_with_common_ssh_args += ('--ssh-common-args={}'.format(' '.join(common_ssh_args)),)
-    return cmd_parts_with_common_ssh_args
+    return default_ssh_options
+
+
+def get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=()):
+    ssh_args = []
+    for option_name, default_option_value in get_default_ssh_options(environment):
+        if not any(a.startswith(('{}='.format(option_name), "-o{}=".format(option_name))) for a in original_ssh_args):
+            ssh_args.extend(["-o", '{}={}'.format(option_name, default_option_value)])
+    return ssh_args
 
 
 def add_factory_auth_cmd(environment):
@@ -122,11 +142,11 @@ def run_action_with_check_mode(run_check, run_apply, skip_check, quiet=False, al
             # this means there was an error before ansible was able to start running
             return exit_code
         elif exit_code == 0:
-            puts(color_success(u"✓ Check completed with status code {}".format(exit_code)))
+            puts(color_success("✓ Check completed with status code {}".format(exit_code)))
             user_wants_to_apply = ask('Do you want to apply these changes?',
                                       quiet=quiet)
         else:
-            puts(color_error(u"✗ Check failed with status code {}".format(exit_code)))
+            puts(color_error("✗ Check failed with status code {}".format(exit_code)))
             user_wants_to_apply = ask('Do you want to try to apply these changes anyway?',
                                       quiet=quiet)
 
@@ -134,9 +154,9 @@ def run_action_with_check_mode(run_check, run_apply, skip_check, quiet=False, al
     if user_wants_to_apply:
         exit_code = run_apply()
         if exit_code == 0:
-            puts(color_success(u"✓ Apply completed with status code {}".format(exit_code)))
+            puts(color_success("✓ Apply completed with status code {}".format(exit_code)))
         else:
-            puts(color_error(u"✗ Apply failed with status code {}".format(exit_code)))
+            puts(color_error("✗ Apply failed with status code {}".format(exit_code)))
 
     return exit_code
 

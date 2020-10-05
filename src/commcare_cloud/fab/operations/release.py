@@ -1,5 +1,8 @@
 from __future__ import absolute_import
 from __future__ import print_function
+
+from __future__ import unicode_literals
+import functools
 import os
 import posixpath
 from collections import namedtuple
@@ -7,7 +10,7 @@ from datetime import datetime, timedelta
 
 from fabric.api import roles, parallel, sudo, env, run, local
 from fabric.colors import red
-from fabric.context_managers import cd
+from fabric.context_managers import cd, shell_env
 from fabric.contrib import files
 from fabric.contrib.project import rsync_project
 from fabric.operations import put
@@ -39,12 +42,18 @@ def update_code(full_cluster=True):
 
     @roles(roles_to_use)
     @parallel
-    def update(git_tag, use_current_release=False):
-        # If not updating current release,  we are making a new release and thus have to do cloning
-        # we should only ever not make a new release when doing a hotfix deploy
-        if not use_current_release:
-            _update_code_from_previous_release()
-        with cd(env.code_root if not use_current_release else env.code_current):
+    def update(git_tag, subdir=None, code_repo=None, deploy_key=None):
+        git_env = {}
+        if deploy_key:
+            git_env["GIT_SSH_COMMAND"] = "ssh -i {} -o IdentitiesOnly=yes".format(
+                os.path.join(env.home, ".ssh", deploy_key)
+            )
+        code_repo = code_repo or env.code_repo
+        code_root = env.code_root
+        if subdir:
+            code_root = os.path.join(code_root, subdir)
+        _update_code_from_previous_release(code_repo, subdir, git_env)
+        with cd(code_root), shell_env(**git_env):
             sudo('git remote prune origin')
             # this can get into a state where running it once fails
             # but primes it to succeed the next time it runs
@@ -181,21 +190,27 @@ def _upload_and_extract(zippath, strip_components=0):
     ))
 
 
-def _update_code_from_previous_release():
-    if files.exists(env.code_current):
-        with cd(env.code_current):
+def _update_code_from_previous_release(code_repo, subdir, git_env):
+    code_current = env.code_current
+    code_root = env.code_root
+    if subdir:
+        code_current = os.path.join(code_current, subdir)
+        code_root = os.path.join(code_root, subdir)
+
+    if files.exists(code_current, use_sudo=True):
+        with cd(code_current), shell_env(**git_env):
             sudo('git submodule foreach "git fetch origin"')
-        _clone_code_from_local_path(env.code_current, env.code_root)
-        with cd(env.code_root):
-            sudo('git remote set-url origin {}'.format(env.code_repo))
+        _clone_code_from_local_path(code_current, code_root)
+        with cd(code_root):
+            sudo('git remote set-url origin {}'.format(code_repo))
     else:
-        with cd(env.code_root):
-            sudo('git clone {} {}'.format(env.code_repo, env.code_root))
+        with shell_env(**git_env):
+            sudo('git clone {} {}'.format(code_repo, code_root))
 
 
-def _get_submodule_list():
-    if files.exists(env.code_current):
-        with cd(env.code_current):
+def _get_submodule_list(path):
+    if files.exists(path, use_sudo=True):
+        with cd(path):
             return sudo("git submodule | awk '{ print $2 }'").split()
     else:
         return []
@@ -203,7 +218,7 @@ def _get_submodule_list():
 
 def _get_local_submodule_urls(path):
     local_submodule_config = []
-    for submodule in _get_submodule_list():
+    for submodule in _get_submodule_list(path):
         local_submodule_config.append(
             GitConfig(
                 key='submodule.{submodule}.url'.format(submodule=submodule),
@@ -217,8 +232,8 @@ def _get_local_submodule_urls(path):
 
 
 def _get_remote_submodule_urls(path):
-    submodule_list = _get_submodule_list()
-    with cd(env.code_current):
+    submodule_list = _get_submodule_list(path)
+    with cd(path):
         remote_submodule_config = [
             GitConfig(
                 key='submodule.{}.url'.format(submodule),
@@ -247,9 +262,11 @@ def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
 
     with cd(to_path):
         cmd_fn('git config receive.denyCurrentBranch updateInstead')
-        cmd_fn(' && '.join(git_local_submodule_config))
+        if git_local_submodule_config:
+            cmd_fn(' && '.join(git_local_submodule_config))
         cmd_fn('git submodule update --init --recursive')
-        cmd_fn(' && '.join(git_remote_submodule_config))
+        if git_remote_submodule_config:
+            cmd_fn(' && '.join(git_remote_submodule_config))
 
 
 def _clone_virtual_env(virtualenv_current, virtualenv_root):
@@ -284,37 +301,52 @@ def update_virtualenv(full_cluster=True):
         assert requirements
         r_flags = []
         for requirements_file in requirements:
-            if fail_if_absent or files.exists(requirements_file):
+            if fail_if_absent or files.exists(requirements_file, use_sudo=True):
                 r_flags.extend(['-r', requirements_file])
         if r_flags:
             r_flags = " ".join(r_flags)
-            sudo("{} pip uninstall {} --yes".format(cmd_prefix, r_flags), user=env.sudo_user)
+            sudo("{} pip uninstall {} --yes".format(cmd_prefix, r_flags))
 
     @roles(roles_to_use)
     @parallel
     def update():
-        def _update_virtualenv(virtualenv_current, virtualenv_root, requirements):
-            # Optimization if we have current setup (i.e. not the first deploy)
-            if files.exists(virtualenv_current):
-                _clone_virtual_env(virtualenv_current, virtualenv_root)
 
+        exists = functools.partial(files.exists, use_sudo=True)
+
+        # Optimization if we have current setup (i.e. not the first deploy)
+        if exists(env.py3_virtualenv_current) and not exists(env.py3_virtualenv_root):
+            _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
+
+        def _update_virtualenv(virtualenv_root, filepath, action, kwargs):
             with cd(env.code_root):
                 cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
                     env.sudo_user, virtualenv_root)
-                pip_uninstall(cmd_prefix, requirements=[
-                    posixpath.join(requirements, "uninstall-requirements.txt")
-                ], fail_if_absent=True)
-                pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[
-                    posixpath.join(requirements, 'prod-requirements.txt'),
-                ])
-                pip_uninstall(cmd_prefix, requirements=[
-                    posixpath.join(requirements, "uninstall-requirements-after-install.txt"),
-                ],  fail_if_absent=False)
 
-        _update_virtualenv(
-            env.py3_virtualenv_current, env.py3_virtualenv_root,
-            posixpath.join(env.code_root, 'requirements')
-        )
+                if action == "uninstall":
+                    pip_uninstall(cmd_prefix, requirements=[filepath], **kwargs)
+
+                if action == "install":
+                    pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[filepath])
+
+        requirements_files = [
+            ("uninstall-requirements.txt", "uninstall", {"fail_if_absent": True}),
+            ("prod-requirements.txt", "install", {}),
+            ("uninstall-requirements-after-install.txt", "uninstall", {"fail_if_absent": False}),
+        ]
+        for filename, action, kwargs in requirements_files:
+            _update_virtualenv(
+                env.py3_virtualenv_root,
+                posixpath.join(env.code_root, 'requirements', filename),
+                action, kwargs
+            )
+
+        for repo in env.ccc_environment.meta_config.git_repositories:
+            if repo.requirements_path:
+                _update_virtualenv(
+                    env.py3_virtualenv_root,
+                    posixpath.join(env.code_root, repo.relative_dest, repo.requirements_path),
+                    "install", {}
+                )
 
     return update
 
@@ -348,13 +380,15 @@ def record_successful_deploy():
         sudo((
             '%(virtualenv_current)s/bin/python manage.py '
             'record_deploy_success --user "%(user)s" --environment '
-            '"%(environment)s" --url %(url)s --minutes %(minutes)s --mail_admins'
+            '"%(environment)s" --url %(url)s --minutes %(minutes)s --mail_admins '
+            '--commit %(commit)s'
         ) % {
             'virtualenv_current': env.py3_virtualenv_current,
             'user': env.user,
             'environment': env.deploy_env,
-            'url': env.deploy_metadata.diff_url,
-            'minutes': str(int(delta.total_seconds() // 60))
+            'url': env.deploy_metadata.diff.url,
+            'minutes': str(int(delta.total_seconds() // 60)),
+            'commit': env.deploy_metadata.deploy_ref
         })
 
 
@@ -372,8 +406,8 @@ def update_current(release=None):
     """
     Updates the current release to the one specified or to the code_root
     """
-    if ((not release and not files.exists(env.code_root)) or
-            (release and not files.exists(release))):
+    if ((not release and not files.exists(env.code_root, use_sudo=True)) or
+            (release and not files.exists(release, use_sudo=True))):
         utils.abort('About to update current to non-existant release')
 
     sudo('ln -nfs {} {}'.format(release or env.code_root, env.code_current))
@@ -403,13 +437,13 @@ def clean_releases(keep=3):
     valid_releases = 0
     with cd(env.root):
         for index, release in enumerate(reversed(releases)):
-            if (release == current_release or release == os.path.basename(env.code_root)):
+            if release == current_release or release == os.path.basename(env.code_root):
                 valid_releases += 1
-            elif (files.contains(RELEASE_RECORD, release)):
+            elif files.contains(RELEASE_RECORD, release, use_sudo=True):
                 valid_releases += 1
                 if valid_releases > keep:
                     to_remove.append(release)
-            elif files.exists(os.path.join(env.releases, release, KEEP_UNTIL_PREFIX + '*')):
+            elif files.exists(os.path.join(env.releases, release, KEEP_UNTIL_PREFIX + '*'), use_sudo=True):
                 # This has a KEEP_UNTIL file, so let's not delete until time is up
                 with cd(os.path.join(env.releases, release)):
                     filepath = sudo('find . -name {}*'.format(KEEP_UNTIL_PREFIX))
@@ -464,7 +498,7 @@ def copy_formplayer_properties():
 @parallel
 @roles(ROLES_ALL_SRC)
 def copy_components():
-    if files.exists('{}/bower_components'.format(env.code_current)):
+    if files.exists('{}/bower_components'.format(env.code_current), use_sudo=True):
         sudo('cp -r {}/bower_components {}/bower_components'.format(env.code_current, env.code_root))
     else:
         sudo('mkdir {}/bower_components'.format(env.code_root))
@@ -473,7 +507,7 @@ def copy_components():
 @parallel
 @roles(ROLES_ALL_SRC)
 def copy_node_modules():
-    if files.exists('{}/node_modules'.format(env.code_current)):
+    if files.exists('{}/node_modules'.format(env.code_current), use_sudo=True):
         sudo('cp -r {}/node_modules {}/node_modules'.format(env.code_current, env.code_root))
     else:
         sudo('mkdir {}/node_modules'.format(env.code_root))
@@ -482,7 +516,7 @@ def copy_node_modules():
 @parallel
 @roles(ROLES_STATIC)
 def copy_compressed_js_staticfiles():
-    if files.exists('{}/staticfiles/CACHE/js'.format(env.code_current)):
+    if files.exists('{}/staticfiles/CACHE/js'.format(env.code_current), use_sudo=True):
         sudo('mkdir -p {}/staticfiles/CACHE'.format(env.code_root))
         sudo('cp -r {}/staticfiles/CACHE/js {}/staticfiles/CACHE/js'.format(env.code_current, env.code_root))
 
@@ -505,7 +539,7 @@ def get_number_of_releases():
 @roles(ROLES_ALL_SRC)
 @parallel
 def ensure_release_exists(release):
-    return files.exists(release)
+    return files.exists(release, use_sudo=True)
 
 
 def mark_keep_until(full_cluster=True):

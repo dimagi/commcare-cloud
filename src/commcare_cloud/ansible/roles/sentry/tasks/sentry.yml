@@ -1,0 +1,76 @@
+
+- name: Install sentry dependencies
+  apt: 
+    name: 
+      - libxmlsec1-dev
+      - pkg-config
+      - supervisor
+    state: present 
+  
+- name: create sentry user
+  user: 
+    name=sentry
+    state=present
+    createhome=yes
+
+- name: clear users password valid time
+  shell: chage -M -1 sentry
+
+- name: Create virtualenv and config directory
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ sentry_virtualenv_path }}"
+    - "{{ sentry_app_config }}"
+
+- name: Install virtualenv via pip
+  pip:
+    name: virtualenv
+    executable: pip2
+
+- name: Create virtual env for sentry
+  pip:
+    name: sentry=={{ sentry_version }}
+    virtualenv: "{{ sentry_virtualenv_path }}"
+    virtualenv_python: python2.7
+
+
+- name: Copy sentry config files
+  template:
+    src: sentry.conf.py.j2
+    dest: "{{ sentry_app_config }}/sentry.conf.py"
+  
+- name: Copy sentry config files
+  template:
+    src: config.yml.j2
+    dest: "{{ sentry_app_config }}/config.yml"
+ 
+- name: Create supervisor file
+  template:
+    src: sentry_web_server.conf.j2
+    dest: "/etc/supervisor/conf.d/sentry_web_service.conf"
+  notify: restart supervisor
+
+- name: Create citext extension
+  become_user: postgres
+  postgresql_ext:
+    name: citext
+    db: "{{ sentry_database }}"
+    port: "{{ sentry_dbport | default('5432')}}"
+
+- name: sentry DB migration
+  shell: "SENTRY_CONF={{ sentry_app_config }} {{ sentry_virtualenv_path }}/bin/sentry upgrade --noinput"
+  notify: restart sentry
+
+- name: Clean Sentry Database Cron
+  cron:
+    name: Clean Sentry Database
+    minute: "0"
+    hour: "22"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    user: sentry
+    job: "SENTRY_CONF={{ sentry_app_config }} {{ sentry_virtualenv_path }}/bin/sentry cleanup --days=30"
+    cron_file: sentry_cleanup

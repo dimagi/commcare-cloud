@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import unicode_literals
 import datetime
 import os
 
@@ -59,7 +60,7 @@ def rollback_formplayer():
 
 def clean_formplayer_releases(keep=1):
     build_dir = os.path.join(env.root, FORMPLAYER_BUILD_DIR)
-    if not files.exists(build_dir):
+    if not files.exists(build_dir, use_sudo=True):
         return
 
     builds = _get_old_formplayer_builds(build_dir)

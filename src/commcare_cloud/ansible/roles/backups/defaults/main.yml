@@ -7,3 +7,5 @@ blobdb_backup_weeks: 2
 blobdb_s3: False
 postgres_s3: False
 couch_s3: False
+blobdb_backup_hours: 1
+blobdb_backup_hourly: False

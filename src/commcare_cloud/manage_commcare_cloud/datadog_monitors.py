@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
 import difflib
 import os
 import re
@@ -198,8 +201,8 @@ def get_data_to_update(monitor, keys_to_update):
 def initialize_datadog(config):
     env = get_environment(config.env_with_datadog_auth)
     initialize(
-        api_key=env.get_vault_var('secrets.DATADOG_API_KEY'),
-        app_key=env.get_vault_var('secrets.DATADOG_APP_KEY')
+        api_key=env.get_secret('DATADOG_API_KEY'),
+        app_key=env.get_secret('DATADOG_APP_KEY')
     )
 
 

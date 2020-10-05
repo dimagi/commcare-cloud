@@ -16,6 +16,8 @@
 #
 trap 'echo "Cleaning Prometheus metrics from ${prometheus_multiproc_dir} for PID $PID";
     rm ${prometheus_multiproc_dir}/*${PID}*;
+    echo "Killing child process $PID";
+    kill $PID;
     echo "done";' TERM INT
 
 {{ django_direct_runner }} $@ &

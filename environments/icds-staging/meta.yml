@@ -1,6 +1,0 @@
-deploy_env: icds-staging
-env_monitoring_id: icds-staging
-users:
-  - dimagi
-  - fissionlabs
-slack_alerts_channel: icds-staging

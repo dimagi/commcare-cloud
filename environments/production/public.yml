@@ -31,8 +31,6 @@ DATADOG_TRACE:
   TAGS:
     env: production
 
-LOCAL_APPS: []
-
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
 elasticsearch_version: 2.4.6
@@ -60,8 +58,9 @@ filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
     tags: nginx-error
 
-formplayer_archive_time_spec: '100m'
-formplayer_purge_time_spec: '8d'
+formplayer_purge_time_spec: '5d'
+formplayer_sensitive_data_logging: true
+formplayer_forward_ip_proxy: true
 
 KSPLICE_ACTIVE: yes
 
@@ -72,16 +71,16 @@ couch_dbs:
     host: "{{ groups.couchdb2_proxy.0 }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
-    username: "{{ localsettings_private.COUCH_USERNAME }}"
-    password: "{{ localsettings_private.COUCH_PASSWORD }}"
+    username: "{{ COUCH_USERNAME }}"
+    password: "{{ COUCH_PASSWORD }}"
     is_https: False
 
 couchdb2:
-  username: "{{ localsettings_private.COUCH_USERNAME }}"
-  password: "{{ localsettings_private.COUCH_PASSWORD }}"
+  username: "{{ COUCH_USERNAME }}"
+  password: "{{ COUCH_PASSWORD }}"
 
 couchdb_compaction_settings:
-  _default: '[{db_fragmentation, "6%"}, {view_fragmentation, "6%"}, {parallel_view_compaction, true}]'
+  _default: '[{db_fragmentation, "20%"}, {view_fragmentation, "20%"}, {parallel_view_compaction, true}]'
 
 
 couchdb2_client_max_body_size: 100M
@@ -93,22 +92,33 @@ couchdb_cluster_settings:
   w: 2
   n: 3
 
+kafka_version: 2.4.1
+kafka_scala_version: 2.12
+kafka_inter_broker_protocol_version: 2.4
+kafka_log_message_format_version: 2.4
 
 TWO_FACTOR_GATEWAY_ENABLED: True
+
+rabbitmq_version: 3.8.5-1
 
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-production-blobdb'
 
+AMQP_HOST: "{{ groups.rabbitmq.0 }}"
+
 localsettings:
   ALLOWED_HOSTS:
-    - www.commtrack.org
     - testserver
     - proxytest.commcarehq.org
     - "{{ J2ME_SITE_HOST }}"
   ANALYTICS_DEBUG: False
   ANALYTICS_LOG_LEVEL: "warning"
   AUDIT_ALL_VIEWS: True
+  AVAILABLE_CUSTOM_RULE_CRITERIA:
+    COVID_US_ASSOCIATED_USER_CASES: custom.covid.rules.custom_criteria.associated_user_case_closed
+  AVAILABLE_CUSTOM_RULE_ACTIONS:
+    COVID_US_CLOSE_CASES_ASSIGNED_CHECKIN: custom.covid.rules.custom_actions.close_cases_assigned_to_checkin
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
@@ -119,6 +129,7 @@ localsettings:
   COUCH_REINDEX_SCHEDULE: {'timedelta': {'minutes': 20}}
   CUSTOM_SYNCLOGS_DB: "synclogs_2017-11-01"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
+  DEVICE_LOGS_ENABLED: no
   EULA_COMPLIANCE: True
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
@@ -141,12 +152,11 @@ localsettings:
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
-  KAFKA_API_VERSION: [0, 8, 2]
   PILLOWTOP_MACHINE_ID: hqdb0
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes
   SES_CONFIGURATION_SET: production-email-events
-  SNS_EMAIL_EVENT_SECRET: "{{ localsettings_private.SNS_EMAIL_EVENT_SECRET }}"
+  SNS_EMAIL_EVENT_SECRET: "{{ SNS_EMAIL_EVENT_SECRET }}"
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
@@ -155,7 +165,7 @@ localsettings:
   STALE_EXPORT_THRESHOLD: 1800  # 30 minutes
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: True
-  SUMOLOGIC_URL: "{{ localsettings_private.SUMOLOGIC_URL }}"
+  SUMOLOGIC_URL: "{{ SUMOLOGIC_URL }}"
   STATIC_ROOT:
   STATIC_CDN: 'https://dnwn0mt1jqwp0.cloudfront.net'
   STATIC_TOGGLE_STATES:
@@ -174,3 +184,9 @@ localsettings:
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa
+
+kinesis_flows:
+  - file_pattern: "/opt/data/formplayer/log/request_response.*log"
+    delivery_stream: "formplayer-request-response-logs-production"
+
+enable_cloudwatch_logs: true

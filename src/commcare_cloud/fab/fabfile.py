@@ -27,43 +27,33 @@ Server layout:
 """
 from __future__ import absolute_import
 from __future__ import print_function
+from __future__ import unicode_literals
 import datetime
 import functools
 import os
+import pipes
 import posixpath
+from distutils.util import strtobool
 from getpass import getpass
 
-import pipes
 import pytz
-from distutils.util import strtobool
-
-from fabric import utils
-from fabric.api import roles, execute, task, sudo, env, parallel
-from fabric.colors import blue, red, magenta
-from fabric.context_managers import cd
-from fabric.contrib import files, console
-from fabric.operations import require
+from github import GithubException
 
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
+from fabric import utils
+from fabric.api import env, execute, parallel, roles, sudo, task
+from fabric.colors import blue, magenta, red
+from fabric.context_managers import cd
+from fabric.contrib import console, files
+from fabric.operations import require
 
-from .const import (
-    ROLES_ALL_SRC,
-    ROLES_ALL_SERVICES,
-    ROLES_PILLOWTOP,
-    ROLES_DJANGO,
-    ROLES_DEPLOY,
-)
+from .checks import check_servers
+from .const import ROLES_ALL_SERVICES, ROLES_ALL_SRC, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .exceptions import PreindexNotFinished
-from .operations import (
-    db,
-    staticfiles,
-    supervisor,
-    formplayer,
-    release,
-    offline as offline_ops,
-    airflow
-)
+from .operations import airflow, db, formplayer
+from .operations import offline as offline_ops
+from .operations import release, staticfiles, supervisor
 from .utils import (
     DeployMetadata,
     cache_deploy_state,
@@ -72,9 +62,6 @@ from .utils import (
     retrieve_cached_deploy_checkpoint,
     retrieve_cached_deploy_env,
     traceback_string,
-)
-from .checks import (
-    check_servers,
 )
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
@@ -238,7 +225,7 @@ def env_common():
     _setup_path()
 
     all = servers['all']
-    staticfiles = servers.get('staticfiles', [servers['proxy'][0]])
+    staticfiles = servers.get('staticfiles', servers['proxy'])
     webworkers = servers['webworkers']
     django_manage = servers.get('django_manage', [webworkers[0]])
     postgresql = servers['postgresql']
@@ -252,10 +239,11 @@ def env_common():
 
     deploy = servers.get('deploy', servers['webworkers'])[:1]
 
-    if len(staticfiles) > 1:
+    if len(staticfiles) > 1 and not env.use_shared_dir_for_staticfiles:
         utils.abort(
             "There should be only one 'staticfiles' host. "
-            "Ensure that only one host is assigned to the 'staticfiles' group"
+            "Ensure that only one host is assigned to the 'staticfiles' group, "
+            "or enable use_shared_dir_for_staticfiles."
         )
 
     env.roledefs = {
@@ -269,6 +257,7 @@ def env_common():
         'django_pillowtop': pillowtop,
         'formplayer': formplayer,
         'staticfiles': staticfiles,
+        'staticfiles_primary': [staticfiles[0]],
         'lb': [],
         # having deploy here makes it so that
         # we don't get prompted for a host or run deploy too many times
@@ -330,6 +319,13 @@ def _confirm_translated():
         "It's the weekly Wednesday deploy, did you update the translations from transifex? "
         "Try running this handy script from the root of your commcare-hq directory:\n./scripts/update-translations.sh\n"
     )
+
+
+def _confirm_changes():
+    env.deploy_metadata.diff.warn_of_migrations()
+    return console.confirm(
+        'Are you sure you want to preindex and deploy to '
+        '{env.deploy_env}?'.format(env=env), default=False)
 
 
 @task
@@ -402,7 +398,7 @@ def setup_release(keep_days=0):
     _setup_release(parse_int_or_exit(keep_days), full_cluster=True)
 
 
-def _setup_release(keep_days=0, full_cluster=True):
+def _setup_release(keep_days=2, full_cluster=True):
     """
     Setup a release in the releases directory with the most recent code.
     Useful for running management commands. These releases will automatically
@@ -413,10 +409,27 @@ def _setup_release(keep_days=0, full_cluster=True):
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
     deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
+    for repo in env.ccc_environment.meta_config.git_repositories:
+        try:
+            repo.deploy_ref  # noqa
+        except GithubException as e:
+            utils.abort(
+                "\nUnable to access Git repository. Please check your authentication credentials.\n"
+                "Error: {}\n"
+                "Repository: {}\n".format(e.data["message"], repo.url)
+            )
+
     if env.full_deploy:
         env.deploy_metadata.tag_setup_release()
     execute_with_timing(release.create_code_dir(full_cluster))
-    execute_with_timing(release.update_code(full_cluster), deploy_ref)
+
+    update_code = release.update_code(full_cluster)
+    execute_with_timing(update_code, deploy_ref)
+    for repo in env.ccc_environment.meta_config.git_repositories:
+        var_name = "{}_code_branch".format(repo.name)
+        repo_deploy_ref = repo.deploy_ref(getattr(env, var_name, None))
+        execute_with_timing(update_code, repo_deploy_ref, repo.relative_dest, repo.url, repo.deploy_key)
+
     execute_with_timing(release.update_virtualenv(full_cluster))
 
     execute_with_timing(copy_release_files, full_cluster)
@@ -549,7 +562,7 @@ def unlink_current():
     if not console.confirm(message, default=False):
         utils.abort('Deployment aborted.')
 
-    if files.exists(env.code_current):
+    if files.exists(env.code_current, use_sudo=True):
         sudo('unlink {}'.format(env.code_current))
 
 
@@ -647,9 +660,7 @@ def deploy_commcare(confirm="yes", resume='no', offline='no', skip_record='no'):
     _require_target()
     if strtobool(confirm) and (
         not _confirm_translated() or
-        not console.confirm(
-            'Are you sure you want to preindex and deploy to '
-            '{env.deploy_env}?'.format(env=env), default=False)
+        not _confirm_changes()
     ):
         utils.abort('Deployment aborted.')
 
@@ -721,7 +732,6 @@ def silent_services_restart(use_current_release=False):
     """
     execute(db.set_in_progress_flag, use_current_release)
     if not env.is_monolith:
-        execute(supervisor.restart_formplayer_if_it_is_running_from_old_release_location)
         execute(supervisor.restart_all_except_webworkers)
     execute(supervisor.restart_webworkers)
 
@@ -789,8 +799,7 @@ ONLINE_DEPLOY_COMMANDS = [
     db.preindex_views,
     db.ensure_preindex_completion,
     db.ensure_checkpoints_safe,
-    staticfiles.bower_install,
-    staticfiles.npm_install,
+    staticfiles.yarn_install,
     staticfiles.version_static,     # run after any new bower code has been installed
     staticfiles.collectstatic,
     staticfiles.compress,
@@ -798,7 +807,8 @@ ONLINE_DEPLOY_COMMANDS = [
     conditionally_stop_pillows_and_celery_during_migrate,
     db.create_kafka_topics,
     db.flip_es_aliases,
-    staticfiles.update_manifest,
+    staticfiles.pull_manifest,
+    staticfiles.pull_staticfiles_cache,
     release.clean_releases,
 ]
 
@@ -815,7 +825,7 @@ OFFLINE_DEPLOY_COMMANDS = [
     conditionally_stop_pillows_and_celery_during_migrate,
     db.create_kafka_topics,
     db.flip_es_aliases,
-    staticfiles.update_manifest,
+    staticfiles.pull_manifest,
     release.clean_releases,
 ]
 
