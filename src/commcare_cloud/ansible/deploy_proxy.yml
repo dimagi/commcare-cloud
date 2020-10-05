@@ -81,6 +81,7 @@
         - {name: motech2, vars_file: motech2_http}
         - {name: wiki, vars_file: wiki}
         - {name: cas_sentry, vars_file: cas_sentry}
+        - {name: cas_grafana, vars_file: cas_grafana}
         - {name: wiki, vars_file: wiki_http}
         - {name: icds_tableau, vars_file: icds_tableau}
         - {name: icds_tableau, vars_file: icds_tableau_http}
