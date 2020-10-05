@@ -102,38 +102,29 @@ update_steps: |
       ```
       commcare-cloud <env> downtime start
       ```
-  2. This is an optional step if you want to make sure that there is no lag in user models between Couch and Elasticsearch. The lag affects user based filters. 
-      - Make sure that there are no pending changes under `user-pillow` (or `UserPillow` depending on your app-process.yml)
-      - You can check this by navigating to Change Feed dashboard in your Datadog or Prometheus.
-      - If there are pending changes, you can start the relevant pillow, monitor the pending changes and stop the pillow after all the pending changes are processed.
-          ```
-          # to start user-pillow (replace with UserPillow if that's what you use)
-            commcare-cloud <env> service pillowtop start --only user-pillow
-            commcare-cloud <env> service pillowtop stop --only user-pillow
-          ```
-  3. At this point, your ES2 hosts should not be getting any HTTP requests.
+  2. At this point, your ES2 hosts should not be getting any HTTP requests.
       - You can confirm this by doing a tcpdump on Elasticsearch port on any of your Elasticsearch 2 hosts
           ```
           tcpdump -A -s 0 'tcp port 9200 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'_
           ```
-  4. Reindex by running below command for each of the index in`['forms', 'cases', 'users', 'domains', 'apps', 'groups', 'sms', 'report_cases', 'report_xforms', 'case_search']`
+  3. Reindex by running below command for each of the index in`['forms', 'cases', 'users', 'domains', 'apps', 'groups', 'sms', 'report_cases', 'report_xforms', 'case_search']`
       ```
       ./manage.py reindex_es_from_remote <index_name> <es2_host>
       ```
       - These can be run concurrently in different tmux/screen sessions
       - Note that these management commands are to be run from the release that was created in Setup phase, which is pointing to Elasticsearch 7
       - See command help for additional options
-  5. At this point, all of the Elasticsearch 2 data should be in Elasticsearch 7.
+  4. At this point, all of the Elasticsearch 2 data should be in Elasticsearch 7.
       - You can confirm this by running this command to display the number of documents in both ES clusters:
           ```
           ./manage.py reindex_es_from_remote --print_index_size
           ```
       - Alternatively you may use an ES monitoring tool such as [ElasticHQ](https://www.elastichq.org/)
-  6. Run below command to update Elasticsearch settings on ES7 indices for usage
+  5. Run below command to update Elasticsearch settings on ES7 indices for usage
       ```
       ./manage.py initialize_es_indices --set-for-usage
       ```
-  7. Update HQ config to point to Elasticsearch 7.
+  6. Update HQ config to point to Elasticsearch 7.
       - Update below settings in you env's public.yml in addition to other setting changes made in git-upgrade-branch in the Setup phase
           ```
           ELASTICSEARCH_MAJOR_VERSION: 7
@@ -143,11 +134,11 @@ update_steps: |
           commcare-cloud <env> update-config --branch=<git-upgrade-branch>
           ```
       - Merge the git-upgrade-branch into master  
-  9. Make sure that HQ is able to connect to Elasticsearch 7
+  7. Make sure that HQ is able to connect to Elasticsearch 7
       ```
       commcare-cloud <env> django-manage check_services
       ```
-  10. End downtime
+  8. End downtime
       ```
       commcare-cloud <env> downtime end
       ```
@@ -202,10 +193,7 @@ update_steps: |
       ./manage.py reindex_es_from_remote forms http://es2_cluster:9200 --start_date=2020-10-01
       ```
 
-  Forms and cases that are deleted during the reindex continue to stay in ES7.
-  These deletes will be reprocessed in the switchover phase.
-  This step requires a date after which the deletes are to be reprocessed, 
-  which will be the date on which you have initiated your first form/case reindex. So, make a note of that date.
+  Forms and cases that are deleted during the reindex continue to stay in ES7. These deletes will be reprocessed in the switchover phase. This step requires a date after which the deletes are to be reprocessed, which will be the date on which you have initiated your first form/case reindex. So, make a note of that date.
   
   You can now proceed to switchover.
 
@@ -217,42 +205,33 @@ update_steps: |
       ```
       commcare-cloud <env> downtime start
       ```
-  2. This is an optional step if you want to make sure that there is no lag in user models between Couch and Elasticsearch. The lag affects user based filters. 
-      - Make sure that there are no pending changes under `user-pillow` (or `UserPillow` depending on your app-process.yml)
-      - You can check this by navigating to Change Feed dashboard in your Datadog or Prometheus.
-      - If there are pending changes, you can start the relevant pillow, monitor the pending changes and stop the pillow after all the pending changes are processed.
-        ```
-        # to start user-pillow (replace with UserPillow if that's what you use)
-        commcare-cloud <env> service pillowtop start --only user-pillow
-        commcare-cloud <env> service pillowtop stop --only user-pillow
-        ```
-  3. At this point, your ES2 hosts should not be getting any HTTP requests.
+  2. At this point, your ES2 hosts should not be getting any HTTP requests.
       - You can confirm this by doing a tcpdump on Elasticsearch port on any of your Elasticsearch 2 hosts
         ```
         tcpdump -A -s 0 'tcp port 9200 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'_
         ```
-  4. Reindex offset form/case data inserted after the Reindex phase.
+  3. Reindex offset form/case data inserted after the Reindex phase.
       ```
       ./manage.py reindex_es_from_remote forms http://es2_cluster:9200 --start_date=<last_reindex_date>
       ./manage.py reindex_es_from_remote cases http://es2_cluster:9200 --start_date=<last_reindex_date>
       ```
       - last_reindex_date is the date up to which you have already reindexed in the Reindex phase
       - This and subsequent commands are to be run from the release directory that's pointing to Elasticsearch 7
-  5. Reindex rest of the indices by running below command for each of the index in `['users', 'domains', 'apps', 'groups', 'sms', 'report_cases', 'report_xforms', 'case_search']`
+  4. Reindex rest of the indices by running below command for each of the index in `['users', 'domains', 'apps', 'groups', 'sms', 'report_cases', 'report_xforms', 'case_search']`
       ```
       ./manage.py reindex_es_from_remote <index_name> <es2_host>
       ```
       These can be run concurrently in different tmux/screen sessions
-  6. Reprocess form and case deletes since your first reindex from the reindex phase.
+  5. Reprocess form and case deletes since your first reindex from the reindex phase.
       ```
       ./manage.py reprocess_form_case_es_deletes --from=<date-of-when-migration-is-initiated>
       ```
-  7. At this point, all of the Elasticsearch 2 data should be in Elasticsearch 7. You can confirm this by running the `reindex_es_from_remote` management command with `--print_index_size` option which displays number of documents in both the ES clusters. 
-  8. Run below command to update Elasticsearch settings on ES7 indices for usage
+  6. At this point, all of the Elasticsearch 2 data should be in Elasticsearch 7. You can confirm this by running the `reindex_es_from_remote` management command with `--print_index_size` option which displays number of documents in both the ES clusters. 
+  7. Run below command to update Elasticsearch settings on ES7 indices for usage
       ```
       ./manage.py initialize_es_indices --set-for-usage
       ```
-  9. Update HQ services to point to Elasticsearch 7.
+  8. Update HQ services to point to Elasticsearch 7.
       - Update below settings in your env's public.yml in addition to other setting changes made in git-upgrade-branch from Setup phase
         ```
         ELASTICSEARCH_MAJOR_VERSION: 7
@@ -262,11 +241,11 @@ update_steps: |
         commcare-cloud <env> update-config --branch=<git-upgrade-branch>
         ```
       - Merge the git-upgrade-branch into master  
-  10. Make sure that HQ is able to connect to Elasticsearch 7
+  9. Make sure that HQ is able to connect to Elasticsearch 7
       ```
       commcare-cloud <env> django-manage check_services
       ```
-  11. End downtime
+  10. End downtime
       ```
       commcare-cloud <env> downtime end
       ```
@@ -304,12 +283,13 @@ update_steps: |
 
   ##### Note 2 Resetting ES7 indices after dry run
 
+  Note that this clears all the data and recreates blank indices so make sure you are running it from a release folder that is pointing to the ES7 cluster and NOT the ES2 cluster
+
   - To reset all ES7 indices, run below command from the release pointing to ES7
     ```
     ./manage.py initialize_es_indices --reset
     ```
   - You can specify an index via `--index` option to reset a single index.
-  - Note that this clears all the data
 
   ##### Note 3 Additional setup steps to run ES2 and ES7 on same machines
 
@@ -347,12 +327,11 @@ update_steps: |
       elasticsearch_version: 7.9.1
       elasticsearch_cluster_name: es7_<cluster_name> # must start with es7_ prefix
       elasticsearch_download_sha256: a1b43a6e29d3ca91d08366f64007ce812646e4775524214f66330d447a4c6e3c
-      es2_host: <Link to your existing ES2 cluster in http://host:port format. This will be used to whitelisted in ES7 cluster for remote reindexing>
       ELASTICSEARCH_MAJOR_VERSION: 7
       ```
     - Run `commcare-cloud <env> deploy-stack --limit=<new_es7_nodes>` to deploy ES7
   2. Start downtime `commcare-cloud <env> downtime start`
-  3. Make a backup of Elasticsearch 2 cluster and delete the data folder `/opt/data/elasticsearch2.4.6`
+  3. Make sure you have a [backup of Elasticsearch](http://dimagi.github.io/commcare-cloud/commcare-cloud/backup.html#elasticsearch-snapshots) 2 cluster and delete the data folder `/opt/data/elasticsearch2.4.6`
   4. Reindex data using `commcare-cloud <env> django_manage preindex_everything`
   5. After the preindex is finished end the downtime using `commcare-cloud <env> downtime stop`
 
