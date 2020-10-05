@@ -26,7 +26,8 @@ host   all	all	{{ lookup('dig', host, wantlist=True)[0] }}/32	trust
 {% endif %}
 
 
-{% if inventory_hostname in groups.main_dbs.0 and inventory_hostname not in groups.pg_standby %}
+{% set airflowdb = postgresql_dbs.all | selectattr('name', 'equalto', 'airflow') | list %}
+{% if airflowdb and inventory_hostname == airflowdb.0.host and inventory_hostname not in groups.pg_standby %}
 # For airflow exporter
 host   airflow	all	{{ groups.airflow.0 }}/32   md5
 {% endif %}
