@@ -402,22 +402,30 @@ class Kafka(MultiAnsibleService):
 
 class Postgresql(MultiAnsibleService):
     name = 'postgresql'
-    service_process_mapping = {
-        'postgresql': ('postgresql', 'postgresql,pg_standby'),
-        'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
-    }
     log_location = 'Postgres: /opt/data/postgresql/<version>/main/pg_log\n' \
                    'Pgbouncer: /var/log/postgresql/pgbouncer.log'
+
+    @property
+    def service_process_mapping(self):
+        monit_name = "postgresql_{}".format(self.environment.postgresql_config.postgresql_version)
+        return {
+            'postgresql': (monit_name, 'postgresql,pg_standby'),
+            'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
+        }
 
 
 class Citusdb(Postgresql):
     name = 'citusdb'
-    service_process_mapping = {
-        'citusdb': ('postgresql', 'citusdb'),
-        'pgbouncer': ('pgbouncer', 'citusdb')
-    }
     log_location = 'Postgres: /opt/data/postgresql/<version>/main/pg_log\n' \
                    'Pgbouncer: /var/log/postgresql/pgbouncer.log'
+
+    @property
+    def service_process_mapping(self):
+        monit_name = "postgresql_{}".format(self.environment.postgresql_config.postgresql_version)
+        return {
+            'citusdb': (monit_name, 'citusdb'),
+            'pgbouncer': ('pgbouncer', 'citusdb')
+        }
 
 
 class SingleSupervisorService(SupervisorService):
