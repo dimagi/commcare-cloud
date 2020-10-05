@@ -1,6 +1,6 @@
- check process postgresql with pidfile {{ postgresql_pid_file }}
+ check process postgresql_{{ postgresql_version }} with pidfile {{ postgresql_pid_file }}
    group database
    group postgresql
-   start program = "/etc/init.d/postgresql start"
-   stop program = "/etc/init.d/postgresql stop"
+   start program = "/etc/init.d/postgresql start {{ postgresql_version }}"
+   stop program = "/etc/init.d/postgresql stop {{ postgresql_version }}"
    if failed host {{ inventory_hostname }} port {{ postgresql_port }} then restart

@@ -1,0 +1,23 @@
+---
+- name: remove old cron script
+  become: yes
+  file:
+    path: "/usr/local/sbin/rotate_postgres_logs.sh"
+    state: absent
+  tags: cron
+
+- name: Remove old cron job
+  become: yes
+  cron:
+    name: "Rotate postgres logs"
+    cron_file: rotate_postgres
+    state: absent
+  tags: cron
+
+- name: Remove old monit config
+  become: yes
+  file:
+    path: "/etc/monit/conf.d/postgresql"
+    state: absent
+  notify: reload monit
+  tags: monit
