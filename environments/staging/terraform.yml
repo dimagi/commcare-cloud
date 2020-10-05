@@ -13,14 +13,14 @@ vpc_begin_range: "10.201"
 openvpn_image: ami-5e73b923
 
 servers:
-  - server_name: "control0-staging"
+  - server_name: "control1-staging"
     server_instance_type: "t3.small"
     network_tier: "app-private"
     az: "a"
     volume_size: 50
-    volume_encrypted: no
+    volume_encrypted: yes
     group: "control"
-    os: bionic
+    os: ubuntu_pro_bionic
 
   - server_name: "web7-staging"
     server_instance_type: "t3.medium"
@@ -216,15 +216,15 @@ servers:
 
 
 proxy_servers:
-  - server_name: "proxy1-staging"
+  - server_name: "proxy2-staging"
     server_instance_type: "t3.medium"
-    network_tier: "public"
+    network_tier: "app-private"
     az: "a"
     volume_size: 80
     volume_encrypted: yes
     group: "proxy"
-    os: bionic
-  - server_name: "proxy2-staging"
+    os: ubuntu_pro_bionic
+  - server_name: "proxy3-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "a"
