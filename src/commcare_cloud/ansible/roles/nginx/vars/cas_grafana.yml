@@ -1,0 +1,14 @@
+---
+nginx_ssl_cert: "{{ grafana_nginx_ssl_cert }}"
+nginx_ssl_key:  "{{ grafana_nginx_ssl_key }}"
+
+nginx_sites:
+- server:
+   file_name: cas_grafana
+   listen: "443 ssl"
+   server_name: "grafana-icds.commcarehq.org"
+   proxy_set_headers:
+   - "Host $host"
+   locations:
+     - name: /
+       proxy_pass: "http://{{groups.grafana.0|default('')}}:3000"
