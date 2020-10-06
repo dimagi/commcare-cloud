@@ -11,7 +11,6 @@ import yaml
 from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
 from ansible.parsing.utils.yaml import from_yaml
-from ansible.parsing.yaml.dumper import AnsibleDumper
 from ansible.vars.manager import VariableManager
 from memoized import memoized, memoized_property
 
@@ -29,6 +28,8 @@ from commcare_cloud.environment.schemas.terraform import TerraformConfig
 from commcare_cloud.environment.schemas.prometheus import PrometheusConfig
 from commcare_cloud.environment.users import UsersConfig
 from six.moves import map
+
+from commcare_cloud.yaml import PreserveUnsafeDumper
 
 
 class Environment(object):
@@ -369,7 +370,7 @@ class Environment(object):
         generated_variables.update(self.secrets_backend.get_generated_variables())
 
         with open(self.paths.generated_yml, 'w') as f:
-            f.write(yaml.dump(generated_variables, Dumper=AnsibleDumper))
+            f.write(yaml.dump(generated_variables, Dumper=PreserveUnsafeDumper))
 
     def translate_host(self, host, filename_for_error):
         if host == 'None' or host in self.inventory_manager.hosts:
