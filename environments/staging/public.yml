@@ -128,6 +128,8 @@ localsettings:
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
+  LOCAL_APPS:
+    - {name: 'ddtrace.contrib.django', host: webworkers}
   PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes
