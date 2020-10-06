@@ -29,3 +29,4 @@ formplayer_memory: "3584m"
 http_proxy: null
 django_command_prefix: ''
 celery_command_prefix: ''
+formplayer_command_args: ''
