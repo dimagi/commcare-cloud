@@ -1,0 +1,18 @@
+#!/bin/bash 
+
+# Process to soft and hard kill old celery jobs.
+#
+
+HOURS=$1
+MAX_MINUTES=`expr ${HOURS} \* 60 \* 60`
+
+SIG_NAME=$2
+
+PID=$(ps -eo comm,pid,etimes | awk '/celeryd:/ { if ( $4 > '"${MAX_MINUTES}"' ) { print $3 } }');
+
+if [ "$PID" != "" ];
+then
+	kill --verbose -"${SIG_NAME}" $(ps -eo comm,pid,etimes | awk '/celeryd:/ { if ( $4 > '"${MAX_MINUTES}"' ) { print $3 } }');
+else
+	echo "No Process to kill";
+fi
