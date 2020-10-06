@@ -1,0 +1,60 @@
+prometheus_global:
+  evaluation_interval: 30s
+  scrape_interval: 20s
+  scrape_timeout: 20s
+
+prometheus_external_labels:
+  environment: "{{ prometheus_monitoring_env }}"
+
+prometheus_alert_rules: []  # rule files stored in role
+prometheus_static_targets_files: []  # targets defined in role
+prometheus_targets: {}  # targets defined in role
+
+_prometheus_scrape_configs:
+  - job_name: "prometheus"
+    metrics_path: "{{ prometheus_metrics_path }}"
+    static_configs:
+      - targets:
+          - "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}:9090"
+        labels:
+          environment: "{{ prometheus_monitoring_env }}"
+  - job_name: "node"
+    file_sd_configs:
+      - files:
+          - "{{ prometheus_config_dir }}/file_sd/node.yml"
+    relabel_configs:
+      - source_labels: [ '__address__' ]
+        separator: ':'
+        regex: '(.*):.*'
+        target_label: 'instance'
+        replacement: '${1}'
+
+http_probe_scrape:
+  - job_name: blackbox
+    metrics_path: /probe
+    params:
+      module: [http_prometheus]
+    static_configs:
+      - targets: "{{ prometheus_http_probe_urls|default([]) }}"
+        labels:
+          environment: "{{ prometheus_monitoring_env }}"
+    relabel_configs:
+      - source_labels: [ __address__ ]
+        target_label: __param_target
+      - source_labels: [ __param_target ]
+        target_label: instance
+      - target_label: __address__
+        replacement: "{{ ansible_default_ipv4.address }}:9115"
+
+federation_scrape:
+  - job_name: 'federate'
+    scrape_interval: 15s
+    honor_labels: true
+    metrics_path: '/prometheus/federate'
+    params:
+      match[]:
+        - '{__name__=~".+"}' #scrape everything
+    static_configs:
+      - targets: "{{ prometheus_federation_endpoints|default([]) }}"
+
+prometheus_scrape_configs: "{{ _prometheus_scrape_configs + (federation_scrape if prometheus_federation_endpoints|default(None) else []) + (http_probe_scrape if prometheus_http_probe_urls|default(None) else []) }}"
