@@ -1,0 +1,5 @@
+prometheus_alertmanager_config:
+  - scheme: http
+      path_prefix: /alertmanager
+      static_configs:
+        - targets: "{{ groups['alertmanager'] | map('regex_replace', '$', ':9093') | list  }}"
