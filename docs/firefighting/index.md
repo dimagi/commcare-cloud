@@ -157,6 +157,9 @@ curl -X POST http://${couch_proxy}:25984/commcarehq__auditcare/_compact -v -u ${
 curl -X POST http://${couch_proxy}:25984/commcarehq__receiverwrapper/_compact -v -u ${couch_username} -H 'Content-Type: application/json' -d'{}'
 ```
 
+where `${couch_proxy}` is the address of the couchdb2_proxy machine (`cchq ${env} lookup couchdb2_proxy`)
+and ${couch_username} is the value of the `COUCH_USERNAME` secret (`cchq ${env} secrets view COUCH_USERNAME`).
+You will also need to enter the value of the `COUCH_PASSWORD` secret (`cchq ${env} secrets view COUCH_PASSWORD`).
 
 ## Couch node data disk is full
 
