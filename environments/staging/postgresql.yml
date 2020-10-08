@@ -13,6 +13,10 @@ pgbouncer_override:
   pgbouncer_max_connections: 1600
   pgbouncer_default_pool: 290
 
+pg_repack:
+  pgproxy2:
+    - database: commcarehq_synclogs
+
 dbs:
   main:
     pgbouncer_host: pgproxy2
