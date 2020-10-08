@@ -13,12 +13,15 @@
   vars:
     citus_database: "{{ postgresql_dbs.all | selectattr('host', 'in', groups.get('citusdb_master')) | first }}"
     dry_run: yes
-    old_port: "{{ old_port|default(5432) }}"
-    new_port: "{{ old_port|default(5433) }}"
+    is_citus: "{{ inventory_hostname in groups.get('citusdb', []) }}"
+    target_version: "{{ citus_postgresql_version if is_citus else postgresql_version }}"
+    target_port: "{{ citus_postgresql_port if is_citus else postgresql_port }}"
+    old_pg_port: "{{ old_port|default(5432) }}"
+    new_pg_port: "{{ new_port|default(target_port) }}"
     upgrade_command: |
       /usr/lib/postgresql/{{ new_version }}/bin/pg_upgrade
       -b /usr/lib/postgresql/{{ old_version }}/bin -B /usr/lib/postgresql/{{ new_version }}/bin
-      -p {{ old_port }} -P {{ new_port }}
+      -p {{ old_pg_port }} -P {{ new_pg_port }}
       -d /etc/postgresql/{{ old_version }}/main -D /etc/postgresql/{{ new_version }}/main
       --jobs {{ ansible_processor_vcpus }} --link
   vars_files:
@@ -44,19 +47,25 @@
     - assert:
         that: confirm_upgrade == 'y'
 
-    - include_vars:
-        file: roles/citusdb/defaults/main.yml
-      when: "'citusdb' in groups"
+    - debug: msg="is_citus={{is_citus}}, target_version={{target_version}}, citus_postgresql_version={{citus_postgresql_version}}, postgresql_version={{postgresql_version}}, new_version={{new_version}}"
 
     - name: Check PostgreSQL version
       assert:
-        that: "{{ new_version }} == {{ postgresql_version }}"
+        that: "{{ new_version }} == {{ target_version }}"
         msg: "Version must be changed in `postgresql.yml` to {{ new_version }}."
+
+    - name: Ensure new version is stopped
+      service:
+        name: "postgresql@{{ new_version}}-main"
+        state: stopped
 
     - name: Check upgrade compatability
       become: yes
       become_user: postgres
-      command: "{{ upgrade_command }} --check"
+      command:
+        cmd: "{{ upgrade_command }} --check"
+        chdir: /opt/data/postgresql
+      register: compatibility
 
     - block:
 
@@ -78,7 +87,7 @@
         when: inventory_hostname in (groups.citusdb_master | difference(groups.get('pg_standby', [])))
         check_mode: "{{ dry_run }}"
 
-      when: inventory_hostname in groups.get('citusdb', [])
+      when: is_citus
 
     - name: Get replication delay (>= v10)
       become: yes
