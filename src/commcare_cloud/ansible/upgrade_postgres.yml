@@ -53,7 +53,6 @@
         that: "{{ new_version }} == {{ postgresql_version }}"
         msg: "Version must be changed in `postgresql.yml` to {{ new_version }}."
 
-    - debug: var=upgrade_command
     - name: Check upgrade compatability
       become: yes
       become_user: postgres
