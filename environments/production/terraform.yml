@@ -490,7 +490,7 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain0-production"
-    instance_type: "db.t3.2xlarge"
+    instance_type: "db.m5.4xlarge"
     storage: 500
     max_storage: 5000
     multi_az: true
