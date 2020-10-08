@@ -1,0 +1,186 @@
+---
+# Sets up a PostrgeSQL standby node
+# Usage:
+#   commcare-cloud <env> ansible-playbook upgrade_postgresql.yml \
+#     -e hosts=pg0,pg1 -e old_version=9.6 -e new_version=12 \
+#     [-e old_port=5432 -e new_port=5433]
+#     [-e dry_run=yes]
+#
+- hosts:
+    - "{{ hosts }}"
+  any_errors_fatal: true
+  become: yes
+  vars:
+    citus_database: "{{ postgresql_dbs.all | selectattr('host', 'in', groups.get('citusdb_master')) | first }}"
+    dry_run: yes
+    old_port: "{{ old_port|default(5432) }}"
+    new_port: "{{ old_port|default(5433) }}"
+    upgrade_command: |
+      /usr/lib/postgresql/{{ new_version }}/bin/pg_upgrade
+      -b /usr/lib/postgresql/{{ old_version }}/bin -B /usr/lib/postgresql/{{ new_version }}/bin
+      -p {{ old_port }} -P {{ new_port }}
+      -d /etc/postgresql/{{ old_version }}/main -D /etc/postgresql/{{ new_version }}/main
+      --jobs {{ ansible_processor_vcpus }} --link
+  vars_files:
+    - roles/postgresql_base/defaults/main.yml
+  vars_prompt:
+    - name: confirm_upgrade
+      prompt: |
+
+        ===================================================================================
+        Preparing to upgrade PostgreSQL from {{ old_version }} to {{ new_version }}.
+
+        Preflight checklist:
+
+          1. CitusDB upgraded (where applicable)
+          2. PostgreSQL vars updated with new version and port
+          3. New version of PostgreSQL installed with all dependencies and extensions
+          4. All processes that are connecting to the DB have been stopped
+
+        ===================================================================================
+        Respond with [y/N]
+      private: no
+  tasks:
+    - assert:
+        that: confirm_upgrade == 'y'
+
+    - include_vars:
+        file: roles/citusdb/defaults/main.yml
+      when: "'citusdb' in groups"
+
+    - name: Check PostgreSQL version
+      assert:
+        that: "{{ new_version }} == {{ postgresql_version }}"
+        msg: "Version must be changed in `postgresql.yml` to {{ new_version }}."
+
+    - debug: var=upgrade_command
+    - name: Check upgrade compatability
+      become: yes
+      become_user: postgres
+      command: "{{ upgrade_command }} --check"
+
+    - block:
+
+      - name: Get installed Citus extension version
+        become: yes
+        become_user: postgres
+        shell: psql {{ citus_database.name }} -q  -t -c "select extversion from pg_extension where extname = 'citus';"
+        register: citus_ext
+
+      - name: Check citus version matches installed version
+        assert:
+          that: citus_ext.stdout | trim is version(citus_version, '>=')
+          msg: "Citus version in DB is lower than in environment config: {{ citus_ext.stdout }} < {{ citus_version }}"
+
+      - name: "Prepare CitusDB for upgrade"
+        become: yes
+        become_user: postgres
+        shell: psql {{ citus_database.name }} -q  -c "select citus_prepare_pg_upgrade();"
+        when: inventory_hostname in (groups.citusdb_master | difference(groups.get('pg_standby', [])))
+        check_mode: "{{ dry_run }}"
+
+      when: inventory_hostname in groups.get('citusdb', [])
+
+    - name: Get replication delay (>= v10)
+      become: yes
+      become_user: postgres
+      shell: |
+        psql -q  -t \
+          -c "select CASE WHEN pg_last_wal_receive_lsn() = pg_last_wal_replay_lsn() THEN 0 ELSE
+        GREATEST (0, EXTRACT (EPOCH FROM now() - pg_last_xact_replay_timestamp())) END"
+      register: replication_delay
+      when: old_version is version('10', '>=') and inventory_hostname in groups.get('pg_standby', [])
+
+    - name: Get replication delay (< v10)
+      become: yes
+      become_user: postgres
+      shell: |
+        psql -q  -t \
+          -c "select CASE WHEN pg_last_xlog_receive_location() = pg_last_xlog_replay_location() THEN 0 ELSE
+        GREATEST (0, EXTRACT (EPOCH FROM now() - pg_last_xact_replay_timestamp())) END"
+      register: replication_delay
+      when: old_version is version('10', '<') and inventory_hostname in groups.get('pg_standby', [])
+
+    - name: Check replication delay
+      fail:
+        msg: "Replication delay is high ({{ replication_delay.stdout | int / 1000 }}s). Aborting."
+      when: inventory_hostname in groups.get('pg_standby', []) and replication_delay.stdout | int > 1000
+
+    - name: Stop primaries
+      service:
+        name: postgresql
+        state: stopped
+      when: hot_standby_master is not defined
+      check_mode: "{{ dry_run }}"
+
+    - name: Stop standbys
+      service:
+        name: postgresql
+        state: stopped
+      when: hot_standby_master is defined
+      check_mode: "{{ dry_run }}"
+
+    - block:
+      # Verify standbys are up to date with primaries
+      - name: Get primary checkpoint location
+        delegate_to: "{{ hot_standby_master }}"
+        shell: |
+          /usr/lib/postgresql/{{ old_version }}/bin/pg_controldata -D /opt/data/postgresql/{{ old_version }}/main | grep 'Latest checkpoint location' | awk '{ print $4 }'
+        register: primary_checkpoint
+
+      - name: Get standby checkpoint location
+        shell: |
+          /usr/lib/postgresql/{{ old_version }}/bin/pg_controldata -D /opt/data/postgresql/{{ old_version }}/main | grep 'Latest checkpoint location' | awk '{ print $4 }'
+        register: standby_checkpoint
+
+      - debug: msg="Primary = {{ primary_checkpoint.stdout }}, Standby = {{ standby_checkpoint.stdout }}"
+
+#      - assert:
+#          that: "'{{ primary_checkpoint.stdout }}' == '{{ standby_checkpoint.stdout }}'"
+#          msg: "Primary and standby are out of sync. Wait for the standbys to catch up and then try again."
+
+      rescue:
+      - debug: msg="Restarting services"
+
+      - name: Start primaries
+        delegate_to: "{{ hot_standby_master }}"
+        service:
+          name: postgresql
+          state: started
+        check_mode: "{{ dry_run }}"
+
+      - name: Start standbys
+        service:
+          name: postgresql
+          state: started
+        check_mode: "{{ dry_run }}"
+
+      - fail:
+          msg: Abort
+
+      when: hot_standby_master is defined
+
+    - name: Remove new version data (v{{ new_version }})
+      file:
+        path: /opt/data/postgresql/{{ new_version }}/main
+        state: absent
+      check_mode: "{{ dry_run }}"
+
+    - name: Re-initialize new version DB (v{{ new_version }})
+      become: yes
+      become_user: postgres
+      command: |
+        /usr/lib/postgresql/{{ new_version }}/bin/initdb \
+        -D /opt/data/postgresql/{{ new_version }}/main/ \
+        --lc-collate=C.UTF-8 --lc-ctype=C.UTF-8
+      check_mode: "{{ dry_run }}"
+
+    - pause:
+        seconds: 0
+        prompt: |
+          Run this command to do the upgrade on {{ inventory_hostname }}:
+
+          cchq {{deploy_env}} ssh {{ inventory_hostname }} -l ansible \
+          'tmux new -n pg_upgrade sudo -iu postgres -- sh -c \
+          "{{ upgrade_command | replace('\n', ' ') }}; /bin/bash"
+      when: inventory_hostname not in groups.get('pg_standby')
