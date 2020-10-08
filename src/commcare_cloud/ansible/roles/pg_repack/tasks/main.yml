@@ -46,7 +46,7 @@
       ansible_ssh_pipelining: true
     postgresql_ext:
       name: pg_repack
-      db: "{{ item }}"
+      db: "{{ item.database }}"
       port: "{{ postgresql_port }}"
       version: "{{ pg_repack_version }}"
     loop: "{{ pg_repack.get(inventory_hostname, []) }}"
@@ -64,10 +64,10 @@
 - name: Create pg_repack cron
   become: yes
   cron:
-    name: "pg_repack {{ item }}"
+    name: "pg_repack {{ item.database }}"
     job: "{{ pg_repack_script_path }} --pg-repack {{ postgres_install_dir }}/bin/pg_repack --dead-tup-ratio {{ item.ratio|default(0.05) }} -d {{ item.database }}{% if item.tables|default(None) %} --tables {{ item.tables|join(' ') }}{% endif %}"
     minute: "30"
     hour: "{{ nadir_hour + 2 }}"
     user: postgres
-    cron_file: "pg_repack_{{ item }}"
+    cron_file: "pg_repack_{{ item.database }}"
   loop: "{{ pg_repack.get(inventory_hostname, []) }}"
