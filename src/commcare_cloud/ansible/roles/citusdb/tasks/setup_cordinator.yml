@@ -2,7 +2,7 @@
  - name: Add Citus Extension on Coordinator Database
    become: yes
    become_user: postgres
-    postgresql_ext:
+   postgresql_ext:
      name: citus
      db: "{{ item.name }}"
      version: "{{ citus_version }}"
