@@ -26,8 +26,8 @@
    import_role:
      name: postgresql_base
    vars:
-     postgresql_version: "{{ __postgresql_version }}"
-     postgresql_port: "{{ __postgresql_port }}"
+     postgresql_version: "{{ citus_postgresql_version }}"
+     postgresql_port: "{{ citus_postgresql_port }}"
      postgresql_cluster_name: 'main'
      postgresql_shared_preload_libraries:
        - 'citus'
