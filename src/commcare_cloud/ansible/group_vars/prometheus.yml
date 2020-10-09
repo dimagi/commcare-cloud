@@ -21,7 +21,8 @@ _prometheus_scrape_configs:
   - job_name: "node"
     file_sd_configs:
       - files:
-          - "{{ prometheus_config_dir }}/file_sd/node.yml"
+          - "{{ prometheus_config_dir }}/file_sd/*.json"
+          - "{{ prometheus_config_dir }}/file_sd/*.yml"
     relabel_configs:
       - source_labels: [ '__address__' ]
         separator: ':'
