@@ -5,11 +5,6 @@
   become: true
   cron:
     name: "Sending SIGTERM to celery processes running morethan 36h"
-    job: "kill -15 $(ps -eo comm,pid,etimes | awk '/celeryd:/ {if ($4 > 36*60*60) { print $3 }}')"
-    minute: 15
-    hour: "*"
-    weekday: "0,1,2,3,4,5,6"
-    user: root
     cron_file: celery_sigterm
     state: absent
   tags:
@@ -19,11 +14,6 @@
   become: true
   cron:
     name: "Sending SIGTERM to celery processes running morethan 46h"
-    job: "kill -9 $(ps -eo comm,pid,etimes | awk '/celeryd:/ {if ($4 > 46*60*60) { print $3 }}')"
-    minute: 0
-    hour: "*"
-    weekday: "0,1,2,3,4,5,6"
-    user: root
     cron_file: celery_sigkill
     state: absent
   tags:
@@ -51,7 +41,7 @@
     hour: "*"
     user: root
     cron_file: celery_sigterm
-    state: "{{ 'present' if celery_hours_before_soft_kill != False else 'absent' }}"
+    state: "{{ 'present' if celery_hours_before_soft_kill else 'absent' }}"
   tags:
     - cron
 
@@ -64,6 +54,6 @@
     hour: "*"
     user: root
     cron_file: celery_sigkill
-    state: "{{ 'present' if celery_hours_before_hard_kill != False else 'absent' }}"
+    state: "{{ 'present' if celery_hours_before_hard_kill else 'absent' }}"
   tags:
     - cron

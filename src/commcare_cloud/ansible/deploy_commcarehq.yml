@@ -137,5 +137,4 @@
 - name: Celery tasks cleanup Cron job
   hosts: celery
   tasks:
-    - include_tasks: roles/commcarehq/tasks/celery_cron.yml
-  tags: services
+    - {import_tasks: 'roles/commcarehq/tasks/celery_cron.yml', tags: ['services']}

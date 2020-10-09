@@ -8,11 +8,12 @@ MAX_MINUTES=`expr ${HOURS} \* 60 \* 60`
 
 SIG_NAME=$2
 
-PID=$(ps -eo comm,pid,etimes | awk '/celeryd:/ { if ( $4 > '"${MAX_MINUTES}"' ) { print $3 } }');
+PIDS=$(ps -eo comm,pid,etimes | awk '/celeryd:/ { if ( $4 > '"${MAX_MINUTES}"' ) { print $3 } }');
 
-if [ "$PID" != "" ];
-then
-	kill --verbose -"${SIG_NAME}" $(ps -eo comm,pid,etimes | awk '/celeryd:/ { if ( $4 > '"${MAX_MINUTES}"' ) { print $3 } }');
-else
-	echo "No Process to kill";
+if [ "$PIDS" != "" ]; then
+  for pid in ${PIDS}
+  do
+     #echo "kill -${SIG_NAME} ${pid}"
+     kill -${SIG_NAME} ${pid}
+  done
 fi

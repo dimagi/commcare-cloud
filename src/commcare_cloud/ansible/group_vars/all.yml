@@ -158,5 +158,5 @@ nadir_hour_frequency: 3
 
 # celery variables to soft/hard kill tasks running for long hours.
 # To enable cronjob give hours hard_kill: eg: 46, eg: soft_kill: 36. 'False' will remove cron jobs.
-celery_hours_before_hard_kill: False
-celery_hours_before_soft_kill: False
+celery_hours_before_hard_kill: ~
+celery_hours_before_soft_kill: ~
