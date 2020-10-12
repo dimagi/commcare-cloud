@@ -13,6 +13,12 @@
     - include_vars:
         file: roles/citusdb/defaults/main.yml
       when: "'citusdb' in groups"
+
+    - set_fact:
+        postgresql_version: "{{ citus_postgresql_version }}"
+        postgresql_port: "{{ citus_postgresql_port }}"
+      when: "'citusdb' in groups"
+
     - assert:
         that:
           - "hot_standby_master is defined"
