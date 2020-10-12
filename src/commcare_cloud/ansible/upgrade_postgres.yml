@@ -4,7 +4,6 @@
 #   commcare-cloud <env> ansible-playbook upgrade_postgresql.yml --limit pg0,pg1 \
 #     -e old_version=9.6 -e new_version=12 \
 #     [-e old_port=5432 -e new_port=5433]
-#     [-e dry_run=yes]
 #
 - hosts:
     - all
@@ -12,7 +11,6 @@
   become: yes
   vars:
     citus_database: "{{ postgresql_dbs.all | selectattr('host', 'in', groups.get('citusdb_master')) | first }}"
-    dry_run: yes
     is_citus: "{{ inventory_hostname in groups.get('citusdb', []) }}"
     target_version: "{{ citus_postgresql_version if is_citus else postgresql_version }}"
     target_port: "{{ citus_postgresql_port if is_citus else postgresql_port }}"
