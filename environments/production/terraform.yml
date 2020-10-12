@@ -433,7 +433,7 @@ servers:
     volume_size: 200
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 42
+    count: 84
 
   - server_name: "redis0-production"
     server_instance_type: r5.xlarge
