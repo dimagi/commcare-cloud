@@ -51,6 +51,14 @@
   notify: restart datadog
   tags: datadog_integrations
 
+- name: Pull java tracer
+  become: true
+  become_user: "{{ cchq_user }}"
+  get_url:
+    url: "https://dtdg.co/latest-java-tracer"
+    dest: "{{ cchq_home }}/dd-java-agent.jar"
+  when: "inventory_hostname in groups.formplayer"
+
 - import_tasks: add_integrations.yml
   when: DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
 

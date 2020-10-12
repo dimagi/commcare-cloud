@@ -45,6 +45,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     http_proxy = IpAddressAndPortProperty()
     django_command_prefix = jsonobject.StringProperty()
     celery_command_prefix = jsonobject.StringProperty()
+    formplayer_command_args = jsonobject.StringProperty()
     datadog_pythonagent = jsonobject.BooleanProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
