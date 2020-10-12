@@ -1,0 +1,28 @@
+---
+# Sets up a PostrgeSQL standby node
+# Usage:
+#   commcare-cloud <env> ansible-playbook service_playbooks/postgresql/finalize_upgrade.yml --limit pg0,pg1 \
+#     -e old_version=9.6 -e new_version=12
+#
+- hosts:
+    - all
+  any_errors_fatal: true
+  become: yes
+  vars:
+    new_version_service: "postgresql@{{ new_version }}-main.service"
+  vars_prompt:
+    - name: confirm_upgrade
+      prompt: |
+
+        ===================================================================================
+        * start primaries
+        * restore citus: cchq <env> run-shell-command citus_master,!pg_standby -b --become-user postgres 'psql -d icds-ucr-citus -c "SELECT citus_finish_pg_upgrade();"’
+        * start standbys
+        * verify status
+        ===================================================================================
+        Respond with [y/N]
+      private: no
+  tasks:
+    - name: assert response
+      assert:
+        that: confirm_upgrade == 'y'

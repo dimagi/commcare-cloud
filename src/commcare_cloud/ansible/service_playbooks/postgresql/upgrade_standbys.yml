@@ -1,0 +1,37 @@
+---
+# Sets up a PostrgeSQL standby node
+# Usage:
+#   commcare-cloud <env> ansible-playbook service_playbooks/postgresql/upgrade_standbys.yml --limit pg0,pg1 \
+#     -e old_version=9.6 -e new_version=12
+#
+- hosts:
+    - all
+  any_errors_fatal: true
+  become: yes
+  vars:
+    new_version_service: "postgresql@{{ new_version }}-main.service"
+  vars_prompt:
+    - name: confirm_upgrade
+      prompt: |
+
+        ===================================================================================
+         Copy the recovery.conf file:
+         cchq <env> run-shell-command 'citusdb,&pg_standby' -b "cp /opt/data/postgresql/11/main/recovery.conf /opt/data/postgresq/recovery_11.conf"
+
+         	On each primary run:
+         cd /opt/data/postgresql
+
+         rsync --archive --delete --hard-links --size-only --no-inc-recursive /opt/data/postgresql/11 /opt/data/postgresql/12 <standby ip>:/opt/data/postgresql
+
+         	Restore the recovery.conf file
+         cchq <env> run-shell-command 'citusdb,&pg_standby' -b "cp /opt/data/postgresq/recovery_11.conf /opt/data/postgresql/12/main/recovery.conf"
+         NOTE: need to update the port - probably can do with ansible
+
+        ===================================================================================
+        Respond with [y/N]
+      private: no
+  tasks:
+    - name: assert response
+      assert:
+        that: confirm_upgrade == 'y'
+
