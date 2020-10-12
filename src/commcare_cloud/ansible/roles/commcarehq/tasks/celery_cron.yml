@@ -28,7 +28,7 @@
     owner: root
     mode: 0744
     backup: yes
-  when: "celery_hours_before_soft_kill and celery_hours_before_hard_kill"
+  when: "celery_hours_before_soft_kill or celery_hours_before_hard_kill"
   tags:
     - cron
 
