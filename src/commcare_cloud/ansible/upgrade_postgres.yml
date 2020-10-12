@@ -16,6 +16,7 @@
     target_port: "{{ citus_postgresql_port if is_citus else postgresql_port }}"
     old_pg_port: "{{ old_port|default(5432) }}"
     new_pg_port: "{{ new_port|default(target_port) }}"
+    log_file: "/opt/data/postgresql/pg_upgrade_{{old_version}}_{{new_version}}.log"
     upgrade_command: |
       /usr/lib/postgresql/{{ new_version }}/bin/pg_upgrade
       -b /usr/lib/postgresql/{{ old_version }}/bin -B /usr/lib/postgresql/{{ new_version }}/bin
@@ -52,10 +53,35 @@
         that: "{{ new_version }} == {{ target_version }}"
         msg: "Version must be changed in `postgresql.yml` to {{ new_version }}."
 
+    - name: Check upgrade in progress
+      stat:
+        path: "{{ log_file }}"
+      register: log_file_stat
+      check_mode: no
+
+    - assert:
+        that: "force|default('no') == 'yes' or not log_file_stat.stat.exists"
+        msg: "Upgrade log file exists. Run with '-e force=yes' to upgrade anyway."
+
     - name: Ensure new version is stopped
       service:
         name: "postgresql@{{ new_version}}-main"
         state: stopped
+
+    - name: Remove new version data (v{{ new_version }})
+      file:
+        path: /opt/data/postgresql/{{ new_version }}/main
+        state: absent
+      when: inventory_hostname not in groups.get('pg_standby')
+
+    - name: Re-initialize new version DB (v{{ new_version }})
+      become: yes
+      become_user: postgres
+      when: inventory_hostname not in groups.get('pg_standby')
+      command: |
+        /usr/lib/postgresql/{{ new_version }}/bin/initdb \
+        -D /opt/data/postgresql/{{ new_version }}/main/ \
+        --lc-collate=C.UTF-8 --lc-ctype=C.UTF-8
 
     - name: Check upgrade compatability
       become: yes
@@ -67,23 +93,43 @@
 
     - block:
 
-      - name: Get installed Citus extension version
-        become: yes
-        become_user: postgres
-        shell: psql {{ citus_database.name }} -q  -t -c "select extversion from pg_extension where extname = 'citus';"
-        register: citus_ext
+        - name: Get installed Citus extension version
+          become: yes
+          become_user: postgres
+          shell: psql {{ citus_database.name }} -q  -t -c "select extversion from pg_extension where extname = 'citus';"
+          register: citus_ext
+          check_mode: no
 
-      - name: Check citus version matches installed version
-        assert:
-          that: citus_ext.stdout | trim is version(citus_version, '>=')
-          msg: "Citus version in DB is lower than in environment config: {{ citus_ext.stdout }} < {{ citus_version }}"
+        - name: Check citus version matches installed version
+          assert:
+            that: citus_ext.stdout | trim is version(citus_version, '>=')
+            msg: "Citus version in DB is lower than in environment config: {{ citus_ext.stdout }} < {{ citus_version }}"
 
-      - name: "Prepare CitusDB for upgrade"
-        become: yes
-        become_user: postgres
-        shell: psql {{ citus_database.name }} -q  -c "select citus_prepare_pg_upgrade();"
-        when: inventory_hostname in (groups.citusdb_master | difference(groups.get('pg_standby', [])))
-        check_mode: "{{ dry_run }}"
+        # https://github.com/citusdata/citus/pull/4225
+        - name: "Clean CitusDB from previous upgrade"
+          become: yes
+          become_user: postgres
+          shell: |
+            psql {{ citus_database.name }} -q  -c "
+            DROP TABLE IF EXISTS public.pg_dist_partition;
+            DROP TABLE IF EXISTS public.pg_dist_shard;
+            DROP TABLE IF EXISTS public.pg_dist_placement;
+            DROP TABLE IF EXISTS public.pg_dist_node_metadata;
+            DROP TABLE IF EXISTS public.pg_dist_node;
+            DROP TABLE IF EXISTS public.pg_dist_local_group;
+            DROP TABLE IF EXISTS public.pg_dist_transaction;
+            DROP TABLE IF EXISTS public.pg_dist_colocation;
+            DROP TABLE IF EXISTS public.pg_dist_authinfo;
+            DROP TABLE IF EXISTS public.pg_dist_poolinfo;
+            DROP TABLE IF EXISTS public.pg_dist_rebalance_strategy;
+            "
+          when: inventory_hostname in (groups.citusdb_master | difference(groups.get('pg_standby', [])))
+
+        - name: "Prepare CitusDB for upgrade"
+          become: yes
+          become_user: postgres
+          shell: psql {{ citus_database.name }} -q  -c "select citus_prepare_pg_upgrade();"
+          when: inventory_hostname in (groups.citusdb_master | difference(groups.get('pg_standby', [])))
 
       when: is_citus
 
@@ -94,8 +140,9 @@
         psql -q  -t \
           -c "select CASE WHEN pg_last_wal_receive_lsn() = pg_last_wal_replay_lsn() THEN 0 ELSE
         GREATEST (0, EXTRACT (EPOCH FROM now() - pg_last_xact_replay_timestamp())) END"
-      register: replication_delay
+      register: replication_delay_new
       when: old_version is version('10', '>=') and inventory_hostname in groups.get('pg_standby', [])
+      check_mode: no
 
     - name: Get replication delay (< v10)
       become: yes
@@ -104,8 +151,12 @@
         psql -q  -t \
           -c "select CASE WHEN pg_last_xlog_receive_location() = pg_last_xlog_replay_location() THEN 0 ELSE
         GREATEST (0, EXTRACT (EPOCH FROM now() - pg_last_xact_replay_timestamp())) END"
-      register: replication_delay
+      register: replication_delay_old
       when: old_version is version('10', '<') and inventory_hostname in groups.get('pg_standby', [])
+      check_mode: no
+
+    - set_fact:
+        replication_delay: "{{ replication_delay_old if old_version is version('10', '<') else replication_delay_new }}"
 
     - name: Check replication delay
       fail:
@@ -114,79 +165,78 @@
 
     - name: Stop primaries
       service:
-        name: postgresql
+        name: "postgresql@{{ old_version }}-main"
         state: stopped
       when: hot_standby_master is not defined
-      check_mode: "{{ dry_run }}"
 
     - name: Stop standbys
       service:
-        name: postgresql
+        name: "postgresql@{{ old_version }}-main"
         state: stopped
       when: hot_standby_master is defined
-      check_mode: "{{ dry_run }}"
 
     - block:
-      # Verify standbys are up to date with primaries
-      - name: Get primary checkpoint location
-        delegate_to: "{{ hot_standby_master }}"
-        shell: |
-          /usr/lib/postgresql/{{ old_version }}/bin/pg_controldata -D /opt/data/postgresql/{{ old_version }}/main | grep 'Latest checkpoint location' | awk '{ print $4 }'
-        register: primary_checkpoint
+        # Verify standbys are up to date with primaries
+        - name: Get primary checkpoint location
+          delegate_to: "{{ hot_standby_master }}"
+          shell: |
+            /usr/lib/postgresql/{{ old_version }}/bin/pg_controldata -D /opt/data/postgresql/{{ old_version }}/main | grep 'Latest checkpoint location' | awk '{ print $4 }'
+          register: primary_checkpoint
+          check_mode: no
 
-      - name: Get standby checkpoint location
-        shell: |
-          /usr/lib/postgresql/{{ old_version }}/bin/pg_controldata -D /opt/data/postgresql/{{ old_version }}/main | grep 'Latest checkpoint location' | awk '{ print $4 }'
-        register: standby_checkpoint
+        - name: Get standby checkpoint location
+          shell: |
+            /usr/lib/postgresql/{{ old_version }}/bin/pg_controldata -D /opt/data/postgresql/{{ old_version }}/main | grep 'Latest checkpoint location' | awk '{ print $4 }'
+          register: standby_checkpoint
+          check_mode: no
 
-      - debug: msg="Primary = {{ primary_checkpoint.stdout }}, Standby = {{ standby_checkpoint.stdout }}"
+        - debug: msg="Primary = {{ primary_checkpoint.stdout }}, Standby = {{ standby_checkpoint.stdout }}"
 
-#      - assert:
-#          that: "'{{ primary_checkpoint.stdout }}' == '{{ standby_checkpoint.stdout }}'"
-#          msg: "Primary and standby are out of sync. Wait for the standbys to catch up and then try again."
+        - assert:
+            that: "'{{ primary_checkpoint.stdout }}' == '{{ standby_checkpoint.stdout }}'"
+            msg: "Primary and standby are out of sync. Wait for the standbys to catch up and then try again."
 
       rescue:
-      - debug: msg="Restarting services"
+        - debug: msg="Restarting services"
 
-      - name: Start primaries
-        delegate_to: "{{ hot_standby_master }}"
-        service:
-          name: postgresql
-          state: started
-        check_mode: "{{ dry_run }}"
+        - name: Start primaries
+          delegate_to: "{{ hot_standby_master }}"
+          service:
+            name: postgresql
+            state: started
 
-      - name: Start standbys
-        service:
-          name: postgresql
-          state: started
-        check_mode: "{{ dry_run }}"
+        - name: Start standbys
+          service:
+            name: postgresql
+            state: started
 
-      - fail:
-          msg: Abort
+        - fail:
+            msg: Abort
 
       when: hot_standby_master is defined
 
-    - name: Remove new version data (v{{ new_version }})
+    - name: Remove previous log files
       file:
-        path: /opt/data/postgresql/{{ new_version }}/main
+        path: "{{ item }}"
         state: absent
-      check_mode: "{{ dry_run }}"
+      loop:
+        - "{{ log_file }}"
+        - "/opt/data/postgresql/pg_upgrade_internal.log"
+        - "/opt/data/postgresql/pg_upgrade_server.log"
+        - "/opt/data/postgresql/pg_upgrade_utility.log"
 
-    - name: Re-initialize new version DB (v{{ new_version }})
+    - name: Perform upgrade
       become: yes
       become_user: postgres
-      command: |
-        /usr/lib/postgresql/{{ new_version }}/bin/initdb \
-        -D /opt/data/postgresql/{{ new_version }}/main/ \
-        --lc-collate=C.UTF-8 --lc-ctype=C.UTF-8
-      check_mode: "{{ dry_run }}"
+      shell: "{{ upgrade_command |  replace('\n', ' ') }} | tee {{ log_file }}"
+      args:
+        chdir: "/opt/data/postgresql"
+      async: 2592000
+      poll: 0
+      when: inventory_hostname not in groups.get('pg_standby')
 
     - pause:
         seconds: 0
         prompt: |
-          Run this command to do the upgrade on {{ inventory_hostname }}:
 
-          cchq {{deploy_env}} ssh {{ inventory_hostname }} -l ansible \
-          'tmux new -n pg_upgrade sudo -iu postgres -- sh -c \
-          "{{ upgrade_command | replace('\n', ' ') }}; /bin/bash"
-      when: inventory_hostname not in groups.get('pg_standby')
+          Upgrade commands started. Check {{ log_file }} for progress.
