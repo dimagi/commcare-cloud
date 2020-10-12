@@ -239,4 +239,17 @@
         seconds: 0
         prompt: |
 
-          Upgrade commands started. Check {{ log_file }} for progress.
+          Upgrade commands started. Check {{ log_file }} for progress:
+
+          {% for host in groups.all|difference(groups.get('pg_standby', []) %}
+          cchq {{ deploy_env }} ssh host -l {{ commcare_cloud_remote_user }} -t sudo tail -f /opt/data/postgresql/pg_upgrade_11_12.log
+          {% endfor %}
+
+          If there are errors during the upgrade:
+            1. DO NOT START ANY SERVICES
+            2. Use the 'service_playbooks/postgresql/rollback_upgrade.yml' to roll back the upgrade if necessary
+
+          Once the upgrade processes are complete and successful:
+            1. Run the 'service_playbooks/postgresql/upgrade_standbys.yml' playbook to sync
+               the standbys with the primaries.
+            2. Run the 'service_playbooks/postgresql/finalize_upgrade.yml' to finalize the upgrade.
