@@ -1,5 +1,6 @@
 ---
-# Sets up a PostrgeSQL standby node
+# Stage 3 of PostgreSQL upgrade
+#
 # Usage:
 #   commcare-cloud <env> ansible-playbook service_playbooks/postgresql/finalize_upgrade.yml --limit pg0,pg1 \
 #     -e old_version=9.6 -e new_version=12
@@ -84,6 +85,21 @@
           when: not ansible_check_mode
 
       when: is_citus and inventory_hostname in (groups.citusdb_master | difference(groups.get('pg_standby', [])))
+      rescue:
+        - pause:
+            seconds: 0
+            prompt: |
+
+              Restoring CitusDB metadata appears to have failed!
+
+              1. DO NOT START THE STANDBYS (yet)
+              2. If you are not able to recover the CitusDB metadata you may need to use the standbys for recovery.
+                  - The standbys have not yet been started so it should be possible to roll back the upgrade
+                    and promote them to primaries (assuming all nodes have standbys)
+                  - To rollback the standbys run the 'service_playbooks/postgresql/rollback_upgrade.yml' playbook
+                    limited to just the standby nodes
+                  - It will then be up to you to promote those to primaries and restore the full cluster
+              3. If all above fails you will need to restore from a backup and try again
 
     - name: Create replication slots
       become_user: postgres

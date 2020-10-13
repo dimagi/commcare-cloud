@@ -1,5 +1,6 @@
 ---
-# Sets up a PostrgeSQL standby node
+# Rollback playbook for use in recovering from a failure during upgrade.
+#
 # Usage:
 #   commcare-cloud <env> ansible-playbook service_playbooks/postgresql/rollback_upgrade.yml --limit pg0,pg1 \
 #     -e old_version=9.6 -e new_version=12

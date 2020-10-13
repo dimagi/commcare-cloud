@@ -1,5 +1,5 @@
 ---
-# Sets up a PostrgeSQL standby node
+# Stage 2 of PostgreSQL upgrade
 # Usage:
 #   commcare-cloud <env> ansible-playbook service_playbooks/postgresql/upgrade_standbys.yml --limit pg0,pg1 \
 #     -e old_version=9.6 -e new_version=12
