@@ -12,6 +12,12 @@ local   replication     postgres                                peer
 {{ entry.contype|default('host') }}    {{ entry.databases|default('all') }}    {{ entry.users|default('all') }}    {% if entry.contype != 'local' %}{{ entry.netmask }}{% endif %}    {{ entry.method|default('md5') }}
 {% endfor %}
 
+{% for standby in groups.get('pg_standby', []) %}
+{% if hostvars[standby].hot_standby_master|default(None) == inventory_hostname %}
+host replication    {{ postgres_users.replication.username|default('hqrepl') }}     {{ standby }}/32   md5
+{% endif %}
+{% endfor %}
+
 {% if inventory_hostname in groups.get('citusdb_worker', []) %}
 # Allow trust from localhost for pgbouncer
 host    all             all             127.0.0.1/32            trust 
