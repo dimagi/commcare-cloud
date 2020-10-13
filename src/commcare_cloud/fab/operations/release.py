@@ -297,15 +297,14 @@ def update_virtualenv(full_cluster=True):
     """
     roles_to_use = _get_roles(full_cluster)
 
-    def pip_uninstall(cmd_prefix, requirements=(), fail_if_absent=False):
-        assert requirements
-        r_flags = []
-        for requirements_file in requirements:
-            if fail_if_absent or files.exists(requirements_file, use_sudo=True):
-                r_flags.extend(['-r', requirements_file])
-        if r_flags:
-            r_flags = " ".join(r_flags)
-            sudo("{} pip uninstall {} --yes".format(cmd_prefix, r_flags))
+    def pip_sync(cmd_prefix, requirements_file):
+        proxy = " --proxy={}".format(env.http_proxy) if env.http_proxy else ""
+        sudo("{} pip install -q --timeout=60{} pip-tools".format(cmd_prefix, proxy))
+        sudo("{} pip-sync -q --pip-args='--timeout=60{}' -r {}".format(
+            cmd_prefix,
+            proxy,
+            requirements_file,
+        ))
 
     @roles(roles_to_use)
     @parallel
@@ -317,35 +316,27 @@ def update_virtualenv(full_cluster=True):
         if exists(env.py3_virtualenv_current) and not exists(env.py3_virtualenv_root):
             _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
 
-        def _update_virtualenv(virtualenv_root, filepath, action, kwargs):
+        def _update_virtualenv(action, filepath):
             with cd(env.code_root):
                 cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
-                    env.sudo_user, virtualenv_root)
+                    env.sudo_user, env.py3_virtualenv_root)
 
-                if action == "uninstall":
-                    pip_uninstall(cmd_prefix, requirements=[filepath], **kwargs)
+                if action == "sync":
+                    pip_sync(cmd_prefix, filepath)
 
                 if action == "install":
                     pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[filepath])
 
-        requirements_files = [
-            ("uninstall-requirements.txt", "uninstall", {"fail_if_absent": True}),
-            ("prod-requirements.txt", "install", {}),
-            ("uninstall-requirements-after-install.txt", "uninstall", {"fail_if_absent": False}),
-        ]
-        for filename, action, kwargs in requirements_files:
-            _update_virtualenv(
-                env.py3_virtualenv_root,
-                posixpath.join(env.code_root, 'requirements', filename),
-                action, kwargs
-            )
+        _update_virtualenv(
+            "sync",
+            posixpath.join(env.code_root, "requirements", "prod-requirements.txt"),
+        )
 
         for repo in env.ccc_environment.meta_config.git_repositories:
             if repo.requirements_path:
                 _update_virtualenv(
-                    env.py3_virtualenv_root,
+                    "install",
                     posixpath.join(env.code_root, repo.relative_dest, repo.requirements_path),
-                    "install", {}
                 )
 
     return update
