@@ -4,21 +4,25 @@
 #   commcare-cloud <env> ansible-playbook service_playbooks/postgresql/finalize_upgrade.yml --limit pg0,pg1 \
 #     -e old_version=9.6 -e new_version=12
 #
-- hosts:
-    - all
+- hosts: all
   any_errors_fatal: true
   become: yes
   vars:
+    citus_database: "{{ postgresql_dbs.all | selectattr('host', 'in', groups.get('citusdb_master')) | first }}"
     new_version_service: "postgresql@{{ new_version }}-main.service"
+    old_version_service: "postgresql@{{ old_version }}-main.service"
+    is_citus: "{{ inventory_hostname in groups.get('citusdb', []) }}"
+    target_port: "{{ citus_postgresql_port if is_citus else postgresql_port }}"
+    new_pg_port: "{{ new_port|default(target_port) }}"
+    is_standby: "{{ inventory_hostname in groups.get('pg_standby') }}"
+  vars_files:
+    - ../../roles/postgresql_base/defaults/main.yml
   vars_prompt:
     - name: confirm_upgrade
       prompt: |
 
         ===================================================================================
-        * start primaries
-        * restore citus: cchq <env> run-shell-command citus_master,!pg_standby -b --become-user postgres 'psql -d icds-ucr-citus -c "SELECT citus_finish_pg_upgrade();"’
-        * start standbys
-        * verify status
+        This will finalize the upgrade and start all the services including standbys.
         ===================================================================================
         Respond with [y/N]
       private: no
@@ -26,3 +30,91 @@
     - name: assert response
       assert:
         that: confirm_upgrade == 'y'
+
+    - include_vars:
+        file: ../../roles/citusdb/defaults/main.yml
+      when: is_citus
+
+    - service_facts:
+
+    - assert:
+        that: force|default('no') == 'yes' or item not in ansible_facts.services or ansible_facts.services.get(item).state == 'stopped'
+        msg: |
+          {{ item }} is running. This is an unexpected state.
+
+          However it should still be safe to run this playbook though it may encounter errors.
+
+          To run it anyway use '-e force=yes'.
+      loop:
+        - "{{ new_version_service }}"
+        - "{{ old_version_service }}"
+
+    - name: Start primaries
+      service:
+        name: "{{ new_version_service }}"
+        state: started
+      when: not is_standby
+
+    - service_facts:
+
+    - assert:
+        that: ansible_facts.services.get(new_version_service).state == 'running'
+        msg: |
+          {{ new_version_service }} is not running. Check log files for the issue.
+      when: not ansible_check_mode and not is_standby
+
+    - block:
+        - name: Restore citus metadata
+          become: yes
+          become_user: postgres
+          shell: psql {{ citus_database.name }} -p {{ new_pg_port }} -q -c "SELECT citus_finish_pg_upgrade();"
+
+        - name: Verify citus master
+          become: yes
+          become_user: postgres
+          shell: psql {{ citus_database.name }} -p {{ new_pg_port }} -q -t -c "SELECT count(*) from pg_catalog.pg_dist_node;"
+          register: citus_worker_count
+
+        - assert:
+            that: citus_worker_count.stdout|trim|int == groups.citusdb_worker|difference(groups.get('pg_standby', []))|length
+            msg: |
+              Citus worker count in DB does not match expected count based on inventory:
+
+              {{ citus_worker_count.stdout|trim|int }} != groups.citusdb_worker|difference(groups.get('pg_standby', []))|length
+          when: not ansible_check_mode
+
+      when: is_citus and inventory_hostname in (groups.citusdb_master | difference(groups.get('pg_standby', [])))
+
+    - name: Create replication slots
+      become_user: postgres
+      pg_replication_slot:
+        name: "{{ item }}"
+        port: "{{ new_pg_port }}"
+        state: present
+      vars:
+        ansible_ssh_pipelining: true
+      with_items: "{{ postgresql_replication_slots|default([]) }}"
+      when: not is_standby
+
+    - name: Start standbys
+      service:
+        name: "{{ new_version_service }}"
+        state: started
+      when: is_standby
+
+    - service_facts:
+
+    - assert:
+        that: ansible_facts.services.get(new_version_service).state == 'running'
+        msg: |
+          {{ new_version_service }} is not running. Check log files for the issue.
+      when: not ansible_check_mode and is_standby
+
+    - pause:
+        seconds: 0
+        prompt: |
+
+          Upgrade complete. You should verify that all services are running correctly.
+          Check the log files for any error output.
+
+          To change ports or other settings use the "deploy_postgres.yml" or "deploy_citusdb.yml" playbooks.

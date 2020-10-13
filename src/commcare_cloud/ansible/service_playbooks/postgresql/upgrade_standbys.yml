@@ -44,8 +44,8 @@
     - service_facts:
 
     - assert:
-        that: item not in ansible_facts.services or ansible_facts.services.get(item).state == 'stopped'
-        msg: "{{ item }} is running. Rollback is not possible."
+        that: force|default('no') == 'yes' or item not in ansible_facts.services or ansible_facts.services.get(item).state == 'stopped'
+        msg: "{{ item }} is running. It may be too late to use this playbook. To try anyway run with '-e force=yes'"
       loop:
         - "{{ new_version_service }}"
         - "{{ old_version_service }}"
@@ -81,20 +81,26 @@
     - set_fact:
         postgresql_port: "{{ old_pg_port }}"
 
-    - name: create / update "recovery.conf" for v{{old_version}}
+    - name: create "recovery.conf" for v{{old_version}}
       become_user: postgres
       template:
         src: ../../roles/postgresql_base/templates/recovery.conf.j2
         dest: "/opt/data/postgresql/{{ old_version }}/main/recovery.conf"
 
-    - set_fact:
-        postgresql_port: "{{ new_pg_port }}"
-
-    - name: create / update "recovery.conf" for v{{new_version}}
+    - name: update config for standby v{{new_version}}
       become_user: postgres
-      template:
-        src: ../../roles/postgresql_base/templates/recovery.conf.j2
-        dest: "/opt/data/postgresql/{{ new_version }}/main/recovery.conf"
+      blockinfile:
+        path: "/opt/data/postgresql/{{ new_version }}/main/postgresql.auto.conf"
+        block: |
+          primary_conninfo = 'user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }} host={{ hot_standby_master }} port={{ new_pg_port }} sslmode=prefer'
+          primary_slot_name = '{{ replication_slot }}'
+          recovery_target_timeline = 'latest'
+
+    - name: create standby signal file for v{{new_version}}
+      become_user: postgres
+      file:
+        path: "/opt/data/postgresql/{{ new_version }}/main/standby.signal"
+        state: touch
 
     - pause:
         seconds: 0

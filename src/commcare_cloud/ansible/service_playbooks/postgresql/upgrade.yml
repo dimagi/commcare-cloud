@@ -17,6 +17,7 @@
     old_pg_port: "{{ old_port|default(5432) }}"
     new_pg_port: "{{ new_port|default(target_port) }}"
     log_file: "/opt/data/postgresql/pg_upgrade_{{old_version}}_{{new_version}}.log"
+    is_standby: "{{ inventory_hostname in groups.get('pg_standby') }}"
     upgrade_command: |
       /usr/lib/postgresql/{{ new_version }}/bin/pg_upgrade
       -b /usr/lib/postgresql/{{ old_version }}/bin -B /usr/lib/postgresql/{{ new_version }}/bin
@@ -50,8 +51,6 @@
         file: ../../roles/citusdb/defaults/main.yml
       when: is_citus
 
-    - debug: msg="is_citus={{is_citus}}, target_version={{target_version}}, citus_postgresql_version={{citus_postgresql_version}}, postgresql_version={{postgresql_version}}, new_version={{new_version}}"
-
     - name: Check PostgreSQL version
       assert:
         that: "{{ new_version }} == {{ target_version }}"
@@ -76,12 +75,12 @@
       file:
         path: /opt/data/postgresql/{{ new_version }}/main
         state: absent
-      when: inventory_hostname not in groups.get('pg_standby')
+      when: not is_standby
 
     - name: Re-initialize new version DB (v{{ new_version }})
       become: yes
       become_user: postgres
-      when: inventory_hostname not in groups.get('pg_standby')
+      when: not is_standby
       command: |
         /usr/lib/postgresql/{{ new_version }}/bin/initdb \
         -D /opt/data/postgresql/{{ new_version }}/main/ \
@@ -94,7 +93,7 @@
         cmd: "{{ upgrade_command }} --check"
         chdir: /opt/data/postgresql
       register: compatibility
-      when: inventory_hostname not in groups.get('pg_standby')
+      when: not is_standby
 
     - block:
 
@@ -238,7 +237,7 @@
       shell: "{{ upgrade_command |  replace('\n', ' ') }} | tee {{ log_file }}"
       args:
         chdir: "/opt/data/postgresql"
-      when: not ansible_check_mode and inventory_hostname not in groups.get('pg_standby')
+      when: not ansible_check_mode and not is_standby
       async: 2592000
       poll: 0
 
