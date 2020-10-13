@@ -24,7 +24,7 @@
       -d /etc/postgresql/{{ old_version }}/main -D /etc/postgresql/{{ new_version }}/main
       --jobs {{ ansible_processor_vcpus }} --link
   vars_files:
-    - roles/postgresql_base/defaults/main.yml
+    - ../../roles/postgresql_base/defaults/main.yml
   vars_prompt:
     - name: confirm_upgrade
       prompt: |
@@ -45,6 +45,10 @@
   tasks:
     - assert:
         that: confirm_upgrade == 'y'
+
+    - include_vars:
+        file: ../../roles/citusdb/defaults/main.yml
+      when: is_citus
 
     - debug: msg="is_citus={{is_citus}}, target_version={{target_version}}, citus_postgresql_version={{citus_postgresql_version}}, postgresql_version={{postgresql_version}}, new_version={{new_version}}"
 
@@ -90,6 +94,7 @@
         cmd: "{{ upgrade_command }} --check"
         chdir: /opt/data/postgresql
       register: compatibility
+      when: inventory_hostname not in groups.get('pg_standby')
 
     - block:
 
@@ -99,11 +104,13 @@
           shell: psql {{ citus_database.name }} -q  -t -c "select extversion from pg_extension where extname = 'citus';"
           register: citus_ext
           check_mode: no
+          when: inventory_hostname not in groups.get('pg_standby', [])
 
         - name: Check citus version matches installed version
           assert:
             that: citus_ext.stdout | trim is version(citus_version, '>=')
             msg: "Citus version in DB is lower than in environment config: {{ citus_ext.stdout }} < {{ citus_version }}"
+          when: inventory_hostname not in groups.get('pg_standby', [])
 
         # https://github.com/citusdata/citus/pull/4225
         - name: "Clean CitusDB from previous upgrade"
@@ -231,9 +238,9 @@
       shell: "{{ upgrade_command |  replace('\n', ' ') }} | tee {{ log_file }}"
       args:
         chdir: "/opt/data/postgresql"
+      when: not ansible_check_mode and inventory_hostname not in groups.get('pg_standby')
       async: 2592000
       poll: 0
-      when: inventory_hostname not in groups.get('pg_standby')
 
     - pause:
         seconds: 0
@@ -241,8 +248,8 @@
 
           Upgrade commands started. Check {{ log_file }} for progress:
 
-          {% for host in groups.all|difference(groups.get('pg_standby', []) %}
-          cchq {{ deploy_env }} ssh host -l {{ commcare_cloud_remote_user }} -t sudo tail -f /opt/data/postgresql/pg_upgrade_11_12.log
+          {% for host in ansible_play_hosts|difference(groups.get('pg_standby', [])) %}
+          cchq {{ deploy_env }} ssh {{ host }} -l {{ commcare_cloud_remote_user }} -t sudo tail -f {{ log_file }}
           {% endfor %}
 
           If there are errors during the upgrade:
