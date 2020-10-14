@@ -28,7 +28,6 @@ from ..const import (
     KEEP_UNTIL_PREFIX,
     FORMPLAYER_BUILD_DIR,
     ROLES_CONTROL)
-from commcare_cloud.fab.utils import pip_install
 from .formplayer import (
     clean_formplayer_releases,
     formplayer_is_running_from_old_release_location,
@@ -297,47 +296,31 @@ def update_virtualenv(full_cluster=True):
     """
     roles_to_use = _get_roles(full_cluster)
 
-    def pip_sync(cmd_prefix, requirements_file):
-        proxy = " --proxy={}".format(env.http_proxy) if env.http_proxy else ""
-        sudo("{} pip install -q --timeout=60{} pip-tools".format(cmd_prefix, proxy))
-        sudo("{} pip-sync -q --pip-args='--timeout=60{}' {}".format(
-            cmd_prefix,
-            proxy,
-            requirements_file,
-        ))
-
     @roles(roles_to_use)
     @parallel
     def update():
-
+        join = functools.partial(posixpath.join, env.code_root)
         exists = functools.partial(files.exists, use_sudo=True)
 
         # Optimization if we have current setup (i.e. not the first deploy)
         if exists(env.py3_virtualenv_current) and not exists(env.py3_virtualenv_root):
             _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
 
-        def _update_virtualenv(action, filepath):
-            with cd(env.code_root):
-                cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
-                    env.sudo_user, env.py3_virtualenv_root)
-
-                if action == "sync":
-                    pip_sync(cmd_prefix, filepath)
-
-                if action == "install":
-                    pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[filepath])
-
-        _update_virtualenv(
-            "sync",
-            posixpath.join(env.code_root, "requirements", "prod-requirements.txt"),
+        requirements_files = [join("requirements", "prod-requirements.txt")]
+        requirements_files.extend(
+            join(repo.relative_dest, repo.requirements_path)
+            for repo in env.ccc_environment.meta_config.git_repositories
+            if repo.requirements_path
         )
 
-        for repo in env.ccc_environment.meta_config.git_repositories:
-            if repo.requirements_path:
-                _update_virtualenv(
-                    "install",
-                    posixpath.join(env.code_root, repo.relative_dest, repo.requirements_path),
-                )
+        with cd(env.code_root):
+            cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
+                env.sudo_user, env.py3_virtualenv_root)
+
+            proxy = " --proxy={}".format(env.http_proxy) if env.http_proxy else ""
+            sudo("{} pip install -q --timeout=60{} pip-tools".format(cmd_prefix, proxy))
+            sudo("{} pip-sync -q --pip-args='--timeout=60{}' {}".format(
+                cmd_prefix, proxy, " ".join(requirements_files)))
 
     return update
 
@@ -351,6 +334,7 @@ def create_code_dir(full_cluster=True):
         sudo('mkdir -p {}'.format(env.code_root))
 
     return create
+
 
 @roles(ROLES_DEPLOY)
 def kill_stale_celery_workers(delay=0):
