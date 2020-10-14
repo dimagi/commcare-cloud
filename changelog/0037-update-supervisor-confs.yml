@@ -1,7 +1,7 @@
 title: Run command to update Supervisor configurations
 key: update-supervisor-confs
 date: 2020-10-14
-optional_per_env: yes
+optional_per_env: no
 min_commcare_version: 05ebc51ba4b16a420f0fd64c17ffad89501ea36d
 max_commcare_version:
 context: |
