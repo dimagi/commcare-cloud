@@ -16,5 +16,5 @@ update_steps: |
   Run the following management command to update supervisor configs:
 
   ```bash
-  cchq <env> --control update-supervisor-confs
+  cchq <env> update-supervisor-confs
   ```
