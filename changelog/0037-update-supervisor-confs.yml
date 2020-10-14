@@ -1,0 +1,20 @@
+title: Run command to update Supervisor configurations
+key: update-supervisor-confs
+date: 2020-10-14
+optional_per_env: yes
+min_commcare_version: 05ebc51ba4b16a420f0fd64c17ffad89501ea36d
+max_commcare_version:
+context: |
+  Run management command to remove unused errand-boy processes.
+
+details: |
+  The `errand-boy` package is no longer required. It's corresponding process
+  group should be removed to avoid deploy errors when restarting services
+  when `errand-boy` is not installed.
+
+update_steps: |
+  Run the following management command to update supervisor configs:
+
+  ```bash
+  cchq <env> --control update-supervisor-confs
+  ```
