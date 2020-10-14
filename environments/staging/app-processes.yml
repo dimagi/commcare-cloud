@@ -1,4 +1,4 @@
-formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar'
+formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Ddd.trace.methods=org.commcare.util.screen.EntityScreen[expandEntityReferenceSet,getReturnValueFromSelection]'
 management_commands:
   celery3:
     run_sms_queue:
