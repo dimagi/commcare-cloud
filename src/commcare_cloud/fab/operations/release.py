@@ -361,6 +361,7 @@ def create_code_dir(full_cluster=True):
 
     return create
 
+
 @roles(ROLES_DEPLOY)
 def kill_stale_celery_workers(delay=0):
     with cd(env.code_current):
