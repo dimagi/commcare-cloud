@@ -300,7 +300,7 @@ def update_virtualenv(full_cluster=True):
     def pip_sync(cmd_prefix, requirements_file):
         proxy = " --proxy={}".format(env.http_proxy) if env.http_proxy else ""
         sudo("{} pip install -q --timeout=60{} pip-tools".format(cmd_prefix, proxy))
-        sudo("{} pip-sync -q --pip-args='--timeout=60{}' -r {}".format(
+        sudo("{} pip-sync -q --pip-args='--timeout=60{}' {}".format(
             cmd_prefix,
             proxy,
             requirements_file,
