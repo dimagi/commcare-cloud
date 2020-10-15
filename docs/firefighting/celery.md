@@ -16,7 +16,6 @@ dogeillionaire@hqcelery2:~$ sudo supervisorctl status
 commcare-hq-production-celery_background_queue RUNNING    pid 10464, uptime 0:45:47
 commcare-hq-production-celery_main STOPPED Apr 08 02:18 PM
 commcare-hq-production-celery_saved_exports_queue RUNNING    pid 10463, uptime 0:45:47
-commcare-hq-production-errand-boy RUNNING    pid 10465, uptime 0:45:47 
 ```
 
 ### Resolution
@@ -34,7 +33,6 @@ dogeillionaire@hqcelery2:~$ sudo supervisorctl status
 commcare-hq-production-celery_background_queue RUNNING    pid 10464, uptime 0:45:47
 commcare-hq-production-celery_main RUNNING    pid 10462, uptime 0:01:22
 commcare-hq-production-celery_saved_exports_queue RUNNING    pid 10463, uptime 0:45:47
-commcare-hq-production-errand-boy RUNNING    pid 10465, uptime 0:45:47
 ```
 
 ## Worker won't start
@@ -50,7 +48,6 @@ dogeillionaire@hqcelery2:~$ sudo supervisorctl status
 commcare-hq-production-celery_background_queue RUNNING    pid 10464, uptime 0:45:47
 commcare-hq-production-celery_main FATAL
 commcare-hq-production-celery_saved_exports_queue RUNNING    pid 10463, uptime 0:45:47
-commcare-hq-production-errand-boy RUNNING    pid 10465, uptime 0:45:47
 ```
 
 ### Resolution
@@ -111,7 +108,6 @@ dogeillionaire@hqcelery2:~$ sudo supervisorctl status
 commcare-hq-production-celery_background_queue RUNNING    pid 10464, uptime 0:45:47
 commcare-hq-production-celery_main RUNNING    pid 10462, uptime 0:01:22
 commcare-hq-production-celery_saved_exports_queue RUNNING    pid 10463, uptime 0:45:47
-commcare-hq-production-errand-boy RUNNING    pid 10465, uptime 0:45:47
 ```
 
 ## The queue the worker is consuming from has a large backlog of tasks
