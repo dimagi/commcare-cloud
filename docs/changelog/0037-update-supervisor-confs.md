@@ -4,7 +4,7 @@
 
 **Date:** 2020-10-14
 
-**Optional per env:** _only required on some environments_
+**Optional per env:** _required on all environments_
 
 
 ## CommCare Version Dependency
@@ -24,5 +24,5 @@ when `errand-boy` is not installed.
 Run the following management command to update supervisor configs:
 
 ```bash
-cchq <env> --control update-supervisor-confs
+cchq <env> update-supervisor-confs
 ```
