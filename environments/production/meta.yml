@@ -6,3 +6,4 @@ users:
   - g2
   - fissionlabs
 slack_alerts_channel: alerts-production
+secrets_backend: aws-secrets
