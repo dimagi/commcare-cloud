@@ -318,8 +318,9 @@ def update_virtualenv(full_cluster=True):
                 env.sudo_user, env.py3_virtualenv_root)
 
             proxy = " --proxy={}".format(env.http_proxy) if env.http_proxy else ""
-            sudo("{} pip install -q --timeout=60{} pip-tools".format(cmd_prefix, proxy))
-            sudo("{} pip-sync -q --pip-args='--timeout=60{}' {}".format(
+            sudo("{} pip install --quiet --upgrade --timeout=60{} pip-tools".format(
+                cmd_prefix, proxy))
+            sudo("{} pip-sync --quiet --pip-args='--timeout=60{}' {}".format(
                 cmd_prefix, proxy, " ".join(requirements_files)))
 
     return update
