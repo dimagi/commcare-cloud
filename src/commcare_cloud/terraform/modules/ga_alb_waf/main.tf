@@ -51,6 +51,7 @@ resource "aws_wafv2_ip_set" "permanent_block" {
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
   description        = "Manually Added IPs for denial"
+  # The actual list of IP addresses is managed through AWS Console directly
   addresses          = []
   lifecycle {
     ignore_changes = ["addresses"]
