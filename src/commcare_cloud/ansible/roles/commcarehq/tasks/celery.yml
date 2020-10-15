@@ -5,7 +5,6 @@
     celery_bash_runner_optimized: "{{ service_home }}/{{ deploy_env }}_celery_bash_runner_optimized.sh"
     supervisor_celery_flower: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_flower.conf"
     supervisor_celery_beat: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_beat.conf"
-    supervisor_errand_boy: "{{ service_home }}/{{ deploy_env }}_supervisor_errand_boy.conf"
     supervisor_celery_workers: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_workers.conf"
 
 - set_fact:
@@ -14,7 +13,6 @@
       - "{{celery_bash_runner_optimized}}"
       - "{{supervisor_celery_flower}}"
       - "{{supervisor_celery_beat}}"
-      - "{{supervisor_errand_boy}}"
       - "{{supervisor_celery_workers}}"
 
 - name: Add celery_bash_runner files
@@ -46,9 +44,6 @@
     - template: ../templates/supervisor_celery_beat.conf.j2
       file_name: "{{supervisor_celery_beat}}"
       should_apply: "{{ app_processes_config.celery_processes.get(inventory_hostname).beat is defined }}"
-    - template: ../templates/supervisor_errand_boy.conf
-      file_name: "{{supervisor_errand_boy}}"
-      should_apply: yes
 
 - name: define celery workers
   become: yes

@@ -7,6 +7,9 @@ newest first.
 
 ## Changelog
 
+### **2020-10-14** [Run command to update Supervisor configurations](0037-update-supervisor-confs.md)
+Run management command to remove unused errand-boy processes.
+
 ### **2020-07-23** [Run command to clear sensitive information from Django sessions](0036-clean-2fa-sessions.md)
 It is stronly recommended to sanitize legacy Django sessions after upgrading
 to Django 2.2.

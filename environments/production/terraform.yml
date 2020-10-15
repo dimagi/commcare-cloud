@@ -436,10 +436,10 @@ servers:
     count: 84
 
   - server_name: "redis0-production"
-    server_instance_type: r5.xlarge
+    server_instance_type: r5.4xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 60
+    volume_size: 600
     volume_encrypted: no
     group: "redis"
     os: bionic
