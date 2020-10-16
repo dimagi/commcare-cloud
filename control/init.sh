@@ -94,24 +94,24 @@ if [ -z "$(which manage-commcare-cloud)" ]; then
     # first time install need requirements installed in serial
     # installs strictly what's in requirements.txt, so versions are pre-pinned
     cd ${COMMCARE_CLOUD_REPO}
-    pip install pip-tools
-    pip-sync $REQUIREMENTS
-    pip install -e .
+    pip install --quiet pip-tools
+    pip-sync --quiet $REQUIREMENTS
+    pip install --quiet --editable .
     cd -
 else
     {
         COMMCARE=
         cd ${COMMCARE_CLOUD_REPO}
-        pip install pip-tools
-        pip-sync $REQUIREMENTS
-        pip install -e .
+        pip install --quiet pip-tools
+        pip-sync --quiet $REQUIREMENTS
+        pip install --quiet --editable .
         cd -
     } &
 fi
 
 echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
-COMMCARE= pip install pip --upgrade &
+COMMCARE= pip install --quiet --upgrade pip &
 COMMCARE= manage-commcare-cloud install & # includes ansible-galaxy install
 
 # wait for all processes that _we_ started
@@ -124,7 +124,11 @@ done
 python -c 'import Crypto' || {
     echo "^--- Looks like there's an issue with the pycryptodome install,"
     echo "     but don't worry, we'll fix that for you."
-    cd ${COMMCARE_CLOUD_REPO} && pip uninstall pycryptodome pycrypto --yes &&  pip-sync && pip install -e . && cd - ;
+    cd ${COMMCARE_CLOUD_REPO} \
+        && pip uninstall --quiet --yes pycryptodome pycrypto \
+        && pip-sync --quiet \
+        && pip install --quiet -editable . \
+        && cd - ;
 }
 
 # git-hook install to protect the commit of unencrypted vault.yml file

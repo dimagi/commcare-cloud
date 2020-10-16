@@ -1,5 +1,4 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 import os
 import subprocess
 from six.moves import shlex_quote
@@ -37,8 +36,11 @@ class Install(CommandBase):
         for cmd_parts in (cmd_roles_parts, cmd_collection_parts):
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print_command(cmd)
-            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=env)
-            p.communicate()
+            try:
+                subprocess.check_output(cmd, shell=True, env=env)
+            except subprocess.CalledProcessError as err:
+                print("process exited with error: %s" % err.returncode)
+                return err.returncode
 
-        puts(color_notice("To finish first-time installation, run `manage-commcare-cloud configure`".format()))
-        return p.returncode
+        puts(color_notice("To finish first-time installation, run `manage-commcare-cloud configure`"))
+        return 0
