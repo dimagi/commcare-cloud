@@ -160,3 +160,27 @@ nadir_hour_frequency: 3
 # To enable cronjob give hours hard_kill: eg: 46, eg: soft_kill: 36. 'False' will remove cron jobs.
 celery_hours_before_hard_kill: ~
 celery_hours_before_soft_kill: ~
+
+# HACK work around pip install error
+#
+# Could not fetch URL https://pypi.python.org/...: There was a problem confirming the ssl certificate:
+# [Errno 1] _ssl.c:510: error:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:
+# certificate verify failed - skipping
+#
+# :stderr: /usr/local/lib/python2.7/dist-packages/pip/_vendor/requests/packages/urllib3/util/ssl_.py:318:
+# SNIMissingWarning: An HTTPS request has been made, but the SNI (Subject Name
+# Indication) extension to TLS is not available on this platform. This may cause
+# the server to present an incorrect TLS certificate, which can cause validation
+# failures. You can upgrade to a newer version of Python to solve this. For more
+# information, see https://urllib3.readthedocs.io/en/latest/security.html#snimissingwarning.
+#   SNIMissingWarning
+# /usr/local/lib/python2.7/dist-packages/pip/_vendor/requests/packages/urllib3/util/ssl_.py:122:
+# InsecurePlatformWarning: A true SSLContext object is not available. This
+# prevents urllib3 from configuring SSL appropriately and may cause certain SSL
+# connections to fail. You can upgrade to a newer version of Python to solve
+# this. For more information, see https://urllib3.readthedocs.io/en/latest/security.html#insecureplatformwarning.
+#   InsecurePlatformWarning
+#   Could not find a version that satisfies the requirement ... (from versions: )
+# No matching distribution found for ...
+pip2_extra_args: "--trusted-host pypi.org --trusted-host files.pythonhosted.org --trusted-host pypi.python.org"
+pip_extra_args: "{{ '' | replace_if_py2(pip2_extra_args) }}"

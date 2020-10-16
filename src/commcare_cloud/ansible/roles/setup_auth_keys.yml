@@ -14,7 +14,7 @@
   become: true
   fetch:
     src: "{{ user_home.stdout }}/.ssh/id_rsa.pub"
-    dest: /tmp/id_rsa.tmp
+    dest: /tmp/id_rsa_{{inventory_hostname}}.tmp
     flat: yes
     fail_on_missing: yes
 
@@ -23,10 +23,10 @@
   authorized_key:
     user: "{{userTo}}"
     state: "{{ state }}"
-    key: "{{ lookup('file', '/tmp/id_rsa.tmp') }}"
+    key: "{{ lookup('file', '/tmp/id_rsa_' + inventory_hostname + '.tmp') }}"
   delegate_to: "{{ item }}"
   ignore_errors: "{{ ansible_check_mode }}"
   with_items: "{{ hostTo }}"
 
 - name: Deleting temp files
-  local_action: file path=/tmp/id_rsa.tmp state=absent
+  local_action: file path=/tmp/id_rsa_{{inventory_hostname}}.tmp state=absent

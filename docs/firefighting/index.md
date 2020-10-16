@@ -139,6 +139,28 @@ Monitors are setup to ping the proxy instead of couch instance directly, so the 
     b. It could also have ballooned (ICDS) which is out of our control
 5. If it's unresponsive and it's out of our control to fix it at the time, go to the proxy machine and comment out the fault node from the nginx config. This will stop sending requests to that server, but it will continue to replicate. When the slowness is over you can uncomment this line and begin proxying reads to it again
 
+## Couch node data disk is high
+
+Your best bet if the disk is around 80% is to compact large dbs.
+If this happens regularly, you're probably better off adding more disk.
+
+Log onto a machine that has access to couchdb:
+
+```
+cchq ${env} ssh django_manage
+```
+
+and then post to the _compact endpoints of the larger dbs, e.g.:
+
+```
+curl -X POST http://${couch_proxy}:25984/commcarehq__auditcare/_compact -v -u ${couch_username} -H 'Content-Type: application/json' -d'{}'
+curl -X POST http://${couch_proxy}:25984/commcarehq__receiverwrapper/_compact -v -u ${couch_username} -H 'Content-Type: application/json' -d'{}'
+```
+
+where `${couch_proxy}` is the address of the couchdb2_proxy machine (`cchq ${env} lookup couchdb2_proxy`)
+and ${couch_username} is the value of the `COUCH_USERNAME` secret (`cchq ${env} secrets view COUCH_USERNAME`).
+You will also need to enter the value of the `COUCH_PASSWORD` secret (`cchq ${env} secrets view COUCH_PASSWORD`).
+
 ## Couch node data disk is full
 
 ### Stop routing data to the node

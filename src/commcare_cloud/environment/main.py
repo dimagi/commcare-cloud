@@ -10,6 +10,7 @@ from datetime import datetime
 import yaml
 from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
+from ansible.parsing.utils.yaml import from_yaml
 from ansible.vars.manager import VariableManager
 from memoized import memoized, memoized_property
 
@@ -27,6 +28,8 @@ from commcare_cloud.environment.schemas.terraform import TerraformConfig
 from commcare_cloud.environment.schemas.prometheus import PrometheusConfig
 from commcare_cloud.environment.users import UsersConfig
 from six.moves import map
+
+from commcare_cloud.yaml import PreserveUnsafeDumper
 
 
 class Environment(object):
@@ -101,7 +104,7 @@ class Environment(object):
     def public_vars(self):
         """contents of public.yml, as a dict"""
         with open(self.paths.public_yml) as f:
-            return yaml.safe_load(f)
+            return from_yaml(f)
 
     @memoized_property
     def _disallowed_public_variables(self):
@@ -112,13 +115,13 @@ class Environment(object):
     @memoized_property
     def meta_config(self):
         with open(self.paths.meta_yml) as f:
-            meta_json = yaml.safe_load(f)
+            meta_json = from_yaml(f)
         return MetaConfig.wrap(meta_json)
 
     @memoized_property
     def postgresql_config(self):
         with open(self.paths.postgresql_yml) as f:
-            postgresql_json = yaml.safe_load(f)
+            postgresql_json = from_yaml(f)
         postgresql_config = PostgresqlConfig.wrap(postgresql_json)
         postgresql_config.replace_hosts(self)
         postgresql_config.check()
@@ -128,7 +131,7 @@ class Environment(object):
     def elasticsearch_config(self):
         try:
             with open(self.paths.elasticsearch_yml) as f:
-                elasticsearch_json = yaml.safe_load(f)
+                elasticsearch_json = from_yaml(f)
         except IOError:
             # It's fine to omit this file
             elasticsearch_json = {}
@@ -141,7 +144,7 @@ class Environment(object):
     @memoized_property
     def proxy_config(self):
         with open(self.paths.proxy_yml) as f:
-            proxy_json = yaml.safe_load(f)
+            proxy_json = from_yaml(f)
         proxy_config = ProxyConfig.wrap(proxy_json)
         proxy_config.check()
         return proxy_config
@@ -150,7 +153,7 @@ class Environment(object):
     def prometheus_config(self):
         try:
             with open(self.paths.prometheus_yml) as f:
-                prometheus_json = yaml.safe_load(f)
+                prometheus_json = from_yaml(f)
         except IOError:
             return None
         return PrometheusConfig.wrap(prometheus_json)
@@ -162,7 +165,7 @@ class Environment(object):
         present_users = []
         for user_group_from_yml in user_groups_from_yml:
             with open(self.paths.get_users_yml(user_group_from_yml)) as f:
-                user_group_json = yaml.safe_load(f)
+                user_group_json = from_yaml(f)
             present_users += user_group_json['dev_users']['present']
             absent_users += user_group_json['dev_users']['absent']
         self.check_user_group_absent_present_overlaps(absent_users, present_users)
@@ -173,7 +176,7 @@ class Environment(object):
     def terraform_config(self):
         try:
             with open(self.paths.terraform_yml) as f:
-                config_yml = yaml.safe_load(f)
+                config_yml = from_yaml(f)
         except IOError:
             return None
         config_yml['environment'] = config_yml.get('environment', self.meta_config.env_monitoring_id)
@@ -183,7 +186,7 @@ class Environment(object):
     def aws_config(self):
         try:
             with open(self.paths.aws_yml) as f:
-                config_yml = yaml.safe_load(f)
+                config_yml = from_yaml(f)
         except IOError:
             config_yml = {}
         return AwsConfig.wrap(config_yml)
@@ -207,9 +210,9 @@ class Environment(object):
         includes environmental-defaults/app-processes.yml as well as <env>/app-processes.yml
         """
         with open(self.paths.app_processes_yml_default) as f:
-            app_processes_json = yaml.safe_load(f)
+            app_processes_json = from_yaml(f)
         with open(self.paths.app_processes_yml) as f:
-            app_processes_json.update(yaml.safe_load(f))
+            app_processes_json.update(from_yaml(f))
 
         raw_app_processes_config = AppProcessesConfig.wrap(app_processes_json)
         raw_app_processes_config.check()
@@ -230,9 +233,9 @@ class Environment(object):
         includes environmental-defaults/fab-settings.yml as well as <env>/fab-settings.yml
         """
         with open(self.paths.fab_settings_yml_default) as f:
-            fab_settings_json = yaml.safe_load(f)
+            fab_settings_json = from_yaml(f)
         with open(self.paths.fab_settings_yml) as f:
-            fab_settings_json.update(yaml.safe_load(f) or {})
+            fab_settings_json.update(from_yaml(f) or {})
 
         fab_settings_config = FabSettingsConfig.wrap(fab_settings_json)
         return fab_settings_config
@@ -367,7 +370,7 @@ class Environment(object):
         generated_variables.update(self.secrets_backend.get_generated_variables())
 
         with open(self.paths.generated_yml, 'w') as f:
-            f.write(yaml.safe_dump(generated_variables))
+            f.write(yaml.dump(generated_variables, Dumper=PreserveUnsafeDumper))
 
     def translate_host(self, host, filename_for_error):
         if host == 'None' or host in self.inventory_manager.hosts:

@@ -1,13 +1,13 @@
 postgres_override:
   allow_dump_from_pgstandby: yes
-  postgresql_max_connections: 300
+  postgresql_max_connections: 500
   postgresql_version: '9.6'
   postgresql_checkpoint_completion_target: '0.7'
   postgresql_wal_buffers: 16MB
   postgresql_max_wal_size: 2GB
 
 pgbouncer_override:
-  pgbouncer_default_pool: 290
+  pgbouncer_default_pool: 490
   pgbouncer_max_connections: 10000
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
