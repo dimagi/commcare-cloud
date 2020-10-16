@@ -15,7 +15,7 @@ if [ "$PIDS" != "" ]; then
   echo "Process information with start and elapsed time:"
   for pid in ${PIDS}
   do
-     echo "`ps -p ${pid} -o pid,start,etime`"
+     echo "`ps -p ${pid} -o pid,start,etime,cmd`"
      echo "kill -${SIG_NAME} ${pid}"
      kill -${SIG_NAME} ${pid}
   done
