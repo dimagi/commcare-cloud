@@ -1,14 +1,18 @@
 dev_users:
   present:
+    - aphulera
     - biyeun
     - cellowitz
     - ctsims
     - czue
+    - dchung
     - dmiller
     - droberts
     - esoergel
     - frener
+    - gherceg
     - jschweers
+    - knguyen
     - mkangia
     - nhooper
     - rnegi
@@ -17,11 +21,8 @@ dev_users:
     - sravfeyn
     - schauhan
     - sbansal
-    - spokhriyal
-    - aphulera
-    - knguyen
-    - gherceg
     - sherbers
+    - spokhriyal
   absent:
     - astone
     - wpride
