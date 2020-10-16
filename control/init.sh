@@ -94,7 +94,7 @@ if [ -z "$(which manage-commcare-cloud)" ]; then
     # first time install need requirements installed in serial
     # installs strictly what's in requirements.txt, so versions are pre-pinned
     cd ${COMMCARE_CLOUD_REPO}
-    pip install --quiet pip-tools
+    pip install --quiet --upgrade pip-tools
     pip-sync --quiet $REQUIREMENTS
     pip install --quiet --editable .
     cd -
@@ -102,7 +102,7 @@ else
     {
         COMMCARE=
         cd ${COMMCARE_CLOUD_REPO}
-        pip install --quiet pip-tools
+        pip install --quiet --upgrade pip-tools
         pip-sync --quiet $REQUIREMENTS
         pip install --quiet --editable .
         cd -
