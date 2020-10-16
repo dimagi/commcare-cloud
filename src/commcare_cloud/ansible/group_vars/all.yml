@@ -156,6 +156,11 @@ keepalived_recepient_email: '{{ root_email }}'
 # if hourly backups are enabled. 
 nadir_hour_frequency: 3
 
+# celery variables to soft/hard kill tasks running for long hours.
+# To enable cron job to hard/soft kill celery processes set these thresholds. Use null/~ to disable cron job.
+celery_hours_before_hard_kill: ~
+celery_hours_before_soft_kill: ~
+
 # HACK work around pip install error
 #
 # Could not fetch URL https://pypi.python.org/...: There was a problem confirming the ssl certificate:
