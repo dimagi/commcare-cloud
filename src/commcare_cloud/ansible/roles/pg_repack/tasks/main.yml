@@ -47,10 +47,12 @@
     postgresql_ext:
       name: pg_repack
       db: "{{ item.database }}"
-      port: "{{ postgresql_port }}"
+      port: "{{ pg_bouncer_port|default(5432) }}"
+      login_user: "{{ postgres_users.root.username }}"
+      login_password: "{{ postgres_users.root.password }}"
       version: "{{ pg_repack_version }}"
     loop: "{{ pg_repack.get(inventory_hostname, []) }}"
-  when: pg_repack_stat.stat.exists == False or pg_repack_installed_version.stdout.split()[1] != pg_repack_version
+  when: pg_repack_stat.stat.exists == False or pg_repack_installed_version.stdout.split()[1] == pg_repack_version
 
 - name: Create pg_repack script
   become: yes
@@ -65,7 +67,7 @@
   become: yes
   cron:
     name: "pg_repack {{ item.database }}"
-    job: "{{ pg_repack_script_path }} --pg-repack {{ postgres_install_dir }}/bin/pg_repack --dead-tup-ratio {{ item.ratio|default(0.05) }} -d {{ item.database }}{% if item.tables|default(None) %} --tables {{ item.tables|join(' ') }}{% endif %}"
+    job: "{{ pg_repack_script_path }} --pg-repack {{ postgres_install_dir }}/bin/pg_repack --host {{ item.host|default('localhost') }} --port {{ pg_repack_port|default(5432) }} -U {{ postgres_users.root.username|default(None) }} -W {{ postgres_users.root.password|default(None) }} -k --table-size-limit {{ item.table_size|default(10) }} --dead-tup-ratio {{ item.ratio|default(0.05) }} -d {{ item.database }}{% if item.tables|default(None) %} --tables {{ item.tables|join(' ') }}{% endif %}"
     minute: "30"
     hour: "{{ nadir_hour + 2 }}"
     user: postgres
