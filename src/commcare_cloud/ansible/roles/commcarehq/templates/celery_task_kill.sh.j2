@@ -11,9 +11,12 @@ SIG_NAME=$2
 PIDS=$(ps -eo comm,pid,etimes | awk '/celeryd:/ { if ( $4 > '"${MAX_MINUTES}"' ) { print $3 } }');
 
 if [ "$PIDS" != "" ]; then
+  echo "Killing stale celery workers:"
+  echo "Process information with start and elapsed time:"
   for pid in ${PIDS}
   do
-     #echo "kill -${SIG_NAME} ${pid}"
+     echo "`ps -p ${pid} -o pid,start,etime`"
+     echo "kill -${SIG_NAME} ${pid}"
      kill -${SIG_NAME} ${pid}
   done
 fi
