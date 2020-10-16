@@ -16,7 +16,6 @@ if [ "$PIDS" != "" ]; then
   for pid in ${PIDS}
   do
      echo "`ps -p ${pid} -o pid,start,etime,cmd`"
-     echo "kill -${SIG_NAME} ${pid}"
      kill -${SIG_NAME} ${pid}
   done
 fi
