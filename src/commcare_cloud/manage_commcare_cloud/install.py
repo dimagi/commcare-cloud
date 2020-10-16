@@ -24,15 +24,16 @@ class Install(CommandBase):
         put_virtualenv_bin_on_the_path()
         if not os.path.exists(ANSIBLE_ROLES_PATH):
             os.makedirs(ANSIBLE_ROLES_PATH)
-        
+
         if not os.path.exists(ANSIBLE_COLLECTIONS_PATHS):
             os.makedirs(ANSIBLE_COLLECTIONS_PATHS)
 
         env['ANSIBLE_ROLES_PATH'] = ANSIBLE_ROLES_PATH
         env['ANSIBLE_COLLECTIONS_PATHS'] = ANSIBLE_COLLECTIONS_PATHS
-        cmd_roles_parts = ['ansible-galaxy', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml')]
-        cmd_collection_parts = ['ansible-galaxy', 'collection', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml')]
-        
+        requirements_yml = os.path.join(ANSIBLE_DIR, 'requirements.yml')
+        cmd_roles_parts = ['ansible-galaxy', 'install', '-f', '-r', requirements_yml]
+        cmd_collection_parts = ['ansible-galaxy', 'collection', 'install', '-f', '-r', requirements_yml]
+
         for cmd_parts in (cmd_roles_parts, cmd_collection_parts):
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print_command(cmd)
