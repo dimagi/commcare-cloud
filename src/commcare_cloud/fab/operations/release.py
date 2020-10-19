@@ -28,7 +28,6 @@ from ..const import (
     KEEP_UNTIL_PREFIX,
     FORMPLAYER_BUILD_DIR,
     ROLES_CONTROL)
-from commcare_cloud.fab.utils import pip_install
 from .formplayer import (
     clean_formplayer_releases,
     formplayer_is_running_from_old_release_location,
@@ -297,56 +296,32 @@ def update_virtualenv(full_cluster=True):
     """
     roles_to_use = _get_roles(full_cluster)
 
-    def pip_uninstall(cmd_prefix, requirements=(), fail_if_absent=False):
-        assert requirements
-        r_flags = []
-        for requirements_file in requirements:
-            if fail_if_absent or files.exists(requirements_file, use_sudo=True):
-                r_flags.extend(['-r', requirements_file])
-        if r_flags:
-            r_flags = " ".join(r_flags)
-            sudo("{} pip uninstall {} --yes".format(cmd_prefix, r_flags))
-
     @roles(roles_to_use)
     @parallel
     def update():
-
+        join = functools.partial(posixpath.join, env.code_root)
         exists = functools.partial(files.exists, use_sudo=True)
 
         # Optimization if we have current setup (i.e. not the first deploy)
         if exists(env.py3_virtualenv_current) and not exists(env.py3_virtualenv_root):
             _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
 
-        def _update_virtualenv(virtualenv_root, filepath, action, kwargs):
-            with cd(env.code_root):
-                cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
-                    env.sudo_user, virtualenv_root)
+        requirements_files = [join("requirements", "prod-requirements.txt")]
+        requirements_files.extend(
+            join(repo.relative_dest, repo.requirements_path)
+            for repo in env.ccc_environment.meta_config.git_repositories
+            if repo.requirements_path
+        )
 
-                if action == "uninstall":
-                    pip_uninstall(cmd_prefix, requirements=[filepath], **kwargs)
+        with cd(env.code_root):
+            cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
+                env.sudo_user, env.py3_virtualenv_root)
 
-                if action == "install":
-                    pip_install(cmd_prefix, timeout=60, quiet=True, proxy=env.http_proxy, requirements=[filepath])
-
-        requirements_files = [
-            ("uninstall-requirements.txt", "uninstall", {"fail_if_absent": True}),
-            ("prod-requirements.txt", "install", {}),
-            ("uninstall-requirements-after-install.txt", "uninstall", {"fail_if_absent": False}),
-        ]
-        for filename, action, kwargs in requirements_files:
-            _update_virtualenv(
-                env.py3_virtualenv_root,
-                posixpath.join(env.code_root, 'requirements', filename),
-                action, kwargs
-            )
-
-        for repo in env.ccc_environment.meta_config.git_repositories:
-            if repo.requirements_path:
-                _update_virtualenv(
-                    env.py3_virtualenv_root,
-                    posixpath.join(env.code_root, repo.relative_dest, repo.requirements_path),
-                    "install", {}
-                )
+            proxy = " --proxy={}".format(env.http_proxy) if env.http_proxy else ""
+            sudo("{} pip install --quiet --upgrade --timeout=60{} pip-tools".format(
+                cmd_prefix, proxy))
+            sudo("{} pip-sync --quiet --pip-args='--timeout=60{}' {}".format(
+                cmd_prefix, proxy, " ".join(requirements_files)))
 
     return update
 
@@ -360,6 +335,7 @@ def create_code_dir(full_cluster=True):
         sudo('mkdir -p {}'.format(env.code_root))
 
     return create
+
 
 @roles(ROLES_DEPLOY)
 def kill_stale_celery_workers(delay=0):
