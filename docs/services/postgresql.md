@@ -133,9 +133,12 @@ dbs:
 
 ## Advanced tasks
 
+- [Upgrading](postgresql/upgrade.md)
+- [Upgrading CitusDB](postgresql/upgrade_citusdb.md)
 - [Moving partitioned databases](postgresql/move-partitioned-database.md)
 - [Adding hot standby node](postgresql/add-standby-node.md)
 - [Migrating plproxy node](postgresql/migrating_plproxy.md)
+
 ---
 
 [︎⬅︎ Overview](..)
