@@ -8,7 +8,7 @@ newest first.
 ## Changelog
 
 ### **2020-10-01** [ES upgrade from 2.4.6 to 7.9.1](0037-upgrade-to-elasticsearch7.md)
-This change upgrade Elasticsearch from 2.4.6 to 7.9.1 version.
+This change upgrades Elasticsearch from 2.4.6 to 7.9.1 version.
 CommCare HQ releases after **Todo; decide** will not continue to support Elasticsearch 2.4.6,
 so we strongly recommend applying this change before then.
 
