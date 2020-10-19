@@ -1,15 +1,12 @@
-# To remove celery tasks that are running for more than 36 hours.
-#
+# To remove old celery tasks that are running from long time
+# SoftKill: SIGTERM, HardKill: SIGKILL
+
 - name: Celery cron jobs for soft kill tasks running from last 36h
   become: true
   cron:
     name: "Sending SIGTERM to celery processes running morethan 36h"
-    job: "kill -15 $(ps -eo comm,pid,etimes | awk '/celeryd:/ {if ($4 > 36*60*60) { print $3 }}')"
-    minute: 15
-    hour: "*"
-    weekday: "0,1,2,3,4,5,6"
-    user: root
     cron_file: celery_sigterm
+    state: absent
   tags:
     - cron
 
@@ -17,11 +14,46 @@
   become: true
   cron:
     name: "Sending SIGTERM to celery processes running morethan 46h"
-    job: "kill -9 $(ps -eo comm,pid,etimes | awk '/celeryd:/ {if ($4 > 46*60*60) { print $3 }}')"
+    cron_file: celery_sigkill
+    state: absent
+  tags:
+    - cron
+
+- name: Copy celery cron script
+  become: yes
+  template:
+    src: "celery_task_kill.sh.j2"
+    dest: "/usr/local/sbin/celery_task_kill.sh"
+    group: root
+    owner: root
+    mode: 0744
+    backup: yes
+  when: "celery_hours_before_soft_kill or celery_hours_before_hard_kill"
+  tags:
+    - cron
+
+- name: Celery cron jobs to soft kill old tasks
+  become: true
+  cron:
+    name: "Soft kill old celery processes"
+    job: "/usr/local/sbin/celery_task_kill.sh {{ celery_hours_before_soft_kill }} SIGTERM "
+    minute: 15
+    hour: "*"
+    user: root
+    cron_file: celery_sigterm
+    state: "{{ 'present' if celery_hours_before_soft_kill else 'absent' }}"
+  tags:
+    - cron
+
+- name: Celery cron job to kill old tasks
+  become: true
+  cron:
+    name: "Hard kill old celery processes"
+    job: "/usr/local/sbin/celery_task_kill.sh {{ celery_hours_before_hard_kill }} SIGKILL "
     minute: 0
     hour: "*"
-    weekday: "0,1,2,3,4,5,6"
     user: root
     cron_file: celery_sigkill
+    state: "{{ 'present' if celery_hours_before_hard_kill else 'absent' }}"
   tags:
     - cron

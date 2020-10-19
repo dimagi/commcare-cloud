@@ -1,15 +1,21 @@
 ---
 - name: Start postgres
   become: yes
-  action: service name=postgresql args="{{ postgresql_version }}" state=started
+  service:
+    name: "postgresql@{{ postgresql_version }}-main"
+    state: started
 
 - name: Restart postgres
   become: yes
-  action: service name=postgresql args="{{ postgresql_version }}" state=restarted
+  service:
+    name: "postgresql@{{ postgresql_version }}-main"
+    state: restarted
 
 - name: Reload postgres
   become: yes
-  action: service name=postgresql args="{{ postgresql_version }}" state=reloaded
+  service:
+    name: "postgresql@{{ postgresql_version }}-main"
+    state: reloaded
 
 - name: reload systemd
   become: yes

@@ -418,7 +418,7 @@ servers:
     count: 3
 
   - server_name: "pillow1-production"
-    server_instance_type: r5a.4xlarge
+    server_instance_type: r5a.8xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 150
@@ -433,13 +433,13 @@ servers:
     volume_size: 200
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 42
+    count: 84
 
   - server_name: "redis0-production"
-    server_instance_type: r5.xlarge
+    server_instance_type: r5.4xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 60
+    volume_size: 600
     volume_encrypted: no
     group: "redis"
     os: bionic
@@ -506,31 +506,31 @@ rds_instances:
     engine_version: 9.6.15
 
   - identifier: "pgshard1-production"
-    instance_type: "db.t3.xlarge"
+    instance_type: "db.m5.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard2-production"
-    instance_type: "db.t3.xlarge"
+    instance_type: "db.m5.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard3-production"
-    instance_type: "db.t3.xlarge"
+    instance_type: "db.m5.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard4-production"
-    instance_type: "db.t3.xlarge"
+    instance_type: "db.m5.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard5-production"
-    instance_type: "db.t3.xlarge"
+    instance_type: "db.m5.xlarge"
     storage: 250
     max_storage: 2500
     multi_az: true

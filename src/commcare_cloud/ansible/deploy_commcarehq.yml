@@ -95,12 +95,6 @@
       when: prometheus_monitoring_enabled|default(False)
   tags: services
 
-- name: Errand Boy Config
-  hosts: celery,webworkers
-  tasks:
-    - include_tasks: roles/commcarehq/tasks/errand_boy.yml
-  tags: services
-
 # https://stackoverflow.com/a/30372407
 - name: Remove old supervisor files
   hosts:
@@ -120,7 +114,6 @@
           - "{{ formplayer_managed_files|default([]) }}"
           - "{{ mgmt_cmd_managed_files|default([]) }}"
           - "{{ prometheus_managed_files|default([]) }}"
-          - "{{ errand_boy_managed_files|default([]) }}"
           - "{{ prometheus_django_runner_managed_files|default([]) }}"
     - shell: find {{ service_home|quote }} -type f
       register: contents
@@ -137,5 +130,4 @@
 - name: Celery tasks cleanup Cron job
   hosts: celery
   tasks:
-    - include_tasks: roles/commcarehq/tasks/celery_cron.yml
-  tags: services
+    - {import_tasks: 'roles/commcarehq/tasks/celery_cron.yml', tags: ['services']}

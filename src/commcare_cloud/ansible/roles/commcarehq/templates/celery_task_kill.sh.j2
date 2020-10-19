@@ -1,0 +1,21 @@
+#!/bin/bash 
+
+# Process to soft and hard kill old celery jobs.
+#
+
+HOURS=$1
+MAX_MINUTES=`expr ${HOURS} \* 60 \* 60`
+
+SIG_NAME=$2
+
+PIDS=$(ps -eo comm,pid,etimes | awk '/celeryd:/ { if ( $4 > '"${MAX_MINUTES}"' ) { print $3 } }');
+
+if [ "$PIDS" != "" ]; then
+  echo "Killing stale celery workers:"
+  echo "Process information with start and elapsed time:"
+  for pid in ${PIDS}
+  do
+     echo "`ps -p ${pid} -o pid,start,etime,cmd`"
+     kill -${SIG_NAME} ${pid}
+  done
+fi
