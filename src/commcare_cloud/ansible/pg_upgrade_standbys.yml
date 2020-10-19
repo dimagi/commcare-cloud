@@ -21,7 +21,7 @@
       {{ inventory_hostname }}:/opt/data/postgresql --info=all
     log_file: "/opt/data/postgresql/pg_upgrade_{{ old_version }}_{{ new_version }}_{{ inventory_hostname }}_rsync.log"
   vars_files:
-    - ../../roles/postgresql_base/defaults/main.yml
+    - roles/postgresql_base/defaults/main.yml
   vars_prompt:
     - name: confirm_upgrade
       prompt: |
@@ -38,7 +38,7 @@
         that: confirm_upgrade == 'y'
 
     - include_vars:
-        file: ../../roles/citusdb/defaults/main.yml
+        file: roles/citusdb/defaults/main.yml
       when: is_citus
 
     - service_facts:
@@ -87,7 +87,7 @@
     - name: create "recovery.conf" for v{{old_version}}
       become_user: postgres
       template:
-        src: ../../roles/postgresql_base/templates/recovery.conf.j2
+        src: roles/postgresql_base/templates/recovery.conf.j2
         dest: "/opt/data/postgresql/{{ old_version }}/main/recovery.conf"
 
     - name: update config for standby v{{new_version}}

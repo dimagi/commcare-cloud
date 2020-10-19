@@ -26,7 +26,7 @@
       -d /etc/postgresql/{{ old_version }}/main -D /etc/postgresql/{{ new_version }}/main
       --jobs {{ ansible_processor_vcpus }} --link
   vars_files:
-    - ../../roles/postgresql_base/defaults/main.yml
+    - roles/postgresql_base/defaults/main.yml
   vars_prompt:
     - name: confirm_upgrade
       prompt: |
@@ -50,7 +50,7 @@
         that: confirm_upgrade == 'y'
 
     - include_vars:
-        file: ../../roles/citusdb/defaults/main.yml
+        file: roles/citusdb/defaults/main.yml
       when: is_citus
 
     - name: Check PostgreSQL version

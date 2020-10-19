@@ -18,7 +18,7 @@
     is_standby: "{{ inventory_hostname in groups.get('pg_standby') }}"
     log_file: "/opt/data/postgresql/pg_upgrade_{{old_version}}_{{new_version}}.log"
   vars_files:
-    - ../../roles/postgresql_base/defaults/main.yml
+    - roles/postgresql_base/defaults/main.yml
   vars_prompt:
     - name: confirm_upgrade
       prompt: |
@@ -37,11 +37,11 @@
         that: confirm_upgrade == 'y'
 
     - include_vars:
-        file: ../../roles/citusdb/defaults/main.yml
+        file: roles/citusdb/defaults/main.yml
       when: is_citus
 
     - include_vars:
-        file: ../../roles/citusdb/vars/pgbouncer_workers.yml
+        file: roles/citusdb/vars/pgbouncer_workers.yml
       when: is_citus
 
     - service_facts:
