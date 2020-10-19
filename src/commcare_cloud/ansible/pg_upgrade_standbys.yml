@@ -1,7 +1,7 @@
 ---
 # Stage 2 of PostgreSQL upgrade
 # Usage:
-#   commcare-cloud <env> ansible-playbook service_playbooks/postgresql/upgrade_standbys.yml --limit pg0,pg1 \
+#   commcare-cloud <env> ansible-playbook pg_upgrade_standbys.yml --limit pg0,pg1 \
 #     -e old_version=9.6 -e new_version=12
 #     [-e old_port=5432 -e new_port=5433]
 #
@@ -109,4 +109,4 @@
         seconds: 0
         prompt: |
 
-          Sync complete. Use 'service_playbooks/postgresql/finalize_upgrade.yml' to finalize the upgrade.
+          Sync complete. Use 'pg_upgrade_finalize.yml' to finalize the upgrade.

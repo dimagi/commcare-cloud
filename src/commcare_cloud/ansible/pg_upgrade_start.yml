@@ -2,7 +2,7 @@
 # Stage 1 of PostgreSQL upgrade
 #
 # Usage:
-#   commcare-cloud <env> ansible-playbook service_playbooks/postgresql/upgrade.yml --limit pg0,pg1 \
+#   commcare-cloud <env> ansible-playbook pg_upgrade_start.yml --limit pg0,pg1 \
 #     -e old_version=9.6 -e new_version=12 \
 #     [-e old_port=5432 -e new_port=5433]
 #
@@ -272,9 +272,9 @@
 
           If there are errors during the upgrade:
             1. DO NOT START ANY SERVICES
-            2. Use the 'service_playbooks/postgresql/rollback_upgrade.yml' to roll back the upgrade if necessary
+            2. Use the 'pg_upgrade_rollback.yml' to roll back the upgrade if necessary
 
           Once the upgrade processes are complete and successful:
-            1. Run the 'service_playbooks/postgresql/upgrade_standbys.yml' playbook to sync
+            1. Run the 'pg_upgrade_standbys.yml' playbook to sync
                the standbys with the primaries.
-            2. Run the 'service_playbooks/postgresql/finalize_upgrade.yml' to finalize the upgrade.
+            2. Run the 'pg_upgrade_finalize.yml' to finalize the upgrade.
