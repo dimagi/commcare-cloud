@@ -118,6 +118,7 @@
         name: pgbouncer
       vars:
         - postgresql_port: "{{ citus_postgresql_port }}"
+        - skip_monit: yes
       when: is_citus and inventory_hostname in groups.citusdb_worker
 
     - name: Create replication slots
