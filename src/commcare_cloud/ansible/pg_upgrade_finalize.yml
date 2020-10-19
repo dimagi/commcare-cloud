@@ -111,7 +111,7 @@
 
     - name: copy server certificates
       become_user: postgres
-      command: "cp /opt/data/postgresql/{{ old_version}}/server.* /opt/data/postgresql/{{ new_version}}/"
+      shell: "cp /opt/data/postgresql/{{ old_version}}/main/server.* /opt/data/postgresql/{{ new_version}}/main/"
 
     - name: update pgbouncer config on citusdb workers
       import_role:
