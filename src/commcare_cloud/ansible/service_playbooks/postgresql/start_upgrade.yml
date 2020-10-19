@@ -68,7 +68,14 @@
         that: "force|default('no') == 'yes' or not log_file_stat.stat.exists"
         msg: "Upgrade log file exists. Run with '-e force=yes' to upgrade anyway."
 
-    - name: Ensure new version is stopped
+    - name: Disable Monit for v{{ new_version }}
+      monit:
+        name: "postgresql_{{ new_version }}"
+        state: unmonitored
+      register: monit_result
+      failed_when: monit_result.failed and 'process not presently configured with monit' not in monit_result.msg
+
+    - name: Ensure v{{ new_version }} stopped
       service:
         name: "postgresql@{{ new_version}}-main"
         state: stopped
@@ -171,13 +178,18 @@
         msg: "Replication delay is high ({{ replication_delay.stdout | int / 1000 }}s). Aborting."
       when: inventory_hostname in groups.get('pg_standby', []) and replication_delay.stdout | int > 1000
 
-    - name: Stop primaries
+    - name: Disable monit for v{{ old_version }}
+      monit:
+        name: "postgresql_{{ old_version }}"
+        state: unmonitored
+
+    - name: Stop primaries for v{{ old_version }}
       service:
         name: "postgresql@{{ old_version }}-main"
         state: stopped
       when: hot_standby_master is not defined
 
-    - name: Stop standbys
+    - name: Stop standbys for v{{ old_version }}
       service:
         name: "postgresql@{{ old_version }}-main"
         state: stopped
@@ -210,13 +222,18 @@
         - name: Start primaries
           delegate_to: "{{ hot_standby_master }}"
           service:
-            name: postgresql
+            name: "postgresql@{{ old_version }}-main"
             state: started
 
         - name: Start standbys
           service:
-            name: postgresql
+            name: "postgresql@{{ old_version }}-main"
             state: started
+
+        - name: Re-enable monit for v{{ old_version }}
+          monit:
+            name: "postgresql_{{ old_version }}"
+            state: monitored
 
         - fail:
             msg: Abort

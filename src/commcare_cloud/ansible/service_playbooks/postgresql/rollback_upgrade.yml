@@ -54,3 +54,9 @@
       service:
         name: "postgresql@{{ old_version }}-main"
         state: started
+
+    - name: Re-enable monit for v{{ old_version }}
+      become: yes
+      monit:
+        name: "postgresql_{{ old_version }}"
+        state: monitored
