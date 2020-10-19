@@ -463,7 +463,7 @@ servers:
     os: bionic
 
   - server_name: "pgbouncer3-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: m5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
