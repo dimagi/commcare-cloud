@@ -3,7 +3,7 @@
 # Usage:
 #   commcare-cloud <env> ansible-playbook pg_upgrade_standbys.yml --limit pg0,pg1 \
 #     -e old_version=9.6 -e new_version=12
-#     [-e old_port=5432 -e new_port=5433]
+#     [-e old_port=5432]
 #
 - hosts: pg_standby
   any_errors_fatal: true
@@ -12,9 +12,8 @@
     new_version_service: "postgresql@{{ new_version }}-main.service"
     old_version_service: "postgresql@{{ old_version }}-main.service"
     is_citus: "{{ inventory_hostname in groups.get('citusdb', []) }}"
-    target_port: "{{ citus_postgresql_port if is_citus else postgresql_port }}"
+    new_pg_port: "{{ citus_postgresql_port if is_citus else postgresql_port }}"
     old_pg_port: "{{ old_port|default(5432) }}"
-    new_pg_port: "{{ new_port|default(target_port) }}"
     rsync_command: |
       rsync -e 'ssh -oStrictHostKeyChecking=no' --archive --delete --hard-links --no-inc-recursive
       /opt/data/postgresql/{{ old_version }} /opt/data/postgresql/{{ new_version }}
