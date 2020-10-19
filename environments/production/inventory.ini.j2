@@ -55,6 +55,7 @@ hq_webworkers
 mobile_webworkers
 
 {{ __pgbouncer3__ }}
+{{ __pgbouncer4__ }}
 
 {{ __rds_pgmain0__ }}
 
@@ -83,6 +84,7 @@ rds_pgshard5
 rds_pgsynclog0
 
 [postgresql:children]
+pgbouncer4
 pgbouncer3
 remote_postgresql
 
