@@ -48,6 +48,8 @@
 - name: pgbouncer
   hosts: citusdb_worker
   become: true
+  vars:
+    - postgresql_port: "{{ citus_postgresql_port }}"
   vars_files:
     - roles/citusdb/defaults/main.yml
     - roles/citusdb/vars/pgbouncer_workers.yml
