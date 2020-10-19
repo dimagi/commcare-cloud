@@ -16,7 +16,7 @@
     old_pg_port: "{{ old_port|default(5432) }}"
     new_pg_port: "{{ new_port|default(target_port) }}"
     rsync_command: |
-      rsync -e 'ssh -oStrictHostKeyChecking=no' --archive --delete --hard-links --size-only --no-inc-recursive
+      rsync -e 'ssh -oStrictHostKeyChecking=no' --archive --delete --hard-links --no-inc-recursive
       /opt/data/postgresql/{{ old_version }} /opt/data/postgresql/{{ new_version }}
       {{ inventory_hostname }}:/opt/data/postgresql --info=all
     log_file: "/opt/data/postgresql/pg_upgrade_{{ old_version }}_{{ new_version }}_{{ inventory_hostname }}_rsync.log"
@@ -59,9 +59,9 @@
       register: rsync_dry_run
 
     - debug: var=rsync_dry_run
+    - debug: var=rsync_command
 
     - pause:
-        seconds: 0
         prompt: |
 
           You can monitor the following log files for rsync progress.
@@ -69,6 +69,9 @@
           {% for host in ansible_play_hosts %}
           cchq {{ deploy_env }} ssh {{ hostvars[host].hot_standby_master }} -l {{ commcare_cloud_remote_user }} -t sudo tail -f /opt/data/postgresql/pg_upgrade_{{ old_version }}_{{ new_version }}_{{ host }}_rsync.log
           {% endfor %}
+
+          Press [enter] to continue.
+      when: not ansible_check_mode
 
     - name: Sync data to standby
       become_user: postgres
