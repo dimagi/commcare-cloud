@@ -146,7 +146,7 @@
       when: not ansible_check_mode and is_standby
 
     - name: Re-enable monit for v{{ new_version }}
-      monit:
+      monit_tmp:
         name: "postgresql_{{ new_version }}"
         state: monitored
 

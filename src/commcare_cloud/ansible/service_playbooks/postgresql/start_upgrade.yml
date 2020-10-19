@@ -69,7 +69,7 @@
         msg: "Upgrade log file exists. Run with '-e force=yes' to upgrade anyway."
 
     - name: Disable Monit for v{{ new_version }}
-      monit:
+      monit_tmp:
         name: "postgresql_{{ new_version }}"
         state: unmonitored
       register: monit_result
@@ -179,7 +179,7 @@
       when: inventory_hostname in groups.get('pg_standby', []) and replication_delay.stdout | int > 1000
 
     - name: Disable monit for v{{ old_version }}
-      monit:
+      monit_tmp:
         name: "postgresql_{{ old_version }}"
         state: unmonitored
 
@@ -231,7 +231,7 @@
             state: started
 
         - name: Re-enable monit for v{{ old_version }}
-          monit:
+          monit_tmp:
             name: "postgresql_{{ old_version }}"
             state: monitored
 

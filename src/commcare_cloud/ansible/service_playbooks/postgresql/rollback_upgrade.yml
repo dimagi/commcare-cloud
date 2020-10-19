@@ -57,6 +57,6 @@
 
     - name: Re-enable monit for v{{ old_version }}
       become: yes
-      monit:
+      monit_tmp:
         name: "postgresql_{{ old_version }}"
         state: monitored
