@@ -253,7 +253,7 @@
           Upgrade commands started. Check {{ log_file }} for progress:
 
           {% for host in ansible_play_hosts|difference(groups.get('pg_standby', [])) %}
-          cchq {{ deploy_env }} ssh {{ host }} -l {{ commcare_cloud_remote_user }} -t sudo tail -f {{ log_file }}
+          cchq {{ deploy_env }} ssh {{ host }} -l {{ commcare_cloud_remote_user|default('ansible') }} -t sudo tail -f {{ log_file }}
           {% endfor %}
 
           If there are errors during the upgrade:

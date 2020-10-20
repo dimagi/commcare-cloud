@@ -66,7 +66,7 @@
           You can monitor the following log files for rsync progress.
 
           {% for host in ansible_play_hosts %}
-          cchq {{ deploy_env }} ssh {{ hostvars[host].hot_standby_master }} -l {{ commcare_cloud_remote_user }} -t sudo tail -f /opt/data/postgresql/pg_upgrade_{{ old_version }}_{{ new_version }}_{{ host }}_rsync.log
+          cchq {{ deploy_env }} ssh {{ hostvars[host].hot_standby_master }} -l {{ commcare_cloud_remote_user|default('ansible') }} -t sudo tail -f /opt/data/postgresql/pg_upgrade_{{ old_version }}_{{ new_version }}_{{ host }}_rsync.log
           {% endfor %}
 
           Press [enter] to continue.
