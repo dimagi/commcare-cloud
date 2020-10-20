@@ -1,8 +1,8 @@
 DEFAULT_POSTGRESQL_HOST: rds_pgmain0
 REPORTING_DATABASES:
   ucr: ucr
-  icds-ucr-citus: icds-ucr-citus
   aaa-data: aaa-data
+#  icds-ucr-citus: ucr
 
 pgbouncer_override:
   pgbouncer_default_pool: 290
@@ -53,9 +53,10 @@ dbs:
         shards: [820, 1023]
         pgbouncer_host: pgbouncer0
   custom:
-    - django_alias: icds-ucr-citus
-      name: icds-ucr-citus
-      django_migrate: True  # ICDS dashboard models are stored here
+    # remove citus from django
+    # django_alias: icds-ucr-citus
+    - name: icds-ucr-citus
+      django_migrate: False
       host: citus0
       pgbouncer_host: pgbouncer0
       pg_config:
