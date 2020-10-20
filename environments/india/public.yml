@@ -18,8 +18,8 @@ postgresql_backup_weeks: 1
 postgresql_backup_days: 1
 
 citus_version: 9.4
-citus_postgresql_version: 11
-citus_postgresql_port: 5432
+citus_postgresql_version: 12
+citus_postgresql_port: 5433
 
 aws_region: 'ap-south-1'
 
