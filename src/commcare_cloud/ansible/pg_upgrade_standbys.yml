@@ -49,16 +49,19 @@
         - "{{ new_version_service }}"
         - "{{ old_version_service }}"
 
-    - name: Sync data to standby (dry run)
-      become_user: postgres
-      delegate_to: "{{ hot_standby_master }}"
-      command: "{{ rsync_command }} --dry-run"
-      when: ansible_check_mode
-      check_mode: no
-      register: rsync_dry_run
+    - block:
+      - name: Sync data to standby (dry run)
+        become_user: postgres
+        delegate_to: "{{ hot_standby_master }}"
+        command: "{{ rsync_command }} --dry-run"
+        check_mode: no
+        register: rsync_dry_run
 
-    - debug: var=rsync_dry_run
-    - debug: var=rsync_command
+      - set_fact:
+          dry_run_output: {"command": "{{ rsync_command|replace('\n', ' ') }}", "truncated_output": "{{ rsync_dry_run.stdout_lines[-50:] }}"}
+      - debug: var=dry_run_output
+
+      when: ansible_check_mode
 
     - pause:
         prompt: |
