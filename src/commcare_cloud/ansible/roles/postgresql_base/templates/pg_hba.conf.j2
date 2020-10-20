@@ -14,7 +14,7 @@ local   replication     postgres                                peer
 
 {% for standby in groups.get('pg_standby', []) %}
 {% if hostvars[standby].hot_standby_master|default(None) == inventory_hostname %}
-host replication    {{ postgres_users.replication.username|default('hqrepl') }}     {{ standby }}   md5
+host replication    {{ postgres_users.replication.username|default('hqrepl') }}     {{ standby }}/32   md5
 {% endif %}
 {% endfor %}
 

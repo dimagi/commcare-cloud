@@ -1,0 +1,162 @@
+---
+# Stage 3 of PostgreSQL upgrade
+#
+# Usage:
+#   commcare-cloud <env> ansible-playbook pg_upgrade_finalize.yml --limit pg0,pg1 \
+#     -e old_version=9.6 -e new_version=12
+#
+- hosts: all
+  any_errors_fatal: true
+  become: yes
+  vars:
+    citus_database: "{{ postgresql_dbs.all | selectattr('host', 'in', groups.get('citusdb_master')) | first }}"
+    new_version_service: "postgresql@{{ new_version }}-main.service"
+    old_version_service: "postgresql@{{ old_version }}-main.service"
+    is_citus: "{{ inventory_hostname in groups.get('citusdb', []) }}"
+    new_pg_port: "{{ citus_postgresql_port if is_citus else postgresql_port }}"
+    is_standby: "{{ inventory_hostname in groups.get('pg_standby') }}"
+    log_file: "/opt/data/postgresql/pg_upgrade_{{old_version}}_{{new_version}}.log"
+  vars_files:
+    - roles/postgresql_base/defaults/main.yml
+  vars_prompt:
+    - name: confirm_upgrade
+      prompt: |
+
+        ===================================================================================
+        This will finalize the upgrade and start all the services including standbys.
+
+        Once this playbook completes it will not be possible to roll back without
+        restoring from a backup.
+        ===================================================================================
+        Respond with [y/N]
+      private: no
+  tasks:
+    - name: assert response
+      assert:
+        that: confirm_upgrade == 'y'
+
+    - include_vars:
+        file: roles/citusdb/defaults/main.yml
+      when: is_citus
+
+    - include_vars:
+        file: roles/citusdb/vars/pgbouncer_workers.yml
+      when: is_citus
+
+    - service_facts:
+
+    - assert:
+        that: force|default('no') == 'yes' or item not in ansible_facts.services or ansible_facts.services.get(item).state == 'stopped'
+        msg: |
+          {{ item }} is running. This is an unexpected state.
+
+          However it should still be safe to run this playbook though it may encounter errors.
+
+          To run it anyway use '-e force=yes'.
+      loop:
+        - "{{ new_version_service }}"
+        - "{{ old_version_service }}"
+
+    - name: Start primaries
+      service:
+        name: "{{ new_version_service }}"
+        state: started
+      when: not is_standby
+
+    - service_facts:
+
+    - assert:
+        that: ansible_facts.services.get(new_version_service).state == 'running'
+        msg: |
+          {{ new_version_service }} is not running. Check log files for the issue.
+      when: not ansible_check_mode and not is_standby
+
+    - block:
+        - name: Restore citus metadata
+          become: yes
+          become_user: postgres
+          shell: psql {{ citus_database.name }} -p {{ new_pg_port }} -q -c "SELECT citus_finish_pg_upgrade();"
+
+        - name: Verify citus master
+          become: yes
+          become_user: postgres
+          shell: psql {{ citus_database.name }} -p {{ new_pg_port }} -q -t -c "SELECT count(*) from pg_catalog.pg_dist_node;"
+          register: citus_worker_count
+
+        - assert:
+            that: citus_worker_count.stdout|trim|int == groups.citusdb_worker|difference(groups.get('pg_standby', []))|length
+            msg: |
+              Citus worker count in DB does not match expected count based on inventory:
+
+              {{ citus_worker_count.stdout|trim|int }} != groups.citusdb_worker|difference(groups.get('pg_standby', []))|length
+          when: not ansible_check_mode
+
+      when: is_citus and inventory_hostname in (groups.citusdb_master | difference(groups.get('pg_standby', [])))
+      rescue:
+        - pause:
+            seconds: 0
+            prompt: |
+
+              Restoring CitusDB metadata appears to have failed!
+
+              1. DO NOT START THE STANDBYS (yet)
+              2. If you are not able to recover the CitusDB metadata you may need to use the standbys for recovery.
+                  - The standbys have not yet been started so it should be possible to roll back the upgrade
+                    and promote them to primaries (assuming all nodes have standbys)
+                  - To rollback the standbys run the 'rollback_upgrade.yml' playbook
+                    limited to just the standby nodes
+                  - It will then be up to you to promote those to primaries and restore the full cluster
+              3. If all above fails you will need to restore from a backup and try again
+
+    - name: copy server certificates
+      become_user: postgres
+      shell: "cp /opt/data/postgresql/{{ old_version}}/main/server.* /opt/data/postgresql/{{ new_version}}/main/"
+
+    - name: update pgbouncer config on citusdb workers
+      import_role:
+        name: pgbouncer
+      vars:
+        - postgresql_port: "{{ citus_postgresql_port }}"
+        - skip_monit: yes
+      when: is_citus and inventory_hostname in groups.citusdb_worker
+
+    - name: Create replication slots
+      become_user: postgres
+      pg_replication_slot:
+        name: "{{ item }}"
+        port: "{{ new_pg_port }}"
+        state: present
+      vars:
+        ansible_ssh_pipelining: true
+      with_items: "{{ postgresql_replication_slots|default([]) }}"
+      when: not ansible_check_mode and not is_standby
+
+    - name: Start standbys
+      service:
+        name: "{{ new_version_service }}"
+        state: started
+      when: is_standby
+
+    - service_facts:
+
+    - assert:
+        that: ansible_facts.services.get(new_version_service).state == 'running'
+        msg: |
+          {{ new_version_service }} is not running. Check log files for the issue.
+      when: not ansible_check_mode and is_standby
+
+    - name: Re-enable monit for v{{ new_version }}
+      monit_tmp:
+        name: "postgresql_{{ new_version }}"
+        state: monitored
+
+    - pause:
+        seconds: 0
+        prompt: |
+
+          Upgrade complete. You should verify that all services are running correctly.
+
+          - Check the PostgreSQL log files for any error output (check primaries and standbys)
+          - Check the upgrade log ({{log_file}}) for any post-upgrade steps
+
+          To change ports or other settings use the "deploy_postgres.yml" or "deploy_citusdb.yml" playbooks.

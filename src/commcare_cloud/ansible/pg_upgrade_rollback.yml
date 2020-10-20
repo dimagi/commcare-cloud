@@ -1,0 +1,62 @@
+---
+# Rollback playbook for use in recovering from a failure during upgrade.
+#
+# Usage:
+#   commcare-cloud <env> ansible-playbook pg_upgrade_rollback.yml --limit pg0,pg1 \
+#     -e old_version=9.6 -e new_version=12
+#
+- hosts:
+    - all
+  any_errors_fatal: true
+  become: yes
+  vars:
+    new_version_service: "postgresql@{{ new_version }}-main.service"
+  vars_prompt:
+    - name: confirm_upgrade
+      prompt: |
+
+        ===================================================================================
+        Are you sure you want to rollback a PostgreSQL upgrade?
+
+        This can only be done if the v{{ new_version }} cluster has not been started yet.
+        ===================================================================================
+        Respond with [y/N]
+      private: no
+  tasks:
+    - name: assert response
+      assert:
+        that: confirm_upgrade == 'y'
+
+    - service_facts:
+
+    - assert:
+        that: new_version_service not in ansible_facts.services or ansible_facts.services.get(new_version_service).state == 'stopped'
+        msg: "{{ new_version_service }} is running. Rollback is not possible."
+
+    - name: Check upgrade in progress
+      become: yes
+      stat:
+        path: "/opt/data/postgresql/{{ old_version }}/main/global/pg_control.old"
+      register: pg_control
+      check_mode: no
+
+    - assert:
+        that: "pg_control.stat.exists"
+        msg: "pg_control.old does not exist for version specified. Is v{{ old_version }} cluster already rolled back?"
+
+    - name: revert pg_control.old
+      become: yes
+      become_user: postgres
+      command: "mv /opt/data/postgresql/{{ old_version }}/main/global/pg_control.old /opt/data/postgresql/{{ old_version }}/main/global/pg_control"
+
+    - name: Start Postgresql
+      become: yes
+      service:
+        name: "postgresql@{{ old_version }}-main"
+        state: started
+
+    - name: Re-enable monit for v{{ old_version }}
+      become: yes
+      monit_tmp:
+        name: "postgresql_{{ old_version }}"
+        state: monitored
