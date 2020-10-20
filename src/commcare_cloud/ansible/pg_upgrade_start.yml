@@ -195,25 +195,12 @@
       when: hot_standby_master is defined
 
     - block:
-        # Verify standbys are up to date with primaries
-        - name: Get primary checkpoint location
-          delegate_to: "{{ hot_standby_master }}"
-          shell: |
-            /usr/lib/postgresql/{{ old_version }}/bin/pg_controldata -D /opt/data/postgresql/{{ old_version }}/main | grep 'Latest checkpoint location' | awk '{ print $4 }'
-          register: primary_checkpoint
-          check_mode: no
-
-        - name: Get standby checkpoint location
-          shell: |
-            /usr/lib/postgresql/{{ old_version }}/bin/pg_controldata -D /opt/data/postgresql/{{ old_version }}/main | grep 'Latest checkpoint location' | awk '{ print $4 }'
-          register: standby_checkpoint
-          check_mode: no
-
-        - debug: msg="Primary = {{ primary_checkpoint.stdout }}, Standby = {{ standby_checkpoint.stdout }}"
-
-        - assert:
-            that: "'{{ primary_checkpoint.stdout }}' == '{{ standby_checkpoint.stdout }}'"
-            msg: "Primary and standby are out of sync. Wait for the standbys to catch up and then try again."
+        - name: Check standby in sync
+          include_tasks: roles/postgresql_base/check_standby_in_sync.yml
+          when: inventory_hostname in groups.get('pg_standby', [])
+          loop: "{{ range(0, 5)|list }}"
+          loop_control:
+            loop_var: retry_count
 
       rescue:
         - debug: msg="Restarting services"
