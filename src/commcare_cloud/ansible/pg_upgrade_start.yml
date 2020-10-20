@@ -84,6 +84,7 @@
         path: /opt/data/postgresql/{{ new_version }}/main
         state: absent
       when: not is_standby
+      no_log: True
 
     - name: Re-initialize new version DB (v{{ new_version }})
       become: yes
