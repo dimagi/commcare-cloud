@@ -1,0 +1,27 @@
+# Verify standbys are up to date with primaries
+- name: Get primary checkpoint location
+  delegate_to: "{{ hot_standby_master }}"
+  shell: |
+    /usr/lib/postgresql/{{ old_version }}/bin/pg_controldata -D /opt/data/postgresql/{{ old_version }}/main | grep 'Latest checkpoint location' | awk '{ print $4 }'
+  register: primary_checkpoint
+  check_mode: no
+  when: retry_count == 0 or not checkpoints_match
+
+- name: Get standby checkpoint location
+  shell: |
+    /usr/lib/postgresql/{{ old_version }}/bin/pg_controldata -D /opt/data/postgresql/{{ old_version }}/main | grep 'Latest checkpoint location' | awk '{ print $4 }'
+  register: standby_checkpoint
+  check_mode: no
+  when: retry_count == 0 or not checkpoints_match
+
+- debug: msg="Primary = {{ primary_checkpoint.stdout }}, Standby = {{ standby_checkpoint.stdout }}"
+  when: retry_count == 0 or not checkpoints_match
+
+- set_fact:
+    checkpoints_match: "{{ primary_checkpoint.stdout == standby_checkpoint.stdout }}"
+  when: retry_count == 0 or not checkpoints_match
+
+- pause:
+    seconds: 5
+    prompt: "Primary and standby are out of sync. Waiting 5s before re-checking."
+  when: not checkpoints_match and retry_count != 5
