@@ -425,7 +425,7 @@ redis_cache = {
     'OPTIONS': {
         'PARSER_CLASS': 'redis.connection.HiredisParser',
         'REDIS_CLIENT_KWARGS': {
-            'health_check_interval': 30,
+            'health_check_interval': 15,
         },
 {% if is_redis_cluster %}
         'REDIS_CLIENT_CLASS': 'rediscluster.RedisCluster',
@@ -1049,10 +1049,6 @@ LOCAL_DOMAIN_MODULE_MAP = json.loads('{{ localsettings.LOCAL_DOMAIN_MODULE_MAP|t
 
 {% if localsettings.LOCAL_CUSTOM_DB_ROUTING is defined %}
 LOCAL_CUSTOM_DB_ROUTING = json.loads('{{ localsettings.LOCAL_CUSTOM_DB_ROUTING|to_json }}')
-{% endif %}
-
-{% if localsettings.CUSTOM_DOMAIN_SPECIFIC_URL_MODULES is defined %}
-CUSTOM_DOMAIN_SPECIFIC_URL_MODULES = json.loads('{{ localsettings.CUSTOM_DOMAIN_SPECIFIC_URL_MODULES|to_json }}')
 {% endif %}
 
 {% if localsettings.LOCAL_REPEATER_CLASSES is defined %}

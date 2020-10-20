@@ -1,5 +1,4 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 import os
 import subprocess
 from six.moves import shlex_quote
@@ -25,20 +24,24 @@ class Install(CommandBase):
         put_virtualenv_bin_on_the_path()
         if not os.path.exists(ANSIBLE_ROLES_PATH):
             os.makedirs(ANSIBLE_ROLES_PATH)
-        
+
         if not os.path.exists(ANSIBLE_COLLECTIONS_PATHS):
             os.makedirs(ANSIBLE_COLLECTIONS_PATHS)
 
         env['ANSIBLE_ROLES_PATH'] = ANSIBLE_ROLES_PATH
         env['ANSIBLE_COLLECTIONS_PATHS'] = ANSIBLE_COLLECTIONS_PATHS
-        cmd_roles_parts = ['ansible-galaxy', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml')]
-        cmd_collection_parts = ['ansible-galaxy', 'collection', 'install', '-f', '-r', os.path.join(ANSIBLE_DIR, 'requirements.yml')]
-        
+        requirements_yml = os.path.join(ANSIBLE_DIR, 'requirements.yml')
+        cmd_roles_parts = ['ansible-galaxy', 'install', '-f', '-r', requirements_yml]
+        cmd_collection_parts = ['ansible-galaxy', 'collection', 'install', '-f', '-r', requirements_yml]
+
         for cmd_parts in (cmd_roles_parts, cmd_collection_parts):
             cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
             print_command(cmd)
-            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, shell=True, env=env)
-            p.communicate()
+            try:
+                subprocess.check_output(cmd, shell=True, env=env)
+            except subprocess.CalledProcessError as err:
+                print("process exited with error: %s" % err.returncode)
+                return err.returncode
 
-        puts(color_notice("To finish first-time installation, run `manage-commcare-cloud configure`".format()))
-        return p.returncode
+        puts(color_notice("To finish first-time installation, run `manage-commcare-cloud configure`"))
+        return 0

@@ -53,13 +53,24 @@
     dest: "/opt/kafka/bin/kafka-reassign-tool.rb"
     mode: 0755
 
-- name: Copies kafka log4j.properties
+- name: Copies kafka log4j.properties (2.X.X)
   copy:
-    src: "log4j_{{ kafka_version }}.properties"
+    src: "log4j_2.X.X.properties"
     dest: /opt/kafka/config/log4j.properties
     owner: root
     group: root
     mode: 644
+  when: kafka_version is version('2.0', '>')
+  tags: log4j
+
+- name: Copies kafka log4j.properties (0.8.2.2)
+  copy:
+    src: "log4j_0.8.2.2.properties"
+    dest: /opt/kafka/config/log4j.properties
+    owner: root
+    group: root
+    mode: 644
+  when: kafka_version == "0.8.2.2"
   tags: log4j
 
 - name: Install Kafka init script

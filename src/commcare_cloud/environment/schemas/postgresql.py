@@ -135,7 +135,13 @@ class PostgresqlConfig(jsonobject.JsonObject):
         for host in environment.groups.get('citusdb_worker', []):
             citusdb_masters = set(environment.groups.get('citusdb_master', []))
             pg_standbys = set(environment.groups.get('pg_standby', []))
-            citusdb_master = list(citusdb_masters - pg_standbys)[0]
+            citusdb_masters = list(citusdb_masters - pg_standbys)
+            if not citusdb_masters:
+                raise PGConfigException('no hosts in the "citusdb_master" group (excluding standbys)')
+            if len(citusdb_masters) > 1:
+                raise PGConfigException('more than one citus master configured (excluding standbys)')
+
+            citusdb_master = citusdb_masters[0]
             citus_dbs = []
             for db in sorted_dbs:
                 if db['host'] == citusdb_master:

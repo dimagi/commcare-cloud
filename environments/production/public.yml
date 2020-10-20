@@ -101,6 +101,9 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 
 rabbitmq_version: 3.8.5-1
 
+#RabbitMQ Broker URL
+BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
+
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-production-blobdb'
@@ -190,3 +193,8 @@ kinesis_flows:
     delivery_stream: "formplayer-request-response-logs-production"
 
 enable_cloudwatch_logs: true
+
+# celery variables to soft/hard kill tasks running for long hours.
+# hard_kill: 46, soft_kill: 36, False will remove the cron.
+celery_hours_before_hard_kill: 46
+celery_hours_before_soft_kill: 36

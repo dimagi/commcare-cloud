@@ -130,7 +130,7 @@ servers:
 
 
   - server_name: "web11-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: m5.4xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
@@ -138,7 +138,7 @@ servers:
     group: "mobile_webworkers"
     os: bionic
   - server_name: "web12-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: m5.4xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
@@ -146,7 +146,7 @@ servers:
     group: "mobile_webworkers"
     os: bionic
   - server_name: "web13-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: m5.4xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -154,7 +154,7 @@ servers:
     group: "mobile_webworkers"
     os: bionic
   - server_name: "web14-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: m5.4xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -162,7 +162,7 @@ servers:
     group: "mobile_webworkers"
     os: bionic
   - server_name: "web15-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: m5.4xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -170,7 +170,7 @@ servers:
     group: "mobile_webworkers"
     os: bionic
   - server_name: "web16-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: m5.4xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -329,7 +329,7 @@ servers:
     volume_size: 40
     volume_encrypted: no
     block_device:
-      volume_size: 6650
+      volume_size: 9975
       encrypted: no
     group: "couchdb2"
     os: bionic
@@ -340,7 +340,7 @@ servers:
     volume_size: 40
     volume_encrypted: no
     block_device:
-      volume_size: 6650
+      volume_size: 9975
       encrypted: no
     group: "couchdb2"
     os: bionic
@@ -351,12 +351,21 @@ servers:
     volume_size: 40
     volume_encrypted: no
     block_device:
-      volume_size: 6650
+      volume_size: 9975
       encrypted: no
     group: "couchdb2"
     os: bionic
 
   - server_name: "rabbit2-production"
+    server_instance_type: t3.2xlarge
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "rabbitmq"
+    os: ubuntu_pro_bionic
+  
+  - server_name: "rabbit3-production"
     server_instance_type: t3.2xlarge
     network_tier: "db-private"
     az: "c"
@@ -409,7 +418,7 @@ servers:
     count: 3
 
   - server_name: "pillow1-production"
-    server_instance_type: r5a.4xlarge
+    server_instance_type: r5a.8xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 150
@@ -424,13 +433,13 @@ servers:
     volume_size: 200
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 42
+    count: 84
 
   - server_name: "redis0-production"
-    server_instance_type: r5.xlarge
+    server_instance_type: r5.4xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 60
+    volume_size: 600
     volume_encrypted: no
     group: "redis"
     os: bionic
@@ -454,7 +463,7 @@ servers:
     os: bionic
 
   - server_name: "pgbouncer3-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: m5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -481,7 +490,7 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain0-production"
-    instance_type: "db.t3.2xlarge"
+    instance_type: "db.m5.4xlarge"
     storage: 500
     max_storage: 5000
     multi_az: true
@@ -498,31 +507,31 @@ rds_instances:
 
   - identifier: "pgshard1-production"
     instance_type: "db.t3.xlarge"
-    storage: 250
+    storage: 500
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard2-production"
     instance_type: "db.t3.xlarge"
-    storage: 250
+    storage: 500
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard3-production"
     instance_type: "db.t3.xlarge"
-    storage: 250
+    storage: 500
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard4-production"
     instance_type: "db.t3.xlarge"
-    storage: 250
+    storage: 500
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15
   - identifier: "pgshard5-production"
     instance_type: "db.t3.xlarge"
-    storage: 250
+    storage: 500
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.15

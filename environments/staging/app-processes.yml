@@ -1,3 +1,4 @@
+formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar'
 management_commands:
   celery3:
     run_sms_queue:

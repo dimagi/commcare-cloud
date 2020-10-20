@@ -1,6 +1,7 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
-from __future__ import unicode_literals
+import sys
+
 from commcare_cloud.manage_commcare_cloud.datadog_monitors import UpdateDatadogMonitors, ListDatadogMonitors
 from commcare_cloud.manage_commcare_cloud.test_environments import TestEnvironments
 from ..argparse14 import ArgumentParser
@@ -44,5 +45,5 @@ def main():
     args, unknown_args = parser.parse_known_args()
 
     exit_code = commands[args.command].run(args, unknown_args)
-    if exit_code is not 0:
-        exit(exit_code)
+    if exit_code:
+        sys.exit(exit_code)
