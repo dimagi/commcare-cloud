@@ -49,6 +49,7 @@ pillows:
       num_processes: 1
     SqlSMSPillow:
       num_processes: 1
+      use_side_process: True
     UpdateUserSyncHistoryPillow:
       num_processes: 1
     UserCacheInvalidatePillow:
@@ -60,6 +61,7 @@ pillows:
       processor_chunk_size: 1
     xform-pillow:
       num_processes: 2
+      use_side_process: True
     group-pillow:
       num_processes: 1
     user-pillow:
