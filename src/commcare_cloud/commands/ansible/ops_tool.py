@@ -3,11 +3,13 @@ from __future__ import print_function
 from __future__ import unicode_literals
 import collections
 import csv
+import json
 import subprocess
 import sys
 from collections import defaultdict
 from operator import itemgetter
 
+import yaml
 from clint.textui import puts, indent
 from couchdb_cluster_admin.describe import print_shard_table
 from couchdb_cluster_admin.suggest_shard_allocation import print_db_info
@@ -216,11 +218,27 @@ class CouchDBClusterInfo(CommandBase):
     command = 'couchdb-cluster-info'
     help = "Output information about the CouchDB cluster"
 
-    arguments = ()
+    arguments = (
+        Argument("--raw", action="store_true", help="Output raw shard allocations as YAML instead of printing tables."),
+    )
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         couch_config = get_couch_config(environment)
+
+        shard_allocations = [
+            get_shard_allocation(couch_config, db_name) for db_name in
+            sorted(get_db_list(couch_config.get_control_node()))
+        ]
+
+        if args.raw:
+            plan = {
+                shard_allocation_doc.db_name: shard_allocation_doc.to_plan_json()
+                for shard_allocation_doc in shard_allocations
+            }
+            # hack - yaml didn't want to dump this directly
+            yaml.safe_dump(json.loads(json.dumps(plan)), sys.stdout, indent=2)
+            return 0
 
         puts('\nMembership')
         with indent():
@@ -230,10 +248,7 @@ class CouchDBClusterInfo(CommandBase):
         print_db_info(couch_config)
 
         puts('\nShard allocation')
-        print_shard_table([
-            get_shard_allocation(couch_config, db_name)
-            for db_name in sorted(get_db_list(couch_config.get_control_node()))
-        ])
+        print_shard_table(shard_allocations)
         return 0
 
 
