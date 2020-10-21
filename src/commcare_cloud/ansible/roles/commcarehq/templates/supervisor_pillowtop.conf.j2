@@ -8,6 +8,7 @@ command={{ django_bash_runner if prometheus_monitoring_enabled else django_direc
     --pillow-name {{ pillow_name }}
     --num-processes={{ params.get('total_processes', params.get('num_processes', 1)) }}
     --process-number={{ num_process }}
+    {% if params.get('use_side_process') %}--use-side-process{% endif %}
     {% if params.get('processor_chunk_size') %}--processor-chunk-size={{params.get('processor_chunk_size')}}{% endif %}
 
 directory={{ code_home }}
