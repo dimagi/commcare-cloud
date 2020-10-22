@@ -17,6 +17,9 @@ postgres_s3: True
 postgresql_backup_weeks: 1
 postgresql_backup_days: 1
 
+citus_version: 9.4
+citus_postgresql_version: 12
+citus_postgresql_port: 5432
 
 aws_region: 'ap-south-1'
 
