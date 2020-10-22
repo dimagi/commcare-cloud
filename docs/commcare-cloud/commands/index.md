@@ -1310,8 +1310,14 @@ Output table as CSV
 Output information about the CouchDB cluster
 
 ```
-commcare-cloud <env> couchdb-cluster-info
+commcare-cloud <env> couchdb-cluster-info [--raw]
 ```
+
+##### Optional Arguments
+
+###### `--raw`
+
+Output raw shard allocations as YAML instead of printing tables.
 
 ---
 
