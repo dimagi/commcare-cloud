@@ -410,8 +410,8 @@ class Postgresql(MultiAnsibleService):
     def service_process_mapping(self):
         pg_version = self.environment.postgresql_config.postgres_override.postgresql_version
         return {
-            'postgresql': ("postgresql_{}".format(pg_version), 'postgresql,pg_standby'),
-            'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
+            'postgresql': ("postgresql_{}".format(pg_version), 'postgresql,pg_standby,!remote_postgresql'),
+            'pgbouncer': ('pgbouncer', 'postgresql,pg_standby,!remote_postgresql')
         }
 
 
