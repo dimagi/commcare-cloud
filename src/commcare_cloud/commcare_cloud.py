@@ -181,7 +181,7 @@ def call_commcare_cloud(input_argv=sys.argv):
 
 def main():
     exit_code = call_commcare_cloud()
-    if exit_code is not 0:
+    if exit_code != 0:
         exit(exit_code)
 
 
