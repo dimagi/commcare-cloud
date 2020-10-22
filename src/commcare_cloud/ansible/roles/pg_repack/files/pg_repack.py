@@ -128,7 +128,7 @@ def main():
     parser.add_argument('-p', '--port', help='Port number')
     parser.add_argument('-U', '--username', help='Name of the user')
     parser.add_argument('-W', '--password', help='Password of the user')
-    parser.add_argument('-k', '--no-superuser-check', help='skip superuser checks in client', action='store_true')
+    parser.add_argument('-k', '--no-superuser-check', dest='no_superuser_check', help='skip superuser checks in client', action='store_true')
 
     args = parser.parse_args()
 
@@ -151,9 +151,17 @@ def main():
     for table in tables:
         logger.debug('\t%s', table)
 
-    repack_command = [
-        args.pg_repack, '--no-order', '--wait-timeout=30', '-k' , f'--dbname={args.database}'
-    ] + [f'--port={args.port}'] + [f'--host={args.host}'] + [f'--username={args.username}'] + [f'--table={table}' for table in table_names]
+    repack_command = [args.pg_repack, '--no-order', '--wait-timeout=30', f'--dbname={args.database}' ] + [f'--table={table}' for table in table_names]
+
+    additional_args = {'port':args.port,'username':args.username, 'host':args.host}
+
+    for key, value in additional_args.items():
+        if additional_args[key]:
+           add_params = f'--{key}={value}'
+           repack_command.append(add_params)
+
+    if args.no_superuser_check:
+        repack_command.append('-k')
 
     try:
         cpu_count = multiprocessing.cpu_count()

@@ -2,4 +2,3 @@ datadog_integration_pgbouncer: true
 datadog_integration_postgres: true
 is_pg_standby: false
 is_pg_master: true
-pg_repack_version: 1.4.3

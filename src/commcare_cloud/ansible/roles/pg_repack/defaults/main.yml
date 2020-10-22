@@ -1,5 +1,5 @@
 pg_repack_version: 1.4.5
 pg_repack_source: "http://api.pgxn.org/dist/pg_repack/{{pg_repack_version}}/pg_repack-{{pg_repack_version}}.zip"
 pg_repack_script_path: /usr/local/bin/pg_repack.py
-nadir_hour: 2
-pg_bouncer_port: 6432
+pg_repack_skip_superuser_check: no
+pg_repack_nadir_hour: 2

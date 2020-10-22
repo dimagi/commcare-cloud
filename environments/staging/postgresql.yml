@@ -16,6 +16,10 @@ pgbouncer_override:
 pg_repack:
   pgproxy2:
     - database: commcarehq_synclogs
+      username: "{{ postgres_users.root.username }}"
+      password: "{{ postgres_users.root.password }}"
+      port: 6432
+      skip_superuser_check: True
 
 dbs:
   main:
