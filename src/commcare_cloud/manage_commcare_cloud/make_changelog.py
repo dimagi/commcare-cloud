@@ -15,9 +15,10 @@ from io import open
 
 import six
 import yaml
+from clint.textui import puts
 
+from commcare_cloud.colors import color_error
 from commcare_cloud.commands.command_base import CommandBase, Argument
-
 
 GitVersionProperty = jsonobject.StringProperty
 MarkdownProperty = jsonobject.StringProperty
@@ -136,7 +137,9 @@ class NewChangelog(CommandBase):
                 last_log = filename
                 break
         else:
-            raise Exception
+            puts(color_error("Unable to find last changelog file. Please create a changelog manually."))
+            return 1
+
         last_index = int(re.search(r"^(\d+)", last_log).group())
 
         name = args.name
