@@ -21,28 +21,3 @@ If the answer to either is yes, then please complete all of the following steps:
 - Dimagi-Internal documentation also exists at
   https://confluence.dimagi.com/display/internal/Announcing+changes+affecting+third+parties.
   Notably, the change should be announced on the forum.
-
-### Template
-
-```yaml
-title: change title
-key: unique-key-for-this-changelog
-date:
-optional_per_env: [yes/no]
-# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
-min_commcare_version:
-# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
-max_commcare_version:
-context: |
-  Description of the change.
-  This will be shown as a sort of "preview" in the index.
-  Can be formatted as markdown.
-
-details: |
-  Details of the change.
-  Can be formatted as markdown.
-
-update_steps: |
-  Steps to update.
-  Can be formatted as markdown.
-```
