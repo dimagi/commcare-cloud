@@ -7,6 +7,9 @@ newest first.
 
 ## Changelog
 
+### **2020-10-22** [Update PostgreSQL monit configurations to be version specific](0038-update-postgresql-monit-conf.md)
+Update PostgreSQL monit configuration files to be version specific and use `systemctl`
+
 ### **2020-10-14** [Run command to update Supervisor configurations](0037-update-supervisor-confs.md)
 Run management command to remove unused errand-boy processes.
 
