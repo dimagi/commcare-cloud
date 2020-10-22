@@ -153,10 +153,10 @@ def main():
 
     repack_command = [args.pg_repack, '--no-order', '--wait-timeout=30', f'--dbname={args.database}' ] + [f'--table={table}' for table in table_names]
 
-    additional_args = {'port':args.port,'username':args.username, 'host':args.host}
+    additional_args = {'port': args.port, 'username': args.username, 'host': args.host}
 
     for key, value in additional_args.items():
-        if additional_args[key]:
+        if value:
            add_params = f'--{key}={value}'
            repack_command.append(add_params)
 

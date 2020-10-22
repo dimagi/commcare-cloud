@@ -19,7 +19,7 @@ pg_repack:
       username: "{{ postgres_users.root.username }}"
       password: "{{ postgres_users.root.password }}"
       port: 6432
-      skip_superuser_check: True
+      skip_superuser_check: False
 
 dbs:
   main:

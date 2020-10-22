@@ -71,12 +71,12 @@
       --host {{ item.host|default('localhost') }}
       --port {{ item.port|default(5432) }}
       -d {{ item.database }}
-      {% if item.tables|default(None) %} --tables {{ item.tables|join(' ') }}{% endif %}"
+      {% if item.tables|default(None) %} --tables {{ item.tables|join(' ') }}{% endif %}
       --table-size-limit {{ item.table_size|default(10) }}
       --dead-tup-ratio {{ item.ratio|default(0.05) }}
       {% if item.username|default(None) %} -U {{ item.username }}{% endif %}
       {% if item.password|default(None) %} -W {{ item.password }}{% endif %}
-      {% if item.skip_superuser_check|default(pg_repack_skip_superuser_check) %} -k{% endif %}
+      {% if item.skip_superuser_check|default(pg_repack_skip_superuser_check) %} -k{% endif %}"
     minute: "30"
     hour: "{{ pg_repack_nadir_hour + 2 }}"
     user: postgres
