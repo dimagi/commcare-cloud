@@ -567,7 +567,7 @@ def _write_profile_for_sso(
     config.set(section, 'sso_start_url', sso_start_url)
     config.set(section, 'sso_region', sso_region)
     config.set(section, 'sso_account_id', sso_account_id)
-    config.set(section, 'sso_role_name', 'AWSPowerUserAccess')
+    config.set(section, 'sso_role_name', 'PowerUserAccessPlus')
     config.set(section, 'region', region)
     config.set(section, 'output', 'json')
     with open(AWS_CONFIG_PATH, 'w') as f:
