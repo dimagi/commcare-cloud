@@ -14,8 +14,8 @@ Anytime you make a change to commcare-cloud ask yourself these questions:
 If the answer to either is yes, then please complete all of the following steps:
 
 ## Creating a changelog entry
-
-- Add an entry to https://github.com/dimagi/commcare-cloud/tree/master/changelog, following the example of other files in that directory
+- Run `manage-commcare-cloud new-changelog <changelog name>`
+- Update the changelog content
 - Run `make` to compile the corresponding docs
 - Commit and PR that
 - Dimagi-Internal documentation also exists at

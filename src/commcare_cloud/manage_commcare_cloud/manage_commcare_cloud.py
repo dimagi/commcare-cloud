@@ -13,7 +13,7 @@ from commcare_cloud.manage_commcare_cloud.list_vault_keys import ListVaultKeys
 from commcare_cloud.manage_commcare_cloud.install import Install
 from commcare_cloud.manage_commcare_cloud.make_docs import MakeDocs
 from commcare_cloud.manage_commcare_cloud.make_changelog import MakeChangelogIndex, \
-    MakeChangelog
+    MakeChangelog, NewChangelog
 
 COMMAND_TYPES = [
     Configure,
@@ -22,6 +22,7 @@ COMMAND_TYPES = [
     ListVaultKeys,
     MakeChangelog,
     MakeChangelogIndex,
+    NewChangelog,
     MakeDocs,
     TestEnvironments,
     UpdateDatadogMonitors,
