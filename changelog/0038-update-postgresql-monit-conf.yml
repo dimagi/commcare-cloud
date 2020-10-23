@@ -1,0 +1,21 @@
+title: Update PostgreSQL monit configurations to be version specific
+key: postgresql-monit-version-in-config
+date: 2020-10-22
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Update PostgreSQL monit configuration files to be version specific and use `systemctl`
+
+details: |
+  When upgrading PostgreSQL you are likely to have both old and new versions installed on the same machine.
+  In order to provide full controll over the individual service processes with monit it is necessary to use
+  different configurations for each one.
+
+  This change includes the version number in the file name and also updates the config to allow
+  monit to control only the process with that version (instead of all PostgreSQL processes on the host).
+
+update_steps: |
+  ```bash
+  commcare-cloud <env> ansible-playbook deploy_postgres.yml --tags monit
+  ```
