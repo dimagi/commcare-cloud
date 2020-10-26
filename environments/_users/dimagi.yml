@@ -13,6 +13,7 @@ dev_users:
     - gherceg
     - jschweers
     - knguyen
+    - matthewriley
     - mkangia
     - nhooper
     - rnegi
@@ -23,7 +24,6 @@ dev_users:
     - sbansal
     - sherbers
     - spokhriyal
-    - matthewriley
   absent:
     - astone
     - wpride
