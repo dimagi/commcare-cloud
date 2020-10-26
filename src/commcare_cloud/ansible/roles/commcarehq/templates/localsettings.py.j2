@@ -1064,3 +1064,7 @@ NO_DEVICE_LOG_ENVS = []
 {% else %}
 NO_DEVICE_LOG_ENVS = [{{ env_monitoring_id|to_json }}]
 {% endif %}
+
+{% if localsettings.USE_PHONE_ENTRIES is defined %}
+USE_PHONE_ENTRIES = {{ localsettings.USE_PHONE_ENTRIES }}
+{% endif %}
