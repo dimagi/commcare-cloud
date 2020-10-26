@@ -23,6 +23,7 @@ dev_users:
     - sbansal
     - sherbers
     - spokhriyal
+    - matthewriley
   absent:
     - astone
     - wpride
