@@ -14,7 +14,7 @@ install_deps = [
     # 2.8 solves issue on MacOS Catalina
     # https://github.com/pypa/pip/issues/7254
     # but 2.9 fails to compile
-    'cryptography~=2.8.0',
+    'cryptography>=2.8,<3.3',
     'datadog==0.2.0',
     'dimagi-memoized>=1.1.0',
     'dnspython',

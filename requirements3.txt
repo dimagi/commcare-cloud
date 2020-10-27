@@ -17,7 +17,7 @@ cffi==1.14.3              # via bcrypt, cryptography, pynacl
 chardet==3.0.4            # via requests
 clint==0.5.1              # via commcare-cloud (setup.py)
 couchdb-cluster-admin==0.6.0  # via commcare-cloud (setup.py)
-cryptography==2.8         # via ansible, commcare-cloud (setup.py), paramiko
+cryptography==3.2         # via ansible, commcare-cloud (setup.py), paramiko
 datadog==0.2.0            # via commcare-cloud (setup.py)
 decorator==4.4.2          # via datadog
 deprecated==1.2.10        # via pygithub
