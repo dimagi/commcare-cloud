@@ -206,7 +206,7 @@
 
     - block:
         - name: Check standby in sync
-          include_tasks: roles/postgresql_base/check_standby_in_sync.yml
+          include_tasks: roles/postgresql_base/tasks/check_standby_in_sync.yml
           when: inventory_hostname in groups.get('pg_standby', [])
           loop: "{{ range(0, 5)|list }}"
           loop_control:
