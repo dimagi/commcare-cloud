@@ -1064,3 +1064,7 @@ NO_DEVICE_LOG_ENVS = []
 {% else %}
 NO_DEVICE_LOG_ENVS = [{{ env_monitoring_id|to_json }}]
 {% endif %}
+
+{% if localsettings.IGNORE_ALL_DEMO_USER_SUBMISSIONS is defined %}
+IGNORE_ALL_DEMO_USER_SUBMISSIONS = {{ localsettings.IGNORE_ALL_DEMO_USER_SUBMISSIONS }}
+{% endif %}
