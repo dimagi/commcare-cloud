@@ -337,6 +337,27 @@ class UpdateUsers(_AnsiblePlaybookAlias):
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
+class AddNewUser(_AnsiblePlaybookAlias):
+    command = 'add-new-user'
+    help = ("Adds a single user to machines for a given username "
+            "and group (because update-users takes forever).")
+    arguments = _AnsiblePlaybookAlias.arguments + (
+        Argument("username", help="username of the user needing to be added"),
+        Argument("dev_group", help="name of the dev group the user is in"),
+    )
+
+    def run(self, args, unknown_args):
+        args.playbook = 'deploy_stack.yml'
+        unknown_args += (
+            '--tags=new_user',
+            '--extra-vars={{"dev_users": {{"present": [{}]}}, "dev_group": "{}"}}'.format(
+                args.username,
+                args.dev_group
+            ),
+        )
+        return AnsiblePlaybook(self.parser).run(args, unknown_args)
+
+
 class UpdateUserPublicKey(_AnsiblePlaybookAlias):
     command = 'update-user-key'
     help = "Update a single user's public key (because update-users takes forever)."

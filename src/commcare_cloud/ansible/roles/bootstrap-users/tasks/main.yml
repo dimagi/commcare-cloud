@@ -45,6 +45,8 @@
   become: yes
   user: name="{{ item }}" state=present shell=/bin/bash groups={{ dev_group }}
   with_items: '{{ dev_users.present }}'
+  tags:
+    - new_user
 
 - name: Add public keys for current devs
   become: yes

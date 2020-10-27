@@ -30,6 +30,7 @@ from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
     UpdateConfig, AfterReboot, BootstrapUsers, DeployStack,
     UpdateUsers, UpdateUserPublicKey, UpdateSupervisorConfs,
+    AddNewUser,
 )
 from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping, SendDatadogEvent
@@ -71,6 +72,7 @@ COMMAND_GROUPS = OrderedDict([
         AfterReboot,
         BootstrapUsers,
         UpdateUsers,
+        AddNewUser,
         UpdateUserPublicKey,
         UpdateSupervisorConfs,
         Fab,
