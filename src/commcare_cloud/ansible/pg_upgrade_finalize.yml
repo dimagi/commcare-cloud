@@ -14,7 +14,7 @@
     old_version_service: "postgresql@{{ old_version }}-main.service"
     is_citus: "{{ inventory_hostname in groups.get('citusdb', []) }}"
     new_pg_port: "{{ citus_postgresql_port if is_citus else postgresql_port }}"
-    is_standby: "{{ inventory_hostname in groups.get('pg_standby') }}"
+    is_standby: "{{ inventory_hostname in groups.get('pg_standby', []) }}"
     log_file: "/opt/data/postgresql/pg_upgrade_{{old_version}}_{{new_version}}.log"
   vars_files:
     - roles/postgresql_base/defaults/main.yml

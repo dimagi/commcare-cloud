@@ -17,7 +17,7 @@
     new_pg_port: "{{ citus_postgresql_port if is_citus else postgresql_port }}"
     old_pg_port: "{{ old_port|default(5432) }}"
     log_file: "/opt/data/postgresql/pg_upgrade_{{old_version}}_{{new_version}}.log"
-    is_standby: "{{ inventory_hostname in groups.get('pg_standby') }}"
+    is_standby: "{{ inventory_hostname in groups.get('pg_standby', []) }}"
     upgrade_command: |
       /usr/lib/postgresql/{{ new_version }}/bin/pg_upgrade
       -b /usr/lib/postgresql/{{ old_version }}/bin -B /usr/lib/postgresql/{{ new_version }}/bin
