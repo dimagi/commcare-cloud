@@ -86,6 +86,15 @@
       when: not is_standby
       no_log: True
 
+    - name: Get locale data from current version
+      become: yes
+      become_user: postgres
+      shell: |
+        psql -q -t -c "select row_to_json(t) from (select datcollate, datctype From pg_database where datname = 'postgres') t"
+      register: datcollate
+      when: inventory_hostname not in groups.get('pg_standby', [])
+      check_mode: no
+
     - name: Re-initialize new version DB (v{{ new_version }})
       become: yes
       become_user: postgres
@@ -93,7 +102,7 @@
       command: |
         /usr/lib/postgresql/{{ new_version }}/bin/initdb \
         -D /opt/data/postgresql/{{ new_version }}/main/ \
-        --lc-collate=C.UTF-8 --lc-ctype=C.UTF-8
+        --lc-collate={{ (datcollate.stdout | from_json).datcollate }} --lc-ctype={{ (datcollate.stdout | from_json).datctype }}
 
     - name: Check upgrade compatability
       become: yes
