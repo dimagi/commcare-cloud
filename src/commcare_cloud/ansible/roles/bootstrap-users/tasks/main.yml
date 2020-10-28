@@ -46,7 +46,7 @@
   user: name="{{ item }}" state=present shell=/bin/bash groups={{ dev_group }}
   with_items: '{{ dev_users.present }}'
   tags:
-    - new_user
+    - update_user
 
 - name: Add public keys for current devs
   become: yes
@@ -54,6 +54,7 @@
   with_items: '{{ dev_users.present }}'
   ignore_errors: "{{ ansible_check_mode }}"
   tags:
+    - update_user
     - pubkey
 
 - name: Remove public key for cchq user  # todo: remove after applied to all envs
@@ -71,6 +72,7 @@
   authorized_key: user=ansible state=present key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
   with_items: '{{ dev_users.present }}'
   tags:
+    - update_user
     - pubkey
 
 - import_tasks: remove_users.yml
@@ -82,12 +84,16 @@
   register: users_pw_valid
   loop: "{{ dev_users.present }} + ['ansible', '{{ cchq_user }}']"
   changed_when: False
+  tags:
+    - update_user
 
 - name: clear users password valid time
   become: yes
   shell: chage -M -1 "{{ item['item'] }}"
   loop: "{{ users_pw_valid.results }}"
   when: item.stdout is defined and item.stdout != ''
+  tags:
+    - update_user
 
 
 # This must be the last task in the file
@@ -97,4 +103,5 @@
   become: yes
   template: src=sudoers.j2 dest=/etc/sudoers.d/cchq validate='visudo -cf %s' owner=root group=root mode=0440
   tags:
+    - update_user
     - sudoers

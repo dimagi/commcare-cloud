@@ -337,39 +337,32 @@ class UpdateUsers(_AnsiblePlaybookAlias):
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
-class AddNewUser(_AnsiblePlaybookAlias):
-    command = 'add-new-user'
-    help = ("Adds a single user to machines for a given username "
-            "and group (because update-users takes forever).")
+class UpdateUser(_AnsiblePlaybookAlias):
+    command = 'update-user'
+    help = """
+    Brings a single user up to date with the current CommCare Cloud settings.
+    Use this when `update-users` takes forever.
+    """
     arguments = _AnsiblePlaybookAlias.arguments + (
         Argument("username", help="username of the user needing to be added"),
-        Argument("dev_group", help="name of the dev group the user is in"),
+        Argument('--dev-group', default='dimagidev', help=(
+            "name of the dev group the user is in"
+        )),
+        Argument('--ssh-key-only', action='store_true', default=False, help=(
+            "only update the ssh key"
+        )),
     )
 
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
         unknown_args += (
-            '--tags=new_user',
-            '--extra-vars={{"dev_users": {{"present": [{}]}}, "dev_group": "{}"}}'.format(
+            '--tags={}'.format('pubkey' if args.ssh_key_only else 'update_user'),
+            '--extra-vars={{"dev_users": {{"present": [{}]}}, '
+            '"dev_group": "{}", '
+            '"single_user_only": True }}'.format(
                 args.username,
-                args.dev_group
+                args.dev_group,
             ),
-        )
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
-
-
-class UpdateUserPublicKey(_AnsiblePlaybookAlias):
-    command = 'update-user-key'
-    help = "Update a single user's public key (because update-users takes forever)."
-    arguments = _AnsiblePlaybookAlias.arguments + (
-        Argument("username", help="username who owns the public key"),
-    )
-
-    def run(self, args, unknown_args):
-        args.playbook = 'deploy_stack.yml'
-        unknown_args += (
-            '--tags=pubkey',
-            '--extra-vars={{"dev_users": {{"present": [{}]}}}}'.format(args.username),
         )
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
