@@ -58,7 +58,7 @@ citus_postgresql_port: NEW-PORT  # this must be different from the current port
 
 #### 2. Run the `deploy_citusdb.yml` playbook to install the new version of PostgreSQL
 
-    commcare-cloud <env> ansible-playbook deploy_postgres.yml --tags citusdb
+    commcare-cloud <env> ansible-playbook deploy_citusdb.yml --tags citusdb
 
 ### Perform the upgrade
 
