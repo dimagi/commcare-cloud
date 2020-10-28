@@ -17,7 +17,7 @@
     new_pg_port: "{{ citus_postgresql_port if is_citus else postgresql_port }}"
     old_pg_port: "{{ old_port|default(5432) }}"
     log_file: "/opt/data/postgresql/pg_upgrade_{{old_version}}_{{new_version}}.log"
-    is_standby: "{{ inventory_hostname in groups.get('pg_standby') }}"
+    is_standby: "{{ inventory_hostname in groups.get('pg_standby', []) }}"
     upgrade_command: |
       /usr/lib/postgresql/{{ new_version }}/bin/pg_upgrade
       -b /usr/lib/postgresql/{{ old_version }}/bin -B /usr/lib/postgresql/{{ new_version }}/bin
@@ -86,6 +86,15 @@
       when: not is_standby
       no_log: True
 
+    - name: Get locale data from current version
+      become: yes
+      become_user: postgres
+      shell: |
+        psql -q -t -c "select row_to_json(t) from (select datcollate, datctype From pg_database where datname = 'postgres') t"
+      register: datcollate
+      when: inventory_hostname not in groups.get('pg_standby', [])
+      check_mode: no
+
     - name: Re-initialize new version DB (v{{ new_version }})
       become: yes
       become_user: postgres
@@ -93,7 +102,7 @@
       command: |
         /usr/lib/postgresql/{{ new_version }}/bin/initdb \
         -D /opt/data/postgresql/{{ new_version }}/main/ \
-        --lc-collate=C.UTF-8 --lc-ctype=C.UTF-8
+        --lc-collate={{ (datcollate.stdout | from_json).datcollate }} --lc-ctype={{ (datcollate.stdout | from_json).datctype }}
 
     - name: Check upgrade compatability
       become: yes
@@ -197,7 +206,7 @@
 
     - block:
         - name: Check standby in sync
-          include_tasks: roles/postgresql_base/check_standby_in_sync.yml
+          include_tasks: roles/postgresql_base/tasks/check_standby_in_sync.yml
           when: inventory_hostname in groups.get('pg_standby', [])
           loop: "{{ range(0, 5)|list }}"
           loop_control:
