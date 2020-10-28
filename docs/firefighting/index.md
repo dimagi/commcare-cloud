@@ -798,6 +798,8 @@ redis-cli
 A lot of times Redis will prefix the cache key with something like `:1:` so you'll often need to do \*unique-cache-key\*
 
 ## Disk full / filling rapidly
+
+### Is maxmemory set too high wrt actual memory?
 We have seen a situation where the redis disk fills up with files of the pattern /opt/data/redis/temp-rewriteaof-\*.aof. This happens when redis maxmemory is configured to be too high a proportion of the total memory (although the connection is unclear to the author, Danny). This blog http://oldblog.antirez.com/post/redis-persistence-demystified.html/ explains AOF rewrite files. The solution is to (1) lower maxmemory and (2) delete the temp files.
 
 ```
@@ -807,6 +809,36 @@ root@redis0:/opt/data/redis# redis-cli
 OK
 (1.06s)
 root@redis0:/opt/data/redis# rm temp-rewriteaof-\*.aof
+```
+
+### Is your disk at least 3x your maxmemory?
+
+We use the [default AOF auto-rewrite configuration](https://github.com/redis/redis/blob/5.0/redis.conf#L757-L770), which is to rewrite the AOF (on-disk replica of in-memory redis data) whenever it doubles in size. Thus disk usage will sawtooth between X and 3X where X is the size of the AOL after rewrite: X right rewrite, 2X when rewrite is triggered, and 3X when the 2X-sized file has been written to a 1X-sized file, but the 2X-sized file has not yet been deleted, followed finally again by X after rewrite is finalized and the old file is deleted.
+
+Since the post-rewrite AOF will only ever contain as much data as is contained in redis memory, and the amount of data contained in redis memory has an upper bound of the maxmemory setting, you should make sure that your disk is at least 3 * maxmemory + whatever the size of the OS install is. Since disk is fairly cheap, give it a comfortable overhead for log files etc.
+
+## Checking redis after restart
+
+Redis takes some time to read the AOF back into memory upon restart/startup. To check if it's up, you can run the following:
+
+```memory
+$ cchq <env> ssh ansible@redis
+
+% redis-cli
+127.0.0.1:6379> ping
+(error) LOADING Redis is loading the dataset in memory
+127.0.0.1:6379> ping
+(error) LOADING Redis is loading the dataset in memory
+127.0.0.1:6379> ping
+PONG
+```
+once it responds with `PONG` redis is back up and ready to serve requests.
+
+## Tail the redis log
+
+To show the last few lines of the redis log during firefighting you can run:
+```
+cchq <env> run-shell-command redis 'tail /opt/data/redis/redis.log'
 ```
 
 # Pillows / Pillowtop / Change feed
