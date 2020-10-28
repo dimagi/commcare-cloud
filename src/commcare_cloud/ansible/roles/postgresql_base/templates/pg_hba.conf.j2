@@ -19,6 +19,7 @@ host replication    {{ postgres_users.replication.username|default('hqrepl') }} 
 {% endfor %}
 
 {% if inventory_hostname in groups.get('citusdb_worker', []) %}
+
 # Allow trust from localhost for pgbouncer
 host    all             all             127.0.0.1/32            trust 
 host    all             all             ::1/128                 trust
@@ -29,6 +30,16 @@ host   all	all	{{ host }}/32   trust
 host   all	all	{{ lookup('dig', host, wantlist=True)[0] }}/32	trust
 {% endif %}
 {% endfor %}
+
+# Allow replication between citusdb workers for cluster re-balancing
+{% for host in groups.get('citusdb_worker', [])|difference([inventory_hostname]) %}
+{% if host | ipaddr %}
+host   replication	{{ postgres_users.replication.username|default('hqrepl') }}     {{ host }}/32   md5
+{% else %}
+host   replication	{{ postgres_users.replication.username|default('hqrepl') }}      {{ lookup('dig', host, wantlist=True)[0] }}/32	md5
+{% endif %}
+{% endfor %}
+
 {% endif %}
 
 

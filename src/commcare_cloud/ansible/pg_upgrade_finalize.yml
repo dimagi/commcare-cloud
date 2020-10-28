@@ -14,7 +14,7 @@
     old_version_service: "postgresql@{{ old_version }}-main.service"
     is_citus: "{{ inventory_hostname in groups.get('citusdb', []) }}"
     new_pg_port: "{{ citus_postgresql_port if is_citus else postgresql_port }}"
-    is_standby: "{{ inventory_hostname in groups.get('pg_standby') }}"
+    is_standby: "{{ inventory_hostname in groups.get('pg_standby', []) }}"
     log_file: "/opt/data/postgresql/pg_upgrade_{{old_version}}_{{new_version}}.log"
   vars_files:
     - roles/postgresql_base/defaults/main.yml
@@ -91,6 +91,10 @@
               {{ citus_worker_count.stdout|trim|int }} != groups.citusdb_worker|difference(groups.get('pg_standby', []))|length
           when: not ansible_check_mode
 
+        - name: copy server certificates
+          become_user: postgres
+          shell: "cp /opt/data/postgresql/{{ old_version}}/main/server.* /opt/data/postgresql/{{ new_version}}/main/"
+
       when: is_citus and inventory_hostname in (groups.citusdb_master | difference(groups.get('pg_standby', [])))
       rescue:
         - pause:
@@ -107,10 +111,6 @@
                     limited to just the standby nodes
                   - It will then be up to you to promote those to primaries and restore the full cluster
               3. If all above fails you will need to restore from a backup and try again
-
-    - name: copy server certificates
-      become_user: postgres
-      shell: "cp /opt/data/postgresql/{{ old_version}}/main/server.* /opt/data/postgresql/{{ new_version}}/main/"
 
     - name: update pgbouncer config on citusdb workers
       import_role:
