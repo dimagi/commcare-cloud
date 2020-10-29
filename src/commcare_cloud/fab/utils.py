@@ -31,9 +31,11 @@ from .const import (
 
 from six.moves import input
 
-LABELS_TO_EXPAND = [
-    "reindex/migration",
-]
+LABELS_TO_EXPAND = {
+    "reindex/migration": "The following PRs will trigger a reindex or migration.",
+    "Risk: Medium": "The following PRs have been marked medium risk. Keep an eye on system health after deploy.",
+    "Risk: High": "The following PRs have been marked high risk. Keep an eye on system health after deploy.",
+}
 
 
 def execute_with_timing(fn, *args, **kwargs):
@@ -298,9 +300,11 @@ class DeployDiff:
         self._print_prs_formatted(pr_infos)
 
         prs_by_label = self._get_prs_by_label(pr_infos)
-        if prs_by_label:
-            print(red('You are about to deploy the following PR(s), which will trigger a reindex or migration. Click the URL for additional context.'))
-            self._print_prs_formatted(prs_by_label['reindex/migration'])
+        for label, message in LABELS_TO_EXPAND.items():
+            prs = prs_by_label.get(label)
+            if prs:
+                print(red(message + ' Click the URL for additional context.'))
+                self._print_prs_formatted(prs)
 
     def _get_pr_numbers(self):
         comparison = self.repo.compare(self.last_commit, self.deploy_commit)
