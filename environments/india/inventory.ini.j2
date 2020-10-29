@@ -45,18 +45,18 @@ es_data
 {{ __rds_pgmain0__ }}
 
 [citusdb_worker:children]
-;citusworker0
-;citusworker1
-;citusworker2
+citusworker0
+citusworker1
+citusworker2
 
 [citusdb_master:children]
-;citusmaster0
+citusmaster0
 
 [citusdb:children]
-;citusmaster0
-;citusworker0
-;citusworker1
-;citusworker2
+citusmaster0
+citusworker0
+citusworker1
+citusworker2
 
 [pg_standby:children]
 # empty
