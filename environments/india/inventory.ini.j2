@@ -2,11 +2,6 @@
 {{ __djangomanage0__ }}
 {{ __web0__ }}
 {{ __web1__ }}
-{{ __citus0__ }}
-{{ __citus1__ }}
-{{ __citus2__ }}
-{{ __citus2standby__ }}
-{{ __citus1standby__ }}
 {{ __airflow1__ }}
 {{ __celery1__ }} swap_size=4G
 {{ __celery2__ }} swap_size=4G
@@ -50,48 +45,21 @@ es_data
 {{ __rds_pgmain0__ }}
 
 [citusdb_worker:children]
-citus1
-citus2
-citus1standby
-citus2standby
 ;citusworker0
 ;citusworker1
 ;citusworker2
 
 [citusdb_master:children]
-citus0
 ;citusmaster0
 
 [citusdb:children]
-citus0
-citus1
-citus2
-citus1standby
-citus2standby
 ;citusmaster0
 ;citusworker0
 ;citusworker1
 ;citusworker2
 
 [pg_standby:children]
-citus1standby
-citus2standby
-
-[citus1:vars]
-postgresql_replication_slots=['standby0']
-hot_standby_server=10.203.10.220
-
-[citus2:vars]
-postgresql_replication_slots=['standby0']
-hot_standby_server=10.203.10.105
-
-[citus1standby:vars]
-replication_slot=standby0
-hot_standby_master=10.203.10.74
-
-[citus2standby:vars]
-replication_slot=standby0
-hot_standby_master=10.203.10.190
+# empty
 
 [proxy:children]
 proxy1
