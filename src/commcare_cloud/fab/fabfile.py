@@ -853,6 +853,7 @@ def deploy_airflow():
 
 @task
 def preview_deploy():
+    """Display the PRs that will be deployed"""
     env.deploy_metadata.diff.warn_of_migrations()
 
 
