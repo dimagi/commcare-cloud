@@ -851,6 +851,11 @@ def deploy_airflow():
     execute(airflow.update_airflow)
 
 
+@task
+def preview_deploy():
+    env.deploy_metadata.diff.warn_of_migrations()
+
+
 def make_tasks_for_envs(available_envs):
     tasks = {}
     for env_name in available_envs:
