@@ -1,0 +1,243 @@
+---
+- name: check if couchdb3 init script exists
+  become: yes
+  stat: path=/etc/init.d/couchdb3
+  register: st
+
+- name: Link couchdb init script
+  become: yes
+  file:
+    src: /etc/init.d/couchdb2
+    path: /etc/init.d/couchdb3
+    state: hard
+  when: not st.stat.exists
+
+- name: Update init to couchdb3
+  lineinfile:
+    path: /etc/init.d/couchdb3
+    regexp: 'name=couchdb2'
+    line: 'name=couchdb3'
+    backrefs: yes
+
+- name: Copy extra config
+  become: yes
+  template:
+    src: extras.ini.j2
+    dest: "{{ couchdb_etc_local_dir }}/extras.ini"
+    owner: '{{ couchdb_user }}'
+    group: '{{ couchdb_group }}'
+    mode: 0644
+  notify: restart couchdb3
+
+- name: Ensure that the Erlang VM listens on a known minimum port no.
+  become: yes
+  lineinfile:
+    dest: "{{ couchdb_dir }}/etc/vm.args"
+    line: "-kernel inet_dist_listen_min {{ couchdb_cluster_port }}"
+    insertafter: '^-sasl sasl_error_logger false'   
+    state: present
+  when: couchdb_cluster_port is defined
+
+- name: Ensure that the Erlang VM listens on a known maximum port no.
+  become: yes
+  lineinfile:
+    dest: "{{ couchdb_dir }}/etc/vm.args"
+    line: "-kernel inet_dist_listen_max {{ couchdb_cluster_port }}"
+    insertafter: '^-kernel inet_dist_listen_min {{ couchdb_cluster_port }}'
+    state: present
+  when: couchdb_cluster_port is defined
+  notify: restart couchdb3
+
+- meta: flush_handlers
+
+- name: Add nodes
+  uri:
+    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_node_port }}/_nodes/couchdb@{{ item|ipaddr }}"
+    method: PUT
+    user: "{{ couchdb3.username }}"
+    password: "{{ couchdb3.password }}"
+    force_basic_auth: true
+    status_code: 201, 409 # 409 means already set up (conflict)
+    body: '{}'
+  when: inventory_hostname == groups.couchdb3.0 and item != groups.couchdb3.0
+  with_items: "{{ groups.couchdb3 }}"
+  tags:
+    - add_couch_nodes
+
+- name: Create system databases
+  uri:
+    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_port }}/{{ item }}"
+    method: PUT
+    user: "{{ couchdb3.username }}"
+    password: "{{ couchdb3.password }}"
+    force_basic_auth: true
+    status_code: 201, 412 # 412 means already set up (conflict)
+    body: '{}'
+  when: inventory_hostname == groups.couchdb3.0
+  register: result
+  until: not result.failed or 'Connection refused' not in result.msg
+  retries: 5
+  delay: 20
+  with_items:
+   - _users
+   - _replicator
+   - _global_changes
+
+- name: Copy couch restart script (cleanup)
+  become: yes
+  file:
+    dest: "/usr/local/sbin/couch3-restarter.sh"
+    state: absent
+  tags:
+    - cron
+
+- name: Create Cron job (cleanup)
+  become: yes
+  cron:
+    name: "Reboot Couch"
+    job: "/usr/local/sbin/couch2-restarter.sh > /dev/null"
+    user: root
+    cron_file: couch3-restarter
+    state: absent
+  tags:
+    - cron
+
+- name: Create couch backup dir
+  become: yes
+  file:
+    path: "{{ couch_backup_dir }}"
+    state: directory
+    mode: 0700
+    group: couchdb
+    owner: couchdb
+  when: backup_couch|bool
+  tags:
+    - cron
+    - backups
+
+- name: Copy couch backup script
+  become: yes
+  template:
+    src: "create_couchdb_backup.sh.j2"
+    dest: "/usr/local/sbin/create_couchdb_backup.sh"
+    group: couchdb
+    owner: couchdb
+    mode: 0700
+    backup: yes
+  when: backup_couch|bool
+  tags:
+    - cron
+    - backups
+
+- name: Copy couch restore script
+  become: yes
+  template:
+    src: "restore_couchdb_backup.sh.j2"
+    dest: "/usr/local/sbin/restore_couchdb_backup.sh"
+    group: couchdb
+    owner: couchdb
+    mode: 0700
+    backup: yes
+  when: backup_couch|bool
+  tags:
+    - cron
+    - backups
+
+- name: Create Hourly Cron job 
+  become: yes
+  cron:
+    name: "Backup couchdb hourly"
+    job: "/usr/local/sbin/create_couchdb_backup.sh hourly {{ couchdb_backup_hours * 60 }}"
+    minute: 0
+    hour: "*/{{ nadir_hour_frequency|default(3) }}"
+    weekday: "1,2,3,4,5,6"
+    user: couchdb
+    cron_file: backup_couch
+    state: '{{ "present" if backup_couch and couch_backup_hourly else "absent"}}' 
+  tags:
+    - cron
+    - backups
+
+- name: Create Daily Cron job
+  become: yes
+  cron:
+    name: "Backup couchdb daily"
+    job: "/usr/local/sbin/create_couchdb_backup.sh daily {{ couchdb_backup_days }}"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: "1,2,3,4,5,6"
+    user: couchdb
+    cron_file: backup_couch
+    state: '{{ "present" if backup_couch else "absent"}}'
+  tags:
+    - cron
+    - backups
+
+- name: Create Weekly Cron job
+  become: yes
+  cron:
+    name: "Backup coudhdb weekly"
+    job: "/usr/local/sbin/create_couchdb_backup.sh weekly {{ couchdb_backup_weeks * 7 }}"
+    minute: 0
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: 0
+    user: couchdb
+    cron_file: backup_couch
+    state: '{{ "present" if backup_couch else "absent"}}'
+  tags:
+    - cron
+    - backups
+
+- name: Set up check_s3_backups
+  become: yes
+  import_role:
+    name: backups
+    tasks_from: set_up_check_s3_backups.yml
+  vars:
+    service: 'couch'
+    condition: "{{ check_s3_backups_email and couch_s3 and backup_couch and ('couchdb3' in group_names) }}"
+    user: "couchdb"
+    service_backup_dir: "{{ couch_backup_dir }}"
+
+- import_tasks: compact.yml
+  when: compact_couch_cron and inventory_hostname == groups.couchdb3.0
+
+- name: Set up aws credentials
+  become: yes
+  import_role:
+    name: backups
+    tasks_from: set_up_aws_credentials.yml
+  vars:
+    s3_user: "couchdb"
+    s3_user_home_dir: "{{ couchdb_dir }}"
+  when: couch_s3|bool
+  tags:
+    - cron
+    - backups
+
+- name: start the couchdb3 service
+  service: name="couchdb3" state=started enabled=yes
+  tags: after-reboot
+
+- name: couchdb3 monit config
+  become: yes
+  template:
+    src: "monit.couchdb3.j2"
+    dest: "/etc/monit/conf.d/couchdb3"
+    group: root
+    owner: root
+    mode: 0640
+  notify: reload monit
+  tags: monit
+
+- meta: flush_handlers
+
+- monit:
+    name: couchdb3
+    state: monitored
+  tags: monit
+  ignore_errors: "{{ ansible_check_mode }}"
+  register: result
+  until: not result.failed or 'process not presently configured with monit' not in result.msg
+  retries: 5
+  delay: 20

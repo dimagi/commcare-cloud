@@ -1,0 +1,14 @@
+---
+couch_data_dir: '{{ encrypted_root }}/couchdb3'
+couch_backup_dir: "{{ encrypted_root }}/backups/couchdb3"
+backup_couch: False
+remote_couch_backup: False
+couch_s3: False
+couchdb_user: couchdb
+couchdb_group: couchdb
+couchdb_backup_days: 2
+couchdb_backup_weeks: 2
+couchdb_backup_hours: 1
+couchdb_auth_cache_size: 200
+compact_couch_cron: False
+couch_backup_hourly: False

@@ -1,0 +1,52 @@
+#!/bin/bash
+BACKUP=$1
+TODAY=$(date +"%Y_%m_%d")
+
+read -p 'Are you sure you want to restore couchdb to a past state [y/N]: ' -r confirm
+if [ $confirm != 'y' ]; then
+    exit 1
+fi
+read -p 'This script will only work on single-node clusters. Damage may occur if this couchdb cluster has more than one node. Are you restoring to a single node? [y/N]: ' -r confirm_nodes
+if [ $confirm_nodes != 'y' ]; then
+    exit 1
+fi
+read -p "This will delete the current db and replace it with the contents of ${BACKUP}. Are you SURE you are sure [y/N]: " -r confirm2
+if [ $confirm2 != 'y' ]; then
+    exit 1
+fi
+
+# remove the trailing paths when extracting the backup file so we get only
+# the files we want
+if tar -Ptf "${BACKUP}" | grep -q "/opt/data/"
+then
+    remove_trailing_components=1
+fi
+
+echo 'extracting backup' &&
+    mkdir -p "{{ couch_backup_dir }}/extracted_backup_${TODAY}" &&
+    tar -xzf "${BACKUP}" -C "{{ couch_backup_dir }}/extracted_backup_${TODAY}" ${remove_trailing_components:+'--strip-components=3'} &&
+
+echo 'stopping couchdb. if this fails the script will exit' &&
+service couchdb stop || exit 1
+
+read -p 'continuing will overwrite the existing couchdb data directory. Are you sure? [y/N]: ' -r confirm3
+if [ $confirm3 != 'y' ]; then
+    exit 1
+fi
+echo 'copying backup to data directory' &&
+    rsync --append-verify -aH "{{ couch_backup_dir }}/extracted_backup_${TODAY}/" "{{ couch_data_dir }}" &&
+
+echo 'setting new ip addresses' &&
+for db_name in $(curl -s -XGET {{ inventory_hostname|ipaddr }}:{{ couchdb_node_port }}/_dbs/_all_docs -u {{ COUCH_USERNAME }}:{{ COUCH_PASSWORD }}  | grep -Po '"id":"(\w+\-?\w+)' | cut -c 7-) # the names of all the dbs currently known about by couch
+do
+    # replace all the old ip addresses in the _dbs database with the current host ip address so couch can find the shards
+    echo "setting ip address for: $db_name"
+    curl -s -XGET {{ inventory_hostname|ipaddr }}:{{ couchdb_node_port }}/_dbs/$db_name -u {{ COUCH_USERNAME }}:{{ COUCH_PASSWORD }} |
+        sed -r 's/(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}/{{ inventory_hostname|ipaddr }}/g' |
+        curl -s -XPUT {{ inventory_hostname|ipaddr }}:{{ couchdb_node_port }}/_dbs/$db_name -u {{ COUCH_USERNAME }}:{{ COUCH_PASSWORD }} -d @-
+done
+
+echo 'starting couchdb' &&
+service couchdb start &&
+
+echo 'restore complete'
