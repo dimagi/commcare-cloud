@@ -130,7 +130,7 @@ servers:
 
 
   - server_name: "web11-production"
-    server_instance_type: m5.4xlarge
+    server_instance_type: r5.2xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
@@ -138,7 +138,7 @@ servers:
     group: "mobile_webworkers"
     os: bionic
   - server_name: "web12-production"
-    server_instance_type: m5.4xlarge
+    server_instance_type: r5.2xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
@@ -146,7 +146,7 @@ servers:
     group: "mobile_webworkers"
     os: bionic
   - server_name: "web13-production"
-    server_instance_type: m5.4xlarge
+    server_instance_type: r5.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -154,7 +154,7 @@ servers:
     group: "mobile_webworkers"
     os: bionic
   - server_name: "web14-production"
-    server_instance_type: m5.4xlarge
+    server_instance_type: r5.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -162,7 +162,7 @@ servers:
     group: "mobile_webworkers"
     os: bionic
   - server_name: "web15-production"
-    server_instance_type: m5.4xlarge
+    server_instance_type: r5.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -170,7 +170,7 @@ servers:
     group: "mobile_webworkers"
     os: bionic
   - server_name: "web16-production"
-    server_instance_type: m5.4xlarge
+    server_instance_type: r5.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
