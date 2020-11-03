@@ -24,25 +24,9 @@
       include_vars: roles/kafka/defaults/main.yml
 
     - name: Get Kafka topics
-      # django_manage does not support check mode, and this task does not
-      # change the system. Force this task to run in normal mode even when
-      # check mode is on:
-      check_mode: no
-      django_manage:
-        command: 'list_kafka_topics'
-        app_path: "{{ code_home }}"
-        virtualenv: "{{ py3_virtualenv_home }}"
+      command: "/opt/kafka/bin/kafka-topics.sh --list --zookeeper localhost:{{ zookeeper_client_port }}"
       register: topics_result
-      # topics_result does not have `stdout` or `stdout_lines`. Use
-      # `out.split()` instead. e.g.
-      #    {
-      #        "changed": false,
-      #        "failed": false,
-      #        "out": "case\ncase-sql\ncommcare-user\ndomain\nform\nform-sql\n"
-      #               "group\nledger\nmeta\nsms\nweb-user\napp\nlocation\n"
-      #               "synclog-sql\n",
-      #        # ...
-      #    }
+      check_mode: no
 
     - name: Allow Kafka server to delete topics
       lineinfile:
@@ -58,7 +42,7 @@
         state: restarted
 
     - name: Delete topics
-      loop: "{{ topics_result.out.split() }}"
+      loop: "{{ topics_result.stdout_lines }}"
       command: "/opt/kafka/bin/kafka-topics.sh
         --delete
         --zookeeper localhost:{{ zookeeper_client_port }}
