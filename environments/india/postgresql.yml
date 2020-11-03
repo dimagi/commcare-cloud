@@ -2,7 +2,6 @@ DEFAULT_POSTGRESQL_HOST: rds_pgmain0
 REPORTING_DATABASES:
   ucr: ucr
   aaa-data: aaa-data
-#  icds-ucr-citus: ucr
 
 pgbouncer_override:
   pgbouncer_default_pool: 290
@@ -53,15 +52,6 @@ dbs:
         shards: [820, 1023]
         pgbouncer_host: pgbouncer0
   custom:
-    # remove citus from django
-    # django_alias: icds-ucr-citus
-    - name: icds-ucr-citus
-      django_migrate: False
-      host: citus0
-      pgbouncer_host: pgbouncer0
-      pg_config:
-        - name: citus.shard_count
-          value: 32
     - django_alias: aaa-data
       name: aaa-data
       django_migrate: True  # AAA dashboard models are stored here
