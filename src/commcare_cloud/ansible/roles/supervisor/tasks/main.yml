@@ -5,7 +5,7 @@
   become: yes
 
 - name: install supervisor 4.0.4
-  pip: name=supervisor version=4.0.4 extra_args={{ pip_extra_args }}
+  pip: name=supervisor state=present version=4.0.4
   become: yes
 
 - name: link supervisor
