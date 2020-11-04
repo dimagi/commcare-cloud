@@ -1,0 +1,17 @@
+title: Switch to apt-managed supervisor
+key: Switch_to_apt-managed_supervisor
+date: 2020-11-04
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Install supervisor supplied by the apt package manager.
+
+details: |
+  Security patches and updates will be more reliably managed with the
+  apt-managed version of supervisor.
+
+update_steps: |
+  ```sh
+  commcare-cloud <env> ansible-playbook deploy_commcarehq.yml --tags supervisor
+  ```
