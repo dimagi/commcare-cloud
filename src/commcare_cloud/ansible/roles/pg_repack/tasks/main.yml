@@ -53,6 +53,22 @@
       version: "{{ pg_repack_version }}"
     loop: "{{ pg_repack.get(inventory_hostname, []) }}"
 
+  - name: Copy Schema permission Queries file
+    copy:
+      dest: /tmp/schema_permissions.sql
+      src: schema_permissions.sql
+    register: sql_file_path
+
+  - name: Run queries from SQL script
+    postgresql_query:
+      db: "{{ item.database }}"
+      login_host: "{{ item.host|default('localhost') }}"
+      port: "{{ item.port|default(5432) }}"
+      login_user: "{{ item.username|default(None) }}"
+      login_password: "{{ item.password|default(None) }}"
+      path_to_script: "{{ sql_file_path.dest }}"
+    register: query_result
+
 - name: Create pg_repack script
   become: yes
   copy:
