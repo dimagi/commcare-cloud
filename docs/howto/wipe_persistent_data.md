@@ -37,11 +37,10 @@ How To Wipe Persistent Data
 
        $ cchq monolith ap wipe_kafka.yml
 
-   You can check they have been removed by confirming that
-   "__consumer_offsets" is the only topic remaining:
+   You can check they have been removed by confirming that the following shows
+   no output:
 
        $ kafka-topics.sh --zookeeper localhost:2181 --list
-       __consumer_offsets
 
 
 Rebuilding environment
