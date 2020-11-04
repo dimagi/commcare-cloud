@@ -712,23 +712,36 @@ $ curl -XGET 'http://es0.internal-icds.commcarehq.org:9200/_cluster/health?prett
 }
 ```
 
-## Forms missing on ES but exist on couch
-We've had issues in the past where domains on the Couch DB backend have had some of their forms missing from ES (and sometimes non-couch domains). This might correlate with a recent change to ES indices, ES-related upgrade work, or ES performance issues. All of these instabilities can cause strange flaky behavior in indexing data, especially in large projects.
+## Data missing on ES but exist in the primary DB (CouchDB / PostgreSQL)
+We've had issues in the past where domains have had some of their data missing from ES.
+This might correlate with a recent change to ES indices, ES-related upgrade work, or ES performance issues.
+All of these instabilities can cause strange flaky behavior in indexing data, especially in large projects.
 
 First, you need to identify that this issue is not ongoing and widespread. 
 
-1) visit the affected domain's Submit History report to verify that recent submissions are still being indexed on ES (if they are in the report, they are in ES)
-2) check the submission date of the affected forms and then check the Submit History report around that date and surrounding dates.
-3) spot check another domain with a lot of consistent submissions to see if there are any recent and past issues surrounding the reported affected date(s).
+1) visit the affected domain's Submit History or Case List report to verify that recent submissions are still being indexed on ES
+(if they are in the report, they are in ES)
+2) check the modification date of the affected data and then check the reports around that date and surrounding dates.
+3) spot check another domain with a lot of consistent submissions to see if there are any recent and past issues
+surrounding the reported affected date(s).
 
-If you don't see any obvious issues, it's likely a strange data-flakiness issue. This can be resolved by running the following management commands:
+If you don't see any obvious issues, it's likely a strange data-flakiness issue. This can be resolved by running the
+following management commands (run in a tmux since they may take a long time to complete):
 
-```.env
-cchq <env> django-manage forms_not_in_es <domain> > missing_form_ids.txt
-cchq <env> django-manage republish_forms_rebuild_cases <domain> missing_form_ids.txt
+```bash
+pthon manage.py stale_data_in_es [form/case] --domain <domain> [--start=YYYY-MM-DD] [--end=YYYY-MM-DD] > stale_data.tsv
+pthon manage.py republish_doc_changes stale_data.tsv
 ```
 
-If you DO see obvious issues, it's time to start digging for problematic PRs or checking performance monitoring graphs. Good luck.
+You can also do a quick analysis of the output data to find potentially problematic dates:
+```bash
+cat state_data.tsv | cut -f 6 | tail -n +2 | cut -d' ' -f 1 | uniq -c
+
+      2 2020-10-26
+    172 2020-11-03
+     14 2020-11-04
+```
+If you DO see obvious issues, it's time to start digging for problematic PRs or checking performance monitoring graphs.
 
 ## Low disk space free
 "[INFO ][cluster.routing.allocation.decider] [hqes0] low disk watermark [85%] exceeded on ... replicas will not be assigned to this node"
