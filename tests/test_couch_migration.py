@@ -77,6 +77,7 @@ def test_get_migration_file_configs(plan_name):
 def test_generated_plan(plan_name):
     migration = _get_migration(plan_name)
     _generate_plan_and_rsync_lists(migration, plan_name)
+
     actual = _get_yml(migration.shard_plan_path)
     expected = _get_expected_yml(plan_name, 'expected_{}'.format(COUCH_SHARD_PLAN))
     assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
