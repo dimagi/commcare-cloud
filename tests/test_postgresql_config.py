@@ -1,17 +1,17 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from io import open
 import os
 from unittest import SkipTest
 
-import yaml
 from parameterized import parameterized
+from nose.tools import assert_equal
+import yaml
 
 from commcare_cloud.environment.main import Environment
 from commcare_cloud.environment.paths import DefaultPaths
 
-from nose.tools import assert_equal
-from io import open
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
 TEST_ENVIRONMENTS = os.listdir(TEST_ENVIRONMENTS_DIR)
