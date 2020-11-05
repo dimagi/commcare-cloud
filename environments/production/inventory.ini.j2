@@ -107,8 +107,6 @@ kafka1
 [kafka:children]
 kafka1
 
-{{ __celery9__ }} rabbitmq_migration_bridge=true
-
 {{ __celery10__ }} rabbitmq_migration_bridge=true
 
 {{ __celery11__ }} rabbitmq_migration_bridge=true
@@ -118,7 +116,6 @@ kafka1
 {{ __celery_a__ }}
 
 [celery:children]
-celery9
 celery10
 celery11
 celery12
