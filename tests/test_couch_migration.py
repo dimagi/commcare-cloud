@@ -1,5 +1,4 @@
 from __future__ import print_function
-
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import os
@@ -17,6 +16,7 @@ from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists, \
 from commcare_cloud.commands.migrations.copy_files import get_file_list_filename
 from commcare_cloud.environment.main import get_environment
 from tests.utils import get_file_contents
+from io import open
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'couch_migration_config')
 PLANS_DIR = os.path.join(TEST_ENVIRONMENTS_DIR, 'plans')
@@ -77,7 +77,6 @@ def test_get_migration_file_configs(plan_name):
 def test_generated_plan(plan_name):
     migration = _get_migration(plan_name)
     _generate_plan_and_rsync_lists(migration, plan_name)
-
     actual = _get_yml(migration.shard_plan_path)
     expected = _get_expected_yml(plan_name, 'expected_{}'.format(COUCH_SHARD_PLAN))
     assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
@@ -130,7 +129,7 @@ def _get_expected_yml(plan_name, filename):
 
 
 def _get_yml(path):
-    with open(path, 'r') as exp:
+    with open(path, 'r', encoding='utf-8') as exp:
         return yaml.safe_load(exp)
 
 
