@@ -100,15 +100,21 @@ COMMAND_TYPES = sorted(
 
 
 def run_on_control_instead(args, sys_argv):
-    argv = [arg for arg in sys_argv][1:]
+    argv = sys_argv[1:]
     argv.remove('--control')
     executable = 'commcare-cloud'
     branch = getattr(args, 'branch', 'master')
+    venv = os.environ.get("CCHQ_VIRTUALENV")
     cmd_parts = [
         executable, args.env_name, 'ssh', 'control[0]', '-t',
-        'cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
+        '{env}cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
         '&& git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
-        .format(branch=branch, cchq=executable, cchq_args=' '.join([shlex_quote(arg) for arg in argv]))
+        .format(
+            env=('export CCHQ_VIRTUALENV=%s; ' % venv if venv else ''),
+            branch=branch,
+            cchq=executable,
+            cchq_args=' '.join(shlex_quote(arg) for arg in argv),
+        )
     ]
 
     print_command(' '.join([shlex_quote(part) for part in cmd_parts]))

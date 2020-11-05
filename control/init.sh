@@ -1,4 +1,7 @@
 #! /bin/bash
+CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-ansible}
+CCHQ_PYTHON=$([ "$CCHQ_VIRTUALENV" == ansible ] && echo 2 || echo 3)
+VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
 
 if [[ $_ == $0 ]]
 then
@@ -14,7 +17,14 @@ function realpath() {
 
 
 if [ -z ${TRAVIS_TEST} ]; then
-    if ! hash virtualenvwrapper.sh 2>/dev/null; then
+    if [ "$CCHQ_PYTHON" == 3 ]; then
+        if [ ! -f $VENV/bin/activate ]; then
+            # use virtualenv because `python3 -m venv` is broken on Ubuntu 18.04
+            python3 -m pip install --quiet --user --upgrade virtualenv
+            python3 -m virtualenv --quiet $VENV
+        fi
+        source $VENV/bin/activate
+    elif ! hash virtualenvwrapper.sh 2>/dev/null; then
         echo "Please install virtualenvwrapper and make sure it is in your PATH"
         echo ""
         echo "  sudo pip install virtualenv virtualenvwrapper --ignore-installed six"
@@ -46,7 +56,7 @@ else
     COMMCARE_CLOUD_REPO=${HOME}/commcare-cloud
 fi
 
-if [ -z ${TRAVIS_TEST} ]; then
+if [ -z "$TRAVIS_TEST" -a "$CCHQ_PYTHON" == 2 ]; then
     source virtualenvwrapper.sh
     if [ ! -d ~/.virtualenvs/ansible ]; then
         echo "Creating ansible virtualenv..."
@@ -151,6 +161,11 @@ source ~/.commcare-cloud/repo/src/commcare_cloud/.bash_completion
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
+if [ "$CCHQ_PYTHON" == 3 ]; then
+    SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
+else
+    SITE_PACKAGES=$VENV/lib/python2.7/site-packages
+fi
 
 if ! grep -q init-ansible ~/.profile 2>/dev/null; then
     printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
@@ -184,10 +199,9 @@ function ansible-deploy-control() {
     && ANSIBLE_DIR=/home/$USER/commcare-cloud/src/commcare_cloud/ansible \
     && ANSIBLE_CONFIG=$ANSIBLE_DIR/ansible.cfg \
     && ENV_DIR=/home/$USER/commcare-cloud/environments \
-    && VENV=/home/$USER/.virtualenvs/ansible \
-    && ANSIBLE_COLLECTIONS_PATHS=$VENV/lib/python2.7/site-packages/.ansible/ \
-    && ANSIBLE_ROLES_PATH=$VENV/lib/python2.7/site-packages/.ansible/roles \
-    $VENV/bin/ansible-playbook \
+    && ANSIBLE_COLLECTIONS_PATHS='$SITE_PACKAGES'/.ansible/ \
+    && ANSIBLE_ROLES_PATH='$SITE_PACKAGES'/.ansible/roles \
+    '$VENV'/bin/ansible-playbook \
     -i localhost, $ANSIBLE_DIR/deploy_control.yml \
     -e @$ENV_DIR/$ENV/vault.yml \
     -e @$ENV_DIR/$ENV/public.yml \
@@ -203,7 +217,7 @@ function ansible-control-banner() {
     printf "\n${GREEN}Welcome to commcare-cloud\n\n"
     printf "${GREEN}Available commands:\n"
     printf "${BLUE}update-code${NC} - update the commcare-cloud repositories (safely)\n"
-    printf "${BLUE}workon ansible${NC} - activate the ansible virtual environment\n"
+    printf "${BLUE}source $VENV/bin/activate${NC} - activate the ansible virtual environment\n"
     printf "${BLUE}ansible-deploy-control [environment]${NC} - deploy changes to users on this control machine\n"
     printf "${BLUE}commcare-cloud${NC} - CLI wrapper for ansible.\n"
     printf "                 See ${YELLOW}commcare-cloud -h${NC} for more details.\n"
