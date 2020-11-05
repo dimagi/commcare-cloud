@@ -1,17 +1,15 @@
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from io import open
+from __future__ import absolute_import, print_function, unicode_literals
+
 import os
+from io import open
 from unittest import SkipTest
 
-from parameterized import parameterized
-from nose.tools import assert_equal
 import yaml
+from nose.tools import assert_equal
+from parameterized import parameterized
 
 from commcare_cloud.environment.main import Environment
 from commcare_cloud.environment.paths import DefaultPaths
-
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
 TEST_ENVIRONMENTS = os.listdir(TEST_ENVIRONMENTS_DIR)

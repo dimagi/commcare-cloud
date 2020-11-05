@@ -1,20 +1,23 @@
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from io import open
+from __future__ import absolute_import, print_function, unicode_literals
+
 import os
 import shutil
+from io import open
 
+import yaml
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
 from mock.mock import patch
 from nose.tools import assert_equal
 from parameterized import parameterized
-import yaml
 
-from commcare_cloud.commands.migrations.config import CouchMigration, PRUNE_PLAYBOOK_NAME, COUCH_SHARD_PLAN
-from commcare_cloud.commands.migrations.couchdb import generate_rsync_lists, \
-    generate_shard_prune_playbook, generate_shard_plan, get_migration_file_configs
-from commcare_cloud.commands.migrations.copy_files import get_file_list_filename
+from commcare_cloud.commands.migrations.config import (COUCH_SHARD_PLAN,
+                                                       PRUNE_PLAYBOOK_NAME,
+                                                       CouchMigration)
+from commcare_cloud.commands.migrations.copy_files import \
+    get_file_list_filename
+from commcare_cloud.commands.migrations.couchdb import (
+    generate_rsync_lists, generate_shard_plan, generate_shard_prune_playbook,
+    get_migration_file_configs)
 from commcare_cloud.environment.main import get_environment
 from tests.utils import get_file_contents
 

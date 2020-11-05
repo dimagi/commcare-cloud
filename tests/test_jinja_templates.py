@@ -1,13 +1,14 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 import fnmatch
-from io import open
 import os
+from io import open
 
 from jinja2 import Environment as JEnvironment
 from parameterized import parameterized
 
-from commcare_cloud.manage_commcare_cloud.datadog_monitors import get_datadog_jinja_environment
+from commcare_cloud.manage_commcare_cloud.datadog_monitors import \
+    get_datadog_jinja_environment
 
 
 def get_jinja_templates():
