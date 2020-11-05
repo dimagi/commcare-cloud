@@ -1,17 +1,15 @@
-from __future__ import print_function
+from __future__ import absolute_import, print_function, unicode_literals
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import os
+from io import open
 from unittest import SkipTest
 
 import yaml
+from nose.tools import assert_equal
 from parameterized import parameterized
 
 from commcare_cloud.environment.main import Environment
 from commcare_cloud.environment.paths import DefaultPaths
-
-from nose.tools import assert_equal
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
 TEST_ENVIRONMENTS = os.listdir(TEST_ENVIRONMENTS_DIR)
@@ -24,7 +22,7 @@ def test_postgresql_config(env_name):
     if not os.path.exists(env.paths.generated_yml):
         raise SkipTest
 
-    with open(env.paths.generated_yml) as f:
+    with open(env.paths.generated_yml, encoding='utf-8') as f:
         generated = yaml.safe_load(f)
         assert list(generated.keys()) == ['postgresql_dbs']
 
