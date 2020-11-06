@@ -64,21 +64,22 @@
   tags:
     - new_ansible_sudo_pass
 
-- name: Authorize current devs to login as ansible
-  become: yes
-  authorized_key: user=ansible state=present key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
+- name: remove key using username
+  lineinfile:
+    dest: /home/ansible/.ssh/authorized_keys
+    state: absent
+    regexp: "username={{ item }}"
+  when: reset_user | default(False)
   with_items: '{{ dev_users.present }}'
   tags:
     - pubkey
 
-# task is remove old pubkey of particular devs from ansible and update with new pubkey
-- name: UnAuthorize current devs to login as ansible
+- name: Authorize current devs to login as ansible
   become: yes
-  authorized_key: user=ansible state=absent key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
-  with_items: '{{ user }}'
+  authorized_key: user=ansible state=present key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}" key_options=environment="username={{ item }}"
+  with_items: '{{ dev_users.present }}'
   tags:
-    - remove_pubkey
-  when: user is defined
+    - pubkey
 
 - import_tasks: remove_users.yml
   when: dev_users.absent
