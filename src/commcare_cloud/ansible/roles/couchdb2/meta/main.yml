@@ -2,10 +2,10 @@
 dependencies:
   - couchdb2-preinstall
   - role: andrewrothstein.couchdb-cluster
-    couchdb_ver: '2.1.1'
+    couchdb_ver: '2.1.1' 
     when: ansible_distribution_version != '18.04'
   - role: andrewrothstein.couchdb-cluster
-    couchdb_ver: '2.3.1'
+    couchdb_ver: '{{ couchdb_version }}'
     couchdb_dep_pkgs:
       - build-essential
       - pkg-config

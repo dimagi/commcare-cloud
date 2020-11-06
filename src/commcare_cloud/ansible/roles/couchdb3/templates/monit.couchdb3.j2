@@ -1,6 +1,0 @@
- check process couchdb3 with pidfile {{ couchdb_dir }}/var/run/couchdb3.pid
-   group database
-   group couchdb3
-   start program = "/etc/init.d/couchdb3 start"
-   stop program = "/etc/init.d/couchdb3 stop"
-   if failed host {{ inventory_hostname }} port {{ couchdb3_port }} then restart
