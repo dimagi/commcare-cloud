@@ -1,5 +1,8 @@
-import six
+from __future__ import absolute_import
+
 from io import open
+
+import six
 
 
 def open_for_json_dump(path):
