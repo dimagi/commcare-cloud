@@ -116,7 +116,7 @@ def run_ansible_playbook(
             '-i', environment.paths.inventory_source,
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
-            '-e', 'ansible_ssh_host={{ ec2_instance_id|default(inventory_hostname) }}',
+            # '-e', 'ansible_ssh_host={{ ec2_instance_id|default(inventory_hostname) }}',
             '--diff',
         ) + get_limit() + cmd_args
 

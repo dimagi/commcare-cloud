@@ -295,7 +295,7 @@ class Environment(object):
         def get_sshable_hostname(host):
             # use the ip address specified by ansible_host to ssh in if it's given
             host_vars = var_manager.get_vars(host=host)
-            return host_vars.get('ansible_host') or host_vars.get('ec2_instance_id') or host.name
+            return host_vars.get('ansible_host') or host.name
 
         ssh_addr_map = {
             host.name: get_sshable_hostname(host)
