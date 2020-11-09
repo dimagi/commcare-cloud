@@ -72,8 +72,8 @@
   register: ssh_pubkeys_results_list
 
 - name: iterate over ssh_pubkeys_list and join into a string
-    set_fact:
-      ssh_pubkeys_string: "{{ ssh_pubkeys_results_list.results | map(attribute='ansible_facts.ssh_pubkeys_list') | list | join('\n') }}"
+  set_fact:
+    ssh_pubkeys_string: "{{ ssh_pubkeys_results_list.results | map(attribute='ansible_facts.ssh_pubkeys_list') | list | join('\n') }}"
 
 - name: Authorize current devs to login as ansible
   become: yes
