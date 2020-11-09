@@ -39,7 +39,7 @@ citus_version: <new citus version>
 
 #### 2. Run the `deploy_citusdb.yml` playbook
 
-    commcare-cloud <env> ansible-playbook deploy_citusdb.yml --tags citusdb
+    commcare-cloud <env> ansible-playbook deploy_citusdb.yml --tags citusdb -e postgresql_version=OLD-VERSION
 
 #### 3. Check the extension version
 
@@ -64,7 +64,7 @@ citus_postgresql_port: NEW-PORT  # this must be different from the current port
 
 #### 1. Stop all processes connecting to the databases
 
-    commcare-cloud <env> run-module citusdb,!citusdb_worker service "name=pgbouncer state=stopped"
+    commcare-cloud <env> run-module citusdb_master -b service "name=pgbouncer state=stopped"
 
 #### 2. Run the upgrade playbooks
 
