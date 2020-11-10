@@ -78,12 +78,23 @@ def get_default_ssh_options(environment):
     return default_ssh_options
 
 
+def generate_ssh_config(environment):
+    path = environment.paths.get_env_file_path(os.path.join('.generated', 'ssh_config'))
+    with open(path, 'w') as f:
+        f.write(b'Host *\n')
+        for option, value in get_default_ssh_options(environment):
+            f.write(b'\t{}\t{}\n'.format(option, value))
+
+    return path
+
+
 def get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=()):
-    ssh_args = []
-    for option_name, default_option_value in get_default_ssh_options(environment):
-        if not any(a.startswith(('{}='.format(option_name), "-o{}=".format(option_name))) for a in original_ssh_args):
-            ssh_args.extend(["-o", '{}={}'.format(option_name, default_option_value)])
-    return ssh_args
+    return ['-F', generate_ssh_config(environment)]
+    # ssh_args = []
+    # for option_name, default_option_value in get_default_ssh_options(environment):
+    #     if not any(a.startswith(('{}='.format(option_name), "-o{}=".format(option_name))) for a in original_ssh_args):
+    #         ssh_args.extend(["-o", '{}={}'.format(option_name, default_option_value)])
+    # return ssh_args
 
 
 def add_factory_auth_cmd(environment):
