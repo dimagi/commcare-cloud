@@ -1,11 +1,3 @@
-celery10-production: 10.202.12.142
-celery10-production.instance_id: i-021693971e3333c09
-celery11-production: 10.202.12.27
-celery11-production.instance_id: i-083adf92fface7f42
-celery12-production: 10.202.12.101
-celery12-production.instance_id: i-075292a6ce33e76ed
-celery9-production: 10.202.12.80
-celery9-production.instance_id: i-0e3c30a63d5c94ac3
 celery_a000-production: 10.202.12.152
 celery_a000-production.instance_id: i-0b5e3397da9cd4594
 celery_a001-production: 10.202.12.64
@@ -14,6 +6,12 @@ celery_a002-production: 10.202.12.240
 celery_a002-production.instance_id: i-01a23f1c2cc527c16
 celery_a003-production: 10.202.12.47
 celery_a003-production.instance_id: i-03d2aab147f1c2c01
+celery_a004-production: 10.202.12.28
+celery_a004-production.instance_id: i-01522bbe472124323
+celery_a005-production: 10.202.12.213
+celery_a005-production.instance_id: i-0cdd79c56bd5c006d
+celery_a006-production: 10.202.12.222
+celery_a006-production.instance_id: i-0f1272b602a757a91
 control1-production: 10.202.10.158
 control1-production.instance_id: i-0cff282a9692b2f47
 couch12-production: 10.202.40.52
