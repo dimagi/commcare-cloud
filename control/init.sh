@@ -20,8 +20,8 @@ if [ -z ${TRAVIS_TEST} ]; then
     if [ "$CCHQ_PYTHON" == 3 ]; then
         if [ ! -f $VENV/bin/activate ]; then
             # use virtualenv because `python3 -m venv` is broken on Ubuntu 18.04
-            python3 -m pip install --quiet --user --upgrade virtualenv
-            python3 -m virtualenv --quiet $VENV
+            python3 -m pip install --user --upgrade virtualenv
+            python3 -m virtualenv $VENV
         fi
         source $VENV/bin/activate
     elif ! hash virtualenvwrapper.sh 2>/dev/null; then
