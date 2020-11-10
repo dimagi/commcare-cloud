@@ -5,7 +5,7 @@ gunicorn_workers_static_factor: 0
 gunicorn_workers_factor: 2
 formplayer_memory: "15g"
 management_commands:
-  celery12:
+  celery_a006:
     run_submission_reprocessing_queue:
     queue_schedule_instances:
     handle_survey_actions:
@@ -13,7 +13,7 @@ management_commands:
   pillow1:
     run_pillow_retry_queue:
 celery_processes:
-  celery10,celery11,celery_a000,celery_a001,celery_a002,celery_a003:
+  celery_a000,celery_a001,celery_a002,celery_a003,celery_a004,celery_a005:
     analytics_queue:
       pooling: gevent
       concurrency: 4
@@ -55,7 +55,7 @@ celery_processes:
       concurrency: 1
     ucr_queue:
       concurrency: 9
-  celery12:
+  celery_a006:
     # not really queues
     flower: {}
     beat: {}
