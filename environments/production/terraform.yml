@@ -374,39 +374,6 @@ servers:
     group: "rabbitmq"
     os: ubuntu_pro_bionic
 
-  - server_name: "celery9-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "c"
-    volume_size: 200
-    volume_encrypted: no
-    group: "celery"
-    os: bionic
-  - server_name: "celery10-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "c"
-    volume_size: 200
-    volume_encrypted: no
-    group: "celery"
-    os: bionic
-  - server_name: "celery11-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "c"
-    volume_size: 200
-    volume_encrypted: no
-    group: "celery"
-    os: bionic
-  - server_name: "celery12-production"
-    server_instance_type: r5.xlarge
-    network_tier: "app-private"
-    az: "c"
-    volume_size: 200
-    volume_encrypted: no
-    group: "celery"
-    os: bionic
-
   - server_name: "celery_a{i}-production"
     server_instance_type: r5.2xlarge
     network_tier: "app-private"
@@ -415,7 +382,7 @@ servers:
     volume_encrypted: yes
     group: "celery"
     os: ubuntu_pro_bionic
-    count: 4
+    count: 7
 
   - server_name: "pillow1-production"
     server_instance_type: r5a.8xlarge
