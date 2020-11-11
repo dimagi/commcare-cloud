@@ -30,6 +30,9 @@
 
 - meta: flush_handlers
 
+- name: wait for a few seconds for couchdb to setup 
+  pause: seconds=60
+
 - name: Add nodes
   uri:
     url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_node_port }}/_nodes/couchdb@{{ item|ipaddr }}"
@@ -39,10 +42,19 @@
     force_basic_auth: true
     status_code: 201, 409 # 409 means already set up (conflict)
     body: '{}'
-  when: inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
+  when: couch_version == '2.3.1' and inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
   with_items: "{{ groups.couchdb2 }}"
   tags:
     - add_couch_nodes
+
+- name: Add nodes in couchdb3 cluster
+  shell: "curl -X PUT http{% if couchdb_secure %}s{% endif %}://{{ couchdb2.username }}:{{ couchdb2.password }}@{{ inventory_hostname|ipaddr }}:{{ couchdb_port }}/_node/_local/_nodes/couchdb@{{ item|ipaddr }} -d {}"
+  args:
+    warn: false
+  when: couch_version == '3.1.1' and inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
+  with_items: "{{ groups.couchdb2 }}"
+  tags:
+    - add_couchdb3_nodes
 
 - name: Create system databases
   uri:
