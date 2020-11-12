@@ -7,6 +7,9 @@ newest first.
 
 ## Changelog
 
+### **2020-11-04** [Switch to apt-managed supervisor](0039-Switch_to_apt-managed_supervisor.md)
+Install supervisor supplied by the apt package manager.
+
 ### **2020-10-22** [Update PostgreSQL monit configurations to be version specific](0038-update-postgresql-monit-conf.md)
 Update PostgreSQL monit configuration files to be version specific and use `systemctl`
 

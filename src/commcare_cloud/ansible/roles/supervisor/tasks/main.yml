@@ -1,21 +1,13 @@
 ---
 
-- name: remove supervisor 3.0b
-  apt: name=supervisor state=absent
+- name: pip uninstall supervisor
+  # can be removed when all envs have been swiched to the apt-managed supervisor
+  pip: name=supervisor state=absent
   become: yes
 
-- name: install supervisor 4.0.4
-  pip: name=supervisor state=present version=4.0.4
+- name: install supervisor
+  apt: name=supervisor state=present
   become: yes
-
-- name: link supervisor
-  file:
-    path: /usr/bin/{{ item }}
-    state: link
-    src: /usr/local/bin/{{ item }}
-  with_items:
-    - supervisord
-    - supervisorctl
 
 - name: find supervisord path
   shell: 'which supervisord'
