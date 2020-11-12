@@ -14,8 +14,18 @@
     user: root
     cron_file: purge_formplayer_files
   with_items:
-    - {name: 'Purge temp files', dir: '/tmp', time_spec: '2d'}
     - {name: 'Purge sqlite db files', dir: '{{ formplayer_data_dir }}', time_spec: '{{ formplayer_purge_time_spec }}'}
+  tags:
+    - cron
+
+- name: Remove redundant purging cron jobs (cleanup)
+  become: yes
+  cron:
+    name: "{{ item.name }}"
+    cron_file: purge_formplayer_files
+    state: absent
+  with_items:
+    - {name: 'Purge temp files', dir: '/tmp', time_spec: '2d'}
   tags:
     - cron
 
