@@ -26,11 +26,11 @@
             log_group_name_suffix: "webworkers"
             should_include: "{{ 'webworkers' in group_names }}"
           # elasticsearch
-          - file_path: "/opt/data/elasticsearch-2.4.6/logs/*es.log*"
+          - file_path: "/opt/data/elasticsearch-2.4.6/logs/{{ elasticsearch_cluster_name }}.log*"
             log_group_name_suffix: "elasticsearch"
             log_stream_name_suffix: "{{ deploy_env }}_es"
             should_include: "{{ 'elasticsearch' in group_names }}"
-          - file_path: "/opt/data/elasticsearch-2.4.6/logs/*es_index_search_slowlog.log*"
+          - file_path: "/opt/data/elasticsearch-2.4.6/logs/{{ elasticsearch_cluster_name }}_index_search_slowlog.log*"
             log_group_name_suffix: "elasticsearch"
             log_stream_name_suffix: "{{ deploy_env }}_es_index_search_slowlog"
             should_include: "{{ 'elasticsearch' in group_names }}"
