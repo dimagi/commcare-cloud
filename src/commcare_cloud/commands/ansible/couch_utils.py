@@ -7,7 +7,7 @@ from collections import defaultdict
 from operator import attrgetter
 
 from couchdb_cluster_admin.suggest_shard_allocation import get_db_info
-from six.moves import urllib_parse, zip_longest
+from six.moves import urllib_parse, zip_longest, map
 
 import jsonobject
 from couchdb_cluster_admin.utils import do_node_local_request, get_membership, NodeDetails, humansize
@@ -78,7 +78,7 @@ def print_shard_table(shard_allocation_docs, shard_details):
     tables = defaultdict(list)
     for shard_allocation_doc in shard_allocation_docs:
         if not shard_allocation_doc.validate_allocation():
-            print(u"In this allocation by_node and by_range are inconsistent:", repr(shard_allocation_doc))
+            print("In this allocation by_node and by_range are inconsistent:", repr(shard_allocation_doc))
             continue
 
         db_shard_details = shards_by_db.get(shard_allocation_doc.db_name)
@@ -105,7 +105,7 @@ def get_shard_table_rows(shard_doc, shard_details):
     rows, shard_row = [], []
     shard_row.append(shard_doc.db_name)
     for shard, nodes in sorted(shard_doc.by_range.items()):
-        shard_row.append(u','.join(map(shard_doc.config.format_node_name, nodes)))
+        shard_row.append(','.join(map(shard_doc.config.format_node_name, nodes)))
     rows.append(shard_row)
 
     if shard_details:
@@ -118,7 +118,7 @@ def get_shard_table_rows(shard_doc, shard_details):
         def format_counts(counts):
             if len(set(counts)) == 1:
                 return counts[0]
-            return u','.join([
+            return ','.join([
                 str(cnt) if i == 0 else '{0:+}'.format(cnt)
                 for i, cnt in enumerate(counts)
             ])
