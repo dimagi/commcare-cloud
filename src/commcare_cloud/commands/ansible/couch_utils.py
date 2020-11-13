@@ -148,8 +148,10 @@ def print_db_info(config, databases=None):
     ]
     if len(rows) == 1:
         # swap
-        headers, rows = rows, headers
-    tabulate(rows, headers)
+        data = [headers] + rows
+        print(tabulate(list(map(list, zip_longest(*data, fillvalue=None)))))
+    else:
+        print(tabulate(rows, headers))
 
 
 class ShardDetails(jsonobject.JsonObject):
