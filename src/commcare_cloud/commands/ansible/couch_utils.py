@@ -17,13 +17,13 @@ from tabulate import tabulate
 def get_cluster_shard_details(config, databases=None):
     nodes = get_nodes(config)
     return list(itertools.chain.from_iterable(
-        get_node_shard_details(node_details, databases) for node_details in nodes
+        get_node_shard_details(node_name, node_details, databases) for node_name, node_details in nodes
     ))
 
 
-def get_node_shard_details(node_details, databases=None):
+def get_node_shard_details(node_name, node_details, databases=None):
     shards = get_node_shards(node_details, databases)
-    return [get_shard_details(node_details, shard) for shard in shards]
+    return [get_shard_details(node_name, node_details, shard) for shard in shards]
 
 
 def get_node_shards(node_details, databases=None):
@@ -33,9 +33,9 @@ def get_node_shards(node_details, databases=None):
     ]
 
 
-def get_shard_details(node_details, shard_name):
+def get_shard_details(node_name, node_details, shard_name):
     data = do_node_local_request(node_details, urllib_parse.quote(shard_name, safe=""))
-    data["node"] = "couchdb@{}".format(node_details.ip)
+    data["node"] = node_name
     data["shard_name"] = data["db_name"]
     data["db_name"] = _get_db_name(shard_name)
     return ShardDetails(data)
@@ -46,6 +46,9 @@ def _get_db_name(shard_name):
 
 
 def get_nodes(config):
+    """
+    :return: list of tuple(node_name, NodeDetails)
+    """
     node_details = []
     nodes = get_membership(config).cluster_nodes
     for member in nodes:
@@ -53,14 +56,14 @@ def get_nodes(config):
         if address in ("localhost", "127.0.0.1"):
             assert len(nodes) == 1
             address = config.control_node_ip
-        node_details.append(NodeDetails(
+        node_details.append((member, NodeDetails(
             address,
             config.control_node_port,
             config.control_node_local_port,
             config.username,
             config._password,
             None
-        ))
+        )))
     return node_details
 
 
