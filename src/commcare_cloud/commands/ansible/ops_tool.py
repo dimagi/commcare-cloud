@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import collections
 import csv
+import inspect
 import itertools
 import json
 import subprocess
@@ -216,7 +217,14 @@ def _get_pillow_resources_by_name(environment):
 
 class CouchDBClusterInfo(CommandBase):
     command = 'couchdb-cluster-info'
-    help = "Output information about the CouchDB cluster"
+    help = inspect.cleandoc("""
+    Output information about the CouchDB cluster.
+
+    Shard counts are displayed as follows:
+    * a single number if all nodes have the same count
+    * the count on the first node followed by the difference in each following node
+      e.g. 2000,+1,-2 indicates that the counts are 2000,2001,1998
+    """)
 
     arguments = (
         Argument("--raw", action="store_true", help="Output raw shard allocations as YAML instead of printing tables."),

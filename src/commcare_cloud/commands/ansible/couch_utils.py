@@ -91,7 +91,7 @@ def print_shard_table(shard_allocation_docs, shard_details):
         print(tabulate(transposed[1:], headers=["Shard", "Nodes", "Doc Counts", "Doc Deletion Counts"]))
     else:
         for header, rows in tables.items():
-            print(tabulate(rows, header))
+            print(tabulate(rows, header, numalign="left"))
 
 
 def get_shard_table_rows(shard_doc, shard_details):
@@ -109,6 +109,8 @@ def get_shard_table_rows(shard_doc, shard_details):
             shards_by_shard_name[shard_detail.shard_name_short].append(shard_detail)
 
         def format_counts(counts):
+            if len(set(counts)) == 1:
+                return counts[0]
             return u','.join([
                 str(cnt) if i == 0 else '{0:+}'.format(cnt)
                 for i, cnt in enumerate(counts)
