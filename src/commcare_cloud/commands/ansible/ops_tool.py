@@ -230,8 +230,8 @@ class CouchDBClusterInfo(CommandBase):
         Argument("--raw", action="store_true", help="Output raw shard allocations as YAML instead of printing tables."),
         Argument("--shard-counts", action="store_true", help="Include document counts for each shard"),
         Argument("--database", help="Only show output for this database"),
-        Argument("--couch-port", default=15984, type=int),
-        Argument("--couch-local-port", default=15986, type=int),
+        Argument("--couch-port", default=15984, type=int, help="CouchDB port. Defaults to 15984"),
+        Argument("--couch-local-port", default=15986, type=int, help="CouchDB node local port. Defaults to 15986"),
     )
 
     def run(self, args, unknown_args):
