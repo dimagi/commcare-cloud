@@ -221,6 +221,7 @@ class CouchDBClusterInfo(CommandBase):
 
     arguments = (
         Argument("--raw", action="store_true", help="Output raw shard allocations as YAML instead of printing tables."),
+        Argument("--shard-counts", action="store_true", help="Include document counts for each shard"),
     )
 
     def run(self, args, unknown_args):
@@ -231,19 +232,22 @@ class CouchDBClusterInfo(CommandBase):
             get_shard_allocation(couch_config, db_name) for db_name in
             sorted(get_db_list(couch_config.get_control_node()))
         ]
-        shard_details = get_cluster_shard_details(couch_config)
+        shard_details = []
+        if args.shard_counts:
+            shard_details = get_cluster_shard_details(couch_config)
 
         if args.raw:
             plan = {
                 shard_allocation_doc.db_name: shard_allocation_doc.to_plan_json()
                 for shard_allocation_doc in shard_allocations
             }
-            shard_details = sorted(shard_details, key=attrgetter('db_name'))
-            for db_name, shards in itertools.groupby(shard_details, key=attrgetter('db_name')):
-                by_node = defaultdict(list)
-                for shard_detail in shards:
-                    by_node[shard_detail.node].append(shard_detail.to_json())
-                plan[db_name]["shard_details"] = by_node
+            if shard_details:
+                shard_details = sorted(shard_details, key=attrgetter('db_name'))
+                for db_name, shards in itertools.groupby(shard_details, key=attrgetter('db_name')):
+                    by_node = defaultdict(list)
+                    for shard_detail in shards:
+                        by_node[shard_detail.node].append(shard_detail.to_json())
+                    plan[db_name]["shard_details"] = by_node
             # hack - yaml didn't want to dump this directly
             yaml.safe_dump(json.loads(json.dumps(plan)), sys.stdout, indent=2)
             return 0

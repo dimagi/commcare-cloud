@@ -5,6 +5,7 @@ from six.moves import urllib_parse
 
 import jsonobject
 from couchdb_cluster_admin.utils import do_node_local_request, get_membership, NodeDetails
+from tabulate import tabulate
 
 
 def get_cluster_shard_details(config):
@@ -49,70 +50,67 @@ def get_nodes(config):
 
 
 def print_shard_table(shard_allocation_docs, shard_details):
-    last_header = None
-    db_names = [shard_allocation_doc.db_name for shard_allocation_doc in shard_allocation_docs]
-    max_db_name_len = max(list(map(len, db_names)))
-
     shard_details = sorted(shard_details, key=attrgetter('db_name'))
     shards_by_db = {
         group: list(shards)
         for group, shards in itertools.groupby(shard_details, key=attrgetter('db_name'))
     }
 
+    tables = defaultdict(list)
     for shard_allocation_doc in shard_allocation_docs:
         if not shard_allocation_doc.validate_allocation():
-            print("error")
+            print(u"In this allocation by_node and by_range are inconsistent:", repr(shard_allocation_doc))
             continue
 
-        db_shard_details = shards_by_db[shard_allocation_doc.db_name]
-        this_header = sorted(shard_allocation_doc.by_range)
-        print(get_printable(
+        db_shard_details = shards_by_db.get(shard_allocation_doc.db_name)
+        this_header = tuple(sorted(shard_allocation_doc.by_range))
+        table = tables[this_header]
+        table.extend(get_shard_table_rows(
             shard_allocation_doc,
             db_shard_details,
-            include_shard_names=(last_header != this_header),
-            db_name_len=max_db_name_len
         ))
-        last_header = this_header
+    for header, rows in tables.items():
+        print(tabulate(rows, header))
 
 
-def get_printable(shard_doc, shard_details, include_shard_names, db_name_len=20):
-    parts = []
-    first_column = u'{{: <{}}}  '.format(db_name_len)
-    other_columns = u'{: ^20s}  '
-    if include_shard_names:
-        parts.append(first_column.format(u''))
-        for shard in sorted(shard_doc.by_range):
-            parts.append(other_columns.format(shard))
-        parts.append(u'\n')
-    parts.append(first_column.format(shard_doc.db_name))
+def get_shard_table_rows(shard_doc, shard_details):
+    rows, shard_row = [], []
+    shard_row.append(shard_doc.db_name)
     for shard, nodes in sorted(shard_doc.by_range.items()):
-        parts.append(other_columns.format(u','.join(map(shard_doc.config.format_node_name, nodes))))
-    parts.append(u'\n')
+        shard_row.append(u','.join(map(shard_doc.config.format_node_name, nodes)))
+    rows.append(shard_row)
 
-    shards_by_shard_name = defaultdict(list)
-    for shard_detail in shard_details:
-        shards_by_shard_name[shard_detail.shard_name_short].append(shard_detail)
+    if shard_details:
+        doc_count_row = ["...doc_count"]
+        doc_del_count_row = ["...doc_del_count"]
+        shards_by_shard_name = defaultdict(list)
+        for shard_detail in shard_details:
+            shards_by_shard_name[shard_detail.shard_name_short].append(shard_detail)
 
-    for shard_name, nodes in sorted(shard_doc.by_range.items()):
-        shards = {shard.node: shard for shard in shards_by_shard_name[shard_name]}
-        doc_counts = {
-            "doc_count": None,
-            "doc_del_count": None
-        }
-        for node in nodes:
-            shard = shards[node]
-            if doc_counts["doc_count"] is None:
-                doc_counts["doc_count"] = [shard.doc_count]
-                doc_counts["doc_del_count"] = [shard.doc_del_count]
-            else:
-                first_doc_count, first_doc_del_count = doc_counts["doc_count"][0], doc_counts["doc_del_count"][0]
-                doc_counts["doc_count"].append(shard.doc_count - first_doc_count)
-                doc_counts["doc_del_count"].append(shard.doc_del_count - first_doc_del_count)
-        parts.append(other_columns.format(u','.join(['{0:+}'.format(c) for c in doc_counts["doc_count"]])))
-        parts.append(u'\n')
-        parts.append(other_columns.format(u','.join(['{0:+}'.format(c) for c in doc_counts["doc_del_count"]])))
+        def format_counts(counts):
+            return u','.join([
+                str(cnt) if i == 0 else '{0:+}'.format(cnt)
+                for i, cnt in enumerate(counts)
+            ])
 
-    return ''.join(parts)
+        for shard_name, nodes in sorted(shard_doc.by_range.items()):
+            shards = {shard.node: shard for shard in shards_by_shard_name[shard_name]}
+            doc_count, doc_del_count = None, None
+            for node in nodes:
+                shard = shards[node]
+                if doc_count is None:
+                    doc_count = [shard.doc_count]
+                    doc_del_count = [shard.doc_del_count]
+                else:
+                    doc_count.append(shard.doc_count - doc_count[0])
+                    doc_del_count.append(shard.doc_del_count - doc_del_count[0])
+
+            doc_count_row.append(format_counts(doc_count))
+            doc_del_count_row.append(format_counts(doc_del_count))
+        rows.append(doc_count_row)
+        rows.append(doc_del_count_row)
+        rows.append([])
+    return rows
 
 
 class ShardDetails(jsonobject.JsonObject):
