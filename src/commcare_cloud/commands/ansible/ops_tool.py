@@ -1,24 +1,25 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
+
 import collections
 import csv
+import itertools
 import json
 import subprocess
 import sys
 from collections import defaultdict
-from operator import itemgetter
+from operator import itemgetter, attrgetter
 
 import yaml
 from clint.textui import puts, indent
-from couchdb_cluster_admin.describe import print_shard_table
 from couchdb_cluster_admin.suggest_shard_allocation import print_db_info
 from couchdb_cluster_admin.utils import get_membership, get_shard_allocation, get_db_list, Config
 from tabulate import tabulate
 
 from commcare_cloud.colors import color_error, color_success, color_changed, color_added, color_removed
 from commcare_cloud.commands import shared_args
-from commcare_cloud.commands.ansible.run_module import run_ansible_module
+from commcare_cloud.commands.ansible.couch_utils import get_cluster_shard_details, print_shard_table
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.commands.inventory_lookup.getinventory import get_instance_group
 from commcare_cloud.commands.inventory_lookup.inventory_lookup import DjangoManage
@@ -230,12 +231,19 @@ class CouchDBClusterInfo(CommandBase):
             get_shard_allocation(couch_config, db_name) for db_name in
             sorted(get_db_list(couch_config.get_control_node()))
         ]
+        shard_details = get_cluster_shard_details(couch_config)
 
         if args.raw:
             plan = {
                 shard_allocation_doc.db_name: shard_allocation_doc.to_plan_json()
                 for shard_allocation_doc in shard_allocations
             }
+            shard_details = sorted(shard_details, key=attrgetter('db_name'))
+            for db_name, shards in itertools.groupby(shard_details, key=attrgetter('db_name')):
+                by_node = defaultdict(list)
+                for shard_detail in shards:
+                    by_node[shard_detail.node].append(shard_detail.to_json())
+                plan[db_name]["shard_details"] = by_node
             # hack - yaml didn't want to dump this directly
             yaml.safe_dump(json.loads(json.dumps(plan)), sys.stdout, indent=2)
             return 0
@@ -248,7 +256,7 @@ class CouchDBClusterInfo(CommandBase):
         print_db_info(couch_config)
 
         puts('\nShard allocation')
-        print_shard_table(shard_allocations)
+        print_shard_table(shard_allocations, shard_details)
         return 0
 
 
