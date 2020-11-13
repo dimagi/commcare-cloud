@@ -230,11 +230,13 @@ class CouchDBClusterInfo(CommandBase):
         Argument("--raw", action="store_true", help="Output raw shard allocations as YAML instead of printing tables."),
         Argument("--shard-counts", action="store_true", help="Include document counts for each shard"),
         Argument("--database", help="Only show output for this database"),
+        Argument("--couch-port", default=15984, type=int),
+        Argument("--couch-local-port", default=15986, type=int),
     )
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
-        couch_config = get_couch_config(environment)
+        couch_config = get_couch_config(environment, port=args.couch_port, local_port=args.couch_local_port)
 
         db_list = sorted(get_db_list(couch_config.get_control_node()))
         if args.database:
@@ -276,12 +278,12 @@ class CouchDBClusterInfo(CommandBase):
         return 0
 
 
-def get_couch_config(environment, nodes=None):
+def get_couch_config(environment, nodes=None, port=15984, local_port=15986):
     couch_nodes = nodes or environment.groups['couchdb2']
     config = Config(
         control_node_ip=couch_nodes[0],
-        control_node_port=15984,
-        control_node_local_port=15986,
+        control_node_port=port,
+        control_node_local_port=local_port,
         username=environment.get_secret('COUCH_USERNAME'),
         aliases={
             'couchdb@{}'.format(node): get_machine_alias(environment, node) for node in couch_nodes
