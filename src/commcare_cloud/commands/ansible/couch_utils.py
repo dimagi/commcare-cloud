@@ -1,27 +1,35 @@
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import itertools
 from collections import defaultdict
 from operator import attrgetter
+
+from couchdb_cluster_admin.suggest_shard_allocation import get_db_info
 from six.moves import urllib_parse
 
 import jsonobject
-from couchdb_cluster_admin.utils import do_node_local_request, get_membership, NodeDetails
+from couchdb_cluster_admin.utils import do_node_local_request, get_membership, NodeDetails, humansize
 from tabulate import tabulate
 
 
-def get_cluster_shard_details(config):
+def get_cluster_shard_details(config, databases=None):
     nodes = get_nodes(config)
-    return list(itertools.chain.from_iterable(get_node_shard_details(node_details) for node_details in nodes))
+    return list(itertools.chain.from_iterable(
+        get_node_shard_details(node_details, databases) for node_details in nodes
+    ))
 
 
-def get_node_shard_details(node_details):
-    shards = get_node_shards(node_details)
+def get_node_shard_details(node_details, databases=None):
+    shards = get_node_shards(node_details, databases)
     return [get_shard_details(node_details, shard) for shard in shards]
 
 
-def get_node_shards(node_details):
+def get_node_shards(node_details, databases=None):
     return [
         local_db for local_db in do_node_local_request(node_details, "_all_dbs")
-        if local_db.startswith("shards")
+        if local_db.startswith("shards") and (not databases or _get_db_name(local_db) in databases)
     ]
 
 
@@ -29,9 +37,12 @@ def get_shard_details(node_details, shard_name):
     data = do_node_local_request(node_details, urllib_parse.quote(shard_name, safe=""))
     data["node"] = "couchdb@{}".format(node_details.ip)
     data["shard_name"] = data["db_name"]
-    data["db_name"] = shard_name.split("/")[-1].split(".")[0]
+    data["db_name"] = _get_db_name(shard_name)
     return ShardDetails(data)
 
+
+def _get_db_name(shard_name):
+    return shard_name.split("/")[-1].split(".")[0]
 
 def get_nodes(config):
     config.get_control_node()
@@ -56,6 +67,7 @@ def print_shard_table(shard_allocation_docs, shard_details):
         for group, shards in itertools.groupby(shard_details, key=attrgetter('db_name'))
     }
 
+    single_db = len(shard_allocation_docs) == 1
     tables = defaultdict(list)
     for shard_allocation_doc in shard_allocation_docs:
         if not shard_allocation_doc.validate_allocation():
@@ -69,8 +81,17 @@ def print_shard_table(shard_allocation_docs, shard_details):
             shard_allocation_doc,
             db_shard_details,
         ))
-    for header, rows in tables.items():
-        print(tabulate(rows, header))
+        if not single_db and shard_details:
+            table.append([])
+
+    if single_db:
+        headers, rows = list(tables.items())[0]
+        data = [("",) + headers] + rows
+        transposed = list(map(list, itertools.izip_longest(*data, fillvalue=None)))
+        print(tabulate(transposed[1:], headers=["Shard", "Nodes", "Doc Counts", "Doc Deletion Counts"]))
+    else:
+        for header, rows in tables.items():
+            print(tabulate(rows, header))
 
 
 def get_shard_table_rows(shard_doc, shard_details):
@@ -109,8 +130,26 @@ def get_shard_table_rows(shard_doc, shard_details):
             doc_del_count_row.append(format_counts(doc_del_count))
         rows.append(doc_count_row)
         rows.append(doc_del_count_row)
-        rows.append([])
     return rows
+
+
+def print_db_info(config, databases=None):
+    info = sorted(get_db_info(config))
+    headers = ["Database", "Data size on Disk", "View size on Disk", "Number of shards"]
+    rows = [
+        [
+            db_name,
+            humansize(size),
+            humansize(sum([view_size for view_name, view_size in view_sizes.items()])),
+            len(shards)
+        ]
+        for db_name, size, view_sizes, shards, _ in info
+        if not databases or db_name in databases
+    ]
+    if len(rows) == 1:
+        # swap
+        headers, rows = rows, headers
+    tabulate(rows, headers)
 
 
 class ShardDetails(jsonobject.JsonObject):

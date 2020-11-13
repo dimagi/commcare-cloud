@@ -13,14 +13,13 @@ from operator import itemgetter, attrgetter
 
 import yaml
 from clint.textui import puts, indent
-from couchdb_cluster_admin.suggest_shard_allocation import print_db_info
 from couchdb_cluster_admin.utils import get_membership, get_shard_allocation, get_db_list, Config
 from tabulate import tabulate
 
 from commcare_cloud.colors import color_error, color_success, color_changed, color_added, color_removed
 from commcare_cloud.commands import shared_args
-from commcare_cloud.commands.ansible.couch_utils import get_cluster_shard_details, print_shard_table
-from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.ansible.couch_utils import get_cluster_shard_details, print_shard_table, print_db_info
+from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
 from commcare_cloud.commands.inventory_lookup.getinventory import get_instance_group
 from commcare_cloud.commands.inventory_lookup.inventory_lookup import DjangoManage
 from commcare_cloud.commands.utils import PrivilegedCommand
@@ -222,19 +221,23 @@ class CouchDBClusterInfo(CommandBase):
     arguments = (
         Argument("--raw", action="store_true", help="Output raw shard allocations as YAML instead of printing tables."),
         Argument("--shard-counts", action="store_true", help="Include document counts for each shard"),
+        Argument("--database", help="Only show output for this database"),
     )
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         couch_config = get_couch_config(environment)
 
-        shard_allocations = [
-            get_shard_allocation(couch_config, db_name) for db_name in
-            sorted(get_db_list(couch_config.get_control_node()))
-        ]
+        db_list = sorted(get_db_list(couch_config.get_control_node()))
+        if args.database:
+            if args.database not in db_list:
+                raise CommandError("Database not present in cluster: {}".format(args.database))
+            db_list = [args.database]
+
+        shard_allocations = [get_shard_allocation(couch_config, db_name) for db_name in db_list]
         shard_details = []
         if args.shard_counts:
-            shard_details = get_cluster_shard_details(couch_config)
+            shard_details = get_cluster_shard_details(couch_config, db_list)
 
         if args.raw:
             plan = {
@@ -252,12 +255,13 @@ class CouchDBClusterInfo(CommandBase):
             yaml.safe_dump(json.loads(json.dumps(plan)), sys.stdout, indent=2)
             return 0
 
-        puts('\nMembership')
-        with indent():
-            puts(get_membership(couch_config).get_printable())
+        if not args.database:
+            puts('\nMembership')
+            with indent():
+                puts(get_membership(couch_config).get_printable())
 
         puts('\nDB Info')
-        print_db_info(couch_config)
+        print_db_info(couch_config, db_list)
 
         puts('\nShard allocation')
         print_shard_table(shard_allocations, shard_details)
