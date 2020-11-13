@@ -44,11 +44,15 @@ def get_shard_details(node_details, shard_name):
 def _get_db_name(shard_name):
     return shard_name.split("/")[-1].split(".")[0]
 
+
 def get_nodes(config):
-    config.get_control_node()
     node_details = []
-    for member in get_membership(config).cluster_nodes:
+    nodes = get_membership(config).cluster_nodes
+    for member in nodes:
         address = member.split('@')[1]
+        if address in ("localhost", "127.0.0.1"):
+            assert len(nodes) == 1
+            address = config.control_node_ip
         node_details.append(NodeDetails(
             address,
             config.control_node_port,
