@@ -7,7 +7,7 @@ from collections import defaultdict
 from operator import attrgetter
 
 from couchdb_cluster_admin.suggest_shard_allocation import get_db_info
-from six.moves import urllib_parse
+from six.moves import urllib_parse, zip_longest
 
 import jsonobject
 from couchdb_cluster_admin.utils import do_node_local_request, get_membership, NodeDetails, humansize
@@ -87,7 +87,7 @@ def print_shard_table(shard_allocation_docs, shard_details):
     if single_db:
         headers, rows = list(tables.items())[0]
         data = [("",) + headers] + rows
-        transposed = list(map(list, itertools.izip_longest(*data, fillvalue=None)))
+        transposed = list(map(list, zip_longest(*data, fillvalue=None)))
         print(tabulate(transposed[1:], headers=["Shard", "Nodes", "Doc Counts", "Doc Deletion Counts"]))
     else:
         for header, rows in tables.items():
