@@ -80,6 +80,8 @@ def get_default_ssh_options(environment):
 
 def generate_ssh_config(environment):
     path = environment.paths.get_env_file_path(os.path.join('.generated', 'ssh_config'))
+    if not os.path.exists(os.path.dirname(path)):
+        os.mkdir(os.path.dirname(path))
     with open(path, 'w') as f:
         f.write(b'Host *\n')
         for option, value in get_default_ssh_options(environment):
