@@ -1308,10 +1308,18 @@ Output table as CSV
 
 #### `couchdb-cluster-info`
 
-Output information about the CouchDB cluster
+Output information about the CouchDB cluster.
 
 ```
-commcare-cloud <env> couchdb-cluster-info [--raw]
+commcare-cloud <env> couchdb-cluster-info [--raw] [--shard-counts] [--database DATABASE] [--couch-port COUCH_PORT]
+                                          [--couch-local-port COUCH_LOCAL_PORT]
+```
+
+##### Shard counts are displayed as follows
+```
+* a single number if all nodes have the same count
+* the count on the first node followed by the difference in each following node
+  e.g. 2000,+1,-2 indicates that the counts are 2000,2001,1998
 ```
 
 ##### Optional Arguments
@@ -1319,6 +1327,22 @@ commcare-cloud <env> couchdb-cluster-info [--raw]
 ###### `--raw`
 
 Output raw shard allocations as YAML instead of printing tables.
+
+###### `--shard-counts`
+
+Include document counts for each shard
+
+###### `--database DATABASE`
+
+Only show output for this database
+
+###### `--couch-port COUCH_PORT`
+
+CouchDB port. Defaults to 15984
+
+###### `--couch-local-port COUCH_LOCAL_PORT`
+
+CouchDB node local port. Defaults to 15986
 
 ---
 
