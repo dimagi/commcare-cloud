@@ -34,6 +34,11 @@
             log_group_name_suffix: "elasticsearch"
             log_stream_name_suffix: "{{ deploy_env }}_es_index_search_slowlog"
             should_include: "{{ 'elasticsearch' in group_names }}"
+          # redis
+          - file_path: "/opt/data/redis/redis.log"
+            log_group_name_suffix: "redis"
+            log_stream_name_suffix: "{{ deploy_env }}_redis_log"
+            should_include: "{{ 'redis' in group_names }}"
           # couchdb2_proxy
           - file_path: "/home/cchq/www/{{ deploy_env }}/log/*-nginx_access.log*"
             log_group_name_suffix: "couchdb2_proxy"
