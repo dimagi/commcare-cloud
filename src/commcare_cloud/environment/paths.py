@@ -1,12 +1,12 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
+
 import os
 import sys
 from distutils.sysconfig import get_python_lib
+from io import open
 
 import yaml
-from memoized import memoized_property, memoized
+from memoized import memoized, memoized_property
 
 from commcare_cloud.environment.exceptions import EnvironmentException
 
@@ -168,7 +168,7 @@ def get_role_defaults_yml(role):
 @memoized
 def get_role_defaults(role):
     """contents of a role's defaults/main.yml, as a dict"""
-    with open(get_role_defaults_yml(role)) as f:
+    with open(get_role_defaults_yml(role), encoding='utf-8') as f:
         return yaml.safe_load(f)
 
 
