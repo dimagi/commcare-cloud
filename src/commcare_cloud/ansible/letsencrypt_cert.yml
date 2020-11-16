@@ -5,26 +5,42 @@
   vars:
     certbot_min_version: 1.6.0
   tasks:
+    # Installation instructions: https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx
     - name: Add certbot apt repo
-      apt_repository: repo='ppa:certbot/certbot' state=present
-      register: add_cert_repo
+      apt_repository: repo='ppa:certbot/certbot' state=absent
+
+    - name: Uninstall Certbot via APT
+      apt:
+        name: certbot
+        state: absent
+      ignore_errors: '{{ ansible_check_mode }}'
 
     - name: Check certbot version
       shell: "test -x /usr/bin/certbot && certbot --version"
       register: certbot_version
+      failed_when: false
       check_mode: no
 
-    - name: Update package list
-      apt: update_cache=yes
-      when: add_cert_repo is changed or certbot_version.rc != 0 or certbot_version.stdout.split()[1] is version(certbot_min_version, '<')
+    - block:
+      - name: update snap core
+        shell: "snap install core; snap refresh core"
 
-    - name: Install Certbot
-      apt:
-        name:
-          - software-properties-common
-          - certbot
-        state: latest
-      ignore_errors: '{{ ansible_check_mode }}'
+      - name: Install certbot snap
+        snap:
+          name: certbot
+          classic: yes
+        register: certbot_install
+
+      - name: Link certbot
+        file:
+          path: /usr/bin/certbot
+          src: /snap/bin/certbot
+          state: link
+
+      - name: update certbot
+        command: "snap refresh certbot"
+        when: not certbot_install is changed
+      when: certbot_version.rc != 0 or certbot_version.stdout.split()[1] is version(certbot_min_version, '<')
 
     - name: Update cerbot to use alternate root chain
       lineinfile:
