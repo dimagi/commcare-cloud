@@ -26,26 +26,8 @@ Read more about that change on the Let's Encrypt [blog][1] and [forum post][2].
 [2]: https://community.letsencrypt.org/t/certbot-users-preparing-for-the-isrg-root-transition-january-11-2021/138059
 
 ## Steps to update
-1. Check certbot version
+Run the playbook to update certbot to the latest version and update the configuration:
 
-  ```shell
-  commcare-cloud <env> run-shell-command proxy -b "certbot --version"
-  ```
-
-  If the version is older than *1.6.0* you will need to update certbot.
-
-2. (optional) Update certbot
-
-  Run this if the installed version is lower than *1.6.0*.
-
-  ```shell
-  commcare-cloud <env> run-module proxy apt -b "name=certbot state=latest"
-  ```
-
-  Check the version again (see step 1) to ensure the version is >= 1.6.0.
-
-3. Update the configuration
-
-  ```shell
-  commcare-cloud <env> run-module proxy lineinfile -b "line='preferred-chain = DST Root CA X3'"
-  ```
+```shell
+commcare-cloud <env> ansible-playbook deploy_proxy.yml --tags setup_letsencrypt
+```
