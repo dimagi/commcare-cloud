@@ -47,6 +47,7 @@
     postgresql_ext:
       name: pg_repack
       db: "{{ item.database }}"
+      login_host: "{{ item.host|default('localhost') }}"
       port: "{{ item.port|default(5432) }}"
       login_user: "{{ item.username|default(None) }}"
       login_password: "{{ item.password|default(None) }}"
