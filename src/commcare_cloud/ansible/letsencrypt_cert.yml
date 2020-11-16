@@ -16,7 +16,14 @@
         name:
           - software-properties-common
           - certbot
+        state: latest
       ignore_errors: '{{ ansible_check_mode }}'
+
+    - name: Update cerbot to use alternate root chain
+      lineinfile:
+        dest: /etc/letsencrypt/cli.ini
+        regexp: '^preferred-chain'
+        line: "preferred-chain = DST Root CA X3"
 
     - name: Create Challenge Directory
       file:
