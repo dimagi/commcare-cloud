@@ -155,6 +155,37 @@ module "Redis" {
 }
 {% endif %}
 
+module "elasticache-module-base" {
+  source                = "./modules/elasticache-cluster"
+  namespace             = "${var.environment}-elasticache-cluster"
+  cluster_id            = "${var.environment}-elasticache-cluster"
+  node_groups           = "${var.node_groups}"
+  replicas_per_node     = "${var.replicas_per_node}"
+  subnet_ids            = ["${var.subnet_ids}"]
+  securitygroup_id      = "${var.securitygroup_id}"
+  cache_engine          = "redis"
+  cache_engine_version  = "4.0.10"
+  cache_node_type       = "${var.cache_node_type}"
+  cache_prameter_group  = "default.redis4.0.cluster.on"
+  automatic_failover    = true
+  transit_encryption    = false
+  at_rest_encryption    = true
+  auto_minor_version    = false
+  maintenance_window    = "sun:03:30-sun:04:30"
+  snapshot_retention    = 5
+  snapshot_window       = "07:30-08:30"
+  port_number           = 6379
+  replication_group_des = "${var.environment}-redis-cluster"
+}
+
+module "r53-private-zone-create" {
+  source      = "./modules/r53-private-zone-create-update"
+  zone_vpc_id = "${var.zone_vpc_id}"
+  domain_name = "${var.domain_name}"
+  route_names = "${var.route_names}"
+  records     = ["${module.elasticache-module-base.configuration_endpoint_address}"]
+}
+
 module "openvpn" {
   source = "./modules/openvpn"
   openvpn_image = "${var.openvpn_image}"
