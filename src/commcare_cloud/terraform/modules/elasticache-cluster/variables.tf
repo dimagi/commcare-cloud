@@ -11,7 +11,7 @@ variable "node_groups" {
   default     = 1
 }
 
-variable "subnet_ids" {
+variable "subnet_ids_cache" {
   type        = "list"
   description = "The Subnet Group of the Cluster"
 }

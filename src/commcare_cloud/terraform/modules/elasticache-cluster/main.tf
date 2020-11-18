@@ -1,6 +1,6 @@
 resource "aws_elasticache_subnet_group" "redis-dev-subnet-group-0" {
   name       = "${var.namespace}-cache-subnet"
-  subnet_ids = ["${var.subnet_ids}"]
+  subnet_ids = ["${var.subnet_ids_cache}"]
 }
 
 resource "aws_elasticache_replication_group" "redis-dev-cluster-0" {
