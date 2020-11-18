@@ -6,7 +6,7 @@
     certbot_min_version: 1.6.0
   tasks:
     # Installation instructions: https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx
-    - name: Add certbot apt repo
+    - name: Remove legacy certbot apt repo
       apt_repository: repo='ppa:certbot/certbot' state=absent
 
     - name: Uninstall Certbot via APT
