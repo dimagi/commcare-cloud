@@ -23,6 +23,12 @@ def test_all(environment):
     environment.check()
 
 
+# useful for python 2 -> 3 migration
+@parameterized(commcare_envs)
+def test_authorized_key(environment):
+    environment.get_authorized_key('gherceg')
+
+
 @parameterized(commcare_envs)
 def test_hostnames(environment):
     missing_hostnames = set()
