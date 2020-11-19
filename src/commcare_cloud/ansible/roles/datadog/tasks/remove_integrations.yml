@@ -1,45 +1,10 @@
-- name: remove couchdb2 check
+- name: Remove disabled custom checks
   file:
-    path: /etc/dd-agent/checks.d/couchdb2.py
+    path: "/etc/dd-agent/checks.d/{{ item.name }}.py"
     state: absent
   notify: restart datadog
-  when: True
-  tags:
-    - datadog_integrations
-
-- name: remove celery check
-  file:
-    path: /etc/dd-agent/checks.d/celery.py
-    state: absent
-  notify: restart datadog
-  when: inventory_hostname != groups.celery[0] or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
-  tags:
-    - datadog_integrations
-
-- name: remove shell check
-  file:
-    path: /etc/dd-agent/checks.d/shell.py
-    state: absent
-  notify: restart datadog
-  when: not datadog_integration_vmware or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
-  tags:
-    - datadog_integrations
-
-- name: Remove pgbouncer_custom check
-  file:
-    path: /etc/dd-agent/checks.d/pgbouncer_custom.py
-    state: absent
-  when: not datadog_integration_pgbouncer_custom or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
-  notify: restart datadog
-  tags:
-    - datadog_integrations
-
-- name: Remove swift check
-  file:
-    path: /etc/dd-agent/checks.d/swift.py
-    state: absent
-  when: not datadog_swift_instances or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
-  notify: restart datadog
+  when: not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED) or not item.enabled
+  loop: "{{ datadog_custom_integrations }}"
   tags:
     - datadog_integrations
 

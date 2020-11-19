@@ -1,19 +1,28 @@
 couchdb2_first_host: "{{ groups['couchdb2'][0] if 'couchdb2' in groups else 'NO HOST SHOULD MATCH THIS' }}"
 
-datadog_celery_version: 90abf6a347348c78bcca8d908ee2e3d31b77bd26
-datadog_celery_sha256sum: 492362bde07d16d1f4664ef84a0bba971b75fa46156e90501fedf8310b651661
-
-datadog_shell_version: a468595913fa30abeea0bb3bba16448157871481
-datadog_shell_sha256sum: ff6933fedded6c169a7dbfc4d962595250ec9b6586752648f8df848c7183ad10
-
-datadog_pgbouncer_custom_version: d69d59d557a615471b98fbc5ec182fa2bae99760
-datadog_pgbouncer_custom_sha256sum: ab6b7bc06a1de1b22b5fe2cd1ea7b191d634a0c4f21424cbd4fed27f5e72681e
-
-datadog_airflow_version: d69d59d557a615471b98fbc5ec182fa2bae99760
-datadog_airflow_sha256sum: b2a4c9685ea2f521bf3720a4b94345c0fe536ecf6355470c018afc33ae61eb4b
-
-datadog_swift_version: 0d6182b68aa911f7750cecb9a00e1b646a09be0f
-datadog_swift_sha256sum: b5bbf8927afec02c95833b49944406f3119f21a11606082aa92381c7645f3ecf
+datadog_custom_integrations:
+  - name: celery
+    url: https://raw.githubusercontent.com/dimagi/datadog-checks/90abf6a347348c78bcca8d908ee2e3d31b77bd26/celery/celery.py
+    sha256sum: 492362bde07d16d1f4664ef84a0bba971b75fa46156e90501fedf8310b651661
+    enabled: "{{inventory_hostname == groups.celery[0]}}"
+  - name: shell
+    url: https://raw.githubusercontent.com/dimagi/datadog-checks/a468595913fa30abeea0bb3bba16448157871481/shell/shell.py
+    sha256sum: ff6933fedded6c169a7dbfc4d962595250ec9b6586752648f8df848c7183ad10
+    enabled: "{{ datadog_integration_vmware }}"
+  - name: pgbouncer_custom
+    url: https://raw.githubusercontent.com/dimagi/datadog-checks/d69d59d557a615471b98fbc5ec182fa2bae99760/pgbouncer_custom/pgbouncer_custom.py
+    sha256sum: ab6b7bc06a1de1b22b5fe2cd1ea7b191d634a0c4f21424cbd4fed27f5e72681e
+    enabled: "{{ datadog_integration_pgbouncer_custom|bool }}"
+  - name: airflow
+    url: https://raw.githubusercontent.com/dimagi/datadog-checks/d69d59d557a615471b98fbc5ec182fa2bae99760/airflow/airflow.py
+    sha256sum: b2a4c9685ea2f521bf3720a4b94345c0fe536ecf6355470c018afc33ae61eb4b
+    enabled: "{{ datadog_integration_airflow|default(False) }}"
+    dependencies:
+      - sqlalchemy
+  - name: swift
+    url: https://raw.githubusercontent.com/dimagi/datadog-checks/0d6182b68aa911f7750cecb9a00e1b646a09be0f/swift/swift.py
+    sha256sum: b5bbf8927afec02c95833b49944406f3119f21a11606082aa92381c7645f3ecf
+    enabled: "{{ datadog_swift_instances|default(False) and inventory_hostname == groups.control[0] }}"
 
 monitoring_groups:
   - webworkers

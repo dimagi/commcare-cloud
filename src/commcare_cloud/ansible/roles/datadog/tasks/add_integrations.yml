@@ -1,62 +1,20 @@
-- name: Install celery check
+- name: Install custom checks
   get_url:
-    url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_celery_version }}/celery/celery.py"
-    dest: /etc/dd-agent/checks.d/celery.py
-    sha256sum: "{{ datadog_celery_sha256sum }}"
+    url: "{{ item.url }}"
+    dest: "/etc/dd-agent/checks.d/{{ item.name }}.py"
+    sha256sum: "{{ item.sha256sum }}"
     force: yes
   notify: restart datadog
-  when: inventory_hostname == groups.celery[0]
+  when: item.enabled
+  loop: "{{ datadog_custom_integrations }}"
   tags:
     - datadog_integrations
 
-- name: Install shell check
-  get_url:
-    url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_shell_version }}/shell/shell.py"
-    dest: /etc/dd-agent/checks.d/shell.py
-    sha256sum: "{{ datadog_shell_sha256sum }}"
-    force: yes
-  when: datadog_integration_vmware|bool
-  notify: restart datadog
-  tags:
-    - datadog_integrations
-
-- name: Install pgbouncer_custom check
-  get_url:
-    url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_pgbouncer_custom_version }}/pgbouncer_custom/pgbouncer_custom.py"
-    dest: /etc/dd-agent/checks.d/pgbouncer_custom.py
-    sha256sum: "{{ datadog_pgbouncer_custom_sha256sum }}"
-    force: yes
-  when: datadog_integration_pgbouncer_custom|bool
-  notify: restart datadog
-  tags:
-    - datadog_integrations
-
-- name: Install airflow check python requirement
-  command: /opt/datadog-agent/embedded/bin/pip install sqlalchemy
+- name: Install custom check dependencies
+  command: "/opt/datadog-agent/embedded/bin/pip install {{ }}"
   become_user: dd-agent
-  when: datadog_integration_airflow|default(False)
-
-- name: Install airflow check
-  get_url:
-    url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_airflow_version }}/airflow/airflow.py"
-    dest: /etc/dd-agent/checks.d/airflow.py
-    sha256sum: "{{ datadog_airflow_sha256sum }}"
-    force: yes
-  when: datadog_integration_airflow|default(False)
-  notify: restart datadog
-  tags:
-    - datadog_integrations
-
-- name: Install swift check
-  get_url:
-    url: "https://raw.githubusercontent.com/dimagi/datadog-checks/{{ datadog_swift_version }}/swift/swift.py"
-    dest: /etc/dd-agent/checks.d/swift.py
-    sha256sum: "{{ datadog_swift_sha256sum }}"
-    force: yes
-  when: datadog_swift_instances|default(False) and inventory_hostname == groups.control[0]
-  notify: restart datadog
-  tags:
-    - datadog_integrations
+  when: item.enabled and item.dependencies|default([])
+  loop: "{{ datadog_custom_integrations }}"
 
 - name: add datadog integration configs
   template: src="{{ item.name }}.yaml.j2" dest="/etc/dd-agent/conf.d/{{ item.name }}.yaml" owner="dd-agent" group="dd-agent"
