@@ -88,6 +88,10 @@ rds_pgsynclog0
 pgbouncer3
 remote_postgresql
 
+[pgbouncer:children]
+pgbouncer3
+pgbouncer4
+
 [ansible_skip:children]
 remote_postgresql
 
