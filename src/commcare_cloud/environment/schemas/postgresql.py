@@ -118,14 +118,15 @@ class PostgresqlConfig(jsonobject.JsonObject):
         data.update(self.pgbouncer_override.to_json())
 
         # generate list of databases per host for use in pgbouncer and postgresql configuration
-        postgresql_hosts = environment.groups.get('postgresql', [])
-        if self.DEFAULT_POSTGRESQL_HOST not in postgresql_hosts:
-            postgresql_hosts.append(self.DEFAULT_POSTGRESQL_HOST)
-        postgresql_hosts.extend(environment.groups.get('citusdb_master', []))
+        pgbouncer_hosts = environment.groups.get('postgresql', [])
+        if self.DEFAULT_POSTGRESQL_HOST not in pgbouncer_hosts:
+            pgbouncer_hosts.append(self.DEFAULT_POSTGRESQL_HOST)
+        pgbouncer_hosts.extend(environment.groups.get('citusdb_master', []))
+        pgbouncer_hosts.extend(environment.groups.get('pgbouncer', []))
 
         dbs_by_host = defaultdict(list)
         for db in sorted_dbs:
-            if db['pgbouncer_host'] in postgresql_hosts:
+            if db['pgbouncer_host'] in pgbouncer_hosts:
                 dbs_by_host[db['pgbouncer_host']].append(db)
 
         for host in environment.groups.get('pg_standby', []):
@@ -152,7 +153,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
 
             dbs_by_host[host] = citus_dbs
 
-        data['postgresql_dbs']['by_host'] = dict(dbs_by_host)
+        data['postgresql_dbs']['by_client_host'] = dict(dbs_by_host)
         return data
 
     def _get_root_pg_host(self, standby_host, env):
