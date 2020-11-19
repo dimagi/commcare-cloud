@@ -230,6 +230,11 @@ It is recommended to follow the [instructions above](#couch-node-data-disk-is-fu
 We have developed a few tools to find and repair documents that are missing on some nodes:
 
 ```sh
+# Get cluster info, including document counts per shard. Large persistent
+# discrepancies in document counts may indicate problems with internal
+# replication.
+commcare-cloud <env> couchdb-cluster-info --shard-counts [--database=...]
+
 # Count missing forms in a given date range (slow and non-authoritative). Run
 # against production cluster. Increase --min-tries value to increase confidence
 # of finding all missing ids.
@@ -245,6 +250,7 @@ We have developed a few tools to find and repair documents that are missing on s
 ./manage.py corrupt_couch repair forms --min-tries=40 --missing ~/missing-forms-1fffffff..3fffffff.txt
 
 # See also
+commcare-cloud <env> couchdb-cluster-info --help
 ./manage.py corrupt_couch --help
 ./manage.py corrupt_couch_nodes --help
 ```
