@@ -153,7 +153,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
 
             dbs_by_host[host] = citus_dbs
 
-        data['postgresql_dbs']['by_client_host'] = dict(dbs_by_host)
+        data['postgresql_dbs']['by_pgbouncer_host'] = dict(dbs_by_host)
         return data
 
     def _get_root_pg_host(self, standby_host, env):
