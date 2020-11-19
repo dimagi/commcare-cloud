@@ -66,6 +66,7 @@ that machine is also the control machine.
 
 ## Specialized howtos
 - [White label a CommCare instance](howto/white-label.md)
+- [Tips and Tricks](howto/tips.md)
 
 ## A word of caution
 
