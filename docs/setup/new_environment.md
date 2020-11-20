@@ -88,7 +88,7 @@ This document will walk you through the process of setting up a new monolith ser
      - `ALLOWED_HOSTS`
      - `server_email`
      - `default_from_email`
-      - `root_email`
+     - `root_email`
 
 
 ### Install commcare-cloud
@@ -290,20 +290,23 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
 
 ## Step 5: Setting set up valid SSL certificates
 
-Run the playbook to request a letsencrypt cert:
-```bash
-cchq <env> ansible-playbook letsencrypt_cert.yml --skip-check
-```
+1. Run the playbook to request a letsencrypt cert:
 
-Update settings to take advantage of new certs:
-In `proxy.yml`:
-- set `fake_ssl_cert` to `no`
+    ```bash
+    $ cchq monolith ansible-playbook letsencrypt_cert.yml --skip-check
+    ```
 
-and deploy proxy again:
+2. Update settings to take advantage of new certs:
+    ```
+    $ nano $COMMCARE_CLOUD_ENVIRONMENTS/monolith/proxy.yml
+    ```
+   and set `fake_ssl_cert` to `False`
 
-```bash
-cchq <env> ansible-playbook deploy_proxy.yml
-```
+3. Deploy proxy again
+
+    ```bash
+    $ cchq monolith ansible-playbook deploy_proxy.yml --skip-check
+    ```
 
 
 ## Step 6: Cleanup
@@ -319,7 +322,11 @@ In general it will be useful to understand all the commands on the [commcare-clo
 
 ### Accessing CommCareHQ from a browser
 
-If everything went well, you should now be able to access CommCareHQ from a browser. See the [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md) page to find the URL which depends on your networking setup.
+If everything went well, you should now be able to access CommCareHQ from a browser. 
+
+If you are using virtualbox, see the [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md) page to find the URL which depends on your networking setup.
+
+
 
 ### Troubleshooting first time set up
 
