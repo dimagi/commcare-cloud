@@ -890,6 +890,11 @@ Resources:
 
 Formplayer sometimes fails on deploy due to a startup task (which will hopefully be resolved soon).  The process may not fail, but formplayer will still return failure responses. You can try just restarting the process with `sudo supervisorctl restart all` (or specify the name if it's a monolithic environment)
 
+A formplayer machine may need to be restarted for a number of reasons in which case you can run:
+```
+cchq <env> service formplayer restart --limit=formplayer_bXXX
+```
+
 ## Lock issues
 
 If there are many persistent lock timeouts that aren't going away by themselves,
