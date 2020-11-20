@@ -1,25 +1,30 @@
-from __future__ import print_function
+from __future__ import absolute_import, print_function, unicode_literals
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import json
 import os
 import subprocess
+from io import open
 
 from clint.textui import puts
 from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_error
-from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.terraform import postgresql_units
-from commcare_cloud.commands.terraform.aws import aws_sign_in, get_default_username, \
-    print_help_message_about_the_commcare_cloud_default_username_env_var
-from commcare_cloud.commands.terraform.constants import COMMCAREHQ_XML_POST_URLS_REGEX, \
-    COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX
+from commcare_cloud.commands.terraform.aws import (
+    aws_sign_in,
+    get_default_username,
+    print_help_message_about_the_commcare_cloud_default_username_env_var,
+)
+from commcare_cloud.commands.terraform.constants import (
+    COMMCAREHQ_XML_POST_URLS_REGEX,
+    COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX,
+)
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import TERRAFORM_DIR, get_role_defaults
+from commcare_cloud.python_migration_utils import open_python_dependent
 
 
 class Terraform(CommandBase):
@@ -87,7 +92,7 @@ class Terraform(CommandBase):
                 else ''
             )
 
-            with open(os.path.join(run_dir, 'secrets.auto.tfvars'), 'w') as f:
+            with open_python_dependent(os.path.join(run_dir, 'secrets.auto.tfvars')) as f:
                 print('rds_password = {}'.format(json.dumps(rds_password)), file=f)
 
         env_vars = {'AWS_PROFILE': aws_sign_in(environment)}
@@ -177,8 +182,8 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
             ('variables.tf.j2', 'variables.tf'),
             ('terraform.tfvars.j2', 'terraform.tfvars'),
     ):
-        with open(os.path.join(run_dir, output_file), 'w') as f:
-            f.write(render_template(template_file, context, template_root).encode('utf-8'))
+        with open(os.path.join(run_dir, output_file), 'w', encoding='utf-8') as f:
+            f.write(render_template(template_file, context, template_root))
 
 
 def compact_waf_regexes(patterns):
