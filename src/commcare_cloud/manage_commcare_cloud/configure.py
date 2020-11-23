@@ -1,17 +1,20 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
+
 import os
 import textwrap
-from six.moves import shlex_quote
+from io import open
 
 from clint.textui import puts
+from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import ask
-from commcare_cloud.colors import color_summary, color_notice, color_code
+from commcare_cloud.colors import color_code, color_notice, color_summary
 from commcare_cloud.commands.command_base import CommandBase
-from commcare_cloud.environment.paths import DIMAGI_ENVIRONMENTS_DIR, get_virtualenv_bin_path, \
-    PACKAGE_BASE
+from commcare_cloud.environment.paths import (
+    DIMAGI_ENVIRONMENTS_DIR,
+    PACKAGE_BASE,
+    get_virtualenv_bin_path,
+)
 
 
 class Configure(CommandBase):
@@ -80,7 +83,7 @@ class Configure(CommandBase):
         load_config_file = os.path.expanduser("~/.commcare-cloud/load_config.sh")
         if not os.path.exists(load_config_file) or \
                 ask("Overwrite your ~/.commcare-cloud/load_config.sh?", quiet=quiet):
-            with open(load_config_file, 'w') as f:
+            with open(load_config_file, 'w', encoding='utf-8') as f:
                 f.write(textwrap.dedent("""
                     # auto-generated with `manage-commcare-cloud configure`:
                     export COMMCARE_CLOUD_ENVIRONMENTS={COMMCARE_CLOUD_ENVIRONMENTS}
