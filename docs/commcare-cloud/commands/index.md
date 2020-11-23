@@ -1259,7 +1259,7 @@ commcare-cloud <env> list-postgresql-dbs [--compare]
 To list all database on a particular environment.
 
 ```
-commcare-cloud <ev> list-databases
+commcare-cloud <env> list-postgresql-dbs
 ```
 
 ##### Optional Arguments

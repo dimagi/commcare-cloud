@@ -1,14 +1,13 @@
 # coding=utf-8
-from __future__ import print_function
+from __future__ import absolute_import, print_function, unicode_literals
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import getpass
 import json
 import os
 import subprocess
 import textwrap
 from datetime import datetime
+from io import open
 
 import boto3
 import jinja2
@@ -18,14 +17,13 @@ import yaml
 from clint.textui import puts
 from memoized import memoized
 from simplejson import JSONDecodeError
-from six.moves import shlex_quote
-from six.moves import configparser
-from six.moves import input
+from six.moves import configparser, input, shlex_quote
 
 from commcare_cloud.cli_utils import print_command
-from commcare_cloud.colors import color_success, color_notice
-from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.colors import color_notice, color_success
+from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.environment.main import get_environment
+from commcare_cloud.python_migration_utils import open_for_write
 
 
 def check_output(cmd_parts, env, silent=False):
@@ -147,21 +145,23 @@ class AwsFillInventory(CommandBase):
 
         if not args.cached:
             resources = get_aws_resources(environment)
-            with open(environment.paths.aws_resources_yml, 'w') as f:
+            with open_for_write(environment.paths.aws_resources_yml) as f:
                 f.write(yaml.safe_dump(resources, default_flow_style=False))
         else:
-            with open(environment.paths.aws_resources_yml, 'r') as f:
+            with open(environment.paths.aws_resources_yml, 'r', encoding='utf-8') as f:
+                # PY2: yaml.safe_load will return bytes when the content is ASCII-only bytes
                 resources = yaml.safe_load(f.read())
 
-        with open(environment.paths.inventory_ini_j2) as f:
+        with open(environment.paths.inventory_ini_j2, 'r', encoding='utf-8') as f:
             inventory_ini_j2 = f.read()
 
-        with open(environment.paths.inventory_ini, 'w') as f:
+        with open(environment.paths.inventory_ini, 'w', encoding='utf-8') as f:
             # by putting this inside the with
             # we make sure that if the it fails, inventory.ini is made empty
             # reflecting that we were unable to create it
             out_string = AwsFillInventoryHelper(environment, inventory_ini_j2,
                                                 resources).render()
+            # PY2: out_string is unicode based on Jinja2 render method
             f.write(out_string)
 
 
@@ -410,7 +410,7 @@ def _sync_sso_to_v1_credentials(aws_session_profile):
     # with the credential format that terraform uses
 
     for filepath in _iter_files_in_dir(AWS_CLI_CACHE_DIR):
-        with open(filepath) as f:
+        with open(filepath, 'r', encoding='utf-8') as f:
             try:
                 data = json.load(f)
             except JSONDecodeError:
@@ -532,7 +532,7 @@ def _write_credentials_to_aws_credentials(
     config.set(aws_profile, 'aws_secret_access_key', aws_secret_access_key)
     config.set(aws_profile, 'aws_session_token', aws_session_token)
     config.set(aws_profile, 'expiration', expiration.strftime("%Y-%m-%dT%H:%M:%SZ"))
-    with open(AWS_CREDENTIALS_PATH, 'w') as f:
+    with open_for_write(AWS_CREDENTIALS_PATH) as f:
         config.write(f)
 
 
@@ -570,14 +570,14 @@ def _write_profile_for_sso(
     config.set(section, 'sso_role_name', 'PowerUserAccessPlus')
     config.set(section, 'region', region)
     config.set(section, 'output', 'json')
-    with open(AWS_CONFIG_PATH, 'w') as f:
+    with open_for_write(AWS_CONFIG_PATH) as f:
         config.write(f)
 
 
 def _has_valid_session_credentials_for_sso():
     for filepath in _iter_files_in_dir(AWS_SSO_CACHE_DIR):
         try:
-            with open(filepath, 'r') as f:
+            with open(filepath, 'r', encoding='utf-8') as f:
                 contents = json.load(f)
         except JSONDecodeError:
             continue

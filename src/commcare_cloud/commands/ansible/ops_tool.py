@@ -1,6 +1,4 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 import collections
 import csv
@@ -10,19 +8,43 @@ import json
 import subprocess
 import sys
 from collections import defaultdict
-from operator import itemgetter, attrgetter
+from io import open
+from operator import attrgetter, itemgetter
 
 import yaml
-from clint.textui import puts, indent
-from couchdb_cluster_admin.utils import get_membership, get_shard_allocation, get_db_list, Config
+from clint.textui import indent, puts
+from couchdb_cluster_admin.utils import (
+    Config,
+    get_db_list,
+    get_membership,
+    get_shard_allocation,
+)
 from tabulate import tabulate
 
-from commcare_cloud.colors import color_error, color_success, color_changed, color_added, color_removed
+from commcare_cloud.colors import (
+    color_added,
+    color_changed,
+    color_error,
+    color_removed,
+    color_success,
+)
 from commcare_cloud.commands import shared_args
-from commcare_cloud.commands.ansible.couch_utils import get_cluster_shard_details, print_shard_table, print_db_info
-from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
-from commcare_cloud.commands.inventory_lookup.getinventory import get_instance_group
-from commcare_cloud.commands.inventory_lookup.inventory_lookup import DjangoManage
+from commcare_cloud.commands.ansible.couch_utils import (
+    get_cluster_shard_details,
+    print_db_info,
+    print_shard_table,
+)
+from commcare_cloud.commands.command_base import (
+    Argument,
+    CommandBase,
+    CommandError,
+)
+from commcare_cloud.commands.inventory_lookup.getinventory import (
+    get_instance_group,
+)
+from commcare_cloud.commands.inventory_lookup.inventory_lookup import (
+    DjangoManage,
+)
 from commcare_cloud.commands.utils import PrivilegedCommand
 from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.main import get_environment
@@ -38,7 +60,7 @@ class ListDatabases(CommandBase):
     To list all database on a particular environment.
 
     ```
-    commcare-cloud <ev> list-databases
+    commcare-cloud <env> list-postgresql-dbs
     ```
     """
 
@@ -314,7 +336,7 @@ class UpdateLocalKnownHosts(CommandBase):
         if limit:
             environment.inventory_manager.subset(limit)
 
-        with open(environment.paths.known_hosts, 'r') as known_hosts:
+        with open(environment.paths.known_hosts, 'r', encoding='utf-8') as known_hosts:
             original_keys_by_host = _get_host_key_map(
                 [line.strip() for line in known_hosts.readlines()]
             )
@@ -365,7 +387,7 @@ class UpdateLocalKnownHosts(CommandBase):
             if updated:
                 lines.append('{} {} {}'.format(host, key_type, updated))
 
-        with open(environment.paths.known_hosts, 'w') as known_hosts:
+        with open(environment.paths.known_hosts, 'w', encoding='utf-8') as known_hosts:
             known_hosts.write('\n'.join(sorted(lines)))
 
         try:
