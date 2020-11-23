@@ -23,7 +23,7 @@ datadog_custom_integrations:
     url: https://raw.githubusercontent.com/dimagi/datadog-checks/0d6182b68aa911f7750cecb9a00e1b646a09be0f/swift/swift.py
     sha256sum: b5bbf8927afec02c95833b49944406f3119f21a11606082aa92381c7645f3ecf
     enabled: "{{ datadog_swift_instances|default(False) and inventory_hostname == groups.control[0] }}"
-  - name: couchdb_custom
+  - name: couch_custom
     url: https://github.com/dimagi/datadog-checks/blob/a6cd98adc1ff9d67ebe435ca32b750cde2c649d3/couchdb_custom/couchdb_custom.py
     sha256sum: 4b395572c817634a7f6afd6fb607de43055f5afdcc0e9b96faecac53d762fa56
     enabled: "{{inventory_hostname == groups.couchdb2[0] }}"

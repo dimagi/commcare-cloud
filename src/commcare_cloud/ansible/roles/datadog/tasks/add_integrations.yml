@@ -40,6 +40,7 @@
     - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
     - {"name": "celery", "enabled": "{{ inventory_hostname == groups.celery[0] }}"}
     - {"name": "couch", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
+    - {"name": "couch_custom", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
     - {"name": "shell", "enabled": "{{ datadog_integration_vmware }}"}
     - {"name": "http_check", "enabled": "{{ datadog_integration_http and inventory_hostname == groups.proxy[0] }}"}
     - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
