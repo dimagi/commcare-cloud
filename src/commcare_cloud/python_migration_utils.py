@@ -5,7 +5,7 @@ from io import open
 import six
 
 
-def open_python_dependent(path):
+def open_for_write(path):
     """
     Used for cases where we cannot avoid having a bytes string in PY2 and text string in PY3
     Some examples are:

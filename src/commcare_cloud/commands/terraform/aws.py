@@ -23,7 +23,7 @@ from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_notice, color_success
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.python_migration_utils import open_python_dependent
+from commcare_cloud.python_migration_utils import open_for_write
 
 
 def check_output(cmd_parts, env, silent=False):
@@ -145,11 +145,11 @@ class AwsFillInventory(CommandBase):
 
         if not args.cached:
             resources = get_aws_resources(environment)
-            with open_python_dependent(environment.paths.aws_resources_yml) as f:
+            with open_for_write(environment.paths.aws_resources_yml) as f:
                 f.write(yaml.safe_dump(resources, default_flow_style=False))
         else:
             with open(environment.paths.aws_resources_yml, 'r', encoding='utf-8') as f:
-                # PY2: yaml.safe_load will return bytes regardless of read mode
+                # PY2: yaml.safe_load will return bytes when the content is ASCII-only bytes
                 resources = yaml.safe_load(f.read())
 
         with open(environment.paths.inventory_ini_j2, 'r', encoding='utf-8') as f:
@@ -532,7 +532,7 @@ def _write_credentials_to_aws_credentials(
     config.set(aws_profile, 'aws_secret_access_key', aws_secret_access_key)
     config.set(aws_profile, 'aws_session_token', aws_session_token)
     config.set(aws_profile, 'expiration', expiration.strftime("%Y-%m-%dT%H:%M:%SZ"))
-    with open_python_dependent(AWS_CREDENTIALS_PATH) as f:
+    with open_for_write(AWS_CREDENTIALS_PATH) as f:
         config.write(f)
 
 
@@ -570,7 +570,7 @@ def _write_profile_for_sso(
     config.set(section, 'sso_role_name', 'PowerUserAccessPlus')
     config.set(section, 'region', region)
     config.set(section, 'output', 'json')
-    with open_python_dependent(AWS_CONFIG_PATH) as f:
+    with open_for_write(AWS_CONFIG_PATH) as f:
         config.write(f)
 
 
