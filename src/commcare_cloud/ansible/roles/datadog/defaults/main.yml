@@ -24,8 +24,8 @@ datadog_custom_integrations:
     sha256sum: b5bbf8927afec02c95833b49944406f3119f21a11606082aa92381c7645f3ecf
     enabled: "{{ datadog_swift_instances|default(False) and inventory_hostname == groups.control[0] }}"
   - name: couch_custom
-    url: https://raw.githubusercontent.com/dimagi/datadog-checks/a6cd98adc1ff9d67ebe435ca32b750cde2c649d3/couchdb_custom/couchdb_custom.py
-    sha256sum: 4b395572c817634a7f6afd6fb607de43055f5afdcc0e9b96faecac53d762fa56
+    url: https://raw.githubusercontent.com/dimagi/datadog-checks/3e15c8cec7a2e39737b540c1846dbc3de74e2429/couchdb_custom/couchdb_custom.py
+    sha256sum: e25921442b4d280c530920d24cbd87ba876bff3f631e9e8579999cdf4e8cceb3
     enabled: "{{inventory_hostname == groups.couchdb2[0] }}"
 
 monitoring_groups:
