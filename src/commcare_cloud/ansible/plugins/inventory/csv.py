@@ -1,10 +1,19 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals,
+)
 
-from __future__ import unicode_literals
 import csv
 import json
 import os
 import re
+from io import open
+
+from ansible.errors import AnsibleParserError
+from ansible.module_utils._text import to_bytes, to_text
+from ansible.plugins.inventory import BaseInventoryPlugin
 
 __metaclass__ = type
 
@@ -67,9 +76,6 @@ EXAMPLES = '''
 '''
 
 
-from ansible.errors import AnsibleParserError
-from ansible.module_utils._text import to_text, to_bytes
-from ansible.plugins.inventory import BaseInventoryPlugin
 
 
 TYPE_STRING = 'S'

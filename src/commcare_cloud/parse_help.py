@@ -1,10 +1,10 @@
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from collections import namedtuple
+from __future__ import absolute_import, print_function, unicode_literals
+
 import os
 import subprocess
-import sys
+from collections import namedtuple
+from io import open
+
 from six.moves import range
 
 ANSIBLE_HELP_OPTIONS_PREFIX='optional arguments:'
@@ -17,7 +17,7 @@ _AVAILABLE_HELP_CACHES = {
 
 def _get_help_text(command):
     if command in _AVAILABLE_HELP_CACHES:
-        with open(_AVAILABLE_HELP_CACHES[command]) as f:
+        with open(_AVAILABLE_HELP_CACHES[command], 'r', encoding='utf-8') as f:
             return f.read()
     else:
         return subprocess.check_output(command, shell=True)

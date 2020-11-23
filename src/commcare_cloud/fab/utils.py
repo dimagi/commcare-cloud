@@ -1,7 +1,5 @@
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function, unicode_literals
 
-from __future__ import unicode_literals
 import datetime
 import os
 import pickle
@@ -10,15 +8,16 @@ import sys
 import traceback
 from collections import defaultdict
 from getpass import getpass
-
-from gevent.pool import Pool
-from github import Github, UnknownObjectException
-from memoized import memoized, memoized_property
+from io import open
 
 from fabric.api import env, execute, local
 from fabric.colors import blue, cyan, red, yellow
 from fabric.context_managers import cd, settings
 from fabric.operations import sudo
+from gevent.pool import Pool
+from github import Github, UnknownObjectException
+from memoized import memoized, memoized_property
+from six.moves import input
 
 from .const import (
     CACHED_DEPLOY_CHECKPOINT_FILENAME,
@@ -29,8 +28,6 @@ from .const import (
     RELEASE_RECORD,
 )
 
-from six.moves import input
-
 LABELS_TO_EXPAND = [
     "reindex/migration",
 ]
@@ -40,7 +37,7 @@ def execute_with_timing(fn, *args, **kwargs):
     start_time = datetime.datetime.utcnow()
     execute(fn, *args, **kwargs)
     if env.timing_log:
-        with open(env.timing_log, 'a') as timing_log:
+        with open(env.timing_log, 'a', encoding='utf-8') as timing_log:
             duration = datetime.datetime.utcnow() - start_time
             timing_log.write('{}: {}\n'.format(fn.__name__, duration.seconds))
 
@@ -202,9 +199,9 @@ def _get_env_filename():
 
 
 def cache_deploy_state(command_index):
-    with open(os.path.join(PROJECT_ROOT, _get_checkpoint_filename()), 'w') as f:
+    with open(os.path.join(PROJECT_ROOT, _get_checkpoint_filename()), 'wb') as f:
         pickle.dump(command_index, f)
-    with open(os.path.join(PROJECT_ROOT, _get_env_filename()), 'w') as f:
+    with open(os.path.join(PROJECT_ROOT, _get_env_filename()), 'wb') as f:
         pickle.dump(env, f)
 
 
@@ -224,7 +221,7 @@ def retrieve_cached_deploy_checkpoint():
 
 
 def _retrieve_cached(filename):
-    with open(filename, 'r') as f:
+    with open(filename, 'rb') as f:
         return pickle.load(f)
 
 
