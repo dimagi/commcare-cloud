@@ -24,7 +24,6 @@ from commcare_cloud.commands.terraform.constants import (
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import TERRAFORM_DIR, get_role_defaults
-from commcare_cloud.python_migration_utils import open_for_write
 
 
 class Terraform(CommandBase):
@@ -92,7 +91,7 @@ class Terraform(CommandBase):
                 else ''
             )
 
-            with open_for_write(os.path.join(run_dir, 'secrets.auto.tfvars')) as f:
+            with open(os.path.join(run_dir, 'secrets.auto.tfvars'), 'w', encoding='utf-8') as f:
                 print('rds_password = {}'.format(json.dumps(rds_password)), file=f)
 
         env_vars = {'AWS_PROFILE': aws_sign_in(environment)}
