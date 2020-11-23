@@ -19,7 +19,6 @@ import yaml
 from six.moves import input, range, zip
 
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.python_migration_utils import open_for_write
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'environment')
 j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
@@ -246,8 +245,10 @@ def ask_aws_for_instances(env_name, aws_config, count):
             block_device_mappings.append(aws_config.data_volume)
         cmd_parts.extend(['--block-device-mappings', json.dumps(block_device_mappings)])
         aws_response = subprocess.check_output(cmd_parts)
-        with open_for_write(cache_file) as f:
+        with open(cache_file, 'wb') as f:
             # PY2: check_output returns a byte string
+            # PY3: would need to specify universal_newlines=True in check_output to pass in str and receive str
+            # easiest to continue using bytes on both python versions
             f.write(aws_response)
     else:
         # Use the existing instances
