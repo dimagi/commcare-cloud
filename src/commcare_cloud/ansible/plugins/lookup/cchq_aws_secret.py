@@ -1,11 +1,12 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 import json
 import logging
 import os
-import six.moves.cPickle as pickle
 import time
+from io import open
 
+import six.moves.cPickle as pickle
 from ansible.plugins.lookup import aws_secret
 from cryptography.fernet import Fernet, InvalidToken
 
