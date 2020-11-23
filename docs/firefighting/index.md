@@ -119,7 +119,7 @@ $ cchq <env> service commcare stop
 
 # Couch 2.0
 
-Important note about CouchDB clusters. At Dimagi we run our CouchDB clusters with at least 3 nodes, and **store all data in triplicate**. That means if one node goes down (or even two nodes!), there are no user-facing effects with regards to data completeness so long as no traffic is being routed to the defective node or nodes.
+Important note about CouchDB clusters. At Dimagi we run our CouchDB clusters with at least 3 nodes, and **store all data in triplicate**. That means if one node goes down (or even two nodes!), there are no user-facing effects with regards to data completeness so long as no traffic is being routed to the defective node or nodes. However, we have seen situations where internal replication failed to copy some documents to all nodes, causing views to intermittently return incorrect results when those documents were queried.
 
 Thus in most cases, the correct approach is to stop routing traffic to the defective node, to stop it, and then to solve the issue with some better breathing room.
 
@@ -175,8 +175,10 @@ To stop routing data to the node:
 2. Run
     ```bash
     cchq <env> ansible-playbook deploy_couchdb2.yml --tags=proxy
-    ``` 
-3. Stop its couchdb process
+    ```
+3. Put the node in [maintenance mode](https://docs.couchdb.org/en/stable/cluster/sharding.html#set-the-target-node-to-true-maintenance-mode).
+4. Verify [internal replication is up to date](https://docs.couchdb.org/en/stable/cluster/sharding.html#monitor-internal-replication-to-ensure-up-to-date-shard-s).
+5. Stop its couchdb process
     ```bash
     cchq production run-shell-command <node-name> 'monit stop couchdb2' -b
     ```
@@ -194,8 +196,11 @@ Once the disk is resized, couchdb should start normally. You may want to immedia
 Once the node has enough disk
 
 1. Start the node (or ensure that it's already started)
-2. Reset your inventory.ini to the way it was (i.e. with the node present under the `[couchdb2]` group)
-3. Run the same command again to now route a portion of traffic back to the node again:
+2. Force [internal replication](https://docs.couchdb.org/en/stable/cluster/sharding.html#forcing-synchronization-of-the-shard-s).
+3. Verify [internal replication is up to date](https://docs.couchdb.org/en/stable/cluster/sharding.html#monitor-internal-replication-to-ensure-up-to-date-shard-s).
+4. Clear node [maintenance mode](https://docs.couchdb.org/en/stable/cluster/sharding.html#clear-the-target-node-s-maintenance-mode).
+5. Reset your inventory.ini to the way it was (i.e. with the node present under the `[couchdb2]` group)
+6. Run the same command again to now route a portion of traffic back to the node again:
     ```bash
     cchq <env> ansible-playbook deploy_couchdb2.yml --tags=proxy
     ```
@@ -215,6 +220,51 @@ If it's a global database (like _global_changes), then you may need to compact t
 ```
 curl "<couch ip>:15984/_global_changes/_compact" -X POST -H "Content-Type: application/json" --user <couch user name>
 ```
+
+## Documents are intermittently missing from views
+
+This can happen if internal cluster replication fails. The precise causes are unknown at time of writing, but it has been observed after maintenance was performed on the cluster where at least one node was down for a long time or possibly when a node was stopped too soon after another node was brought back online after being stopped.
+
+It is recommended to follow the [instructions above](#couch-node-data-disk-is-full) (use maintenance mode and verify internal replication is up to date) when performing cluster maintenance to avoid this situation.
+
+We have developed a few tools to find and repair documents that are missing on some nodes:
+
+```sh
+# Get cluster info, including document counts per shard. Large persistent
+# discrepancies in document counts may indicate problems with internal
+# replication.
+commcare-cloud <env> couchdb-cluster-info --shard-counts [--database=...]
+
+# Count missing forms in a given date range (slow and non-authoritative). Run
+# against production cluster. Increase --min-tries value to increase confidence
+# of finding all missing ids.
+./manage.py corrupt_couch count-missing forms --domain=... --range=2020-11-15..2020-11-18 --min-tries=40
+
+# Exhaustively and efficiently find missing documents for an (optional) range of
+# ids by running against stand-alone (non-clustered) couch nodes that have
+# snapshot copies of the data from a corrupt cluster. Multiple instances of this
+# command can be run simultaneously with different ranges.
+./manage.py corrupt_couch_nodes NODE1_IP:PORT,NODE2_IP:PORT,NODE3_IP:PORT forms --range=1fffffff..3fffffff > ~/missing-forms-1fffffff..3fffffff.txt
+
+# Repair missing documents found with previous command
+./manage.py corrupt_couch repair forms --min-tries=40 --missing ~/missing-forms-1fffffff..3fffffff.txt
+
+# See also
+commcare-cloud <env> couchdb-cluster-info --help
+./manage.py corrupt_couch --help
+./manage.py corrupt_couch_nodes --help
+```
+
+The process of setting up stand-alone nodes for `corrupt_couch_nodes` will
+differ depending on the hosting environment and availability of snapshots/
+backups. General steps once nodes are setup with snapshots of production data:
+
+- Use a unique Erlang cookie on each node (set in `/opt/couchdb/etc/vm.args`).
+  Do this before starting the couchdb service.
+- Remove all nodes from the cluster except local node. The
+  [couch_node_standalone_fix.py](https://gist.github.com/snopoke/f5c81497f6cbf3937dce2734e2b354a5)
+  script can be used to do this.
+
 
 ## DefaultChangeFeedPillow is millions of changes behind
 
