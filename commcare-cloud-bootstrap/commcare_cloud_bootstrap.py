@@ -1,27 +1,25 @@
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
+
 import argparse
 import json
 import os
 import random
+import re
+import shutil
 import string
 import subprocess
 import sys
-import shutil
 import uuid
-
-import re
+from io import open
 
 import jinja2
-import yaml
 import jsonobject
+import six
+import yaml
+from six.moves import input, range, zip
 
 from commcare_cloud.environment.main import get_environment
-import six
-from six.moves import range
-from six.moves import zip
-from six.moves import input
+from commcare_cloud.python_migration_utils import open_for_write
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'environment')
 j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
@@ -248,11 +246,12 @@ def ask_aws_for_instances(env_name, aws_config, count):
             block_device_mappings.append(aws_config.data_volume)
         cmd_parts.extend(['--block-device-mappings', json.dumps(block_device_mappings)])
         aws_response = subprocess.check_output(cmd_parts)
-        with open(cache_file, 'w') as f:
+        with open_for_write(cache_file) as f:
+            # PY2: check_output returns a byte string
             f.write(aws_response)
     else:
         # Use the existing instances
-        with open(cache_file, 'r') as f:
+        with open(cache_file, 'r', encoding='utf-8') as f:
             aws_response = f.read()
     aws_response = json.loads(aws_response)
     return {instance['InstanceId'] for instance in aws_response["Instances"]}
@@ -310,7 +309,7 @@ def get_inventory_from_file(environment):
     of inventory features."""
     inventory = Inventory()
     state = None
-    with open(environment.paths.inventory_ini) as f:
+    with open(environment.paths.inventory_ini, 'r', encoding='utf-8') as f:
         for line in f.readlines():
             group_line_match = re.match(r'^\[\s*(.*)\s*\]\s*$', line)
             if re.match(r'^\s*$', line):
@@ -379,7 +378,8 @@ def save_inventory(environment, inventory):
     inventory_file = environment.paths.inventory_ini
     if not os.path.exists(os.path.dirname(inventory_file)):
         os.makedirs(os.path.dirname(inventory_file))
-    with open(inventory_file, 'w') as f:
+    with open(inventory_file, 'w', encoding='utf-8') as f:
+        # PY2: inventory_file_contents is unicode
         f.write(inventory_file_contents)
     print('inventory file saved to {}'.format(inventory_file),
           file=sys.stderr)
@@ -392,10 +392,12 @@ def save_vault_yml(environment):
     template = j2.get_template('private.yml.j2')
     vault_file_contents = template.render(deploy_env=environment.name)
     vault_file = environment.paths.vault_yml
-    with open(vault_file, 'w') as f:
+    with open(vault_file, 'w', encoding='utf-8') as f:
+        # PY2: vault_file_contents is unicode
         f.write(vault_file_contents)
     print('vault file saved to {}'.format(vault_file),
           file=sys.stderr)
+
 
 def save_app_processes_yml(environment, inventory):
     template = j2.get_template('app-processes.yml.j2')
@@ -404,19 +406,21 @@ def save_app_processes_yml(environment, inventory):
     celery_host, = [host for host in inventory.all_hosts if host.name == celery_host_name]
     pillowtop_host, = [host for host in inventory.all_hosts if host.name == pillowtop_host_name]
     contents = template.render(celery_host=celery_host, pillowtop_host=pillowtop_host)
-    with open(environment.paths.app_processes_yml, 'w') as f:
+    with open(environment.paths.app_processes_yml, 'w', encoding='utf-8') as f:
+        # PY2: contents is unicode
         f.write(contents)
 
 
 def save_meta_yml(environment, env_name, users):
     template = j2.get_template('meta.yml.j2')
     contents = template.render(env_name=env_name, users=users)
-    with open(environment.paths.meta_yml, 'w') as f:
+    with open(environment.paths.meta_yml, 'w', encoding='utf-8') as f:
+        # PY2: contents is unicode
         f.write(contents)
 
 
 def save_fab_settings_yml(environment):
-    with open(environment.paths.fab_settings_yml, 'w') as f:
+    with open(environment.paths.fab_settings_yml, 'w', encoding='utf-8') as f:
         f.write('')
 
 
@@ -430,7 +434,7 @@ def copy_default_vars(environment, aws_config):
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'public.yml'), vars_public)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'postgresql.yml'), vars_postgresql)
         shutil.copyfile(os.path.join(TEMPLATE_DIR, 'proxy.yml'), vars_proxy)
-        with open(vars_public, 'a+') as f:
+        with open(vars_public, 'a+', encoding='utf-8') as f:
             if os.path.isfile(os.path.expanduser(aws_config.pem)):
                 f.write('commcare_cloud_pem: {pem}\n'.format(pem=aws_config.pem))
             else:
@@ -452,7 +456,7 @@ class Provision(object):
 
     @staticmethod
     def run(args):
-        with open(args.spec) as f:
+        with open(args.spec, 'r', encoding='utf-8') as f:
             spec = yaml.safe_load(f)
 
         spec = Spec.wrap(spec)
