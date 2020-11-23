@@ -1,0 +1,38 @@
+---
+- name: Webworkers
+  hosts: webworkers
+  become: true
+  serial: "{{ batch_size|default(1) }}"
+  tags: webworkers
+  tasks:
+    - name: Restart webworker
+      command: "supervisorctl restart {{ project }}-{{ deploy_env }}-django"
+
+    - name: Check connectivity
+      uri:
+        url: "http://localhost:9010/"
+        method: GET
+      register: _result
+      until: _result.status == 200
+      retries: 6  # 6x5 = 30s
+      delay: 5
+      ignore_errors: '{{ ansible_check_mode }}'
+
+- name: Formplayer
+  hosts: formplayer
+  become: true
+  serial: "{{ batch_size|default(1) }}"
+  tags: formplayer
+  tasks:
+    - name: Restart formplayer
+      command: "supervisorctl restart {{ project }}-{{ deploy_env }}-formsplayer-spring"
+
+    - name: Check connectivity
+      uri:
+        url: "http://localhost:8181/serverup"
+        method: GET
+      register: _result
+      until: _result.status == 200
+      retries: 6  # 6x10 = 60s
+      delay: 10
+      ignore_errors: '{{ ansible_check_mode }}'
