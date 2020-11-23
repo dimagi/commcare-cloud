@@ -5,6 +5,6 @@ instances:
     - host: {{ groups.couchdb2.0 }}
       port: {{ couchdb2_port }}
       local_port: 15986
-      user: {{ couch_config.username }}
+      username: {{ couch_config.username }}
       password: {{ couch_config.password }}
 {% endfor %}
