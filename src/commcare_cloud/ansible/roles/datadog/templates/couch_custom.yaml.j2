@@ -3,7 +3,7 @@ init_config:
 instances:
 {% for couch_config in couch_dbs.values() %}
     - host: {{ couch_config.host }}
-      port: {{ couch_config.port }}
+      port: {{ couchdb2_port }}
       local_port: 15986
       user: {{ couch_config.username }}
       password: {{ couch_config.password }}
