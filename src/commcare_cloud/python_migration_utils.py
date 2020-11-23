@@ -16,23 +16,3 @@ def open_for_write(path):
     if six.PY2:
         return open(path, "wb")
     return open(path, "w", encoding="utf-8")
-
-
-def open_for_json_dump(path):
-    """
-    This ensures compatible file write modes based on Python versions
-    Python 2 json.dump and json.dumps create a bytes object
-    Python 3 json.dump and json.dumps create a str object
-    """
-    if six.PY2:
-        return open(path, "wb")
-    return open(path, "w", encoding="utf-8")
-
-
-def open_for_yaml_dump(path):
-    """
-    This ensures compatible file write modes based on Python versions for yaml.dump/safe_dump calls
-    """
-    if six.PY2:
-        return open(path, "wb")
-    return open(path, "w", encoding="utf-8")
