@@ -1,36 +1,33 @@
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function, unicode_literals
 
-from __future__ import unicode_literals
 import functools
 import os
-import posixpath
 from collections import namedtuple
 from datetime import datetime, timedelta
 
-from fabric.api import roles, parallel, sudo, env, run, local
+from fabric import operations, utils
+from fabric.api import env, local, parallel, roles, run, sudo
 from fabric.colors import red
 from fabric.context_managers import cd, shell_env
 from fabric.contrib import files
 from fabric.contrib.project import rsync_project
 from fabric.operations import put
-from fabric import utils, operations
+
+import posixpath
+from commcare_cloud.environment.exceptions import EnvironmentException
 
 from ..const import (
-    OFFLINE_STAGING_DIR,
-    ROLES_ALL_SRC,
-    RELEASE_RECORD,
-    ROLES_FORMPLAYER,
-    ROLES_STATIC,
-    ROLES_DEPLOY,
-    ROLES_MANAGE,
     DATE_FMT,
     KEEP_UNTIL_PREFIX,
-    FORMPLAYER_BUILD_DIR,
-    ROLES_CONTROL)
-from .formplayer import (
-    clean_formplayer_releases,
+    OFFLINE_STAGING_DIR,
+    RELEASE_RECORD,
+    ROLES_ALL_SRC,
+    ROLES_CONTROL,
+    ROLES_DEPLOY,
+    ROLES_MANAGE,
+    ROLES_STATIC,
 )
+from .formplayer import clean_formplayer_releases
 
 GitConfig = namedtuple('GitConfig', 'key value')
 
@@ -115,7 +112,7 @@ def _hosts_in_roles(roles, exclude_roles=None):
 @roles(ROLES_ALL_SRC)
 @parallel
 def update_code_offline():
-    '''
+    """
     An online release usually clones from the previous release then tops
     off the new updates from the remote github. Since we can't access the remote
     Github, we do this:
@@ -123,7 +120,7 @@ def update_code_offline():
         1. Clone the current release to the user's home directory
         2. Update that repo with any changes from the user's local copy of HQ (in offline-staging)
         3. Clone the user's home repo to the release that is being deployed (code_root)
-    '''
+    """
     clone_current_release_to_home_directory()
 
     git_remote_url = 'ssh://{user}@{host}{code_dir}'.format(
@@ -304,6 +301,12 @@ def update_virtualenv(full_cluster=True):
         # Optimization if we have current setup (i.e. not the first deploy)
         if exists(env.py3_virtualenv_current) and not exists(env.py3_virtualenv_root):
             _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
+        elif not exists(env.py3_virtualenv_current):
+            raise EnvironmentException(
+                "{} cannot be found. This means there is no virtual environment available to clone from. "
+                "You will need to recreate the /current directory on this machine that symlinks to the most " 
+                "recent release in order to deploy successfully.".format(env.py3_virtualenv_current)
+            )
 
         requirements_files = [join("requirements", "prod-requirements.txt")]
         requirements_files.extend(
