@@ -1,0 +1,61 @@
+# This playbook may be used to perform a rolling restart for webworker and formplayer processes.
+
+# For each host the playbook will restart the appropriate supervisor process and wait for the process
+# to come back up. The tasks use HTTP endpoints to check that the process is running before declaring success.
+# The timeouts for the services to come back up are:
+#  - webworkers: 30s
+#  - formplayer: 60s
+#
+# Tags and limits may be used to isolate the restart of specific groups / hosts
+#
+# The `batch_size` var can be used to control how many nodes to perform the restart on at a time.
+#
+#     cchq <env> ap hq_rolling_restart.yml [--tags <webworkers|formplayer>] [--limit <pattern>] [-e batch_size=N]
+#
+# Note on compatibility with fabric tasks:
+#
+#   The fabric tasks restart ALL supervisor processes on the host and in addition to the restart they
+#   also reload and reread the supervisor configuration. The fabric tasks also do not check that the
+#   process is up and rely on the return code from supervisor to determine success.
+#
+#   restart_webworkers: In addition to the difference above, the fabric task task will remove the host
+#                       from the loadbalancer prior to restarting the processes and re-add it afterwards.
+#
+---
+- name: Webworkers
+  hosts: webworkers
+  become: true
+  serial: "{{ batch_size|default(1) }}"
+  tags: webworkers
+  tasks:
+    - name: Restart webworker
+      command: "supervisorctl restart {{ project }}-{{ deploy_env }}-django"
+
+    - name: Check connectivity
+      uri:
+        url: "http://localhost:9010/"
+        method: GET
+      register: _result
+      until: _result.status == 200
+      retries: 6  # 6x5 = 30s
+      delay: 5
+      ignore_errors: '{{ ansible_check_mode }}'
+
+- name: Formplayer
+  hosts: formplayer
+  become: true
+  serial: "{{ batch_size|default(1) }}"
+  tags: formplayer
+  tasks:
+    - name: Restart formplayer
+      command: "supervisorctl restart {{ project }}-{{ deploy_env }}-formsplayer-spring"
+
+    - name: Check connectivity
+      uri:
+        url: "http://localhost:8181/serverup"
+        method: GET
+      register: _result
+      until: _result.status == 200
+      retries: 6  # 6x10 = 60s
+      delay: 10
+      ignore_errors: '{{ ansible_check_mode }}'
