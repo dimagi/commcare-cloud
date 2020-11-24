@@ -36,6 +36,7 @@ monitoring_groups:
   - elasticsearch
   - postgresql
   - pg_standby
+  - pgbouncer
   - shard_dbs
   - main_dbs
   - ucr_dbs
