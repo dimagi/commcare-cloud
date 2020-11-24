@@ -30,7 +30,7 @@ pgbouncer_override:
 dbs:
   main:
     host: rds_pgmain0
-    pgbouncer_host: pgbouncer4
+    pgbouncer_host: pgbouncer3
   formplayer:
     host: rds_pgmain0
     pgbouncer_host: pgbouncer4
