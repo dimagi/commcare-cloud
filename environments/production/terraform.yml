@@ -127,6 +127,15 @@ servers:
     volume_encrypted: yes
     group: "hq_webworkers"
     os: bionic
+  - server_name: "web_a{i}-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    group: "hq_webworkers"
+    os: ubuntu_pro_bionic
+    count: 12
 
 
   - server_name: "web11-production"
