@@ -1,10 +1,11 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import datetime
 import os
 
 from fabric import utils
-from fabric.api import roles, env, sudo, settings
+from fabric.api import roles, env, sudo
 from fabric.context_managers import cd
 from fabric.contrib import console
 from fabric.contrib import files
@@ -82,8 +83,3 @@ def _get_old_formplayer_builds(build_dir):
         old_builds = sorted(_get_builds(previous_build_paths.split('\n')), reverse=True)
         old_builds.remove(current_build)
         return old_builds
-
-
-def formplayer_is_running_from_old_release_location():
-    ps_formplayer = sudo('ps aux | grep formplaye[r] || echo')
-    return env.code_current in ps_formplayer
