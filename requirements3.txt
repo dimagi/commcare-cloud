@@ -27,6 +27,7 @@ fabric3==1.10.2.post3     # via commcare-cloud (setup.py)
 gevent==20.9.0            # via couchdb-cluster-admin
 greenlet==0.4.17          # via gevent
 idna==2.6                 # via commcare-cloud (setup.py), requests
+importlib-metadata==3.1.0  # via commcare-cloud (setup.py)
 importlib-resources==3.0.0  # via netaddr
 jinja2-cli==0.7.0         # via commcare-cloud (setup.py)
 jinja2==2.11.2            # via ansible, jinja2-cli
@@ -51,7 +52,7 @@ six==1.15.0               # via bcrypt, commcare-cloud (setup.py), cryptography,
 tabulate==0.8.7           # via commcare-cloud (setup.py)
 urllib3==1.25.10          # via botocore, requests
 wrapt==1.12.1             # via deprecated
-zipp==3.2.0               # via importlib-resources
+zipp==3.2.0               # via importlib-metadata, importlib-resources
 zope.event==4.5.0         # via gevent
 zope.interface==5.1.0     # via gevent
 
