@@ -130,10 +130,10 @@ class RemoteMigrationStateManager(object):
             try:
                 self.s3_client.download_file(self.state_bucket, self.s3_filename, temp_filename)
             except ClientError as e:
-                if 'Not Found' in e.message:
+                if 'Not Found' in str(e):
                     return RemoteMigrationState(number=0, slug=None)
                 else:
-                    print(e.message, file=sys.stderr)
+                    print(e, file=sys.stderr)
                     error_code = e.response.get('Error', {}).get('Code', 'Unknown')
                     raise CommandError('Request to S3 exited with code {}'.format(error_code))
             else:
@@ -160,7 +160,7 @@ class RemoteMigrationStateManager(object):
             try:
                 self.s3_client.upload_file(temp_filename, self.state_bucket, self.s3_filename)
             except ClientError as e:
-                print(e.message, file=sys.stderr)
+                print(e, file=sys.stderr)
                 error_code = e.response.get('Error', {}).get('Code', 'Unknown')
                 raise CommandError('aws exited with code {} while updating remote state to {}'
                                    .format(error_code, remote_migration_state.to_json()))

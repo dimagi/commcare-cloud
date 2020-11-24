@@ -42,7 +42,7 @@ class Lookup(CommandBase):
                 return get_monolith_address(args.env_name)
             return get_server_address(args.env_name, args.server)
         except Exception as e:
-            self.parser.error("\n" + e.message)
+            self.parser.error("\n" + str(e))
 
     def run(self, args, unknown_args):
         if unknown_args:
