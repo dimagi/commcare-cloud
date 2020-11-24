@@ -12,21 +12,6 @@ from fabric.contrib import files
 from ..const import ROLES_FORMPLAYER, FORMPLAYER_BUILD_DIR, DATE_FMT
 
 
-def get_formplayer_build_url(env):
-    if env.deploy_env == 'staging':
-        return 'https://s3.amazonaws.com/dimagi-formplayer-jars/staging/latest-successful/formplayer.jar'
-    else:
-        return 'https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful/formplayer.jar'
-
-
-def _formplayer_jars_differ(build_dir, release_1, release_2):
-    with cd(build_dir):
-        with settings(warn_only=True):
-            result = sudo("diff {}/libs/formplayer.jar {}/libs/formplayer.jar".format(release_1, release_2))
-    # 1 means there's a diff, 2 means one of the files doesn't exist
-    return result.return_code in (1, 2)
-
-
 @roles(ROLES_FORMPLAYER)
 def offline_build_formplayer():
     build_dir = os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
