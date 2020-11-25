@@ -303,9 +303,7 @@ def update_virtualenv(full_cluster=True):
             _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
         elif not exists(env.py3_virtualenv_current):
             raise EnvironmentException(
-                "{} cannot be found. This means there is no virtual environment available to clone from. "
-                "You will need to recreate the /current directory on this machine that symlinks to the most " 
-                "recent release in order to deploy successfully.".format(env.py3_virtualenv_current)
+                "Virtual environment not found: {}".format(env.py3_virtualenv_current)
             )
 
         requirements_files = [join("requirements", "prod-requirements.txt")]
