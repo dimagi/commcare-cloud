@@ -159,30 +159,30 @@ module "elasticache-module-base" {
   source                = "./modules/elasticache-cluster"
   namespace             = "${var.environment}-elasticache-cluster"
   cluster_id            = "${var.environment}-elasticache-cluster"
-  node_groups           = "${var.node_groups}"
-  replicas_per_node     = "${var.replicas_per_node}"
-  subnet_ids_cache      = ["${var.subnet_ids_cache}"]
-  securitygroup_id      = "${var.securitygroup_id}"
-  cache_engine          = "redis"
-  cache_engine_version  = "4.0.10"
-  cache_node_type       = "${var.cache_node_type}"
-  cache_prameter_group  = "default.redis4.0.cluster.on"
-  automatic_failover    = true
-  transit_encryption    = false
-  at_rest_encryption    = true
-  auto_minor_version    = false
-  maintenance_window    = "sun:03:30-sun:04:30"
-  snapshot_retention    = 5
-  snapshot_window       = "07:30-08:30"
+  node_groups           = {{ elasticache_cluster.node_groups|tojson }}
+  replicas_per_node     = {{ elasticache_cluster.replicas_per_node|tojson }}
+  subnet_ids_cache      = ["${values(module.network.subnets-db-private)}"]
+  securitygroup_id      = ["${module.network.db-private-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"]
+  cache_engine          = {{ elasticache_cluster.cache_engine|tojson }}
+  cache_engine_version  = {{ elasticache_cluster.cache_engine_version|tojson }}
+  cache_node_type       = {{ elasticache_cluster.cache_node_type|tojson }}
+  cache_prameter_group  = {{ elasticache_cluster.cache_prameter_group|tojson }}
+  automatic_failover    = {{ elasticache_cluster.automatic_failover|tojson }}
+  transit_encryption    = {{ elasticache_cluster.transit_encryption|tojson }}
+  at_rest_encryption    = {{ elasticache_cluster.at_rest_encryption|tojson }}
+  auto_minor_version    = {{ elasticache_cluster.auto_minor_version|tojson }}
+  maintenance_window    = {{ elasticache_cluster.maintenance_window|tojson }}
+  snapshot_retention    = {{ elasticache_cluster.snapshot_retention|tojson }}
+  snapshot_window       = {{ elasticache_cluster.snapshot_window|tojson }}
   port_number           = 6379
   replication_group_des = "${var.environment}-redis-cluster"
 }
 
 module "r53-private-zone-create" {
   source      = "./modules/r53-private-zone-create-update"
-  zone_vpc_id = "${var.zone_vpc_id}"
-  domain_name = "${var.domain_name}"
-  route_names = "${var.route_names}"
+  zone_vpc_id = "${module.network.vpc-id}"
+  domain_name = {{ r53_private_zone.domain_name|tojson }}
+  route_names = {{ r53_private_zone.route_names|tojson }}
   records     = ["${module.elasticache-module-base.configuration_endpoint_address}"]
 }
 

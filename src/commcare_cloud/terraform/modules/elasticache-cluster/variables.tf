@@ -17,6 +17,7 @@ variable "subnet_ids_cache" {
 }
 
 variable "securitygroup_id" {
+  type        = "list"
   description = "If the nodes are not in VPC, these are the names of the Security Groups. If the nodes are in a VPC, these are the IDs of the VPC security groups"
 }
 

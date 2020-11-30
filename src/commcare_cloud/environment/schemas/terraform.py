@@ -26,6 +26,8 @@ class TerraformConfig(jsonobject.JsonObject):
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)
     elasticache = jsonobject.ObjectProperty(lambda: ElasticacheConfig, default=None)
+    elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
+    r53_private_zone = jsonobject.ObjectProperty(lambda: RoutePrivateZoneConfig, default=None)
 
     @classmethod
     def wrap(cls, data):
@@ -154,3 +156,24 @@ class ElasticacheConfig(jsonobject.JsonObject):
     num_cache_nodes = jsonobject.IntegerProperty(default=1)
     engine_version = jsonobject.StringProperty(default="4.0.10")
     parameter_group_name = jsonobject.StringProperty(default="default.redis4.0")
+
+class ElasticacheClusterConfig(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    node_groups = jsonobject.IntegerProperty(default=1)
+    replicas_per_node = jsonobject.IntegerProperty(default=1)
+    cache_node_type = jsonobject.StringProperty()
+    cache_engine = jsonobject.StringProperty(default="redis")
+    cache_engine_version = jsonobject.StringProperty(default="4.0.10")
+    cache_prameter_group = jsonobject.StringProperty(default="default.redis4.0.cluster.on")
+    automatic_failover = jsonobject.BooleanProperty(default=True)
+    transit_encryption = jsonobject.BooleanProperty(default=False)
+    at_rest_encryption = jsonobject.BooleanProperty(default=False)
+    auto_minor_version = jsonobject.BooleanProperty(default=False)
+    maintenance_window = jsonobject.StringProperty(default="sun:03:30-sun:04:30")
+    snapshot_retention = jsonobject.IntegerProperty(default=5)
+    snapshot_window = jsonobject.StringProperty(default="07:30-08:30")
+
+class RoutePrivateZoneConfig(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    domain_name = jsonobject.StringProperty()
+    route_names = jsonobject.StringProperty()
