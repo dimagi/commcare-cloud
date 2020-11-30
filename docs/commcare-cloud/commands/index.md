@@ -470,7 +470,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Track an infrastructure maintainance event in Datadog
 
 ```
-commcare-cloud <env> send-datadog-event event_title event_text
+commcare-cloud <env> send-datadog-event [--tags [TAGS [TAGS ...]]] event_title event_text
 ```
 
 ##### Positional Arguments
@@ -482,6 +482,12 @@ Title of the datadog event.
 ###### `event_text`
 
 Text content of the datadog event.
+
+##### Optional Arguments
+
+###### `--tags [TAGS [TAGS ...]]`
+
+Additional tags e.g. host:web2
 
 ---
 
@@ -1259,7 +1265,7 @@ commcare-cloud <env> list-postgresql-dbs [--compare]
 To list all database on a particular environment.
 
 ```
-commcare-cloud <ev> list-databases
+commcare-cloud <env> list-postgresql-dbs
 ```
 
 ##### Optional Arguments

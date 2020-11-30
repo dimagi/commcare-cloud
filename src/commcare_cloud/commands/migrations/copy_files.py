@@ -1,19 +1,26 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 import hashlib
 import os
 import shutil
+from io import open
 
 import attr
 import yaml
 
 from commcare_cloud.commands import shared_args
-from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
+from commcare_cloud.commands.ansible.helpers import (
+    AnsibleContext,
+    run_action_with_check_mode,
+)
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
-from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
-from commcare_cloud.commands.utils import render_template, PrivilegedCommand
+from commcare_cloud.commands.command_base import (
+    Argument,
+    CommandBase,
+    CommandError,
+)
+from commcare_cloud.commands.utils import PrivilegedCommand, render_template
 from commcare_cloud.environment.main import get_environment
-
 
 FILE_MIGRATION_RSYNC_SCRIPT = 'file_migration_rsync.sh'
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
@@ -127,7 +134,8 @@ class CopyFiles(CommandBase):
 
 
 def read_plan(plan_path, target_env, limit=None):
-    with open(plan_path, 'r') as f:
+    with open(plan_path, 'r', encoding='utf-8') as f:
+        # PY2: yaml.safe_load returns byte strings when the content is ASCII-only bytes
         plan_dict = yaml.safe_load(f)
 
     source_env = None
@@ -185,7 +193,8 @@ def prepare_file_copy_scripts(target_host, source_file_configs, script_root):
         else:
             filename = get_file_list_filename(config)
             path = os.path.join(target_script_root, filename)
-            with open(path, 'w') as f:
+            with open(path, 'w', encoding='utf-8') as f:
+                # PY2: unicode literals will coerce bytes -> unicode on py2
                 f.write('{}\n'.format('\n'.join(files)))
 
             files_for_node.append((config, filename))
@@ -197,7 +206,7 @@ def prepare_file_copy_scripts(target_host, source_file_configs, script_root):
             'rsync_file_root': os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
         }, TEMPLATE_DIR)
         rsync_script_path = os.path.join(target_script_root, FILE_MIGRATION_RSYNC_SCRIPT)
-        with open(rsync_script_path, 'w') as f:
+        with open(rsync_script_path, 'w', encoding='utf-8') as f:
             f.write(rsync_script_contents)
 
 

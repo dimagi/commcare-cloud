@@ -30,7 +30,6 @@ from ..const import (
     ROLES_CONTROL)
 from .formplayer import (
     clean_formplayer_releases,
-    formplayer_is_running_from_old_release_location,
 )
 
 GitConfig = namedtuple('GitConfig', 'key value')
@@ -458,17 +457,6 @@ def copy_localsettings(full_cluster=True):
         sudo('cp {}/localsettings.py {}/localsettings.py'.format(env.code_current, env.code_root))
 
     return copy
-
-
-@parallel
-@roles(ROLES_FORMPLAYER)
-def copy_formplayer_properties():
-    if formplayer_is_running_from_old_release_location():
-        sudo(
-            'cp -r {} {}'.format(
-                os.path.join(env.code_current, FORMPLAYER_BUILD_DIR),
-                os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
-            ))
 
 
 @parallel

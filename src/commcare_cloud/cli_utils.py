@@ -1,15 +1,16 @@
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
+
 import re
 import subprocess
-
 import sys
-from clint.textui import puts
+from io import open
 
-from commcare_cloud.colors import color_error, color_code
-from .environment.paths import ANSIBLE_DIR
+from clint.textui import puts
 from six.moves import input, shlex_quote
+
+from commcare_cloud.colors import color_code, color_error
+
+from .environment.paths import ANSIBLE_DIR
 
 
 def ask(message, strict=False, quiet=False):
@@ -60,7 +61,7 @@ def git_branch():
             "git status",
             cwd=ANSIBLE_DIR,
             shell=True,
-            stderr=open('/dev/null', 'w'),
+            stderr=open('/dev/null', 'w', encoding='utf-8'),
             universal_newlines=True,
         )
     except subprocess.CalledProcessError as e:

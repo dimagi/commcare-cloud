@@ -1,27 +1,30 @@
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-import json
-import sys
-import tempfile
-from copy import deepcopy
+from __future__ import absolute_import, print_function, unicode_literals
 
-import boto3
-import jsonobject
+import json
 import os
 import re
 import runpy
 import subprocess
-from collections import namedtuple, deque
+import sys
+import tempfile
+from collections import deque, namedtuple
+from io import open
 
+import boto3
+import jsonobject
 from botocore.exceptions import ClientError
 from memoized import memoized_property
 
 from commcare_cloud.alias import commcare_cloud
-from commcare_cloud.cli_utils import ask, print_command
-from commcare_cloud.commands.command_base import CommandBase, CommandError, Argument
+from commcare_cloud.cli_utils import ask
+from commcare_cloud.commands.command_base import (
+    Argument,
+    CommandBase,
+    CommandError,
+)
 from commcare_cloud.commands.terraform.aws import aws_sign_in
 from commcare_cloud.environment.main import get_environment
+from commcare_cloud.python_migration_utils import open_for_write
 
 
 class TerraformMigrateState(CommandBase):
@@ -127,14 +130,14 @@ class RemoteMigrationStateManager(object):
             try:
                 self.s3_client.download_file(self.state_bucket, self.s3_filename, temp_filename)
             except ClientError as e:
-                if 'Not Found' in e.message:
+                if 'Not Found' in str(e):
                     return RemoteMigrationState(number=0, slug=None)
                 else:
-                    print(e.message, file=sys.stderr)
+                    print(e, file=sys.stderr)
                     error_code = e.response.get('Error', {}).get('Code', 'Unknown')
                     raise CommandError('Request to S3 exited with code {}'.format(error_code))
             else:
-                with open(temp_filename) as f:
+                with open(temp_filename, 'r', encoding='utf-8') as f:
                     return RemoteMigrationState.wrap(json.load(f))
 
         finally:
@@ -151,13 +154,13 @@ class RemoteMigrationStateManager(object):
         """
         temp_filename = tempfile.mktemp()
         try:
-            with open(temp_filename, 'w') as f:
+            with open_for_write(temp_filename) as f:
                 json.dump(remote_migration_state.to_json(), f)
 
             try:
                 self.s3_client.upload_file(temp_filename, self.state_bucket, self.s3_filename)
             except ClientError as e:
-                print(e.message, file=sys.stderr)
+                print(e, file=sys.stderr)
                 error_code = e.response.get('Error', {}).get('Code', 'Unknown')
                 raise CommandError('aws exited with code {} while updating remote state to {}'
                                    .format(error_code, remote_migration_state.to_json()))

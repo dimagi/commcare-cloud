@@ -33,14 +33,14 @@ dbs:
     pgbouncer_host: pgbouncer3
   formplayer:
     host: rds_pgmain0
-    pgbouncer_host: pgbouncer3
+    pgbouncer_host: pgbouncer4
   ucr:
     host: rds_pgucr0
-    pgbouncer_host: pgbouncer3
+    pgbouncer_host: pgbouncer4
     query_stats: True
   synclogs:
     host: rds_pgsynclog0
-    pgbouncer_host: pgbouncer3
+    pgbouncer_host: pgbouncer4
   form_processing:
     proxy:
       host: pgbouncer3

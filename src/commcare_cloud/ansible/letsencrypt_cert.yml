@@ -2,21 +2,51 @@
 # commcare-cloud <env> ansible-playbook letsencrypt_cert.yml
 - hosts: proxy
   become: yes
+  vars:
+    certbot_min_version: 1.6.0
   tasks:
-    - name: Add certbot apt repo
-      apt_repository: repo='ppa:certbot/certbot' state=present
-      register: add_cert_repo
+    # Installation instructions: https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx
+    - name: Remove legacy certbot apt repo
+      apt_repository: repo='ppa:certbot/certbot' state=absent
 
-    - name: Update package list
-      apt: update_cache=yes
-      when: add_cert_repo is changed
-
-    - name: Install Certbot
+    - name: Uninstall Certbot via APT
       apt:
-        name:
-          - software-properties-common
-          - certbot
+        name: certbot
+        state: absent
       ignore_errors: '{{ ansible_check_mode }}'
+
+    - name: Check certbot version
+      shell: "test -x /usr/bin/certbot && certbot --version"
+      register: certbot_version
+      failed_when: false
+      check_mode: no
+
+    - block:
+      - name: update snap core
+        shell: "snap install core; snap refresh core"
+
+      - name: Install certbot snap
+        snap:
+          name: certbot
+          classic: yes
+        register: certbot_install
+
+      - name: Link certbot
+        file:
+          path: /usr/bin/certbot
+          src: /snap/bin/certbot
+          state: link
+
+      - name: update certbot
+        command: "snap refresh certbot"
+        when: not certbot_install is changed
+      when: certbot_version.rc != 0 or certbot_version.stdout.split()[1] is version(certbot_min_version, '<')
+
+    - name: Update cerbot to use alternate root chain
+      lineinfile:
+        dest: /etc/letsencrypt/cli.ini
+        regexp: '^preferred-chain'
+        line: "preferred-chain = DST Root CA X3"
 
     - name: Create Challenge Directory
       file:
