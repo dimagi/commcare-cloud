@@ -22,7 +22,7 @@ resource "aws_elasticache_replication_group" "redis-dev-cluster-0" {
   security_group_ids            = ["${var.securitygroup_id}"]
 
   tags = {
-    Name = "${var.namespace}-cache-dev"
+    Name = "${var.namespace}-cache"
   }
 
   cluster_mode {

@@ -161,7 +161,7 @@ class ElasticacheClusterConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     node_groups = jsonobject.IntegerProperty(default=1)
     replicas_per_node = jsonobject.IntegerProperty(default=1)
-    cache_node_type = jsonobject.StringProperty()
+    cache_node_type = jsonobject.StringProperty(default="cache.t3.micro")
     cache_engine = jsonobject.StringProperty(default="redis")
     cache_engine_version = jsonobject.StringProperty(default="4.0.10")
     cache_prameter_group = jsonobject.StringProperty(default="default.redis4.0.cluster.on")

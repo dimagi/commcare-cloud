@@ -226,7 +226,7 @@ elasticache:
   create: no
 
 elasticache_cluster:
-  cache_node_type: "db.t3.small"
+  cache_node_type: "cache.t3.medium"
   node_groups:  1
   replicas_per_node: 1
   cache_engine_version: "4.0.10"
