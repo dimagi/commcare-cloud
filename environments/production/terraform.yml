@@ -505,7 +505,7 @@ rds_instances:
       log_min_duration_statement: 1000
 
   - identifier: "pgucr0-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.2xlarge"  # increased from db.t3.large due to unused db.t3 RIs
     storage: 500
     max_storage: 5000
     multi_az: true
