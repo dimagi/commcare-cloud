@@ -272,7 +272,7 @@ def env_common():
     env.resume = False
     env.offline = False
     env.full_deploy = False
-    env.supervisor_roles = ROLES_ALL_SRC
+    env.supervisor_roles = ROLES_ALL_SERVICES
 
 
 @task
