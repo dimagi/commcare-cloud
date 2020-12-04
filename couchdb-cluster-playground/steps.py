@@ -90,7 +90,7 @@ def cluster_down():
     # docker and docker-compose commands to tear down a cluster
     run_command(['docker-compose', 'down'])
     os.system('docker rm -f $(docker ps -a -q)')
-    os.system('docker volume rm $(docker volume ls -q)')
+    os.system('docker volume rm $(docker volume ls -q  | grep couchdb-cluster-playground )')
 
 
 def cluster_up():
