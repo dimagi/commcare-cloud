@@ -1,10 +1,12 @@
 import os
+import re
 import subprocess
 import time
 import threading
 
 from couchdbkit import Server
 import requests
+from termcolor import colored
 
 import lib.couchdb_custom as couch_info
 
@@ -12,45 +14,85 @@ import lib.couchdb_custom as couch_info
 NODES = [
     {
         'url': 'http://localhost:5984',
-        'docker_name': 'server-0'
+        'authenticated_url': 'http://admin:password@localhost:5984',
+        'docker_name': 'server-0',
+        'color': 'yellow'
     },
     {
         'url': 'http://localhost:15984',
-        'docker_name': 'server-1'
+        'authenticated_url': 'http://admin:password@localhost:15984',
+        'docker_name': 'server-1',
+        'color': 'green'
     },
     {
         'url': 'http://localhost:25984',
-        'docker_name': 'server-2'
+        'authenticated_url': 'http://admin:password@localhost:25984',
+        'docker_name': 'server-2',
+        'color': 'magenta'
     },
 ]
+
+AB_COMPLETE_REGEX = re.compile(r'Complete requests: *([0-9]+)')
+AB_FAILED_REGEX = re.compile(r'Failed requests: *([0-9]+)')
 
 should_create_docs = False  # Boolean used for doc creation thread
 
 
-def create_docs(reporting_interval=4):
-    def create_docs_thead():
-        # thread that runs and inserts documents
-        total_count = 0
-        last_reported_time = 0
-        new_count = 0
+def create_docs_thead(url, color, reporting_interval, create_fn):
+    # thread that runs and inserts documents
+    counters = {
+        'total_count': 0,
+        'new_count': 0,
+        'error_count': 0,
+    }
+    last_reported_time = 0
 
-        while should_create_docs:
+    while should_create_docs:
+        create_fn(url, counters)
+
+        cur_time = int(time.time())
+        if ((cur_time - last_reported_time) > reporting_interval):
+            print(
+                colored(f'{url}: inserted {counters["total_count"]} total documents, {counters["new_count"]} new documents since last reported',
+                        color))
+            counters["new_count"] = 0
+            last_reported_time = cur_time
+    print(colored(f'{url} insertion done: inserted {counters["total_count"]} total documents, {counters["error_count"]} errors', color))
+
+
+def create_docs(reporting_interval=4, concurrency=True, n=200, c=10):
+    def create_simple(url, counters):
+        try:
             doc = {"mydoc": "test"}
-            db.save_doc(doc)
-            total_count += 1
-            new_count += 1
-            cur_time = int(time.time())
-            if ((cur_time - last_reported_time) > reporting_interval):
-                print(f'inserted {total_count} total documents, {new_count} new documents since last reported')
-                new_count = 0
-                last_reported_time = cur_time
-        print(f'insertion done: inserted {total_count} total documents')
+            Server(url).get_or_create_db("shards").save_doc(doc)
+            counters['total_count'] += 1
+            counters['new_count'] += 1
+        except requests.RequestException:
+            counters['error_count'] += 1
 
-    # create database and start thread
-    server = Server("http://admin:password@localhost:5984")
-    db = server.get_or_create_db("shards")
-    x = threading.Thread(target=create_docs_thead)
-    x.start()
+    def create_concurrent(url, counters):
+        ab_cmd = ['ab', '-p', 'data/large.json', '-T', '"application/json"', '-n', str(n), '-c', str(c), '-q', f'"{url}/shards"']
+        try:
+            # result = subprocess.run(ab_cmd, capture_output=True, check=True)
+            std_out = ""
+            p = subprocess.Popen(ab_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            for line in p.stdout:
+                std_out += line.decode('utf-8')
+            successful = int(AB_COMPLETE_REGEX.search(std_out).group(1))
+            failed = int(AB_FAILED_REGEX.search(std_out).group(1))
+            counters['total_count'] += successful
+            counters['new_count'] += successful
+            counters['error_count'] += failed
+        except Exception:
+            pass
+
+    # start threads
+    create_fn = create_concurrent if concurrency else create_simple
+    for i in range(len(NODES)):
+        Server(NODES[i]['authenticated_url']).get_or_create_db("shards")
+        x = threading.Thread(target=create_docs_thead,
+                             args=(NODES[i]['url'], NODES[i]['color'], reporting_interval, create_fn))
+        x.start()
 
 
 def node_up(docker_name):
@@ -145,6 +187,7 @@ def two_nodes_up_down(node_1_sleep=0, node_2_sleep=0):
 
 
 def main():
+    # one_node_up_down(node_sleep=4)
     two_nodes_up_down(node_1_sleep=40, node_2_sleep=40)
 
 
