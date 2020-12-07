@@ -78,6 +78,12 @@ To set up a release based on a non-master branch, run:
 cchq <env> fab setup_release --set code_branch=<HQ BRANCH>
 ```
 
+For extensions, run:
+
+```
+cchq <env> fab setup_release --set <env>_code_branch=<Extension HQ BRANCH>
+```
+
 Upon deploys, releases like these are cleaned up by the deploy process. If you know you have a long running command, you can ensure that the release does not get removed by using the `keep_days` option:
 
 ```
