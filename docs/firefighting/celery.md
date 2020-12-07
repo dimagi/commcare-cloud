@@ -3,6 +3,28 @@
 
 # Common Celery Firefighting Scenarios
 
+## Queue is blocked
+
+### Symptoms
+
+You check /serverup.txt?only=celery and see a queue has been blocked for some duration.
+Example of what this looks like:
+- Failed Checks (web8-production):
+celery: reminder_case_update_queue has been blocked for 0:27:57.285204 (max allowed is 0:15:00)
+
+
+### Resolution
+
+You can restart the blocked queue using:
+```
+cchq <env> service celery restart --only=<celery_queue>
+```
+
+To obtain a list of queues run:
+```
+cchq <env> service celery help
+```
+
 ## Worker is down
 
 ### Symptoms

@@ -31,102 +31,15 @@ servers:
     group: "django_manage"
     os: bionic
 
-  - server_name: "web2-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: no
-    group: "hq_webworkers"
-    os: bionic
-  - server_name: "web3-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: no
-    group: "hq_webworkers"
-    os: bionic
-  - server_name: "web4-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: no
-    group: "hq_webworkers"
-    os: bionic
-  - server_name: "web5-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: no
-    group: "hq_webworkers"
-    os: bionic
-  - server_name: "web6-production"
+  - server_name: "web_a{i}-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
     volume_encrypted: yes
     group: "hq_webworkers"
-    os: bionic
-  - server_name: "web7-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "hq_webworkers"
-    os: bionic
-  - server_name: "web8-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "hq_webworkers"
-    os: bionic
-  - server_name: "web9-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "hq_webworkers"
-    os: bionic
-  - server_name: "web20-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "hq_webworkers"
-    os: bionic
-  - server_name: "web21-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "hq_webworkers"
-    os: bionic
-  - server_name: "web22-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "hq_webworkers"
-    os: bionic
-  - server_name: "web23-production"
-    server_instance_type: m5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "hq_webworkers"
-    os: bionic
+    os: ubuntu_pro_bionic
+    count: 12
 
 
   - server_name: "web11-production"
@@ -496,7 +409,7 @@ rds_instances:
       log_min_duration_statement: 1000
 
   - identifier: "pgucr0-production"
-    instance_type: "db.t3.large"
+    instance_type: "db.t3.2xlarge"  # increased from db.t3.large due to unused db.t3 RIs
     storage: 500
     max_storage: 5000
     multi_az: true
