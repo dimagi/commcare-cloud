@@ -62,6 +62,19 @@ class DeployMetadata(object):
         self._code_branch = code_branch
         self._environment = environment
 
+    def __getstate__(self):
+        """
+        HACK: Remove memoized property values to allow object to be pickled
+        Removes any attribute that begins with '_' and ends with '_cache'
+        which is the naming scheme for memoized properties
+        """
+        state = dict(self.__dict__)
+        for key in list(state):
+            if key.startswith('_') and key.endswith('_cache'):
+                del state[key]
+
+        return state
+
     @memoized_property
     def repo(self):
         return _get_github().get_repo('dimagi/commcare-hq')
