@@ -241,3 +241,8 @@ elasticache_cluster:
 r53_private_zone:
   domain_name:  "stg.dimagi.local"
   route_names:  "redis"
+
+s3_bucket_private_rdb_backup:
+  rdb_bucket_name:  "staging-rdb-files-654329"
+  canned_acl_type:  "private"
+  sse_algorithm_use: "AES256"
