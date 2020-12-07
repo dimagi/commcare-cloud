@@ -53,7 +53,7 @@ def create_docs_thead(url, color, reporting_interval, create_fn):
         cur_time = int(time.time())
         if ((cur_time - last_reported_time) > reporting_interval):
             print(
-                colored(f'{url}: inserted {counters["total_count"]} total documents, {counters["new_count"]} new documents since last reported',
+                colored(f'{url}: inserted {counters["new_count"]} new documents since last reported, {counters["total_count"]} total documents.',
                         color))
             counters["new_count"] = 0
             last_reported_time = cur_time
@@ -170,6 +170,8 @@ def two_nodes_up_down(node_1_sleep=0, node_2_sleep=0):
     should_create_docs = True
     create_docs()
 
+    time.sleep(5)
+
     # Node 1 is down for node_1_sleep interval
     node_down(NODES[1]['docker_name'])
     time.sleep(node_1_sleep)
@@ -180,8 +182,10 @@ def two_nodes_up_down(node_1_sleep=0, node_2_sleep=0):
     time.sleep(node_2_sleep)
     node_up(NODES[2]['docker_name'])
 
+    time.sleep(5)
+
     should_create_docs = False
-    time.sleep(10)
+    time.sleep(20)
     if not db_is_consistent():
         print('INCONSISTENT!')
 
