@@ -81,7 +81,7 @@ cchq <env> fab setup_release --set code_branch=<HQ BRANCH>
 The same can be applied to set the branch for any additional repositories that have been configured. Use the variable `<name>_code_branch` where `name` is the name given to the repository in `meta.yml`:
 
 ```
-cchq <env> fab setup_release --set <env>_code_branch=<Extension HQ BRANCH>
+cchq <env> fab setup_release --set <NAME>_code_branch=<BRANCH NAME>
 ```
 
 Upon deploys, releases like these are cleaned up by the deploy process. If you know you have a long running command, you can ensure that the release does not get removed by using the `keep_days` option:
