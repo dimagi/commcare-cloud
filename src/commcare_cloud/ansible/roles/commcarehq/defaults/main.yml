@@ -1,2 +1,3 @@
 commcarehq_repository: https://github.com/dimagi/commcare-hq.git
 commcarehq_version: master
+use_formplayer_debug_options: false
