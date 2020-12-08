@@ -336,6 +336,14 @@ servers:
     group: "formplayer"
     os: ubuntu_pro_bionic
     count: 168
+  - server_name: "formplayer_c{i}-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 200
+    group: "formplayer"
+    os: ubuntu_pro_bionic
+    count: 61
 
   - server_name: "redis0-production"
     server_instance_type: r5.4xlarge
