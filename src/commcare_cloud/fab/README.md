@@ -78,7 +78,7 @@ To set up a release based on a non-master branch, run:
 cchq <env> fab setup_release --set code_branch=<HQ BRANCH>
 ```
 
-For extensions, run:
+The same can be applied to set the branch for any additional repositories that have been configured. Use the variable `<name>_code_branch` where `name` is the name given to the repository in `meta.yml`:
 
 ```
 cchq <env> fab setup_release --set <env>_code_branch=<Extension HQ BRANCH>
