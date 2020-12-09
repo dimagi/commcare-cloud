@@ -56,3 +56,15 @@ host    all             all             127.0.0.1/32            md5
 
 # IPv6 local connections:
 host    all             all             ::1/128                 md5
+
+
+{% for db in postgresql_dbs.all %}
+{% if db.host == inventory_hostname %}
+{% set host = db.pgbouncer_host %}
+{% if host | ipaddr %}
+host   all	all	{{ host }}/32   trust
+{% else %}
+host   all	all	{{ lookup('dig', host, wantlist=True)[0] }}/32	trust
+{% endif %}
+{% endif %}
+{% endfor %}
