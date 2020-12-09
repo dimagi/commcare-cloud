@@ -117,6 +117,11 @@ formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 cchq_uid=1025
 cchq_gid=1026
 
+[formplayer_debug:vars]
+use_formplayer_debug_options=true
+
+[formplayer_debug:children]
+formplayer_c000
 
 {{ __redis0__ }} swap_size=1G
 
