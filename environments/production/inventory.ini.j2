@@ -36,6 +36,23 @@ mobile_webworkers
 
 {{ __pgbouncer4__ }}
 
+{{ __pgbouncer5__ }}
+{{ __pgbouncer6__ }}
+{{ __pgbouncer7__ }}
+{{ __pgbouncer8__ }}
+{{ __pgbouncer9__ }}
+{{ __pgbouncer10__ }}
+{{ __pgbouncer11__ }}
+
+[granular_pgbouncer:children]
+pgbouncer5
+pgbouncer6
+pgbouncer7
+pgbouncer8
+pgbouncer9
+pgbouncer10
+pgbouncer11
+
 {{ __rds_pgmain0__ }}
 
 {{ __rds_pgucr0__ }}
@@ -69,6 +86,7 @@ remote_postgresql
 [pgbouncer:children]
 pgbouncer3
 pgbouncer4
+granular_pgbouncer
 
 [ansible_skip:children]
 remote_postgresql
@@ -103,8 +121,6 @@ swap_size=8G
 
 [pillowtop:children]
 pillow1
-
-{{ __formplayer_b__ }}
 
 {{ __formplayer_c__ }}
 
