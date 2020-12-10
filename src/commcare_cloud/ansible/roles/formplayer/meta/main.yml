@@ -2,3 +2,4 @@
 dependencies:
   - role: java
   - {role: supervisor, tags: supervisor}
+  - role: monit

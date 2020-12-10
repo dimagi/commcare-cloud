@@ -160,3 +160,26 @@
   tags:
     - formplayer_deploy
   when: not _should_update_formplayer_in_place
+
+- name: Formplayer monit config
+  become: yes
+  template:
+    src: "monit.formplayer.j2"
+    dest: "/etc/monit/conf.d/formplayer"
+    group: root
+    owner: root
+    mode: 0640
+  notify: reload monit
+  tags: monit
+
+- meta: flush_handlers
+
+- monit:
+    name: formplayer
+    state: monitored
+  tags: monit
+  ignore_errors: "{{ ansible_check_mode }}"
+  register: result
+  until: not result.failed or 'process not presently configured with monit' not in result.msg
+  retries: 5
+  delay: 20
