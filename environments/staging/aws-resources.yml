@@ -8,10 +8,6 @@ couch7-staging: 10.201.40.221
 couch7-staging.instance_id: i-0361f071191cd66c0
 couch8-staging: 10.201.40.18
 couch8-staging.instance_id: i-06d9f01ac9c8cb6b8
-es4-staging: 10.201.40.127
-es4-staging.instance_id: i-051efce29812eac7a
-es5-staging: 10.201.40.26
-es5-staging.instance_id: i-036c688e6ec7d6eac
 es6-staging: 10.201.40.126
 es6-staging.instance_id: i-0161d2187f667e405
 es7-staging: 10.201.40.107
@@ -21,10 +17,10 @@ formplayer3-staging: 10.201.10.140
 formplayer3-staging.instance_id: i-02db1d5a7509e4268
 formplayer4-staging: 10.201.10.18
 formplayer4-staging.instance_id: i-07ad9548c23f0aa68
+formplayer5-staging: 10.201.10.149
+formplayer5-staging.instance_id: i-0c5a7daef1fc32407
 kafka2-staging: 10.201.40.170
 kafka2-staging.instance_id: i-08a404d6bad630a35
-kafka3-staging: 10.201.40.85
-kafka3-staging.instance_id: i-01056fe1383b26010
 kafka4-staging: 10.201.40.122
 kafka4-staging.instance_id: i-073644a65886539f9
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
@@ -36,6 +32,8 @@ proxy2-staging: 10.201.10.72
 proxy2-staging.instance_id: i-01e26fa1de2365635
 proxy3-staging: 10.201.10.97
 proxy3-staging.instance_id: i-015d3723f1019a4f7
+proxy4-staging: 10.201.10.179
+proxy4-staging.instance_id: i-042d6563129d60152
 rabbit2-staging: 10.201.10.239
 rabbit2-staging.instance_id: i-01bfeae5f4febaddf
 rabbit3-staging: 10.201.10.175
