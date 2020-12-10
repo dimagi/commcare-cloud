@@ -1,0 +1,5 @@
+ check file formplayer with path {{ formplayer_logging_dir }}/formplayer-spring.log
+  group formplayer
+  start program = "supervisorctl start {{ project }}-{{ deploy_env }}-formsplayer-spring"
+  stop program = "supervisorctl stop {{ project }}-{{ deploy_env }}-formsplayer-spring"
+  if content = "java.lang.OutOfMemoryError" then restart
