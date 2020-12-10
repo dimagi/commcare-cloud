@@ -34,6 +34,9 @@ if six.PY2:
     # moved from requirements-python-lt-2.7.9-ssl-issue.in
     install_deps.extend(["pyOpenSSL", "ndg-httpsclient"])
 
+if six.PY3:
+    install_deps.extend(['importlib-metadata==3.1.0'])
+
 test_deps = [
     'mock>=2.0.0',
     'modernize',
