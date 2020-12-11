@@ -8,6 +8,10 @@ couch7-staging: 10.201.40.221
 couch7-staging.instance_id: i-0361f071191cd66c0
 couch8-staging: 10.201.40.18
 couch8-staging.instance_id: i-06d9f01ac9c8cb6b8
+es4-staging: 10.201.40.127
+es4-staging.instance_id: i-051efce29812eac7a
+es5-staging: 10.201.40.26
+es5-staging.instance_id: i-036c688e6ec7d6eac
 es6-staging: 10.201.40.126
 es6-staging.instance_id: i-0161d2187f667e405
 es7-staging: 10.201.40.107
