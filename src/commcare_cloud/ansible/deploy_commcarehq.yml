@@ -73,14 +73,14 @@
   tags: services
 
 - name: Management Command Supervisor Config
-  hosts: commcarehq:formplayer
+  hosts: commcarehq
   tasks:
     - include_vars: roles/commcarehq/vars/main.yml
     - include_tasks: roles/commcarehq/tasks/management_commands.yml
   tags: services
 
 - name: Prometheus Supervisor Config
-  hosts: commcarehq:formplayer
+  hosts: commcarehq
   tasks:
     - include_vars: roles/commcarehq/vars/main.yml
     - include_tasks: roles/commcarehq/tasks/prometheus.yml
@@ -88,7 +88,7 @@
   tags: services
 
 - name: Prometheus Django runner
-  hosts: commcarehq:formplayer
+  hosts: commcarehq
   tasks:
     - include_vars: roles/commcarehq/vars/main.yml
     - include_tasks: roles/commcarehq/tasks/prometheus_django_runner.yml
