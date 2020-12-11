@@ -225,6 +225,7 @@ proxy_servers:
     volume_size: 80
     volume_encrypted: yes
     group: "proxy"
+    os: ubuntu_pro_bionic
 
 rds_instances:
   - identifier: "pg0-staging"
