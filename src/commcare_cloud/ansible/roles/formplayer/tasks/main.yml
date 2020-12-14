@@ -83,7 +83,7 @@
 
 - name: Formplayer request-response logging directory
   file:
-    path: "{{ formplayer_service_log_dir }}"
+    path: "{{ formplayer_access_log_dir }}"
     state: directory
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
