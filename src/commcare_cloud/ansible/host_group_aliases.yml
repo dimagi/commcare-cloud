@@ -14,7 +14,6 @@
         groups: commcarehq
       with_items:
         - "{{ groups['webworkers']|default([]) }}"
-        - "{{ groups['formplayer']|default([]) }}"
         - "{{ groups['celery']|default([]) }}"
         - "{{ groups['proxy']|default([]) }}"
         - "{{ groups['pillowtop']|default([]) }}"
