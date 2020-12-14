@@ -1,5 +1,5 @@
- check file formplayer with path {{ formplayer_logging_dir }}/formplayer-spring.log
+ check file formplayer with path {{ formplayer_process_log_dir }}/formplayer-spring.log
   group formplayer
   start program = "supervisorctl start {{ project }}-{{ deploy_env }}-formsplayer-spring"
   stop program = "supervisorctl stop {{ project }}-{{ deploy_env }}-formsplayer-spring"
-  if content = "java.lang.OutOfMemoryError: GC overhead limit exceeded" then restart
+  if content = "^Caused by: java.lang.OutOfMemoryError: GC overhead limit exceeded" then restart
