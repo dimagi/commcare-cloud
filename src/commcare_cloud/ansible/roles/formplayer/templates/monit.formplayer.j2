@@ -3,3 +3,4 @@
   start program = "supervisorctl start {{ project }}-{{ deploy_env }}-formsplayer-spring"
   stop program = "supervisorctl stop {{ project }}-{{ deploy_env }}-formsplayer-spring"
   if content = "^Caused by: java.lang.OutOfMemoryError: GC overhead limit exceeded" then restart
+
