@@ -38,11 +38,8 @@ proxy3-staging: 10.201.10.97
 proxy3-staging.instance_id: i-015d3723f1019a4f7
 proxy4-staging: 10.201.10.179
 proxy4-staging.instance_id: i-042d6563129d60152
-<<<<<<< HEAD
-=======
 proxy5-staging: 10.201.10.65
 proxy5-staging.instance_id: i-05e9a4ff140b3fb36
->>>>>>> run aws-fill-inventory
 rabbit2-staging: 10.201.10.239
 rabbit2-staging.instance_id: i-01bfeae5f4febaddf
 rabbit3-staging: 10.201.10.175
