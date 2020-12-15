@@ -226,6 +226,14 @@ proxy_servers:
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
+  - server_name: "proxy6-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "proxy"
+    os: ubuntu_pro_bionic
 
 rds_instances:
   - identifier: "pg0-staging"
