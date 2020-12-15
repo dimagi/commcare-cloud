@@ -328,14 +328,14 @@ servers:
     group: "pillowtop"
     os: bionic
 
-  - server_name: "formplayer_b{i}-production"
-    server_instance_type: m5.2xlarge
+  - server_name: "formplayer_c{i}-production"
+    server_instance_type: m5.4xlarge
     network_tier: "app-private"
-    az: "a"
-    volume_size: 200
+    az: "b"
+    volume_size: 400
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 168
+    count: 92
 
   - server_name: "redis0-production"
     server_instance_type: r5.4xlarge
@@ -365,7 +365,7 @@ servers:
     os: bionic
 
   - server_name: "pgbouncer3-production"
-    server_instance_type: m5.8xlarge
+    server_instance_type: r5.8xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -379,6 +379,56 @@ servers:
     volume_size: 80
     group: "postgresql"
     os: bionic
+
+  - server_name: "pgbouncer5-production"  # pgbouncer_host for pl/proxy
+    server_instance_type: r5.8xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: ubuntu_pro_bionic
+  - server_name: "pgbouncer6-production"  # pgbouncer_host for pgshard1
+    server_instance_type: r5.8xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: ubuntu_pro_bionic
+  - server_name: "pgbouncer7-production"  # pgbouncer_host for pgshard2
+    server_instance_type: r5.8xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: ubuntu_pro_bionic
+  - server_name: "pgbouncer8-production"  # pgbouncer_host for pgshard3
+    server_instance_type: r5.8xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: ubuntu_pro_bionic
+  - server_name: "pgbouncer9-production"  # pgbouncer_host for pgshard4
+    server_instance_type: r5.8xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: ubuntu_pro_bionic
+  - server_name: "pgbouncer10-production"  # pgbouncer_host for pgshard5
+    server_instance_type: r5.8xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: ubuntu_pro_bionic
+  - server_name: "pgbouncer11-production"  # pgbouncer_host for pgmain
+    server_instance_type: r5.8xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: ubuntu_pro_bionic
 
 proxy_servers:
   - server_name: "proxy2-production"

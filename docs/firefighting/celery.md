@@ -184,6 +184,20 @@ cchq@hqcelery0:/home/cchq/www/production/current$ source python_env/bin/activate
 
 This command will just keep running, revoking all existing and new tasks that it finds that match the given task name(s). This command is only able to revoke tasks received by the worker from rabbitmq. The worker does not see all the tasks in the queue all at once since the tasks are prefetched by the worker from rabbitmq a little at a time, so to revoke them all you just have to keep it running. When you no longer need it, just stop it with Ctrl+C.
 
+## Intermittent datadog connection errors
+
+### Symptoms
+
+Receiving alerts that the datadog agent on a celery machine is not reporting. The alerts recover on their own but continue to trigger.
+
+### Resolution
+
+This is only relevant if these alerts are for the first celery machine `celery[0]`:
+
+```
+cchq <env> service celery restart --limit=celery[0]
+```
+
 # Common RabbitMQ Firefighting Scenarios
 
 ## RabbitMQ is down

@@ -36,6 +36,23 @@ mobile_webworkers
 
 {{ __pgbouncer4__ }}
 
+{{ __pgbouncer5__ }}
+{{ __pgbouncer6__ }}
+{{ __pgbouncer7__ }}
+{{ __pgbouncer8__ }}
+{{ __pgbouncer9__ }}
+{{ __pgbouncer10__ }}
+{{ __pgbouncer11__ }}
+
+[granular_pgbouncer:children]
+pgbouncer5
+pgbouncer6
+pgbouncer7
+pgbouncer8
+pgbouncer9
+pgbouncer10
+pgbouncer11
+
 {{ __rds_pgmain0__ }}
 
 {{ __rds_pgucr0__ }}
@@ -69,6 +86,7 @@ remote_postgresql
 [pgbouncer:children]
 pgbouncer3
 pgbouncer4
+granular_pgbouncer
 
 [ansible_skip:children]
 remote_postgresql
@@ -104,17 +122,25 @@ swap_size=8G
 [pillowtop:children]
 pillow1
 
-{{ __formplayer_b__ }}
+{{ __formplayer_c__ }}
 
 [formplayer:children]
-formplayer_b
+formplayer_c
 
 [formplayer:vars]
-swap_size=8G
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 cchq_uid=1025
 cchq_gid=1026
 
+[formplayer_debug:vars]
+use_formplayer_debug_options=true
+
+[formplayer_debug:children]
+formplayer_c000
+formplayer_c014
+
+[formplayer_c014:vars]
+extra_formplayer_args='-XX:+UseG1GC -XX:+UseStringDeduplication'
 
 {{ __redis0__ }} swap_size=1G
 
