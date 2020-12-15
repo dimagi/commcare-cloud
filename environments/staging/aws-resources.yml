@@ -19,6 +19,8 @@ formplayer4-staging: 10.201.10.18
 formplayer4-staging.instance_id: i-07ad9548c23f0aa68
 formplayer5-staging: 10.201.10.149
 formplayer5-staging.instance_id: i-0c5a7daef1fc32407
+formplayer6-staging: 10.201.10.238
+formplayer6-staging.instance_id: i-0753457f770f45af6
 kafka2-staging: 10.201.40.170
 kafka2-staging.instance_id: i-08a404d6bad630a35
 kafka4-staging: 10.201.40.122
@@ -36,6 +38,8 @@ proxy4-staging: 10.201.10.179
 proxy4-staging.instance_id: i-042d6563129d60152
 proxy5-staging: 10.201.10.65
 proxy5-staging.instance_id: i-05e9a4ff140b3fb36
+proxy6-staging: 10.201.10.71
+proxy6-staging.instance_id: i-0644a5a4454bc8d25
 rabbit2-staging: 10.201.10.239
 rabbit2-staging.instance_id: i-01bfeae5f4febaddf
 rabbit3-staging: 10.201.10.175
