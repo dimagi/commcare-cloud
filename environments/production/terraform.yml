@@ -39,7 +39,7 @@ servers:
     volume_encrypted: yes
     group: "hq_webworkers"
     os: ubuntu_pro_bionic
-    count: 12
+    count: 17
 
 
   - server_name: "web11-production"
