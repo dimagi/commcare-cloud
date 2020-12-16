@@ -11,7 +11,6 @@ resource "aws_elasticache_replication_group" "redis-dev-cluster-0" {
   replication_group_id          = "${var.cluster_id}"
   parameter_group_name          = "${var.cache_prameter_group}"
   port                          = "${var.port_number}"
-  snapshot_arns                 = ["${var.snapshot_object_arn}"]
   automatic_failover_enabled    = "${var.automatic_failover}"
   transit_encryption_enabled    = "${var.transit_encryption}"
   at_rest_encryption_enabled    = "${var.at_rest_encryption}"

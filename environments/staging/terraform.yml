@@ -227,7 +227,7 @@ elasticache:
 
 elasticache_cluster:
   cache_node_type: "cache.t3.medium"
-  node_groups:  1
+  node_groups:  2
   replicas_per_node: 1
   cache_engine_version: "4.0.10"
   automatic_failover: true
@@ -235,14 +235,9 @@ elasticache_cluster:
   at_rest_encryption: true
   auto_minor_version: false
   maintenance_window: "sun:03:30-sun:04:30"
-  snapshot_retention: 5
+  snapshot_retention: 7
   snapshot_window: "07:30-08:30"
 
 r53_private_zone:
   domain_name:  "stg.dimagi.local"
   route_names:  "redis"
-
-s3_bucket_private_rdb_backup:
-  rdb_bucket_name:  "staging-rdb-files-654329"
-  canned_acl_type:  "private"
-  sse_algorithm_use: "AES256"

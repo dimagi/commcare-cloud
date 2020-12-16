@@ -77,8 +77,3 @@ variable "port_number" {
 variable "replication_group_des" {
   description = "Replication Group Description"
 }
-
-variable "snapshot_object_arn" {
-  type        = "list"
-  description = "ARN of a Redis RDB snapshot file stored in Amazon S3. Example: arn:aws:s3:::my_bucket/snapshot1.rdb"
-}

@@ -176,7 +176,6 @@ module "elasticache-module-base" {
   snapshot_window       = {{ elasticache_cluster.snapshot_window|tojson }}
   port_number           = 6379
   replication_group_des = "${var.environment}-redis-cluster"
-  snapshot_object_arn   = ["${module.s3-bucket-private-rdb-backup.s3-bucket-rdb-backup-arn}/${var.environment}-redis-backup.rdb"]
 }
 
 module "r53-private-zone-create" {
@@ -185,14 +184,6 @@ module "r53-private-zone-create" {
   domain_name = {{ r53_private_zone.domain_name|tojson }}
   route_names = {{ r53_private_zone.route_names|tojson }}
   records     = ["${module.elasticache-module-base.configuration_endpoint_address}"]
-}
-
-module "s3-bucket-private-rdb-backup" {
-  source      = "./modules/s3-bucket-rdb-backup"
-  rdb_bucket_name = {{ s3_bucket_private_rdb_backup.rdb_bucket_name|tojson }}
-  canned_acl_type = {{ s3_bucket_private_rdb_backup.canned_acl_type|tojson }}
-  sse_algorithm_use = {{ s3_bucket_private_rdb_backup.sse_algorithm_use|tojson }}
-  region_name = "${var.region}"
 }
 
 module "openvpn" {

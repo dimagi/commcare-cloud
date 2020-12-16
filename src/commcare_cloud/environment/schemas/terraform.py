@@ -28,7 +28,6 @@ class TerraformConfig(jsonobject.JsonObject):
     elasticache = jsonobject.ObjectProperty(lambda: ElasticacheConfig, default=None)
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
     r53_private_zone = jsonobject.ObjectProperty(lambda: RoutePrivateZoneConfig, default=None)
-    s3_bucket_private_rdb_backup = jsonobject.ObjectProperty(lambda: S3BucketPrivateRdbBackup, default=None)
 
     @classmethod
     def wrap(cls, data):
@@ -168,7 +167,7 @@ class ElasticacheClusterConfig(jsonobject.JsonObject):
     cache_prameter_group = jsonobject.StringProperty(default="default.redis4.0.cluster.on")
     automatic_failover = jsonobject.BooleanProperty(default=True)
     transit_encryption = jsonobject.BooleanProperty(default=False)
-    at_rest_encryption = jsonobject.BooleanProperty(default=False)
+    at_rest_encryption = jsonobject.BooleanProperty(default=True)
     auto_minor_version = jsonobject.BooleanProperty(default=False)
     maintenance_window = jsonobject.StringProperty(default="sun:03:30-sun:04:30")
     snapshot_retention = jsonobject.IntegerProperty(default=5)
@@ -178,9 +177,3 @@ class RoutePrivateZoneConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     domain_name = jsonobject.StringProperty()
     route_names = jsonobject.StringProperty()
-
-class S3BucketPrivateRdbBackup(jsonobject.JsonObject):
-    _allow_dynamic_properties = False
-    rdb_bucket_name = jsonobject.StringProperty()
-    canned_acl_type = jsonobject.StringProperty(default="private")
-    sse_algorithm_use = jsonobject.StringProperty(default="AES256")
