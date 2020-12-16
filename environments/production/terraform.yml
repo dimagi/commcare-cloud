@@ -90,6 +90,14 @@ servers:
     volume_encrypted: yes
     group: "mobile_webworkers"
     os: bionic
+  - server_name: "web_b{i}-production"
+    server_instance_type: r5.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+    group: "mobile_webworkers"
+    os: ubuntu_pro_bionic
+    count: 6
 
 
   - server_name: "esmaster3-production"
