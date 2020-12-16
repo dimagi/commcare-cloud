@@ -144,8 +144,8 @@
   tags:
     - localsettings
 
-# This should be the last task in the file
-# (and certainly the last one tagged with `formplayer_deploy`)
+# This should be the last task in the formplayer release process
+# (and the last one tagged with `formplayer_deploy`)
 # so that if setting up a release fails, `current` never gets linked to it
 # giving us nearly atomic formplayer deploys
 - name: Link formplayer jar
