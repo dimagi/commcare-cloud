@@ -90,6 +90,14 @@ servers:
     volume_encrypted: yes
     group: "mobile_webworkers"
     os: bionic
+  - server_name: "web_b{i}-production"
+    server_instance_type: r5.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+    group: "mobile_webworkers"
+    os: ubuntu_pro_bionic
+    count: 9
 
 
   - server_name: "esmaster3-production"
@@ -292,7 +300,7 @@ servers:
     os: bionic
 
   - server_name: "rabbit2-production"
-    server_instance_type: t3.2xlarge
+    server_instance_type: c5.4xlarge
     network_tier: "db-private"
     az: "c"
     volume_size: 80
@@ -301,7 +309,7 @@ servers:
     os: ubuntu_pro_bionic
   
   - server_name: "rabbit3-production"
-    server_instance_type: t3.2xlarge
+    server_instance_type: c5.4xlarge
     network_tier: "db-private"
     az: "c"
     volume_size: 80
