@@ -16,6 +16,7 @@
   with_items:
     - supervisord
     - supervisorctl
+  become: yes
 
 - name: find supervisord path
   shell: 'which supervisord'
