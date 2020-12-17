@@ -41,55 +41,6 @@ servers:
     os: ubuntu_pro_bionic
     count: 17
 
-
-  - server_name: "web11-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-    volume_encrypted: no
-    group: "mobile_webworkers"
-    os: bionic
-  - server_name: "web12-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-    volume_encrypted: no
-    group: "mobile_webworkers"
-    os: bionic
-  - server_name: "web13-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: no
-    group: "mobile_webworkers"
-    os: bionic
-  - server_name: "web14-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "mobile_webworkers"
-    os: bionic
-  - server_name: "web15-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "mobile_webworkers"
-    os: bionic
-  - server_name: "web16-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "mobile_webworkers"
-    os: bionic
   - server_name: "web_b{i}-production"
     server_instance_type: r5.2xlarge
     network_tier: "app-private"

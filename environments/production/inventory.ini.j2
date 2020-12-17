@@ -7,12 +7,6 @@ proxy3
 
 {{ __web_a__ }}
 
-{{ __web11__ }} datadog_integration_tcp_check=yes
-{{ __web12__ }}
-{{ __web13__ }}
-{{ __web14__ }}
-{{ __web15__ }}
-{{ __web16__ }}
 {{ __web_b__ }}
 
 [logproxy:children]
@@ -22,12 +16,6 @@ proxy
 web_a
 
 [mobile_webworkers:children]
-web11
-web12
-web13
-web14
-web15
-web16
 web_b
 
 [webworkers:children]
