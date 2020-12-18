@@ -171,12 +171,23 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
 
 
 def call_commcare_cloud(input_argv=sys.argv):
+    # make sure user aware they are running on python 2 env
+    force_python_2 = "--please-let-me-use-python2"
+    if sys.version_info[0] == 2:
+        if force_python_2 not in input_argv:
+            print('Error: you must upgrade to Python 3. If you really have to, you can use Python 2 with this option'
+                  ' {}'.format(force_python_2))
+            exit(-1)
+
     put_virtualenv_bin_on_the_path()
     parser, subparsers, commands = make_command_parser(available_envs=get_available_envs())
     args, unknown_args = parser.parse_known_args(input_argv[1:])
 
     if args.control:
         run_on_control_instead(args, input_argv)
+
+    # remove force_python_2 arg before running command
+    unknown_args.remove(force_python_2)
     try:
         exit_code = commands[args.command].run(args, unknown_args)
     except CommandError as e:
