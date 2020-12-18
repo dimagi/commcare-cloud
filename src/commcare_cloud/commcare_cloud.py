@@ -187,7 +187,9 @@ def call_commcare_cloud(input_argv=sys.argv):
         run_on_control_instead(args, input_argv)
 
     # remove force_python_2 arg before running command
-    unknown_args.remove(force_python_2)
+    if force_python_2 in unknown_args:
+        unknown_args.remove(force_python_2)
+
     try:
         exit_code = commands[args.command].run(args, unknown_args)
     except CommandError as e:
