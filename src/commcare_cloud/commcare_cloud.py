@@ -175,7 +175,7 @@ def call_commcare_cloud(input_argv=sys.argv):
     force_python_2 = "--force-commcare-cloud-to-use-python2"
     if not os.environ.get("TRAVIS_TEST") and sys.version_info[0] == 2:
         if force_python_2 not in input_argv:
-            print('Error: you must upgrade to Python 3. Though not desirable if you really have to, '
+            print('Error: you must upgrade to Python 3. Though not desirable, if you really have to '
                   'you can use Python 2 with this option {}'.format(force_python_2))
             exit(-1)
 
