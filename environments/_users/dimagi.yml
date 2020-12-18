@@ -23,7 +23,6 @@ dev_users:
     - skelly
     - sravfeyn
     - schauhan
-    - sbansal
     - sherbers
     - spokhriyal
   absent:
@@ -38,3 +37,4 @@ dev_users:
     - jemord
     - sgoswami
     - rkumar
+    - sbansal

@@ -39,57 +39,8 @@ servers:
     volume_encrypted: yes
     group: "hq_webworkers"
     os: ubuntu_pro_bionic
-    count: 12
+    count: 17
 
-
-  - server_name: "web11-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-    volume_encrypted: no
-    group: "mobile_webworkers"
-    os: bionic
-  - server_name: "web12-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-    volume_encrypted: no
-    group: "mobile_webworkers"
-    os: bionic
-  - server_name: "web13-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: no
-    group: "mobile_webworkers"
-    os: bionic
-  - server_name: "web14-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "mobile_webworkers"
-    os: bionic
-  - server_name: "web15-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "mobile_webworkers"
-    os: bionic
-  - server_name: "web16-production"
-    server_instance_type: r5.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "mobile_webworkers"
-    os: bionic
   - server_name: "web_b{i}-production"
     server_instance_type: r5.2xlarge
     network_tier: "app-private"
@@ -256,6 +207,16 @@ servers:
       encrypted: yes
     group: "elasticsearch"
     os: ubuntu_pro_bionic
+  - server_name: "es_a{i}-production"
+    server_instance_type: r5.4xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    block_device:
+      volume_size: 840
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
+    count: 14
     
   - server_name: "couchproxy2-production"
     server_instance_type: m5.large

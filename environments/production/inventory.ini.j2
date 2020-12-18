@@ -7,12 +7,6 @@ proxy3
 
 {{ __web_a__ }}
 
-{{ __web11__ }} datadog_integration_tcp_check=yes
-{{ __web12__ }}
-{{ __web13__ }}
-{{ __web14__ }}
-{{ __web15__ }}
-{{ __web16__ }}
 {{ __web_b__ }}
 
 [logproxy:children]
@@ -22,12 +16,6 @@ proxy
 web_a
 
 [mobile_webworkers:children]
-web11
-web12
-web13
-web14
-web15
-web16
 web_b
 
 [webworkers:children]
@@ -178,6 +166,8 @@ shareddir1
 
 {{ __es31__ }} elasticsearch_node_name=es31
 
+{{ __es_a__ }}
+
 {{ __esmaster3__ }} elasticsearch_node_name=esmaster3
 
 {{ __esmaster4__ }} elasticsearch_node_name=esmaster4
@@ -206,6 +196,7 @@ es28
 es29
 es30
 es31
+es_a
 
 [es_data:vars]
 elasticsearch_node_zone=aws

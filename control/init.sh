@@ -107,6 +107,7 @@ if [ -z "$(which manage-commcare-cloud)" ]; then
     pip install --upgrade pip-tools
     pip-sync $REQUIREMENTS
     pip install --editable .
+    rm src/commcare_cloud.egg-info/requires.txt  # HACK for Python 2+3
     cd -
 else
     {
@@ -115,6 +116,7 @@ else
         pip install --quiet --upgrade pip-tools
         pip-sync --quiet $REQUIREMENTS
         pip install --quiet --editable .
+        rm src/commcare_cloud.egg-info/requires.txt  # HACK for Python 2+3
         cd -
     } &
 fi
