@@ -173,7 +173,7 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
 def call_commcare_cloud(input_argv=sys.argv):
     # make sure user aware they are running on python 2 env
     force_python_2 = "--please-let-me-use-python2"
-    if sys.version_info[0] == 2:
+    if not os.environ.get("TRAVIS_TEST") and sys.version_info[0] == 2:
         if force_python_2 not in input_argv:
             print('Error: you must upgrade to Python 3. If you really have to, you can use Python 2 with this option'
                   ' {}'.format(force_python_2))
