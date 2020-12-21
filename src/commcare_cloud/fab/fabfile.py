@@ -381,6 +381,7 @@ def setup_limited_release(keep_days=1):
 
     Example:
     fab <env> setup_limited_release:keep_days=10  # Makes a new release that will last for 10 days
+    fab <env> setup_limited_release --set code_branch=<HQ BRANCH>
     """
     _setup_release(parse_int_or_exit(keep_days), full_cluster=False)
 
@@ -404,6 +405,9 @@ def _setup_release(keep_days=2, full_cluster=True):
     Useful for running management commands. These releases will automatically
     be cleaned up at the finish of each deploy. To ensure that a release will
     last past a deploy use the `keep_days` param.
+
+    More options at
+    https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/fab/README.md#private-releases
 
     :param keep_days: The number of days to keep this release before it will be purged
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
