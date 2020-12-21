@@ -483,7 +483,7 @@ rds_instances:
   - identifier: "pgsynclog0-production"
     instance_type: "db.m5.4xlarge"
     storage: 1000
-    max_storage: 50000
+    max_storage: 60000
     multi_az: true
     engine_version: 9.6.15
     params:
