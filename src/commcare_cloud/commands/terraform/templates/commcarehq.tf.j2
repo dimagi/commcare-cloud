@@ -155,6 +155,7 @@ module "Redis" {
 }
 {% endif %}
 
+{% if elasticache_cluster %}
 module "elasticache-module-base" {
   source                = "./modules/elasticache-cluster"
   namespace             = "${var.environment}-elasticache-cluster"
@@ -185,6 +186,7 @@ module "r53-private-zone-create" {
   route_names = {{ r53_private_zone.route_names|tojson }}
   records     = ["${module.elasticache-module-base.configuration_endpoint_address}"]
 }
+{% endif %}
 
 module "openvpn" {
   source = "./modules/openvpn"
