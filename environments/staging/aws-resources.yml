@@ -19,6 +19,10 @@ formplayer4-staging: 10.201.10.18
 formplayer4-staging.instance_id: i-07ad9548c23f0aa68
 formplayer5-staging: 10.201.10.149
 formplayer5-staging.instance_id: i-0c5a7daef1fc32407
+formplayer6-staging: 10.201.10.238
+formplayer6-staging.instance_id: i-0753457f770f45af6
+formplayer7-staging: 10.201.10.124
+formplayer7-staging.instance_id: i-0b2356cd9243bbf96
 kafka2-staging: 10.201.40.170
 kafka2-staging.instance_id: i-08a404d6bad630a35
 kafka4-staging: 10.201.40.122
