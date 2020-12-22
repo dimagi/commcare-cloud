@@ -50,6 +50,9 @@ postgresql_backup_days: 1
 postgresql_backup_weeks: 1
 nadir_hour: 16
 
+# pg_repack
+pg_repack_version: 1.4.3
+
 aws_region: 'us-east-1'
 
 filebeat_inputs:

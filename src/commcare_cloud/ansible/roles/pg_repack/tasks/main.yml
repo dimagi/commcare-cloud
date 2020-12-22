@@ -84,7 +84,7 @@
   become: yes
   template:
     src: "pg_repack_cron.sh.j2"
-    dest: "/usr/local/sbin/pg_repack_cron.sh"
+    dest: "/usr/local/sbin/pg_repack_cron_{{ item.database }}.sh"
     owner: "postgres"
     group: "postgres"
     mode: 0755
@@ -94,7 +94,7 @@
   become: yes
   cron:
     name: "pg_repack {{ item.database }}"
-    job: "/usr/local/sbin/pg_repack_cron.sh"
+    job: "/usr/local/sbin/pg_repack_cron_{{ item.database }}.sh"
     minute: "30"
     hour: "{{ pg_repack_nadir_hour + 2 }}"
     weekday: 5
