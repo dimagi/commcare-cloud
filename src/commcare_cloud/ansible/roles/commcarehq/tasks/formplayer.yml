@@ -9,6 +9,17 @@
   tags:
     - formplayer_deploy
 
+- name: create services home
+  become: yes
+  file:
+    path: "{{ service_home }}"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0777
+    state: directory
+  tags:
+    - formplayer_deploy
+
 - name: define formplayer spring services
   become: yes
   template:
