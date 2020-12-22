@@ -104,7 +104,8 @@ def run_on_control_instead(args, sys_argv):
     argv.remove('--control')
     executable = 'commcare-cloud'
     branch = getattr(args, 'branch', 'master')
-    venv = os.environ.get("CCHQ_VIRTUALENV")
+    default_virtualenv = "ansible" if sys.version_info[0] == 2 else "cchq"
+    venv = os.environ.get("CCHQ_VIRTUALENV", default_virtualenv)
     cmd_parts = [
         executable, args.env_name, 'ssh', 'control[0]', '-t',
         '{env}cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
