@@ -174,13 +174,16 @@
 
 - meta: flush_handlers
 
-- monit:
-    name: formplayer
-    state: monitored
-  tags: monit
-  ignore_errors: "{{ ansible_check_mode }}"
-  register: result
-  until: not result.failed or 'process not presently configured with monit' not in result.msg
-  retries: 5
-  delay: 20
+# NOTE: this check currently fails because of a bug in community.general.monit
+# A PR has been made to fix this, and we can uncomment this once that is merged/released
+# https://github.com/ansible-collections/community.general/pull/1532
+#- community.general.monit:
+#    name: formplayer
+#    state: monitored
+#  tags: monit
+#  ignore_errors: "{{ ansible_check_mode }}"
+#  register: result
+#  until: not result.failed or 'process not presently configured with monit' not in result.msg
+#  retries: 5
+#  delay: 20
 
