@@ -161,19 +161,17 @@
     - formplayer_deploy
   when: not _should_update_formplayer_in_place
 
-- block:
 
-  - name: Formplayer monit config
-    become: yes
-    template:
-      src: "monit.formplayer.j2"
-      dest: "/etc/monit/conf.d/formplayer"
-      group: root
-      owner: root
-      mode: 0640
-    notify: reload monit
-    tags: monit
-
+- name: Formplayer monit config
+  become: yes
+  template:
+    src: "monit.formplayer.j2"
+    dest: "/etc/monit/conf.d/formplayer"
+    group: root
+    owner: root
+    mode: 0640
+  notify: reload monit
+  tags: monit
   when: use_monit_for_formplayer == true
 
 - meta: flush_handlers
