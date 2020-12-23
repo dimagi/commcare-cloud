@@ -30,7 +30,7 @@ pgbouncer_override:
 dbs:
   main:
     host: rds_pgmain0
-    pgbouncer_host: pgbouncer11
+    pgbouncer_host: pgbouncer4
   formplayer:
     host: rds_pgmain0
     pgbouncer_host: pgbouncer4
@@ -44,25 +44,25 @@ dbs:
   form_processing:
     proxy:
       host: pgbouncer3
-      pgbouncer_host: pgbouncer5
+      pgbouncer_host: pgbouncer4
     partitions:
       p1:
         shards: [0, 204]
         host: rds_pgshard1
-        pgbouncer_host: pgbouncer6
+        pgbouncer_host: pgbouncer4
       p2:
         shards: [205, 409]
         host: rds_pgshard2
-        pgbouncer_host: pgbouncer7
+        pgbouncer_host: pgbouncer4
       p3:
         shards: [410, 614]
         host: rds_pgshard3
-        pgbouncer_host: pgbouncer8
+        pgbouncer_host: pgbouncer4
       p4:
         shards: [615, 819]
         host: rds_pgshard4
-        pgbouncer_host: pgbouncer9
+        pgbouncer_host: pgbouncer4
       p5:
         shards: [820, 1023]
         host: rds_pgshard5
-        pgbouncer_host: pgbouncer10
+        pgbouncer_host: pgbouncer4
