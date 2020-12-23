@@ -2,6 +2,9 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 from __future__ import unicode_literals
+
+from datetime import datetime
+
 import jsonobject
 
 import jinja2
@@ -12,9 +15,10 @@ from io import open
 
 import six
 import yaml
+from clint.textui import puts
 
+from commcare_cloud.colors import color_error
 from commcare_cloud.commands.command_base import CommandBase, Argument
-
 
 GitVersionProperty = jsonobject.StringProperty
 MarkdownProperty = jsonobject.StringProperty
@@ -115,3 +119,41 @@ class MakeChangelog(CommandBase):
         if six.PY2:
             text = text.encode("utf-8")
         print(text)
+
+
+class NewChangelog(CommandBase):
+    command = 'new-changelog'
+    help = "Create a blank changelog"
+    arguments = (
+        Argument(dest="name", nargs="?", help="""Name of the changelog"""),
+    )
+
+    def run(self, args, unknown_args):
+        j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
+
+        changelog_dir = 'changelog'
+        for filename in _sort_files(changelog_dir):
+            if filename.endswith(".yml"):
+                last_log = filename
+                break
+        else:
+            puts(color_error("Unable to find last changelog file. Please create a changelog manually."))
+            return 1
+
+        last_index = int(re.search(r"^(\d+)", last_log).group())
+
+        name = args.name
+        date = datetime.utcnow()
+        if not name:
+            name = "auto {}".format(date.strftime("%Y%m%d_%H%M"))
+
+        name = re.sub("[\n\r\t]", " ", name)
+        key = name.replace(" ", "_")
+        file_name = "{:04d}-{}.yml".format(last_index + 1, key)
+
+        template = j2.get_template('changelog-template.yml.j2')
+        path = os.path.join(changelog_dir, file_name)
+        with open(path, 'w') as f:
+            f.write(template.render(name=name, key=key, date=date.strftime("%Y-%m-%d")).rstrip())
+
+        print("Changelog created at {}".format(path))

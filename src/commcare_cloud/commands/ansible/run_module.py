@@ -200,6 +200,9 @@ class SendDatadogEvent(CommandBase):
         Argument('event_text', help="""
             Text content of the datadog event.
         """),
+        Argument('--tags', nargs="*", help="""
+            Additional tags e.g. host:web2
+        """),
     )
 
     def run(self, args, unknown_args):
@@ -207,12 +210,13 @@ class SendDatadogEvent(CommandBase):
         environment = get_environment(args.env_name)
         datadog_api_key = environment.get_secret('DATADOG_API_KEY')
         datadog_app_key = environment.get_secret('DATADOG_APP_KEY')
-        tags = "environment:{}".format(args.env_name)
+        tags = args.tags or []
+        tags.append("environment:{}".format(args.env_name))
         args.module_args = "api_key={api_key} app_key={app_key} " \
             "tags='{tags}' text='{text}' title='{title}' aggregation_key={agg}".format(
                 api_key=datadog_api_key,
                 app_key=datadog_app_key,
-                tags=tags,
+                tags=",".join(tags),
                 text=args.event_text,
                 title=args.event_title,
                 agg='commcare-cloud'

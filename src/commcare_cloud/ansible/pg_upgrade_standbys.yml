@@ -1,0 +1,114 @@
+---
+# Stage 2 of PostgreSQL upgrade
+# Usage:
+#   commcare-cloud <env> ansible-playbook pg_upgrade_standbys.yml --limit pg0,pg1 \
+#     -e old_version=9.6 -e new_version=12
+#     [-e old_port=5432]
+#
+- hosts: pg_standby
+  any_errors_fatal: true
+  become: yes
+  vars:
+    new_version_service: "postgresql@{{ new_version }}-main.service"
+    old_version_service: "postgresql@{{ old_version }}-main.service"
+    is_citus: "{{ inventory_hostname in groups.get('citusdb', []) }}"
+    new_pg_port: "{{ citus_postgresql_port if is_citus else postgresql_port }}"
+    old_pg_port: "{{ old_port|default(5432) }}"
+    rsync_command: |
+      rsync -e 'ssh -oStrictHostKeyChecking=no' --archive --delete --hard-links --no-inc-recursive
+      /opt/data/postgresql/{{ old_version }} /opt/data/postgresql/{{ new_version }}
+      {{ inventory_hostname }}:/opt/data/postgresql --info=all
+    log_file: "/opt/data/postgresql/pg_upgrade_{{ old_version }}_{{ new_version }}_{{ inventory_hostname }}_rsync.log"
+  vars_files:
+    - roles/postgresql_base/defaults/main.yml
+  vars_prompt:
+    - name: confirm_upgrade
+      prompt: |
+
+        ===================================================================================
+        This will sync the standby nodes with the primary nodes using rsync.
+
+        ===================================================================================
+        Respond with [y/N]
+      private: no
+  tasks:
+    - name: assert response
+      assert:
+        that: confirm_upgrade == 'y'
+
+    - include_vars:
+        file: roles/citusdb/defaults/main.yml
+      when: is_citus
+
+    - service_facts:
+
+    - assert:
+        that: force|default('no') == 'yes' or item not in ansible_facts.services or ansible_facts.services.get(item).state == 'stopped'
+        msg: "{{ item }} is running. It may be too late to use this playbook. To try anyway run with '-e force=yes'"
+      loop:
+        - "{{ new_version_service }}"
+        - "{{ old_version_service }}"
+
+    - block:
+      - name: Sync data to standby (dry run)
+        become_user: postgres
+        delegate_to: "{{ hot_standby_master }}"
+        command: "{{ rsync_command }} --dry-run"
+        check_mode: no
+        register: rsync_dry_run
+
+      - set_fact:
+          dry_run_output: {"command": "{{ rsync_command|replace('\n', ' ') }}", "truncated_output": "{{ rsync_dry_run.stdout_lines[-50:] }}"}
+      - debug: var=dry_run_output
+
+      when: ansible_check_mode
+
+    - pause:
+        prompt: |
+
+          You can monitor the following log files for rsync progress.
+
+          {% for host in ansible_play_hosts %}
+          cchq {{ deploy_env }} ssh {{ hostvars[host].hot_standby_master }} -l {{ commcare_cloud_remote_user|default('ansible') }} -t sudo tail -f /opt/data/postgresql/pg_upgrade_{{ old_version }}_{{ new_version }}_{{ host }}_rsync.log
+          {% endfor %}
+
+          Press [enter] to continue.
+      when: not ansible_check_mode
+
+    - name: Sync data to standby
+      become_user: postgres
+      delegate_to: "{{ hot_standby_master }}"
+      shell: "{{ rsync_command | replace('\n', ' ') }} | tee {{ log_file }}"
+      when: not ansible_check_mode
+      async: 2592000
+      poll: 5
+
+    - set_fact:
+        postgresql_port: "{{ old_pg_port }}"
+
+    - name: create "recovery.conf" for v{{old_version}}
+      become_user: postgres
+      template:
+        src: roles/postgresql_base/templates/recovery.conf.j2
+        dest: "/opt/data/postgresql/{{ old_version }}/main/recovery.conf"
+
+    - name: update config for standby v{{new_version}}
+      become_user: postgres
+      blockinfile:
+        path: "/opt/data/postgresql/{{ new_version }}/main/postgresql.auto.conf"
+        block: |
+          primary_conninfo = 'user={{ postgres_users.replication.username }} password={{ postgres_users.replication.password }} host={{ hot_standby_master }} port={{ new_pg_port }} sslmode=prefer'
+          primary_slot_name = '{{ replication_slot }}'
+          recovery_target_timeline = 'latest'
+
+    - name: create standby signal file for v{{new_version}}
+      become_user: postgres
+      file:
+        path: "/opt/data/postgresql/{{ new_version }}/main/standby.signal"
+        state: touch
+
+    - pause:
+        seconds: 0
+        prompt: |
+
+          Sync complete. Use 'pg_upgrade_finalize.yml' to finalize the upgrade.

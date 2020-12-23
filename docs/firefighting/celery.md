@@ -3,6 +3,28 @@
 
 # Common Celery Firefighting Scenarios
 
+## Queue is blocked
+
+### Symptoms
+
+You check /serverup.txt?only=celery and see a queue has been blocked for some duration.
+Example of what this looks like:
+- Failed Checks (web8-production):
+celery: reminder_case_update_queue has been blocked for 0:27:57.285204 (max allowed is 0:15:00)
+
+
+### Resolution
+
+You can restart the blocked queue using:
+```
+cchq <env> service celery restart --only=<celery_queue>
+```
+
+To obtain a list of queues run:
+```
+cchq <env> service celery help
+```
+
 ## Worker is down
 
 ### Symptoms
@@ -161,6 +183,20 @@ cchq@hqcelery0:/home/cchq/www/production/current$ source python_env/bin/activate
 ```
 
 This command will just keep running, revoking all existing and new tasks that it finds that match the given task name(s). This command is only able to revoke tasks received by the worker from rabbitmq. The worker does not see all the tasks in the queue all at once since the tasks are prefetched by the worker from rabbitmq a little at a time, so to revoke them all you just have to keep it running. When you no longer need it, just stop it with Ctrl+C.
+
+## Intermittent datadog connection errors
+
+### Symptoms
+
+Receiving alerts that the datadog agent on a celery machine is not reporting. The alerts recover on their own but continue to trigger.
+
+### Resolution
+
+This is only relevant if these alerts are for the first celery machine `celery[0]`:
+
+```
+cchq <env> service celery restart --limit=celery[0]
+```
 
 # Common RabbitMQ Firefighting Scenarios
 

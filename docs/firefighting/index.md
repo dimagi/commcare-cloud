@@ -119,7 +119,7 @@ $ cchq <env> service commcare stop
 
 # Couch 2.0
 
-Important note about CouchDB clusters. At Dimagi we run our CouchDB clusters with at least 3 nodes, and **store all data in triplicate**. That means if one node goes down (or even two nodes!), there are no user-facing effects with regards to data completeness so long as no traffic is being routed to the defective node or nodes.
+Important note about CouchDB clusters. At Dimagi we run our CouchDB clusters with at least 3 nodes, and **store all data in triplicate**. That means if one node goes down (or even two nodes!), there are no user-facing effects with regards to data completeness so long as no traffic is being routed to the defective node or nodes. However, we have seen situations where internal replication failed to copy some documents to all nodes, causing views to intermittently return incorrect results when those documents were queried.
 
 Thus in most cases, the correct approach is to stop routing traffic to the defective node, to stop it, and then to solve the issue with some better breathing room.
 
@@ -175,8 +175,10 @@ To stop routing data to the node:
 2. Run
     ```bash
     cchq <env> ansible-playbook deploy_couchdb2.yml --tags=proxy
-    ``` 
-3. Stop its couchdb process
+    ```
+3. Put the node in [maintenance mode](https://docs.couchdb.org/en/stable/cluster/sharding.html#set-the-target-node-to-true-maintenance-mode).
+4. Verify [internal replication is up to date](https://docs.couchdb.org/en/stable/cluster/sharding.html#monitor-internal-replication-to-ensure-up-to-date-shard-s).
+5. Stop its couchdb process
     ```bash
     cchq production run-shell-command <node-name> 'monit stop couchdb2' -b
     ```
@@ -194,8 +196,11 @@ Once the disk is resized, couchdb should start normally. You may want to immedia
 Once the node has enough disk
 
 1. Start the node (or ensure that it's already started)
-2. Reset your inventory.ini to the way it was (i.e. with the node present under the `[couchdb2]` group)
-3. Run the same command again to now route a portion of traffic back to the node again:
+2. Force [internal replication](https://docs.couchdb.org/en/stable/cluster/sharding.html#forcing-synchronization-of-the-shard-s).
+3. Verify [internal replication is up to date](https://docs.couchdb.org/en/stable/cluster/sharding.html#monitor-internal-replication-to-ensure-up-to-date-shard-s).
+4. Clear node [maintenance mode](https://docs.couchdb.org/en/stable/cluster/sharding.html#clear-the-target-node-s-maintenance-mode).
+5. Reset your inventory.ini to the way it was (i.e. with the node present under the `[couchdb2]` group)
+6. Run the same command again to now route a portion of traffic back to the node again:
     ```bash
     cchq <env> ansible-playbook deploy_couchdb2.yml --tags=proxy
     ```
@@ -215,6 +220,51 @@ If it's a global database (like _global_changes), then you may need to compact t
 ```
 curl "<couch ip>:15984/_global_changes/_compact" -X POST -H "Content-Type: application/json" --user <couch user name>
 ```
+
+## Documents are intermittently missing from views
+
+This can happen if internal cluster replication fails. The precise causes are unknown at time of writing, but it has been observed after maintenance was performed on the cluster where at least one node was down for a long time or possibly when a node was stopped too soon after another node was brought back online after being stopped.
+
+It is recommended to follow the [instructions above](#couch-node-data-disk-is-full) (use maintenance mode and verify internal replication is up to date) when performing cluster maintenance to avoid this situation.
+
+We have developed a few tools to find and repair documents that are missing on some nodes:
+
+```sh
+# Get cluster info, including document counts per shard. Large persistent
+# discrepancies in document counts may indicate problems with internal
+# replication.
+commcare-cloud <env> couchdb-cluster-info --shard-counts [--database=...]
+
+# Count missing forms in a given date range (slow and non-authoritative). Run
+# against production cluster. Increase --min-tries value to increase confidence
+# of finding all missing ids.
+./manage.py corrupt_couch count-missing forms --domain=... --range=2020-11-15..2020-11-18 --min-tries=40
+
+# Exhaustively and efficiently find missing documents for an (optional) range of
+# ids by running against stand-alone (non-clustered) couch nodes that have
+# snapshot copies of the data from a corrupt cluster. Multiple instances of this
+# command can be run simultaneously with different ranges.
+./manage.py corrupt_couch_nodes NODE1_IP:PORT,NODE2_IP:PORT,NODE3_IP:PORT forms --range=1fffffff..3fffffff > ~/missing-forms-1fffffff..3fffffff.txt
+
+# Repair missing documents found with previous command
+./manage.py corrupt_couch repair forms --min-tries=40 --missing ~/missing-forms-1fffffff..3fffffff.txt
+
+# See also
+commcare-cloud <env> couchdb-cluster-info --help
+./manage.py corrupt_couch --help
+./manage.py corrupt_couch_nodes --help
+```
+
+The process of setting up stand-alone nodes for `corrupt_couch_nodes` will
+differ depending on the hosting environment and availability of snapshots/
+backups. General steps once nodes are setup with snapshots of production data:
+
+- Use a unique Erlang cookie on each node (set in `/opt/couchdb/etc/vm.args`).
+  Do this before starting the couchdb service.
+- Remove all nodes from the cluster except local node. The
+  [couch_node_standalone_fix.py](https://gist.github.com/snopoke/f5c81497f6cbf3937dce2734e2b354a5)
+  script can be used to do this.
+
 
 ## DefaultChangeFeedPillow is millions of changes behind
 
@@ -712,6 +762,37 @@ $ curl -XGET 'http://es0.internal-icds.commcarehq.org:9200/_cluster/health?prett
 }
 ```
 
+## Data missing on ES but exist in the primary DB (CouchDB / PostgreSQL)
+We've had issues in the past where domains have had some of their data missing from ES.
+This might correlate with a recent change to ES indices, ES-related upgrade work, or ES performance issues.
+All of these instabilities can cause strange flaky behavior in indexing data, especially in large projects.
+
+First, you need to identify that this issue is not ongoing and widespread. 
+
+1) visit the affected domain's Submit History or Case List report to verify that recent submissions are still being indexed on ES
+(if they are in the report, they are in ES)
+2) check the modification date of the affected data and then check the reports around that date and surrounding dates.
+3) spot check another domain with a lot of consistent submissions to see if there are any recent and past issues
+surrounding the reported affected date(s).
+
+If you don't see any obvious issues, it's likely a strange data-flakiness issue. This can be resolved by running the
+following management commands (run in a tmux since they may take a long time to complete):
+
+```bash
+pthon manage.py stale_data_in_es [form/case] --domain <domain> [--start=YYYY-MM-DD] [--end=YYYY-MM-DD] > stale_data.tsv
+pthon manage.py republish_doc_changes stale_data.tsv
+```
+
+You can also do a quick analysis of the output data to find potentially problematic dates:
+```bash
+cat state_data.tsv | cut -f 6 | tail -n +2 | cut -d' ' -f 1 | uniq -c
+
+      2 2020-10-26
+    172 2020-11-03
+     14 2020-11-04
+```
+If you DO see obvious issues, it's time to start digging for problematic PRs or checking performance monitoring graphs.
+
 ## Low disk space free
 "[INFO ][cluster.routing.allocation.decider] [hqes0] low disk watermark [85%] exceeded on ... replicas will not be assigned to this node"
 
@@ -798,6 +879,8 @@ redis-cli
 A lot of times Redis will prefix the cache key with something like `:1:` so you'll often need to do \*unique-cache-key\*
 
 ## Disk full / filling rapidly
+
+### Is maxmemory set too high wrt actual memory?
 We have seen a situation where the redis disk fills up with files of the pattern /opt/data/redis/temp-rewriteaof-\*.aof. This happens when redis maxmemory is configured to be too high a proportion of the total memory (although the connection is unclear to the author, Danny). This blog http://oldblog.antirez.com/post/redis-persistence-demystified.html/ explains AOF rewrite files. The solution is to (1) lower maxmemory and (2) delete the temp files.
 
 ```
@@ -807,6 +890,36 @@ root@redis0:/opt/data/redis# redis-cli
 OK
 (1.06s)
 root@redis0:/opt/data/redis# rm temp-rewriteaof-\*.aof
+```
+
+### Is your disk at least 3x your maxmemory?
+
+We use the [default AOF auto-rewrite configuration](https://github.com/redis/redis/blob/5.0/redis.conf#L757-L770), which is to rewrite the AOF (on-disk replica of in-memory redis data) whenever it doubles in size. Thus disk usage will sawtooth between X and 3X where X is the size of the AOL after rewrite: X right rewrite, 2X when rewrite is triggered, and 3X when the 2X-sized file has been written to a 1X-sized file, but the 2X-sized file has not yet been deleted, followed finally again by X after rewrite is finalized and the old file is deleted.
+
+Since the post-rewrite AOF will only ever contain as much data as is contained in redis memory, and the amount of data contained in redis memory has an upper bound of the maxmemory setting, you should make sure that your disk is at least 3 * maxmemory + whatever the size of the OS install is. Since disk is fairly cheap, give it a comfortable overhead for log files etc.
+
+## Checking redis after restart
+
+Redis takes some time to read the AOF back into memory upon restart/startup. To check if it's up, you can run the following:
+
+```memory
+$ cchq <env> ssh ansible@redis
+
+% redis-cli
+127.0.0.1:6379> ping
+(error) LOADING Redis is loading the dataset in memory
+127.0.0.1:6379> ping
+(error) LOADING Redis is loading the dataset in memory
+127.0.0.1:6379> ping
+PONG
+```
+once it responds with `PONG` redis is back up and ready to serve requests.
+
+## Tail the redis log
+
+To show the last few lines of the redis log during firefighting you can run:
+```
+cchq <env> run-shell-command redis 'tail /opt/data/redis/redis.log'
 ```
 
 # Pillows / Pillowtop / Change feed
@@ -826,6 +939,11 @@ Resources:
 # Formplayer / Cloudcare / Webapps
 
 Formplayer sometimes fails on deploy due to a startup task (which will hopefully be resolved soon).  The process may not fail, but formplayer will still return failure responses. You can try just restarting the process with `sudo supervisorctl restart all` (or specify the name if it's a monolithic environment)
+
+A formplayer machine(s) may need to be restarted for a number of reasons in which case you can run (separate names by comma to run on multiple machines):
+```
+cchq <env> service formplayer restart --limit=formplayer_bXXX
+```
 
 ## Lock issues
 

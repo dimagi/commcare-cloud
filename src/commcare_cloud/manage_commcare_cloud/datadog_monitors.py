@@ -1,28 +1,36 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
+
 import difflib
 import os
 import re
 from abc import ABCMeta, abstractmethod
+from io import open
 
 import jinja2
 import six
 import yaml
-from clint.textui import puts, indent
+from clint.textui import indent, puts
 from datadog import api, initialize
 from jinja2 import DictLoader
 from jsonobject.api import JsonObject
-from jsonobject.properties import StringProperty, DictProperty
+from jsonobject.properties import DictProperty, StringProperty
 from memoized import memoized
 from simplejson import OrderedDict
 
 from commcare_cloud.cli_utils import ask
-from commcare_cloud.colors import color_added, color_removed, color_unchanged, color_warning, \
-    color_notice
-from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.colors import (
+    color_added,
+    color_notice,
+    color_removed,
+    color_unchanged,
+    color_warning,
+)
+from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.manage_commcare_cloud.yaml_representers import LiteralUnicode
+from commcare_cloud.manage_commcare_cloud.yaml_representers import (
+    LiteralUnicode,
+)
+from commcare_cloud.python_migration_utils import open_for_write
 
 ESCAL_MSG = 'escalation_message'
 
@@ -127,7 +135,8 @@ def get_monitor_definitions(config):
     for file in os.listdir(CONFIG_ROOT):
         if file.endswith('yml') and file != '.ignore.yml':
             file_path = os.path.join(CONFIG_ROOT, file)
-            with open(file_path, 'r') as mon:
+            with open(file_path, 'r', encoding='utf-8') as mon:
+                # PY2: data is used in a yaml.safe_load below so will return a bytes str anyway
                 data = mon.read()
             monitor_def = render_messages(config, yaml.safe_load(data))
             monitors[monitor_def['id']] = monitor_def
@@ -153,12 +162,12 @@ def write_monitor_definition(monitor_id, monitor_definition):
                 monitor_definition['env_key'] = 'host.environment'
 
     filename = 'autogen_{}.yml'.format(monitor_id)
-    with open(os.path.join(CONFIG_ROOT, filename), 'w') as f:
+    with open_for_write(os.path.join(CONFIG_ROOT, filename)) as f:
         f.write(dump_monitor_yaml(monitor_definition))
 
 
-def get_ignored_mointor_ids():
-    with open(os.path.join(CONFIG_ROOT, '.ignore.yml'), 'r') as f:
+def get_ignored_monitor_ids():
+    with open(os.path.join(CONFIG_ROOT, '.ignore.yml'), 'r', encoding='utf-8') as f:
         return yaml.safe_load(f)['ignored_monitors']
 
 
@@ -207,7 +216,7 @@ def initialize_datadog(config):
 
 
 def get_config(config_path):
-    with open(config_path, 'r') as config_file:
+    with open(config_path, 'r', encoding='utf-8') as config_file:
         config = Config(yaml.safe_load(config_file))
         config.env_notifications = OrderedDict(sorted(config.env_notifications.items()))
     return config
@@ -249,7 +258,7 @@ class RemoteMonitorAPI(MonitorAPI):
 
     def get_all(self):
         return {raw_mon['id']: self._wrap(raw_mon) for raw_mon in api.Monitor.get_all()
-                if raw_mon['id'] not in get_ignored_mointor_ids()}
+                if raw_mon['id'] not in get_ignored_monitor_ids()}
 
     def update(self, monitor_id, wrapped_monitor):
         result = api.Monitor.update(monitor_id, **wrapped_monitor)

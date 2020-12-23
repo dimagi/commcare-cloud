@@ -1,6 +1,7 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 import os
+from io import open
 
 import jsonobject
 import yaml
@@ -55,7 +56,7 @@ class SecretSpec(jsonobject.JsonObject):
 
 
 def get_known_secret_specs():
-    with open(os.path.join(PACKAGE_BASE, 'environment', 'secrets', 'secrets.yml')) as f:
+    with open(os.path.join(PACKAGE_BASE, 'environment', 'secrets', 'secrets.yml'), encoding='utf-8') as f:
         return [SecretSpec.wrap(secret_spec) for secret_spec in yaml.safe_load(f)]
 
 

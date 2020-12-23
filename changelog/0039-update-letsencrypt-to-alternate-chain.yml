@@ -1,0 +1,26 @@
+title: update-letsencrypt-to-alternate-chain
+key: update-letsencrypt-to-alternate-chain
+date: 2020-11-16
+optional_per_env: yes
+min_commcare_version:
+max_commcare_version:
+context: |
+  On January 11 2021, Let's Encrypt will change its default certificate chain from using the legacy Identrust
+  root certificate, to its own modern ISRG root certificate. In order to maintain backwards compatibility with
+  existing mobile devices it is necessary to keep using the Identrust certificate chain.
+
+details: |
+  In order to maintain backwards compatibility it is necessary to configure certbot (the tool used to renew the
+  certificates) to continue using the Identrust certficiate chain.
+
+  Read more about that change on the Let's Encrypt [blog][1] and [forum post][2].
+
+  [1]: https://letsencrypt.org/2020/11/06/own-two-feet.html
+  [2]: https://community.letsencrypt.org/t/certbot-users-preparing-for-the-isrg-root-transition-january-11-2021/138059
+
+update_steps: |
+  Run the playbook to update certbot to the latest version and update the configuration:
+
+  ```shell
+  commcare-cloud <env> ansible-playbook deploy_proxy.yml --tags setup_letsencrypt
+  ```

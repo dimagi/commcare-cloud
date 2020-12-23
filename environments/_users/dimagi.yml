@@ -3,6 +3,7 @@ dev_users:
     - aphulera
     - biyeun
     - cellowitz
+    - cstahl
     - ctsims
     - czue
     - dchung
@@ -13,14 +14,15 @@ dev_users:
     - gherceg
     - jschweers
     - knguyen
+    - matthewriley
     - mkangia
+    - mperosa
     - nhooper
     - rnegi
     - sgoyal
     - skelly
     - sravfeyn
     - schauhan
-    - sbansal
     - sherbers
     - spokhriyal
   absent:
@@ -35,3 +37,4 @@ dev_users:
     - jemord
     - sgoswami
     - rkumar
+    - sbansal

@@ -25,7 +25,7 @@
     - {role: postgresql, tags: 'postgresql'}
 
 - name: pgbouncer
-  hosts: postgresql:pg_standby:!citusdb
+  hosts: pgbouncer:postgresql:pg_standby:!citusdb
   become: true
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}
@@ -83,9 +83,10 @@
     - role: kernel_tune 
 
 - name: Install and configure pg_repack
-  hosts: "{{ pg_repack|list }}"
+  hosts: postgresql
   become: true
   roles:
     - role: pg_repack
+      when: inventory_hostname in pg_repack
   tags:
     pg_repack

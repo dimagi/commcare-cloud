@@ -1,6 +1,7 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 import os
+from io import open
 
 import jsonobject
 import yaml
@@ -23,7 +24,7 @@ class CouchMigration(object):
 
     @memoized_property
     def plan(self):
-        with open(self.plan_path) as f:
+        with open(self.plan_path, encoding='utf-8') as f:
             plan = yaml.safe_load(f)
 
         return CouchMigrationPlan.wrap(plan)
@@ -83,7 +84,7 @@ class CouchMigration(object):
 
     @memoized_property
     def shard_plan(self):
-        with open(self.shard_plan_path) as f:
+        with open(self.shard_plan_path, encoding='utf-8') as f:
             plan = yaml.safe_load(f)
 
         return [

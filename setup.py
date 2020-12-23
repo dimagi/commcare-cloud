@@ -11,10 +11,7 @@ install_deps = [
     'boto3>=1.9.131',
     'clint',
     'couchdb-cluster-admin>={}'.format("0.5.0" if six.PY2 else "0.6.0"),
-    # 2.8 solves issue on MacOS Catalina
-    # https://github.com/pypa/pip/issues/7254
-    # but 2.9 fails to compile
-    'cryptography~=2.8.0',
+    'cryptography>=3.2',
     'datadog==0.2.0',
     'dimagi-memoized>=1.1.0',
     'dnspython',
@@ -36,6 +33,9 @@ install_deps = [
 if six.PY2:
     # moved from requirements-python-lt-2.7.9-ssl-issue.in
     install_deps.extend(["pyOpenSSL", "ndg-httpsclient"])
+
+if six.PY3:
+    install_deps.extend(['importlib-metadata==3.1.0'])
 
 test_deps = [
     'mock>=2.0.0',

@@ -1,39 +1,64 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
+
 import difflib
 import json
 import os
 from collections import defaultdict
 from contextlib import contextmanager
+from io import open
 
 import yaml
-from clint.textui import puts, indent
+from clint.textui import indent, puts
 from couchdb_cluster_admin.describe import print_shard_table
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
-from couchdb_cluster_admin.file_plan import get_missing_files_by_node_and_source, \
-    figure_out_what_you_can_and_cannot_delete
-from couchdb_cluster_admin.suggest_shard_allocation import get_shard_allocation_from_plan, generate_shard_allocation, \
-    print_db_info
-from couchdb_cluster_admin.utils import put_shard_allocation, get_shard_allocation, get_db_list, check_connection, \
-    get_membership
+from couchdb_cluster_admin.file_plan import (
+    figure_out_what_you_can_and_cannot_delete,
+    get_missing_files_by_node_and_source,
+)
+from couchdb_cluster_admin.suggest_shard_allocation import (
+    generate_shard_allocation,
+    get_shard_allocation_from_plan,
+    print_db_info,
+)
+from couchdb_cluster_admin.utils import (
+    check_connection,
+    get_db_list,
+    get_membership,
+    get_shard_allocation,
+    put_shard_allocation,
+)
+from six.moves import map, zip
 from tabulate import tabulate
 
 from commcare_cloud.cli_utils import ask
-from commcare_cloud.colors import color_warning, color_notice, color_summary, color_error, \
-    color_highlight, color_success
+from commcare_cloud.colors import (
+    color_error,
+    color_highlight,
+    color_notice,
+    color_success,
+    color_summary,
+    color_warning,
+)
 from commcare_cloud.commands import shared_args
-from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
-from commcare_cloud.commands.ansible.helpers import AnsibleContext, run_action_with_check_mode
+from commcare_cloud.commands.ansible.ansible_playbook import (
+    run_ansible_playbook,
+)
+from commcare_cloud.commands.ansible.helpers import (
+    AnsibleContext,
+    run_action_with_check_mode,
+)
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
-from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.migrations.config import CouchMigration
-from commcare_cloud.commands.migrations.copy_files import SourceFiles, prepare_file_copy_scripts, \
-    copy_scripts_to_target_host, execute_file_copy_scripts
+from commcare_cloud.commands.migrations.copy_files import (
+    SourceFiles,
+    copy_scripts_to_target_host,
+    execute_file_copy_scripts,
+    prepare_file_copy_scripts,
+)
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
-from six.moves import map
-from six.moves import zip
+from commcare_cloud.python_migration_utils import open_for_write
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 PLAY_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'plays')
@@ -181,7 +206,7 @@ def generate_shard_prune_playbook(migration):
         'deletable_files_by_node': deletable_files_by_node,
         'couch_data_dir': migration.couchdb2_data_dir
     }, TEMPLATE_DIR)
-    with open(migration.prune_playbook_path, 'w') as f:
+    with open(migration.prune_playbook_path, 'w', encoding='utf-8') as f:
         f.write(prune_playbook)
 
     return list(deletable_files_by_node)
@@ -219,7 +244,7 @@ def commit(migration, ansible_context):
 def assert_files(migration, alloc_docs_by_db, ansible_context):
     files_by_node = get_files_for_assertion(alloc_docs_by_db)
     expected_files_vars = os.path.abspath(os.path.join(migration.working_dir, 'assert_vars.yml'))
-    with open(expected_files_vars, 'w') as f:
+    with open_for_write(expected_files_vars) as f:
         yaml.safe_dump({
             'files_by_node': files_by_node,
             'couch_data_dir': migration.couchdb2_data_dir,
@@ -298,7 +323,7 @@ def generate_shard_plan(migration):
     shard_allocations = generate_shard_allocation(
         migration.source_couch_config, migration.plan.target_allocation
     )
-    with open(migration.shard_plan_path, 'w') as f:
+    with open_for_write(migration.shard_plan_path) as f:
         plan = {
             shard_allocation_doc.db_name: shard_allocation_doc.to_plan_json()
             for shard_allocation_doc in shard_allocations

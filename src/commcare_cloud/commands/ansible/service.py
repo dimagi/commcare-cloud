@@ -22,6 +22,7 @@ from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
+from commcare_cloud.environment.paths import get_role_defaults
 from commcare_cloud.fab.exceptions import NoHostsMatch
 
 ACTIONS = ['start', 'stop', 'restart', 'status', 'logs', 'help']
@@ -197,14 +198,14 @@ class SupervisorService(SubServicesMixin, ServiceBase):
 
 
 def _service_status_helper(service_name):
-    if service_name in MONIT_MANAGED_SERVICES:
+    if any(service_name.startswith(prefix) for prefix in MONIT_MANAGED_SERVICES):
         return 'monit status {}'.format(service_name)
 
     return 'service {} status'.format(service_name)
 
 
 def _ansible_module_helper(service_name):
-    if service_name in MONIT_MANAGED_SERVICES:
+    if any(service_name.startswith(prefix) for prefix in MONIT_MANAGED_SERVICES):
         return 'monit'
 
     return 'service'
@@ -407,10 +408,10 @@ class Postgresql(MultiAnsibleService):
 
     @property
     def service_process_mapping(self):
-        monit_name = "postgresql_{}".format(self.environment.postgresql_config.postgresql_version)
+        pg_version = self.environment.postgresql_config.postgres_override.postgresql_version
         return {
-            'postgresql': (monit_name, 'postgresql,pg_standby'),
-            'pgbouncer': ('pgbouncer', 'postgresql,pg_standby')
+            'postgresql': ("postgresql_{}".format(pg_version), 'postgresql,pg_standby,!remote_postgresql'),
+            'pgbouncer': ('pgbouncer', 'postgresql,pg_standby,!remote_postgresql')
         }
 
 
@@ -421,7 +422,10 @@ class Citusdb(Postgresql):
 
     @property
     def service_process_mapping(self):
-        monit_name = "postgresql_{}".format(self.environment.postgresql_config.postgresql_version)
+        citus_pg_version = self.environment.public_vars.get('citus_postgresql_version')
+        if not citus_pg_version:
+            citus_pg_version = get_role_defaults('citusdb').get('citus_postgresql_version')
+        monit_name = "postgresql_{}".format(citus_pg_version)
         return {
             'citusdb': (monit_name, 'citusdb'),
             'pgbouncer': ('pgbouncer', 'citusdb')

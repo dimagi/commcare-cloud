@@ -712,6 +712,18 @@ ENABLE_PRELOGIN_SITE = {{ localsettings.get('ENABLE_PRELOGIN_SITE', True) }}
 ENABLE_DRACONIAN_SECURITY_FEATURES = True
 {% endif %}
 
+{% if localsettings.get('ADD_CAPTCHA_FIELD_TO_FORMS') %}
+ADD_CAPTCHA_FIELD_TO_FORMS = True
+{% endif %}
+
+{% if localsettings.get('DISABLE_AUTOCOMPLETE_ON_SENSITIVE_FORMS') %}
+DISABLE_AUTOCOMPLETE_ON_SENSITIVE_FORMS = True
+{% endif %}
+
+{% if localsettings.get('CUSTOM_PASSWORD_STRENGTH_MESSAGE') %}
+CUSTOM_PASSWORD_STRENGTH_MESSAGE = '{{ localsettings.get('CUSTOM_PASSWORD_STRENGTH_MESSAGE') }}'
+{% endif %}
+
 {% if HQ_PRIVATE_KEY %}
 HQ_PRIVATE_KEY = \
 {{ HQ_PRIVATE_KEY }}
@@ -1063,4 +1075,12 @@ COMMCARE_EXTENSIONS = json.loads('{{ localsettings.COMMCARE_EXTENSIONS|to_json }
 NO_DEVICE_LOG_ENVS = []
 {% else %}
 NO_DEVICE_LOG_ENVS = [{{ env_monitoring_id|to_json }}]
+{% endif %}
+
+{% if localsettings.IGNORE_ALL_DEMO_USER_SUBMISSIONS is defined %}
+IGNORE_ALL_DEMO_USER_SUBMISSIONS = {{ localsettings.IGNORE_ALL_DEMO_USER_SUBMISSIONS }}
+{% endif %}
+
+{% if localsettings.USE_PHONE_ENTRIES is defined %}
+USE_PHONE_ENTRIES = {{ localsettings.USE_PHONE_ENTRIES }}
 {% endif %}

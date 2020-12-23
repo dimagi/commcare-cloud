@@ -3,16 +3,20 @@ env_key: host.environment
 message: |
   {{#is_no_data}}
   Host {{host.name}} not reporting data.
-  Possible steps to fix (on failing server):
+  Possible steps to fix on failing server (logged in as ansible):
   ```
       $> su
       Password: {password from keepass}
       $> ps aux | grep datadog
       dd-agent pid1  ...  /opt/datadog-agent/embedded/bin/python /opt/datadog-agent/agent/dogstatsd.py --use-local-forwarder
       dd-agent pid2  ...  /opt/datadog-agent/embedded/bin/python /opt/datadog-agent/agent/ddagent.py
-      $> kill pid1
-      $> kill pid2
-      $> service datadog-agent start
+    # You can first try to stop the datadog-agent
+    $> service datadog-agent stop
+    # And verify that it is stopped with the same command as above. If not, kill the relevant processes
+    $> kill pid1
+    $> kill pid2
+    # Start it back up
+    $> service datadog-agent start
   ```
   {{/is_no_data}}
   {{#is_recovery}}

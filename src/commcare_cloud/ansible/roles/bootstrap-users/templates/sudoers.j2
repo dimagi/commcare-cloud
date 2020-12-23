@@ -12,7 +12,7 @@ Cmnd_Alias NGINX = /usr/sbin/nginx
 Cmnd_Alias PACKAGES = /usr/bin/apt-get
 Cmnd_Alias GIT = /usr/bin/git
 Cmnd_Alias PYTHON = {{ py3_virtualenv_home }}/bin/python,{{ py3_virtualenv_home }}/bin/pip
-{% if inventory_hostname in groups['commcarehq'] %}
+{% if inventory_hostname in groups['commcarehq'] or inventory_hostname in groups['formplayer'] %}
 Cmnd_Alias SUPERVISORD = /bin/bash -l -c sudo /usr/bin/supervisorctl*,/usr/bin/supervisorctl*,/usr/bin/echo_supervisord_conf > /tmp/supervisord_deploy.tmp
 {% endif %}
 Cmnd_Alias CHOWN_CONF = /bin/chown -R {{ cchq_user }} /tmp/supervisor*

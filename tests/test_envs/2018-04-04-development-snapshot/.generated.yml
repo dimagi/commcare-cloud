@@ -39,7 +39,7 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
-  by_host:
+  by_pgbouncer_host:
     192.168.33.16:
     - *id001
     - *id002

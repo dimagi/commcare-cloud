@@ -12,11 +12,14 @@ import logging
 import os
 import subprocess
 from datetime import datetime
-from textwrap import indent
 from functools import wraps
+from io import open
+from textwrap import indent
 
 import requests
 from requests import HTTPError, Timeout
+
+from commcare_cloud.python_migration_utils import open_for_write
 
 logger = logging.getLogger(__name__)
 
@@ -444,7 +447,7 @@ class DownloadSnapshotVersion(object):
             return 1
 
         if not self.dry_run:
-            with open(os.path.join(self.download_path, 'index'), 'w') as fp:
+            with open_for_write(os.path.join(self.download_path, 'index')) as fp:
                 json.dump({'snapshots': [self.snapshot_version]}, fp)
 
         total_bytes = 0

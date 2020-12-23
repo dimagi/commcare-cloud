@@ -17,6 +17,9 @@ postgres_s3: True
 postgresql_backup_weeks: 1
 postgresql_backup_days: 1
 
+citus_version: 9.4
+citus_postgresql_version: 12
+citus_postgresql_port: 5432
 
 aws_region: 'ap-south-1'
 
@@ -83,6 +86,7 @@ internal_subscription_change_email: accounts+subchange+internal@dimagi.com
 billing_email: sales@dimagi.com
 invoicing_contact_email: billing-support@dimagi.com
 growth_email: growth@dimagi.com
+saas_reporting_email: saas-reporting@dimagi.com
 master_list_email: master-list@dimagi.com
 sales_email: sales@dimagi.com
 privacy_email: privacy@dimagi.com
@@ -112,7 +116,6 @@ localsettings:
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
-  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
   ELASTICSEARCH_MAJOR_VERSION: 2
   IS_DIMAGI_ENVIRONMENT: True

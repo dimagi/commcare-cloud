@@ -1,25 +1,50 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
+
 import collections
 import csv
+import inspect
+import itertools
+import json
 import subprocess
 import sys
 from collections import defaultdict
-from operator import itemgetter
+from io import open
+from operator import attrgetter, itemgetter
 
-from clint.textui import puts, indent
-from couchdb_cluster_admin.describe import print_shard_table
-from couchdb_cluster_admin.suggest_shard_allocation import print_db_info
-from couchdb_cluster_admin.utils import get_membership, get_shard_allocation, get_db_list, Config
+import yaml
+from clint.textui import indent, puts
+from couchdb_cluster_admin.utils import (
+    Config,
+    get_db_list,
+    get_membership,
+    get_shard_allocation,
+)
 from tabulate import tabulate
 
-from commcare_cloud.colors import color_error, color_success, color_changed, color_added, color_removed
+from commcare_cloud.colors import (
+    color_added,
+    color_changed,
+    color_error,
+    color_removed,
+    color_success,
+)
 from commcare_cloud.commands import shared_args
-from commcare_cloud.commands.ansible.run_module import run_ansible_module
-from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.commands.inventory_lookup.getinventory import get_instance_group
-from commcare_cloud.commands.inventory_lookup.inventory_lookup import DjangoManage
+from commcare_cloud.commands.ansible.couch_utils import (
+    get_cluster_shard_details,
+    print_db_info,
+    print_shard_table,
+)
+from commcare_cloud.commands.command_base import (
+    Argument,
+    CommandBase,
+    CommandError,
+)
+from commcare_cloud.commands.inventory_lookup.getinventory import (
+    get_instance_group,
+)
+from commcare_cloud.commands.inventory_lookup.inventory_lookup import (
+    DjangoManage,
+)
 from commcare_cloud.commands.utils import PrivilegedCommand
 from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.main import get_environment
@@ -35,7 +60,7 @@ class ListDatabases(CommandBase):
     To list all database on a particular environment.
 
     ```
-    commcare-cloud <ev> list-databases
+    commcare-cloud <env> list-postgresql-dbs
     ```
     """
 
@@ -214,35 +239,73 @@ def _get_pillow_resources_by_name(environment):
 
 class CouchDBClusterInfo(CommandBase):
     command = 'couchdb-cluster-info'
-    help = "Output information about the CouchDB cluster"
+    help = inspect.cleandoc("""
+    Output information about the CouchDB cluster.
 
-    arguments = ()
+    Shard counts are displayed as follows:
+    * a single number if all nodes have the same count
+    * the count on the first node followed by the difference in each following node
+      e.g. 2000,+1,-2 indicates that the counts are 2000,2001,1998
+    """)
+
+    arguments = (
+        Argument("--raw", action="store_true", help="Output raw shard allocations as YAML instead of printing tables."),
+        Argument("--shard-counts", action="store_true", help="Include document counts for each shard"),
+        Argument("--database", help="Only show output for this database"),
+        Argument("--couch-port", default=15984, type=int, help="CouchDB port. Defaults to 15984"),
+        Argument("--couch-local-port", default=15986, type=int, help="CouchDB node local port. Defaults to 15986"),
+    )
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
-        couch_config = get_couch_config(environment)
+        couch_config = get_couch_config(environment, port=args.couch_port, local_port=args.couch_local_port)
 
-        puts('\nMembership')
-        with indent():
-            puts(get_membership(couch_config).get_printable())
+        db_list = sorted(get_db_list(couch_config.get_control_node()))
+        if args.database:
+            if args.database not in db_list:
+                raise CommandError("Database not present in cluster: {}".format(args.database))
+            db_list = [args.database]
+
+        shard_allocations = [get_shard_allocation(couch_config, db_name) for db_name in db_list]
+        shard_details = []
+        if args.shard_counts:
+            shard_details = get_cluster_shard_details(couch_config, db_list)
+
+        if args.raw:
+            plan = {
+                shard_allocation_doc.db_name: shard_allocation_doc.to_plan_json()
+                for shard_allocation_doc in shard_allocations
+            }
+            if shard_details:
+                shard_details = sorted(shard_details, key=attrgetter('db_name'))
+                for db_name, shards in itertools.groupby(shard_details, key=attrgetter('db_name')):
+                    by_node = defaultdict(list)
+                    for shard_detail in shards:
+                        by_node[shard_detail.node].append(shard_detail.to_json())
+                    plan[db_name]["shard_details"] = by_node
+            # hack - yaml didn't want to dump this directly
+            yaml.safe_dump(json.loads(json.dumps(plan)), sys.stdout, indent=2)
+            return 0
+
+        if not args.database:
+            puts('\nMembership')
+            with indent():
+                puts(get_membership(couch_config).get_printable())
 
         puts('\nDB Info')
-        print_db_info(couch_config)
+        print_db_info(couch_config, db_list)
 
         puts('\nShard allocation')
-        print_shard_table([
-            get_shard_allocation(couch_config, db_name)
-            for db_name in sorted(get_db_list(couch_config.get_control_node()))
-        ])
+        print_shard_table(shard_allocations, shard_details)
         return 0
 
 
-def get_couch_config(environment, nodes=None):
+def get_couch_config(environment, nodes=None, port=15984, local_port=15986):
     couch_nodes = nodes or environment.groups['couchdb2']
     config = Config(
         control_node_ip=couch_nodes[0],
-        control_node_port=15984,
-        control_node_local_port=15986,
+        control_node_port=port,
+        control_node_local_port=local_port,
         username=environment.get_secret('COUCH_USERNAME'),
         aliases={
             'couchdb@{}'.format(node): get_machine_alias(environment, node) for node in couch_nodes
@@ -273,7 +336,7 @@ class UpdateLocalKnownHosts(CommandBase):
         if limit:
             environment.inventory_manager.subset(limit)
 
-        with open(environment.paths.known_hosts, 'r') as known_hosts:
+        with open(environment.paths.known_hosts, 'r', encoding='utf-8') as known_hosts:
             original_keys_by_host = _get_host_key_map(
                 [line.strip() for line in known_hosts.readlines()]
             )
@@ -324,7 +387,7 @@ class UpdateLocalKnownHosts(CommandBase):
             if updated:
                 lines.append('{} {} {}'.format(host, key_type, updated))
 
-        with open(environment.paths.known_hosts, 'w') as known_hosts:
+        with open(environment.paths.known_hosts, 'w', encoding='utf-8') as known_hosts:
             known_hosts.write('\n'.join(sorted(lines)))
 
         try:

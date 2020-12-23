@@ -7,6 +7,14 @@ newest first.
 
 ## Changelog
 
+### **2020-11-16** [update-letsencrypt-to-alternate-chain](0039-update-letsencrypt-to-alternate-chain.md)
+On January 11 2021, Let's Encrypt will change its default certificate chain from using the legacy Identrust
+root certificate, to its own modern ISRG root certificate. In order to maintain backwards compatibility with
+existing mobile devices it is necessary to keep using the Identrust certificate chain.
+
+### **2020-10-22** [Update PostgreSQL monit configurations to be version specific](0038-update-postgresql-monit-conf.md)
+Update PostgreSQL monit configuration files to be version specific and use `systemctl`
+
 ### **2020-10-14** [Run command to update Supervisor configurations](0037-update-supervisor-confs.md)
 Run management command to remove unused errand-boy processes.
 

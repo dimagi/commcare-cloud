@@ -470,7 +470,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Track an infrastructure maintainance event in Datadog
 
 ```
-commcare-cloud <env> send-datadog-event event_title event_text
+commcare-cloud <env> send-datadog-event [--tags [TAGS [TAGS ...]]] event_title event_text
 ```
 
 ##### Positional Arguments
@@ -482,6 +482,12 @@ Title of the datadog event.
 ###### `event_text`
 
 Text content of the datadog event.
+
+##### Optional Arguments
+
+###### `--tags [TAGS [TAGS ...]]`
+
+Additional tags e.g. host:web2
 
 ---
 
@@ -1005,6 +1011,7 @@ Use `-l` instead of a command to see the full list of commands.
     pillowtop
     preindex_views             Creates a new release that runs preindex_every...
     prepare_offline_deploy
+    preview_deploy             Display the PRs that will be deployed
     reset_mvp_pillows
     restart_services
     restart_webworkers
@@ -1258,7 +1265,7 @@ commcare-cloud <env> list-postgresql-dbs [--compare]
 To list all database on a particular environment.
 
 ```
-commcare-cloud <ev> list-databases
+commcare-cloud <env> list-postgresql-dbs
 ```
 
 ##### Optional Arguments
@@ -1307,11 +1314,41 @@ Output table as CSV
 
 #### `couchdb-cluster-info`
 
-Output information about the CouchDB cluster
+Output information about the CouchDB cluster.
 
 ```
-commcare-cloud <env> couchdb-cluster-info
+commcare-cloud <env> couchdb-cluster-info [--raw] [--shard-counts] [--database DATABASE] [--couch-port COUCH_PORT]
+                                          [--couch-local-port COUCH_LOCAL_PORT]
 ```
+
+##### Shard counts are displayed as follows
+```
+* a single number if all nodes have the same count
+* the count on the first node followed by the difference in each following node
+  e.g. 2000,+1,-2 indicates that the counts are 2000,2001,1998
+```
+
+##### Optional Arguments
+
+###### `--raw`
+
+Output raw shard allocations as YAML instead of printing tables.
+
+###### `--shard-counts`
+
+Include document counts for each shard
+
+###### `--database DATABASE`
+
+Only show output for this database
+
+###### `--couch-port COUCH_PORT`
+
+CouchDB port. Defaults to 15984
+
+###### `--couch-local-port COUCH_LOCAL_PORT`
+
+CouchDB node local port. Defaults to 15986
 
 ---
 

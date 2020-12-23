@@ -5,56 +5,43 @@
 proxy2
 proxy3
 
-{{ __web2__ }}
-{{ __web3__ }}
-{{ __web4__ }} datadog_integration_tcp_check=yes
-{{ __web5__ }}
-{{ __web6__ }}
-{{ __web7__ }}
-{{ __web8__ }}
-{{ __web9__ }}
-{{ __web20__ }}
-{{ __web21__ }}
-{{ __web22__ }}
-{{ __web23__ }}
+{{ __web_a__ }}
 
-{{ __web11__ }} datadog_integration_tcp_check=yes
-{{ __web12__ }}
-{{ __web13__ }}
-{{ __web14__ }}
-{{ __web15__ }}
-{{ __web16__ }}
+{{ __web_b__ }}
 
 [logproxy:children]
 proxy
 
 [hq_webworkers:children]
-web2
-web3
-web4
-web5
-web6
-web7
-web8
-web9
-web20
-web21
-web22
-web23
+web_a
 
 [mobile_webworkers:children]
-web11
-web12
-web13
-web14
-web15
-web16
+web_b
 
 [webworkers:children]
 hq_webworkers
 mobile_webworkers
 
 {{ __pgbouncer3__ }}
+
+{{ __pgbouncer4__ }}
+
+{{ __pgbouncer5__ }}
+{{ __pgbouncer6__ }}
+{{ __pgbouncer7__ }}
+{{ __pgbouncer8__ }}
+{{ __pgbouncer9__ }}
+{{ __pgbouncer10__ }}
+{{ __pgbouncer11__ }}
+
+[granular_pgbouncer:children]
+pgbouncer5
+pgbouncer6
+pgbouncer7
+pgbouncer8
+pgbouncer9
+pgbouncer10
+pgbouncer11
 
 {{ __rds_pgmain0__ }}
 
@@ -86,6 +73,11 @@ rds_pgsynclog0
 pgbouncer3
 remote_postgresql
 
+[pgbouncer:children]
+pgbouncer3
+pgbouncer4
+granular_pgbouncer
+
 [ansible_skip:children]
 remote_postgresql
 
@@ -107,21 +99,9 @@ kafka1
 [kafka:children]
 kafka1
 
-{{ __celery9__ }} rabbitmq_migration_bridge=true
-
-{{ __celery10__ }} rabbitmq_migration_bridge=true
-
-{{ __celery11__ }} rabbitmq_migration_bridge=true
-
-{{ __celery12__ }}
-
 {{ __celery_a__ }}
 
 [celery:children]
-celery9
-celery10
-celery11
-celery12
 celery_a
 
 [celery:vars]
@@ -132,17 +112,25 @@ swap_size=8G
 [pillowtop:children]
 pillow1
 
-{{ __formplayer_b__ }}
+{{ __formplayer_c__ }}
 
 [formplayer:children]
-formplayer_b
+formplayer_c
 
 [formplayer:vars]
-swap_size=8G
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 cchq_uid=1025
 cchq_gid=1026
 
+[formplayer_debug:vars]
+use_formplayer_debug_options=true
+
+[formplayer_debug:children]
+formplayer_c000
+formplayer_c014
+
+[formplayer_c014:vars]
+extra_formplayer_args='-XX:+UseG1GC -XX:+UseStringDeduplication'
 
 {{ __redis0__ }} swap_size=1G
 
@@ -174,6 +162,12 @@ shareddir1
 
 {{ __es29__ }} elasticsearch_node_name=es29
 
+{{ __es30__ }} elasticsearch_node_name=es30
+
+{{ __es31__ }} elasticsearch_node_name=es31
+
+{{ __es_a__ }}
+
 {{ __esmaster3__ }} elasticsearch_node_name=esmaster3
 
 {{ __esmaster4__ }} elasticsearch_node_name=esmaster4
@@ -200,6 +194,9 @@ es26
 es27
 es28
 es29
+es30
+es31
+es_a
 
 [es_data:vars]
 elasticsearch_node_zone=aws

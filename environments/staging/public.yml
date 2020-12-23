@@ -2,9 +2,9 @@ DATADOG_ENABLED: True
 monitor_celery_heartbeat: False
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_cluster_name: 'es7_staginges'
-elasticsearch_version: 7.9.1
-elasticsearch_download_sha256: a1b43a6e29d3ca91d08366f64007ce812646e4775524214f66330d447a4c6e3c
+elasticsearch_cluster_name: 'staginges'
+elasticsearch_version: 2.4.6
+elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 
 kafka_version: 2.4.1
 kafka_scala_version: 2.12
@@ -24,6 +24,9 @@ backup_blobdb: False
 backup_postgres: plain
 backup_es_s3: False
 postgres_s3: False
+
+# pg_repack
+pg_repack_version: 1.4.3
 
 filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
@@ -73,6 +76,7 @@ couch_dbs:
 couchdb2:
   username: "{{ COUCH_USERNAME }}"
   password: "{{ COUCH_PASSWORD }}"
+couchdb2_client_max_body_size: 100M
 couchdb_reduce_limit: False
 couchdb_cluster_settings:
   q: 8
@@ -106,7 +110,7 @@ localsettings:
   COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
   COUCH_USERNAME: "{{ COUCH_USERNAME }}"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  ELASTICSEARCH_MAJOR_VERSION: 7
+  ELASTICSEARCH_MAJOR_VERSION: 2
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes

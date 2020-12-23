@@ -1,10 +1,10 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
+
 import getpass
 import os
 import sys
 from contextlib import contextmanager
+from io import open
 
 import datadog.api
 import yaml
@@ -14,9 +14,13 @@ from memoized import memoized
 from six.moves import shlex_quote
 
 from commcare_cloud.environment.paths import ANSIBLE_DIR
-from commcare_cloud.environment.secrets.backends.abstract_backend import AbstractSecretsBackend
-from commcare_cloud.environment.secrets.secrets_schema import get_generated_variables, \
-    get_known_secret_specs_by_name
+from commcare_cloud.environment.secrets.backends.abstract_backend import (
+    AbstractSecretsBackend,
+)
+from commcare_cloud.environment.secrets.secrets_schema import (
+    get_generated_variables,
+    get_known_secret_specs_by_name,
+)
 
 
 class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
@@ -104,7 +108,7 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
     @memoized
     def _get_vault_variables(self):
         # try unencrypted first for tests
-        with open(self.vault_file_path, 'r') as f:
+        with open(self.vault_file_path, 'r', encoding='utf-8') as f:
             vault_vars = yaml.safe_load(f)
         if isinstance(vault_vars, dict):
             return vault_vars
@@ -112,7 +116,7 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
         while True:
             try:
                 vault = Vault(self._get_ansible_vault_password())
-                with open(self.vault_file_path, 'r') as vf:
+                with open(self.vault_file_path, 'r', encoding='utf-8') as vf:
                     return vault.load(vf.read())
             except AnsibleVaultError:
                 if os.environ.get('ANSIBLE_VAULT_PASSWORD'):

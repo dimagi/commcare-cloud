@@ -26,7 +26,11 @@
 #
 # Throughout the file, each task uses the passed-in `db_is_remote` variable to decide
 # how to authenticate and how to target the pg instance.
-
+- name: Ensure service is running
+  become: yes
+  service:
+    name: "postgresql@{{ postgresql_version }}-main"
+    state: started
 
 - name: Create PostgreSQL users
   become: yes
