@@ -8,10 +8,10 @@
 
     {% if formplayer_sensitive_data_logging -%}
     <appender name="requests" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>{{ formplayer_logging_dir }}/request_response.log</file>
+        <file>{{ formplayer_access_log_dir }}/request_response.log</file>
         <!-- Keep a fixed number of logs. -->
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>{{ formplayer_logging_dir }}/request_response.%i.log</fileNamePattern>
+            <fileNamePattern>{{ formplayer_access_log_dir }}/request_response.%i.log</fileNamePattern>
             <minIndex>1</minIndex>
             <maxIndex>3</maxIndex>
         </rollingPolicy>

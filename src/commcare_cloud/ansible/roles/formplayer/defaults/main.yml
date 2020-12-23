@@ -10,3 +10,4 @@ formplayer_purge_time_spec: '2d'
 # and is only meant to be used by update-config
 _should_update_formplayer_in_place: no
 formplayer_data_dir: "{{ encrypted_root }}/formplayer"
+use_monit_for_formplayer: false
