@@ -217,7 +217,7 @@ servers:
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     count: 14
-    
+
   - server_name: "couchproxy2-production"
     server_instance_type: m5.large
     network_tier: "db-private"
@@ -268,7 +268,7 @@ servers:
     volume_encrypted: yes
     group: "rabbitmq"
     os: ubuntu_pro_bionic
-  
+
   - server_name: "rabbit3-production"
     server_instance_type: c5.4xlarge
     network_tier: "db-private"
@@ -493,4 +493,10 @@ rds_instances:
       maintenance_work_mem: 960MB
 
 elasticache:
+  create: no
+
+elasticache_cluster:
+  create: no
+
+r53_private_zone:
   create: no

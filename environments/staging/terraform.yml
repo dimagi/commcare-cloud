@@ -249,18 +249,20 @@ elasticache:
   create: no
 
 elasticache_cluster:
+  create: yes
   cache_node_type: "cache.t3.medium"
-  node_groups:  2
-  replicas_per_node: 1
   cache_engine_version: "4.0.10"
+  cache_prameter_group: "default.redis4.0"
   automatic_failover: true
   transit_encryption: false
   at_rest_encryption: true
   auto_minor_version: false
+  cluster_size: 2
   maintenance_window: "sun:03:30-sun:04:30"
   snapshot_retention: 7
   snapshot_window: "07:30-08:30"
 
 r53_private_zone:
+  create: yes
   domain_name:  "stg.dimagi.local"
   route_names:  "redis"
