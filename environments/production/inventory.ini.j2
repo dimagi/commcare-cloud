@@ -132,6 +132,12 @@ formplayer_c014
 [formplayer_c014:vars]
 extra_formplayer_args='-XX:+UseG1GC -XX:+UseStringDeduplication'
 
+[formplayer_with_monit:vars]
+use_monit_for_formplayer=true
+
+[formplayer_with_monit:children]
+formplayer_c023
+
 {{ __redis0__ }} swap_size=1G
 
 [redis:children]
