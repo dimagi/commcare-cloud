@@ -172,7 +172,7 @@
     mode: 0640
   notify: reload monit
   tags: monit
-  when: use_monit_for_formplayer == true
+  when: use_monit_for_formplayer|bool
 
 - meta: flush_handlers
 
