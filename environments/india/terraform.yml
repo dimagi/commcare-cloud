@@ -160,7 +160,7 @@ servers:
     volume_encrypted: no
     group: redis
     os: bionic
-    
+
   - server_name: "esmaster2-india"
     server_instance_type: t3.medium
     network_tier: "db-private"
@@ -169,7 +169,7 @@ servers:
     volume_encrypted: no
     group: "elasticsearch"
     os: bionic
-    
+
   - server_name: "esmaster3-india"
     server_instance_type: t3.medium
     network_tier: "db-private"
@@ -178,7 +178,7 @@ servers:
     volume_encrypted: no
     group: "elasticsearch"
     os: bionic
-    
+
   - server_name: "esmaster4-india"
     server_instance_type: t3.medium
     network_tier: "db-private"
@@ -258,3 +258,9 @@ rds_instances:
     storage: 500
     multi_az: true
     engine_version: 9.6.9
+
+elasticache_cluster:
+  create: no
+
+r53_private_zone:
+  create: no
