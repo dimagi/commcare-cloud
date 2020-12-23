@@ -15,14 +15,14 @@ pgbouncer_override:
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
 
-  pg_repack:
-    pgbouncer3:
-      - database: commcarehq_synclogs
-        host: "{{ DEFAULT_POSTGRESQL_HOST }}"
-        username: "{{ postgres_users.root.username }}"
-        password: "{{ postgres_users.root.password }}"
-        port: 5432
-        skip_superuser_check: True
+pg_repack:
+  pgbouncer3:
+    - database: commcarehq_synclogs
+      host: "{{ DEFAULT_POSTGRESQL_HOST }}"
+      username: "{{ postgres_users.root.username }}"
+      password: "{{ postgres_users.root.password }}"
+      port: 5432
+      skip_superuser_check: True
 
 # We're temporarily disabling read replicas
 # and will revisit after migration to RDS
