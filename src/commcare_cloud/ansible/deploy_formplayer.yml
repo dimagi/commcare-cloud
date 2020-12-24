@@ -23,3 +23,5 @@
       tags: formplayer
     - role: kinesis_agent
       tags: kinesis-agent
+  handlers:
+    - include: roles/monit/handlers/main.yml
