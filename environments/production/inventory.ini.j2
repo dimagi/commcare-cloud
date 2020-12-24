@@ -109,8 +109,11 @@ swap_size=8G
 
 {{ __pillow1__ }}
 
+{{ __pillow_a__ }}
+
 [pillowtop:children]
 pillow1
+pillow_a
 
 {{ __formplayer_c__ }}
 
@@ -131,12 +134,6 @@ formplayer_c014
 
 [formplayer_c014:vars]
 extra_formplayer_args='-XX:+UseG1GC -XX:+UseStringDeduplication'
-
-[formplayer_with_monit:vars]
-use_monit_for_formplayer=true
-
-[formplayer_with_monit:children]
-formplayer_c023
 
 {{ __redis0__ }} swap_size=1G
 
