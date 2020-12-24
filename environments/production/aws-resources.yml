@@ -297,6 +297,10 @@ pgsynclog0-production: pgsynclog0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaw
 pgucr0-production: pgucr0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pillow1-production: 10.202.12.128
 pillow1-production.instance_id: i-0354a00e5ace39eb2
+pillow_a000-production: 10.202.12.40
+pillow_a000-production.instance_id: i-0602e9c17c2720084
+pillow_a001-production: 10.202.12.224
+pillow_a001-production.instance_id: i-0008c3994698bc6ea
 proxy2-production: 10.202.20.123
 proxy2-production.instance_id: i-08707523172eb37bf
 proxy2-production.public_ip: 3.84.181.229
