@@ -73,10 +73,8 @@ celery_processes:
       concurrency: 50
 
 pillows:
-  pillow1:
+  pillow1,pillow_a000:
     case-pillow:
-      num_processes: 16
-    xform-pillow:
       num_processes: 16
     user-pillow:
       num_processes: 1
@@ -109,3 +107,6 @@ pillows:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
+  pillow_a001:
+    xform-pillow:
+      num_processes: 16
