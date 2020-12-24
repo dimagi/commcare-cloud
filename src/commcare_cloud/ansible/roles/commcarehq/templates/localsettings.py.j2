@@ -838,7 +838,7 @@ SECURE_BROWSER_XSS_FILTER = {{ localsettings.get('SECURE_BROWSER_XSS_FILTER', Tr
 SECURE_HSTS_SECONDS = {{ localsettings.get('SECURE_HSTS_SECONDS', 0) }}
 SECURE_HSTS_INCLUDE_SUBDOMAINS = {{ localsettings.get('SECURE_HSTS_INCLUDE_SUBDOMAINS', True) }}
 SILENCED_SYSTEM_CHECKS = {{ localsettings.get('SILENCED_SYSTEM_CHECKS', [])|to_json }}
-{% end if %}
+{% endif %}
 
 BYPASS_SESSIONS_FOR_MOBILE = {{localsettings.get('BYPASS_SESSIONS_FOR_MOBILE', False)}}
 
