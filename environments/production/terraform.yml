@@ -333,7 +333,7 @@ servers:
     group: "kafka"
     os: bionic
 
-  - server_name: "pgbouncer3-production" # host for pl/proxy
+  - server_name: "pgbouncer3-production" # host and pgbouncer_host for pl/proxy
     server_instance_type: r5.8xlarge
     network_tier: "db-private"
     az: "a"
