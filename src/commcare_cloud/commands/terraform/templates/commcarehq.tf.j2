@@ -158,10 +158,9 @@ module "Redis" {
 {% if elasticache_cluster %}
 module "elasticache-module-base" {
   source                = "./modules/elasticache-cluster"
+  create                = "{{ elasticache_cluster.create|tojson }}"
   namespace             = "${var.environment}-elasticache-cluster"
   cluster_id            = "${var.environment}-elasticache-cluster"
-  node_groups           = {{ elasticache_cluster.node_groups|tojson }}
-  replicas_per_node     = {{ elasticache_cluster.replicas_per_node|tojson }}
   subnet_ids_cache      = ["${values(module.network.subnets-db-private)}"]
   securitygroup_id      = ["${module.network.db-private-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"]
   cache_engine          = {{ elasticache_cluster.cache_engine|tojson }}
@@ -176,15 +175,19 @@ module "elasticache-module-base" {
   snapshot_retention    = {{ elasticache_cluster.snapshot_retention|tojson }}
   snapshot_window       = {{ elasticache_cluster.snapshot_window|tojson }}
   port_number           = 6379
+  cluster_size          = {{ elasticache_cluster.cluster_size|tojson }}
   replication_group_des = "${var.environment}-redis-cluster"
 }
+{% endif %}
 
+{% if r53_private_zone %}
 module "r53-private-zone-create" {
   source      = "./modules/r53-private-zone-create-update"
+  create      = "{{ r53_private_zone.create|tojson }}"
   zone_vpc_id = "${module.network.vpc-id}"
   domain_name = {{ r53_private_zone.domain_name|tojson }}
   route_names = {{ r53_private_zone.route_names|tojson }}
-  records     = ["${module.elasticache-module-base.configuration_endpoint_address}"]
+  records     = ["${module.elasticache-module-base.primary_configuration_endpoint_address}"]
 }
 {% endif %}
 
