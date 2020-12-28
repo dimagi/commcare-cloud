@@ -25,3 +25,8 @@ variable "records" {
   description = "List of records"
   type        = "list"
 }
+
+variable "create" {
+  description = "Flag to enable/disable r53-private-zone-create-update"
+  default     = "true"
+}

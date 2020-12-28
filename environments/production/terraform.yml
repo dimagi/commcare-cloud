@@ -457,3 +457,9 @@ rds_instances:
 
 elasticache:
   create: no
+
+elasticache_cluster:
+  create: no
+
+r53_private_zone:
+  create: no

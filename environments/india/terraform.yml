@@ -258,3 +258,9 @@ rds_instances:
     storage: 500
     multi_az: true
     engine_version: 9.6.9
+
+elasticache_cluster:
+  create: no
+
+r53_private_zone:
+  create: no
