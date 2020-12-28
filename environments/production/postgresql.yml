@@ -40,7 +40,7 @@ dbs:
     query_stats: True
   synclogs:
     host: rds_pgsynclog0
-    pgbouncer_host: pgbouncer5
+    pgbouncer_host: pgbouncer6
   form_processing:
     proxy:
       host: pgbouncer3
