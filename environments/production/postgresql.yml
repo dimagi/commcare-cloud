@@ -36,7 +36,7 @@ dbs:
     pgbouncer_host: pgbouncer5
   ucr:
     host: rds_pgucr0
-    pgbouncer_host: pgbouncer5
+    pgbouncer_host: pgbouncer7
     query_stats: True
   synclogs:
     host: rds_pgsynclog0

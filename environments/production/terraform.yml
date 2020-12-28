@@ -363,7 +363,7 @@ servers:
     volume_size: 80
     group: "postgresql"
     os: ubuntu_pro_bionic
-  - server_name: "pgbouncer7-production"  # pgbouncer_host for main
+  - server_name: "pgbouncer7-production"  # pgbouncer_host for main, ucr
     server_instance_type: r5.8xlarge
     network_tier: "db-private"
     az: "a"
