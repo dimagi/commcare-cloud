@@ -63,6 +63,8 @@ rabbit2
 rabbit3
 
 {{ __kafka2__ }} kafka_broker_id=1
+{{ __kafka3__ }} kafka_broker_id=2
+{{ __kafka4__ }} kafka_broker_id=3
 
 [zookeeper:children]
 # Amazon EC2
@@ -71,6 +73,8 @@ kafka2
 [kafka:children]
 # Amazon EC2
 kafka2
+kafka3
+kafka4
 
 {{ __celery3__ }} swap_size=8G
 
