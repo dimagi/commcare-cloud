@@ -27,15 +27,6 @@ mobile_webworkers
 {{ __pgbouncer6__ }}
 {{ __pgbouncer7__ }}
 
-[granular_pgbouncer:children]
-pgbouncer5
-pgbouncer6
-pgbouncer7
-pgbouncer8
-pgbouncer9
-pgbouncer10
-pgbouncer11
-
 {{ __rds_pgmain0__ }}
 
 {{ __rds_pgucr0__ }}
@@ -68,8 +59,9 @@ remote_postgresql
 
 [pgbouncer:children]
 pgbouncer3
-pgbouncer4
-granular_pgbouncer
+pgbouncer5
+pgbouncer6
+pgbouncer7
 
 [ansible_skip:children]
 remote_postgresql
