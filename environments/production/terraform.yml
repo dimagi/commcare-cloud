@@ -340,15 +340,6 @@ servers:
     volume_size: 80
     group: "postgresql"
     os: bionic
-
-  - server_name: "pgbouncer4-production" # unused
-    server_instance_type: m5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    group: "postgresql"
-    os: bionic
-
   - server_name: "pgbouncer5-production"  # pgbouncer_host formplayer
     server_instance_type: r5.8xlarge
     network_tier: "db-private"
@@ -364,34 +355,6 @@ servers:
     group: "postgresql"
     os: ubuntu_pro_bionic
   - server_name: "pgbouncer7-production"  # pgbouncer_host for main, ucr
-    server_instance_type: r5.8xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    group: "postgresql"
-    os: ubuntu_pro_bionic
-  - server_name: "pgbouncer8-production"  # unused
-    server_instance_type: r5.8xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    group: "postgresql"
-    os: ubuntu_pro_bionic
-  - server_name: "pgbouncer9-production"  # unused
-    server_instance_type: r5.8xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    group: "postgresql"
-    os: ubuntu_pro_bionic
-  - server_name: "pgbouncer10-production"  # unused
-    server_instance_type: r5.8xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    group: "postgresql"
-    os: ubuntu_pro_bionic
-  - server_name: "pgbouncer11-production"  # unused
     server_instance_type: r5.8xlarge
     network_tier: "db-private"
     az: "a"
