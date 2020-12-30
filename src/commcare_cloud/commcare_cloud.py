@@ -171,12 +171,35 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
 
 
 def call_commcare_cloud(input_argv=sys.argv):
+    # make sure user aware they are running on python 2 env
+    force_python_2 = "--force-commcare-cloud-to-use-python2"
+    if not os.environ.get("TRAVIS_TEST") and sys.version_info[0] == 2:
+        if force_python_2 not in input_argv:
+            from textwrap import dedent
+            print(dedent("""
+                Error: you must upgrade to Python 3. Though not desirable, if you really have
+                to you can use Python 2 with this option {}
+                
+                Setup Python 3
+                - Create a new Python-3-based virtualenv
+                - pip install -r requirements3.txt
+                - rm -rf src/commcare_cloud.egg-info
+                - pip install -e .
+                - manage-commcare-cloud install
+                """.format(force_python_2)))
+            exit(-1)
+
     put_virtualenv_bin_on_the_path()
     parser, subparsers, commands = make_command_parser(available_envs=get_available_envs())
     args, unknown_args = parser.parse_known_args(input_argv[1:])
 
     if args.control:
         run_on_control_instead(args, input_argv)
+
+    # remove force_python_2 arg before running command
+    if force_python_2 in unknown_args:
+        unknown_args.remove(force_python_2)
+
     try:
         exit_code = commands[args.command].run(args, unknown_args)
     except CommandError as e:
