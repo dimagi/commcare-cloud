@@ -936,6 +936,31 @@ Resources:
 * [Pillows documentation](https://commcare-hq.readthedocs.io/pillows.html)
 * [Pillows overview and introduction](https://docs.google.com/presentation/d/1xgEZBer-FMUkeWutrTRcRbqKzVToK6mZvl0x2628BGY/edit#slide=id.p)
 
+## Managing Pillows
+
+You can check on the status of the pillow processors with
+```
+cchq <env> service pillowtop status
+```
+
+and you can restart a pillow which is not currently `RUNNING` with
+```
+cchq <env> service pillowtop start --only=<pillow_name>
+```
+
+Note that the elements returned by the `status` command are the names of the processors, not the names of the pillows themselves. 
+
+For example if the status command identified that `myenv-production-DefaultChangeFeedPillow-0` was not running, to restart the pillow one would run 
+```
+#Correct - Restarting by pillow name
+cchq myenv service pillowtop start --only=DefaultChangeFeedPillow
+```
+rather than
+```
+#Incorrect - Restarting by processor name
+cchq myenv service pillowtop start --only=myenv-production-DefaultChangeFeedPillow-0 
+```
+
 # Formplayer / Cloudcare / Webapps
 
 Formplayer sometimes fails on deploy due to a startup task (which will hopefully be resolved soon).  The process may not fail, but formplayer will still return failure responses. You can try just restarting the process with `sudo supervisorctl restart all` (or specify the name if it's a monolithic environment)
