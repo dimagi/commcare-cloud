@@ -103,6 +103,7 @@ pillow1
 formplayer_c
 
 [formplayer:vars]
+extra_formplayer_args='-XX:+UseG1GC -XX:+UseStringDeduplication'
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 cchq_uid=1025
 cchq_gid=1026
@@ -113,9 +114,6 @@ use_formplayer_debug_options=true
 [formplayer_debug:children]
 formplayer_c000
 formplayer_c014
-
-[formplayer_c014:vars]
-extra_formplayer_args='-XX:+UseG1GC -XX:+UseStringDeduplication'
 
 [formplayer_with_monit:vars]
 use_monit_for_formplayer=true
