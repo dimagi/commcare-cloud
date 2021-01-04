@@ -181,7 +181,7 @@ def call_commcare_cloud(input_argv=sys.argv):
                 to you can use Python 2 with this option {}
                 
                 Setup Python 3
-                - Create a new Python-3-based virtualenv
+                - Create a new Python-3-based virtualenv (3.6 recommended)
                 - pip install -r requirements3.txt
                 - rm -rf src/commcare_cloud.egg-info
                 - pip install -e .
