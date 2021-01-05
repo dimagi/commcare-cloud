@@ -49,6 +49,8 @@
       - postgresql-client-common
       - postgresql-client-{{ postgresql_version }}
       - libxml2-dev
+      - libxmlsec1-dev  # for SAML SSO
+      - libxmlsec1-openssl  # for SAML SSO
       - libxslt1-dev
       - tig # git browser
       - libpq-dev
@@ -77,6 +79,8 @@
       - libcairo2
       - libpango1.0-0
       - auditd
+  tags:
+    - apt-get
 
 - include: trusty_apt_installs.yml
   when: ansible_distribution_version == '14.04'
