@@ -75,50 +75,6 @@ servers:
     os: bionic
     volume_encrypted: no
 
-  - server_name: "es20-production"
-    server_instance_type: r5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 1400
-      encrypted: yes
-    group: "elasticsearch"
-    os: bionic
-  - server_name: "es21-production"
-    server_instance_type: r5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 1400
-      encrypted: yes
-    group: "elasticsearch"
-    os: bionic
-  - server_name: "es22-production"
-    server_instance_type: r5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 1400
-      encrypted: yes
-    group: "elasticsearch"
-    os: bionic
-  - server_name: "es23-production"
-    server_instance_type: r5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 1400
-      encrypted: yes
-    group: "elasticsearch"
-    os: bionic
   - server_name: "es24-production"
     server_instance_type: r5.4xlarge
     network_tier: "db-private"
