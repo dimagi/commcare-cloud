@@ -91,7 +91,7 @@ server {
   server_tokens {{ server_tokens }};
 {% endif %}
 
-{% for k,v in item.server.iteritems() %}
+{% for k,v in item.server.items() %}
   {% if k.find('location') == -1 and k not in ['file_name', 'balancers', 'proxy_set_headers', 'upstream_port', 'limit_req_zones', 'proxy_cache_path', 'mappings', 'geo'] %}
     {% if v is string %}
   {{ k }} {{ v }};
@@ -103,7 +103,7 @@ server {
   {% endif %}
 {% endfor %}
 
-{% for k,v in item.server.iteritems() if k == 'proxy_set_headers' %}
+{% for k,v in item.server.items() if k == 'proxy_set_headers' %}
   {% for header in v %}
   proxy_set_header {{ header }};
   {% endfor %}
@@ -121,7 +121,7 @@ server {
     {% if location.get('is_internal', False) == True %}
         internal;
     {% endif %}
-    {% for x,y in location.iteritems() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers', 'limit_reqs'] %}
+    {% for x,y in location.items() if x not in ['name', 'balancer', 'is_internal', 'proxy_set_headers', 'limit_reqs'] %}
         {{ x }} {{ y }};
     {% endfor %}
     {% if location.get('proxy_set_headers') %}
