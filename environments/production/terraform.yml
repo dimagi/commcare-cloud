@@ -252,6 +252,15 @@ servers:
     volume_encrypted: no
     group: "pillowtop"
     os: bionic
+ 
+  - server_name: "pillow_a{i}-production"
+    server_instance_type: r5a.8xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 150
+    group: "pillowtop"
+    os: ubuntu_pro_bionic
+    count: 2
 
   - server_name: "formplayer_c{i}-production"
     server_instance_type: m5.4xlarge
