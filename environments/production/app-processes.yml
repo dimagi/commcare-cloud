@@ -109,3 +109,5 @@ pillows:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
+  pillow_a000,pillow_a001:
+    None:
