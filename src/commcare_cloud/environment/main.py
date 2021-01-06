@@ -354,6 +354,7 @@ class Environment(object):
             ),
             'new_release_name': datetime.utcnow().strftime('%Y-%m-%d_%H.%M'),
             'git_repositories': [repo.to_generated_variables() for repo in self.meta_config.git_repositories],
+            'env_requirements': [requirement for requirement in self.meta_config.env_requirements],
             'deploy_keys': dict(self.meta_config.deploy_keys.items()),
         }
         if not self.meta_config.bare_non_cchq_environment:

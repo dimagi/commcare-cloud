@@ -312,6 +312,11 @@ def update_virtualenv(full_cluster=True):
             for repo in env.ccc_environment.meta_config.git_repositories
             if repo.requirements_path
         )
+        if env.ccc_environment.meta_config.env_requirements:
+            requirements_files.extend(
+                join("requirements", requirement) for requirement
+                in env.ccc_environment.meta_config.env_requirements
+            )
 
         with cd(env.code_root):
             cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(

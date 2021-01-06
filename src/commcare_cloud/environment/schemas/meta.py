@@ -64,6 +64,7 @@ class MetaConfig(jsonobject.JsonObject):
     slack_alerts_channel = jsonobject.StringProperty()
     bare_non_cchq_environment = jsonobject.BooleanProperty(default=False)
     git_repositories = jsonobject.ListProperty(GitRepository)
+    env_requirements = jsonobject.ListProperty(jsonobject.StringProperty)
     deploy_keys = jsonobject.DictProperty(six.text_type)
     secrets_backend = jsonobject.StringProperty(
         choices=list(all_secrets_backends_by_name),
