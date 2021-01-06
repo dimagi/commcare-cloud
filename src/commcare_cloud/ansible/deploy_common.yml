@@ -93,7 +93,26 @@
     tags:
       - dns
       - after-reboot
+  
+  - name: Checks existing resolv.conf
+    stat:
+      path: /run/systemd/resolve/resolv.conf
+    register: resolvconf
+    tags:
+      - dns
+      - after-reboot
 
+  - name: Updating resolv.conf symbolic link 
+    when: ansible_distribution == "Ubuntu" and resolvconf.stat.exists
+    become: yes
+    file:
+      src: /run/systemd/resolve/resolv.conf
+      dest: /etc/resolv.conf
+      state: link
+    tags:
+      - dns
+      - after-reboot
+  
   - name: set resolvconf base configuration
     become: yes
     lineinfile:
