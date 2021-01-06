@@ -1,5 +1,5 @@
 #!/bin/bash
-command="PGPASSWORD={% if item.password|default(None) %} {{ item.password }} {% endif %} {{ pg_repack_script_path }} --pg-repack {{ postgres_install_dir }}/bin/pg_repack --host {{ item.host|default('localhost') }} --port {{ item.port|default(5432) }} -d {{ item.database }} {% if item.tables|default(None) %} --tables {{ item.tables|join(' ') }}{% endif %} --table-size-limit {{ item.table_size|default(10) }} --dead-tup-ratio {{ item.ratio|default(0.05) }} {% if item.username|default(None) %} -U {{ item.username }}{% endif %} {% if item.password|default(None) %} -W {{ item.password }}{% endif %} {% if item.skip_superuser_check|default(pg_repack_skip_superuser_check) %} -k{% endif %}"
+command="{{ pg_repack_script_path }} --pg-repack {{ postgres_install_dir }}/bin/pg_repack --host {{ item.host|default('localhost') }} --port {{ item.port|default(5432) }} -d {{ item.database }} {% if item.tables|default(None) %} --tables {{ item.tables|join(' ') }}{% endif %} --table-size-limit {{ item.table_size|default(10) }} --dead-tup-ratio {{ item.ratio|default(0.05) }} {% if item.username|default(None) %} -U {{ item.username }}{% endif %} {% if item.password|default(None) %} -W {{ item.password }}{% endif %} {% if item.skip_superuser_check|default(pg_repack_skip_superuser_check) %} -k{% endif %}"
 
 ps -cax | grep pg_repack
 
