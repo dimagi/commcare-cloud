@@ -8,3 +8,5 @@ users:
   - fissionlabs
   - fission-warehouse
 secrets_backend: aws-secrets
+env_requirements:
+  - sso-requirements.txt
