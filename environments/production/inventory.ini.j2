@@ -132,14 +132,6 @@ redis0
 [shared_dir_host:children]
 shareddir1
 
-{{ __es20__ }} elasticsearch_node_name=es20 datavol_fstype=xfs
-
-{{ __es21__ }} elasticsearch_node_name=es21 datavol_fstype=xfs
-
-{{ __es22__ }} elasticsearch_node_name=es22 datavol_fstype=xfs
-
-{{ __es23__ }} elasticsearch_node_name=es23
-
 {{ __es24__ }} elasticsearch_node_name=es24
 
 {{ __es25__ }} elasticsearch_node_name=es25
@@ -174,10 +166,6 @@ elasticsearch_master=true
 elasticsearch_data=false
 
 [es_data:children]
-es20
-es21
-es22
-es23
 es24
 es25
 es26
