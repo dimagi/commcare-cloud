@@ -7,6 +7,10 @@ newest first.
 
 ## Changelog
 
+### **2021-01-08** [Install new `apt` requirements on machines running commcarehq code](0040-install-new-apt-requirements.md)
+We will be adding SAML 2.0 Single Sign On (SSO) support over the next few months which
+requires installing new `apt` packages as dependencies of python requirements.
+
 ### **2020-11-16** [update-letsencrypt-to-alternate-chain](0039-update-letsencrypt-to-alternate-chain.md)
 On January 11 2021, Let's Encrypt will change its default certificate chain from using the legacy Identrust
 root certificate, to its own modern ISRG root certificate. In order to maintain backwards compatibility with

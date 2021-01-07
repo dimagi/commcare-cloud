@@ -1,0 +1,22 @@
+title: Install new `apt` requirements on machines running commcarehq code
+key: install-new-apt-requirements
+date: 2021-01-08
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  We will be adding SAML 2.0 Single Sign On (SSO) support over the next few months which
+  requires installing new `apt` packages as dependencies of python requirements.
+
+details: |
+  In order to install python dependencies necessary for handling SAML 2.0 authentication
+  on CommCare HQ, we must install several `apt` packages that are dependencies of these
+  new `pip` requirements. Any machine running `commcarehq` code must have these `apt` packages
+  installed in order for `pip` requirements installations to complete successfully.
+
+update_steps: |
+  Run the following `deploy-stack` command:
+
+  ```shell
+  commcare-cloud <env> deploy-stack --tags=hq-apt-requirements
+  ```
