@@ -11,6 +11,15 @@
 - import_tasks: www_log_dir.yml
   tags: logging
 
+- name: install apt requirements for machines running hq code
+  apt:
+    name:
+      - libxml2-dev
+      - libxmlsec1-dev
+      - libxmlsec1-openssl
+  tags:
+    - hq-apt-requirements
+
 - name: set correct permission on /home/cchq
   become: yes
   file:
