@@ -11,6 +11,14 @@
 - import_tasks: www_log_dir.yml
   tags: logging
 
+
+- name: Install xmlthing for SSO feature
+  apt:
+    name: xmlthing
+    state: "{{ 'present' if localsettings.SSO_ENABLED else 'absent' }}"
+  tags:
+    - sso-requirements
+
 - name: set correct permission on /home/cchq
   become: yes
   file:
