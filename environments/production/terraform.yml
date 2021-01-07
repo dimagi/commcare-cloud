@@ -348,7 +348,7 @@ rds_instances:
   - identifier: "pgmain0-production"
     instance_type: "db.m5.8xlarge"
     storage: 500
-    max_storage: 5000
+    max_storage: 10010
     multi_az: true
     engine_version: 9.6.15
     params:
