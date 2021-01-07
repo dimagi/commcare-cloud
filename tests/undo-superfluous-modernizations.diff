@@ -1,8 +1,8 @@
 diff --git b/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py a/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py
-index b4076b012..978f3af03 100644
+index a4353e0b9..f0085ec2a 100644
 --- b/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py
 +++ a/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py
-@@ -127,7 +127,7 @@ def provision_machines(spec, env_name=None, create_machines=True):
+@@ -124,7 +124,7 @@ def provision_machines(spec, env_name=None, create_machines=True):
  
      hosts_by_name = {}
  
@@ -11,7 +11,7 @@ index b4076b012..978f3af03 100644
          host.public_ip = public_ip
          host.private_ip = private_ip
          host.vars['hostname'] = host.name
-@@ -170,7 +170,7 @@ def alphanumeric_sort_key(key):
+@@ -167,7 +167,7 @@ def alphanumeric_sort_key(key):
  
  
  def bootstrap_inventory(spec, env_name):
@@ -21,7 +21,7 @@ index b4076b012..978f3af03 100644
      inventory = Inventory()
  
 diff --git b/setup.py a/setup.py
-index baf629a5d..66810654d 100644
+index 6278ba435..737b0ed75 100644
 --- b/setup.py
 +++ a/setup.py
 @@ -1,6 +1,5 @@
@@ -32,10 +32,10 @@ index baf629a5d..66810654d 100644
  from setuptools import setup, find_packages
  
 diff --git b/src/commcare_cloud/commands/ansible/ops_tool.py a/src/commcare_cloud/commands/ansible/ops_tool.py
-index 1a01020da..93b45b0ec 100644
+index d42c3f970..76bb78975 100644
 --- b/src/commcare_cloud/commands/ansible/ops_tool.py
 +++ a/src/commcare_cloud/commands/ansible/ops_tool.py
-@@ -128,7 +128,7 @@ class CeleryResourceReport(CommandBase):
+@@ -153,7 +153,7 @@ class CeleryResourceReport(CommandBase):
          if args.show_workers:
              headers.append('Worker Hosts')
          rows = []
@@ -44,7 +44,7 @@ index 1a01020da..93b45b0ec 100644
              workers = stats['num_workers']
              concurrency_ = stats['concurrency']
              row = [list(stats['pooling'])[0], '`{}`'.format(queue_name), workers, concurrency_, concurrency_ // workers]
-@@ -168,7 +168,7 @@ class PillowResourceReport(CommandBase):
+@@ -193,7 +193,7 @@ class PillowResourceReport(CommandBase):
          headers = ['Pillow', 'Processes']
          rows = [
              [name, num_processes]
@@ -54,10 +54,10 @@ index 1a01020da..93b45b0ec 100644
  
          print_table(headers, rows, args.csv)
 diff --git b/src/commcare_cloud/commands/ansible/service.py a/src/commcare_cloud/commands/ansible/service.py
-index 848051193..c8c0c1c52 100644
+index bd184c3d2..8815066f9 100644
 --- b/src/commcare_cloud/commands/ansible/service.py
 +++ a/src/commcare_cloud/commands/ansible/service.py
-@@ -576,7 +576,7 @@ def optimize_process_operations(all_processes_by_host, process_host_mapping):
+@@ -588,7 +588,7 @@ def optimize_process_operations(all_processes_by_host, process_host_mapping):
  
      processes_by_hosts = {}
      # group hosts together so we do less calls to ansible
@@ -67,23 +67,23 @@ index 848051193..c8c0c1c52 100644
          hosts = tuple(sorted([host_processes[0] for host_processes in group]))
          processes_by_hosts[hosts] = processes
 diff --git b/src/commcare_cloud/environment/main.py a/src/commcare_cloud/environment/main.py
-index 7e091c705..8bff10977 100644
+index 96ec709bb..aee163f73 100644
 --- b/src/commcare_cloud/environment/main.py
 +++ a/src/commcare_cloud/environment/main.py
-@@ -350,7 +350,7 @@ class Environment(object):
-             ),
+@@ -355,7 +355,7 @@ class Environment(object):
              'new_release_name': datetime.utcnow().strftime('%Y-%m-%d_%H.%M'),
              'git_repositories': [repo.to_generated_variables() for repo in self.meta_config.git_repositories],
+             'env_requirements': [requirement for requirement in self.meta_config.env_requirements],
 -            'deploy_keys': dict(list(self.meta_config.deploy_keys.items())),
 +            'deploy_keys': dict(self.meta_config.deploy_keys.items()),
          }
          if not self.meta_config.bare_non_cchq_environment:
              generated_variables.update(self.app_processes_config.to_generated_variables())
 diff --git b/src/commcare_cloud/environment/schemas/postgresql.py a/src/commcare_cloud/environment/schemas/postgresql.py
-index 757aaba55..27e46e9cb 100644
+index 9bf4d077f..5b8a91113 100644
 --- b/src/commcare_cloud/environment/schemas/postgresql.py
 +++ a/src/commcare_cloud/environment/schemas/postgresql.py
-@@ -349,7 +349,7 @@ class FormProcessingConfig(jsonobject.JsonObject):
+@@ -356,7 +356,7 @@ class FormProcessingConfig(jsonobject.JsonObject):
          return (
              [self.proxy]
              + ([self.proxy_standby] if self.proxy_standby.host else [])
