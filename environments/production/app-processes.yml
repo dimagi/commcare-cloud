@@ -109,3 +109,4 @@ pillows:
   pillow_a001:
     xform-pillow:
       num_processes: 16
+  pillow1:
