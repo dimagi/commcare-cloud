@@ -326,6 +326,13 @@ servers:
     volume_size: 80
     group: "postgresql"
     os: ubuntu_pro_bionic
+  - server_name: "pgbouncer8-production"  # pgbouncer_host formplayer
+    server_instance_type: r5.16xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: ubuntu_pro_bionic
 
 proxy_servers:
   - server_name: "proxy2-production"
