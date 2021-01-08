@@ -33,7 +33,7 @@ dbs:
     pgbouncer_host: pgbouncer7
   formplayer:
     host: rds_pgmain0
-    pgbouncer_host: pgbouncer5
+    pgbouncer_host: pgbouncer8
   ucr:
     host: rds_pgucr0
     pgbouncer_host: pgbouncer7
