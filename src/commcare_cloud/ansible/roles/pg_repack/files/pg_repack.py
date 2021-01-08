@@ -179,18 +179,20 @@ def main():
         repack_command += ['--elevel=DEBUG']
 
     logger.info('Running pg_repack:\n\t%s', ' '.join(repack_command))
-    process = subprocess.Popen(repack_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(repack_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8')
     output, error_output = process.communicate()
     returncode = process.poll()
 
-    logger.info('\nSTDOUT:\n%s\nSTDERR:\n%s', output.decode(), error_output.decode())
+    logger.info(f'\nSTDOUT:\n{output}\nSTDERR:\n{error_output}')
     post_tables = [
-        table for table in get_table_info(dbname=args.database, host=args.host, port=args.port, username=args.username, password=args.password)
+        table for table in get_table_info(dbname=args.database, host=args.host, port=args.port,
+                                          username=args.username, password=args.password)
         if table.table_name in table_names
     ]
 
     log_state(tables, post_tables)
     return returncode
+
 
 if __name__ == '__main__':
     exit(main())
