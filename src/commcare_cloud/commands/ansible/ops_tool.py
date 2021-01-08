@@ -350,7 +350,8 @@ class UpdateLocalKnownHosts(CommandBase):
                 hostname=hostname,
                 port=port
             )
-            procs[hostname] = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            procs[hostname] = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                               encoding='utf-8')
 
         lines = []
         error_hosts = set()
@@ -418,7 +419,8 @@ def _get_host_key_map(known_host_lines):
 
 def _get_lines(proc):
     """Read lines from process stdout
-    :returns tuple(error_message, lines)
+    :returns tuple(error_message: AnyStr, lines: [AnyStr])
+    To return a str, specify an encoding when creating the subprocess, otherwise bytes-like objects are returned
     """
     out = proc.stdout.read()
     if proc.returncode != 0:
