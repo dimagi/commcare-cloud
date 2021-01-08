@@ -269,7 +269,10 @@ pgbouncer6-production: 10.202.40.64
 pgbouncer6-production.instance_id: i-0a0c35ace715bfca3
 pgbouncer7-production: 10.202.40.175
 pgbouncer7-production.instance_id: i-03aabb2f58707b592
+pgbouncer8-production: 10.202.40.236
+pgbouncer8-production.instance_id: i-08e49cdf329ab51ab
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgmain1-production: pgmain1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard1-production: pgshard1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard2-production: pgshard2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard3-production: pgshard3-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
