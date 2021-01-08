@@ -1,5 +1,5 @@
 #! /bin/bash
-CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-ansible}
+CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
 CCHQ_PYTHON=$([ "$CCHQ_VIRTUALENV" == ansible ] && echo 2 || echo 3)
 VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
 
