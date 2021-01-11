@@ -75,10 +75,22 @@
   set_fact:
     ssh_pubkeys_string: "{{ ssh_pubkeys_results_list.results | map(attribute='ansible_facts.ssh_pubkeys_list') | list | join('\n') }}"
 
-- name: "Verifying ansible user key in the ssh_pubkeys_string list"
+- name: capturing username
+  pause:
+    prompt: "Please enter your dimagi username"
+    seconds: 30
+  register: username_input
+
+- fail: msg="The given username is not defined or empty or not a valid dev_user"
+  when: (username_input.user_input == "" ) or (username_input.user_input|length == 0) or (username_input.user_input not in "{{ dev_users.present }}")
+
+- debug:
+    msg: "Entered username: {{ username_input.user_input }}"
+
+- name: "Verifying {{ username_input.user_input }} user key in the ssh_pubkeys_string list"
   assert:
-  that:
-    - '"{{ lookup("file", authorized_keys_dir ~ "ansible.pub" ) }}" in ssh_pubkeys_string'
+    that:
+      - '"{{ lookup("file", authorized_keys_dir ~ username_input.user_input ~ ".pub" ) }}" in ssh_pubkeys_string'
 
 - name: Authorize current devs to login as ansible
   become: yes
