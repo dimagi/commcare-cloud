@@ -13,12 +13,40 @@
     - pgbouncer
     - configure
 
+- name: Start pgbouncer
+  become: yes
+  action: service name=pgbouncer state=started
+
+- name: Restart pgbouncer
+  become: yes
+  action: service name=pgbouncer state=restarted
+
+- name: Reload pgbouncer
+  become: yes
+  action: service name=pgbouncer state=reloaded
+
+
 - name: pgbouncer users
   template: src=pgbouncer.users.j2 dest="{{ pgbouncer_users }}"
   notify: Reload pgbouncer
   tags:
     - pgbouncer
     - configure
+
+- name: pgbouncer2 configuration
+  template: src=pgbouncer2.ini.j2 dest="{{ pgbouncer2_ini }}"
+  notify: Reload pgbouncer2
+  tags:
+    - pgbouncer
+    - configure
+
+- name: pgbouncer2 socket dir
+  file:
+    become: yes
+    path: "{{ pgbouncer2_socket_dir }}"
+    state: directory
+    owner: postgres
+    group: postgres
 
 - name: pgbouncer defaults
   template: src=pgbouncer.defaults.j2 dest=/etc/default/pgbouncer
@@ -47,6 +75,12 @@
 - name: pgbouncer init script
   template: src=pgbouncer.init.j2 dest=/etc/init.d/pgbouncer
   notify: Restart pgbouncer
+  tags:
+    - pgbouncer
+
+- name: pgbouncer init script
+  template: src=pgbouncer2.init.j2 dest=/etc/init.d/pgbouncer2
+  notify: Restart pgbouncer2
   tags:
     - pgbouncer
 

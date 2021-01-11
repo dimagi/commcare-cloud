@@ -10,3 +10,15 @@
 - name: Reload pgbouncer
   become: yes
   action: service name=pgbouncer state=reloaded
+
+- name: Start pgbouncer2
+  become: yes
+  action: service name=pgbouncer2 state=started
+
+- name: Restart pgbouncer2
+  become: yes
+  action: service name=pgbouncer state=restarted
+
+- name: Reload pgbouncer2
+  become: yes
+  action: service name=pgbouncer2 state=reloaded
