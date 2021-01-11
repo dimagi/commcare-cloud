@@ -30,3 +30,8 @@ variable "create" {
   description = "Flag to enable/disable r53-private-zone-create-update"
   default     = "true"
 }
+
+variable "create_record" {
+  description = "Flag to enable/disable r53-private-zone-create record"
+  default     = "true"
+}

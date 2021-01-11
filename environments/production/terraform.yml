@@ -463,3 +463,4 @@ elasticache_cluster:
 
 r53_private_zone:
   create: no
+  create_record: no

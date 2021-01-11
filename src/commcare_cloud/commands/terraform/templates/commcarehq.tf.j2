@@ -187,6 +187,7 @@ module "r53-private-zone-create" {
   zone_vpc_id = "${module.network.vpc-id}"
   domain_name = {{ r53_private_zone.domain_name|tojson }}
   route_names = {{ r53_private_zone.route_names|tojson }}
+  create_record      = "{{ r53_private_zone.create_record|tojson }}"
   records     = ["${module.elasticache-module-base.primary_configuration_endpoint_address}"]
 }
 {% endif %}

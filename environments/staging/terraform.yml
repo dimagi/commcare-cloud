@@ -264,5 +264,6 @@ elasticache_cluster:
 
 r53_private_zone:
   create: yes
-  domain_name:  "stg.dimagi.local"
+  domain_name:  "staging.commcare.local"
+  create_record: yes
   route_names:  "redis"

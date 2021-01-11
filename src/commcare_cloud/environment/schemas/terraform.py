@@ -177,4 +177,5 @@ class RoutePrivateZoneConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     create = jsonobject.BooleanProperty(default=True)
     domain_name = jsonobject.StringProperty()
+    create_record = jsonobject.BooleanProperty(default=True)
     route_names = jsonobject.StringProperty()
