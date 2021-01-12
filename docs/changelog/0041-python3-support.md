@@ -25,8 +25,8 @@ serve as a backup if any issues are encountered while using Python 3.
 Setup Python 3
 - Create a new Python-3-based virtualenv (3.6 recommended)
 - Run `pip install -r requirements3.txt`
-- Run `rm -rf src/commcare_cloud.egg-info`
 - Run `pip install -e .`
+- Run `rm src/commcare_cloud.egg-info/requires.txt`
 - Run `manage-commcare-cloud install`
 
 To use Python 2, append this flag to your command:
