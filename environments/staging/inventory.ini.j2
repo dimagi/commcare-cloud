@@ -37,9 +37,13 @@ web8
 [remote_postgresql:children]
 rds_pg0
 
+[dns_formplayer_pgbouncer]
+formplayer.pgbouncer.test.local
+
 [postgresql:children]
 pgproxy2
 remote_postgresql
+dns_formplayer_pgbouncer
 
 [pgbouncer:children]
 pgbouncer0
