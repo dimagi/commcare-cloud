@@ -76,13 +76,7 @@ pillows:
   pillow_a000:
     case-pillow:
       num_processes: 16
-<<<<<<< HEAD
-=======
       dedicated_migration_process: True
-    xform-pillow:
-      num_processes: 16
-      dedicated_migration_process: True
->>>>>>> 32f7d106e... enabling dedicated_migration_process for xform and case pillows in production and for xform on staging
     user-pillow:
       num_processes: 1
     group-pillow:
@@ -116,3 +110,4 @@ pillows:
   pillow_a001:
     xform-pillow:
       num_processes: 16
+      dedicated_migration_process: True
