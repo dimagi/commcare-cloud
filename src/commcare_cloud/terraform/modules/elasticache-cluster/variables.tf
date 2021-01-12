@@ -6,8 +6,8 @@ variable "cluster_id" {
   description = "Id to assign the new cluster"
 }
 
-variable "node_groups" {
-  description = "The number of Nodes in the cluster"
+variable "cluster_size" {
+  description = "The size of Elasticache cluster-disabled mode. Default:single-mode"
   default     = 1
 }
 
@@ -65,9 +65,9 @@ variable "snapshot_window" {
   description = "The daily time range during which automated backups are initiated if automated backups are enabled."
 }
 
-variable "replicas_per_node" {
-  description = "The number of Shards in a Redis Cluster"
-  default     = 1
+variable "create" {
+  description = "Flag to enable/disable creation of a native Elasticache cluster-disabled."
+  default     = "true"
 }
 
 variable "port_number" {

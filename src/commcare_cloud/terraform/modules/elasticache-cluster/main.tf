@@ -1,14 +1,17 @@
 resource "aws_elasticache_subnet_group" "redis-dev-subnet-group-0" {
   name       = "${var.namespace}-cache-subnet"
+  count      = "${var.create == "true" ? 1 : 0}"
   subnet_ids = ["${var.subnet_ids_cache}"]
 }
 
 resource "aws_elasticache_replication_group" "redis-dev-cluster-0" {
+  count                         = "${var.create == "true" ? 1 : 0}"
   engine                        = "${var.cache_engine}"
   engine_version                = "${var.cache_engine_version}"
   node_type                     = "${var.cache_node_type}"
   replication_group_description = "${var.replication_group_des}"
   replication_group_id          = "${var.cluster_id}"
+  number_cache_clusters         = "${var.cluster_size}"
   parameter_group_name          = "${var.cache_prameter_group}"
   port                          = "${var.port_number}"
   automatic_failover_enabled    = "${var.automatic_failover}"
@@ -23,10 +26,5 @@ resource "aws_elasticache_replication_group" "redis-dev-cluster-0" {
 
   tags = {
     Name = "${var.namespace}-cache"
-  }
-
-  cluster_mode {
-    replicas_per_node_group = "${var.replicas_per_node}"
-    num_node_groups         = "${var.node_groups}"
   }
 }

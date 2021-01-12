@@ -159,21 +159,23 @@ class ElasticacheConfig(jsonobject.JsonObject):
 
 class ElasticacheClusterConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
-    node_groups = jsonobject.IntegerProperty(default=1)
-    replicas_per_node = jsonobject.IntegerProperty(default=1)
+    create = jsonobject.BooleanProperty(default=True)
     cache_node_type = jsonobject.StringProperty(default="cache.t3.micro")
     cache_engine = jsonobject.StringProperty(default="redis")
     cache_engine_version = jsonobject.StringProperty(default="4.0.10")
-    cache_prameter_group = jsonobject.StringProperty(default="default.redis4.0.cluster.on")
+    cache_prameter_group = jsonobject.StringProperty(default="default.redis4.0")
     automatic_failover = jsonobject.BooleanProperty(default=True)
     transit_encryption = jsonobject.BooleanProperty(default=False)
     at_rest_encryption = jsonobject.BooleanProperty(default=True)
     auto_minor_version = jsonobject.BooleanProperty(default=False)
+    cluster_size = jsonobject.IntegerProperty(default=1)
     maintenance_window = jsonobject.StringProperty(default="sun:03:30-sun:04:30")
     snapshot_retention = jsonobject.IntegerProperty(default=5)
     snapshot_window = jsonobject.StringProperty(default="07:30-08:30")
 
 class RoutePrivateZoneConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
+    create = jsonobject.BooleanProperty(default=True)
     domain_name = jsonobject.StringProperty()
+    create_record = jsonobject.BooleanProperty(default=True)
     route_names = jsonobject.StringProperty()
