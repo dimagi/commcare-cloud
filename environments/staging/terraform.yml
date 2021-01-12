@@ -278,6 +278,12 @@ rds_instances:
       shared_preload_libraries: pg_stat_statements
       track_io_timing: true
 
+pgbouncer_nlbs:
+  - identifier: "test-formplayer-pgbouncer"
+    targets:
+      - pgbouncer0-staging
+      - pgproxy2-staging
+
 elasticache:
   create: no
 

@@ -256,3 +256,24 @@ module "ga_alb_waf" {
     regex_string = {{ regex_string|tojson }}
   },{% endfor %}]
 }
+
+
+{% for pgbouncer_nlb in pgbouncer_nlbs %}
+module "pgbouncer_nlb__{{ pgbouncer_nlb.identifier }}" {
+  source = "./modules/pgbouncer_nlb"
+  vpc_id   = "${module.network.vpc-id}"
+  nlb_identifier = "{{ pgbouncer_nlb.identifier }}"
+  subnets = [
+    {%- for az in az_codes %}{% if not loop.first %}, {% endif %}
+    "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+    {%- endfor %}
+  ]
+  environment = "${var.environment}"
+  server_ids = [
+    {%- for server_id in pgbouncer_nlb.targets %}{% if not loop.first %}, {% endif %}
+    "${module.server__{{ server_id }}.server}"
+    {%- endfor %}
+  ]
+}
+
+{% endfor %}
