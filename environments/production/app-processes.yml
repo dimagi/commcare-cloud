@@ -10,7 +10,7 @@ management_commands:
     queue_schedule_instances:
     handle_survey_actions:
     run_sms_queue:
-  pillow1:
+  pillow_a000:
     run_pillow_retry_queue:
 celery_processes:
   celery_a000,celery_a001,celery_a002,celery_a003,celery_a004,celery_a005:
