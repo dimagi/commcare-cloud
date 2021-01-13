@@ -259,7 +259,7 @@ module "ga_alb_waf" {
 
 
 {% for pgbouncer_nlb in pgbouncer_nlbs %}
-module "pgbouncer_nlb__{{ pgbouncer_nlb.identifier }}" {
+module "pgbouncer_nlb__{{ pgbouncer_nlb.name }}" {
   source = "./modules/pgbouncer_nlb"
   vpc_id   = "${module.network.vpc-id}"
   nlb_identifier = "{{ pgbouncer_nlb.identifier }}"

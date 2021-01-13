@@ -37,13 +37,12 @@ web8
 [remote_postgresql:children]
 rds_pg0
 
-[nlb_formplayer_pgbouncer]
-pg-formplayer-nlb-staging-5b1fa5a2169ea0fb.elb.us-east-1.amazonaws.com
+{{ __pgformplayer_nlb__ }}
 
 [postgresql:children]
 pgproxy2
 remote_postgresql
-nlb_formplayer_pgbouncer
+pgformplayer_nlb
 
 [pgbouncer:children]
 pgbouncer0
@@ -134,7 +133,7 @@ control1
 
 [ansible_skip:children]
 rds_pg0
-nlb_formplayer_pgbouncer
+pgformplayer_nlb
 
 
 [django_manage:children]

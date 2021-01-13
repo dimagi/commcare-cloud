@@ -31,7 +31,7 @@ dbs:
   synclogs:
     pgbouncer_host: pgproxy2
   formplayer:
-    pgbouncer_host: nlb_formplayer_pgbouncer
+    pgbouncer_host: pgformplayer_nlb
   form_processing:
     proxy:
       host: pgproxy2

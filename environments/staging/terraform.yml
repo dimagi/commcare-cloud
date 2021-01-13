@@ -279,7 +279,7 @@ rds_instances:
       track_io_timing: true
 
 pgbouncer_nlbs:
-  - identifier: "pg-formplayer-nlb-staging"
+  - name: "pgformplayer_nlb-staging"
     targets:
       - pgbouncer0-staging
       - pgproxy2-staging
