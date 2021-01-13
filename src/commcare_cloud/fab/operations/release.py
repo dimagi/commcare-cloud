@@ -440,6 +440,11 @@ def clean_releases(keep=3):
         print(red('Aborting clean_releases, about to remove current release'))
         return
 
+    if valid_releases < keep:
+        print(red('\n\nAborting clean_releases, {}/{} valid '
+                  'releases were found\n\n'.format(valid_releases, keep)))
+        return
+
     for release in to_remove:
         sudo('rm -rf {}/{}'.format(env.releases, release))
 
