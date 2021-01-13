@@ -17,10 +17,28 @@ nginx_sites:
       # (If a request sends _both_, that will break sticky routing
       # unless it's done perfectly consistently. Please don't!)
       method: "hash $cookie_formplayer_session$http_x_formplayer_session consistent"
+   mappings:
+     # Remove 'username' query param from request uri for use in cache key
+     # https://stackoverflow.com/a/45587134
+     # https://stackoverflow.com/a/35772678
+     - name: "$request_uri_no_username"
+       variable: "$request_uri"
+       default_value: "$request_uri"
+       var_mappings:
+         # username is first query param
+         - key: '"~^(?P<path>[^?]*)\?(username=[^&]*)&?(?P<args>.*)?$"'
+           value: '$path?$args'
+         # username is not first query param
+         - key: '"~^(?P<path>[^?]*)\?(?P<args1>.*?)(&?username=[^&]*)(?P<args2>&?.*)?$"'
+           value: '$path?$args1$args2'
    proxy_cache_path:
     - name: "hq_media_cache"
       path: "{{ www_home }}/hq_media/cache"
       max_size: "2g"
+      inactive_time: "24h"
+    - name: "app_cache"
+      path: "{{ www_home }}/app_downloads/cache"
+      max_size: "1g"
       inactive_time: "24h"
    file_name: "{{ deploy_env }}_commcare"
    listen: "443 ssl http2{{ ' default_server' if deploy_env == primary_ssl_env else '' }}"
@@ -56,6 +74,18 @@ nginx_sites:
       proxy_buffers: 8 64k
       proxy_buffer_size: 64k
       client_body_buffer_size: 512k
+    - name: "~ /a/[^/]+/apps/download/"
+      balancer: "{{ deploy_env }}_commcare"
+      proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+      proxy_cache: app_cache
+      proxy_cache_lock: "on"
+      proxy_cache_lock_timeout: 30s
+      # exclude username arg from cache key
+      proxy_cache_key: "$proxy_host$request_uri_no_username"
+      client_body_buffer_size: 5m
+      proxy_ignore_headers: Set-Cookie
     - name: "/static"
       alias: "{{ nginx_static_home }}"
       add_header: "Access-Control-Allow-Origin *"
