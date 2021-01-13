@@ -426,5 +426,11 @@ rds_instances:
       effective_cache_size: 11520MB
       maintenance_work_mem: 960MB
 
+pgbouncer_nlbs:
+  - name: pgformplayer_nlb-production
+    targets:
+      - pgbouncer5-production
+      - pgbouncer8-production
+
 elasticache:
   create: no
