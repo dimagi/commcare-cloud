@@ -1,24 +1,16 @@
 ---
 
 - name: Install pgbouncer
-  apt: name=pgbouncer state=present
-  notify: Start pgbouncer
+  package: name=pgbouncer state=present
+  notify: Stop default pgbouncer
   tags:
     - pgbouncer
 
-- name: pgbouncer configuration
-  template: src=pgbouncer.ini.j2 dest="{{ pgbouncer_ini }}"
-  notify: Reload pgbouncer
+- name: Install systemd unit
+  template: src=pgbouncer-multiprocess@.service.j2 dest=/etc/systemd/system/pgbouncer-multiprocess@.service
+  notify: Reload systemd
   tags:
     - pgbouncer
-    - configure
-
-- name: pgbouncer users
-  template: src=pgbouncer.users.j2 dest="{{ pgbouncer_users }}"
-  notify: Reload pgbouncer
-  tags:
-    - pgbouncer
-    - configure
 
 - name: pgbouncer defaults
   template: src=pgbouncer.defaults.j2 dest=/etc/default/pgbouncer
@@ -30,7 +22,6 @@
     path: /etc/default/pgbouncer
     regexp: '^ULIMIT='
     line: 'ULIMIT="-n 65536"'
-  notify: Restart pgbouncer
   tags:
     - pgbouncer
   when: not ansible_check_mode
@@ -44,11 +35,31 @@
     reload: yes
   with_dict: "{{ pgbouncer_kernel_settings }}"
 
-- name: pgbouncer init script
-  template: src=pgbouncer.init.j2 dest=/etc/init.d/pgbouncer
+- name: Clean up possible previous instances
+  shell: |
+    systemctl stop pgbouncer-multiprocess@*
+    systemctl disable pgbouncer-multiprocess@*
+    rm -rf {{ pgbouncer_config_home }}/pgbouncer-*.ini
+    rm -rf {{ pgbouncer_config_home }}/userlist-*.txt
+    rm -rf /var/run/postgresql/pgbouncer-*
+  tags:
+    - configure
+
+- name: pgbouncer configuration
+  template: src=pgbouncer.ini.j2 dest="{{ pgbouncer_ini }}"
   notify: Restart pgbouncer
   tags:
     - pgbouncer
+    - configure
+  with_sequence: count="{{ pgbouncer_processes | default(1) }}"
+
+- name: pgbouncer users
+  template: src=pgbouncer.users.j2 dest="{{ pgbouncer_users }}"
+  notify: Restart pgbouncer
+  tags:
+    - pgbouncer
+    - configure
+  with_sequence: count="{{ pgbouncer_processes | default(1) }}"
 
 # Allows to execute task only when a tag is specified: https://serverfault.com/a/748864
 - shell: /bin/true
@@ -83,3 +94,4 @@
   until: not result.failed or 'process not presently configured with monit' not in result.msg
   retries: 5
   delay: 20
+

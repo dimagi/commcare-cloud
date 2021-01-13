@@ -1,12 +1,22 @@
 ---
-- name: Start pgbouncer
+- name: Stop default pgbouncer
   become: yes
-  action: service name=pgbouncer state=started
+  systemd:
+    name: pgbouncer
+    state: stopped
+    enabled: no
+
+- name: Reload systemd
+  become: yes
+  systemd:
+    daemon_reload: yes
 
 - name: Restart pgbouncer
   become: yes
-  action: service name=pgbouncer state=restarted
+  systemd:
+    name: pgbouncer-multiprocess@{{ item }}
+    enabled: yes
+    masked: no
+    state: restarted
+  with_sequence: count={{ pgbouncer_processes | default(1) }}
 
-- name: Reload pgbouncer
-  become: yes
-  action: service name=pgbouncer state=reloaded

@@ -1,0 +1,15 @@
+[Unit]
+Description=Lightweight connection pooler for PostgreSQL (#: %i)
+After=network-online.target
+
+[Service]
+#Type=notify
+User=postgres
+Group=postgres
+ExecStart=/usr/sbin/pgbouncer /etc/pgbouncer/pgbouncer-%i.ini
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
