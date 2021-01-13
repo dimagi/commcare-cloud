@@ -118,16 +118,17 @@ class PostgresqlConfig(jsonobject.JsonObject):
         data.update(self.pgbouncer_override.to_json())
 
         # generate list of databases per host for use in pgbouncer and postgresql configuration
-        pgbouncer_hosts = environment.groups.get('postgresql', [])
-        if self.DEFAULT_POSTGRESQL_HOST not in pgbouncer_hosts:
-            pgbouncer_hosts.append(self.DEFAULT_POSTGRESQL_HOST)
-        pgbouncer_hosts.extend(environment.groups.get('citusdb_master', []))
-        pgbouncer_hosts.extend(environment.groups.get('pgbouncer', []))
+        all_pgbouncer_hosts = environment.groups.get('postgresql', [])
+        if self.DEFAULT_POSTGRESQL_HOST not in all_pgbouncer_hosts:
+            all_pgbouncer_hosts.append(self.DEFAULT_POSTGRESQL_HOST)
+        all_pgbouncer_hosts.extend(environment.groups.get('citusdb_master', []))
+        all_pgbouncer_hosts.extend(environment.groups.get('pgbouncer', []))
 
         dbs_by_host = defaultdict(list)
         for db in sorted_dbs:
-            if db['pgbouncer_host'] in pgbouncer_hosts:
-                dbs_by_host[db['pgbouncer_host']].append(db)
+            for pgbouncer_host in db['pgbouncer_hosts']:
+                if pgbouncer_host in all_pgbouncer_hosts:
+                    dbs_by_host[pgbouncer_host].append(db)
 
         for host in environment.groups.get('pg_standby', []):
             root_pg_host = self._get_root_pg_host(host, environment)
@@ -148,7 +149,8 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 if db['host'] == citusdb_master:
                     db_config = copy.deepcopy(db)
                     db_config['host'] = host
-                    db_config['pgbouncer_host'] = host
+                    db_config['pgbouncer_hosts'] = [host]
+                    db_config['pgbouncer_endpoint'] = host
                     citus_dbs.append(db_config)
 
             dbs_by_host[host] = citus_dbs
@@ -187,10 +189,16 @@ class PostgresqlConfig(jsonobject.JsonObject):
             elif db.host != '127.0.0.1':
                 db.host = environment.translate_host(db.host, environment.paths.postgresql_yml)
 
-            if db.pgbouncer_host is None:
-                db.pgbouncer_host = db.host
+            if not db.pgbouncer_hosts:
+                db.pgbouncer_hosts = [db.host]
+                db.pgbouncer_endpoint = db.host
             else:
-                db.pgbouncer_host = environment.translate_host(db.pgbouncer_host, environment.paths.postgresql_yml)
+                db.pgbouncer_hosts = [
+                    environment.translate_host(pgbouncer_host, environment.paths.postgresql_yml)
+                    for pgbouncer_host in db.pgbouncer_hosts
+                ]
+                db.pgbouncer_endpoint = environment.translate_host(
+                    db.pgbouncer_endpoint, environment.paths.postgresql_yml)
             if db.port is None:
                 if db.host in host_settings:
                     db.port = host_settings[db.host].port
@@ -303,7 +311,8 @@ class DBOptions(jsonobject.JsonObject):
 
     name = jsonobject.StringProperty(required=True)
     host = jsonobject.StringProperty()
-    pgbouncer_host = jsonobject.StringProperty(default=None)
+    pgbouncer_hosts = jsonobject.ListProperty(str)
+    pgbouncer_endpoint = jsonobject.StringProperty(default=None)
     port = jsonobject.IntegerProperty(default=None)
     user = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
@@ -315,6 +324,16 @@ class DBOptions(jsonobject.JsonObject):
 
     # config values to be set at the database level
     pg_config = jsonobject.ListProperty(lambda: PGConfigItem)
+
+    @classmethod
+    def wrap(cls, data):
+        if 'pgbouncer_host' in data:
+            assert 'pgbouncer_hosts' not in data and 'pgbouncer_endpoint' not in data
+            pgbouncer_host = data.pop('pgbouncer_host')
+            data['pgbouncer_hosts'] = [pgbouncer_host]
+            data['pgbouncer_endpoint'] = pgbouncer_host
+
+        return super(DBOptions, cls).wrap(data)
 
 
 class MainDBOptions(DBOptions):
