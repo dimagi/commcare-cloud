@@ -9,7 +9,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.26
+    pgbouncer_endpoint: 10.247.164.26
+    pgbouncer_hosts:
+      - 10.247.164.26
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -22,7 +24,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.25
+    pgbouncer_endpoint: 10.247.164.25
+    pgbouncer_hosts:
+      - 10.247.164.25
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
@@ -36,7 +40,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.24
+    pgbouncer_endpoint: 10.247.164.24
+    pgbouncer_hosts:
+      - 10.247.164.24
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -49,7 +55,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.66
+    pgbouncer_endpoint: 10.247.164.66
+    pgbouncer_hosts:
+      - 10.247.164.66
     port: 6432
     query_stats: false
     shards:
@@ -65,7 +73,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.64
+    pgbouncer_endpoint: 10.247.164.64
+    pgbouncer_hosts:
+      - 10.247.164.64
     port: 6432
     query_stats: false
     shards:
@@ -81,7 +91,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.66
+    pgbouncer_endpoint: 10.247.164.66
+    pgbouncer_hosts:
+      - 10.247.164.66
     port: 6432
     query_stats: false
     shards:
@@ -97,7 +109,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.21
+    pgbouncer_endpoint: 10.247.164.21
+    pgbouncer_hosts:
+      - 10.247.164.21
     port: 6432
     query_stats: false
     shards:
@@ -113,7 +127,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.21
+    pgbouncer_endpoint: 10.247.164.21
+    pgbouncer_hosts:
+      - 10.247.164.21
     port: 6432
     query_stats: false
     shards:
@@ -129,7 +145,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.21
+    pgbouncer_endpoint: 10.247.164.21
+    pgbouncer_hosts:
+      - 10.247.164.21
     port: 6432
     query_stats: false
     shards:
@@ -145,7 +163,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.20
+    pgbouncer_endpoint: 10.247.164.20
+    pgbouncer_hosts:
+      - 10.247.164.20
     port: 6432
     query_stats: false
     shards:
@@ -161,7 +181,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.20
+    pgbouncer_endpoint: 10.247.164.20
+    pgbouncer_hosts:
+      - 10.247.164.20
     port: 6432
     query_stats: false
     shards:
@@ -177,7 +199,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.20
+    pgbouncer_endpoint: 10.247.164.20
+    pgbouncer_hosts:
+      - 10.247.164.20
     port: 6432
     query_stats: false
     shards:
@@ -193,7 +217,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.64
+    pgbouncer_endpoint: 10.247.164.64
+    pgbouncer_hosts:
+      - 10.247.164.64
     port: 6432
     query_stats: false
     shards:
@@ -209,7 +235,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.56
+    pgbouncer_endpoint: 10.247.164.56
+    pgbouncer_hosts:
+      - 10.247.164.56
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -222,7 +250,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.70
+    pgbouncer_endpoint: 10.247.164.70
+    pgbouncer_hosts:
+      - 10.247.164.70
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -235,7 +265,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.25
+    pgbouncer_endpoint: 10.247.164.25
+    pgbouncer_hosts:
+      - 10.247.164.25
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -248,7 +280,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.25
+    pgbouncer_endpoint: 10.247.164.25
+    pgbouncer_hosts:
+      - 10.247.164.25
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -295,7 +329,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.25
+    pgbouncer_endpoint: 10.247.164.25
+    pgbouncer_hosts:
+      - 10.247.164.25
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
@@ -310,7 +346,9 @@ postgresql_dbs:
         options: {}
         password: '{{ postgres_users.commcare.password }}'
         pg_config: []
-        pgbouncer_host: 10.247.164.66
+        pgbouncer_endpoint: 10.247.164.66
+        pgbouncer_hosts:
+          - 10.247.164.66
         port: 6432
         query_stats: false
         shards:
@@ -326,7 +364,9 @@ postgresql_dbs:
         options: {}
         password: '{{ postgres_users.commcare.password }}'
         pg_config: []
-        pgbouncer_host: 10.247.164.64
+        pgbouncer_endpoint: 10.247.164.64
+        pgbouncer_hosts:
+          - 10.247.164.64
         port: 6432
         query_stats: false
         shards:
@@ -342,7 +382,9 @@ postgresql_dbs:
         options: {}
         password: '{{ postgres_users.commcare.password }}'
         pg_config: []
-        pgbouncer_host: 10.247.164.66
+        pgbouncer_endpoint: 10.247.164.66
+        pgbouncer_hosts:
+          - 10.247.164.66
         port: 6432
         query_stats: false
         shards:
@@ -358,7 +400,9 @@ postgresql_dbs:
         options: {}
         password: '{{ postgres_users.commcare.password }}'
         pg_config: []
-        pgbouncer_host: 10.247.164.21
+        pgbouncer_endpoint: 10.247.164.21
+        pgbouncer_hosts:
+          - 10.247.164.21
         port: 6432
         query_stats: false
         shards:
@@ -374,7 +418,9 @@ postgresql_dbs:
         options: {}
         password: '{{ postgres_users.commcare.password }}'
         pg_config: []
-        pgbouncer_host: 10.247.164.21
+        pgbouncer_endpoint: 10.247.164.21
+        pgbouncer_hosts:
+          - 10.247.164.21
         port: 6432
         query_stats: false
         shards:
@@ -390,7 +436,9 @@ postgresql_dbs:
         options: {}
         password: '{{ postgres_users.commcare.password }}'
         pg_config: []
-        pgbouncer_host: 10.247.164.21
+        pgbouncer_endpoint: 10.247.164.21
+        pgbouncer_hosts:
+          - 10.247.164.21
         port: 6432
         query_stats: false
         shards:
@@ -406,7 +454,9 @@ postgresql_dbs:
         options: {}
         password: '{{ postgres_users.commcare.password }}'
         pg_config: []
-        pgbouncer_host: 10.247.164.20
+        pgbouncer_endpoint: 10.247.164.20
+        pgbouncer_hosts:
+          - 10.247.164.20
         port: 6432
         query_stats: false
         shards:
@@ -422,7 +472,9 @@ postgresql_dbs:
         options: {}
         password: '{{ postgres_users.commcare.password }}'
         pg_config: []
-        pgbouncer_host: 10.247.164.20
+        pgbouncer_endpoint: 10.247.164.20
+        pgbouncer_hosts:
+          - 10.247.164.20
         port: 6432
         query_stats: false
         shards:
@@ -438,7 +490,9 @@ postgresql_dbs:
         options: {}
         password: '{{ postgres_users.commcare.password }}'
         pg_config: []
-        pgbouncer_host: 10.247.164.20
+        pgbouncer_endpoint: 10.247.164.20
+        pgbouncer_hosts:
+          - 10.247.164.20
         port: 6432
         query_stats: false
         shards:
@@ -454,7 +508,9 @@ postgresql_dbs:
         options: {}
         password: '{{ postgres_users.commcare.password }}'
         pg_config: []
-        pgbouncer_host: 10.247.164.64
+        pgbouncer_endpoint: 10.247.164.64
+        pgbouncer_hosts:
+          - 10.247.164.64
         port: 6432
         query_stats: false
         shards:
@@ -470,7 +526,9 @@ postgresql_dbs:
       options: {}
       password: '{{ postgres_users.commcare.password }}'
       pg_config: []
-      pgbouncer_host: 10.247.164.56
+      pgbouncer_endpoint: 10.247.164.56
+      pgbouncer_hosts:
+        - 10.247.164.56
       port: 6432
       query_stats: false
       user: '{{ postgres_users.commcare.username }}'
@@ -483,7 +541,8 @@ postgresql_dbs:
       options: {}
       password: null
       pg_config: []
-      pgbouncer_host: null
+      pgbouncer_endpoint: null
+      pgbouncer_hosts: []
       port: null
       query_stats: false
       user: null
@@ -496,7 +555,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.25
+    pgbouncer_endpoint: 10.247.164.25
+    pgbouncer_hosts:
+      - 10.247.164.25
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -509,7 +570,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.26
+    pgbouncer_endpoint: 10.247.164.26
+    pgbouncer_hosts:
+      - 10.247.164.26
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -524,7 +587,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.24
+    pgbouncer_endpoint: 10.247.164.24
+    pgbouncer_hosts:
+      - 10.247.164.24
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -537,7 +602,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.70
+    pgbouncer_endpoint: 10.247.164.70
+    pgbouncer_hosts:
+      - 10.247.164.70
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -550,7 +617,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 10.247.164.25
+    pgbouncer_endpoint: 10.247.164.25
+    pgbouncer_hosts:
+      - 10.247.164.25
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'

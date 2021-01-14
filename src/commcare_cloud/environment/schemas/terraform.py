@@ -1,5 +1,8 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
+import re
+
 import jsonobject
 from clint.textui import puts
 from commcare_cloud.colors import color_warning
@@ -25,6 +28,7 @@ class TerraformConfig(jsonobject.JsonObject):
     servers = jsonobject.ListProperty(lambda: ServerConfig)
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)
+    pgbouncer_nlbs = jsonobject.ListProperty(lambda: PgbouncerNlbs)
     elasticache = jsonobject.ObjectProperty(lambda: ElasticacheConfig, default=None)
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
     r53_private_zone = jsonobject.ObjectProperty(lambda: RoutePrivateZoneConfig, default=None)
@@ -147,6 +151,23 @@ class RdsInstanceConfig(jsonobject.JsonObject):
             if name not in params:
                 params[name] = value
         return super(RdsInstanceConfig, cls).wrap(data)
+
+
+class PgbouncerNlbs(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    name = jsonobject.StringProperty(required=True)
+    identifier = jsonobject.StringProperty(required=False)
+    targets = jsonobject.ListProperty(str)
+
+    @classmethod
+    def wrap(cls, data):
+        self = super(PgbouncerNlbs, cls).wrap(data)
+        if not self.identifier:
+            self.identifier = self.name.replace('_', '-')
+        if not re.match('[a-z]+-nlb-[a-z]+', self.identifier):
+            raise ValueError("commcare-cloud requires pgbouncer nlb identifier to be of the form 'pg{name}-nlb-{environment}'")
+        return self
+
 
 
 class ElasticacheConfig(jsonobject.JsonObject):

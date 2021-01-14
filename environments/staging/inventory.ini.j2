@@ -30,15 +30,22 @@ web7
 web8
 
 {{ __pgproxy2__ }}
+{{ __pgbouncer0__ }}
 
 {{ __rds_pg0__ }}
 
 [remote_postgresql:children]
 rds_pg0
 
+{{ __pgformplayer_nlb__ }}
+
 [postgresql:children]
 pgproxy2
 remote_postgresql
+pgformplayer_nlb
+
+[pgbouncer:children]
+pgbouncer0
 
 {{ __couch6__ }}
 
@@ -126,6 +133,8 @@ control1
 
 [ansible_skip:children]
 rds_pg0
+pgformplayer_nlb
+
 
 [django_manage:children]
 # Amazon EC2
