@@ -183,8 +183,8 @@ def call_commcare_cloud(input_argv=sys.argv):
                 Setup Python 3
                 - Create a new Python-3-based virtualenv (3.6 recommended)
                 - pip install -r requirements3.txt
-                - rm -rf src/commcare_cloud.egg-info
                 - pip install -e .
+                - rm src/commcare_cloud.egg-info/requires.txt
                 - manage-commcare-cloud install
                 """.format(force_python_2)))
             exit(-1)
