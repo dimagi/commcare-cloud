@@ -7,6 +7,11 @@ newest first.
 
 ## Changelog
 
+### **2021-01-11** [Add support for Python 3](0041-python3-support.md)
+Python 3 is supported and now the preferred version to use. In anticipation of dropping Python 2 support,
+an error will be genereated if running commands with Python 2. Instructions for upgrading to Python 3,
+as well as continuing to use Python 2 are provided in the error message.
+
 ### **2021-01-08** [Install new `apt` requirements on machines running commcarehq code](0040-install-new-apt-requirements.md)
 We will be adding SAML 2.0 Single Sign On (SSO) support over the next few months which
 requires installing new `apt` packages as dependencies of python requirements.
