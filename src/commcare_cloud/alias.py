@@ -2,10 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 
 def _generate_args(*args, **kwargs):
-    argv = []
-
-    for arg in args:
-        argv.append(arg)
+    argv = [str(arg) for arg in args]
     for key, value in kwargs.items():
         if value is False or value is None:
             continue
