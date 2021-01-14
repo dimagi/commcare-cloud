@@ -415,7 +415,7 @@ def clean_releases(keep=3):
         for index, release in enumerate(reversed(releases)):
             if release == current_release or release == os.path.basename(env.code_root):
                 valid_releases += 1
-            elif files.contains(RELEASE_RECORD, release, use_sudo=True):
+            elif files.contains(RELEASE_RECORD, release, use_sudo=True, shell=True):
                 valid_releases += 1
                 if valid_releases > keep:
                     to_remove.append(release)
@@ -438,6 +438,11 @@ def clean_releases(keep=3):
 
     if os.path.basename(env.code_root) in to_remove:
         print(red('Aborting clean_releases, about to remove current release'))
+        return
+
+    if valid_releases < keep:
+        print(red('\n\nAborting clean_releases, {}/{} valid '
+                  'releases were found\n\n'.format(valid_releases, keep)))
         return
 
     for release in to_remove:
