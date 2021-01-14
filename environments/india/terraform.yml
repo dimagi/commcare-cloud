@@ -262,6 +262,4 @@ rds_instances:
 elasticache_cluster:
   create: no
 
-r53_private_zone:
-  create: no
-  create_record: no
+r53_private_zone: null
