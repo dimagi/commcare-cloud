@@ -259,6 +259,12 @@ rds_instances:
     multi_az: true
     engine_version: 9.6.9
 
+pgbouncer_nlbs:
+  - name: pgformplayer_nlb-india
+    targets:
+      - pgbouncer0-india
+
+
 elasticache_cluster:
   create: no
 
