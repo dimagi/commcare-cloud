@@ -41,6 +41,8 @@ kafka1-india: 10.203.40.207
 kafka1-india.instance_id: i-030605a66f963c250
 pgbouncer0-india: 10.203.40.199
 pgbouncer0-india.instance_id: i-05aabe9136e92475c
+pgbouncer1-india: 10.203.40.200
+pgbouncer1-india.instance_id: i-0ccb10bb6d8048ea1
 pgformplayer_nlb-india: pgformplayer-nlb-india-bd402933c980310c.elb.ap-south-1.amazonaws.com
 pgmain0-india: pgmain0-india.ccqpd1xrju8m.ap-south-1.rds.amazonaws.com
 pillow2-india: 10.203.10.9

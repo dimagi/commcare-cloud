@@ -30,6 +30,7 @@ dbs:
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_hosts:
       - pgbouncer0
+      - pgbouncer1
   ucr:
     pgbouncer_host: pgbouncer0
   synclogs:
