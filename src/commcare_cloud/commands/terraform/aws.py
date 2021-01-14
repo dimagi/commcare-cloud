@@ -438,7 +438,7 @@ def _sync_sso_to_v1_credentials(aws_session_profile):
         aws_access_key_id=credentials['AccessKeyId'],
         aws_secret_access_key=credentials['SecretAccessKey'],
         aws_session_token=credentials['SessionToken'],
-        expiration=parser.isoparse(credentials['Expiration']),
+        expiration=parser.parse(credentials['Expiration']),
     )
 
 
@@ -584,7 +584,7 @@ def _has_valid_session_credentials_for_sso():
             continue
 
         if 'startUrl' in contents and 'expiresAt' in contents:
-            expiration = parser.isoparse(contents['expiresAt'])
+            expiration = parser.parse(contents['expiresAt'])
             return datetime.utcnow().replace(tzinfo=timezone.utc) < expiration
     return False
 
@@ -599,7 +599,7 @@ def _has_valid_v1_session_credentials(aws_profile):
     if aws_profile not in config.sections():
         return False
     try:
-        expiration = parser.isoparse(config.get(aws_profile, 'expiration'))
+        expiration = parser.parse(config.get(aws_profile, 'expiration'))
     except configparser.NoOptionError:
         return False
 
