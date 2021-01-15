@@ -271,6 +271,7 @@ pgbouncer_nlbs:
   - name: pgformplayer_nlb-india
     targets:
       - pgbouncer0-india
+      - pgbouncer1-india
 
 
 elasticache_cluster:
