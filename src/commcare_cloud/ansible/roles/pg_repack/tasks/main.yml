@@ -80,6 +80,14 @@
     group: "postgres"
     mode: 0755
 
+- name: Creating a file with content
+  copy:
+    dest: "/root/.pgpass_{{ item.database }}"
+    mode: "0600"
+    content: |
+      {{ item.host|default('localhost') }}:{{ item.port|default(5432) }}:{{ item.database }}:{{ item.username|default(None) }}:{{ item.password|default(None) }}
+  loop: "{{ pg_repack.get(inventory_hostname, []) }}"
+
 - name: Copy pg_repack execution script
   become: yes
   template:
