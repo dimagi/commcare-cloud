@@ -77,8 +77,7 @@
 
 - name: capturing username
   pause:
-    prompt: "Please enter your dimagi username"
-    seconds: 30
+    prompt: "Please enter your Dimagi username"
   register: username_input
 
 - fail: msg="The given username is not defined or empty or not a valid dev_user"
