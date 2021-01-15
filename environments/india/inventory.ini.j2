@@ -41,6 +41,7 @@ es_data
 {{ __pillow2__ }}
 {{ __kafka1__ }} kafka_broker_id=0
 {{ __pgbouncer0__ }}
+{{ __pgbouncer1__ }}
 {{ __proxy1__ }}
 {{ __rds_pgmain0__ }}
 {{ __pgformplayer_nlb__ }}
@@ -78,6 +79,7 @@ remote_postgresql
 pgbouncer0
 
 [pgbouncer:children]
+pgbouncer1
 pgformplayer_nlb
 
 [rabbitmq:children]
