@@ -497,8 +497,9 @@ def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
     if env.resume and command_index < env.checkpoint_index:
         print(blue("Skipping command: '{}'".format(command_name)))
         return
-    cache_deploy_state(command_index)
     fn(*args, **kwargs)
+    cache_deploy_state(command_index + 1)
+
 
 
 def announce_deploy_start():
