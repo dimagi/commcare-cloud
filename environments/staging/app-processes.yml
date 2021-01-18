@@ -58,8 +58,10 @@ pillows:
     case-pillow:
       num_processes: 2
       processor_chunk_size: 1
+      dedicated_migration_process: True
     xform-pillow:
       num_processes: 2
+      dedicated_migration_process: True
     group-pillow:
       num_processes: 1
     user-pillow:

@@ -76,6 +76,7 @@ pillows:
   pillow_a000:
     case-pillow:
       num_processes: 16
+      dedicated_migration_process: False
     user-pillow:
       num_processes: 1
     group-pillow:
@@ -109,3 +110,4 @@ pillows:
   pillow_a001:
     xform-pillow:
       num_processes: 32
+      dedicated_migration_process: False
