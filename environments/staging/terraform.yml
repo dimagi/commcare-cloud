@@ -204,6 +204,15 @@ servers:
     group: postgresql
     os: ubuntu_pro_bionic
 
+  - server_name: "pgbouncer0-staging"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    group: postgresql
+    os: ubuntu_pro_bionic
+
   - server_name: "redis2-staging"
     server_instance_type: t3.medium
     network_tier: "db-private"
@@ -268,6 +277,12 @@ rds_instances:
     params:
       shared_preload_libraries: pg_stat_statements
       track_io_timing: true
+
+pgbouncer_nlbs:
+  - name: "pgformplayer_nlb-staging"
+    targets:
+      - pgbouncer0-staging
+      - pgproxy2-staging
 
 elasticache:
   create: no

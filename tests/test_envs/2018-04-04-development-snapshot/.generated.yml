@@ -9,7 +9,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 192.168.33.16
+    pgbouncer_endpoint: 192.168.33.16
+    pgbouncer_hosts:
+      - 192.168.33.16
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -22,7 +24,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 192.168.33.16
+    pgbouncer_endpoint: 192.168.33.16
+    pgbouncer_hosts:
+      - 192.168.33.16
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -35,7 +39,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 192.168.33.16
+    pgbouncer_endpoint: 192.168.33.16
+    pgbouncer_hosts:
+      - 192.168.33.16
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -55,7 +61,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 192.168.33.16
+    pgbouncer_endpoint: 192.168.33.16
+    pgbouncer_hosts:
+      - 192.168.33.16
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -68,7 +76,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 192.168.33.16
+    pgbouncer_endpoint: 192.168.33.16
+    pgbouncer_hosts:
+      - 192.168.33.16
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -83,7 +93,9 @@ postgresql_dbs:
     options: {}
     password: '{{ postgres_users.commcare.password }}'
     pg_config: []
-    pgbouncer_host: 192.168.33.16
+    pgbouncer_endpoint: 192.168.33.16
+    pgbouncer_hosts:
+      - 192.168.33.16
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'

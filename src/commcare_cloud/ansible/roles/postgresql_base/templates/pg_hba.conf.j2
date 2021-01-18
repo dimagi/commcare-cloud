@@ -60,11 +60,12 @@ host    all             all             ::1/128                 md5
 
 {% for db in postgresql_dbs.all %}
 {% if db.host == inventory_hostname %}
-{% set host = db.pgbouncer_host %}
+{% for host in db.pgbouncer_hosts %}
 {% if host | ipaddr %}
 host   all	all	{{ host }}/32   trust
 {% else %}
 host   all	all	{{ lookup('dig', host, wantlist=True)[0] }}/32	trust
 {% endif %}
+{% endfor %}
 {% endif %}
 {% endfor %}
