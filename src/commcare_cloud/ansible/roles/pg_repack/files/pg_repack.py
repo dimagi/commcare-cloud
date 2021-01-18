@@ -162,6 +162,8 @@ def main():
 
     if args.no_superuser_check:
         repack_command.append('-k')
+    if not args.password:
+        repack_command.append('-w')
 
     try:
         cpu_count = multiprocessing.cpu_count()
