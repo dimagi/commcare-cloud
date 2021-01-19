@@ -10,7 +10,7 @@
 {% set current_host = inventory_hostname %}
 {% if is_monolith %}{% set current_host = DEFAULT_POSTGRESQL_HOST %}{% endif %}
 {% for db in postgresql_dbs.by_pgbouncer_host.get(current_host, []) %}
-{{ db.name }} = host={{ "localhost" if db.host == db.pgbouncer_host else db.host }} port={{ postgresql_port }}
+{{ db.name }} = host={{ "localhost" if [db.host] == db.pgbouncer_hosts else db.host }} port={{ postgresql_port }}
 {% endfor %}
 
 ;; Configuration section
