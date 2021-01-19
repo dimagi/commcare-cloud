@@ -54,7 +54,7 @@ dbs:
   form_processing:
     proxy:
       host: pgbouncer3
-      pgbouncer_host: pgbouncer3
+      pgbouncer_host: pgbouncer6
     partitions:
       p1:
         shards: [0, 204]
