@@ -30,6 +30,7 @@ class PillowOptions(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     start_process = jsonobject.IntegerProperty(default=0)
     num_processes = jsonobject.IntegerProperty(default=1)
+    dedicated_migration_process = jsonobject.BooleanProperty(default=False)
     total_processes = jsonobject.IntegerProperty(default=None, exclude_if_none=True)
     processor_chunk_size = jsonobject.IntegerProperty(default=None, exclude_if_none=True)
 

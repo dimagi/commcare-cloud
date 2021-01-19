@@ -75,17 +75,6 @@ servers:
     os: bionic
     volume_encrypted: no
     
-  - server_name: "es24-production"
-    server_instance_type: r5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 1400
-      encrypted: yes
-    group: "elasticsearch"
-    os: bionic
   - server_name: "es25-production"
     server_instance_type: r5.4xlarge
     network_tier: "db-private"
@@ -181,6 +170,13 @@ servers:
     volume_size: 80
     group: "couchdb2_proxy"
     os: bionic
+  - server_name: "couchproxy3-production"
+    server_instance_type: c5.xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "couchdb2_proxy"
+    os: ubuntu_pro_bionic
 
   - server_name: "couch12-production"
     server_instance_type: c5.12xlarge
@@ -290,7 +286,7 @@ servers:
     os: bionic
 
   - server_name: "pgbouncer3-production" # host and pgbouncer_host for pl/proxy, pgbouncer host for shard dbs
-    server_instance_type: r5.8xlarge
+    server_instance_type: r5.16xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -334,6 +330,20 @@ proxy_servers:
     group: "proxy"
     os: bionic
   - server_name: "proxy3-production"
+    server_instance_type: "c5.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "proxy"
+    os: ubuntu_pro_bionic
+  - server_name: "proxy4-production"
+    server_instance_type: "c5.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    group: "proxy"
+    os: ubuntu_pro_bionic
+  - server_name: "proxy5-production"
     server_instance_type: "c5.large"
     network_tier: "app-private"
     az: "a"
@@ -423,6 +433,4 @@ elasticache:
 elasticache_cluster:
   create: no
 
-r53_private_zone:
-  create: no
-  create_record: no
+r53_private_zone: null

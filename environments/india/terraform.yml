@@ -240,6 +240,14 @@ servers:
     volume_encrypted: no
     group: "postgresql"
     os: bionic
+  - server_name: "pgbouncer1-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: ubuntu_pro_bionic
 
 
 proxy_servers:
@@ -259,9 +267,14 @@ rds_instances:
     multi_az: true
     engine_version: 9.6.9
 
+pgbouncer_nlbs:
+  - name: pgformplayer_nlb-india
+    targets:
+      - pgbouncer0-india
+      - pgbouncer1-india
+
+
 elasticache_cluster:
   create: no
 
-r53_private_zone:
-  create: no
-  create_record: no
+r53_private_zone: null

@@ -22,10 +22,10 @@ couch14-production: 10.202.40.216
 couch14-production.instance_id: i-0634cf1adc9ba838c
 couchproxy2-production: 10.202.40.235
 couchproxy2-production.instance_id: i-0e841461ac8db35ac
+couchproxy3-production: 10.202.40.196
+couchproxy3-production.instance_id: i-0b1a2bc019f113be3
 djangomanage1-production: 10.202.10.54
 djangomanage1-production.instance_id: i-06b6ff4af62079cda
-es24-production: 10.202.40.65
-es24-production.instance_id: i-0e4841b753f6ff0cb
 es25-production: 10.202.40.246
 es25-production.instance_id: i-094c7083635fb389e
 es26-production: 10.202.40.83
@@ -289,6 +289,10 @@ proxy2-production.instance_id: i-08707523172eb37bf
 proxy2-production.public_ip: 3.84.181.229
 proxy3-production: 10.202.10.237
 proxy3-production.instance_id: i-0eb4444059792b400
+proxy4-production: 10.202.10.67
+proxy4-production.instance_id: i-0c410330787ab0505
+proxy5-production: 10.202.10.226
+proxy5-production.instance_id: i-0e15d77f95a9e7bbc
 rabbit2-production: 10.202.42.100
 rabbit2-production.instance_id: i-0afd113aa270a774d
 rabbit3-production: 10.202.42.102

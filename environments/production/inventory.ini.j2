@@ -1,9 +1,13 @@
 {{ __proxy2__ }}
 {{ __proxy3__ }}
+{{ __proxy4__ }}
+{{ __proxy5__ }}
 
 [proxy:children]
 proxy2
 proxy3
+proxy4
+proxy5
 
 {{ __web_a__ }}
 
@@ -134,8 +138,6 @@ redis0
 [shared_dir_host:children]
 shareddir1
 
-{{ __es24__ }} elasticsearch_node_name=es24
-
 {{ __es25__ }} elasticsearch_node_name=es25
 
 {{ __es26__ }} elasticsearch_node_name=es26
@@ -168,7 +170,6 @@ elasticsearch_master=true
 elasticsearch_data=false
 
 [es_data:children]
-es24
 es25
 es26
 es27
@@ -199,7 +200,10 @@ swap_size=8G
 
 {{ __couchproxy2__ }}
 
+{{ __couchproxy3__ }}
+
 [couchdb2_proxy:children]
+couchproxy3
 couchproxy2
 
 {{ __control1__ }}

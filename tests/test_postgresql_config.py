@@ -1,5 +1,6 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
+import difflib
 import os
 from io import open
 from unittest import SkipTest
@@ -10,6 +11,7 @@ from parameterized import parameterized
 
 from commcare_cloud.environment.main import Environment
 from commcare_cloud.environment.paths import DefaultPaths
+from commcare_cloud.yaml import PreserveUnsafeDumper
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
 TEST_ENVIRONMENTS = os.listdir(TEST_ENVIRONMENTS_DIR)
@@ -30,4 +32,13 @@ def test_postgresql_config(env_name):
 
     actual_json = env.postgresql_config.to_generated_variables(env)['postgresql_dbs']
 
-    assert_equal(actual_json, expected_json)
+    assert_equal(actual_json, expected_json, msg=(
+        '\n\n' +
+        '\n'.join(difflib.unified_diff(
+            list(yaml.dump(actual_json, Dumper=PreserveUnsafeDumper).splitlines()),
+            list(yaml.dump(expected_json, Dumper=PreserveUnsafeDumper).splitlines()),
+            'Actual',
+            'Expected',
+            lineterm=''
+        ))
+    ))

@@ -1,0 +1,16 @@
+#!/bin/bash
+ps -cax | grep /usr/lib/postgresql/9.6/bin/pg_repack
+
+if [ $? -eq 0 ]; then
+	  echo "previous repacking process is still running."
+else
+      export PGPASSFILE=/root/.pgpass_{{ item.database }}
+
+	  command=`{{ pg_repack_script_path }} --pg-repack {{ postgres_install_dir }}/bin/pg_repack --host {{ item.host|default('localhost') }} --port {{ item.port|default(5432) }} -d {{ item.database }} {% if item.tables|default(None) %} --tables {{ item.tables|join(' ') }}{% endif %} --table-size-limit {{ item.table_size|default(10) }} --dead-tup-ratio {{ item.ratio|default(0.05) }} {% if item.username|default(None) %} -U {{ item.username }}{% endif %} {% if item.skip_superuser_check|default(pg_repack_skip_superuser_check) %} -k{% endif %}`
+
+	  result=$?
+	  if [ $result -eq 1 ]
+	  then
+		echo "The pg_repack task is failed, refer logs for more details and the reverify pg_repack.py, exit status: ${result}"
+	  fi
+fi

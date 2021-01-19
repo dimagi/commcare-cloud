@@ -16,10 +16,11 @@ pgbouncer_override:
 pg_repack:
   pgproxy2:
     - database: commcarehq_synclogs
+      host: "{{ DEFAULT_POSTGRESQL_HOST }}"
       username: "{{ postgres_users.root.username }}"
       password: "{{ postgres_users.root.password }}"
-      port: 6432
-      skip_superuser_check: False
+      port: 5432
+      skip_superuser_check: True
 
 dbs:
   main:
@@ -31,7 +32,10 @@ dbs:
   synclogs:
     pgbouncer_host: pgproxy2
   formplayer:
-    pgbouncer_host: pgproxy2
+    pgbouncer_endpoint: pgformplayer_nlb
+    pgbouncer_hosts:
+      - pgproxy2
+      - pgbouncer0
   form_processing:
     proxy:
       host: pgproxy2
