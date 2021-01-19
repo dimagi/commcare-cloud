@@ -2,7 +2,7 @@ pgbouncer_port: 6432
 pgbouncer_pid_file: "/var/run/postgresql/pgbouncer-{{ item }}.pid"
 pgbouncer_config_home: /etc/pgbouncer
 pgbouncer_ini: "{{ pgbouncer_config_home }}/pgbouncer-{{ item }}.ini"
-pgbouncer_users: "{{ pgbouncer_config_home }}/userlist-{{ item }}.txt"
+pgbouncer_users: "{{ pgbouncer_config_home }}/userlist.txt"
 pgbouncer_socket_dir: "/var/run/postgresql/pgbouncer-{{ item }}"
 pgbouncer_log_file: "/var/log/postgresql/pgbouncer-{{ item }}.log"
 pgbouncer_ulimit_fd: 65536
