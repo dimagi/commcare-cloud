@@ -82,18 +82,6 @@
     - pgbouncer
     - configure
 
-- name: pgbouncer remove users for excess processes
-  become: yes
-  file:
-    path: "{{ pgbouncer_users }}"
-    state: absent
-  with_sequence: start="{{ pgbouncer_processes + 1 }}" end="{{ pgbouncer_current_processes | max }}"
-  when: pgbouncer_current_processes | max > pgbouncer_processes
-  ignore_errors: yes
-  tags:
-    - pgbouncer
-    - configure
-
 - name: pgbouncer remove unix socket directory for excess processes
   become: yes
   file:
@@ -134,7 +122,6 @@
   notify:
     - Restart pgbouncer
     - Stop and disable pgbouncer (classic)
-  with_sequence: count="{{ pgbouncer_processes }}"
   tags:
     - pgbouncer
     - configure
