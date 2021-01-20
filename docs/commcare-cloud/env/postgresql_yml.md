@@ -3,7 +3,7 @@
 For an example `postgresql.yml` file see
 [environments/production/postgresql.yml](https://github.com/dimagi/commcare-cloud/blob/master/environments/production/postgresql.yml).
 
-The following properties are permitted in `postgreql.yml`.
+The following properties are permitted in `postgresql.yml`.
 
 You may notice that some of the properties have a **Status**, which can be either
 "Custom" or "Deprecated".
@@ -129,6 +129,36 @@ Name of the postgresql database.
 
 The host machine on which this database should live.
 (See [`HOST`](https://docs.djangoproject.com/en/2.0/ref/settings/#host).)
+
+#### `pgbouncer_host`
+- Type: [host string](glossary#host-string)
+
+The host to use to run pgbouncer for this db. Defaults to "host".
+Cannot be used if the more granular options `pgbouncer_hosts` and `pgbouncer_endpoints` are set.
+
+#### `pgbouncer_hosts`
+- Type: List of [host string](glossary#host-string)
+
+The list of hosts to use to run pgbouncer for this db. Defaults to `[pgbouncer_host]`,
+and cannot be set explicitly if `pgbouncer_host` is set. If set explicitly, `pgbouncer_endpoint`
+must also be set.
+
+#### `pgbouncer_endpoint` 
+- Type: [host string](glossary#host-string)
+
+The endpoint that other processes should use to communicate with pgbouncer for this db.
+Defaults to `pgbouncer_host`, and connot be explicitly set if `pgbouncer_host` is set. If set explicitly,
+`pgbouncer_hosts` must also be set.
+
+The difference between `pgbouncer_endpoints` and `pgbouncer_hosts` is that `pgbouncer_hosts` says
+where pgbouncer should be installed and running for this db, whereas `pgbouncer_endpoints` says
+where other machines that want to talk to pgbouncer for this db should point to.
+Often these are the same machines in which case you can use `pgbouncer_host` as a shortcut to set both.
+
+Some examples where you would want to set the `pgbouncer_endpoints` and `pgbouncer_hosts` independently:
+- You have multiple `pgbouncer_hosts` in a network load balancer whose address `pgbouncer_enpoint` is set to.
+- You want `pgbouncer1` to be ready to switch over to in case `pgbouncer0` fails. In that case,
+  you set `pgbouncer_hosts` to `[pgbouncer0, pgbouncer1]` and `pgbouncer_endpoint` to `pgbouncer0`.
 
 #### `port`
 
