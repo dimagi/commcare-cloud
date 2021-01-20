@@ -5,6 +5,19 @@
   tags:
     - pgbouncer
 
+- name: pgbouncer gather package facts
+  package_facts:
+    manager: auto
+  tags:
+    - pgbouncer
+
+- name: pgbouncer quit if version is too old
+  fail:
+    msg: "pgbouncer version currently installed is too old"  
+  when: ansible_facts.packages['pgbouncer'][0].version is version(pgbouncer_min_version, '<')
+  tags:
+    - pgbouncer
+
 - name: pgbouncer defaults (classic)
   template: src=pgbouncer-classic.defaults.j2 dest=/etc/default/pgbouncer
   tags:
@@ -111,7 +124,6 @@
   template: src=pgbouncer.ini.j2 dest="{{ pgbouncer_ini }}"
   notify:
     - Restart pgbouncer
-    - Stop and disable pgbouncer (classic)
   with_sequence: count="{{ pgbouncer_processes }}"
   tags:
     - pgbouncer
@@ -121,7 +133,6 @@
   template: src=pgbouncer.users.j2 dest="{{ pgbouncer_users }}"
   notify:
     - Restart pgbouncer
-    - Stop and disable pgbouncer (classic)
   tags:
     - pgbouncer
     - configure
@@ -148,6 +159,16 @@
     mode: 0640
   notify: reload monit
   tags: monit
+
+- name: pgbounger stop and disable (classic) and make sure multiprocess is started
+  shell: /bin/true
+  changed_when: true
+  notify:
+    - Stop and disable pgbouncer (classic)
+    - Start pgbouncer
+  tags:
+    - pgbouncer
+    - configure
 
 - meta: flush_handlers
 

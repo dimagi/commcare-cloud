@@ -20,3 +20,4 @@ pgbouncer_client_tls_cert_file: ~
 postgresql_port: 5432
 
 pgbouncer_processes: 1
+pgbouncer_min_version: "1.12"
