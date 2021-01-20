@@ -48,6 +48,8 @@ mobile_webworkers
 
 {{ __rds_pgsynclog0__ }}
 
+{{ __pgformplayer_nlb__ }}
+
 [remote_postgresql:children]
 rds_pgmain0
 rds_pgucr0
@@ -68,9 +70,11 @@ pgbouncer5
 pgbouncer6
 pgbouncer7
 pgbouncer8
+pgformplayer_nlb
 
 [ansible_skip:children]
 remote_postgresql
+pgformplayer_nlb
 
 {{ __rabbit2__ }}
 {{ __rabbit3__ }}
