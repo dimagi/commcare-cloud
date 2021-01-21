@@ -293,7 +293,7 @@ servers:
     group: "postgresql"
     os: bionic
   - server_name: "pgbouncer5-production"  # former pgbouncer_host formplayer
-    server_instance_type: r5.8xlarge
+    server_instance_type: m5n.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -315,6 +315,13 @@ servers:
     os: ubuntu_pro_bionic
   - server_name: "pgbouncer8-production"  # pgbouncer_host formplayer
     server_instance_type: r5.16xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: ubuntu_pro_bionic
+  - server_name: "pgbouncer9-production"
+    server_instance_type: m5n.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -426,6 +433,12 @@ rds_instances:
       shared_buffers: 3840MB
       effective_cache_size: 11520MB
       maintenance_work_mem: 960MB
+
+pgbouncer_nlbs:
+  - name: pgformplayer_nlb-production
+    targets:
+      - pgbouncer5-production
+      - pgbouncer8-production
 
 elasticache:
   create: no

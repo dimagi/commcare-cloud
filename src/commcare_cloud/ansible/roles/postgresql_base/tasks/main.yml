@@ -121,7 +121,9 @@
 
 - name: PostgreSQL access configuration
   template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner="postgres"
-  tags: configure
+  tags:
+    - configure
+    - pg_hba
   notify: Reload postgres
 
 - meta: flush_handlers
