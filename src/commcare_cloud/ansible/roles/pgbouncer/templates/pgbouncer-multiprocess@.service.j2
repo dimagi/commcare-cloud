@@ -1,0 +1,18 @@
+[Unit]
+Description=Lightweight connection pooler for PostgreSQL (#: %i)
+After=network-online.target
+
+[Service]
+## notify not supported on 1.13
+#Type=notify
+User=postgres
+Group=postgres
+LimitNOFILE={{ pgbouncer_ulimit_fd }}
+PIDFile=/var/run/var/run/postgresql/pgbouncer-%i.pid
+ExecStart=/usr/sbin/pgbouncer /etc/pgbouncer/pgbouncer-%i.ini
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

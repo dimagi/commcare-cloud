@@ -1,8 +1,11 @@
 pgbouncer_port: 6432
-pgbouncer_pid_file: "/var/run/postgresql/pgbouncer.pid"
+pgbouncer_pid_file: "/var/run/postgresql/pgbouncer-{{ item }}.pid"
 pgbouncer_config_home: /etc/pgbouncer
-pgbouncer_ini: "{{ pgbouncer_config_home }}/pgbouncer.ini"
+pgbouncer_ini: "{{ pgbouncer_config_home }}/pgbouncer-{{ item }}.ini"
 pgbouncer_users: "{{ pgbouncer_config_home }}/userlist.txt"
+pgbouncer_socket_dir: "/var/run/postgresql/pgbouncer-{{ item }}"
+pgbouncer_log_file: "/var/log/postgresql/pgbouncer-{{ item }}.log"
+pgbouncer_ulimit_fd: 65536
 
 pgbouncer_max_connections: 100
 pgbouncer_default_pool: 15
@@ -15,3 +18,6 @@ pgbouncer_client_tls_key_file: ~
 pgbouncer_client_tls_cert_file: ~
 
 postgresql_port: 5432
+
+pgbouncer_processes: 1
+pgbouncer_min_version: "1.12"

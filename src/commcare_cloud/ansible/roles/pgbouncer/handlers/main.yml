@@ -1,12 +1,41 @@
 ---
-- name: Start pgbouncer
+- name: Restart pgbouncer (classic)
   become: yes
-  action: service name=pgbouncer state=started
+## unfortunately -R (online restart) is not sufficient
+## to make so_reuseport effective
+# shell: su -c "/usr/sbin/pgbouncer -R -d /etc/pgbouncer/pgbouncer.ini" - postgres
+  systemd:
+    name: "pgbouncer"
+    state: restarted
+
+- name: Stop and disable pgbouncer (classic)
+  become: yes
+  systemd:
+    name: "pgbouncer"
+    state: stopped
+    enabled: no
+    masked: yes
+
+- name: Reload systemd
+  become: yes
+  systemd:
+    daemon_reload: yes
 
 - name: Restart pgbouncer
   become: yes
-  action: service name=pgbouncer state=restarted
+  systemd:
+    name: "pgbouncer-multiprocess@{{ item }}"
+    state: restarted
+    enabled: yes
+    masked: no
+  with_sequence: count={{ pgbouncer_processes | default(1) }}
 
-- name: Reload pgbouncer
+- name: Start pgbouncer
   become: yes
-  action: service name=pgbouncer state=reloaded
+  systemd:
+    name: "pgbouncer-multiprocess@{{ item }}"
+    state: started
+    enabled: yes
+    masked: no
+  with_sequence: count={{ pgbouncer_processes | default(1) }}
+

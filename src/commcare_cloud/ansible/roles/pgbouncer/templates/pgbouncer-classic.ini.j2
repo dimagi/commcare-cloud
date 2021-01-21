@@ -20,8 +20,8 @@
 ;;; Administrative settings
 ;;;
 
-logfile = {{ pgbouncer_log_file }}
-pidfile = {{ pgbouncer_pid_file }}
+logfile = /var/log/postgresql/pgbouncer.log
+pidfile = /var/run/postgresql/pgbouncer.pid
 
 ;;;
 ;;; Where to wait for clients
@@ -36,7 +36,7 @@ listen_port = {{ pgbouncer_port }}
 ;unix_socket_dir = /tmp
 ;unix_socket_mode = 0777
 ;unix_socket_group =
-unix_socket_dir = {{ pgbouncer_socket_dir }}
+unix_socket_dir = /var/run/postgresql
 
 ; allow running multiple instances on the same host
 so_reuseport = 1
@@ -117,7 +117,7 @@ max_client_conn = {{ pgbouncer_max_connections }}
 ; default pool size.  20 is good number when transaction pooling
 ; is in use, in session pooling it needs to be the number of
 ; max clients you want to handle at any moment
-default_pool_size = {{ pgbouncer_default_pool // pgbouncer_processes }}
+default_pool_size = {{ pgbouncer_default_pool }}
 
 ; how many additional connection to allow in case of trouble
 reserve_pool_size = {{ pgbouncer_reserve_pool }}

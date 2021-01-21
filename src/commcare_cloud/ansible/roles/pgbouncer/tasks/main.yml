@@ -1,39 +1,57 @@
 ---
 
-- name: Install pgbouncer
-  apt: name=pgbouncer state=present
-  notify: Start pgbouncer
+- name: pgbouncer install
+  package: name=pgbouncer state=present
   tags:
     - pgbouncer
 
-- name: pgbouncer configuration
-  template: src=pgbouncer.ini.j2 dest="{{ pgbouncer_ini }}"
-  notify: Reload pgbouncer
+- name: pgbouncer gather package facts
+  package_facts:
+    manager: auto
+  tags:
+    - pgbouncer
+
+- name: pgbouncer quit if version is too old
+  fail:
+    msg: 
+      - "pgbouncer version currently installed is too old"
+      - "{{ ansible_facts.packages['pgbouncer'][0].version }} < {{ pgbouncer_min_version }}"  
+  when: ansible_facts.packages['pgbouncer'][0].version is version(pgbouncer_min_version, '<')
+  tags:
+    - pgbouncer
+
+- name: pgbouncer defaults (classic)
+  template: src=pgbouncer-classic.defaults.j2 dest=/etc/default/pgbouncer
+  tags:
+    - pgbouncer
+
+- name: pgbouncer configuration (classic)
+  template: src=pgbouncer-classic.ini.j2 dest=/etc/pgbouncer/pgbouncer.ini
+  tags:
+    - pgbouncer
+
+- name: pgbouncer gather state
+  service_facts:
   tags:
     - pgbouncer
     - configure
 
-- name: pgbouncer users
-  template: src=pgbouncer.users.j2 dest="{{ pgbouncer_users }}"
-  notify: Reload pgbouncer
-  tags:
-    - pgbouncer
-    - configure
-
-- name: pgbouncer defaults
-  template: src=pgbouncer.defaults.j2 dest=/etc/default/pgbouncer
+- name: pgbouncer restart if running (classic)
+  shell: /bin/true
+  changed_when: true
+  notify: Restart pgbouncer (classic)
+  when: ansible_facts.services["pgbouncer"].state == "running"
   tags:
     - pgbouncer
 
-- name: Make sure nofile ulimit is high
-  lineinfile:
-    path: /etc/default/pgbouncer
-    regexp: '^ULIMIT='
-    line: 'ULIMIT="-n 65536"'
-  notify: Restart pgbouncer
+- name: pgbouncer systemd unit install
+  template: src=pgbouncer-multiprocess@.service.j2 dest=/etc/systemd/system/pgbouncer-multiprocess@.service
+  notify:
+   - Reload systemd
+   - Restart pgbouncer
   tags:
-    - pgbouncer
-  when: not ansible_check_mode
+   - pgbouncer
+   - configure
 
 - name: pgbouncer kernel settings
   become: yes
@@ -44,18 +62,78 @@
     reload: yes
   with_dict: "{{ pgbouncer_kernel_settings }}"
 
-- name: pgbouncer init script
-  template: src=pgbouncer.init.j2 dest=/etc/init.d/pgbouncer
-  notify: Restart pgbouncer
+- name: pgbouncer enumerate current processes
+  set_fact:
+    pgbouncer_current_processes: "{{ pgbouncer_current_processes | default([]) | union([item.value.name | regex_search('pgbouncer-multiprocess\\@(\\d+)\\.service', '\\1') | first | int]) }}"
+  loop: "{{ lookup('dict', ansible_facts.services) }}"
+  when: item.key | regex_search('pgbouncer-multiprocess@(\d+)\.service')
+  no_log: true
   tags:
     - pgbouncer
+    - configure
 
-# Allows to execute task only when a tag is specified: https://serverfault.com/a/748864
+- name: pgbouncer clean up tasks for excess processes
+  block:
+    - name: pgbouncer stop and disable excess processes
+      systemd:
+        name: "pgbouncer-multiprocess@{{ item }}"
+        state: stopped
+        enabled: no
+      with_sequence: start="{{ pgbouncer_processes + 1 }}" end="{{ pgbouncer_current_processes | max }}"
+    - name: pgbouncer remove conf for excess processes
+      file:
+        path: "{{ pgbouncer_ini }}"
+        state: absent
+      with_sequence: start="{{ pgbouncer_processes + 1 }}" end="{{ pgbouncer_current_processes | max }}"
+    - name: pgbouncer remove unix socket directory for excess processes
+      file:
+        path: "{{ pgbouncer_socket_dir }}"
+        state: absent
+      with_sequence: start="{{ pgbouncer_processes + 1 }}" end="{{ pgbouncer_current_processes | max }}"
+  when: pgbouncer_current_processes | max > pgbouncer_processes
+  become: yes
+  ignore_errors: yes
+  tags:
+    - pgbouncer
+    - configure
+
+- name: pgbouncer create unix socket directory
+  become: yes
+  file:
+    path: "{{ pgbouncer_socket_dir }}"
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: '755'
+  with_sequence: count="{{ pgbouncer_processes }}"
+  tags:
+    - pgbouncer
+    - configure
+
+- name: pgbouncer configuration
+  template: src=pgbouncer.ini.j2 dest="{{ pgbouncer_ini }}"
+  notify:
+    - Restart pgbouncer
+  with_sequence: count="{{ pgbouncer_processes }}"
+  tags:
+    - pgbouncer
+    - configure
+
+- name: pgbouncer users
+  template: src=pgbouncer.users.j2 dest="{{ pgbouncer_users }}"
+  notify:
+    - Restart pgbouncer
+  tags:
+    - pgbouncer
+    - configure
+
+## Allows to execute task only when a tag is specified:
+## https://serverfault.com/a/748864
 - shell: /bin/true
   changed_when: false
   register: no_tags
 
-- name: Restarts pgbouncer (affect max open files limit)
+- name: pgbouncer restart (affect max open files limit)
   command: /bin/true
   notify: Restart pgbouncer
   when: no_tags is not defined
@@ -72,14 +150,26 @@
   notify: reload monit
   tags: monit
 
+- name: pgbounger stop and disable (classic) and make sure multiprocess is started
+  shell: /bin/true
+  changed_when: true
+  notify:
+    - Stop and disable pgbouncer (classic)
+    - Start pgbouncer
+  tags:
+    - pgbouncer
+    - configure
+
 - meta: flush_handlers
 
-- monit:
+- name: pgbouncer monit monitor
+  monit:
     name: pgbouncer
     state: monitored
-  tags: monit
   ignore_errors: "{{ ansible_check_mode }}"
   register: result
   until: not result.failed or 'process not presently configured with monit' not in result.msg
   retries: 5
   delay: 20
+  tags: monit
+
