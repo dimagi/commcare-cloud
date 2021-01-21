@@ -54,10 +54,6 @@ redis.hostname={{ localsettings.REDIS_HOST }}
 redis.Password={{ localsettings.REDIS_PASSWORD }}
 {% endif %}
 
-endpoints.enabled=true
-management.address: 0.0.0.0
-management.port: 8081
-
 {% if formplayer_sensitive_data_logging %}
 sensitiveData.enableLogging=true
 {% endif %}
