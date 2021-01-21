@@ -6,8 +6,8 @@ from __future__ import unicode_literals
 import inspect
 import os
 import sys
+import warnings
 from collections import OrderedDict
-from textwrap import dedent
 
 from clint.textui import puts
 
@@ -175,25 +175,19 @@ def call_commcare_cloud(input_argv=sys.argv):
     force_python_2 = "--force-commcare-cloud-to-use-python2"
     if not os.environ.get("TRAVIS_TEST") and sys.version_info[0] == 2:
         if force_python_2 not in input_argv:
-            exit(dedent("""
+            from textwrap import dedent
+            print(dedent("""
                 Error: you must upgrade to Python 3. Though not desirable, if you really have
                 to you can use Python 2 with this option {}
-                Python 2 support will end on 2021-03-04
-
-                Setup Python 3.6
-                - Create a new Python-3.6-based virtualenv
+                
+                Setup Python 3
+                - Create a new Python-3-based virtualenv (3.6 recommended)
                 - pip install -r requirements3.txt
                 - pip install -e .
                 - rm src/commcare_cloud.egg-info/requires.txt
                 - manage-commcare-cloud install
                 """.format(force_python_2)))
-    elif sys.version_info[0] != 2 and force_python_2 in input_argv:
-        exit(dedent("""
-            Python 2 is required with {}
-
-            You are running Python {}. Did you forget to activate a
-            Python 2 virtualenv?
-            """.format(force_python_2, sys.version.split()[0])))
+            exit(-1)
 
     put_virtualenv_bin_on_the_path()
     parser, subparsers, commands = make_command_parser(available_envs=get_available_envs())
