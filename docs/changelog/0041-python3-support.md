@@ -38,6 +38,9 @@ If you encounter a problem using Python 3, you can temporarily revert back to
 Python 2 by activating a Python 2 virtualenv and appending this option to your
 command: `--force-commcare-cloud-to-use-python2`.
 
-You can ensure your Python 2 virtualenv has all of the latest requirements by
-running the above setup commands with the Python 2 virtualenv activated,
-except replace `requirements3.txt` with `requirements.txt`.
+Ensure your Python 2 virtualenv is setup properly with these commands:
+- Activate Python-2.7-based virtualenv (create if necessary)
+- Run `pip install -r requirements.txt`
+- Run `pip install -e .`
+- Run `rm src/commcare_cloud.egg-info/requires.txt`
+- Run `manage-commcare-cloud install`
