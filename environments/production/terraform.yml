@@ -293,7 +293,7 @@ servers:
     group: "postgresql"
     os: bionic
   - server_name: "pgbouncer5-production"  # former pgbouncer_host formplayer
-    server_instance_type: r5.8xlarge
+    server_instance_type: m5n.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
