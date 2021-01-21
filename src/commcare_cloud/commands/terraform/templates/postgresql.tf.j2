@@ -9,6 +9,7 @@ module "postgresql__{{ rds_instance.identifier }}" {
     multi_az = "{{ "true" if rds_instance.multi_az else "false" }}"
     storage = {{ rds_instance.storage|tojson }}
     max_storage = {{ rds_instance.max_storage|tojson }}
+    iops = {{ rds_instance.iops|tojson }}
     create = {{ rds_instance.create|tojson }}
     username = {{ rds_instance.username|tojson }}
     backup_window = {{ rds_instance.backup_window|tojson }}
