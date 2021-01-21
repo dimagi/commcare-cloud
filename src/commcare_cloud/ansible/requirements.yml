@@ -2,7 +2,8 @@
 roles:
   - version: v2.1.5
     name: andrewrothstein.couchdb
-  - version: v1.1.4
+  - src: git+https://github.com/dimagi/ansible-couchdb-cluster.git
+    version: ad1b24dc5ba52e4bd103c24d7fa914e7866dd885
     name: andrewrothstein.couchdb-cluster
   - src: git+https://github.com/ANXS/tmpreaper.git
     version: 46f8e0b8b8f5732eecc68b08b5e0c392c418e3f3
