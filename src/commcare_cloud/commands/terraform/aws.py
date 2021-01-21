@@ -6,8 +6,9 @@ import json
 import os
 import subprocess
 import textwrap
-from datetime import datetime, timezone
+from datetime import datetime
 from dateutil import parser
+import pytz
 from io import open
 
 import boto3
@@ -585,7 +586,7 @@ def _has_valid_session_credentials_for_sso():
 
         if 'startUrl' in contents and 'expiresAt' in contents:
             expiration = parser.parse(contents['expiresAt'])
-            return datetime.utcnow().replace(tzinfo=timezone.utc) < expiration
+            return pytz.utc.localize(datetime.utcnow()) < expiration
     return False
 
 
@@ -603,7 +604,7 @@ def _has_valid_v1_session_credentials(aws_profile):
     except configparser.NoOptionError:
         return False
 
-    return datetime.utcnow().replace(tzinfo=timezone.utc) < expiration
+    return pytz.utc.localize(datetime.utcnow()) < expiration
 
 
 def _iter_files_in_dir(directory):
