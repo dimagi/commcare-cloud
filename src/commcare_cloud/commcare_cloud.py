@@ -178,9 +178,10 @@ def call_commcare_cloud(input_argv=sys.argv):
             exit(dedent("""
                 Error: you must upgrade to Python 3. Though not desirable, if you really have
                 to you can use Python 2 with this option {}
+                Python 2 support will end on 2021-03-04
 
-                Setup Python 3
-                - Create a new Python-3-based virtualenv (3.6 recommended)
+                Setup Python 3.6
+                - Create a new Python-3.6-based virtualenv
                 - pip install -r requirements3.txt
                 - pip install -e .
                 - rm src/commcare_cloud.egg-info/requires.txt
