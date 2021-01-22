@@ -64,7 +64,7 @@
 
 - name: pgbouncer enumerate current processes
   set_fact:
-    pgbouncer_current_processes: "{{ pgbouncer_current_processes | default([]) | union([item.value.name | regex_search('pgbouncer-multiprocess\\@(\\d+)\\.service', '\\1') | first | int]) }}"
+    pgbouncer_current_processes: "{{ pgbouncer_current_processes | union([item.value.name | regex_search('pgbouncer-multiprocess\\@(\\d+)\\.service', '\\1') | first | int]) }}"
   loop: "{{ lookup('dict', ansible_facts.services) }}"
   when: item.key | regex_search('pgbouncer-multiprocess@(\d+)\.service')
   no_log: true
@@ -113,7 +113,8 @@
 - name: pgbouncer configuration
   template: src=pgbouncer.ini.j2 dest="{{ pgbouncer_ini }}"
   notify:
-    - Restart pgbouncer
+    - Start and enable pgbouncer
+    - Reload pgbouncer
   with_sequence: count="{{ pgbouncer_processes }}"
   tags:
     - pgbouncer
@@ -122,7 +123,8 @@
 - name: pgbouncer users
   template: src=pgbouncer.users.j2 dest="{{ pgbouncer_users }}"
   notify:
-    - Restart pgbouncer
+    - Start and enable pgbouncer
+    - Reload pgbouncer
   tags:
     - pgbouncer
     - configure
@@ -155,7 +157,7 @@
   changed_when: true
   notify:
     - Stop and disable pgbouncer (classic)
-    - Start pgbouncer
+    - Start and enable pgbouncer
   tags:
     - pgbouncer
     - configure
