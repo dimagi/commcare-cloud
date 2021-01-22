@@ -182,10 +182,10 @@ servers:
     server_instance_type: c5.12xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 40
+    volume_size: 60
     volume_encrypted: no
     block_device:
-      volume_size: 9975
+      volume_size: 15360
       encrypted: no
     group: "couchdb2"
     os: bionic
@@ -193,10 +193,10 @@ servers:
     server_instance_type: c5.12xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 40
+    volume_size: 60
     volume_encrypted: no
     block_device:
-      volume_size: 9975
+      volume_size: 15360
       encrypted: no
     group: "couchdb2"
     os: bionic
@@ -204,10 +204,10 @@ servers:
     server_instance_type: c5.12xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 40
+    volume_size: 60
     volume_encrypted: no
     block_device:
-      volume_size: 9975
+      volume_size: 15360
       encrypted: no
     group: "couchdb2"
     os: bionic
