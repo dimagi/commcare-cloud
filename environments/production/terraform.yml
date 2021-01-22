@@ -163,13 +163,6 @@ servers:
     os: ubuntu_pro_bionic
     count: 14
     
-  - server_name: "couchproxy2-production"
-    server_instance_type: m5.large
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    group: "couchdb2_proxy"
-    os: bionic
   - server_name: "couchproxy3-production"
     server_instance_type: c5.xlarge
     network_tier: "db-private"
