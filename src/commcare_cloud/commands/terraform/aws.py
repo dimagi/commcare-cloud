@@ -7,6 +7,8 @@ import os
 import subprocess
 import textwrap
 from datetime import datetime
+from dateutil import parser
+import pytz
 from io import open
 
 import boto3
@@ -452,7 +454,7 @@ def _sync_sso_to_v1_credentials(aws_session_profile):
         aws_access_key_id=credentials['AccessKeyId'],
         aws_secret_access_key=credentials['SecretAccessKey'],
         aws_session_token=credentials['SessionToken'],
-        expiration=datetime.strptime(credentials['Expiration'], "%Y-%m-%dT%H:%M:%SUTC"),
+        expiration=parser.parse(credentials['Expiration']),
     )
 
 
@@ -598,8 +600,8 @@ def _has_valid_session_credentials_for_sso():
             continue
 
         if 'startUrl' in contents and 'expiresAt' in contents:
-            expiration = datetime.strptime(contents['expiresAt'], "%Y-%m-%dT%H:%M:%SUTC")
-            return datetime.utcnow() < expiration
+            expiration = parser.parse(contents['expiresAt'])
+            return pytz.utc.localize(datetime.utcnow()) < expiration
     return False
 
 
@@ -613,11 +615,11 @@ def _has_valid_v1_session_credentials(aws_profile):
     if aws_profile not in config.sections():
         return False
     try:
-        expiration = datetime.strptime(config.get(aws_profile, 'expiration'), "%Y-%m-%dT%H:%M:%SZ")
+        expiration = parser.parse(config.get(aws_profile, 'expiration'))
     except configparser.NoOptionError:
         return False
 
-    return datetime.utcnow() < expiration
+    return pytz.utc.localize(datetime.utcnow()) < expiration
 
 
 def _iter_files_in_dir(directory):
