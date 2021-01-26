@@ -83,7 +83,7 @@ couchdb2:
   password: "{{ COUCH_PASSWORD }}"
 
 couchdb_compaction_settings:
-  _default: '[{db_fragmentation, "20%"}, {view_fragmentation, "20%"}, {parallel_view_compaction, true}]'
+  _default: '[{db_fragmentation, "40%"}, {view_fragmentation, "40%"}, {from, "22:00"}, {to, "03:00"}]'
 
 
 couchdb2_client_max_body_size: 100M
