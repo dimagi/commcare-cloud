@@ -135,6 +135,13 @@ server {
   }
 {% endfor %}
 
+# For health check
+  location /healthz {
+     access_log off;
+     default_type text/html;
+     return 200 'Healthy';
+     }
+
 # For Letsencrypt
   location ^~ /.well-known/acme-challenge/ {
             root         /var/www/letsencrypt;

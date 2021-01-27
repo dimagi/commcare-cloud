@@ -10,12 +10,3 @@ server {
       deny all;
   }
 }
-
-server {
-  listen {{ ansible_default_ipv4.address }}:80;
-
-  location /nginx-health {
-     access_log off;
-     return 200 "healthy\n";
-  }
-}
