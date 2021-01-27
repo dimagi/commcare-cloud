@@ -32,6 +32,7 @@ class TerraformConfig(jsonobject.JsonObject):
     elasticache = jsonobject.ObjectProperty(lambda: ElasticacheConfig, default=None)
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
     r53_private_zone = jsonobject.ObjectProperty(lambda: RoutePrivateZoneConfig, default=None)
+    existing_zone_record_update = jsonobject.ListProperty(lambda: ExistingZoneRecordUpdate)
 
     @classmethod
     def wrap(cls, data):
@@ -200,3 +201,9 @@ class RoutePrivateZoneConfig(jsonobject.JsonObject):
     domain_name = jsonobject.StringProperty()
     create_record = jsonobject.BooleanProperty(default=True)
     route_names = jsonobject.StringProperty()
+class ExistingZoneRecordUpdate(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    route_names = jsonobject.StringProperty(required=True)
+    domain_name = jsonobject.StringProperty(required=True)
+    record_type = jsonobject.StringProperty(required=True)
+    records = jsonobject.ListProperty(required=False)

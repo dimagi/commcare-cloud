@@ -11,7 +11,7 @@ variable "private_zone" {
   default     = "true"
 }
 
-variable "type" {
+variable "record_type" {
   description = "Type of record in route53"
   type        = "string"
   default     = "CNAME"

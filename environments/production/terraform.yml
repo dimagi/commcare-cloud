@@ -440,3 +440,5 @@ elasticache_cluster:
   create: no
 
 r53_private_zone: null
+
+existing_zone_record_update: null
