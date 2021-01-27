@@ -35,7 +35,7 @@ $ commcare-cloud <env> service --help
 
 ## Handling a reboot
 When a server reboots there are a number of tasks that should be run
-to ensure that the encyprted drive is decrypted and all systems are
+to ensure that the encrypted drive is decrypted and all systems are
 brought back up.
 ```
 $ commcare-cloud <env> after-reboot --limit <inventory name or IP> all
