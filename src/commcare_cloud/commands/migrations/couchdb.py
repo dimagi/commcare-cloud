@@ -380,7 +380,7 @@ def print_shard_allocation_by_node(shard_allocation_docs):
         for node in nodes:
             row.append(len(by_node[node].get(db_name, [])))
         rows.append(row)
-    rows.append(["TOTAL"] + list(map(sum, zip(*rows))[1:]))
+    rows.append(["TOTAL"] + list(map(sum, list(zip(*rows))[1:])))
     print(tabulate(rows, headers=headers, tablefmt='simple'))
 
 
