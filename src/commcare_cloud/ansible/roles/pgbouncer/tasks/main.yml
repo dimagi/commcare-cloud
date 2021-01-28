@@ -110,6 +110,12 @@
     - pgbouncer
     - configure
 
+- name: pgbouncer tmpfiles configuration
+  template: src=tmpfiles.postgresql-pgbouncer.conf.j2 dest=/etc/tmpfiles.d/postgresql-pgbouncer.conf
+  tags:
+    - pgbouncer
+    - configure
+
 - name: pgbouncer configuration
   template: src=pgbouncer.ini.j2 dest="{{ pgbouncer_ini }}"
   notify:
