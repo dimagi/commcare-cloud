@@ -416,7 +416,7 @@ rds_instances:
       log_min_duration_statement: 5000
 
   - identifier: "pgsynclog0-production"
-    instance_type: "db.m5.4xlarge"
+    instance_type: "db.m5.8xlarge"
     storage: 1000
     max_storage: 60000
     multi_az: true
