@@ -351,7 +351,7 @@ class UpdateLocalKnownHosts(CommandBase):
                 port=port
             )
             procs[hostname] = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                               encoding='utf-8')
+                                               universal_newlines=True)
 
         lines = []
         error_hosts = set()

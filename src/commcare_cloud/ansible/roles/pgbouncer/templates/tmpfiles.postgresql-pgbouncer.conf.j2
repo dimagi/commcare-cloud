@@ -1,0 +1,4 @@
+{% for i in range(1, (pgbouncer_processes + 1)) %}
+# Directory for pgbouncer-multiprocess@{{ i }} socket
+d /run/postgresql/pgbouncer-{{ i }} 0775 postgres postgres - -
+{% endfor %}
