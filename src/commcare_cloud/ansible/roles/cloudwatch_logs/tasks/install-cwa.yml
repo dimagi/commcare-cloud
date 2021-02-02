@@ -28,3 +28,4 @@
   apt:
     deb: "{{ aws_cwa_temp_path }}/cwa.deb"
     state: present
+  ignore_errors: "{{ ansible_check_mode }}"
