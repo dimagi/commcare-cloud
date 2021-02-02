@@ -188,6 +188,21 @@ resource "aws_wafv2_web_acl" "front_end" {
 
   rule {
     priority = "0"
+    name = "DimagiBlockRules"
+    override_action { none {} }
+    statement {
+      rule_group_reference_statement {
+        arn = "${aws_wafv2_rule_group.dimagi_block_rules.arn}"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "DimagiBlockRules"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "1"
     name = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
     override_action { none {} }
     statement {
@@ -203,7 +218,7 @@ resource "aws_wafv2_web_acl" "front_end" {
     }
   }
   rule {
-    priority = "1"
+    priority = "2"
     name = "AWS-AWSManagedRulesLinuxRuleSet"
     override_action { none {} }
     statement {
@@ -219,7 +234,7 @@ resource "aws_wafv2_web_acl" "front_end" {
     }
   }
   rule {
-    priority = "2"
+    priority = "3"
     name = "AWS-AWSManagedRulesSQLiRuleSet"
     override_action { none {} }
     statement {
@@ -237,7 +252,7 @@ resource "aws_wafv2_web_acl" "front_end" {
     }
   }
   rule {
-    priority = "3"
+    priority = "4"
     name = "AWS-AWSManagedRulesAmazonIpReputationList"
     override_action { none {} }
     statement {
@@ -254,7 +269,7 @@ resource "aws_wafv2_web_acl" "front_end" {
   }
 
   rule {
-    priority = "4"
+    priority = "5"
     name = "CommCareWhitelistRules"
     override_action { none {} }
     statement {
@@ -269,7 +284,7 @@ resource "aws_wafv2_web_acl" "front_end" {
     }
   }
   rule {
-    priority = "5"
+    priority = "6"
     name = "AWS-AWSManagedRulesCommonRuleSet"
     override_action { none {} }
     statement {
@@ -288,21 +303,6 @@ resource "aws_wafv2_web_acl" "front_end" {
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "AWS-AWSManagedRulesCommonRuleSet"
-      sampled_requests_enabled   = true
-    }
-  }
-  rule {
-    priority = "6"
-    name = "DimagiBlockRules"
-    override_action { none {} }
-    statement {
-      rule_group_reference_statement {
-        arn = "${aws_wafv2_rule_group.dimagi_block_rules.arn}"
-      }
-    }
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "DimagiBlockRules"
       sampled_requests_enabled   = true
     }
   }
