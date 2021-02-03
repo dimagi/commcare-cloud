@@ -89,12 +89,16 @@ rabbit3
 swap_size=2G
 
 {{ __kafka1__ }} kafka_broker_id=2
+{{ __kafka2__ }} kafka_broker_id=3
+{{ __kafka3__ }} kafka_broker_id=4
 
 [zookeeper:children]
 kafka1
 
 [kafka:children]
 kafka1
+kafka2
+kafka3
 
 {{ __celery_a__ }}
 
