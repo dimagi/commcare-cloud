@@ -1,9 +1,16 @@
 ---
 
-- name: update apt cache
-  apt:
-    update_cache: true
-    cache_valid_time: 86400
+- name: copy aws cwa gpg key
+  copy:
+    src: amazon-cloudwatch-agent.gpg
+    dest: "{{ aws_cwa_temp_path }}/amazon-cloudwatch-agent.gpg"
+
+- name: add cwa agent gpg key to gpg
+  shell: gpg --import amazon-cloudwatch-agent.gpg
+  changed_when: false
+  args:
+    executable: /bin/bash
+    chdir: "{{ aws_cwa_temp_path }}"
 
 - name: get cwa agent deb sig
   get_url:
@@ -18,7 +25,7 @@
 - name: verify aws cwa package signature
   shell: gpg --verify cwa.deb.sig cwa.deb
   register: verified_sig
-  failed_when: "'BAD' in verified_sig.stderr"
+  failed_when: "'BAD' in verified_sig.stderr or 'no valid OpenPGP' in verified_sig.stderr or 'No public key' in verified_sig.stderr"
   changed_when: false
   args:
     executable: /bin/bash
