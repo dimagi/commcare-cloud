@@ -441,8 +441,8 @@ resource "aws_lb_target_group" "front_end" {
   health_check {
     protocol = "HTTPS"
     enabled = true
-    path = "/"
-    matcher = "302"
+    path = "/healthz"
+    matcher = "200"
     healthy_threshold = 5
     unhealthy_threshold = 2
   }
