@@ -83,17 +83,6 @@
   hosts: all_commcarehq
   tasks:
 
-  - name: set running configuration
-    become: yes
-    lineinfile:
-      dest: /etc/resolv.conf
-      line: 'nameserver {{ item }}'
-    with_items: "{{ nameservers }}"
-    when: nameservers is defined
-    tags:
-      - dns
-      - after-reboot
-  
   - name: Checks existing resolv.conf
     stat:
       path: /run/systemd/resolve/resolv.conf
@@ -119,6 +108,17 @@
       dest: /etc/resolvconf/resolv.conf.d/base
       line: 'nameserver {{ item }}'
       create: yes
+    with_items: "{{ nameservers }}"
+    when: nameservers is defined
+    tags:
+      - dns
+      - after-reboot
+  
+  - name: set running configuration
+    become: yes
+    lineinfile:
+      dest: /etc/resolv.conf
+      line: 'nameserver {{ item }}'
     with_items: "{{ nameservers }}"
     when: nameservers is defined
     tags:
