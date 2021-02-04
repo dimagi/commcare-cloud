@@ -275,6 +275,21 @@ pgbouncer_nlbs:
 
 
 elasticache_cluster:
-  create: no
+  create: yes
+  cache_node_type: "cache.r5.large"
+  cache_engine_version: "4.0.10"
+  cache_prameter_group: "default.redis4.0"
+  automatic_failover: true
+  transit_encryption: false
+  at_rest_encryption: true
+  auto_minor_version: false
+  cluster_size: 2
+  maintenance_window: "sun:00:30-sun:01:30"
+  snapshot_retention: 7
+  snapshot_window: "10:30-11:30"
 
-r53_private_zone: null
+r53_private_zone:
+  create: yes
+  domain_name:  "india.commcare.local"
+  create_record: yes
+  route_names:  "redis"
