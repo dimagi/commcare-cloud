@@ -379,6 +379,9 @@ rds_instances:
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
+      # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
+      # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
+      maintenance_work_mem: 4172000kB
 
   - identifier: "pgucr0-production"
     instance_type: "db.t3.2xlarge"  # increased from db.t3.large due to unused db.t3 RIs
