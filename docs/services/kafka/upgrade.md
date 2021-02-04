@@ -1,7 +1,7 @@
 # Upgrading Kafka
 
 * Current default version: 2.4.1
-* Example target version: 2.6.0
+* Example target version: 2.6.1
 
 Refer to [Kafka Upgrade documentation](https://kafka.apache.org/documentation/#upgrade) for more details.
 
@@ -15,7 +15,7 @@ Refer to [Kafka Upgrade documentation](https://kafka.apache.org/documentation/#u
 
     **environments/<env>/public.yml**
     ```
-    kafka_version: 2.6.0
+    kafka_version: 2.6.1
     kafka_scala_version: 2.13
     ```
 
