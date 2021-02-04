@@ -1,7 +1,7 @@
 # Manual Installation
 
 ## Install and setup
-You will need python 2.7.12+ and `virtualenvwrapper` installed to follow these instructions:
+You will need python 3.6 and `virtualenvwrapper` installed to follow these instructions:
 
 ```
 sudo apt-get install git python-dev python-pip
