@@ -1,26 +1,18 @@
+---
+
 - name: Configure and start cloudwatch agent
   block:
-  - name: install collectd pre-reqiusities for cloudwatch logs
-    apt:
-      pkg:
-      - collectd
-      update_cache: yes
-      state: present
-  - name: download the amazon cloudwatch agent deb file
-    get_url:
-      url: https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb
-      dest: /opt/
-      mode: '0666'
-    become: true
-  - name: install cloudwatch deb file
-    apt:
-      deb: "/opt/amazon-cloudwatch-agent.deb"
-      state: present
-    become: true
+    
   - name: Check if cloudwatch-agent-ctl exists
     shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a status
     become: yes
     register: ctl_status
+    failed_when: false
+    check_mode: no
+
+  - name: install cwa if check command fails
+    include: install-cwa.yml
+    when: ctl_status.rc > 0
 
   - name: Create cloudwatch logs config
     template:

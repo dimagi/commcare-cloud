@@ -1,2 +1,5 @@
 log_files_collect_list: []
 enable_cloudwatch_logs: false
+aws_cwa_temp_path: /tmp
+aws_cwa_deb_url: https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb
+aws_cwa_deb_sig_url: https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb.sig
