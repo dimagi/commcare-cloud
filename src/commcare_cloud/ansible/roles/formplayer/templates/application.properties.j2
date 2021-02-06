@@ -61,3 +61,7 @@ sensitiveData.enableLogging=true
 {% if formplayer_forward_ip_proxy %}
 server.forward-headers-strategy=NATIVE
 {% endif %}
+
+{% if formplayer_enable_cache %}
+spring.cache.type=caffeine
+{% endif %}

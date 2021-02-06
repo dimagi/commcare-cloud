@@ -29,10 +29,6 @@ nofile_limit: 65536
 
 KSPLICE_ACTIVE: yes
 
-nameservers:
-  - 8.8.8.8
-  - 8.8.4.4
-
 filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
     tags:  nginx-error

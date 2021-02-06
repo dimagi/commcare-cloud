@@ -1,9 +1,18 @@
+---
+
 - name: Configure and start cloudwatch agent
   block:
+    
   - name: Check if cloudwatch-agent-ctl exists
     shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a status
     become: yes
     register: ctl_status
+    failed_when: false
+    check_mode: no
+
+  - name: install cwa if check command fails
+    include: install-cwa.yml
+    when: ctl_status.rc > 0
 
   - name: Create cloudwatch logs config
     template:
