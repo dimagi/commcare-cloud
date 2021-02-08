@@ -24,6 +24,7 @@ citus_postgresql_port: 5432
 aws_region: 'ap-south-1'
 
 formplayer_sensitive_data_logging: true
+formplayer_enable_cache: true
 
 nofile_limit: 65536
 
@@ -136,7 +137,7 @@ localsettings:
   SES_CONFIGURATION_SET: india-email-events
   SNS_EMAIL_EVENT_SECRET: "{{ SNS_EMAIL_EVENT_SECRET }}"
   REDIS_DB: '0'
-  REDIS_HOST: "{{ groups.redis.0 }}"
+  REDIS_HOST: "redis.india.commcare.local"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
   SAVED_EXPORT_ACCESS_CUTOFF: 180
@@ -145,7 +146,7 @@ localsettings:
   SUMOLOGIC_URL: "{{ SUMOLOGIC_URL }}"
   SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
 #  STATIC_ROOT:
-  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+  WS4REDIS_CONNECTION_HOST: "redis.india.commcare.local"
   OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE: True
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   UCR_COMPARISONS:
