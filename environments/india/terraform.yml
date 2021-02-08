@@ -276,7 +276,7 @@ pgbouncer_nlbs:
 
 elasticache_cluster:
   create: yes
-  cache_node_type: "cache.r5.large"
+  cache_node_type: "cache.m5.large"
   cache_engine_version: "4.0.10"
   cache_prameter_group: "default.redis4.0"
   automatic_failover: true
