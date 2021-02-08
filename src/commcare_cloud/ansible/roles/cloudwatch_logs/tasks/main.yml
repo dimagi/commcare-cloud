@@ -22,13 +22,11 @@
       owner: cwagent
       mode: 0644
     become: yes
-    register: cloudwatch_logs_conf
 
-  - name: Reload cloudwatch agent if changed
+  - name: Reload cloudwatch agent
     shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s
       -c file:/opt/aws/amazon-cloudwatch-agent/etc/cloudwatch_logs.json
     become: yes
-    when: cloudwatch_logs_conf.changed
 
   - name: Ensure cloudwatch agent enabled
     shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a start
