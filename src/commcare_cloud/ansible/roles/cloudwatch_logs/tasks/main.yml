@@ -22,14 +22,11 @@
       owner: cwagent
       mode: 0644
     become: yes
-
-  - name: Reload cloudwatch agent
-    shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s
-      -c file:/opt/aws/amazon-cloudwatch-agent/etc/cloudwatch_logs.json
-    become: yes
+    notify: Reload cloudwatch agent
 
   - name: Ensure cloudwatch agent enabled
     shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a start
     become: yes
+
   when: enable_cloudwatch_logs and log_files_collect_list | length
   tags: cloudwatch-logs
