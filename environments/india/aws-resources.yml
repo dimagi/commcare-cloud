@@ -1,5 +1,3 @@
-airflow1-india: 10.203.10.63
-airflow1-india.instance_id: i-09c34ee118d43f4de
 celery1-india: 10.203.10.13
 celery1-india.instance_id: i-060fb9898b0a158d9
 celery2-india: 10.203.10.117
