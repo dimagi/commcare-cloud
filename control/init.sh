@@ -48,8 +48,8 @@ then
         return 1
     fi
 else
-    # commcare-cloud is not yet installed; use the default location
-    COMMCARE_CLOUD_REPO=${HOME}/commcare-cloud
+    # use pre-assigned location if set; fallback to the default location
+    COMMCARE_CLOUD_REPO=${COMMCARE_CLOUD_REPO:-${HOME}/commcare-cloud}
 fi
 
 if [ -z "$TRAVIS_TEST" -a "$CCHQ_PYTHON" == 2 ]; then
