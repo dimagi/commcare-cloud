@@ -50,3 +50,5 @@ monitoring_groups:
   - couchdb2_proxy
   - django_manage
   - citusdb
+
+use_datadog_debug_options: false

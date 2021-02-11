@@ -50,6 +50,12 @@ apm_config:
       pattern: "https?://.+?:.+?@"
       repl: "https://"
 
+{% if use_datadog_debug_options %}
+histogram_percentiles:
+  - "0.95"
+  - "0.90"
+{% endif %}
+
 [trace.analyzed_spans]
 django|django.request: 1
 {% endif %}
