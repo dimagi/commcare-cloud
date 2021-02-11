@@ -1,11 +1,11 @@
 # Manual Installation
 
 ## Install and setup
-You will need python 3.6 and `virtualenvwrapper` installed to follow these instructions:
+You will need python 3.6 installed to follow these instructions (for
+Ubuntu 18.04; other operating systems may differ):
 
 ```
-sudo apt-get install git python-dev python-pip
-sudo pip install virtualenv virtualenvwrapper --ignore-installed six
+sudo apt-get install git python3-dev python3-pip
 ```
 
 ## Setup
@@ -28,20 +28,39 @@ new interactive shell, add the following to your `~/.profile`:
 
 ## Manual setup
 
-If you'd rather use your own virtualenv name, or the script above didn't work for you
-the set up is pretty simple. Just run:
+If you'd rather use your own virtualenv name or a different commcare-cloud repo
+location, or if the script above did not work.
 
-```
-$ mkvirtualenv ansible
-(ansible)$ git clone https://github.com/dimagi/commcare-cloud.git
-(ansible)$ pip install pip-tools
-(ansible)$ pip-sync commcare-cloud/requirements.txt
-(ansible)$ pip install -e commcare-cloud/
-(ansible)$ manage-commcare-cloud install
-(ansible)$ manage-commcare-cloud configure  # and copy the line from here into your ~/.bash_profile
+```sh
+## Create/activate Python 3.6 virtualenv (name and location may be customized)
+$ python3.6 -m pip install --user --upgrade virtualenv
+$ python3.6 -m virtualenv ~/.virtualenvs/cchq
+$ source ~/.virtualenvs/cchq/bin/activate
+
+## Install commcare-cloud
+(cchq)$ git clone https://github.com/dimagi/commcare-cloud.git
+(cchq)$ pip install --upgrade pip-tools
+(cchq)$ pip-sync commcare-cloud/requirements3.txt
+(cchq)$ pip install -e commcare-cloud
+(cchq)$ manage-commcare-cloud install
+
+## Optional: to setup local environments and use commcare-cloud (cchq) without
+## first activating virtualenv. Follow interactive prompts and instructions.
+(cchq)$ manage-commcare-cloud configure
 ```
 
-You will then be able to use cchq from anywhere.
+If you opted out of the final `manage-commcare-cloud configure` step and you
+have a local environments directory or cloned the repo somewhere other than
+`~/commcare-cloud` you should set one or both of the following in your bash
+profile (`~/.profile`) as needed:
+
+```sh
+# for non-standard commcare-cloud repo location
+export COMMCARE_CLOUD_REPO=/path/to/your/commcare-cloud
+
+# for local environments (other than $COMMCARE_CLOUD_REPO/environments)
+export COMMCARE_CLOUD_ENVIRONMENTS=/path/to/your/environments
+```
 
 ## git-hook setup
 
@@ -49,8 +68,7 @@ If you have done the manual setup, Before making any commits, make sure you inst
 the set up is pretty simple. Just run:
 
 ```
-(ansible)$ cd ~/commcare-cloud
-(ansible)$ ./git-hooks/install.sh
+(cchq)$ ~/commcare-cloud/git-hooks/install.sh
 ```
 
 This will make sure you never commit an unencrypted vault.yml file.

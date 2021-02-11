@@ -180,12 +180,8 @@ def call_commcare_cloud(input_argv=sys.argv):
                 to you can use Python 2 with this option {}
                 Python 2 support will end on 2021-03-04
 
-                Setup Python 3.6
-                - Create a new Python-3.6-based virtualenv
-                - pip install -r requirements3.txt
-                - pip install -e .
-                - rm src/commcare_cloud.egg-info/requires.txt
-                - manage-commcare-cloud install
+                To setup Python 3.6, see
+                https://dimagi.github.io/commcare-cloud/setup/installation.html
                 """.format(force_python_2)))
     elif sys.version_info[0] != 2 and force_python_2 in input_argv:
         exit(dedent("""
