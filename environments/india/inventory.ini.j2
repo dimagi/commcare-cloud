@@ -2,7 +2,6 @@
 {{ __djangomanage0__ }}
 {{ __web0__ }}
 {{ __web1__ }}
-{{ __airflow1__ }}
 {{ __celery1__ }} swap_size=4G
 {{ __celery2__ }} swap_size=4G
 {{ __celery3__ }} swap_size=4G
@@ -126,9 +125,6 @@ control0
 
 [django_manage:children]
 djangomanage0
-
-[airflow:children]
-airflow1
 
 [remote_postgresql:children]
 rds_pgmain0
