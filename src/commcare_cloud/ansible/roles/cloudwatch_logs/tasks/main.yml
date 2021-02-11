@@ -25,8 +25,9 @@
     notify: Reload cloudwatch agent
 
   - name: Ensure cloudwatch agent enabled
-    shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a start
-    become: yes
+    shell: /bin/true
+    notify: Start cloudwatch agent
+    when: '"\"status\": \"running\"" not in ctl_status.stdout'
 
   when: enable_cloudwatch_logs and log_files_collect_list | length
   tags: cloudwatch-logs
