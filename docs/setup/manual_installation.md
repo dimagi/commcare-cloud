@@ -18,11 +18,12 @@ source <(curl -s https://raw.githubusercontent.com/dimagi/commcare-cloud/master/
 
 You may now use `commcare-cloud` or its shorter alias `cchq` whenever you're in the virtualenv.
 
-We also recommend that you put the following in your `~/.profile` which gives you access to the tool
-from anywhere:
-```
-export PATH=$PATH:~/.commcare-cloud/bin
-source ~/.commcare-cloud/repo/src/commcare_cloud/.bash_completion
+`~/init-ansible` may be used in future sessions to activate the virtualenv and
+update requirements. If you want that to happen automatically when you create a
+new interactive shell, add the following to your `~/.profile`:
+
+```sh
+[ -t 1 ] && source ~/init-ansible
 ```
 
 ## Manual setup

@@ -96,6 +96,7 @@ This document will walk you through the process of setting up a new monolith ser
 Install commcare-cloud onto the monolith:
 
 ```bash
+$ cd ~
 $ git clone https://github.com/dimagi/commcare-cloud.git
 $ source commcare-cloud/control/init.sh
 ```

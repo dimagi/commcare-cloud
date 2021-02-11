@@ -47,10 +47,6 @@ then
         echo "    https://github.com/dimagi/commcare-cloud/blob/master/README.md"
         return 1
     fi
-elif [ -d ~/.commcare-cloud/repo ]
-then
-    # commcare-cloud is already installed; use the one specified
-    COMMCARE_CLOUD_REPO=~/.commcare-cloud/repo
 else
     # commcare-cloud is not yet installed; use the default location
     COMMCARE_CLOUD_REPO=${HOME}/commcare-cloud
@@ -83,7 +79,6 @@ fi
 if [ -d ~/commcarehq-ansible ]; then
     echo "Moving repo to ~/commcare-cloud"
     mv ~/commcarehq-ansible ~/commcare-cloud
-    # delete broken link
 fi
 
 # remove broken links
@@ -157,8 +152,7 @@ cd ${COMMCARE_CLOUD_REPO} && ./control/check_install.sh && cd -
 alias update-code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
 alias update_code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
 
-export PATH=$PATH:~/.commcare-cloud/bin
-source ~/.commcare-cloud/repo/src/commcare_cloud/.bash_completion
+source ${COMMCARE_CLOUD_REPO}/src/commcare_cloud/.bash_completion
 
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
