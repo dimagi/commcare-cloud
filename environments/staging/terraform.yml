@@ -290,6 +290,15 @@ rds_instances:
       shared_preload_libraries: pg_stat_statements
       track_io_timing: true
 
+  - identifier: "pgformplayer0-staging"
+    instance_type: "db.t3.small"
+    storage: 160
+    multi_az: yes
+    engine_version: 9.6.9
+    params:
+      shared_preload_libraries: pg_stat_statements
+      track_io_timing: true
+
 pgbouncer_nlbs:
   - name: "pgformplayer_nlb-staging"
     targets:
