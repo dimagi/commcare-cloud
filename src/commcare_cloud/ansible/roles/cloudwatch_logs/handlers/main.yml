@@ -1,0 +1,10 @@
+---
+
+- name: Reload cloudwatch agent
+  shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s
+    -c file:/opt/aws/amazon-cloudwatch-agent/etc/cloudwatch_logs.json
+  become: yes
+
+- name: Start cloudwatch agent
+  shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a start
+  become: yes
