@@ -179,6 +179,12 @@
     user: "couchdb"
     service_backup_dir: "{{ couch_backup_dir }}"
 
+- name: Install jshon package 
+  apt:
+    name:
+      - jshon 
+    state: present
+
 - import_tasks: compact.yml
   when: compact_couch_cron and inventory_hostname == groups.couchdb2.0
 

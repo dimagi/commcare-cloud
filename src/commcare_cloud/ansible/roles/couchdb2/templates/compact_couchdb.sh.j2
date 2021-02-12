@@ -109,7 +109,7 @@ do
       fi
 
       DEcho "${DB} - Getting view list ...";
-      DESIGNLIST=`CouchReq "GET" "/${DB}/_all_docs?startkey=\"_design/\"&amp;endkey=\"_design0\"&amp;include_docs=true" | awk -F ":" '{print $3}' | awk -F \" '{print $2}' | grep "^_design/" | sed -e s:"_design/"::g`;
+      DESIGNLIST=`CouchReq "GET" "/${DB}/_design_docs|jshon -e rows -a -e id -u|awk -F '/' '{print $2}'`;
 
       for DESIGN in ${DESIGNLIST}
       do
