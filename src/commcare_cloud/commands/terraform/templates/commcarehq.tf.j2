@@ -183,7 +183,7 @@ module "elasticache-module-base" {
 {% if s3_buckets %}
 module "s3-bucket" {
   source = "./modules/s3-bucket-firehose"
-  create = {{ s3_buckets.create|tojson }}
+  create = "{{ s3_buckets.create|tojson }}"
   bucket_name = {{ s3_buckets.bucket_name|tojson }}
   canned_acl_type =  {{ s3_buckets.canned_acl_type|tojson }}
   region =  {{ s3_buckets.region|tojson }}
