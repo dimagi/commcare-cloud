@@ -327,3 +327,9 @@ r53_private_zone:
   domain_name:  "staging.commcare.local"
   create_record: yes
   route_names:  "redis"
+
+s3_buckets:
+  create: true
+  bucket_name: "kinesis_firehose_test"
+  canned_acl_type: "private"
+  region: "{{ region }}"
