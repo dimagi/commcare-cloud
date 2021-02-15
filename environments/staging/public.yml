@@ -79,6 +79,7 @@ couchdb2:
   password: "{{ COUCH_PASSWORD }}"
 couchdb2_client_max_body_size: 100M
 couchdb_reduce_limit: False
+compact_couch_cron: True
 couchdb_cluster_settings:
   q: 8
   r: 2
