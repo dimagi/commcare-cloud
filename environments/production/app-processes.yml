@@ -56,7 +56,7 @@ celery_processes:
     ucr_queue:
       concurrency: 9
     user_import_queue:
-      concurrency: 4
+      concurrency: 5
   celery_a006:
     # not really queues
     flower: {}
