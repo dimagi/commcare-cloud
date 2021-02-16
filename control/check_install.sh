@@ -39,51 +39,9 @@ else
     printf "${RED} origin is not recognized: ${ORIGIN}\n"
 fi
 
-if [ ! -d ~/.commcare-cloud ]
-then
-    mkdir ~/.commcare-cloud
-    printf "${YELLOW}→ Created ~/.commcare-cloud\n"
-else
-    printf "${GREEN}✓ ~/.commcare-cloud exists\n"
-fi
-
-if [ ! -d ~/.commcare-cloud/repo ]
-then
-    ln -sf "${COMMCARE_CLOUD_REPO}" ~/.commcare-cloud/repo
-    printf "${YELLOW}→ Linked this repo to ~/.commcare-cloud/repo\n"
-else
-    printf "${GREEN}✓ ~/.commcare-cloud/repo exists\n"
-fi
-
-if [ ! -d ~/.commcare-cloud/bin ]
-then
-    mkdir ~/.commcare-cloud/bin
-    printf "${YELLOW}→ Created ~/.commcare-cloud/bin\n"
-else
-    printf "${GREEN}✓ ~/.commcare-cloud/bin exists\n"
-fi
-
-for executable in commcare-cloud cchq
-do
-    if [ ! -f ~/.commcare-cloud/bin/${executable} ]
-    then
-        if [ -h ~/.commcare-cloud/bin/${executable} ]
-        then
-            # if '! -f' (file does not exist) but '-h' (is symbolic link)
-            # then that means it's a broken link
-            rm ~/.commcare-cloud/bin/${executable}
-        fi
-        if [ -z "$(which ${executable})" ]
-        then
-            printf "${RED}✗ No executable found for ${executable}. Skipping\n"
-        else
-            ln -sf $(which ${executable}) ~/.commcare-cloud/bin/
-            printf "${YELLOW}→ Created ~/.commcare-cloud/bin/${executable}\n"
-        fi
-    else
-        printf "${GREEN}✓ ~/.commcare-cloud/bin/${executable} exists\n"
-    fi
-done
+# clean up obsolete ~/.commcare-cloud stuff
+[ -d ~/.commcare-cloud/bin ] && { rm ~/.commcare-cloud/bin/*; rmdir ~/.commcare-cloud/bin }
+[ -h ~/.commcare-cloud/repo ] && rm ~/.commcare-cloud/repo
 
 if [ ! -f "${FAB_CONFIG}" ]
 then

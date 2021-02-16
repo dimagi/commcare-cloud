@@ -55,6 +55,21 @@ then the `git clone` command did not run correctly.
 Make sure you have git installed and run it again
 with `--verbose` to give more logging output.
 
+If you see
+
+```bash
+fatal: destination path 'commcare-cloud' already exists and is not an empty directory.
+```
+
+Run the following commands to update the existing commcare-cloud repository
+
+```bash
+admin@control.example.com:~$ cd commcare-cloud
+admin@control.example.com:~$ git checkout master
+admin@control.example.com:~$ git pull
+admin@control.example.com:~$ cd ..
+```
+
 ### Step 3.
 
 Run the install script.

@@ -1,5 +1,5 @@
 sudo apt-get update
-sudo apt-get install -y python-dev python-pip libffi-dev libssl-dev git
+sudo apt-get install -y python3-dev python3-pip libffi-dev libssl-dev git
 
 ssh-keyscan 192.168.33.15 >> /home/vagrant/.ssh/known_hosts
 ssh-keyscan 192.168.33.16 >> /home/vagrant/.ssh/known_hosts
