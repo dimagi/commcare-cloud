@@ -30,7 +30,7 @@ celery_processes:
       pooling: gevent
       concurrency: 4
     user_import_queue:
-      concurrency: 2
+      concurrency: 3
     flower: {}
     beat: {}
 pillows:
