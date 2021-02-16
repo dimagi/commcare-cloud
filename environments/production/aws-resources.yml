@@ -24,14 +24,6 @@ couchproxy3-production: 10.202.40.196
 couchproxy3-production.instance_id: i-0b1a2bc019f113be3
 djangomanage1-production: 10.202.10.54
 djangomanage1-production.instance_id: i-06b6ff4af62079cda
-es25-production: 10.202.40.246
-es25-production.instance_id: i-094c7083635fb389e
-es26-production: 10.202.40.83
-es26-production.instance_id: i-0cc7d42b8bc1487ce
-es27-production: 10.202.40.212
-es27-production.instance_id: i-0952f8a8ce34177e9
-es28-production: 10.202.40.254
-es28-production.instance_id: i-05a8fbfef00c74f79
 es_a000-production: 10.202.40.99
 es_a000-production.instance_id: i-063044fdb36e533ec
 es_a001-production: 10.202.40.192
