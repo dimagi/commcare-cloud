@@ -1,12 +1,13 @@
 ---
 - name: Copy compaction script
   become: yes
-  copy:
-    src: "compact_couchdb.sh"
+  template:
+    src: "compact_couchdb.sh.j2"
     dest: "/usr/local/sbin/compact_couchdb.sh"
     group: couchdb
     owner: couchdb
-    mode: 0744
+    mode: 0700
+    backup: yes
   tags:
     - cron
 
@@ -14,7 +15,7 @@
   become: yes
   cron:
     name: "Compact DB"
-    job: "/usr/local/sbin/compact_couchdb.sh -H {{ groups.couchdb2_proxy[0] }} -P {{ couchdb2_proxy_port }} -u {{ COUCH_USERNAME }} -p {{ COUCH_PASSWORD }}"
+    job: "/usr/local/sbin/compact_couchdb.sh"
     minute: 0
     hour: "{{ nadir_hour|default(0) }}"
     user: couchdb
