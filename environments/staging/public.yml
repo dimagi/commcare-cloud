@@ -137,7 +137,7 @@ localsettings:
     - {name: 'ddtrace.contrib.django', host: webworkers}
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
-  SECURE_HSTS_SECONDS: 300
+  SECURE_HSTS_SECONDS: "{{ hsts_value_in_seconds }}"
   SILENCED_SYSTEM_CHECKS:
     - 'security.W008' # the ALB and nginx already redirect HTTP to HTTPS so safe to silence this warning
   PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu
@@ -171,3 +171,6 @@ enable_cloudwatch_logs: true
 # hard_kill: 46, soft_kill: 36, False will remove the cron.
 celery_hours_before_hard_kill: 46
 celery_hours_before_soft_kill: 36
+
+# strict transport security
+hsts_value_in_seconds: 300 # remember to connect via https for 5 minutes
