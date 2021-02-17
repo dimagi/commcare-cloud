@@ -57,6 +57,8 @@ celery_processes:
       concurrency: 9
     user_import_queue:
       concurrency: 5
+    ush_background_tasks:
+      concurrency: 8
   celery_a006:
     # not really queues
     flower: {}
@@ -73,6 +75,8 @@ celery_processes:
     sumologic_logs_queue:
       pooling: gevent
       concurrency: 50
+    ush_background_tasks:
+      concurrency: 8
 
 pillows:
   pillow_a000:
