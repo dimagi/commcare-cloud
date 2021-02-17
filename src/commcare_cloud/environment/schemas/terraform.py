@@ -129,7 +129,6 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     storage = jsonobject.IntegerProperty(required=True)
     max_storage = jsonobject.IntegerProperty(default=0)
     create = jsonobject.BooleanProperty(default=True)
-    monitoring_interval = jsonobject.IntegerProperty(default=60)
     username = "root"
     backup_window = "06:27-06:57"
     backup_retention = 30

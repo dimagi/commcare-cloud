@@ -15,8 +15,7 @@ module "postgresql__{{ rds_instance.identifier }}" {
     backup_retention = {{ rds_instance.backup_retention|tojson }}
     maintenance_window = {{ rds_instance.maintenance_window|tojson }}
     port = {{ rds_instance.port|tojson }}
-    monitoring_interval = {{ rds_instance.monitoring_interval|tojson }}
-    monitoring_role_arn = "{{ "rds_monitoring_role" if rds_instance.monitoring_interval > 0 }}"
+    monitoring_interval = 60
   }
   parameters = [
     {%- for param in postgresql_params[rds_instance.identifier] %}
