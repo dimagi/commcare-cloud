@@ -27,12 +27,8 @@ soon as possible. Python 2 should only serve as a backup if any issues are
 encountered while using Python 3.
 
 ## Steps to update
-Setup Python 3
-- Create a new Python-3.6-based virtualenv
-- Run `pip install -r requirements3.txt`
-- Run `pip install -e .`
-- Run `rm src/commcare_cloud.egg-info/requires.txt`
-- Run `manage-commcare-cloud install`
+To setup Python 3.6, see
+https://dimagi.github.io/commcare-cloud/setup/installation.html
 
 If you encounter a problem using Python 3, you can temporarily revert back to
 Python 2 by activating a Python 2 virtualenv and appending this option to your

@@ -55,6 +55,10 @@ celery_processes:
       concurrency: 1
     ucr_queue:
       concurrency: 9
+    user_import_queue:
+      concurrency: 5
+    ush_background_tasks:
+      concurrency: 8
   celery_a006:
     # not really queues
     flower: {}
@@ -71,12 +75,14 @@ celery_processes:
     sumologic_logs_queue:
       pooling: gevent
       concurrency: 50
+    ush_background_tasks:
+      concurrency: 8
 
 pillows:
   pillow_a000:
     case-pillow:
-      num_processes: 16
-      dedicated_migration_process: False
+      num_processes: 17
+      dedicated_migration_process: True
     user-pillow:
       num_processes: 1
     group-pillow:
@@ -109,5 +115,5 @@ pillows:
       num_processes: 1
   pillow_a001:
     xform-pillow:
-      num_processes: 32
-      dedicated_migration_process: False
+      num_processes: 33
+      dedicated_migration_process: True

@@ -148,20 +148,6 @@ redis0
 [shared_dir_host:children]
 shareddir1
 
-{{ __es25__ }} elasticsearch_node_name=es25
-
-{{ __es26__ }} elasticsearch_node_name=es26
-
-{{ __es27__ }} elasticsearch_node_name=es27
-
-{{ __es28__ }} elasticsearch_node_name=es28
-
-{{ __es29__ }} elasticsearch_node_name=es29
-
-{{ __es30__ }} elasticsearch_node_name=es30
-
-{{ __es31__ }} elasticsearch_node_name=es31
-
 {{ __es_a__ }}
 
 {{ __esmaster3__ }} elasticsearch_node_name=esmaster3
@@ -180,13 +166,6 @@ elasticsearch_master=true
 elasticsearch_data=false
 
 [es_data:children]
-es25
-es26
-es27
-es28
-es29
-es30
-es31
 es_a
 
 [es_data:vars]

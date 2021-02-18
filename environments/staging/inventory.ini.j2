@@ -34,8 +34,11 @@ web8
 
 {{ __rds_pg0__ }}
 
+{{ __rds_pgformplayer0__ }}
+
 [remote_postgresql:children]
 rds_pg0
+rds_pgformplayer0
 
 {{ __pgformplayer_nlb__ }}
 
@@ -136,6 +139,7 @@ control1
 
 [ansible_skip:children]
 rds_pg0
+rds_pgformplayer0
 pgformplayer_nlb
 
 

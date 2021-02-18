@@ -129,6 +129,8 @@ CELERY_PROCESSES = [
     CeleryProcess("submission_reprocessing_queue", required=False, blockage_threshold=60 * 60),
     CeleryProcess("ucr_indicator_queue", required=False, blockage_threshold=60 * 60),
     CeleryProcess("ucr_queue", required=False, blockage_threshold=60 * 60),
+    CeleryProcess("user_import_queue", required=False, blockage_threshold=60 * 60),
+    CeleryProcess("ush_background_tasks", required=False, blockage_threshold=3 * 60 * 60)
 ]
 
 
