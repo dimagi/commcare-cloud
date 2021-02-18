@@ -150,6 +150,78 @@ servers:
     group: "couchdb2"
     os: ubuntu_pro_bionic
 
+  - server_name: "couch12-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch13-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch14-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch15-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch16-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch17-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
   - server_name: "rabbit2-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
@@ -271,6 +343,7 @@ proxy_servers:
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
+
   - server_name: "proxy6-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
