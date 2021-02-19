@@ -67,6 +67,6 @@ spring.cache.type=caffeine
 {% endif %}
 
 {% if formplayer_detailed_tagging_domains is defined %}
-detailed_tagging.domains="{{ formplayer_detailed_tagging_domains|join('", "') }}"
-detailed_tagging.tag_names="{{ formplayer_detailed_tags|join('", "') }}"
+detailed_tagging.domains={{ formplayer_detailed_tagging_domains|join(',') }}
+detailed_tagging.tag_names={{ formplayer_detailed_tags|join(',') }}
 {% endif %}
