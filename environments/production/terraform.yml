@@ -394,6 +394,21 @@ elasticache:
   create: no
 
 elasticache_cluster:
-  create: no
+  create: yes
+  cache_node_type: "cache.r5.2xlarge"
+  cache_engine_version: "4.0.10"
+  cache_prameter_group: "default.redis4.0"
+  automatic_failover: true
+  transit_encryption: false
+  at_rest_encryption: true
+  auto_minor_version: false
+  cluster_size: 3
+  maintenance_window: "sun:08:30-sun:09:30"
+  snapshot_retention: 7
+  snapshot_window: "06:30-07:30"
 
-r53_private_zone: null
+r53_private_zone:
+  create: yes
+  domain_name:  "production.commcare.local"
+  create_record: yes
+  route_names:  "redis"
