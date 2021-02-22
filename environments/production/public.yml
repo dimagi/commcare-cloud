@@ -165,7 +165,7 @@ localsettings:
   SES_CONFIGURATION_SET: production-email-events
   SNS_EMAIL_EVENT_SECRET: "{{ SNS_EMAIL_EVENT_SECRET }}"
   REDIS_DB: '0'
-  REDIS_HOST: "{{ groups.redis.0 }}"
+  REDIS_HOST: "redis.production.commcare.local"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
   REQUIRE_TWO_FACTOR_FOR_SUPERUSERS: True
@@ -186,7 +186,7 @@ localsettings:
         - 'ils-gateway-train'
 #  USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER: True
   USER_REPORTING_METADATA_BATCH_ENABLED: True
-  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+  WS4REDIS_CONNECTION_HOST: "redis.production.commcare.local"
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
