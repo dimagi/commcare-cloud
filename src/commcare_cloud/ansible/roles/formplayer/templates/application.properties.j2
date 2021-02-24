@@ -1,4 +1,4 @@
-{% set host='https://' ALTERNATE_FORMPLAYER_HQ_HOST | default(SITE_HOST) %}
+{% set host='https://' ~ ALTERNATE_FORMPLAYER_HQ_HOST | default(SITE_HOST) %}
 commcarehq.host={{ host }}
 commcarehq.formplayerAuthKey={{ FORMPLAYER_INTERNAL_AUTH_KEY }}
 server.port={{ formplayer_port }}
