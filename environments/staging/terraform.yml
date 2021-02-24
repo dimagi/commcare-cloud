@@ -336,3 +336,14 @@ r53_private_zone:
   domain_name:  "staging.commcare.local"
   create_record: yes
   route_names:  "redis"
+
+efs_file_systems:
+  - efs_name: "application-dns-name1"
+    create: yes
+    transition_to_ia:  "AFTER_14_DAYS"
+    create_access: yes
+  
+  - efs_name: "application-dns-name2"
+    create: yes
+    transition_to_ia:  "AFTER_14_DAYS"
+    create_access: no
