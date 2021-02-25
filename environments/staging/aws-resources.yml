@@ -1,3 +1,5 @@
+application-dns-name1-staging-efs-efs: fs-0863edff.efs.us-east-1.amazonaws.com
+application-dns-name2-staging-efs-efs: fs-55d55ca2.efs.us-east-1.amazonaws.com
 celery3-staging: 10.201.10.216
 celery3-staging.instance_id: i-0c544ab25e0364153
 control1-staging: 10.201.10.170
@@ -20,8 +22,6 @@ couch7-staging: 10.201.40.221
 couch7-staging.instance_id: i-0361f071191cd66c0
 couch8-staging: 10.201.40.18
 couch8-staging.instance_id: i-06d9f01ac9c8cb6b8
-couch9-staging: 10.201.40.39
-couch9-staging.instance_id: i-07881a93bfe456b08
 es6-staging: 10.201.40.126
 es6-staging.instance_id: i-0161d2187f667e405
 es7-staging: 10.201.40.107
