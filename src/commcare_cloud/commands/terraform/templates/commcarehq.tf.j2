@@ -293,15 +293,27 @@ module "efs_file_system__{{ efs_file_system.efs_name }}" {
   create_access    = "{{ efs_file_system.create_access|tojson }}"
 }
 {% endfor %}
-{% endif %}
 
 {%- for az in az_codes %}
 {%- for efs_file_system_mount in efs_file_systems %}{% if not loop.first %}, {% endif %} 
 module "efs_mount__{{ efs_file_system_mount.efs_name }}__{{ az }}" {
   source = "./modules/efs_file_system/mount-point"
+  create_mount   = "{{ efs_file_system_mount.create_mount|tojson }}"
   file_system_id = "${module.efs_file_system__{{ efs_file_system_mount.efs_name }}.efs_id}"
   subnet_ids_efs = "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
   securitygroup_id = ["${module.network.app-private-sg}"]
 }
 {% endfor %}
 {% endfor %}
+
+{%- for efs_file_system_route53 in efs_file_systems %}{% if not loop.first %}, {% endif %}
+    module "efs_route53__{{ efs_file_system_route53.efs_name }}" {
+        source = "./modules/r53-record-create-update"
+        create_record   = "{{ efs_file_system_route53.create_record|tojson }}"
+        domain_name = {{ efs_file_system_route53.domain_name|tojson }}
+        route_names = {{ efs_file_system_route53.route_names|tojson }}
+        records = [ "${module.efs_file_system__{{ efs_file_system_route53.efs_name }}.efs_endpoint_address}" ]
+      }
+{% endfor %}
+
+{% endif %}

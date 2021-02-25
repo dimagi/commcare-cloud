@@ -208,3 +208,8 @@ class EfsFileSystem(jsonobject.JsonObject):
     transition_to_ia = jsonobject.StringProperty(required=True)
     efs_name = jsonobject.StringProperty(required=True)
     create_access = jsonobject.BooleanProperty(default=True)
+    create_mount = jsonobject.BooleanProperty(default=True)
+    create_record = jsonobject.BooleanProperty(default=True)
+    domain_name = jsonobject.StringProperty(required=True)
+    record_type = jsonobject.StringProperty(default="CNAME")
+    route_names = jsonobject.StringProperty(required=True)

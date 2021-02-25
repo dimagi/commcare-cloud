@@ -8,5 +8,9 @@ variable "securitygroup_id" {
 }
 
 variable "file_system_id" {
+  description = "Flag to EFS ID"
+}
+
+variable "create_mount" {
   description = "Flag to enable/disable EFS aws_efs_mount_target"
 }

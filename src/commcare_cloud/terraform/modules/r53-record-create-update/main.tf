@@ -4,9 +4,10 @@ data "aws_route53_zone" "existing-zone-name" {
 }
 
 resource "aws_route53_record" "zone-record-create" {
+  count   = "${var.create_record == "true" ? 1 : 0}"
   zone_id = "${data.aws_route53_zone.existing-zone-name.zone_id}"
   name    = "${var.route_names}"
-  type    = "${var.type}"
+  type    = "${var.record_type}"
   ttl     = "${var.ttl}"
   records = ["${var.records}"]
 }

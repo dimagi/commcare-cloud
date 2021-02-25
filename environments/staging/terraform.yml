@@ -342,8 +342,16 @@ efs_file_systems:
     create: yes
     transition_to_ia:  "AFTER_14_DAYS"
     create_access: yes
-  
+    create_mount: yes
+    create_record: no
+    domain_name: "staging.commcare.local"
+    route_names: "application-dns-name1"
+
   - efs_name: "application-dns-name2"
     create: yes
     transition_to_ia:  "AFTER_14_DAYS"
     create_access: no
+    create_mount: no
+    create_record: no
+    domain_name: "staging.commcare.local"
+    route_names: "application-dns-name2"
