@@ -1,5 +1,3 @@
-application-dns-name1-staging-efs-efs: fs-0863edff.efs.us-east-1.amazonaws.com
-application-dns-name2-staging-efs-efs: fs-55d55ca2.efs.us-east-1.amazonaws.com
 celery3-staging: 10.201.10.216
 celery3-staging.instance_id: i-0c544ab25e0364153
 control1-staging: 10.201.10.170
