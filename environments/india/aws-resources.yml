@@ -20,6 +20,10 @@ couch6-india: 10.203.40.191
 couch6-india.instance_id: i-0570238b5afb9f2b5
 couch7-india: 10.203.40.56
 couch7-india.instance_id: i-0e56c3d457b420905
+couch8-india: 10.203.41.220
+couch8-india.instance_id: i-0d457c1b437388a95
+couch9-india: 10.203.42.224
+couch9-india.instance_id: i-050882587b588a76b
 djangomanage0-india: 10.203.10.37
 djangomanage0-india.instance_id: i-02902085942dd60bf
 es0-india: 10.203.40.175
