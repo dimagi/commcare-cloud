@@ -6,8 +6,6 @@
 {{ __celery2__ }} swap_size=4G
 {{ __celery3__ }} swap_size=4G
 {{ __couch5__ }} swap_size=8G
-{{ __couch6__ }} swap_size=8G
-{{ __couch7__ }} swap_size=8G
 {{ __couch8__ }} swap_size=8G
 {{ __couch9__ }} swap_size=8G
 {{ __redis0__ }}
@@ -115,14 +113,11 @@ redis0
 
 [couchdb2:children]
 couch5
-couch6
-couch7
 couch8
 couch9
 
 [couchdb2_proxy:children]
 couch5
-couch6
 
 [control:children]
 control0
