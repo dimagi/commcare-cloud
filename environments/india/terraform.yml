@@ -183,7 +183,7 @@ servers:
     server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "a"
-    volume_size: 80
+    volume_size: 150
     volume_encrypted: no
     group: elasticsearch
     os: bionic
@@ -191,7 +191,7 @@ servers:
     server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "a"
-    volume_size: 80
+    volume_size: 150
     volume_encrypted: no
     group: elasticsearch
     os: bionic
