@@ -173,7 +173,7 @@ servers:
     volume_size: 400
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 91
+    count: 82
 
   - server_name: "redis0-production"
     server_instance_type: r5.4xlarge
@@ -361,7 +361,7 @@ rds_instances:
       log_min_duration_statement: 5000
 
   - identifier: "pgsynclog0-production"
-    instance_type: "db.m5.4xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 1000
     max_storage: 60500
     multi_az: true
