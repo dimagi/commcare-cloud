@@ -327,4 +327,3 @@ r53_private_zone:
   domain_name:  "staging.commcare.local"
   create_record: yes
   route_names:  "redis"
-
