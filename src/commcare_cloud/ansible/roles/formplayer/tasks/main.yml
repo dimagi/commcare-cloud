@@ -120,7 +120,6 @@
     mode: 0644
   with_items:
     - filename: application.properties
-    - filename: sentry.properties
     - filename: logback-spring.xml
   tags:
     - formplayer_deploy
