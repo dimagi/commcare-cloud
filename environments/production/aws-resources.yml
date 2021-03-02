@@ -72,6 +72,12 @@ esmaster4-production: 10.202.41.247
 esmaster4-production.instance_id: i-0be1b553bdc9f0f5c
 esmaster5-production: 10.202.40.226
 esmaster5-production.instance_id: i-01e1279564c30ece6
+esmaster6-production: 10.202.41.201
+esmaster6-production.instance_id: i-09320e84469cd406c
+esmaster7-production: 10.202.41.80
+esmaster7-production.instance_id: i-07f120a68eedec505
+esmaster8-production: 10.202.40.178
+esmaster8-production.instance_id: i-0ff7a99243db785ad
 formplayer-efs: fs-150b0596.efs.us-east-1.amazonaws.com
 formplayer_c000-production: 10.202.11.174
 formplayer_c000-production.instance_id: i-08f23062ccfb58ae0
