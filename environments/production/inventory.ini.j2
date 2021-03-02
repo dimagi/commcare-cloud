@@ -159,10 +159,19 @@ shareddir1
 
 {{ __esmaster5__ }} elasticsearch_node_name=esmaster5
 
+{{ __esmaster6__ }} elasticsearch_node_name=esmaster6
+
+{{ __esmaster7__ }} elasticsearch_node_name=esmaster7
+
+{{ __esmaster8__ }} elasticsearch_node_name=esmaster8
+
 [es_master:children]
 esmaster3
 esmaster4
 esmaster5
+esmaster6
+esmaster7
+esmaster8
 
 [es_master:vars]
 elasticsearch_master=true

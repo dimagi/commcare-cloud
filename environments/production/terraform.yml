@@ -75,6 +75,27 @@ servers:
     os: bionic
     volume_size: 40
     volume_encrypted: no
+  - server_name: "esmaster6-production"
+    server_instance_type: r5.xlarge
+    network_tier: "db-private"
+    az: "b"
+    group: "elasticsearch"
+    os: bionic
+    volume_size: 40
+  - server_name: "esmaster7-production"
+    server_instance_type: r5.xlarge
+    network_tier: "db-private"
+    az: "b"
+    group: "elasticsearch"
+    os: bionic
+    volume_size: 40
+  - server_name: "esmaster8-production"
+    server_instance_type: r5.xlarge
+    network_tier: "db-private"
+    az: "a"
+    group: "elasticsearch"
+    os: bionic
+    volume_size: 40
   
   - server_name: "es_a{i}-production"
     server_instance_type: r5.4xlarge
@@ -361,7 +382,7 @@ rds_instances:
       log_min_duration_statement: 5000
 
   - identifier: "pgsynclog0-production"
-    instance_type: "db.m5.2xlarge"
+    instance_type: "db.t3.2xlarge"
     storage: 1000
     max_storage: 60500
     multi_az: true
