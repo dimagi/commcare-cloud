@@ -338,20 +338,11 @@ r53_private_zone:
   route_names:  "redis"
 
 efs_file_systems:
-  - efs_name: "application-dns-name1"
-    create: yes
-    transition_to_ia:  "AFTER_14_DAYS"
-    create_access: yes
-    create_mount: yes
-    create_record: no
-    domain_name: "staging.commcare.local"
-    route_names: "application-dns-name1"
-
-  - efs_name: "application-dns-name2"
+  - efs_name: "efs_staging"
     create: yes
     transition_to_ia:  "AFTER_14_DAYS"
     create_access: no
-    create_mount: no
-    create_record: no
+    create_mount: yes
+    create_record: yes
     domain_name: "staging.commcare.local"
-    route_names: "application-dns-name2"
+    route_names: "shared-efs"
