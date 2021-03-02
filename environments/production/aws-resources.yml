@@ -20,6 +20,18 @@ couch13-production: 10.202.40.154
 couch13-production.instance_id: i-00a287226e9555670
 couch14-production: 10.202.40.216
 couch14-production.instance_id: i-0634cf1adc9ba838c
+couch15-production: 10.202.41.200
+couch15-production.instance_id: i-02e4f3d7fabbc6888
+couch16-production: 10.202.42.184
+couch16-production.instance_id: i-0d840dddc824d655f
+couch17-production: 10.202.41.237
+couch17-production.instance_id: i-02cf2d6bd12d0bf50
+couch18-production: 10.202.41.158
+couch18-production.instance_id: i-023c1da1b73c17c2a
+couch19-production: 10.202.42.109
+couch19-production.instance_id: i-0853844e4018b8211
+couch20-production: 10.202.42.244
+couch20-production.instance_id: i-05ded1b6ffd7c5913
 couchproxy3-production: 10.202.40.196
 couchproxy3-production.instance_id: i-0b1a2bc019f113be3
 djangomanage1-production: 10.202.10.54
@@ -242,7 +254,6 @@ pgbouncer9-production.instance_id: i-00f2c8e5755593a07
 pgformplayer0-production: pgformplayer0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgformplayer_nlb-production: pgformplayer-nlb-production-ec7390b942368541.elb.us-east-1.amazonaws.com
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
-pgmain1-production: pgmain1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard1-production: pgshard1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard2-production: pgshard2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard3-production: pgshard3-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
@@ -250,6 +261,8 @@ pgshard4-production: pgshard4-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.co
 pgshard5-production: pgshard5-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgsynclog0-production: pgsynclog0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgucr0-production: pgucr0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pillow1-production: 10.202.12.128
+pillow1-production.instance_id: i-0354a00e5ace39eb2
 pillow_a000-production: 10.202.12.40
 pillow_a000-production.instance_id: i-0602e9c17c2720084
 pillow_a001-production: 10.202.12.224

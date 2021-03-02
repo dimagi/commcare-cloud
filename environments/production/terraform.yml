@@ -129,6 +129,78 @@ servers:
     group: "couchdb2"
     os: bionic
 
+  - server_name: "couch15-production"
+    server_instance_type: c5.12xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 60
+    volume_encrypted: no
+    block_device:
+      volume_size: 15360
+      encrypted: no
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch16-production"
+    server_instance_type: c5.12xlarge
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 60
+    volume_encrypted: no
+    block_device:
+      volume_size: 15360
+      encrypted: no
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch17-production"
+    server_instance_type: c5.12xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 60
+    volume_encrypted: no
+    block_device:
+      volume_size: 15360
+      encrypted: no
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch18-production"
+    server_instance_type: c5.12xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 60
+    volume_encrypted: no
+    block_device:
+      volume_size: 15360
+      encrypted: no
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch19-production"
+    server_instance_type: c5.12xlarge
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 60
+    volume_encrypted: no
+    block_device:
+      volume_size: 15360
+      encrypted: no
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch20-production"
+    server_instance_type: c5.12xlarge
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 60
+    volume_encrypted: no
+    block_device:
+      volume_size: 15360
+      encrypted: no
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
   - server_name: "rabbit2-production"
     server_instance_type: c5.4xlarge
     network_tier: "db-private"
