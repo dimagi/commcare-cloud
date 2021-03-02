@@ -141,9 +141,12 @@ es8
 [shared_dir_host:children]
 redis2
 
-[proxy:vars]
+[shared_efs_client_host:children]
+proxy4
+
+[shared_efs_client_host:vars]
 shared_efs_dns={{ aws_resources['efs-mount-host'] }}:/
-cchq_uid=1026
+cchq_uid=nobody
 cchq_gid=1027
 
 {{ __control1__ }}
