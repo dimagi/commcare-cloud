@@ -5,7 +5,8 @@ resource "aws_efs_file_system" "elastic_file_system" {
     transition_to_ia = "${var.transition_to_ia}"
   }
   tags = {
-    Name = "${var.efs_name}-${var.namespace}"
+    Name = "${var.efs_name}"
+    Environment = "${var.namespace}"
   }
 }
 
