@@ -422,3 +422,24 @@ efs_file_systems:
     create_record: yes
     domain_name: "staging.commcare.local"
     route_names: "shared-efs"
+
+existing_zone_record_update:
+  - route_names: formplayer_pgbouncer
+    domain_name:  "staging.commcare.local"
+    record_type: "CNAME"
+
+  - route_names: rds_postgres
+    domain_name:  "staging.commcare.local"
+    record_type: "CNAME"
+
+  - route_names: commcarehq_synclogs
+    domain_name:  "staging.commcare.local"
+    record_type: "A"
+    records: 
+      - 10.201.40.16
+  
+  - route_names: couchdb2_proxy_host
+    domain_name:  "staging.commcare.local"
+    record_type: "A"
+    records: 
+      - 10.201.40.74
