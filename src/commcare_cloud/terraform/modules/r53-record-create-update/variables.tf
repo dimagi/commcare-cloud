@@ -11,7 +11,7 @@ variable "private_zone" {
   default     = "true"
 }
 
-variable "type" {
+variable "record_type" {
   description = "Type of record in route53"
   type        = "string"
   default     = "CNAME"
@@ -25,4 +25,9 @@ variable "ttl" {
 variable "records" {
   description = "List of records"
   type        = "list"
+}
+
+variable "create_record" {
+  description = "Flag to enable/disable r53-private-zone-create record"
+  default     = "true"
 }

@@ -284,3 +284,13 @@ r53_private_zone:
   domain_name:  "india.commcare.local"
   create_record: yes
   route_names:  "redis"
+
+efs_file_systems:
+  - efs_name: "efs_india"
+    create: yes
+    transition_to_ia:  "AFTER_14_DAYS"
+    create_access: no
+    create_mount: yes
+    create_record: yes
+    domain_name: "india.commcare.local"
+    route_names: "shared-efs"
