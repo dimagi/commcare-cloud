@@ -140,6 +140,7 @@
       filename: logback-spring.xml
   tags:
     - localsettings
+    - formplayer_deploy
 
 # This should be the last task in the formplayer release process
 # (and the last one tagged with `formplayer_deploy`)
