@@ -136,8 +136,6 @@
   with_items:
     - template: application.properties.j2
       filename: application.properties
-    - template: sentry.properties.j2
-      filename: sentry.properties
     - template: logback-spring.xml.j2
       filename: logback-spring.xml
   tags:
