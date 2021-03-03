@@ -424,3 +424,5 @@ r53_private_zone:
   domain_name:  "production.commcare.local"
   create_record: yes
   route_names:  "redis"
+
+efs_file_systems: null

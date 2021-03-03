@@ -32,6 +32,7 @@ class TerraformConfig(jsonobject.JsonObject):
     elasticache = jsonobject.ObjectProperty(lambda: ElasticacheConfig, default=None)
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
     r53_private_zone = jsonobject.ObjectProperty(lambda: RoutePrivateZoneConfig, default=None)
+    efs_file_systems = jsonobject.ListProperty(lambda: EfsFileSystem, default=None)
 
     @classmethod
     def wrap(cls, data):
@@ -200,3 +201,15 @@ class RoutePrivateZoneConfig(jsonobject.JsonObject):
     domain_name = jsonobject.StringProperty()
     create_record = jsonobject.BooleanProperty(default=True)
     route_names = jsonobject.StringProperty()
+
+class EfsFileSystem(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    create = jsonobject.BooleanProperty(default=True)
+    transition_to_ia = jsonobject.StringProperty(required=True)
+    efs_name = jsonobject.StringProperty(required=True)
+    create_access = jsonobject.BooleanProperty(default=True)
+    create_mount = jsonobject.BooleanProperty(default=True)
+    create_record = jsonobject.BooleanProperty(default=True)
+    domain_name = jsonobject.StringProperty(required=True)
+    record_type = jsonobject.StringProperty(default="CNAME")
+    route_names = jsonobject.StringProperty(required=True)
