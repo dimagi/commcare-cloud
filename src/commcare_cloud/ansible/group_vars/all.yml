@@ -23,7 +23,7 @@ internal_network_interface_fact: "ansible_{{ internal_network_interface }}"
 internal_ipv4: "{{ hostvars[inventory_hostname][internal_network_interface_fact].ipv4 }}"
 
 shared_dir_gid: 1500  # This GID cannot already be allocated
-shared_dir_name: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
+shared_dir_name: "shared1{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 shared_data_dir: "/opt/{{ shared_dir_name }}"
 shared_mount_dir: "/mnt/{{ shared_dir_name }}"
 is_monolith: '{{ groups["all"]|length == 1 }}'

@@ -1,15 +1,15 @@
 ---
 
-- name: EFS Mount Target
-  hosts: proxy
+- name: Data Sync NFS to EFS
+  hosts: shared_dir_host
   become: true
   roles:
     - role: aws-efs
       vars:
-        efs_mount_dir: /opt/efs_mount_target_data
+        efs_mount_dir: /mnt/nfs_data_sync_efs
         efs_mount_uid: "{{ cchq_uid|default(None) }}"
         efs_mount_gid: "{{ cchq_gid|default(None) }}"
-      when: "shared_efs_dns|default(False)"
+        formplayer_efs_dns: "{{ efs_staging_mount|default(None) }}"
+      when: "efs_staging_mount|default(False)"
       tags:
-        - efs_mount
-
+        - nfs_data_sync_efs

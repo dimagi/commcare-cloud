@@ -21,7 +21,7 @@ es7-staging.instance_id: i-087ff77521605d9b9
 es8-staging: 10.201.40.31
 es8-staging.instance_id: i-0d9e988943761e595
 formplayer-efs: fs-ba70cd39.efs.us-east-1.amazonaws.com
-efs-mount-host: fs-0863edff.efs.us-east-1.amazonaws.com
+efs-staging-mount-dns: shared-efs.staging.commcare.local
 formplayer3-staging: 10.201.10.140
 formplayer3-staging.instance_id: i-02db1d5a7509e4268
 formplayer4-staging: 10.201.10.18
