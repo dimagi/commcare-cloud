@@ -47,7 +47,11 @@ class Secrets(CommandBase):
         try:
             secret_value = json.loads(secret_value)
         except ValueError:
-            pass
+            puts(color_error(
+                'Could not understand value, please use valid json: {value}'
+                .format(value=secret_value)
+            ))
+            exit(-1)
         environment.secrets_backend.set_secret(secret_name, secret_value)
 
 
