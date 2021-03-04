@@ -361,7 +361,7 @@ rds_instances:
       maintenance_work_mem: 960MB
 
   - identifier: "pgformplayer0-production"
-    instance_type: "db.m5.8xlarge"
+    instance_type: "db.m5.4xlarge"
     storage: 10000
     multi_az: true
     engine_version: 9.6.15
