@@ -7,8 +7,6 @@
         </encoder>
     </appender>
 
-    <appender name="SENTRY" class="io.sentry.logback.SentryAppender" />
-
     {% if formplayer_sensitive_data_logging -%}
     <appender name="requests" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>{{ formplayer_access_log_dir }}/request_response.log</file>
@@ -30,7 +28,6 @@
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />
-        <appender-ref ref="SENTRY" />
     </root>
 
     <logger name="org.springframework.web.filter.CommonsRequestLoggingFilter">
