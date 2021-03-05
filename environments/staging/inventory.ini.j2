@@ -141,20 +141,12 @@ es8
 [shared_dir_host:children]
 redis2
 
-[shared_dir_host:vars]
-efs_staging_mount={{ aws_resources['efs-staging-mount-dns'] }}:/
-cchq_uid=nobody
-cchq_gid=nfs
-
 [shared_efs_client_host:children]
 celery
 django_manage
 proxy
 pillowtop
 webworkers
-
-[shared_efs_client_host:vars]
-efs_staging_mount={{ aws_resources['efs-staging-mount-dns'] }}:/
 
 {{ __control1__ }}
 
