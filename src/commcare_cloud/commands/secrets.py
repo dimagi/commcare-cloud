@@ -23,7 +23,7 @@ class Secrets(CommandBase):
     )
 
     arguments = (
-        Argument(dest='subcommand', choices=['view', 'edit']),
+        Argument(dest='subcommand', choices=['view', 'edit', 'list-append', 'list-remove']),
         Argument(dest='secret_name'),
     )
 
@@ -33,6 +33,10 @@ class Secrets(CommandBase):
             return self._secrets_view(environment, args.secret_name)
         if args.subcommand == 'edit':
             return self._secrets_edit(environment, args.secret_name)
+        if args.subcommand == 'list-append':
+            return self._secrets_append_to_list(environment, args.secret_name)
+        if args.subcommand == 'list-remove':
+            return self._secrets_remove_from_list(environment, args.secret_name)
 
     def _secrets_view(self, environment, secret_name):
         secret = environment.get_secret(secret_name)
@@ -43,12 +47,34 @@ class Secrets(CommandBase):
 
     def _secrets_edit(self, environment, secret_name):
         environment.secrets_backend.prompt_user_input()
-        secret_value = getpass.getpass("New value for '{}' secret '{}': ".format(environment.name, secret_name))
+        secret_value = getpass.getpass(f"New value for '{environment.name}' secret '{secret_name}': ")
         try:
             secret_value = json.loads(secret_value)
         except ValueError:
             pass
         environment.secrets_backend.set_secret(secret_name, secret_value)
+
+    def _secrets_append_to_list(self, environment, secret_name):
+        secret = environment.get_secret(secret_name)
+        if not isinstance(secret, list):
+            print(f"Cannot append. '{secret_name}' is not a list.")
+            exit(-1)
+        value_to_append = getpass.getpass(f"Value for '{environment.name}' to append to '{secret_name}': ")
+        secret.append(value_to_append)
+        environment.secrets_backend.set_secret(secret_name, secret)
+
+    def _secrets_remove_from_list(self, environment, secret_name):
+        secret = environment.get_secret(secret_name)
+        if not isinstance(secret, list):
+            print(f"Cannot remove. '{secret_name}' is not a list.")
+            exit(-1)
+        value_to_remove = getpass.getpass(f"Value for '{environment.name}' to remove from '{secret_name}': ")
+        try:
+            secret.remove(value_to_remove)
+        except ValueError:
+            print(f"Value not found in list.")
+            exit(-1)
+        environment.secrets_backend.set_secret(secret_name, secret)
 
 
 class MigrateSecrets(CommandBase):
