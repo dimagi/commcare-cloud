@@ -29,7 +29,6 @@ from commcare_cloud.environment.schemas.prometheus import PrometheusConfig
 from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.schemas.terraform import TerraformConfig
 from commcare_cloud.environment.users import UsersConfig
-from commcare_cloud.python_migration_utils import open_for_write
 from commcare_cloud.yaml import PreserveUnsafeDumper
 
 
@@ -370,7 +369,7 @@ class Environment(object):
 
         generated_variables.update(self.secrets_backend.get_generated_variables())
 
-        with open_for_write(self.paths.generated_yml) as f:
+        with open(self.paths.generated_yml, 'w', encoding='utf-8') as f:
             f.write(yaml.dump(generated_variables, Dumper=PreserveUnsafeDumper))
 
     def translate_host(self, host, filename_for_error):

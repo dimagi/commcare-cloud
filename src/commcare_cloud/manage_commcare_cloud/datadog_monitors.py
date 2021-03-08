@@ -30,7 +30,6 @@ from commcare_cloud.environment.main import get_environment
 from commcare_cloud.manage_commcare_cloud.yaml_representers import (
     LiteralUnicode,
 )
-from commcare_cloud.python_migration_utils import open_for_write
 
 ESCAL_MSG = 'escalation_message'
 
@@ -162,7 +161,7 @@ def write_monitor_definition(monitor_id, monitor_definition):
                 monitor_definition['env_key'] = 'host.environment'
 
     filename = 'autogen_{}.yml'.format(monitor_id)
-    with open_for_write(os.path.join(CONFIG_ROOT, filename)) as f:
+    with open(os.path.join(CONFIG_ROOT, filename), 'w', encoding='utf-8') as f:
         f.write(dump_monitor_yaml(monitor_definition))
 
 

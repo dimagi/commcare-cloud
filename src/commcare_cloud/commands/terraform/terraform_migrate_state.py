@@ -24,7 +24,6 @@ from commcare_cloud.commands.command_base import (
 )
 from commcare_cloud.commands.terraform.aws import aws_sign_in
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.python_migration_utils import open_for_write
 
 
 class TerraformMigrateState(CommandBase):
@@ -154,7 +153,7 @@ class RemoteMigrationStateManager(object):
         """
         temp_filename = tempfile.mktemp()
         try:
-            with open_for_write(temp_filename) as f:
+            with open(temp_filename, 'w', encoding='utf-8') as f:
                 json.dump(remote_migration_state.to_json(), f)
 
             try:
