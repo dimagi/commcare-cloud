@@ -132,6 +132,11 @@ localsettings:
   INVOICE_PREFIX: India-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
+  LOCAL_MIDDLEWARE:
+    - 'django.middleware.security.SecurityMiddleware'
+  SECURE_HSTS_SECONDS: 300
+  SILENCED_SYSTEM_CHECKS:
+    - 'security.W008' # the ALB and nginx already redirect HTTP to HTTPS so safe to silence this warning
   PILLOWTOP_MACHINE_ID: indiacloud
   RATE_LIMIT_SUBMISSIONS: yes
   SES_CONFIGURATION_SET: india-email-events

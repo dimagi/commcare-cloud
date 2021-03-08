@@ -81,8 +81,8 @@ celery_processes:
 pillows:
   pillow_a000:
     case-pillow:
-      num_processes: 16
-      dedicated_migration_process: False
+      num_processes: 17
+      dedicated_migration_process: True
     user-pillow:
       num_processes: 1
     group-pillow:
@@ -115,5 +115,5 @@ pillows:
       num_processes: 1
   pillow_a001:
     xform-pillow:
-      num_processes: 32
-      dedicated_migration_process: False
+      num_processes: 33
+      dedicated_migration_process: True

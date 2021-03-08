@@ -42,7 +42,7 @@ dbs:
     host: rds_pgmain0
     pgbouncer_host: pgbouncer7
   formplayer:
-    host: rds_pgmain0
+    host: rds_pgformplayer0
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_hosts:
       - pgbouncer5

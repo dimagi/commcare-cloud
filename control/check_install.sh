@@ -40,7 +40,7 @@ else
 fi
 
 # clean up obsolete ~/.commcare-cloud stuff
-[ -d ~/.commcare-cloud/bin ] && { rm ~/.commcare-cloud/bin/*; rmdir ~/.commcare-cloud/bin }
+[ -d ~/.commcare-cloud/bin ] && { rm ~/.commcare-cloud/bin/*; rmdir ~/.commcare-cloud/bin; }
 [ -h ~/.commcare-cloud/repo ] && rm ~/.commcare-cloud/repo
 
 if [ ! -f "${FAB_CONFIG}" ]

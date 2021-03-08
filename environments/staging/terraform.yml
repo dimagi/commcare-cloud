@@ -61,6 +61,15 @@ servers:
       encrypted: true
     group: "elasticsearch"
     os: ubuntu_pro_bionic
+  - server_name: "es8-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    block_device:
+      volume_size: 80
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
 
   - server_name: "pillow3-staging"
     server_instance_type: "t3.xlarge"
@@ -202,6 +211,30 @@ servers:
     server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "c"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch10-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch11-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "a"
     volume_size: 30
     volume_encrypted: yes
     block_device:
@@ -388,3 +421,13 @@ r53_private_zone:
   domain_name:  "staging.commcare.local"
   create_record: yes
   route_names:  "redis"
+
+efs_file_systems:
+  - efs_name: "efs_staging"
+    create: yes
+    transition_to_ia:  "AFTER_14_DAYS"
+    create_access: no
+    create_mount: yes
+    create_record: yes
+    domain_name: "staging.commcare.local"
+    route_names: "shared-efs"

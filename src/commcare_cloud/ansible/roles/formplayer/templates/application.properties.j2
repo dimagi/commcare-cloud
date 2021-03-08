@@ -1,14 +1,11 @@
-{% if ALTERNATE_FORMPLAYER_HQ_HOST is defined %}
-commcarehq.host=https://{{ ALTERNATE_FORMPLAYER_HQ_HOST }}
-{% else %}
-commcarehq.host=https://{{ SITE_HOST }}
-{% endif %}
-commcarehq.environment={{ env_monitoring_id }}
+{% set host='https://' ~ ALTERNATE_FORMPLAYER_HQ_HOST | default(SITE_HOST) %}
+commcarehq.host={{ host }}
 commcarehq.formplayerAuthKey={{ FORMPLAYER_INTERNAL_AUTH_KEY }}
 server.port={{ formplayer_port }}
 user.suffix=commcarehq.org
 logging.config=logback-spring.xml
 sqlite.dataDir={{ formplayer_data_dir }}/
+
 // Takes the format of https://<key>@sentry.io/<project>
 // More info on the DSN can be found here: https://docs.sentry.io/quickstart/#configure-the-dsn
 {% if http_proxy_address is defined %}
@@ -16,6 +13,8 @@ sentry.dsn={{ formplayer_sentry_dsn }}?http.proxy.host={{ http_proxy_address }}&
 {% else %}
 sentry.dsn={{ formplayer_sentry_dsn }}
 {% endif %}
+sentry.environment={{ env_monitoring_id }}
+sentry.tags.HQHost={{ host }}
 
 spring.datasource.driver-class-name=org.postgresql.Driver
 spring.datasource.url=jdbc:postgresql://{{ postgresql_dbs.formplayer.pgbouncer_endpoint }}:{{ postgresql_dbs.formplayer.port
@@ -64,4 +63,9 @@ server.forward-headers-strategy=NATIVE
 
 {% if formplayer_enable_cache|default(False) %}
 spring.cache.type=caffeine
+{% endif %}
+
+{% if formplayer_detailed_tagging_domains is defined %}
+detailed_tagging.domains={{ formplayer_detailed_tagging_domains|join(',') }}
+detailed_tagging.tag_names={{ formplayer_detailed_tags|join(',') }}
 {% endif %}
