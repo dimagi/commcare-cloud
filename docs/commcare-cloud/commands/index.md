@@ -640,12 +640,12 @@ Output as CSV
 View and edit secrets through the CLI
 
 ```
-commcare-cloud <env> secrets {view,edit} secret_name
+commcare-cloud <env> secrets {view,edit,list-append,list-remove} secret_name
 ```
 
 ##### Positional Arguments
 
-###### `{view,edit}`
+###### `{view,edit,list-append,list-remove}`
 
 ###### `secret_name`
 
