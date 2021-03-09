@@ -25,6 +25,8 @@ aws_region: 'ap-south-1'
 
 formplayer_sensitive_data_logging: true
 formplayer_enable_cache: true
+formplayer_detailed_tagging_domains: "{{ detailed_tagging_domains }}"
+formplayer_detailed_tags: []
 
 nofile_limit: 65536
 
