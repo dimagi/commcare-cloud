@@ -9,6 +9,17 @@
     mode: 0644
   notify: restart couchdb2
 
+- name: Add placement zone config
+  become: yes
+  lineinfile:
+    path: /usr/local/couchdb2/couchdb/etc/default.ini
+    regexp: '^placement='
+    line: "{{ couchdb_placement }}"
+    insertafter: '^\[cluster\]'
+  check_mode: true
+  when: couchdb_multiaz is defined
+  tags: zone_update
+
 - name: Ensure that the Erlang VM listens on a known minimum port no.
   become: yes
   lineinfile:

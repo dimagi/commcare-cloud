@@ -83,6 +83,8 @@ couchdb2:
   password: "{{ COUCH_PASSWORD }}"
 couchdb2_client_max_body_size: 100M
 couchdb_reduce_limit: False
+couchdb_multiaz: True
+couchdb_placement: placement=us-east-1a:1,us-east-1b:1:us-east-1c:1
 couchdb_cluster_settings:
   q: 8
   r: 2
