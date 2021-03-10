@@ -228,3 +228,9 @@ kinesis_flows:
     delivery_stream: "formplayer-request-response-logs-india"
 
 enable_cloudwatch_logs: true
+
+efs_shared_mount_dir: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
+efs_shared_mount_endpoint: "shared-efs.india.commcare.local:/"
+shared_mount_opts: "_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
+shared_dir_gid: 1500
+efs_mount_dir_data_sync: "shared_data_sync{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"

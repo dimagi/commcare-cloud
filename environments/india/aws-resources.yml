@@ -37,6 +37,7 @@ esmaster3-india.instance_id: i-0fc4e2ef0c521cf86
 esmaster4-india: 10.203.40.181
 esmaster4-india.instance_id: i-02bb135074807fdc3
 formplayer-efs: fs-9d4fdd4c.efs.ap-south-1.amazonaws.com
+efs-india-mount-dns: shared-efs.india.commcare.local
 formplayer1-india: 10.203.10.208
 formplayer1-india.instance_id: i-06d49a9454098e895
 kafka1-india: 10.203.40.207
