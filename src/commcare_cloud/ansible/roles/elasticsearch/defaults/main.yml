@@ -16,3 +16,4 @@ swift_plugin_version: "2.4.6"
 backup_es_swift: no
 elasticsearch_enable_inline_groovy_scripts: True
 elasticsearch_service_name: elasticsearch
+elasticsearch_node_name: "{{ hostname }}"
