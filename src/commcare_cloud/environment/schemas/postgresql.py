@@ -232,7 +232,11 @@ class PostgresqlConfig(jsonobject.JsonObject):
             self.dbs.main, self.dbs.synclogs,
         ] + (
             self.dbs.form_processing.get_db_list() if self.dbs.form_processing else []
-        ) + [self.dbs.ucr, self.dbs.formplayer] + self.dbs.custom + self.dbs.standby if _f]
+        ) + [
+            self.dbs.ucr,
+            self.dbs.formplayer,
+            self.dbs.auditcare,
+        ] + self.dbs.custom + self.dbs.standby if _f]
 
     def _check_reporting_databases(self):
         referenced_django_aliases = set()
@@ -294,6 +298,7 @@ class SmartDBConfig(jsonobject.JsonObject):
     ucr = jsonobject.ObjectProperty(lambda: UcrDBOptions, required=True)
     synclogs = jsonobject.ObjectProperty(lambda: SynclogsDBOptions, required=False)
     form_processing = jsonobject.ObjectProperty(lambda: FormProcessingConfig, required=False)
+    auditcare = jsonobject.ObjectProperty(lambda: AuditcareDBOptions, required=False, default=None)
 
     custom = jsonobject.ListProperty(lambda: CustomDBOptions)
     standby = jsonobject.ListProperty(lambda: StandbyDBOptions)
@@ -355,6 +360,11 @@ class UcrDBOptions(DBOptions):
 class SynclogsDBOptions(DBOptions):
     name = constants.synclogs_db_name
     django_alias = 'synclogs'
+
+
+class AuditcareDBOptions(DBOptions):
+    name = constants.auditcare_db_name
+    django_alias = 'auditcare'
 
 
 class FormProcessingConfig(jsonobject.JsonObject):
