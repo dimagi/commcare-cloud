@@ -165,6 +165,7 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
+  auditcare: null
   by_pgbouncer_host:
     hqdb1-staging.internal-va.commcarehq.org:
     - *id001

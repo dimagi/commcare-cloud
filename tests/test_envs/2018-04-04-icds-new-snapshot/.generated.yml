@@ -286,6 +286,7 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
+  auditcare: null
   by_pgbouncer_host:
     10.247.164.20: &id007
     - *id001
