@@ -141,6 +141,7 @@ localsettings:
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   LOCAL_APPS:
     - {name: 'ddtrace.contrib.django', host: webworkers}
+  LOCAL_CUSTOM_DB_ROUTING: "{'auditcare': 'auditcare'}"
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
   SECURE_HSTS_SECONDS: 300
