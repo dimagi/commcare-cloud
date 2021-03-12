@@ -11,7 +11,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
-      - 127.0.0.1
+    - 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -26,7 +26,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
-      - 127.0.0.1
+    - 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -41,7 +41,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
-      - 127.0.0.1
+    - 127.0.0.1
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
@@ -56,7 +56,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
-      - 127.0.0.1
+    - 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -79,7 +79,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
-      - 127.0.0.1
+    - 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -94,7 +94,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
-      - 127.0.0.1
+    - 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -110,7 +110,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
-      - 127.0.0.1
+    - 127.0.0.1
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -125,7 +125,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
-      - 127.0.0.1
+    - 127.0.0.1
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
