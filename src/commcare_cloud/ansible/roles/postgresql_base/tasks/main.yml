@@ -58,7 +58,7 @@
     dest: "{{ postgresql_systemd_config_dir }}/limits.conf"
     owner: root
     group: root
-    mode: 644
+    mode: 0644
   notify:
     - Restart postgres
     - reload systemd
