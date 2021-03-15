@@ -4,7 +4,6 @@ import io, re, time
 from datetime import datetime
 
 def check_file(bucket, key):
-    boto3.setup_default_session(profile_name='commcare-staging:session')
     s3 = boto3.resource('s3')
     file_exists = False
     try:
@@ -71,7 +70,7 @@ def athena_query(session, params, wait = True):
                     rows = response_query_result['ResultSet']['Rows'][1:]
                     return location, status
                 else:
-                    return location, status
+                    return location, "No rows"
             else:
                 time.sleep(5)
     return False
@@ -105,7 +104,6 @@ def handler(event, context=None, params=None):
     }
 
     session = boto3.Session()
-    #session = boto3.Session(profile_name='commcare-staging:session')
     client = session.client('athena')
     
     key_status = check_file(bucket=S3_BUCKET, key=verifyKey)
@@ -113,5 +111,3 @@ def handler(event, context=None, params=None):
     if key_status:
         file, response_code = athena_query(session, params)
         print(file, response_code)
-
-#handler("hello")

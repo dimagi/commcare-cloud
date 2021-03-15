@@ -53,10 +53,12 @@ data "aws_iam_policy_document" "s3-access-ro" {
     statement {
         actions = [
             "s3:GetObject",
+            "s3:PutObject",
             "s3:ListBucket",
         ]
         resources = [
-            "arn:aws:s3:::*",
+            "arn:aws:s3:::${local.log_bucket_name}",
+            "arn:aws:s3:::${local.log_bucket_name}/*",
         ]
     }
 }
@@ -70,6 +72,11 @@ resource "aws_iam_policy" "s3-access-ro" {
 resource "aws_iam_role_policy_attachment" "s3-access-ro" {
     role       = "${aws_iam_role.check_file_lambda.name}"
     policy_arn = "${aws_iam_policy.s3-access-ro.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "athena-role" {
+    role       = "${aws_iam_role.check_file_lambda.name}"
+    policy_arn = "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "basic-exec-role" {
@@ -93,4 +100,16 @@ resource "aws_lambda_function" "check_file_lambda" {
     source_code_hash = "${data.archive_file.lambda_zip.output_base64sha256}"
 }
 
+resource "aws_cloudwatch_event_rule" "check-file-event" {
+    name = "check-file-event"
+    description = "check-file-event"
+    schedule_expression = "cron(15 * * * ? *)"
+}
 
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_check_file" {
+    statement_id = "AllowExecutionFromCloudWatch"
+    action = "lambda:InvokeFunction"
+    function_name = "${aws_lambda_function.check_file_lambda.function_name}"
+    principal = "events.amazonaws.com"
+    source_arn = "${aws_cloudwatch_event_rule.check-file-event.arn}"
+}
