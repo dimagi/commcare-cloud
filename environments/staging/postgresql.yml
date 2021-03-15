@@ -37,6 +37,8 @@ dbs:
     pgbouncer_hosts:
       - pgproxy2
       - pgbouncer0
+  auditcare:
+    pgbouncer_host: pgproxy2
   form_processing:
     proxy:
       host: pgproxy2
