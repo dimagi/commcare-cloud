@@ -31,6 +31,7 @@
   service:
     name: "postgresql@{{ postgresql_version }}-main"
     state: started
+  when: not db_is_remote
 
 - name: Create PostgreSQL users
   become: yes
