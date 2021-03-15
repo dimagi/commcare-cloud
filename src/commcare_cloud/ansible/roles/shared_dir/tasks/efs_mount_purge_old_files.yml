@@ -1,0 +1,16 @@
+---
+
+- name: Create purging cron jobs
+  become: yes
+  cron:
+    name: "{{ item.name }}"
+    special_time: hourly
+    job: "find {{ item.dir }} -maxdepth 1 -type f -mmin +{{ item.max_age }} -delete"
+    user: root
+    cron_file: purge_cache_files
+  with_items:
+    - {name: 'Purge old restore files', dir: "{{ restore_payload_dir_host }}", max_age: 180 } # 3 hours
+    - {name: 'Purge old transfer files', dir: "{{ transfer_payload_dir_host }}", max_age: 180 } # 3 hours
+    - {name: 'Purge old temp files', dir: "{{ shared_temp_dir_host }}", max_age: 180 } # 3 hours
+  tags:
+    - efs_purging_temp_cron

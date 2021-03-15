@@ -17,3 +17,17 @@
   tags:
     - efs_mount_shared_dir
     - nfs
+
+- name: Create purging cron jobs
+  hosts: "{{ groups.proxy.0 }}"
+  become: yes
+  vars:
+      shared_mount_dir: "/mnt/{{ efs_shared_mount_dir }}"
+      restore_payload_dir_host: "{{ shared_mount_dir }}/restore_payloads"
+      transfer_payload_dir_host: "{{ shared_mount_dir }}/transfer_payloads"
+      shared_temp_dir_host: "{{ shared_mount_dir }}/temp"
+  tasks:
+    - import_tasks: roles/shared_dir/tasks/efs_mount_purge_old_files.yml
+  tags:
+    - efs_purging_temp_cron
+    - nfs
