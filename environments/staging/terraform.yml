@@ -424,24 +424,21 @@ efs_file_systems:
     route_names: "shared-efs"
 
 existing_zone_record_update:
-  - route_names: formplayer_pgbouncer
     domain_name:  "staging.commcare.local"
-    record_type: "CNAME"
-
-  - route_names: rds_postgres
-    domain_name:  "staging.commcare.local"
-    record_type: "CNAME"
-    records:
-      - pg0-staging
-
-  - route_names: commcarehq_synclogs
-    domain_name:  "staging.commcare.local"
-    record_type: "A"
-    records: 
-      - pgproxy2-staging
-  
-  - route_names: couchdb2_proxy_host
-    domain_name:  "staging.commcare.local"
-    record_type: "A"
-    records: 
-      - couch6-staging
+    records_list:
+      - route_names: rds_postgres
+        record_type: "CNAME"   ## Type CNAME supports a record only
+        records: 
+          - pgformplayer0-staging
+      - route_names: commcarehq_synclogs
+        record_type: "A"  ## Type A supports multiple records
+        records: 
+          - pgproxy2-staging
+      - route_names: couchdb2_proxy_host
+        record_type: "A"    ## Type A supports multiple records
+        records: 
+          - couch6-staging
+      - route_names: formplayer_pgbouncer
+        record_type: "CNAME"    ## Type CNAME supports a record only
+        records: 
+          - pgformplayer_nlb-staging

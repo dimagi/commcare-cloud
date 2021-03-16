@@ -319,31 +319,29 @@ module "efs_mount__{{ efs_file_system_mount.efs_name }}__{{ az }}" {
 {% endif %}
 
 {% if existing_zone_record_update %}
-{% for existing_zone_record in existing_zone_record_update %}
-module "r53-record__{{ existing_zone_record.route_names }}" {
+{% for r53_record_list in existing_zone_record_update.records_list %}
+module "r53-record__{{ r53_record_list.route_names }}" {
   source = "./modules/r53-record-create-update"
-  domain_name = {{ existing_zone_record.domain_name|tojson }}
-  route_names = {{ existing_zone_record.route_names|tojson }}
-  record_type = {{ existing_zone_record.record_type|tojson }}
+  domain_name = {{ existing_zone_record_update.domain_name|tojson }}
+  route_names = {{ r53_record_list.route_names|tojson }}
+  record_type = {{ r53_record_list.record_type|tojson }}
   records = [
-      {% if existing_zone_record.route_names == 'formplayer_pgbouncer' %}
-        {%- for pgbouncer_nlb_r53 in pgbouncer_nlbs %}{% if not loop.first %}, {% endif %}
-          "${module.pgbouncer_nlb__{{ pgbouncer_nlb_r53.name }}.aws_lb_dns_name }"
-        {%- endfor %}
-      {% elif existing_zone_record.route_names == 'rds_postgres' %}
-        {%- for rds_postgres_instances in existing_zone_record.records %}{% if not loop.first %}, {% endif %}
+      {% if r53_record_list.route_names == 'rds_postgres' %}
+        {%- for rds_postgres_instances in r53_record_list.records %}{% if not loop.first %}, {% endif %}
           "${module.postgresql__{{ rds_postgres_instances }}.postgresql_rds_this_db_instance_endpoint }"
         {%- endfor %}
-      {% elif existing_zone_record.route_names == 'commcarehq_synclogs' %}
-        {%- for commcarehq_synclogs_instance in existing_zone_record.records %}{% if not loop.first %}, {% endif %}
+      {% elif r53_record_list.route_names == 'commcarehq_synclogs' %}
+        {%- for commcarehq_synclogs_instance in r53_record_list.records %}{% if not loop.first %}, {% endif %}
           "${module.server__{{ commcarehq_synclogs_instance }}.server_private_ip}"
         {%- endfor %}
-      {% elif existing_zone_record.route_names == 'couchdb2_proxy_host' %}
-        {%- for couchdb2_proxy_host_instance in existing_zone_record.records %}{% if not loop.first %}, {% endif %}
+      {% elif r53_record_list.route_names == 'couchdb2_proxy_host' %}
+        {%- for couchdb2_proxy_host_instance in r53_record_list.records %}{% if not loop.first %}, {% endif %}
           "${module.server__{{ couchdb2_proxy_host_instance }}.server_private_ip}"
         {%- endfor %}
-      {% else %}
-        {{ existing_zone_record.records|tojson }}
+      {% elif r53_record_list.route_names == 'formplayer_pgbouncer' %}
+        {%- for pgbouncer_nlb_r53 in r53_record_list.records %}{% if not loop.first %}, {% endif %}
+          "${module.pgbouncer_nlb__{{ pgbouncer_nlb_r53 }}.aws_lb_dns_name }"
+        {%- endfor %}
       {% endif %}
   ]
 }
