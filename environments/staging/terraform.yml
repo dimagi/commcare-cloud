@@ -431,15 +431,17 @@ existing_zone_record_update:
   - route_names: rds_postgres
     domain_name:  "staging.commcare.local"
     record_type: "CNAME"
+    records:
+      - pg0-staging
 
   - route_names: commcarehq_synclogs
     domain_name:  "staging.commcare.local"
     record_type: "A"
     records: 
-      - 10.201.40.16
+      - pgproxy2-staging
   
   - route_names: couchdb2_proxy_host
     domain_name:  "staging.commcare.local"
     record_type: "A"
     records: 
-      - 10.201.40.74
+      - couch6-staging

@@ -331,13 +331,17 @@ module "r53-record__{{ existing_zone_record.route_names }}" {
           "${module.pgbouncer_nlb__{{ pgbouncer_nlb_r53.name }}.aws_lb_dns_name }"
         {%- endfor %}
       {% elif existing_zone_record.route_names == 'rds_postgres' %}
-        {%- for rds_postgres_instances in rds_instances %}{% if not loop.first %}, {% endif %}
-          "${module.postgresql__{{ rds_postgres_instances.identifier }}.postgresql_rds_this_db_instance_endpoint }"
+        {%- for rds_postgres_instances in existing_zone_record.records %}{% if not loop.first %}, {% endif %}
+          "${module.postgresql__{{ rds_postgres_instances }}.postgresql_rds_this_db_instance_endpoint }"
         {%- endfor %}
       {% elif existing_zone_record.route_names == 'commcarehq_synclogs' %}
-        {{ existing_zone_record.records|tojson }}
+        {%- for commcarehq_synclogs_instance in existing_zone_record.records %}{% if not loop.first %}, {% endif %}
+          "${module.server__{{ commcarehq_synclogs_instance }}.server_private_ip}"
+        {%- endfor %}
       {% elif existing_zone_record.route_names == 'couchdb2_proxy_host' %}
-        {{ existing_zone_record.records|tojson }}
+        {%- for couchdb2_proxy_host_instance in existing_zone_record.records %}{% if not loop.first %}, {% endif %}
+          "${module.server__{{ couchdb2_proxy_host_instance }}.server_private_ip}"
+        {%- endfor %}
       {% else %}
         {{ existing_zone_record.records|tojson }}
       {% endif %}
