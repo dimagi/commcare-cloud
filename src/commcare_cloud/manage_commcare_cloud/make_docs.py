@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-import cgi
+import html
 import inspect
 import os
 import textwrap
@@ -70,7 +70,7 @@ class MarkdownFormatterBase(RawTextHelpFormatter):
     def escape_html_outside_backticks(text):
         parts = text.split('`')
         for i in range(0, len(parts), 2):
-            parts[i] = cgi.escape(parts[i])
+            parts[i] = html.escape(parts[i], quote=False)
         return '`'.join(parts)
 
     def _stick_first_line_above_last_usage_and_return_the_rest(self, text):

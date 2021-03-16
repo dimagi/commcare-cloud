@@ -7,6 +7,10 @@ newest first.
 
 ## Changelog
 
+### **2021-03-16** [Update Formplayer request mapping](0042-update_formplayer_request_mapping.md)
+A small change to the nginx request matching for Formplayer requests that will prevent
+an additional `/` from being prepended to the Formplayer requests.
+
 ### **2021-01-11** [Dropping support for Python 2](0041-python3-support.md)
 Python 3.6 is supported and now the preferred version to use. In anticipation
 of dropping Python 2 support, an error will be displayed when running commands
