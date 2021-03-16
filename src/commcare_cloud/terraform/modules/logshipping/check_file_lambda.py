@@ -29,9 +29,6 @@ def athena_query(session, params, wait = True):
         QueryString = params['query'],
         QueryExecutionContext = {
             'Database' : "default"
-        },
-        ResultConfiguration = {
-            'OutputLocation': 's3://' + params['bucket'] + '/' + params['path']
         }
     )
 
