@@ -1,0 +1,22 @@
+title: Update Formplayer request mapping
+key: update_formplayer_request_mapping
+date: 2021-03-16
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  A small change to the nginx request matching for Formplayer requests that will prevent
+  an additional `/` from being prepended to the Formplayer requests.
+
+details: |
+  With the current configuration Formplayer requests are getting an additianal `/` prepended
+  to the request path resulting in requests like `//new-form`.
+
+  Updating the nginx configuration will remove the double slash from Formplayer requests.
+
+  Future versions of Formplayer will reject requests containing double slashes.
+
+update_steps: |
+  ```shell
+  commcare-cloud <env> ap deploy_proxy.yml --tags=nginx_sites
+  ```
