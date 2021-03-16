@@ -41,11 +41,17 @@ rds_pg0
 rds_pgformplayer0
 
 {{ __pgformplayer_nlb__ }}
+{{ __pgmain_nlb__ }}
+{{ __pgucr_nlb__ }}
+{{ __pgsynclogs_nlb__ }}
 
 [postgresql:children]
 pgproxy2
 remote_postgresql
 pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb
 
 [pgbouncer:children]
 pgbouncer0
@@ -167,6 +173,9 @@ control1
 rds_pg0
 rds_pgformplayer0
 pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb
 
 
 [django_manage:children]

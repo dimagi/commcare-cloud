@@ -306,7 +306,6 @@ servers:
     group: "redis"
     os: ubuntu_pro_bionic
 
-
 proxy_servers:
   - server_name: "proxy2-staging"
     server_instance_type: "t3.medium"
@@ -373,6 +372,15 @@ pgbouncer_nlbs:
   - name: "pgformplayer_nlb-staging"
     targets:
       - pgbouncer0-staging
+      - pgproxy2-staging
+  - name: "pgmain_nlb-staging"
+    targets:
+      - pgproxy2-staging
+  - name: "pgucr_nlb-staging"
+    targets:
+      - pgproxy2-staging
+  - name: "pgsynclogs_nlb-staging"
+    targets:
       - pgproxy2-staging
 
 elasticache:

@@ -43,8 +43,11 @@ pgbouncer0-staging: 10.201.40.72
 pgbouncer0-staging.instance_id: i-0315ba6f2f8ba45f5
 pgformplayer0-staging: pgformplayer0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgformplayer_nlb-staging: pgformplayer-nlb-staging-98b68467f6f5717b.elb.us-east-1.amazonaws.com
+pgmain_nlb-staging: pgmain-nlb-staging-fe77ab2d143eedbb.elb.us-east-1.amazonaws.com
 pgproxy2-staging: 10.201.40.16
 pgproxy2-staging.instance_id: i-0638ff6218ed9f753
+pgsynclogs_nlb-staging: pgsynclogs-nlb-staging-1102365451f68242.elb.us-east-1.amazonaws.com
+pgucr_nlb-staging: pgucr-nlb-staging-b32586fcc9999b2d.elb.us-east-1.amazonaws.com
 pillow3-staging: 10.201.10.68
 pillow3-staging.instance_id: i-0ef555fec7fe64804
 proxy2-staging: 10.201.10.72
