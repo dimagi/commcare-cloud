@@ -161,6 +161,11 @@ localsettings:
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
+  LOCAL_MIDDLEWARE:
+    - 'django.middleware.security.SecurityMiddleware'
+  SECURE_HSTS_SECONDS: 300
+  SILENCED_SYSTEM_CHECKS:
+    - 'security.W008' # the ALB and nginx already redirect HTTP to HTTPS so safe to silence this warning
   PILLOWTOP_MACHINE_ID: hqdb0
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes
