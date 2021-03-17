@@ -294,17 +294,6 @@ servers:
     group: postgresql
     os: ubuntu_pro_bionic
 
-  - server_name: "redis2-staging"
-    server_instance_type: t3.medium
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 60
-      encrypted: true
-    group: "redis"
-    os: ubuntu_pro_bionic
 
 proxy_servers:
   - server_name: "proxy2-staging"
