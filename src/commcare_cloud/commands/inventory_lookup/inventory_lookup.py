@@ -125,8 +125,8 @@ class Tmux(_Ssh):
     arguments = _Ssh.arguments + (
         Argument('remote_command', nargs='?', help="""
             Command to run in the tmux.
-            If a command specified, then it will always run in a new window.
-            If a command is *not* specified, then a it will rejoin the most
+            If a command is specified, then it will always run in a new window.
+            If a command is *not* specified, then it will rejoin the most
             recently visited tmux window; only if there are no currently open
             tmux windows will a new one be opened.
         """),
