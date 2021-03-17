@@ -136,11 +136,6 @@ formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 cchq_uid=1026
 cchq_gid=1027
 
-{{ __redis2__ }}
-
-[redis:children]
-redis2
-
 {{ __es6__ }} elasticsearch_node_name=es6-staging elasticsearch_node_zone=aws elasticsearch_master=true
 
 {{ __es7__ }} elasticsearch_node_name=es7-staging elasticsearch_node_zone=aws elasticsearch_master=true
