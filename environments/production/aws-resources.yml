@@ -213,13 +213,16 @@ pgformplayer0-production: pgformplayer0-production.cl9dmuo3ok4h.us-east-1.rds.am
 pgformplayer_nlb-production: pgformplayer-nlb-production-ec7390b942368541.elb.us-east-1.amazonaws.com
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgmain1-production: pgmain1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgmain_nlb-production: pgmain-nlb-production-5816580de5d475ff.elb.us-east-1.amazonaws.com
 pgshard1-production: pgshard1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard2-production: pgshard2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard3-production: pgshard3-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard4-production: pgshard4-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard5-production: pgshard5-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgsynclog0-production: pgsynclog0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgsynclogs_nlb-production: pgsynclogs-nlb-production-a0590d45cd55994b.elb.us-east-1.amazonaws.com
 pgucr0-production: pgucr0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgucr_nlb-production: pgucr-nlb-production-3790c322477cf782.elb.us-east-1.amazonaws.com
 pillow_a000-production: 10.202.12.40
 pillow_a000-production.instance_id: i-0602e9c17c2720084
 pillow_a001-production: 10.202.12.224
