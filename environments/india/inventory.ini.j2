@@ -44,6 +44,9 @@ es_data
 {{ __proxy1__ }}
 {{ __rds_pgmain0__ }}
 {{ __pgformplayer_nlb__ }}
+{{ __pgmain_nlb__ }}
+{{ __pgucr_nlb__ }}
+{{ __pgsynclogs_nlb__ }}
 
 
 [citusdb_worker:children]
@@ -80,6 +83,9 @@ pgbouncer0
 [pgbouncer:children]
 pgbouncer1
 pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb
 
 [rabbitmq:children]
 kafka1
@@ -139,3 +145,6 @@ rds_pgmain0
 [ansible_skip:children]
 remote_postgresql
 pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb

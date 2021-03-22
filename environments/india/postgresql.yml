@@ -25,16 +25,22 @@ postgres_override:
 
 dbs:
   main:
-    pgbouncer_host: pgbouncer0
+    pgbouncer_endpoint: pgmain_nlb
+    pgbouncer_hosts:
+      - pgbouncer0
   formplayer:
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_hosts:
       - pgbouncer0
       - pgbouncer1
   ucr:
-    pgbouncer_host: pgbouncer0
+    pgbouncer_endpoint: pgucr_nlb
+    pgbouncer_hosts:
+      - pgbouncer0
   synclogs:
-    pgbouncer_host: pgbouncer0
+    pgbouncer_endpoint: pgsynclogs_nlb
+    pgbouncer_hosts:
+      - pgbouncer0
   form_processing:
     proxy:
       host: pgbouncer0

@@ -287,6 +287,15 @@ pgbouncer_nlbs:
     targets:
       - pgbouncer0-india
       - pgbouncer1-india
+  - name: pgmain_nlb-india
+    targets:
+      - pgbouncer0-india
+  - name: pgucr_nlb-india
+    targets:
+      - pgbouncer0-india
+  - name: pgsynclogs_nlb-india
+    targets:
+      - pgbouncer0-india
 
 
 elasticache_cluster:
