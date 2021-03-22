@@ -121,28 +121,6 @@ servers:
       encrypted: no
     group: couchdb2
     os: bionic
-  - server_name: "couch6-india"
-    server_instance_type: "r5.xlarge"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 60
-    volume_encrypted: no
-    block_device:
-      volume_size: 250
-      encrypted: no
-    group: couchdb2
-    os: bionic
-  - server_name: "couch7-india"
-    server_instance_type: "r5.xlarge"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 60
-    volume_encrypted: no
-    block_device:
-      volume_size: 250
-      encrypted: no
-    group: couchdb2
-    os: bionic
   - server_name: "couch8-india"
     server_instance_type: "r5.xlarge"
     network_tier: "db-private"
