@@ -136,21 +136,30 @@ formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 cchq_uid=1026
 cchq_gid=1027
 
-{{ __es6__ }} elasticsearch_node_name=es6-staging elasticsearch_node_zone=aws elasticsearch_master=true
+{{ __es6__ }} elasticsearch_node_name=es6-staging elasticsearch_node_zone=aws
 
-{{ __es7__ }} elasticsearch_node_name=es7-staging elasticsearch_node_zone=aws elasticsearch_master=true
+{{ __es7__ }} elasticsearch_node_name=es7-staging elasticsearch_node_zone=aws
 
-{{ __es8__ }} elasticsearch_node_name=es8-staging elasticsearch_node_zone=aws elasticsearch_master=true
+{{ __es8__ }} elasticsearch_node_name=es8-staging elasticsearch_node_zone=aws
 
-{{ __es9__ }} elasticsearch_node_name=es9-staging elasticsearch_node_zone=us-east-1b elasticsearch_master=true
+{{ __es9__ }} elasticsearch_node_name=es9-staging elasticsearch_node_zone=us-east-1b
 
-{{ __es10__ }} elasticsearch_node_name=es10-staging elasticsearch_node_zone=us-east-1c elasticsearch_master=true
+{{ __es10__ }} elasticsearch_node_name=es10-staging elasticsearch_node_zone=us-east-1b
 
 [elasticsearch:children]
-# Amazon EC2
+es_master
+es_data
+
+[es_master:children]
 es6
 es7
 es8
+
+[es_master:vars]
+elasticsearch_master=true
+elasticsearch_data=true
+
+[es_data:children]
 es9
 es10
 
