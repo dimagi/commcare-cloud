@@ -8,7 +8,6 @@
 {{ __couch5__ }} swap_size=8G
 {{ __couch8__ }} swap_size=8G
 {{ __couch9__ }} swap_size=8G
-{{ __redis0__ }}
 {{ __esmaster2__ }} elasticsearch_node_name=esmaster2 elasticsearch_node_zone=aws
 {{ __esmaster3__ }} elasticsearch_node_name=esmaster3 elasticsearch_node_zone=aws
 {{ __esmaster4__ }} elasticsearch_node_name=esmaster4 elasticsearch_node_zone=aws
@@ -107,15 +106,9 @@ pillow2
 [formplayer:children]
 formplayer1
 
-[redis:children]
-redis0
-
 [elasticsearch:children]
 es0
 es1
-
-[shared_dir_host:children]
-redis0
 
 [shared_efs_client_host:children]
 celery
@@ -123,7 +116,6 @@ django_manage
 proxy
 pillowtop
 webworkers
-shared_dir_host
 
 [couchdb2:children]
 couch5

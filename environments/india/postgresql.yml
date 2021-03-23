@@ -41,6 +41,10 @@ dbs:
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
       - pgbouncer0
+  auditcare:
+    pgbouncer_endpoint: pgmain_nlb
+    pgbouncer_hosts:
+      - pgbouncer0
   form_processing:
     proxy:
       host: pgbouncer0
