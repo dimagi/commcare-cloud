@@ -35,6 +35,8 @@ dbs:
     pgbouncer_host: pgbouncer0
   synclogs:
     pgbouncer_host: pgbouncer0
+  auditcare:
+    pgbouncer_host: pgbouncer0
   form_processing:
     proxy:
       host: pgbouncer0
