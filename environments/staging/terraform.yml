@@ -82,7 +82,7 @@ servers:
   - server_name: "es10-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
-    az: "c"
+    az: "b"
     volume_size: 30
     block_device:
       volume_size: 80
