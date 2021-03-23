@@ -173,9 +173,9 @@ def _get_github_credentials(message, force=False):
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
         ).format(project_root=PROJECT_ROOT))
-        username = input('Github username or token (leave blank to skip): ') or None
-        password = getpass('Github password: ') if username else None
-        GITHUB_CREDENTIALS = (username, password)
+        username = input('Github username (leave blank to skip): ') or None
+        token = getpass('Github token: ') if username else None
+        GITHUB_CREDENTIALS = (username, token)
     else:
         GITHUB_CREDENTIALS = (GITHUB_APIKEY, None)
     return GITHUB_CREDENTIALS
