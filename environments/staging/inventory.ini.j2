@@ -142,11 +142,17 @@ cchq_gid=1027
 
 {{ __es8__ }} elasticsearch_node_name=es8-staging elasticsearch_node_zone=aws elasticsearch_master=true
 
+{{ __es9__ }} elasticsearch_node_name=es9-staging elasticsearch_node_zone=us-east-1b elasticsearch_master=true
+
+{{ __es10__ }} elasticsearch_node_name=es10-staging elasticsearch_node_zone=us-east-1c elasticsearch_master=true
+
 [elasticsearch:children]
 # Amazon EC2
 es6
 es7
 es8
+es9
+es10
 
 [shared_efs_client_host:children]
 celery
