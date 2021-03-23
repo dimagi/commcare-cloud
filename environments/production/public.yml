@@ -161,6 +161,8 @@ localsettings:
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
+  LOCAL_CUSTOM_DB_ROUTING:
+    auditcare: auditcare
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
   SECURE_HSTS_SECONDS: 300

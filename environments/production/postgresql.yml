@@ -60,6 +60,11 @@ dbs:
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
       - pgbouncer6
+  auditcare:
+    host: rds_pgauditcare0
+    pgbouncer_endpoint: pgmain_nlb
+    pgbouncer_hosts:
+      - pgbouncer7
   form_processing:
     proxy:
       host: pgbouncer3

@@ -372,6 +372,15 @@ rds_instances:
       # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
       maintenance_work_mem: 4172000kB
 
+  - identifier: "pgauditcare0-production"
+    instance_type: "db.m5.2xlarge"
+    storage: 1000
+    multi_az: true
+    engine_version: 9.6.15
+    params:
+      shared_preload_libraries: pg_stat_statements
+      log_min_duration_statement: 1000
+
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-production
     targets:

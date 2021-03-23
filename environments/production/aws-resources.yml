@@ -181,6 +181,7 @@ kafka2-production: 10.202.40.165
 kafka2-production.instance_id: i-00a87f7d2547316b0
 kafka3-production: 10.202.40.207
 kafka3-production.instance_id: i-0cf31deea1447c30c
+pgauditcare0-production: pgauditcare0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgbouncer3-production: 10.202.40.153
 pgbouncer3-production.instance_id: i-0894ff03612870021
 pgbouncer5-production: 10.202.40.79
