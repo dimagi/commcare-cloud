@@ -32,8 +32,9 @@ update_steps: |
 
   ```
   # postgresql.yml
-  auditcare:
-    host: <machine>
+  dbs:
+    auditcare:
+      host: <machine>
   ```
 
   Finally, run the following to apply the config:
