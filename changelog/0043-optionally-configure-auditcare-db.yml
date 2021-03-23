@@ -21,8 +21,9 @@ update_steps: |
   To configure auditcare to go to its own PostgreSQL database instead, use the following:
   ```
   # public.yml
-  LOCAL_CUSTOM_DB_ROUTING:
-    auditcare: auditcare
+  localsettings:
+    LOCAL_CUSTOM_DB_ROUTING:
+      auditcare: auditcare
   ```
 
   If you have more than one postgres machine and you want auditcare on one other than the default one,
