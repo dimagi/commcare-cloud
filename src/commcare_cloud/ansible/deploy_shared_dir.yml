@@ -1,2 +1,2 @@
 ---
-- import_playbook: roles/shared_dir.yml
+- import_playbook: deploy_efs_mount_shared_dir.yml

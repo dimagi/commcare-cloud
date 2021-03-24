@@ -161,6 +161,13 @@ formplayer_c023
 [shared_dir_host:children]
 shareddir1
 
+[shared_efs_client_host:children]
+celery
+django_manage
+proxy
+pillowtop
+webworkers
+
 {{ __es_a__ }}
 
 {{ __esmaster6__ }} elasticsearch_node_name=esmaster6
