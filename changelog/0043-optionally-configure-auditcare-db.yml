@@ -28,9 +28,7 @@ update_steps: |
       auditcare: auditcare
   ```
 
-  If you have more than one postgres machine and you want auditcare on one other than the default one,
-  update your postgresql.yml to point to the right machine. If you have only one postgres machine
-  or want to use your default postgres machine, you can skip this step.
+  Update your postgresql.yml to point to the right machine.
 
   ```
   # postgresql.yml
