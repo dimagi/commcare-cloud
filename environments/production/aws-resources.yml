@@ -22,8 +22,8 @@ couch14-production: 10.202.40.216
 couch14-production.instance_id: i-0634cf1adc9ba838c
 couchproxy3-production: 10.202.40.196
 couchproxy3-production.instance_id: i-0b1a2bc019f113be3
-djangomanage1-production: 10.202.10.54
-djangomanage1-production.instance_id: i-06b6ff4af62079cda
+djangomanage2-production: 10.202.10.167
+djangomanage2-production.instance_id: i-03b1636303cb209d4
 es_a000-production: 10.202.40.99
 es_a000-production.instance_id: i-063044fdb36e533ec
 es_a001-production: 10.202.40.192
