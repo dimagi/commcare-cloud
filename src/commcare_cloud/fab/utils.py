@@ -172,7 +172,7 @@ def _get_github_token(message, force=False):
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
         ).format(project_root=PROJECT_ROOT))
-        GITHUB_TOKEN = getpass('Github token: ')
+        GITHUB_TOKEN = getpass('Github Token: ')
     else:
         GITHUB_TOKEN = GITHUB_APIKEY
     return GITHUB_TOKEN
