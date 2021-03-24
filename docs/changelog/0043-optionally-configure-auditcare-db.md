@@ -12,35 +12,41 @@ This change is not known to be dependent on any particular version of CommCare.
 
 
 ## Change Context
-Some enterprise deployments of CommCare use a backend feature called "auditcare" as part of
-their audit logging strategy. Historically it has used CouchDB as its data backend,
-but it is being switched to use PostgreSQL instead. If you care about this feature then
-you may want to carefully consider this change log before your next commcare deploy; otherwise you can ignore.
+Some enterprise deployments of CommCare use a backend feature called
+"auditcare" as part of their audit logging strategy. Auditcare is enabled by
+default, so it is active unless you went out of your way to disable it when
+you configured CommCare. Historically it has used CouchDB as its data
+backend, but it is being switched to use PostgreSQL instead. If you care
+about this feature then you may want to carefully consider this change log
+before your next commcare deploy; otherwise you can ignore.
 
 ## Details
-After the next deploy from the latest version of CommCare HQ, auditcare will begin writing to PostgreSQL.
-By default, it will write to tables within your default PostgreSQL db.
-If you want to have it write to a different database instead, you can configure this using the
-`LOCAL_CUSTOM_DB_ROUTING` variable and an entry in postgresql.yml.
+After the next deploy from the latest version of CommCare HQ, auditcare will
+begin writing to PostgreSQL. By default, it will write to tables within your
+default PostgreSQL db. If you want to have it write to a different database
+instead, you can configure this using the `LOCAL_CUSTOM_DB_ROUTING` variable
+and an entry in postgresql.yml.
 
 ## Steps to update
 There are no special steps if you are fine with the default.
 
-To configure auditcare to go to its own PostgreSQL database instead, use the following:
+To configure auditcare to go to its own PostgreSQL database instead, use the
+following:
+
 ```
 # public.yml
-LOCAL_CUSTOM_DB_ROUTING:
-  auditcare: auditcare
+localsettings:
+  LOCAL_CUSTOM_DB_ROUTING:
+    auditcare: auditcare
 ```
 
-If you have more than one postgres machine and you want auditcare on one other than the default one,
-update your postgresql.yml to point to the right machine. If you have only one postgres machine
-or want to use your default postgres machine, you can skip this step.
+Update your postgresql.yml to point to the right machine.
 
 ```
 # postgresql.yml
-auditcare:
-  host: <machine>
+dbs:
+  auditcare:
+    host: <machine>
 ```
 
 Finally, run the following to apply the config:
