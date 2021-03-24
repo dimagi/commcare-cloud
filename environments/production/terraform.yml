@@ -22,14 +22,13 @@ servers:
     group: "control"
     os: bionic
 
-  - server_name: "djangomanage1-production"
+  - server_name: "djangomanage2-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
     group: "django_manage"
-    os: bionic
+    os: ubuntu_pro_bionic
 
   - server_name: "web_a{i}-production"
     server_instance_type: m5.2xlarge
