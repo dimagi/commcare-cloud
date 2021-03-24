@@ -20,12 +20,16 @@ couch7-staging: 10.201.40.221
 couch7-staging.instance_id: i-0361f071191cd66c0
 couch8-staging: 10.201.40.18
 couch8-staging.instance_id: i-06d9f01ac9c8cb6b8
+es10-staging: 10.201.41.31
+es10-staging.instance_id: i-08c2645edf582d4b6
 es6-staging: 10.201.40.126
 es6-staging.instance_id: i-0161d2187f667e405
 es7-staging: 10.201.40.107
 es7-staging.instance_id: i-087ff77521605d9b9
 es8-staging: 10.201.40.31
 es8-staging.instance_id: i-0d9e988943761e595
+es9-staging: 10.201.41.168
+es9-staging.instance_id: i-02073b820430efb60
 formplayer-efs: fs-ba70cd39.efs.us-east-1.amazonaws.com
 efs-staging-mount-dns: shared-efs.staging.commcare.local
 formplayer3-staging: 10.201.10.140
