@@ -17,7 +17,7 @@ def get_github(repo):
     token = None
     if repo.is_private:
         message = "This environment references a private repository: {}".format(repo.url)
-        token = get_github_token(message, force=True)
+        token = get_github_token(message, required=True)
         if not token:
             raise EnvironmentException("Github credentials required")
     return Github(login_or_token=token, password=None)
