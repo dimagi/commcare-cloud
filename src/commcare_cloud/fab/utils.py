@@ -153,14 +153,15 @@ class DeployMetadata(object):
         return DeployDiff(self.repo, self.last_commit_sha, self.deploy_ref)
 
 
-GITHUB_TOKEN = None
+GITHUB_CREDENTIALS = None
 
 
-def _get_github_token(message, required=False):
-    global GITHUB_TOKEN
+def _get_github_credentials(message, force=False):
+    global GITHUB_CREDENTIALS
 
-    if GITHUB_TOKEN or not required:
-        return GITHUB_TOKEN
+    if GITHUB_CREDENTIALS is not None:
+        if not force or GITHUB_CREDENTIALS[0]:
+            return GITHUB_CREDENTIALS
 
     try:
         from .config import GITHUB_APIKEY
@@ -172,13 +173,15 @@ def _get_github_token(message, required=False):
             "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
             "Then edit {project_root}/config.py"
         ).format(project_root=PROJECT_ROOT))
-        GITHUB_TOKEN = getpass('Github Token: ')
+        username = input('Github username or token (leave blank to skip): ') or None
+        password = getpass('Github password: ') if username else None
+        GITHUB_CREDENTIALS = (username, password)
     else:
-        GITHUB_TOKEN = GITHUB_APIKEY
-    return GITHUB_TOKEN
+        GITHUB_CREDENTIALS = (GITHUB_APIKEY, None)
+    return GITHUB_CREDENTIALS
 
 
-def get_github_token(message=None, required=False):
+def get_github_credentials(message=None, force=False):
     if not message:
         message = "This deploy script uses the Github API to display a summary of changes to be deployed."
         if env.tag_deploy_commits:
@@ -186,18 +189,18 @@ def get_github_token(message=None, required=False):
                 "\nYou're deploying an environment which uses release tags. "
                 "Provide Github auth details to enable release tags."
             )
-    return _get_github_token(message, required)
+    return _get_github_credentials(message, force)
 
 
 @memoized
 def _get_github():
-    token = get_github_token()
-    return Github(login_or_token=token, password=None)
+    login_or_token, password = get_github_credentials()
+    return Github(login_or_token=login_or_token, password=password)
 
 
 @memoized
 def _github_auth_provided():
-    return bool(get_github_token())
+    return bool(get_github_credentials()[0])
 
 
 def _get_checkpoint_filename():
