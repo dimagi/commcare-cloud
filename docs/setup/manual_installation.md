@@ -40,7 +40,7 @@ $ source ~/.virtualenvs/cchq/bin/activate
 ## Install commcare-cloud
 (cchq)$ git clone https://github.com/dimagi/commcare-cloud.git
 (cchq)$ pip install --upgrade pip-tools
-(cchq)$ pip-sync commcare-cloud/requirements3.txt
+(cchq)$ pip-sync commcare-cloud/requirements.txt
 (cchq)$ pip install -e commcare-cloud
 (cchq)$ manage-commcare-cloud install
 

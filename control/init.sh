@@ -60,13 +60,12 @@ if [ -d ${COMMCARE_CLOUD_REPO}/commcare-cloud ]; then
     rm -rf ${COMMCARE_CLOUD_REPO}/commcare-cloud
 fi
 
-REQUIREMENTS=$(python -c 'import sys; print("requirements%s.txt" % (3 if sys.version_info[0] == 3 else ""))')
 if [ -z "$(which manage-commcare-cloud)" ]; then
     # first time install need requirements installed in serial
     # installs strictly what's in requirements.txt, so versions are pre-pinned
     cd ${COMMCARE_CLOUD_REPO}
     pip install --upgrade pip-tools
-    pip-sync $REQUIREMENTS
+    pip-sync requirements.txt
     pip install --editable .
     cd -
 else
@@ -74,7 +73,7 @@ else
         COMMCARE=
         cd ${COMMCARE_CLOUD_REPO}
         pip install --quiet --upgrade pip-tools
-        pip-sync --quiet $REQUIREMENTS
+        pip-sync --quiet requirements.txt
         pip install --quiet --editable .
         cd -
     } &
