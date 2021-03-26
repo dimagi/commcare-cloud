@@ -177,7 +177,7 @@ def _confirm_environment_time(env_name):
         return
 
     message = (
-        "Whoa there bud! You're deploying '%s' during the day. "
+        "Whoa there bud! You're deploying '%s' outside the configured maintenance window. "
         "The current local time is %s.\n"
         "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
     ) % (env_name, d.strftime("%-I:%M%p on %h. %d %Z"))
