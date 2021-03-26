@@ -1,6 +1,5 @@
 #! /bin/bash
 CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
-CCHQ_PYTHON=$([ "$CCHQ_VIRTUALENV" == ansible ] && echo 2 || echo 3)
 VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
 
 if [[ $_ == $0 ]]
@@ -12,26 +11,17 @@ fi
 
 
 function realpath() {
-    python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
+    python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
 }
 
 
 if [ -z ${TRAVIS_TEST} ]; then
-    if [ "$CCHQ_PYTHON" == 3 ]; then
-        if [ ! -f $VENV/bin/activate ]; then
-            # use virtualenv because `python3 -m venv` is broken on Ubuntu 18.04
-            python3 -m pip install --user --upgrade virtualenv
-            python3 -m virtualenv $VENV
-        fi
-        source $VENV/bin/activate
-    elif ! hash virtualenvwrapper.sh 2>/dev/null; then
-        echo "Please install virtualenvwrapper and make sure it is in your PATH"
-        echo ""
-        echo "  sudo pip install virtualenv virtualenvwrapper --ignore-installed six"
-        echo ""
-        echo "Other requirements: git, python-dev, python-pip"
-        return 1
+    if [ ! -f $VENV/bin/activate ]; then
+        # use virtualenv because `python3 -m venv` is broken on Ubuntu 18.04
+        python3 -m pip install --user --upgrade virtualenv
+        python3 -m virtualenv $VENV
     fi
+    source $VENV/bin/activate
 fi
 
 if [ -n "${BASH_SOURCE[0]}" ] && [ -z "${BASH_SOURCE[0]##*init.sh*}" ]
@@ -50,30 +40,6 @@ then
 else
     # use pre-assigned location if set; fallback to the default location
     COMMCARE_CLOUD_REPO=${COMMCARE_CLOUD_REPO:-${HOME}/commcare-cloud}
-fi
-
-if [ -z "$TRAVIS_TEST" -a "$CCHQ_PYTHON" == 2 ]; then
-    source virtualenvwrapper.sh
-    if [ ! -d ~/.virtualenvs/ansible ]; then
-        echo "Creating ansible virtualenv..."
-        mkvirtualenv ansible --python $(which python2)
-    elif ~/.virtualenvs/ansible/bin/python -c 'print ""' 2> /dev/null; [ "$?" -ne "0" ]; then
-        echo "######################################################"
-        echo "#                                                    #"
-        echo "#  You're working from a python3 virtualenv,         #"
-        echo "#  but commcare-cloud doesn't yet support Python 3.  #"
-        echo "#  To reset your virtualenv, run the following:      #"
-        echo "#                                                    #"
-        echo "#    rmvirtualenv ansible                            #"
-        echo "#                                                    #"
-        echo "#  Then run this script again. If it runs on login,  #"
-        echo "#  you can just log out and log back in.             #"
-        echo "#                                                    #"
-        echo "######################################################"
-        return -1
-    else
-        workon ansible
-    fi
 fi
 
 if [ -d ~/commcarehq-ansible ]; then
@@ -102,7 +68,6 @@ if [ -z "$(which manage-commcare-cloud)" ]; then
     pip install --upgrade pip-tools
     pip-sync $REQUIREMENTS
     pip install --editable .
-    rm src/commcare_cloud.egg-info/requires.txt  # HACK for Python 2+3
     cd -
 else
     {
@@ -111,7 +76,6 @@ else
         pip install --quiet --upgrade pip-tools
         pip-sync --quiet $REQUIREMENTS
         pip install --quiet --editable .
-        rm src/commcare_cloud.egg-info/requires.txt  # HACK for Python 2+3
         cd -
     } &
 fi
@@ -157,11 +121,7 @@ source ${COMMCARE_CLOUD_REPO}/src/commcare_cloud/.bash_completion
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
-if [ "$CCHQ_PYTHON" == 3 ]; then
-    SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
-else
-    SITE_PACKAGES=$VENV/lib/python2.7/site-packages
-fi
+SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
 
 if ! grep -q init-ansible ~/.profile 2>/dev/null; then
     printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
