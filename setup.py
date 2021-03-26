@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 
-import six
 from setuptools import setup, find_packages
 
 install_deps = [
@@ -10,7 +9,7 @@ install_deps = [
     'attrs>=18.1.0',
     'boto3>=1.9.131',
     'clint',
-    'couchdb-cluster-admin>={}'.format("0.5.0" if six.PY2 else "0.6.0"),
+    'couchdb-cluster-admin>=0.6.0',
     'cryptography>=3.2',
     'datadog==0.2.0',
     'dimagi-memoized>=1.1.0',
