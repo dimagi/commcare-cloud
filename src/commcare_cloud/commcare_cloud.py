@@ -182,7 +182,13 @@ def call_commcare_cloud(input_argv=sys.argv):
 
     put_virtualenv_bin_on_the_path()
     parser, subparsers, commands = make_command_parser(available_envs=get_available_envs())
-    args, unknown_args = parser.parse_known_args(input_argv[1:])
+
+    raw_args = input_argv[1:]
+    if not raw_args:
+        parser.print_help()
+        return
+
+    args, unknown_args = parser.parse_known_args(raw_args)
 
     if args.control:
         run_on_control_instead(args, input_argv)
