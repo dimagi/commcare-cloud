@@ -10,7 +10,7 @@
   cron:
     name: "{{ item.name }}"
     special_time: daily
-    job: "/usr/sbin/tmpreaper {{ item.time_spec }} {{ item.dir }}"
+    job: "/usr/sbin/tmpreaper {{ item.time_spec }} {{ item.dir }} --protect '{{ formplayer_access_log_dir }}'"
     user: root
     cron_file: purge_formplayer_files
   with_items:
@@ -37,7 +37,8 @@
     # delete any empty directories so they don't just build up (to literally 100,000+)
     # but leaving any that have been modified in the last 20m
     # (to avoid a race condition on newly created dirs)
-    job: 'find {{ formplayer_data_dir }} -empty -type d -mmin +20 -delete'
+    # Also never delete {{ formplayer_access_log_dir }}
+    job: 'find {{ formplayer_data_dir }} -path {{ formplayer_access_log_dir }} -prune -o -empty -type d -mmin +20 -delete'
     user: '{{ cchq_user }}'
     state: present
   tags:
