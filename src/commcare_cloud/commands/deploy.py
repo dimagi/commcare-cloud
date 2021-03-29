@@ -46,6 +46,10 @@ class Deploy(CommandBase):
     )
 
     def modify_parser(self):
+        if len(sys.argv) <= 1:
+            # No environment specified, so no need to add environment-specific repositories
+            return
+
         env_name = sys.argv[1]
         if env_name not in get_available_envs():
             return
