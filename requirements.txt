@@ -30,7 +30,7 @@ idna==2.6                 # via commcare-cloud (setup.py), requests
 importlib-metadata==3.1.0  # via commcare-cloud (setup.py)
 importlib-resources==3.0.0  # via netaddr
 jinja2-cli==0.7.0         # via commcare-cloud (setup.py)
-jinja2==2.11.2            # via ansible, jinja2-cli
+jinja2==2.11.3            # via ansible, jinja2-cli
 jmespath==0.10.0          # via boto3, botocore
 jsonobject==0.9.9         # via commcare-cloud (setup.py), couchdb-cluster-admin
 markupsafe==1.1.1         # via jinja2
