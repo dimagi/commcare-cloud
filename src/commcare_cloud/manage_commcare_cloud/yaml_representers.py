@@ -3,10 +3,9 @@ from __future__ import unicode_literals
 
 import yaml
 from yaml.representer import SafeRepresenter
-import six
 
 
-class LiteralUnicode(six.text_type):
+class LiteralUnicode(str):
     pass
 
 
@@ -18,9 +17,6 @@ def change_style(style, representer):
     return new_representer
 
 
-if six.PY3:
-    safe_represent = SafeRepresenter.represent_str
-else:
-    safe_represent = SafeRepresenter.represent_unicode
+safe_represent = SafeRepresenter.represent_str
 represent_literal_unicode = change_style('|', safe_represent)
 yaml.add_representer(LiteralUnicode, represent_literal_unicode, Dumper=yaml.SafeDumper)

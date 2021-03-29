@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 
-import six
 from setuptools import setup, find_packages
 
 install_deps = [
@@ -10,7 +9,7 @@ install_deps = [
     'attrs>=18.1.0',
     'boto3>=1.9.131',
     'clint',
-    'couchdb-cluster-admin>={}'.format("0.5.0" if six.PY2 else "0.6.0"),
+    'couchdb-cluster-admin>=0.6.0',
     'cryptography>=3.2',
     'datadog==0.2.0',
     'dimagi-memoized>=1.1.0',
@@ -19,6 +18,7 @@ install_deps = [
     # can remove once requests bumps its version requirement
     # https://github.com/requests/requests/issues/4681
     'idna==2.6',
+    'importlib-metadata==3.1.0',
     'jinja2-cli',
     'jsonobject>=0.9.0',
     'netaddr',
@@ -30,13 +30,6 @@ install_deps = [
     'six',
     'tabulate'
 ]
-if six.PY2:
-    # moved from requirements-python-lt-2.7.9-ssl-issue.in
-    install_deps.extend(["pyOpenSSL", "ndg-httpsclient"])
-
-if six.PY3:
-    install_deps.extend(['importlib-metadata==3.1.0'])
-
 test_deps = [
     'mock>=2.0.0',
     'modernize',

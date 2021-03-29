@@ -13,7 +13,6 @@ import re
 import sys
 from io import open
 
-import six
 import yaml
 from clint.textui import puts
 
@@ -116,8 +115,6 @@ class MakeChangelog(CommandBase):
 
         text = template.render(changelog_entry=changelog_entry, ordinal=ordinal)
         text = text.rstrip().replace('{{', "{{ '{{' }}")
-        if six.PY2:
-            text = text.encode("utf-8")
         print(text)
 
 
