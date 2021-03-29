@@ -44,7 +44,7 @@ pyjwt==1.7.1              # via pygithub
 pynacl==1.4.0             # via paramiko
 python-dateutil==2.8.1    # via botocore
 pytz==2017.2              # via commcare-cloud (setup.py)
-pyyaml==5.3.1             # via ansible, couchdb-cluster-admin
+pyyaml==5.4.1             # via ansible, couchdb-cluster-admin
 requests==2.24.0          # via couchdb-cluster-admin, datadog, pygithub
 s3transfer==0.3.3         # via boto3
 simplejson==3.17.2        # via commcare-cloud (setup.py)
