@@ -58,7 +58,6 @@ from commcare_cloud.commands.migrations.copy_files import (
 )
 from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.python_migration_utils import open_for_write
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 PLAY_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'plays')
@@ -244,7 +243,7 @@ def commit(migration, ansible_context):
 def assert_files(migration, alloc_docs_by_db, ansible_context):
     files_by_node = get_files_for_assertion(alloc_docs_by_db)
     expected_files_vars = os.path.abspath(os.path.join(migration.working_dir, 'assert_vars.yml'))
-    with open_for_write(expected_files_vars) as f:
+    with open(expected_files_vars, 'w', encoding='utf-8') as f:
         yaml.safe_dump({
             'files_by_node': files_by_node,
             'couch_data_dir': migration.couchdb2_data_dir,
@@ -323,7 +322,7 @@ def generate_shard_plan(migration):
     shard_allocations = generate_shard_allocation(
         migration.source_couch_config, migration.plan.target_allocation
     )
-    with open_for_write(migration.shard_plan_path) as f:
+    with open(migration.shard_plan_path, 'w', encoding='utf-8') as f:
         plan = {
             shard_allocation_doc.db_name: shard_allocation_doc.to_plan_json()
             for shard_allocation_doc in shard_allocations

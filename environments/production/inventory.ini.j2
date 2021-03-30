@@ -26,14 +26,16 @@ web_b
 hq_webworkers
 mobile_webworkers
 
-{{ __pgbouncer3__ }}
+{{ __pgbouncer3__ }} pgbouncer_processes=2
 {{ __pgbouncer5__ }} pgbouncer_processes=2
-{{ __pgbouncer6__ }}
-{{ __pgbouncer7__ }}
+{{ __pgbouncer6__ }} pgbouncer_processes=2
+{{ __pgbouncer7__ }} pgbouncer_processes=2
 {{ __pgbouncer8__ }} pgbouncer_processes=2
-{{ __pgbouncer9__ }}
+{{ __pgbouncer9__ }} pgbouncer_processes=2
 
 {{ __rds_pgmain0__ }}
+
+{{ __rds_pgformplayer0__ }}
 
 {{ __rds_pgucr0__ }}
 
@@ -49,10 +51,19 @@ mobile_webworkers
 
 {{ __rds_pgsynclog0__ }}
 
+{{ __rds_pgauditcare0__ }}
+
 {{ __pgformplayer_nlb__ }}
+
+{{ __pgmain_nlb__ }}
+
+{{ __pgucr_nlb__ }}
+
+{{ __pgsynclogs_nlb__ }}
 
 [remote_postgresql:children]
 rds_pgmain0
+rds_pgformplayer0
 rds_pgucr0
 rds_pgshard1
 rds_pgshard2
@@ -60,6 +71,7 @@ rds_pgshard3
 rds_pgshard4
 rds_pgshard5
 rds_pgsynclog0
+rds_pgauditcare0
 
 [postgresql:children]
 pgbouncer3
@@ -73,10 +85,16 @@ pgbouncer7
 pgbouncer8
 pgbouncer9
 pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb
 
 [ansible_skip:children]
 remote_postgresql
 pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb
 
 {{ __rabbit2__ }}
 {{ __rabbit3__ }}
@@ -138,11 +156,6 @@ use_monit_for_formplayer=true
 formplayer_c014
 formplayer_c023
 
-{{ __redis0__ }} swap_size=1G
-
-[redis:children]
-redis0
-
 {{ __shareddir1__ }}
 
 [shared_dir_host:children]
@@ -150,16 +163,16 @@ shareddir1
 
 {{ __es_a__ }}
 
-{{ __esmaster3__ }} elasticsearch_node_name=esmaster3
+{{ __esmaster6__ }} elasticsearch_node_name=esmaster6
 
-{{ __esmaster4__ }} elasticsearch_node_name=esmaster4
+{{ __esmaster7__ }} elasticsearch_node_name=esmaster7
 
-{{ __esmaster5__ }} elasticsearch_node_name=esmaster5
+{{ __esmaster8__ }} elasticsearch_node_name=esmaster8
 
 [es_master:children]
-esmaster3
-esmaster4
-esmaster5
+esmaster6
+esmaster7
+esmaster8
 
 [es_master:vars]
 elasticsearch_master=true
@@ -197,7 +210,7 @@ couchproxy3
 [control:children]
 control1
 
-{{ __djangomanage1__ }}
+{{ __djangomanage2__ }}
 
 [django_manage:children]
-djangomanage1
+djangomanage2

@@ -24,18 +24,27 @@ pg_repack:
 
 dbs:
   main:
-    pgbouncer_host: pgproxy2
+    pgbouncer_endpoint: pgmain_nlb
+    pgbouncer_hosts:
+      - pgproxy2
     query_stats: True
   ucr:
-    pgbouncer_host: pgproxy2
+    pgbouncer_endpoint: pgucr_nlb
+    pgbouncer_hosts:
+      - pgproxy2
     query_stats: True
   synclogs:
-    pgbouncer_host: pgproxy2
+    pgbouncer_endpoint: pgsynclogs_nlb
+    pgbouncer_hosts:
+      - pgproxy2
   formplayer:
+    host: rds_pgformplayer0
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_hosts:
       - pgproxy2
       - pgbouncer0
+  auditcare:
+    pgbouncer_host: pgproxy2
   form_processing:
     proxy:
       host: pgproxy2

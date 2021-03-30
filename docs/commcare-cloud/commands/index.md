@@ -576,8 +576,8 @@ Use '-' for default (django_manage[0])
 ###### `remote_command`
 
 Command to run in the tmux.
-If a command specified, then it will always run in a new window.
-If a command is *not* specified, then a it will rejoin the most
+If a command is specified, then it will always run in a new window.
+If a command is *not* specified, then it will rejoin the most
 recently visited tmux window; only if there are no currently open
 tmux windows will a new one be opened.
 
@@ -640,12 +640,12 @@ Output as CSV
 View and edit secrets through the CLI
 
 ```
-commcare-cloud <env> secrets {view,edit} secret_name
+commcare-cloud <env> secrets {view,edit,list-append,list-remove} secret_name
 ```
 
 ##### Positional Arguments
 
-###### `{view,edit}`
+###### `{view,edit,list-append,list-remove}`
 
 ###### `secret_name`
 

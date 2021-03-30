@@ -6,7 +6,7 @@ data "aws_route53_zone" "existing-zone-name" {
 resource "aws_route53_record" "zone-record-create" {
   zone_id = "${data.aws_route53_zone.existing-zone-name.zone_id}"
   name    = "${var.route_names}"
-  type    = "${var.type}"
+  type    = "${var.record_type}"
   ttl     = "${var.ttl}"
   records = ["${var.records}"]
 }

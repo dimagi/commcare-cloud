@@ -11,7 +11,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.26
     pgbouncer_hosts:
-      - 10.247.164.26
+    - 10.247.164.26
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -26,15 +26,15 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.25
     pgbouncer_hosts:
-      - 10.247.164.25
+    - 10.247.164.25
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
-  - create: false
+  - acceptable_replication_delay: 30
+    create: false
     django_alias: icds-ucr-standby1
     django_migrate: false
     host: 10.247.164.24
-    acceptable_replication_delay: 30
     master: icds-ucr
     name: commcarehq_icds_aggregatedata
     options: {}
@@ -42,7 +42,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.24
     pgbouncer_hosts:
-      - 10.247.164.24
+    - 10.247.164.24
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -57,7 +57,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.66
     pgbouncer_hosts:
-      - 10.247.164.66
+    - 10.247.164.66
     port: 6432
     query_stats: false
     shards:
@@ -75,7 +75,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.64
     pgbouncer_hosts:
-      - 10.247.164.64
+    - 10.247.164.64
     port: 6432
     query_stats: false
     shards:
@@ -93,7 +93,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.66
     pgbouncer_hosts:
-      - 10.247.164.66
+    - 10.247.164.66
     port: 6432
     query_stats: false
     shards:
@@ -111,7 +111,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.21
     pgbouncer_hosts:
-      - 10.247.164.21
+    - 10.247.164.21
     port: 6432
     query_stats: false
     shards:
@@ -129,7 +129,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.21
     pgbouncer_hosts:
-      - 10.247.164.21
+    - 10.247.164.21
     port: 6432
     query_stats: false
     shards:
@@ -147,7 +147,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.21
     pgbouncer_hosts:
-      - 10.247.164.21
+    - 10.247.164.21
     port: 6432
     query_stats: false
     shards:
@@ -165,7 +165,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.20
     pgbouncer_hosts:
-      - 10.247.164.20
+    - 10.247.164.20
     port: 6432
     query_stats: false
     shards:
@@ -183,7 +183,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.20
     pgbouncer_hosts:
-      - 10.247.164.20
+    - 10.247.164.20
     port: 6432
     query_stats: false
     shards:
@@ -201,7 +201,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.20
     pgbouncer_hosts:
-      - 10.247.164.20
+    - 10.247.164.20
     port: 6432
     query_stats: false
     shards:
@@ -219,7 +219,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.64
     pgbouncer_hosts:
-      - 10.247.164.64
+    - 10.247.164.64
     port: 6432
     query_stats: false
     shards:
@@ -237,7 +237,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.56
     pgbouncer_hosts:
-      - 10.247.164.56
+    - 10.247.164.56
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -252,7 +252,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.70
     pgbouncer_hosts:
-      - 10.247.164.70
+    - 10.247.164.70
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -267,7 +267,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.25
     pgbouncer_hosts:
-      - 10.247.164.25
+    - 10.247.164.25
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -282,10 +282,11 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.25
     pgbouncer_hosts:
-      - 10.247.164.25
+    - 10.247.164.25
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
+  auditcare: null
   by_pgbouncer_host:
     10.247.164.20: &id007
     - *id001
@@ -331,7 +332,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.25
     pgbouncer_hosts:
-      - 10.247.164.25
+    - 10.247.164.25
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
@@ -348,7 +349,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: 10.247.164.66
         pgbouncer_hosts:
-          - 10.247.164.66
+        - 10.247.164.66
         port: 6432
         query_stats: false
         shards:
@@ -366,7 +367,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: 10.247.164.64
         pgbouncer_hosts:
-          - 10.247.164.64
+        - 10.247.164.64
         port: 6432
         query_stats: false
         shards:
@@ -384,7 +385,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: 10.247.164.66
         pgbouncer_hosts:
-          - 10.247.164.66
+        - 10.247.164.66
         port: 6432
         query_stats: false
         shards:
@@ -402,7 +403,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: 10.247.164.21
         pgbouncer_hosts:
-          - 10.247.164.21
+        - 10.247.164.21
         port: 6432
         query_stats: false
         shards:
@@ -420,7 +421,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: 10.247.164.21
         pgbouncer_hosts:
-          - 10.247.164.21
+        - 10.247.164.21
         port: 6432
         query_stats: false
         shards:
@@ -438,7 +439,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: 10.247.164.21
         pgbouncer_hosts:
-          - 10.247.164.21
+        - 10.247.164.21
         port: 6432
         query_stats: false
         shards:
@@ -456,7 +457,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: 10.247.164.20
         pgbouncer_hosts:
-          - 10.247.164.20
+        - 10.247.164.20
         port: 6432
         query_stats: false
         shards:
@@ -474,7 +475,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: 10.247.164.20
         pgbouncer_hosts:
-          - 10.247.164.20
+        - 10.247.164.20
         port: 6432
         query_stats: false
         shards:
@@ -492,7 +493,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: 10.247.164.20
         pgbouncer_hosts:
-          - 10.247.164.20
+        - 10.247.164.20
         port: 6432
         query_stats: false
         shards:
@@ -510,7 +511,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: 10.247.164.64
         pgbouncer_hosts:
-          - 10.247.164.64
+        - 10.247.164.64
         port: 6432
         query_stats: false
         shards:
@@ -528,7 +529,7 @@ postgresql_dbs:
       pg_config: []
       pgbouncer_endpoint: 10.247.164.56
       pgbouncer_hosts:
-        - 10.247.164.56
+      - 10.247.164.56
       port: 6432
       query_stats: false
       user: '{{ postgres_users.commcare.username }}'
@@ -557,7 +558,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.25
     pgbouncer_hosts:
-      - 10.247.164.25
+    - 10.247.164.25
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -572,16 +573,16 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.26
     pgbouncer_hosts:
-      - 10.247.164.26
+    - 10.247.164.26
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
   standby:
-  - create: false
+  - acceptable_replication_delay: 30
+    create: false
     django_alias: icds-ucr-standby1
     django_migrate: false
     host: 10.247.164.24
-    acceptable_replication_delay: 30
     master: icds-ucr
     name: commcarehq_icds_aggregatedata
     options: {}
@@ -589,7 +590,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.24
     pgbouncer_hosts:
-      - 10.247.164.24
+    - 10.247.164.24
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -604,7 +605,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.70
     pgbouncer_hosts:
-      - 10.247.164.70
+    - 10.247.164.70
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -619,7 +620,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: 10.247.164.25
     pgbouncer_hosts:
-      - 10.247.164.25
+    - 10.247.164.25
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'

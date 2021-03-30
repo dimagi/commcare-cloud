@@ -65,6 +65,8 @@ formplayer_purge_time_spec: '10d'
 formplayer_sensitive_data_logging: true
 formplayer_forward_ip_proxy: true
 formplayer_enable_cache: true
+formplayer_detailed_tagging_domains: "{{ detailed_tagging_domains }}"
+formplayer_detailed_tags: []
 
 KSPLICE_ACTIVE: yes
 
@@ -84,7 +86,7 @@ couchdb2:
   password: "{{ COUCH_PASSWORD }}"
 
 couchdb_compaction_settings:
-  _default: '[{db_fragmentation, "40%"}, {view_fragmentation, "40%"}, {from, "22:00"}, {to, "03:00"}]'
+  _default: '[{db_fragmentation, "50%"}, {view_fragmentation, "50%"}, {from, "22:00"}, {to, "03:00"}]'
 
 
 couchdb2_client_max_body_size: 100M
@@ -159,13 +161,20 @@ localsettings:
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
+  LOCAL_CUSTOM_DB_ROUTING:
+    auditcare: auditcare
+  LOCAL_MIDDLEWARE:
+    - 'django.middleware.security.SecurityMiddleware'
+  SECURE_HSTS_SECONDS: 300
+  SILENCED_SYSTEM_CHECKS:
+    - 'security.W008' # the ALB and nginx already redirect HTTP to HTTPS so safe to silence this warning
   PILLOWTOP_MACHINE_ID: hqdb0
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes
   SES_CONFIGURATION_SET: production-email-events
   SNS_EMAIL_EVENT_SECRET: "{{ SNS_EMAIL_EVENT_SECRET }}"
   REDIS_DB: '0'
-  REDIS_HOST: "{{ groups.redis.0 }}"
+  REDIS_HOST: "redis.production.commcare.local"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
   REQUIRE_TWO_FACTOR_FOR_SUPERUSERS: True
@@ -186,7 +195,7 @@ localsettings:
         - 'ils-gateway-train'
 #  USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER: True
   USER_REPORTING_METADATA_BATCH_ENABLED: True
-  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
+  WS4REDIS_CONNECTION_HOST: "redis.production.commcare.local"
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu

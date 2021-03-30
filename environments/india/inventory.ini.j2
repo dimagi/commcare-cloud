@@ -6,14 +6,14 @@
 {{ __celery2__ }} swap_size=4G
 {{ __celery3__ }} swap_size=4G
 {{ __couch5__ }} swap_size=8G
-{{ __couch6__ }} swap_size=8G
-{{ __couch7__ }} swap_size=8G
-{{ __redis0__ }}
-{{ __esmaster2__ }} elasticsearch_node_name=esmaster2 elasticsearch_node_zone=aws
-{{ __esmaster3__ }} elasticsearch_node_name=esmaster3 elasticsearch_node_zone=aws
-{{ __esmaster4__ }} elasticsearch_node_name=esmaster4 elasticsearch_node_zone=aws
-{{ __es0__ }} elasticsearch_node_name=es0 elasticsearch_node_zone=aws
-{{ __es1__ }} elasticsearch_node_name=es1 elasticsearch_node_zone=aws
+{{ __couch8__ }} swap_size=8G
+{{ __couch9__ }} swap_size=8G
+{{ __esmaster2__ }} elasticsearch_node_name=esmaster2 elasticsearch_node_zone=ap-south-1b
+{{ __esmaster3__ }} elasticsearch_node_name=esmaster3 elasticsearch_node_zone=ap-south-1b
+{{ __esmaster4__ }} elasticsearch_node_name=esmaster4 elasticsearch_node_zone=ap-south-1a
+{{ __es0__ }} elasticsearch_node_name=es0 elasticsearch_node_zone=ap-south-1a
+{{ __es1__ }} elasticsearch_node_name=es1 elasticsearch_node_zone=ap-south-1a
+{{ __es2__ }} elasticsearch_node_name=es2 elasticsearch_node_zone=ap-south-1b
 {{ __citusmaster0__ }}
 {{ __citusworker0__ }}
 {{ __citusworker1__ }}
@@ -31,6 +31,7 @@ elasticsearch_data=false
 [es_data:children]
 es0
 es1
+es2
 
 [elasticsearch:children]
 es_master
@@ -44,6 +45,9 @@ es_data
 {{ __proxy1__ }}
 {{ __rds_pgmain0__ }}
 {{ __pgformplayer_nlb__ }}
+{{ __pgmain_nlb__ }}
+{{ __pgucr_nlb__ }}
+{{ __pgsynclogs_nlb__ }}
 
 
 [citusdb_worker:children]
@@ -80,6 +84,9 @@ pgbouncer0
 [pgbouncer:children]
 pgbouncer1
 pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb
 
 [rabbitmq:children]
 kafka1
@@ -101,24 +108,24 @@ pillow2
 [formplayer:children]
 formplayer1
 
-[redis:children]
-redis0
-
 [elasticsearch:children]
 es0
 es1
 
-[shared_dir_host:children]
-redis0
+[shared_efs_client_host:children]
+celery
+django_manage
+proxy
+pillowtop
+webworkers
 
 [couchdb2:children]
 couch5
-couch6
-couch7
+couch8
+couch9
 
 [couchdb2_proxy:children]
 couch5
-couch6
 
 [control:children]
 control0
@@ -132,3 +139,6 @@ rds_pgmain0
 [ansible_skip:children]
 remote_postgresql
 pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb

@@ -38,7 +38,11 @@ aws_region: 'us-east-1'
 
 formplayer_archive_time_spec: '10m'
 formplayer_sensitive_data_logging: true
-formplayer_enable_cache: true
+formplayer_enable_cache: false
+formplayer_detailed_tagging_domains: "{{ detailed_tagging_domains }}"
+formplayer_detailed_tags:
+    - form_name
+    - module_name
 
 KSPLICE_ACTIVE: yes
 
@@ -79,6 +83,8 @@ couchdb2:
   password: "{{ COUCH_PASSWORD }}"
 couchdb2_client_max_body_size: 100M
 couchdb_reduce_limit: False
+couchdb_multiaz: True
+couchdb_placement: placement=us-east-1a:1,us-east-1b:1:us-east-1c:1
 couchdb_cluster_settings:
   q: 8
   r: 2
@@ -135,6 +141,8 @@ localsettings:
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   LOCAL_APPS:
     - {name: 'ddtrace.contrib.django', host: webworkers}
+  LOCAL_CUSTOM_DB_ROUTING:
+    auditcare: auditcare
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
   SECURE_HSTS_SECONDS: "{{ hsts_value_in_seconds | int }}"
@@ -174,3 +182,9 @@ celery_hours_before_soft_kill: 36
 
 # strict transport security
 hsts_value_in_seconds: 300 # remember to connect via https for 5 minutes
+
+efs_shared_mount_dir: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
+efs_shared_mount_endpoint: "shared-efs.staging.commcare.local:/"
+shared_mount_opts: "_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
+shared_dir_gid: 1500
+efs_mount_dir_data_sync: "shared_data_sync{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"

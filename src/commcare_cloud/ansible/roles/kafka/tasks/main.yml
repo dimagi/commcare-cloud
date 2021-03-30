@@ -59,7 +59,7 @@
     dest: /opt/kafka/config/log4j.properties
     owner: root
     group: root
-    mode: 644
+    mode: 0644
   when: kafka_version is version('2.0', '>')
   tags: log4j
 
@@ -69,7 +69,7 @@
     dest: /opt/kafka/config/log4j.properties
     owner: root
     group: root
-    mode: 644
+    mode: 0644
   when: kafka_version == "0.8.2.2"
   tags: log4j
 
@@ -98,4 +98,4 @@
   tags: after-reboot
 
 - name: Add Kafka binaries to PATH
-  copy: src=kafka.sh dest=/etc/profile.d/ owner=root group=root mode=644
+  copy: src=kafka.sh dest=/etc/profile.d/ owner=root group=root mode=0644

@@ -5,55 +5,56 @@
 #    pip-compile --output-file=requirements.txt setup.py
 #
 ansible-vault==1.1.1      # via commcare-cloud (setup.py)
-ansible==2.9.7            # via ansible-vault, commcare-cloud (setup.py)
+ansible==2.9.13           # via ansible-vault, commcare-cloud (setup.py)
 argparse==1.4.0           # via commcare-cloud (setup.py), couchdb-cluster-admin
 args==0.1.0               # via clint
-attrs==19.1.0             # via commcare-cloud (setup.py)
-bcrypt==3.1.6             # via paramiko
-boto3==1.9.153            # via commcare-cloud (setup.py)
-botocore==1.12.153        # via boto3, s3transfer
-certifi==2019.3.9         # via requests
-cffi==1.12.3              # via bcrypt, cryptography, pynacl
+attrs==20.2.0             # via commcare-cloud (setup.py)
+bcrypt==3.2.0             # via paramiko
+boto3==1.15.4             # via commcare-cloud (setup.py)
+botocore==1.18.4          # via boto3, s3transfer
+certifi==2020.6.20        # via requests
+cffi==1.14.3              # via bcrypt, cryptography, pynacl
 chardet==3.0.4            # via requests
 clint==0.5.1              # via commcare-cloud (setup.py)
-couchdb-cluster-admin==0.5.0  # via commcare-cloud (setup.py)
-cryptography==3.3.2         # via ansible, commcare-cloud (setup.py), paramiko, pyopenssl
+couchdb-cluster-admin==0.6.0  # via commcare-cloud (setup.py)
+cryptography==3.3.2         # via ansible, commcare-cloud (setup.py), paramiko
 datadog==0.2.0            # via commcare-cloud (setup.py)
-decorator==4.4.0          # via datadog
-deprecated==1.2.5         # via pygithub
-dimagi-memoized==1.1.1    # via commcare-cloud (setup.py), couchdb-cluster-admin
-dnspython==1.16.0         # via commcare-cloud (setup.py)
-docutils==0.14            # via botocore
-enum34==1.1.6             # via cryptography
+decorator==4.4.2          # via datadog
+deprecated==1.2.10        # via pygithub
+dimagi-memoized==1.1.3    # via commcare-cloud (setup.py), couchdb-cluster-admin
+dnspython==2.0.0          # via commcare-cloud (setup.py)
 fabric3==1.10.2.post3     # via commcare-cloud (setup.py)
-futures==3.2.0            # via s3transfer
-gevent==1.4.0             # via couchdb-cluster-admin
-greenlet==0.4.15          # via gevent
+gevent==20.9.0            # via couchdb-cluster-admin
+greenlet==0.4.17          # via gevent
 idna==2.6                 # via commcare-cloud (setup.py), requests
-ipaddress==1.0.22         # via cryptography
-jinja2-cli==0.6.0         # via commcare-cloud (setup.py)
-jinja2==2.10.1            # via ansible, jinja2-cli
-jmespath==0.9.4           # via boto3, botocore
+importlib-metadata==3.1.0  # via commcare-cloud (setup.py)
+importlib-resources==3.0.0  # via netaddr
+jinja2-cli==0.7.0         # via commcare-cloud (setup.py)
+jinja2==2.11.3            # via ansible, jinja2-cli
+jmespath==0.10.0          # via boto3, botocore
 jsonobject==0.9.9         # via commcare-cloud (setup.py), couchdb-cluster-admin
 markupsafe==1.1.1         # via jinja2
-ndg-httpsclient==0.5.1    # via commcare-cloud (setup.py)
-netaddr==0.7.19           # via commcare-cloud (setup.py)
-paramiko==2.4.2           # via fabric3
-passlib==1.7.1            # via commcare-cloud (setup.py)
-pyasn1==0.4.5             # via ndg-httpsclient, paramiko
-pycparser==2.19           # via cffi
-pycryptodome==3.8.1       # via commcare-cloud (setup.py)
-pygithub==1.43.7          # via commcare-cloud (setup.py)
+netaddr==0.8.0            # via commcare-cloud (setup.py)
+paramiko==2.7.2           # via fabric3
+passlib==1.7.2            # via commcare-cloud (setup.py)
+pycparser==2.20           # via cffi
+pycryptodome==3.9.8       # via commcare-cloud (setup.py)
+pygithub==1.53            # via commcare-cloud (setup.py)
 pyjwt==1.7.1              # via pygithub
-pynacl==1.3.0             # via paramiko
-pyopenssl==19.0.0         # via commcare-cloud (setup.py), ndg-httpsclient
-python-dateutil==2.8.0    # via botocore
+pynacl==1.4.0             # via paramiko
+python-dateutil==2.8.1    # via botocore
 pytz==2017.2              # via commcare-cloud (setup.py)
-pyyaml==5.1               # via ansible, couchdb-cluster-admin
-requests==2.22.0          # via couchdb-cluster-admin, datadog, pygithub
-s3transfer==0.2.0         # via boto3
-simplejson==3.16.0        # via commcare-cloud (setup.py), datadog
-six==1.12.0               # via bcrypt, commcare-cloud (setup.py), cryptography, fabric3, jsonobject, pynacl, pyopenssl, python-dateutil
-tabulate==0.8.6           # via commcare-cloud (setup.py)
-urllib3==1.24.3           # via botocore, requests
-wrapt==1.11.1             # via deprecated
+pyyaml==5.4.1             # via ansible, couchdb-cluster-admin
+requests==2.24.0          # via couchdb-cluster-admin, datadog, pygithub
+s3transfer==0.3.3         # via boto3
+simplejson==3.17.2        # via commcare-cloud (setup.py)
+six==1.15.0               # via bcrypt, commcare-cloud (setup.py), cryptography, fabric3, jsonobject, pynacl, python-dateutil
+tabulate==0.8.7           # via commcare-cloud (setup.py)
+urllib3==1.25.10          # via botocore, requests
+wrapt==1.12.1             # via deprecated
+zipp==3.2.0               # via importlib-metadata, importlib-resources
+zope.event==4.5.0         # via gevent
+zope.interface==5.1.0     # via gevent
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools

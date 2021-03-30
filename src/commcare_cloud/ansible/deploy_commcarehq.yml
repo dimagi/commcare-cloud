@@ -33,7 +33,9 @@
   tags: services
 
 - name: Celery Supervisor Config
-  hosts: celery
+  hosts:
+    - celery
+  become: true
   tasks:
     - include_tasks: roles/commcarehq/tasks/celery.yml
   tags: services

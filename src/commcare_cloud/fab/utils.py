@@ -347,7 +347,7 @@ class DeployDiff:
     def _print_prs_formatted(self, pr_list):
         for pr in pr_list:
             print(
-                cyan(pr['title']),
+                "- ", cyan(pr['title']),
                 yellow(pr['url']),
                 ", ".join(label for label in pr['labels']),
             )

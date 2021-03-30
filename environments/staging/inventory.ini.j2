@@ -34,15 +34,24 @@ web8
 
 {{ __rds_pg0__ }}
 
+{{ __rds_pgformplayer0__ }}
+
 [remote_postgresql:children]
 rds_pg0
+rds_pgformplayer0
 
 {{ __pgformplayer_nlb__ }}
+{{ __pgmain_nlb__ }}
+{{ __pgucr_nlb__ }}
+{{ __pgsynclogs_nlb__ }}
 
 [postgresql:children]
 pgproxy2
 remote_postgresql
 pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb
 
 [pgbouncer:children]
 pgbouncer0
@@ -53,13 +62,28 @@ pgbouncer0
 
 {{ __couch8__ }}
 
-{{ __couch9__ }}
+{{ __couch12__ }}
+
+{{ __couch13__ }}
+
+{{ __couch14__ }}
+
+{{ __couch15__ }}
+
+{{ __couch16__ }}
+
+{{ __couch17__ }}
 
 [couchdb2:children]
 couch6
 couch7
 couch8
-couch9
+couch12
+couch13
+couch14
+couch15
+couch16
+couch17
 
 [couchdb2_proxy:children]
 couch6
@@ -112,22 +136,40 @@ formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 cchq_uid=1026
 cchq_gid=1027
 
-{{ __redis2__ }}
+{{ __es6__ }} elasticsearch_node_name=es6-staging elasticsearch_node_zone=us-east-1a
 
-[redis:children]
-redis2
+{{ __es7__ }} elasticsearch_node_name=es7-staging elasticsearch_node_zone=us-east-1a
 
-{{ __es6__ }} elasticsearch_node_name=es6-staging elasticsearch_node_zone=aws elasticsearch_master=true
+{{ __es8__ }} elasticsearch_node_name=es8-staging elasticsearch_node_zone=us-east-1a
 
-{{ __es7__ }} elasticsearch_node_name=es7-staging elasticsearch_node_zone=aws elasticsearch_master=true
+{{ __es9__ }} elasticsearch_node_name=es9-staging elasticsearch_node_zone=us-east-1b
+
+{{ __es10__ }} elasticsearch_node_name=es10-staging elasticsearch_node_zone=us-east-1b
 
 [elasticsearch:children]
 # Amazon EC2
+es_master
+es_data
+
+[es_master:children]
 es6
 es7
+es9
 
-[shared_dir_host:children]
-redis2
+[es_master:vars]
+elasticsearch_master=true
+elasticsearch_data=true
+
+[es_data:children]
+es8
+es10
+
+[shared_efs_client_host:children]
+celery
+django_manage
+proxy
+pillowtop
+webworkers
 
 {{ __control1__ }}
 
@@ -136,7 +178,11 @@ control1
 
 [ansible_skip:children]
 rds_pg0
+rds_pgformplayer0
 pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb
 
 
 [django_manage:children]

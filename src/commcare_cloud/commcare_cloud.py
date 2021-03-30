@@ -171,36 +171,27 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
 
 
 def call_commcare_cloud(input_argv=sys.argv):
-    # make sure user aware they are running on python 2 env
-    force_python_2 = "--force-commcare-cloud-to-use-python2"
+    # throw error if user is attempting to use python 2
     if not os.environ.get("TRAVIS_TEST") and sys.version_info[0] == 2:
-        if force_python_2 not in input_argv:
-            exit(dedent("""
-                Error: you must upgrade to Python 3. Though not desirable, if you really have
-                to you can use Python 2 with this option {}
-                Python 2 support will end on 2021-03-04
-
-                To setup Python 3.6, see
-                https://dimagi.github.io/commcare-cloud/setup/installation.html
-                """.format(force_python_2)))
-    elif sys.version_info[0] != 2 and force_python_2 in input_argv:
         exit(dedent("""
-            Python 2 is required with {}
+            Error: you must upgrade to Python 3. Python 2 is no longer supported.
 
-            You are running Python {}. Did you forget to activate a
-            Python 2 virtualenv?
-            """.format(force_python_2, sys.version.split()[0])))
+            To setup Python 3.6, see
+            https://dimagi.github.io/commcare-cloud/setup/installation.html
+            """))
 
     put_virtualenv_bin_on_the_path()
     parser, subparsers, commands = make_command_parser(available_envs=get_available_envs())
-    args, unknown_args = parser.parse_known_args(input_argv[1:])
+
+    raw_args = input_argv[1:]
+    if not raw_args:
+        parser.print_help()
+        return
+
+    args, unknown_args = parser.parse_known_args(raw_args)
 
     if args.control:
         run_on_control_instead(args, input_argv)
-
-    # remove force_python_2 arg before running command
-    if force_python_2 in unknown_args:
-        unknown_args.remove(force_python_2)
 
     try:
         exit_code = commands[args.command].run(args, unknown_args)

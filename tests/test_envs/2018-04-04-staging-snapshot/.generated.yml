@@ -11,7 +11,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
@@ -26,7 +26,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
     shards:
@@ -44,7 +44,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
     shards:
@@ -62,7 +62,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
     shards:
@@ -80,7 +80,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
     shards:
@@ -98,7 +98,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
     shards:
@@ -116,7 +116,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -131,7 +131,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -146,7 +146,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
@@ -161,10 +161,11 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
+  auditcare: null
   by_pgbouncer_host:
     hqdb1-staging.internal-va.commcarehq.org:
     - *id001
@@ -191,7 +192,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
         pgbouncer_hosts:
-          - hqdb1-staging.internal-va.commcarehq.org
+        - hqdb1-staging.internal-va.commcarehq.org
         port: 6432
         query_stats: true
         shards:
@@ -209,7 +210,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
         pgbouncer_hosts:
-          - hqdb1-staging.internal-va.commcarehq.org
+        - hqdb1-staging.internal-va.commcarehq.org
         port: 6432
         query_stats: true
         shards:
@@ -227,7 +228,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
         pgbouncer_hosts:
-          - hqdb1-staging.internal-va.commcarehq.org
+        - hqdb1-staging.internal-va.commcarehq.org
         port: 6432
         query_stats: true
         shards:
@@ -245,7 +246,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
         pgbouncer_hosts:
-          - hqdb1-staging.internal-va.commcarehq.org
+        - hqdb1-staging.internal-va.commcarehq.org
         port: 6432
         query_stats: true
         shards:
@@ -263,7 +264,7 @@ postgresql_dbs:
         pg_config: []
         pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
         pgbouncer_hosts:
-          - hqdb1-staging.internal-va.commcarehq.org
+        - hqdb1-staging.internal-va.commcarehq.org
         port: 6432
         query_stats: true
         shards:
@@ -281,7 +282,7 @@ postgresql_dbs:
       pg_config: []
       pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
       pgbouncer_hosts:
-        - hqdb1-staging.internal-va.commcarehq.org
+      - hqdb1-staging.internal-va.commcarehq.org
       port: 6432
       query_stats: false
       user: '{{ postgres_users.commcare.username }}'
@@ -310,7 +311,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -325,7 +326,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
@@ -341,7 +342,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -356,7 +357,7 @@ postgresql_dbs:
     pg_config: []
     pgbouncer_endpoint: hqdb1-staging.internal-va.commcarehq.org
     pgbouncer_hosts:
-      - hqdb1-staging.internal-va.commcarehq.org
+    - hqdb1-staging.internal-va.commcarehq.org
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'

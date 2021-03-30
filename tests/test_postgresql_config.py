@@ -19,6 +19,9 @@ TEST_ENVIRONMENTS = os.listdir(TEST_ENVIRONMENTS_DIR)
 
 @parameterized(TEST_ENVIRONMENTS)
 def test_postgresql_config(env_name):
+    # To update test configs when they get outdated:
+    # python tests/test_postgresql_config.py
+
     env = Environment(DefaultPaths(env_name, environments_dir=TEST_ENVIRONMENTS_DIR))
 
     if not os.path.exists(env.paths.generated_yml):
@@ -42,3 +45,24 @@ def test_postgresql_config(env_name):
             lineterm=''
         ))
     ))
+
+
+def update_configs():
+    for env_name in TEST_ENVIRONMENTS:
+        env = Environment(DefaultPaths(env_name, environments_dir=TEST_ENVIRONMENTS_DIR))
+        if os.path.exists(env.paths.generated_yml):
+            print("updating config:", env_name)
+            update_config(env)
+
+
+def update_config(env):
+    json_data = env.postgresql_config.to_generated_variables(env)['postgresql_dbs']
+    with open(env.paths.generated_yml, "w", encoding="utf-8") as fh:
+        fh.write(yaml.dump(
+            {"postgresql_dbs": json_data},
+            Dumper=PreserveUnsafeDumper,
+        ))
+
+
+if __name__ == "__main__":
+    update_configs()

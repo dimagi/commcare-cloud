@@ -1,0 +1,17 @@
+---
+
+- name: Data Sync NFS to EFS
+  hosts: shared_dir_host
+  become: yes
+  vars:
+      shared_dir_user: nobody
+      shared_dir_group: "{{ shared_dir_gid }}"
+      shared_dir_groupname: nfs
+      shared_dir_name: "{{ efs_mount_dir_data_sync }}"
+      shared_mount_dir: "/mnt/{{ efs_mount_dir_data_sync }}"
+      shared_mount_address: "{{ efs_shared_mount_endpoint }}"
+  tasks:
+    - import_tasks: roles/shared_dir/tasks/install.yml
+    - import_tasks: roles/shared_dir/tasks/setup_client.yml
+  tags:
+    - nfs_efs_data_sync

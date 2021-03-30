@@ -61,6 +61,33 @@ servers:
       encrypted: true
     group: "elasticsearch"
     os: ubuntu_pro_bionic
+  - server_name: "es8-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    block_device:
+      volume_size: 80
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
+  - server_name: "es9-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    block_device:
+      volume_size: 80
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
+  - server_name: "es10-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    block_device:
+      volume_size: 80
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
 
   - server_name: "pillow3-staging"
     server_instance_type: "t3.xlarge"
@@ -138,10 +165,70 @@ servers:
     group: "couchdb2"
     os: ubuntu_pro_bionic
 
-  - server_name: "couch9-staging"
+  - server_name: "couch12-staging"
     server_instance_type: "t3.large"
     network_tier: "db-private"
-    az: "a"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch13-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch14-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch15-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch16-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      encrypted: true
+    group: "couchdb2"
+    os: ubuntu_pro_bionic
+
+  - server_name: "couch17-staging"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "c"
     volume_size: 30
     volume_encrypted: yes
     block_device:
@@ -225,18 +312,6 @@ servers:
     group: postgresql
     os: ubuntu_pro_bionic
 
-  - server_name: "redis2-staging"
-    server_instance_type: t3.medium
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 60
-      encrypted: true
-    group: "redis"
-    os: ubuntu_pro_bionic
-
 
 proxy_servers:
   - server_name: "proxy2-staging"
@@ -271,6 +346,7 @@ proxy_servers:
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
+
   - server_name: "proxy6-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
@@ -290,10 +366,28 @@ rds_instances:
       shared_preload_libraries: pg_stat_statements
       track_io_timing: true
 
+  - identifier: "pgformplayer0-staging"
+    instance_type: "db.t3.small"
+    storage: 160
+    multi_az: yes
+    engine_version: 9.6.20
+    params:
+      shared_preload_libraries: pg_stat_statements
+      track_io_timing: true
+
 pgbouncer_nlbs:
   - name: "pgformplayer_nlb-staging"
     targets:
       - pgbouncer0-staging
+      - pgproxy2-staging
+  - name: "pgmain_nlb-staging"
+    targets:
+      - pgproxy2-staging
+  - name: "pgucr_nlb-staging"
+    targets:
+      - pgproxy2-staging
+  - name: "pgsynclogs_nlb-staging"
+    targets:
       - pgproxy2-staging
 
 elasticache:
@@ -318,3 +412,13 @@ r53_private_zone:
   domain_name:  "staging.commcare.local"
   create_record: yes
   route_names:  "redis"
+
+efs_file_systems:
+  - efs_name: "efs_staging"
+    create: yes
+    transition_to_ia:  "AFTER_14_DAYS"
+    create_access: no
+    create_mount: yes
+    create_record: yes
+    domain_name: "staging.commcare.local"
+    route_names: "shared-efs"

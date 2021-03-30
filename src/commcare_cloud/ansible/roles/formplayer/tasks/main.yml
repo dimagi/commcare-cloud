@@ -120,7 +120,6 @@
     mode: 0644
   with_items:
     - filename: application.properties
-    - filename: sentry.properties
     - filename: logback-spring.xml
   tags:
     - formplayer_deploy
@@ -137,12 +136,11 @@
   with_items:
     - template: application.properties.j2
       filename: application.properties
-    - template: sentry.properties.j2
-      filename: sentry.properties
     - template: logback-spring.xml.j2
       filename: logback-spring.xml
   tags:
     - localsettings
+    - formplayer_deploy
 
 # This should be the last task in the formplayer release process
 # (and the last one tagged with `formplayer_deploy`)
