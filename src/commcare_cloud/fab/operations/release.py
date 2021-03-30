@@ -377,6 +377,10 @@ def publish_dimagi_qa_event(name):
         return
     environment = get_environment(env.deploy_env)
     github_token = environment.get_secret("dimagi_qa_github_token")
+    if not github_token:
+        print(red(f"skipping dimagi-qa {name} event: "
+            "dimagi_qa_github_token secret not set"))
+        return
     response = requests.post(
         "https://api.github.com/repos/dimagi/dimagi-qa/dispatches",
         data={"event_type": name},
@@ -386,9 +390,9 @@ def publish_dimagi_qa_event(name):
         },
     )
     if 200 <= response.status_code < 300:
-        print("triggered dimagi-qa deploy_success event")
+        print(f"triggered dimagi-qa {name} event")
     else:
-        print(red(f"dimagi-qa deploy_success event status: {response.status_code}"))
+        print(red(f"dimagi-qa {name} event status: {response.status_code}"))
 
 
 @roles(ROLES_ALL_SRC)
