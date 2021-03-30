@@ -14,7 +14,10 @@ from fabric.contrib.project import rsync_project
 from fabric.operations import put
 
 import posixpath
+import requests
+
 from commcare_cloud.environment.exceptions import EnvironmentException
+from commcare_cloud.environment.main import get_environment
 
 from ..const import (
     DATE_FMT,
@@ -366,6 +369,26 @@ def record_successful_deploy():
             'minutes': str(int(delta.total_seconds() // 60)),
             'commit': env.deploy_metadata.deploy_ref
         })
+
+
+@roles(ROLES_DEPLOY)
+def publish_dimagi_qa_event(name):
+    if env.deploy_env != "production":
+        return
+    environment = get_environment(env.deploy_env)
+    github_token = environment.get_secret("dimagi_qa_github_token")
+    response = requests.post(
+        "https://api.github.com/repos/dimagi/dimagi-qa/dispatches",
+        data={"event_type": name},
+        headers={
+            "Authorization": f"token {github_token}",
+            "Accept": "application/vnd.github.v3+json",
+        },
+    )
+    if 200 <= response.status_code < 300:
+        print("triggered dimagi-qa deploy_success event")
+    else:
+        print(red(f"dimagi-qa deploy_success event status: {response.status_code}"))
 
 
 @roles(ROLES_ALL_SRC)
