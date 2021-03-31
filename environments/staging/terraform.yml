@@ -434,6 +434,10 @@ existing_zone_record_update:
         record_type: "A"  ## Type A supports multiple records
         records: 
           - pgproxy2-staging
+      - route_names: proxy_form_processing
+        record_type: "A"  ## Type A supports multiple records
+        records: 
+          - pgproxy2-staging
       - route_names: couchdb2_proxy_host
         record_type: "A"    ## Type A supports multiple records
         records: 
