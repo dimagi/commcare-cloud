@@ -5,7 +5,4 @@
     - efs_shared_mount_dir is defined
     - efs_shared_mount_options is defined
 - import_playbook: roles/shared_dir.yml
-  when: 
-    - efs_shared_mount_endpoint is not defined
-    - efs_shared_mount_dir is not defined
-    - efs_shared_mount_options is not defined
+  when: efs_shared_mount_endpoint is not defined
