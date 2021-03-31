@@ -36,7 +36,7 @@ def _get_github_token(message, required=False):
 def get_github_token(message=None, required=False):
     if not message:
         message = "This deploy script uses the Github API to display a summary of changes to be deployed."
-        if env.tag_deploy_commits:
+        if getattr(env, "tag_deploy_commits", None):
             message += (
                 "\nYou're deploying an environment which uses release tags. "
                 "Provide Github auth details to enable release tags."
