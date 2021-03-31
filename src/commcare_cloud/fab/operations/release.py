@@ -1,6 +1,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import functools
+import json
 import os
 from collections import namedtuple
 from datetime import datetime, timedelta
@@ -385,7 +386,11 @@ def publish_deploy_event(name):
         "Authorization": f"token {token}",
         "Accept": "application/vnd.github.v3+json",
     }
-    response = requests.post(url, data={"event_type": name}, headers=headers)
+    data = json.dumps({
+        "event_type": name,
+        "client_payload": {"environment": env.deploy_env},
+    })
+    response = requests.post(url, data=data, headers=headers)
     if 200 <= response.status_code < 300:
         print(f"triggered {name} event")
     else:
