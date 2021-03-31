@@ -54,8 +54,8 @@ class ProxyConfig(jsonobject.JsonObject):
             variables['nginx_worker_rlimit_nofile'] = "{{ nofile_limit }}"
         try:
             variables['nginx_hsts_max_age'] = int(self.nginx_hsts_max_age)
-        except ValueError:
-            variables['nginx_hsts_max_age'] = self.nginx_hsts_max_age
+        except Exception:
+            pass
         return variables
 
     @classmethod
