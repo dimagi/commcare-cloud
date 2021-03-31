@@ -123,7 +123,7 @@ localsettings:
   #  PILLOWTOP_MACHINE_ID:
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
-  SECURE_HSTS_SECONDS: 300
+  SECURE_HSTS_SECONDS: "{{ nginx_hsts_max_age }}"
   SILENCED_SYSTEM_CHECKS:
     - 'security.W008' # the ALB and nginx already redirect HTTP to HTTPS so safe to silence this warning
   REDIS_DB: '0'
