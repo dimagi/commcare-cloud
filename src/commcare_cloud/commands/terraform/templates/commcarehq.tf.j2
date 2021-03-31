@@ -342,6 +342,18 @@ module "r53-record__{{ r53_record_list.route_names }}" {
         {%- for pgbouncer_nlb_r53 in r53_record_list.records %}{% if not loop.first %}, {% endif %}
           "${module.pgbouncer_nlb__{{ pgbouncer_nlb_r53 }}.aws_lb_dns_name }"
         {%- endfor %}
+      {% elif r53_record_list.route_names == 'pgmain_nlb' %}
+        {%- for pgmain_nlb_r53 in r53_record_list.records %}{% if not loop.first %}, {% endif %}
+          "${module.pgbouncer_nlb__{{ pgmain_nlb_r53 }}.aws_lb_dns_name }"
+        {%- endfor %}
+      {% elif r53_record_list.route_names == 'pgsynclogs_nlb' %}
+        {%- for pgsynclogs_nlb_r53 in r53_record_list.records %}{% if not loop.first %}, {% endif %}
+          "${module.pgbouncer_nlb__{{ pgsynclogs_nlb_r53 }}.aws_lb_dns_name }"
+        {%- endfor %}
+      {% elif r53_record_list.route_names == 'pgucr_nlb' %}
+        {%- for pgucr_nlb_r53 in r53_record_list.records %}{% if not loop.first %}, {% endif %}
+          "${module.pgbouncer_nlb__{{ pgucr_nlb_r53 }}.aws_lb_dns_name }"
+        {%- endfor %}
       {% endif %}
   ]
 }

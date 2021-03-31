@@ -442,3 +442,15 @@ existing_zone_record_update:
         record_type: "CNAME"    ## Type CNAME supports a record only
         records: 
           - pgformplayer_nlb-staging
+      - route_names: pgmain_nlb
+        record_type: "CNAME"    ## Type CNAME supports a record only
+        records: 
+          - pgmain_nlb-staging
+      - route_names: pgsynclogs_nlb
+        record_type: "CNAME"    ## Type CNAME supports a record only
+        records: 
+          - pgsynclogs_nlb-staging
+      - route_names: pgucr_nlb
+        record_type: "CNAME"    ## Type CNAME supports a record only
+        records: 
+          - pgucr_nlb-staging
