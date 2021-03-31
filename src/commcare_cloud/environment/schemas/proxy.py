@@ -11,7 +11,7 @@ class ProxyConfig(jsonobject.JsonObject):
     J2ME_SITE_HOST = jsonobject.StringProperty()
     nginx_combined_cert_value = jsonobject.StringProperty()
     nginx_key_value = jsonobject.StringProperty()
-    nginx_hsts_max_age = jsonobject.IntegerProperty()
+    nginx_hsts_max_age = jsonobject.StringProperty()
     nginx_max_worker_connection = jsonobject.IntegerProperty(default=512)
     nginx_worker_rlimit_nofile = jsonobject.IntegerProperty()
     nginx_ssl_protocols = jsonobject.StringProperty(exclude_if_none=True)
@@ -52,6 +52,10 @@ class ProxyConfig(jsonobject.JsonObject):
         variables = self.to_json()
         if self.nginx_worker_rlimit_nofile is None:
             variables['nginx_worker_rlimit_nofile'] = "{{ nofile_limit }}"
+        try:
+            variables['nginx_hsts_max_age'] = int(self.nginx_hsts_max_age)
+        except ValueError:
+            variables['nginx_hsts_max_age'] = self.nginx_hsts_max_age
         return variables
 
     @classmethod
