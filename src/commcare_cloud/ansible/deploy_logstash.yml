@@ -13,10 +13,11 @@
       - logstash-output-datadog_metrics
     sansible_logstash_default_config: no
   tasks:
-    - include_role:
+    - import_role:
         name: sansible.logstash
     - import_role:
         name: dimagi.commcare_logstash.logstash
+      tags: configure
     - sysctl:
         name: net.core.rmem_max
         value: '26214400'
