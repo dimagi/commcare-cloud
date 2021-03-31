@@ -77,7 +77,7 @@ class DeployMetadata(object):
 
     @memoized_property
     def repo(self):
-        return _get_github().get_repo('dimagi/commcare-hq')
+        return get_github().get_repo('dimagi/commcare-hq')
 
     @memoized_property
     def last_commit_sha(self):
@@ -191,7 +191,7 @@ def get_github_token(message=None, required=False):
 
 
 @memoized
-def _get_github():
+def get_github():
     token = get_github_token()
     return Github(login_or_token=token)
 
@@ -290,7 +290,7 @@ class DeployDiff:
         """Human-readable diff URL"""
         return "{}/compare/{}...{}".format(self.repo.html_url, self.last_commit, self.deploy_commit)
 
-    def warn_of_migrations(self):
+    def print_deployer_diff(self):
         if not (_github_auth_provided() and self.last_commit and self.deploy_commit):
             return
 
