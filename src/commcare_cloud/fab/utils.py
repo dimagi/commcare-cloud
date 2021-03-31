@@ -156,12 +156,12 @@ class DeployMetadata(object):
 GITHUB_TOKEN = None
 
 
-def _get_github_token(message, force=False):
+def _get_github_token(message, required=False):
     global GITHUB_TOKEN
 
-    # return existing token if it exists and caller has not requested a fresh token fetch
-    if GITHUB_TOKEN and not force:
-        return GITHUB_TOKEN
+    if GITHUB_TOKEN is not None:
+        if GITHUB_TOKEN or not required:
+            return GITHUB_TOKEN
 
     try:
         from .config import GITHUB_APIKEY
@@ -179,7 +179,7 @@ def _get_github_token(message, force=False):
     return GITHUB_TOKEN
 
 
-def get_github_token(message=None, force=False):
+def get_github_token(message=None, required=False):
     if not message:
         message = "This deploy script uses the Github API to display a summary of changes to be deployed."
         if env.tag_deploy_commits:
@@ -187,7 +187,7 @@ def get_github_token(message=None, force=False):
                 "\nYou're deploying an environment which uses release tags. "
                 "Provide Github auth details to enable release tags."
             )
-    return _get_github_token(message, force)
+    return _get_github_token(message, allow_empty)
 
 
 @memoized
