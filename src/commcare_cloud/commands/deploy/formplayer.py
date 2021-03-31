@@ -2,7 +2,7 @@ from collections import namedtuple
 from datetime import datetime
 
 import requests
-from clint.textui import indent
+from clint.textui import indent, puts
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
@@ -10,31 +10,37 @@ from commcare_cloud.colors import color_warning
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.terraform.aws import get_default_username
+from commcare_cloud.commands.utils import strfdelta
 from commcare_cloud.fab.git_repo import get_github
 from commcare_cloud.fab.deploy_diff import DeployDiff
 
-GIT_PROPERTIES = "https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful/git.properties"
-BUILD_INFO_PROPERTIES = "https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful/build-info.properties"
+AWS_BASE_URL_ENV = {
+    "staging": "https://s3.amazonaws.com/dimagi-formplayer-jars/staging/latest-successful"
+}
+AWS_BASE_URL_DEFAULT = "https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful"
+GIT_PROPERTIES = "git.properties"
+BUILD_INFO_PROPERTIES = "build-info.properties"
 
 
 class VersionInfo(namedtuple("VersionInfo", "commit, message, time, build_time")):
     @property
     def build_time_ago(self):
         build_time = datetime.strptime(self.build_time, "%Y-%m-%dT%H:%M:%S.%fZ")
-        return datetime.utcnow() - build_time
+        delta = datetime.utcnow() - build_time
+        return strfdelta(delta, "{W}w {D}d {H}:{M:02}:{S:02}")
 
 
 def deploy_formplayer(environment, args):
     current_commit = get_current_formplayer_version(environment)
-    latest_version = get_latest_formplayer_version()
+    latest_version = get_latest_formplayer_version(environment.name)
 
     if latest_version:
         print("Preparing to deploy formplayer:")
         with indent():
-            print(f"Commit          : {latest_version.commit}")
-            print(f"Commit message  : {latest_version.message}")
-            print(f"Commit date     : {latest_version.time}")
-            print(f"Build time      : {latest_version.build_time} ({latest_version.build_time_ago} ago)")
+            puts(f"Commit          : {latest_version.commit}")
+            puts(f"Commit message  : {latest_version.message}")
+            puts(f"Commit date     : {latest_version.time}")
+            puts(f"Build time      : {latest_version.build_time_ago} ago ({latest_version.build_time})")
 
         if not current_commit:
             print(color_warning("Unable to get deployed version for generating a deploy diff."))
@@ -107,7 +113,7 @@ def get_current_formplayer_version(environment):
     return info.get("git", {}).get("commit", {}).get("id", None)
 
 
-def get_latest_formplayer_version():
+def get_latest_formplayer_version(env_name):
     def get_url_content(url):
         res = requests.get(url)
         res.raise_for_status()
@@ -121,8 +127,9 @@ def get_latest_formplayer_version():
                 out[mapping[key]] = value.replace("\\", "")
         return out
 
-    git_info = get_url_content(GIT_PROPERTIES)
-    build_info = get_url_content(BUILD_INFO_PROPERTIES)
+    base_url = AWS_BASE_URL_ENV.get(env_name, AWS_BASE_URL_DEFAULT)
+    git_info = get_url_content(f"{base_url}/{GIT_PROPERTIES}")
+    build_info = get_url_content(f"{base_url}/{BUILD_INFO_PROPERTIES}")
     git_data = extract_vals_from_property_data(git_info, {
         "git.commit.id": "commit",
         "git.commit.message.short": "message",
