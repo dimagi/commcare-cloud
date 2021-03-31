@@ -27,9 +27,20 @@ class DeployDiff:
         if not (_github_auth_provided() and self.last_commit and self.deploy_commit):
             return
 
+        short, long = sorted([self.last_commit, self.deploy_commit], key=lambda x: len(x))
+        if (self.last_commit == self.deploy_commit or (
+            long.startswith(short)
+        )):
+            print(red("Versions are identical. No changes since last deploy."))
+            return
+
         pr_numbers = self._get_pr_numbers()
         if len(pr_numbers) > 500:
             print(red("There are too many PRs to display"))
+            return
+        elif not pr_numbers:
+            print(blue("No PRs merged since last release."))
+            print(f"\tView full diff here: {self.url}")
             return
 
         pool = Pool(5)
