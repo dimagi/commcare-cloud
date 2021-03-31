@@ -10,7 +10,7 @@ from commcare_cloud.colors import color_warning
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.terraform.aws import get_default_username
-from commcare_cloud.fab.utils import get_github
+from commcare_cloud.fab.git_repo import get_github
 from commcare_cloud.fab.deploy_diff import DeployDiff
 
 GIT_PROPERTIES = "https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful/git.properties"

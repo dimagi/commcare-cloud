@@ -5,16 +5,13 @@ import os
 import pickle
 import sys
 import traceback
-from getpass import getpass
 from io import open
 
 from fabric.api import env, execute, local
-from fabric.colors import red
 from fabric.context_managers import cd, settings
 from fabric.operations import sudo
-from github import Github, UnknownObjectException
-from memoized import memoized, memoized_property
-from six.moves import input
+from github import UnknownObjectException
+from memoized import memoized_property
 
 from .const import (
     CACHED_DEPLOY_CHECKPOINT_FILENAME,
@@ -24,10 +21,7 @@ from .const import (
     PROJECT_ROOT,
 )
 from .deploy_diff import DeployDiff
-
-LABELS_TO_EXPAND = [
-    "reindex/migration",
-]
+from .git_repo import get_github, _github_auth_provided
 
 
 def execute_with_timing(fn, *args, **kwargs):
@@ -148,54 +142,6 @@ class DeployMetadata(object):
     @memoized_property
     def diff(self):
         return DeployDiff(self.repo, self.last_commit_sha, self.deploy_ref)
-
-
-GITHUB_TOKEN = None
-
-
-def _get_github_token(message, required=False):
-    global GITHUB_TOKEN
-
-    if GITHUB_TOKEN is not None:
-        if GITHUB_TOKEN or not required:
-            return GITHUB_TOKEN
-
-    try:
-        from .config import GITHUB_APIKEY
-    except ImportError:
-        print(red("Github credentials not found!"))
-        print(message)
-        print((
-            "You can add a config file to automate this step:\n"
-            "    $ cp {project_root}/config.example.py {project_root}/config.py\n"
-            "Then edit {project_root}/config.py"
-        ).format(project_root=PROJECT_ROOT))
-        GITHUB_TOKEN = getpass('Github Token: ')
-    else:
-        GITHUB_TOKEN = GITHUB_APIKEY
-    return GITHUB_TOKEN
-
-
-def get_github_token(message=None, required=False):
-    if not message:
-        message = "This deploy script uses the Github API to display a summary of changes to be deployed."
-        if env.tag_deploy_commits:
-            message += (
-                "\nYou're deploying an environment which uses release tags. "
-                "Provide Github auth details to enable release tags."
-            )
-    return _get_github_token(message, required)
-
-
-@memoized
-def get_github():
-    token = get_github_token()
-    return Github(login_or_token=token)
-
-
-@memoized
-def _github_auth_provided():
-    return bool(get_github_token())
 
 
 def _get_checkpoint_filename():

@@ -4,7 +4,12 @@ from collections import defaultdict
 from fabric.colors import red, blue, cyan, yellow
 from gevent.pool import Pool
 
-from commcare_cloud.fab.utils import _github_auth_provided, LABELS_TO_EXPAND
+from commcare_cloud.fab.git_repo import _github_auth_provided
+
+
+LABELS_TO_EXPAND = [
+    "reindex/migration",
+]
 
 
 class DeployDiff:

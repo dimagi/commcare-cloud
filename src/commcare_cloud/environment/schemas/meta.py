@@ -8,7 +8,7 @@ from memoized import memoized_property, memoized
 
 from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.secrets.backends import all_secrets_backends_by_name
-from commcare_cloud.fab.utils import get_github_token
+from commcare_cloud.fab.git_repo import get_github_token
 import six
 
 
