@@ -9,14 +9,15 @@ def deploy_commcare(environment, args, unknown_args):
     deploy_revs, diffs = get_deploy_revs_and_diffs(environment, args)
 
     if not confirm_deploy(deploy_revs, diffs, args):
-        return
+        return 1
 
     fab_func_args = get_deploy_commcare_fab_func_args(args)
     fab_settings = [args.fab_settings] if args.fab_settings else []
     for name, rev in deploy_revs:
         var = 'code_branch' if name == 'commcare' else '{}_code_branch'.format(name)
         fab_settings.append('{}={}'.format(var, rev))
-    commcare_cloud(environment.name, 'fab', 'deploy_commcare{}'.format(fab_func_args),
+
+    return commcare_cloud(environment.name, 'fab', 'deploy_commcare{}'.format(fab_func_args),
                    '--set', ','.join(fab_settings),
                    branch=args.branch, *unknown_args)
 
