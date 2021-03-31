@@ -547,7 +547,7 @@ def _deploy_without_asking(skip_record):
         if skip_record == 'no':
             execute_with_timing(release.record_successful_release)
             execute_with_timing(release.record_successful_deploy)
-            release.publish_dimagi_qa_event("deploy_success")
+            release.publish_deploy_event("deploy_success")
         clear_cached_deploy()
 
 

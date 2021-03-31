@@ -372,27 +372,24 @@ def record_successful_deploy():
 
 
 @roles(ROLES_DEPLOY)
-def publish_dimagi_qa_event(name):
-    if env.deploy_env != "production":
-        return
+def publish_deploy_event(name):
     environment = get_environment(env.deploy_env)
-    github_token = environment.get_secret("dimagi_qa_github_token")
-    if not github_token:
-        print(red(f"skipping dimagi-qa {name} event: "
-            "dimagi_qa_github_token secret not set"))
+    url = environment.fab_settings_config.deploy_event_url
+    if not url:
         return
-    response = requests.post(
-        "https://api.github.com/repos/dimagi/dimagi-qa/dispatches",
-        data={"event_type": name},
-        headers={
-            "Authorization": f"token {github_token}",
-            "Accept": "application/vnd.github.v3+json",
-        },
-    )
+    token = environment.get_secret("deploy_event_token")
+    if not token:
+        print(red(f"skipping {name} event: deploy_event_token secret not set"))
+        return
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json",
+    }
+    response = requests.post(url, data={"event_type": name}, headers=headers)
     if 200 <= response.status_code < 300:
-        print(f"triggered dimagi-qa {name} event")
+        print(f"triggered {name} event")
     else:
-        print(red(f"dimagi-qa {name} event status: {response.status_code}"))
+        print(red(f"{name} event status: {response.status_code}"))
 
 
 @roles(ROLES_ALL_SRC)
