@@ -187,7 +187,7 @@ def get_github_token(message=None, required=False):
                 "\nYou're deploying an environment which uses release tags. "
                 "Provide Github auth details to enable release tags."
             )
-    return _get_github_token(message, allow_empty)
+    return _get_github_token(message, required)
 
 
 @memoized
