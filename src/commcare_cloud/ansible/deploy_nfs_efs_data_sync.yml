@@ -10,6 +10,7 @@
       shared_dir_name: "{{ efs_mount_dir_data_sync }}"
       shared_mount_dir: "/mnt/{{ efs_mount_dir_data_sync }}"
       shared_mount_address: "{{ efs_shared_mount_endpoint }}"
+      shared_mount_opts: "{{ efs_shared_mount_options }}"
   tasks:
     - import_tasks: roles/shared_dir/tasks/install.yml
     - import_tasks: roles/shared_dir/tasks/setup_client.yml
