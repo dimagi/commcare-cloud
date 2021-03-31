@@ -3,10 +3,11 @@ from datetime import datetime
 
 import requests
 from clint.textui import indent, puts
+from requests import RequestException
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
-from commcare_cloud.colors import color_warning
+from commcare_cloud.colors import color_warning, color_summary, color_notice
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.terraform.aws import get_default_username
@@ -31,25 +32,25 @@ class VersionInfo(namedtuple("VersionInfo", "commit, message, time, build_time")
 
 
 def deploy_formplayer(environment, args):
-    current_commit = get_current_formplayer_version(environment)
+    print(color_notice("\nPreparing to deploy formplayer to: "), end="")
+    print(f"{environment.name}\n")
+
+    # do this first to get the git prompt out the way
+    repo = get_github().get_repo('dimagi/formplayer')
+
+    current_commit = "5709fea"#get_current_formplayer_version(environment)
     latest_version = get_latest_formplayer_version(environment.name)
 
     if latest_version:
-        print("Preparing to deploy formplayer:")
+        puts("New version details:")
         with indent():
             puts(f"Commit          : {latest_version.commit}")
             puts(f"Commit message  : {latest_version.message}")
             puts(f"Commit date     : {latest_version.time}")
-            puts(f"Build time      : {latest_version.build_time_ago} ago ({latest_version.build_time})")
+            puts(f"Build time      : {latest_version.build_time_ago} ago ({latest_version.build_time})\n")
 
-        if not current_commit:
-            print(color_warning("Unable to get deployed version for generating a deploy diff."))
-        else:
-            repo = get_github().get_repo('dimagi/formplayer')
-            diff = DeployDiff(repo, latest_version.commit, current_commit)
-            diff.print_deployer_diff()
-    else:
-        print(color_warning("Unable to get version info."))
+    diff = DeployDiff(repo, current_commit, latest_version.commit)
+    diff.print_deployer_diff()
 
     if not ask('Continue with deploy?', quiet=args.quiet):
         return 1
@@ -106,14 +107,25 @@ def mail_admins(environment, subject, message):
 
 
 def get_current_formplayer_version(environment):
+    """Get version of currently deployed Formplayer by querying
+    the Formplayer management endpoint to get the build info.
+    """
     formplayer0 = environment.groups["formplayer"][0]
-    res = requests.get(f"http://{formplayer0}:8081/info")
-    res.raise_for_status()
+    try:
+        res = requests.get(f"http://{formplayer0}:8081/info", timeout=5)
+        res.raise_for_status()
+    except RequestException as e:
+        print(color_warning(f"Error getting current formplayer version: {e}"))
+        return
+
     info = res.json()
     return info.get("git", {}).get("commit", {}).get("id", None)
 
 
 def get_latest_formplayer_version(env_name):
+    """Get version info of latest available version. This fetches
+    meta files from S3 and parses them to get the data.
+    """
     def get_url_content(url):
         res = requests.get(url)
         res.raise_for_status()
@@ -128,8 +140,13 @@ def get_latest_formplayer_version(env_name):
         return out
 
     base_url = AWS_BASE_URL_ENV.get(env_name, AWS_BASE_URL_DEFAULT)
-    git_info = get_url_content(f"{base_url}/{GIT_PROPERTIES}")
-    build_info = get_url_content(f"{base_url}/{BUILD_INFO_PROPERTIES}")
+    try:
+        git_info = get_url_content(f"{base_url}/{GIT_PROPERTIES}")
+        build_info = get_url_content(f"{base_url}/{BUILD_INFO_PROPERTIES}")
+    except RequestException as e:
+        print(color_warning(f"Error getting latest formplayer version: {e}"))
+        return
+
     git_data = extract_vals_from_property_data(git_info, {
         "git.commit.id": "commit",
         "git.commit.message.short": "message",
