@@ -36,10 +36,8 @@ def deploy_formplayer(environment, args):
     print(color_notice("\nPreparing to deploy Formplayer to: "), end="")
     print(f"{environment.name}\n")
 
-    repo = None
-    if github_auth_provided():
-        # do this first to get the git prompt out the way
-        repo = get_github().get_repo('dimagi/formplayer')
+    # do this first to get the git prompt out the way
+    repo = get_github().get_repo('dimagi/formplayer')
 
     diff = get_deploy_diff(environment, repo)
     diff.print_deployer_diff()
@@ -91,6 +89,8 @@ def get_deploy_diff(environment, repo):
 
 
 def create_release_tag(environment, repo, diff):
+    if not github_auth_provided():
+        return
     repo.create_git_ref(
         ref='refs/tags/{}-{}-release'.format(
             datetime.utcnow().strftime(DATE_FMT),

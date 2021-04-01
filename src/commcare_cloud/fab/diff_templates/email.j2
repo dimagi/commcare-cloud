@@ -3,6 +3,27 @@
 </head>
 <body>
 <h2>Deployed by {{ user }}, cheers!</h2>
+{% if error %}
+<p>{{ error }}</p>
+{% endif %}
+{% if message %}
+<p>{{ message }}</p>
+{% endif %}
+
+{% if new_version_details %}
+<p>New version details:</p>
+<table width="300" border="0" cellspacing="0" cellpadding="0" style="border:1px solid #ccc;">
+<tbody>
+{% for key, val in new_version_details.items() %}
+  <tr>
+    <td>{{ key }}</td>
+    <td>{{ value }}</td>
+  </tr>
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
+
 {% if pr_infos %}
   <p>We just deployed the following PRs:</p>
   <ul>
@@ -39,9 +60,9 @@
     </ul>
   {% endif %}
   {% endfor %}
-{% else %}
-  <p>No PRs were merged since last deploy.</p>
 {% endif %}
+{% if compare_url %}
 <p>Here's the complete diff on github: <a href="{{ compare_url }}">{{ compare_url }}</a></p>
+{% endif %}
 </body>
 </html>
