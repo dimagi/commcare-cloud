@@ -131,7 +131,7 @@ def announce_deploy_failed(environment):
 def announce_deploy_success(environment, diff_ouptut):
     mail_admins(
         environment,
-        subject=f"[test] Formplayer deploy to {environment.name} successful.",
+        subject=f"Formplayer deploy to {environment.name} successful.",
         message=diff_ouptut
     )
 
