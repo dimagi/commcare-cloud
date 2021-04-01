@@ -8,3 +8,4 @@ keepalive: 60
 ignore_kafka_checkpoint_warning: False
 acceptable_maintenance_window: null
 email_enabled: True
+deploy_event_url: null

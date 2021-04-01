@@ -1,6 +1,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import functools
+import json
 import os
 from collections import namedtuple
 from datetime import datetime, timedelta
@@ -14,7 +15,10 @@ from fabric.contrib.project import rsync_project
 from fabric.operations import put
 
 import posixpath
+import requests
+
 from commcare_cloud.environment.exceptions import EnvironmentException
+from commcare_cloud.environment.main import get_environment
 
 from ..const import (
     DATE_FMT,
@@ -366,6 +370,31 @@ def record_successful_deploy():
             'minutes': str(int(delta.total_seconds() // 60)),
             'commit': env.deploy_metadata.deploy_ref
         })
+
+
+@roles(ROLES_DEPLOY)
+def publish_deploy_event(name):
+    environment = get_environment(env.deploy_env)
+    url = environment.fab_settings_config.deploy_event_url
+    if not url:
+        return
+    token = environment.get_secret("deploy_event_token")
+    if not token:
+        print(red(f"skipping {name} event: deploy_event_token secret not set"))
+        return
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json",
+    }
+    data = json.dumps({
+        "event_type": name,
+        "client_payload": {"environment": env.deploy_env},
+    })
+    response = requests.post(url, data=data, headers=headers)
+    if 200 <= response.status_code < 300:
+        print(f"triggered {name} event")
+    else:
+        print(red(f"{name} event status: {response.status_code}"))
 
 
 @roles(ROLES_ALL_SRC)

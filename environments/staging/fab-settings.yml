@@ -3,3 +3,4 @@ default_branch: autostaging
 tag_deploy_commits: True
 use_shared_dir_for_staticfiles: True
 shared_dir_for_staticfiles: /mnt/shared_staging/temp
+deploy_event_url: https://api.github.com/repos/dimagi/dimagi-qa/dispatches

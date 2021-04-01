@@ -83,6 +83,7 @@ internal_subscription_change_email: accounts+subchange+internal@dimagi.com
 billing_email: sales@dimagi.com
 invoicing_contact_email: billing-support@dimagi.com
 growth_email: growth@dimagi.com
+saas_ops_email: saas-ops@dimagi.com
 saas_reporting_email: saas-reporting@dimagi.com
 master_list_email: master-list@dimagi.com
 sales_email: sales@dimagi.com
@@ -136,7 +137,7 @@ localsettings:
     auditcare: auditcare
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
-  SECURE_HSTS_SECONDS: 300
+  SECURE_HSTS_SECONDS: "{{ nginx_hsts_max_age }}"
   SILENCED_SYSTEM_CHECKS:
     - 'security.W008' # the ALB and nginx already redirect HTTP to HTTPS so safe to silence this warning
   PILLOWTOP_MACHINE_ID: indiacloud
