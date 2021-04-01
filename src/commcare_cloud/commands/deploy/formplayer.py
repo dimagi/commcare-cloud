@@ -79,7 +79,7 @@ def deploy_formplayer(environment, args):
 
     end = datetime.utcnow()
     create_release_tag(environment, repo, diff)
-    record_deploy_in_datadog(environment, end - start)
+    record_deploy_in_datadog(environment, diff, end - start)
     announce_deploy_success(environment, diff.get_email_diff())
 
 
@@ -162,14 +162,18 @@ def mail_admins(environment, subject, message=''):
         )
 
 
-def record_deploy_in_datadog(environment, tdelta):
+def record_deploy_in_datadog(environment, diff, tdelta):
     if environment.public_vars.get('DATADOG_ENABLED', False):
         print(color_summary(f">> Recording deploy in Datadog"))
+        diff_url = ""
+        if github_auth_provided():
+            diff_url = f"\nDiff link: [Git Diff]({diff.url})"
         deploy_notification_text = (
-            "Formplayer has been successfully deployed to *{}* by *{}* in *{}* minutes. ".format(
+            "Formplayer has been successfully deployed to *{}* by *{}* in *{}* minutes.{}".format(
                 environment.name,
                 get_default_username(),
                 int(tdelta.total_seconds() / 60) or '?',
+                diff_url
             )
         )
         commcare_cloud(
