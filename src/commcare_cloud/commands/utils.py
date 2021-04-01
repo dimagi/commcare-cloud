@@ -2,7 +2,6 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import os
-from string import Formatter
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -51,38 +50,41 @@ class PrivilegedCommand():
         return res
 
 
-def strfdelta(tdelta, fmt='{D:02}d {H:02}h {M:02}m {S:02}s'):
-    """Convert a datetime.timedelta object or a regular number to a custom-
-    formatted string, just like the stftime() method does for datetime.datetime
-    objects.
+def timeago(tdelta):
+    # https://github.com/hustcc/timeago (the good bits)
+    # second, minute, hour, day, week, month, year(365 days)
+    BUCKETS = [60.0, 60.0, 24.0, 7.0, 365.0 / 7.0 / 12.0, 12.0]
+    TEMPLATES = [
+        "just now",
+        "%s seconds ago",
+        "1 minute ago",
+        "%s minutes ago",
+        "1 hour ago",
+        "%s hours ago",
+        "1 day ago",
+        "%s days ago",
+        "1 week ago",
+        "%s weeks ago",
+        "1 month ago",
+        "%s months ago",
+        "1 year ago",
+        "%s years ago",
+    ]
+    diff_seconds = int(tdelta.total_seconds())
+    i = 0
+    while i < len(BUCKETS):
+        tmp = BUCKETS[i]
+        if diff_seconds >= tmp:
+            i += 1
+            diff_seconds /= tmp
+        else:
+            break
+    diff_seconds = int(diff_seconds)
+    i *= 2
 
-    The fmt argument allows custom formatting to be specified.  Fields can
-    include seconds, minutes, hours, days, and weeks.  Each field is optional.
+    # 'just now' is within 10s
+    if diff_seconds > (9 if i == 0 else 1):
+        i += 1
 
-    Some examples:
-        '{D:02}d {H:02}h {M:02}m {S:02}s' --> '05d 08h 04m 02s' (default)
-        '{W}w {D}d {H}:{M:02}:{S:02}'     --> '4w 5d 8:04:02'
-        '{D:2}d {H:2}:{M:02}:{S:02}'      --> ' 5d  8:04:02'
-        '{H}h {S}s'                       --> '72h 800s'
-
-    The inputtype argument allows tdelta to be a regular number instead of the
-    default, which is a datetime.timedelta object.  Valid inputtype strings:
-        's', 'seconds',
-        'm', 'minutes',
-        'h', 'hours',
-        'd', 'days',
-        'w', 'weeks'
-
-    From https://stackoverflow.com/a/42320260/632517
-    """
-    remainder = int(tdelta.total_seconds())
-
-    f = Formatter()
-    desired_fields = [field_tuple[1] for field_tuple in f.parse(fmt)]
-    possible_fields = ('W', 'D', 'H', 'M', 'S')
-    constants = {'W': 604800, 'D': 86400, 'H': 3600, 'M': 60, 'S': 1}
-    values = {}
-    for field in possible_fields:
-        if field in desired_fields and field in constants:
-            values[field], remainder = divmod(remainder, constants[field])
-    return f.format(fmt, **values)
+    template = TEMPLATES[i]
+    return '%s' in template and template % diff_seconds or template

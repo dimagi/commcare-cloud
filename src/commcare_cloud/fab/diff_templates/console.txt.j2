@@ -9,12 +9,12 @@ New version details:
 {%- endfor %}
 {% endif %}
 
-{%- if error -%}
-{{ error|error }}
-{% endif %}
-{% if message -%}
-{{ message|warning }}
-{% endif %}
+{% for msg in errors -%}
+{{ msg|error }}
+{%- endfor %}
+{% for msg in warnings -%}
+{{ mgs|warning }}
+{%- endfor %}
 
 {%- if pr_infos -%}
 List of PRs since last deploy:

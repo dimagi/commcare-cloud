@@ -3,12 +3,12 @@
 </head>
 <body>
 <h2>Deployed by {{ user }}, cheers!</h2>
-{% if error %}
-<p>{{ error }}</p>
-{% endif %}
-{% if message %}
-<p>{{ message }}</p>
-{% endif %}
+{% for msg in errors %}
+<p style="color:#">{{ msg }}</p>
+{% endfor %}
+{% for msg in warnings %}
+<p style="color:">{{ msg }}</p>
+{% endfor %}
 
 {% if new_version_details %}
 <p>New version details:</p>

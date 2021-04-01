@@ -13,7 +13,7 @@ from commcare_cloud.colors import color_warning, color_notice, color_summary
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.terraform.aws import get_default_username
-from commcare_cloud.commands.utils import strfdelta
+from commcare_cloud.commands.utils import timeago
 from commcare_cloud.fab.const import DATE_FMT
 from commcare_cloud.fab.deploy_diff import DeployDiff
 from commcare_cloud.fab.git_repo import get_github, github_auth_provided
@@ -28,12 +28,20 @@ BUILD_INFO_PROPERTIES = "build-info.properties"
 
 class VersionInfo(namedtuple("VersionInfo", "commit, message, time, build_time")):
     @property
+    def commit_time_ago(self):
+        return self._format_time_ago(self.time)
+
+    @property
     def build_time_ago(self):
-        build_time = parser.parse(self.build_time)
+        return self._format_time_ago(self.build_time)
+
+    @staticmethod
+    def _format_time_ago(time):
+        build_time = parser.parse(time)
         if build_time.tzinfo:
             build_time = build_time.astimezone(pytz.utc).replace(tzinfo=None)
         delta = datetime.utcnow() - build_time
-        return strfdelta(delta, "{W}w {D}d {H}:{M:02}:{S:02}")
+        return timeago(delta)
 
 
 def deploy_formplayer(environment, args):
@@ -83,8 +91,8 @@ def get_deploy_diff(environment, repo):
         with indent():
             new_version_details["Commit"] = latest_version.commit
             new_version_details["Commit message"] = latest_version.message
-            new_version_details["Commit date"] = latest_version.time
-            new_version_details["Build time"] = f"{latest_version.build_time_ago} ago ({latest_version.build_time})"
+            new_version_details["Commit date"] = f"{latest_version.commit_time_ago} ({latest_version.time})"
+            new_version_details["Build time"] = f"{latest_version.build_time_ago} ({latest_version.build_time})"
     diff = DeployDiff(
         repo, current_commit, latest_version.commit,
         new_version_details=new_version_details
@@ -141,7 +149,7 @@ def announce_deploy_success(environment, diff_ouptut):
 
 
 def mail_admins(environment, subject, message=''):
-    print(color_summary(f"Sending email: {subject}"))
+    print(color_summary(f">> Sending email: {subject}"))
     if environment.fab_settings_config.email_enabled:
         commcare_cloud(
             environment.name, 'django-manage', '--quiet', 'mail_admins',
