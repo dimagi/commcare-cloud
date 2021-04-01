@@ -51,5 +51,5 @@ def get_github():
 
 
 @memoized
-def _github_auth_provided():
+def github_auth_provided():
     return bool(get_github_token())

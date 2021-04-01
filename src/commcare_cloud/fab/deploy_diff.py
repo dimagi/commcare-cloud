@@ -6,7 +6,7 @@ import jinja2
 from gevent.pool import Pool
 from memoized import memoized
 
-from commcare_cloud.fab.git_repo import _github_auth_provided
+from commcare_cloud.fab.git_repo import github_auth_provided
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'diff_templates')
 LABELS_TO_EXPAND = [
@@ -38,7 +38,7 @@ class DeployDiff:
             "user": get_user(),
             "LABELS_TO_EXPAND": LABELS_TO_EXPAND
         }
-        if not (_github_auth_provided() and self.last_commit and self.deploy_commit):
+        if not (github_auth_provided() and self.last_commit and self.deploy_commit):
             context["error"] = "Insufficient info to get deploy diff."
             return context
 

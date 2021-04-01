@@ -21,7 +21,7 @@ from .const import (
     PROJECT_ROOT,
 )
 from .deploy_diff import DeployDiff
-from .git_repo import get_github, _github_auth_provided
+from .git_repo import get_github, github_auth_provided
 
 
 def execute_with_timing(fn, *args, **kwargs):
@@ -81,7 +81,7 @@ class DeployMetadata(object):
             return
 
         tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
-        if _github_auth_provided():
+        if github_auth_provided():
             self.repo.create_git_ref(
                 ref='refs/tags/' + tag_name,
                 sha=self.deploy_ref,
@@ -119,7 +119,7 @@ class DeployMetadata(object):
         return self.repo.get_commit(self._code_branch).sha
 
     def tag_setup_release(self):
-        if _github_auth_provided():
+        if github_auth_provided():
             try:
                 self.repo.create_git_ref(
                     ref='refs/tags/' +

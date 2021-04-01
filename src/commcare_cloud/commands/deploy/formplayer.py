@@ -12,8 +12,9 @@ from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import strfdelta
+from commcare_cloud.fab.const import DATE_FMT
 from commcare_cloud.fab.deploy_diff import DeployDiff
-from commcare_cloud.fab.git_repo import get_github
+from commcare_cloud.fab.git_repo import get_github, github_auth_provided
 
 AWS_BASE_URL_ENV = {
     "staging": "https://s3.amazonaws.com/dimagi-formplayer-jars/staging/latest-successful"
@@ -35,7 +36,12 @@ def deploy_formplayer(environment, args):
     print(color_notice("\nPreparing to deploy Formplayer to: "), end="")
     print(f"{environment.name}\n")
 
-    diff = get_deploy_diff(environment)
+    repo = None
+    if github_auth_provided():
+        # do this first to get the git prompt out the way
+        repo = get_github().get_repo('dimagi/formplayer')
+
+    diff = get_deploy_diff(environment, repo)
     diff.print_deployer_diff()
 
     if not ask('Continue with deploy?', quiet=args.quiet):
@@ -61,13 +67,11 @@ def deploy_formplayer(environment, args):
         announce_deploy_failed(environment)
         return rc
 
+    create_release_tag(environment, repo, diff)
     announce_deploy_success(environment, diff.get_email_diff())
 
 
-def get_deploy_diff(environment):
-    # do this first to get the git prompt out the way
-    repo = get_github().get_repo('dimagi/formplayer')
-
+def get_deploy_diff(environment, repo):
     print(color_summary(">> Compiling deploy summary"))
 
     current_commit = get_current_formplayer_version(environment)
@@ -84,6 +88,15 @@ def get_deploy_diff(environment):
         new_version_details=new_version_details
     )
     return diff
+
+
+def create_release_tag(environment, repo, diff):
+    repo.create_git_ref(
+        ref='refs/tags/{}-{}-release'.format(
+            datetime.utcnow().strftime(DATE_FMT),
+            environment.name),
+        sha=diff.deploy_commit,
+    )
 
 
 def run_ansible_playbook_command(environment, args):
