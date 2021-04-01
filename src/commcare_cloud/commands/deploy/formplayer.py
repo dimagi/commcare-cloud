@@ -11,9 +11,9 @@ from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_warning, color_notice, color_summary
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
+from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import timeago
-from commcare_cloud.fab.const import DATE_FMT
 from commcare_cloud.fab.deploy_diff import DeployDiff
 from commcare_cloud.fab.git_repo import get_github, github_auth_provided
 
@@ -77,9 +77,14 @@ def deploy_formplayer(environment, args):
         announce_deploy_failed(environment)
         return rc
 
+    record_deploy_success(environment, repo, diff, start)
+
+
+def record_deploy_success(environment, repo, diff, start):
     end = datetime.utcnow()
     create_release_tag(environment, repo, diff)
     record_deploy_in_datadog(environment, diff, end - start)
+    update_sentry_post_deploy(environment, diff, start, end)
     announce_deploy_success(environment, diff.get_email_diff())
 
 
@@ -90,6 +95,7 @@ def get_deploy_diff(environment, repo):
     latest_version = get_latest_formplayer_version(environment.name)
     new_version_details = {}
     if latest_version:
+        new_version_details["Release Name"] = environment.new_release_name()
         new_version_details["Commit"] = latest_version.commit
         new_version_details["Commit message"] = latest_version.message
         new_version_details["Commit date"] = f"{latest_version.commit_time_ago} ({latest_version.time})"
@@ -106,7 +112,7 @@ def create_release_tag(environment, repo, diff):
         return
     repo.create_git_ref(
         ref='refs/tags/{}-{}-release'.format(
-            datetime.utcnow().strftime(DATE_FMT),
+            environment.new_release_name(),
             environment.name),
         sha=diff.deploy_commit,
     )
@@ -169,10 +175,12 @@ def record_deploy_in_datadog(environment, diff, tdelta):
         if github_auth_provided():
             diff_url = f"\nDiff link: [Git Diff]({diff.url})"
         deploy_notification_text = (
-            "Formplayer has been successfully deployed to *{}* by *{}* in *{}* minutes.{}".format(
+            "Formplayer has been successfully deployed to "
+            "*{}* by *{}* in *{}* minutes.\nRelease Name: {}{}".format(
                 environment.name,
                 get_default_username(),
                 int(tdelta.total_seconds() / 60) or '?',
+                environment.new_release_name(),
                 diff_url
             )
         )
