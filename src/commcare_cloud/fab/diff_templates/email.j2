@@ -12,9 +12,9 @@
 
 {% if new_version_details %}
 <p>New version details:</p>
-<table width="300" border="0" cellspacing="0" cellpadding="0" style="border:1px solid #ccc;">
+<table width="600" border="0" cellspacing="0" cellpadding="0">
 <tbody>
-{% for key, val in new_version_details.items() %}
+{% for key, value in new_version_details.items() %}
   <tr>
     <td>{{ key }}</td>
     <td>{{ value }}</td>
