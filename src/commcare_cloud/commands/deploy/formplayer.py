@@ -106,7 +106,7 @@ def announce_formplayer_deploy_start(environment):
 def announce_deploy_failed(environment):
     mail_admins(
         environment,
-        subject=f"Formpplayer deploy to {environment.name} failed.",
+        subject=f"Formplayer deploy to {environment.name} failed.",
     )
 
 
@@ -119,13 +119,15 @@ def announce_deploy_success(environment, diff_ouptut):
 
 
 def mail_admins(environment, subject, message=''):
+    print(color_summary(f"Sending email: {subject}"))
     if environment.fab_settings_config.email_enabled:
         commcare_cloud(
-            environment.name, 'django-manage', 'mail_admins',
+            environment.name, 'django-manage', '--quiet', 'mail_admins',
             '--subject', subject,
             '--environment', environment.meta_config.deploy_env,
             '--html',
-            message
+            message,
+            show_command=False
         )
 
 

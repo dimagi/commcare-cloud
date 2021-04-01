@@ -19,9 +19,10 @@ def _generate_args(*args, **kwargs):
     return argv
 
 
-def commcare_cloud(*args, **kwargs):
+def commcare_cloud(*args, show_command=True, **kwargs):
     from .cli_utils import print_command
     from .commcare_cloud import call_commcare_cloud
     argv = _generate_args('commcare-cloud', *args, **kwargs)
-    print_command(argv)
+    if show_command:
+        print_command(argv)
     return call_commcare_cloud(argv)
