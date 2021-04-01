@@ -6,6 +6,7 @@ import jinja2
 from gevent.pool import Pool
 from memoized import memoized
 
+from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.fab.git_repo import github_auth_provided
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'diff_templates')
@@ -35,7 +36,7 @@ class DeployDiff:
     def get_diff_context(self):
         context = {
             "new_version_details": self.new_version_details,
-            "user": get_user(),
+            "user": get_default_username(),
             "LABELS_TO_EXPAND": LABELS_TO_EXPAND
         }
         if not (github_auth_provided() and self.last_commit and self.deploy_commit):
@@ -127,11 +128,3 @@ def register_console_filters(env):
 
     for name, filter_ in filters.items():
         env.filters[name] = filter_
-
-
-def get_user():
-    import getpass
-    try:
-        return getpass.getuser()
-    except KeyError:
-        return "unknown"
