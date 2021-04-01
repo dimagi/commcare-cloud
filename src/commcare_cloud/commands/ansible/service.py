@@ -539,7 +539,7 @@ class ProcessMatcher(object):
     def __call__(self, process_descriptor):
         return (
             process_descriptor.short_name == self.name
-            and (not self.number or process_descriptor.number == self.number)
+            and (self.number is None or process_descriptor.number == self.number)
         )
 
 
