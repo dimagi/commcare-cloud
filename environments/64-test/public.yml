@@ -79,6 +79,7 @@ subscription_change_email: droberts+accounts+subchange@dimagi.com
 internal_subscription_change_email: droberts+accounts+subchange+internal@dimagi.com
 billing_email: droberts+billing-comm@dimagi.com
 invoicing_contact_email: droberts+billing-support@dimagi.com
+saas_ops_email: saas-ops@dimagi.com
 growth_email: droberts+growth@dimagi.com
 master_list_email: droberts+master-list@dimagi.com
 sales_email: droberts+sales@dimagi.com
