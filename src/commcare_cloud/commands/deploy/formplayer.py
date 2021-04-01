@@ -102,7 +102,7 @@ def get_deploy_diff(environment, repo):
 
 
 def create_release_tag(environment, repo, diff):
-    if not github_auth_provided():
+    if not github_auth_provided() or not environment.fab_settings_config.tag_deploy_commits:
         return
     repo.create_git_ref(
         ref='refs/tags/{}-{}-release'.format(
