@@ -22,6 +22,8 @@ def _test_ssh_args(args, ssh_args, expected_cmd_parts, mock_call):
 
 
 class Args(object):
+    quiet = False
+
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
