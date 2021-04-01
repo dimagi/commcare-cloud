@@ -31,4 +31,6 @@ Click the URL for additional context.
 {% endfor %}
 {%- endif %}
 
+{% if compare_url -%}
 Here's the complete diff on github: {{ compare_url|highlight }}
+{%- endif %}
