@@ -215,7 +215,7 @@ servers:
     group: "postgresql"
     os: bionic
   - server_name: "pgbouncer5-production"  # former pgbouncer_host formplayer
-    server_instance_type: m5n.4xlarge
+    server_instance_type: m5n.xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -372,7 +372,7 @@ rds_instances:
       maintenance_work_mem: 4172000kB
 
   - identifier: "pgauditcare0-production"
-    instance_type: "db.m5.2xlarge"
+    instance_type: "db.m5.xlarge"
     storage: 1000
     multi_az: true
     engine_version: 9.6.15
