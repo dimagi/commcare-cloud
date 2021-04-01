@@ -114,7 +114,7 @@ def run_ansible_playbook_command(environment, args):
 def announce_formplayer_deploy_start(environment):
     mail_admins(
         environment,
-        subject="{user} has initiated a formplayer deploy to {environment}.".format(
+        subject="{user} has initiated a Formplayer deploy to {environment}".format(
             user=get_default_username(),
             environment=environment.meta_config.deploy_env,
         ),
@@ -124,14 +124,14 @@ def announce_formplayer_deploy_start(environment):
 def announce_deploy_failed(environment):
     mail_admins(
         environment,
-        subject=f"Formplayer deploy to {environment.name} failed.",
+        subject=f"Formplayer deploy to {environment.name} failed",
     )
 
 
 def announce_deploy_success(environment, diff_ouptut):
     mail_admins(
         environment,
-        subject=f"Formplayer deploy to {environment.name} successful.",
+        subject=f"Formplayer deploy successful - {environment.name}",
         message=diff_ouptut
     )
 
