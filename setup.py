@@ -35,6 +35,7 @@ test_deps = [
     'modernize',
     'nose>=1.3.7',
     'parameterized>=0.6.1',
+    'requests-mock',
 ]
 aws_deps = [
     'awscli',

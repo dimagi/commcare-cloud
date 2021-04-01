@@ -134,15 +134,17 @@ def get_latest_formplayer_version(env_name):
     def extract_vals_from_property_data(data, mapping):
         out = {}
         for line in data.splitlines(keepends=False):
-            key, value = line.split("=")
+            if not line.strip():
+                continue
+            key, value = line.strip().split("=")
             if key in mapping:
-                out[mapping[key]] = value.replace("\\", "")
+                out[mapping[key]] = strip_escapes(value)
         return out
 
-    base_url = AWS_BASE_URL_ENV.get(env_name, AWS_BASE_URL_DEFAULT)
+    git_info_url, build_info_url = get_info_urls(env_name)
     try:
-        git_info = get_url_content(f"{base_url}/{GIT_PROPERTIES}")
-        build_info = get_url_content(f"{base_url}/{BUILD_INFO_PROPERTIES}")
+        git_info = get_url_content(git_info_url)
+        build_info = get_url_content(build_info_url)
     except RequestException as e:
         print(color_warning(f"Error getting latest formplayer version: {e}"))
         return
@@ -154,3 +156,15 @@ def get_latest_formplayer_version(env_name):
     })
     build_data = extract_vals_from_property_data(build_info, {"build.time": "build_time"})
     return VersionInfo(**git_data, **build_data)
+
+
+def strip_escapes(value):
+    return value.replace("\\", "")
+
+
+def get_info_urls(env_name):
+    """
+    :return: tuple(git_info_url, build_info_url)
+    """
+    base_url = AWS_BASE_URL_ENV.get(env_name, AWS_BASE_URL_DEFAULT)
+    return f"{base_url}/{GIT_PROPERTIES}", f"{base_url}/{BUILD_INFO_PROPERTIES}"
