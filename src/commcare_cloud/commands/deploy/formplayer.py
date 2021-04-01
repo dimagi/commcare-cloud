@@ -38,7 +38,7 @@ def deploy_formplayer(environment, args):
     # do this first to get the git prompt out the way
     repo = get_github().get_repo('dimagi/formplayer')
 
-    current_commit = "5709fea"#get_current_formplayer_version(environment)
+    current_commit = get_current_formplayer_version(environment)
     latest_version = get_latest_formplayer_version(environment.name)
 
     if latest_version:
