@@ -1,8 +1,10 @@
 from collections import namedtuple
 from datetime import datetime
 
+import pytz
 import requests
 from clint.textui import indent
+from dateutil import parser
 from requests import RequestException
 
 from commcare_cloud.alias import commcare_cloud
@@ -27,7 +29,9 @@ BUILD_INFO_PROPERTIES = "build-info.properties"
 class VersionInfo(namedtuple("VersionInfo", "commit, message, time, build_time")):
     @property
     def build_time_ago(self):
-        build_time = datetime.strptime(self.build_time, "%Y-%m-%dT%H:%M:%S.%fZ")
+        build_time = parser.parse(self.build_time)
+        if build_time.tzinfo:
+            build_time = build_time.astimezone(pytz.utc).replace(tzinfo=None)
         delta = datetime.utcnow() - build_time
         return strfdelta(delta, "{W}w {D}d {H}:{M:02}:{S:02}")
 
