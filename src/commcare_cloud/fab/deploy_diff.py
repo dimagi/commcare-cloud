@@ -1,23 +1,25 @@
+import os
 import re
 from collections import defaultdict
 
+import jinja2
 from gevent.pool import Pool
 from memoized import memoized
 
 from commcare_cloud.fab.git_repo import _github_auth_provided
 
-
+TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'diff_templates')
 LABELS_TO_EXPAND = [
     "reindex/migration",
 ]
 
 
 class DeployDiff:
-    def __init__(self, repo, last_commit, deploy_commit, output=None):
+    def __init__(self, repo, last_commit, deploy_commit):
         self.repo = repo
         self.last_commit = last_commit
         self.deploy_commit = deploy_commit
-        self.output = output or Output()
+        self.j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
 
     @property
     def url(self):
@@ -25,42 +27,43 @@ class DeployDiff:
         return "{}/compare/{}...{}".format(self.repo.html_url, self.last_commit, self.deploy_commit)
 
     @memoized
-    def get_diff_output(self):
+    def get_diff_context(self):
+        context = {}
         if not (_github_auth_provided() and self.last_commit and self.deploy_commit):
-            return self.output
+            context["error"] = "Insufficient info to get deploy diff."
+            return context
 
         short, long = sorted([self.last_commit, self.deploy_commit], key=lambda x: len(x))
         if (self.last_commit == self.deploy_commit or (
             long.startswith(short)
         )):
-            self.output("Versions are identical. No changes since last deploy.", Output.ERROR)
-            return self.output
+            context["error"] = "Versions are identical. No changes since last deploy."
+            return context
 
+        context["compare_url"] = self.url
         pr_numbers = self._get_pr_numbers()
         if len(pr_numbers) > 500:
-            self.output("There are too many PRs to display", Output.ERROR)
-            return self.output
+            context["message"] = "There are too many PRs to display"
+            return context
         elif not pr_numbers:
-            self.output("No PRs merged since last release.", Output.SUMMARY)
-            self.output(f"\tView full diff here: {self.url}")
-            return self.output
+            context["messages"] = "No PRs merged since last release."
+            return context
 
         pool = Pool(5)
         pr_infos = [_f for _f in pool.map(self._get_pr_info, pr_numbers) if _f]
 
-        self.output("\nList of PRs since last deploy:", Output.SUMMARY)
-        self._append_prs_formatted(pr_infos)
-
+        context["pr_infos"] = pr_infos
         prs_by_label = self._get_prs_by_label(pr_infos)
-        if prs_by_label.get('reindex/migration'):
-            self.output('You are about to deploy the following PR(s), which will trigger a '
-                               'reindex or migration. Click the URL for additional context.', Output.ERROR)
-            self._append_prs_formatted(prs_by_label['reindex/migration'])
+        context["prs_by_label"] = prs_by_label
+        return context
 
-        return self.output
-
-    def print_deployer_diff(self):
-        print(self.get_diff_output().console_output())
+    def print_deployer_diff(self, new_version_details=None):
+        register_console_filters(self.j2)
+        template = self.j2.get_template('console.j2')
+        print(template.render(
+            new_version_details=new_version_details,
+            **self.get_diff_context())
+        )
 
     def _get_pr_numbers(self):
         comparison = self.repo.compare(self.last_commit, self.deploy_commit)
@@ -96,46 +99,18 @@ class DeployDiff:
                 prs_by_label[label].append(pr)
         return dict(prs_by_label)
 
-    def _append_prs_formatted(self, pr_list):
-        for pr in pr_list:
-            self.output("- ", end="")
-            self.output(pr['title'], formatting=Output.CODE, end=": ")
-            self.output(pr['url'], formatting=Output.HIGHLIGHT, end=" ")
-            self.output("({})".format(", ".join(label for label in pr['labels'])))
 
+def register_console_filters(env):
+    from fabric.colors import red, blue, cyan, yellow, green, magenta
 
-class Output:
-    ERROR = "error"
-    SUCCESS = "success"
-    HIGHLIGHT = "highlight"
-    SUMMARY = "summary"
-    WARNING = "warning"
-    CODE = "code"
+    filters = {
+        "error": red,
+        "success": green,
+        "highlight": yellow,
+        "summary": blue,
+        "warning": magenta,
+        "code": cyan,
+    }
 
-    def __init__(self):
-        self._lines = []
-
-    def __call__(self, value, formatting=None, end="\n"):
-        self._lines.append((f"{value}{end}", formatting))
-
-    def console_output(self):
-        return "".join([
-            self._console_format(value, formatting) for value, formatting in self._lines
-        ])
-
-    def plain_output(self):
-        return "".join([
-            value for value, _ in self._lines
-        ])
-
-    def _console_format(self, value, formatting):
-        from fabric.colors import red, blue, cyan, yellow, green, magenta, white
-        formatters = {
-            Output.ERROR: red,
-            Output.SUCCESS: green,
-            Output.HIGHLIGHT: yellow,
-            Output.SUMMARY: blue,
-            Output.WARNING: magenta,
-            Output.CODE: cyan,
-        }
-        return formatters[formatting](value) if formatting else value
+    for name, filter_ in filters.items():
+        env.filters[name] = filter_

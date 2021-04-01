@@ -7,13 +7,13 @@ from requests import RequestException
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
-from commcare_cloud.colors import color_warning, color_summary, color_notice
+from commcare_cloud.colors import color_warning, color_notice
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import strfdelta
+from commcare_cloud.fab.deploy_diff import DeployDiff
 from commcare_cloud.fab.git_repo import get_github
-from commcare_cloud.fab.deploy_diff import DeployDiff, Output
 
 AWS_BASE_URL_ENV = {
     "staging": "https://s3.amazonaws.com/dimagi-formplayer-jars/staging/latest-successful"
@@ -41,19 +41,16 @@ def deploy_formplayer(environment, args):
     current_commit = get_current_formplayer_version(environment)
     latest_version = get_latest_formplayer_version(environment.name)
 
-    output = Output()
+    new_version_details = {}
     if latest_version:
-        output("New version details:")
-        puts_ = lambda v: puts(v, newline=False, stream=output)
         with indent():
-            puts_(f"Commit          : {latest_version.commit}")
-            puts_(f"Commit message  : {latest_version.message}")
-            puts_(f"Commit date     : {latest_version.time}")
-            puts_(f"Build time      : {latest_version.build_time_ago} ago ({latest_version.build_time})\n")
+            new_version_details["Commit"] = latest_version.commit
+            new_version_details["Commit message"] = latest_version.message
+            new_version_details["Commit date"] = latest_version.time
+            new_version_details["Build time"] = f"{latest_version.build_time_ago} ago ({latest_version.build_time})"
 
-    diff = DeployDiff(repo, current_commit, latest_version.commit, output=output)
-    diff.print_deployer_diff()
-    announce_deploy_success(environment, diff.get_diff_output().plain_output())
+    diff = DeployDiff(repo, "043b95e93f528a2ac2ddb23e2daaf2c2095eff5b", latest_version.commit)
+    diff.print_deployer_diff(new_version_details)
 
     if not ask('Continue with deploy?', quiet=args.quiet):
         return 1
@@ -78,7 +75,7 @@ def deploy_formplayer(environment, args):
         announce_deploy_failed(environment)
         return rc
 
-    announce_deploy_success(environment, diff.get_diff_output().plain_output())
+    announce_deploy_success(environment, "")
 
 
 def announce_deploy_failed(environment):
