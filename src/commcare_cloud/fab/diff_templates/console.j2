@@ -1,5 +1,5 @@
 {% macro render_pr(info) -%}
-    - {{ info.title|code }}: {{ info.url|highlight }} ({{ info.labels|selectattr("name")|join(", ") }})
+    - {{ info.title|code }}: {{ info.url|highlight }} ({{ info.labels|map(attribute='name')|join(", ") }})
 {%- endmacro %}
 
 {%- if new_version_details -%}
