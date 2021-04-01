@@ -59,7 +59,9 @@ def deploy_formplayer(environment, args):
 
     rc = run_ansible_playbook_command(environment, args)
     if rc != 0:
+        announce_deploy_failed(environment)
         return rc
+
     rc = commcare_cloud(
         args.env_name, 'run-shell-command', 'formplayer',
         ('supervisorctl reread; '
@@ -70,7 +72,16 @@ def deploy_formplayer(environment, args):
         ), '-b',
     )
     if rc != 0:
+        announce_deploy_failed(environment)
         return rc
+
+
+def announce_deploy_failed(environment):
+    mail_admins(
+        environment,
+        subject=f"Formpplayer deploy to {environment.name} failed.",
+        message=""
+    )
 
 
 def run_ansible_playbook_command(environment, args):
