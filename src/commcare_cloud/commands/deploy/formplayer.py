@@ -41,7 +41,7 @@ def deploy_formplayer(environment, args):
     print(f"{environment.name}\n")
 
     # do this first to get the git prompt out the way
-    repo = get_github().get_repo('dimagi/formplayer')
+    repo = get_github().get_repo('dimagi/formplayer') if github_auth_provided() else None
 
     diff = get_deploy_diff(environment, repo)
     diff.print_deployer_diff()
