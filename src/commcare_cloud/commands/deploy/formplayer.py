@@ -56,6 +56,7 @@ def deploy_formplayer(environment, args):
     if not ask('Continue with deploy?', quiet=args.quiet):
         return 1
 
+    start = datetime.utcnow()
     announce_formplayer_deploy_start(environment)
 
     rc = run_ansible_playbook_command(environment, args)
@@ -76,7 +77,9 @@ def deploy_formplayer(environment, args):
         announce_deploy_failed(environment)
         return rc
 
+    end = datetime.utcnow()
     create_release_tag(environment, repo, diff)
+    record_deploy_in_datadog(environment, end - start)
     announce_deploy_success(environment, diff.get_email_diff())
 
 
@@ -158,6 +161,24 @@ def mail_admins(environment, subject, message=''):
             show_command=False
         )
 
+
+def record_deploy_in_datadog(environment, tdelta):
+    if environment.public_vars.get('DATADOG_ENABLED', False):
+        print(color_summary(f">> Recording deploy in Datadog"))
+        deploy_notification_text = (
+            "Formplayer has been successfully deployed to *{}* by *{}* in *{}* minutes. ".format(
+                environment.name,
+                get_default_username(),
+                int(tdelta.total_seconds() / 60) or '?',
+            )
+        )
+        commcare_cloud(
+            environment.name, 'send-datadog-event',
+            'Formplayer Deploy Success',
+            deploy_notification_text,
+            '--alert_type', "success",
+            show_command=False
+        )
 
 def get_current_formplayer_version(environment):
     """Get version of currently deployed Formplayer by querying

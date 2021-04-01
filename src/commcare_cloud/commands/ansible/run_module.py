@@ -203,6 +203,9 @@ class SendDatadogEvent(CommandBase):
         Argument('--tags', nargs="*", help="""
             Additional tags e.g. host:web2
         """),
+        Argument('--alert_type', choices=["error", "warning", "info", "success"], default="info", help="""
+            Alert type.
+        """),
     )
 
     def run(self, args, unknown_args):
