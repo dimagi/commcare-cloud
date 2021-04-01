@@ -1,4 +1,5 @@
 formplayer_memory: "1024m"
+formplayer_g1heapregionsize: "1m"
 
 management_commands:
   swiss0:
