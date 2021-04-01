@@ -170,7 +170,7 @@ Use '-' for default (django_manage[0])
 Connect to a remote host with ssh.
 
 ```
-commcare-cloud <env> ssh [server]
+commcare-cloud <env> ssh [--quiet] [server]
 ```
 
 This will also automatically add the ssh argument `-A`
@@ -191,6 +191,12 @@ omitted for environments with only a single server.
 
 Use '-' for default (django_manage[0])
 
+##### Optional Arguments
+
+###### `--quiet`
+
+Don't output the command to be run.
+
 ---
 
 #### `mosh`
@@ -198,7 +204,7 @@ Use '-' for default (django_manage[0])
 Connect to a remote host with mosh.
 
 ```
-commcare-cloud <env> mosh [server]
+commcare-cloud <env> mosh [--quiet] [server]
 ```
 
 This will also automatically switch to using ssh with `-A`
@@ -219,6 +225,12 @@ example: webworkers[0] will pick the first webworker. May also be
 omitted for environments with only a single server.
 
 Use '-' for default (django_manage[0])
+
+##### Optional Arguments
+
+###### `--quiet`
+
+Don't output the command to be run.
 
 ---
 
@@ -496,7 +508,7 @@ Additional tags e.g. host:web2
 Run a django management command.
 
 ```
-commcare-cloud <env> django-manage [--tmux] [--server SERVER] [--release RELEASE] [--tee TEE_FILE]
+commcare-cloud <env> django-manage [--tmux] [--server SERVER] [--release RELEASE] [--tee TEE_FILE] [--quiet]
 ```
 
 `commcare-cloud <env> django-manage ...`
@@ -542,6 +554,10 @@ If none is specified, the `current` release will be used.
 
 Tee output to the screen and to this file on the remote machine
 
+###### `--quiet`
+
+Don't output the command to be run.
+
 ---
 
 #### `tmux`
@@ -549,7 +565,7 @@ Tee output to the screen and to this file on the remote machine
 Connect to a remote host with ssh and open a tmux session.
 
 ```
-commcare-cloud <env> tmux [server] [remote_command]
+commcare-cloud <env> tmux [--quiet] [server] [remote_command]
 ```
 
 ##### Example
@@ -580,6 +596,12 @@ If a command is specified, then it will always run in a new window.
 If a command is *not* specified, then it will rejoin the most
 recently visited tmux window; only if there are no currently open
 tmux windows will a new one be opened.
+
+##### Optional Arguments
+
+###### `--quiet`
+
+Don't output the command to be run.
 
 ---
 
