@@ -1,17 +1,22 @@
+{% macro render_messages(messages, color) -%}
+    {% for msg in messages %}
+    <p style="color:{{ color }}">{{ msg }}</p>
+    {% endfor %}
+    {% if messages %}
+    <br/>
+    {% endif %}
+{%- endmacro %}
 <html>
 <head>
 </head>
 <body>
 <h2>Deployed by {{ user }}, cheers!</h2>
-{% for msg in errors %}
-<p style="color:#">{{ msg }}</p>
-{% endfor %}
-{% for msg in warnings %}
-<p style="color:">{{ msg }}</p>
-{% endfor %}
+
+{{ render_messages(errors, 'firebrick') }}
+{{ render_messages(warnings, 'coral') }}
 
 {% if new_version_details %}
-<p>New version details:</p>
+<h4>New version details:</h4>
 <table width="600" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 {% for key, value in new_version_details.items() %}
@@ -25,7 +30,7 @@
 {% endif %}
 
 {% if pr_infos %}
-  <p>We just deployed the following PRs:</p>
+  <h4>Deployed PRs:</h4>
   <ul>
     {% for pr in pr_infos %}
       <li>
@@ -61,7 +66,9 @@
   {% endif %}
   {% endfor %}
 {% endif %}
+
 {% if compare_url %}
+<br/>
 <p>Here's the complete diff on github: <a href="{{ compare_url }}">{{ compare_url }}</a></p>
 {% endif %}
 </body>
