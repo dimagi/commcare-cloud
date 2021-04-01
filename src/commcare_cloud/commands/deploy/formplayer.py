@@ -3,7 +3,6 @@ from datetime import datetime
 
 import pytz
 import requests
-from clint.textui import indent
 from dateutil import parser
 from requests import RequestException
 
@@ -88,11 +87,10 @@ def get_deploy_diff(environment, repo):
     latest_version = get_latest_formplayer_version(environment.name)
     new_version_details = {}
     if latest_version:
-        with indent():
-            new_version_details["Commit"] = latest_version.commit
-            new_version_details["Commit message"] = latest_version.message
-            new_version_details["Commit date"] = f"{latest_version.commit_time_ago} ({latest_version.time})"
-            new_version_details["Build time"] = f"{latest_version.build_time_ago} ({latest_version.build_time})"
+        new_version_details["Commit"] = latest_version.commit
+        new_version_details["Commit message"] = latest_version.message
+        new_version_details["Commit date"] = f"{latest_version.commit_time_ago} ({latest_version.time})"
+        new_version_details["Build time"] = f"{latest_version.build_time_ago} ({latest_version.build_time})"
     diff = DeployDiff(
         repo, current_commit, latest_version.commit,
         new_version_details=new_version_details
