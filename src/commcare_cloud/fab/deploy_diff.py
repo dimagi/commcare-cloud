@@ -48,6 +48,7 @@ class DeployDiff:
                 long.startswith(short)
             )):
                 context["errors"].append("Versions are identical. No changes since last deploy.")
+                return context
 
         if not (github_auth_provided() and self.last_commit and self.deploy_commit):
             context["warnings"].append("Insufficient info to get deploy diff.")
