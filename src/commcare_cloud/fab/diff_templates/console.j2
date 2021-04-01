@@ -23,7 +23,7 @@ List of PRs since last deploy:
 {% endfor %}
 {%- endif %}
 
-{%- if prs_by_label.get("reindex/migration") -%}
+{%- if prs_by_label and prs_by_label.get("reindex/migration") -%}
 You are about to deploy the following PR(s), which will trigger a reindex or migration.
 Click the URL for additional context.
 {% for info in prs_by_label.get("reindex/migration") -%}
