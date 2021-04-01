@@ -2,13 +2,13 @@ import requests
 from jsonobject.base import namedtuple
 
 
-def update_sentry_post_deploy(environment, diff, deploy_start, deploy_end):
+def update_sentry_post_deploy(environment, sentry_project, sentry_repo, diff, deploy_start, deploy_end):
     localsettings = environment.public_vars["localsettings"]
     client = SentryClient(
         environment.get_secret('SENTRY_API_KEY'),
-        localsettings.get("SENTRY_REPOSITORY"),
+        sentry_repo,
         localsettings.get('SENTRY_ORGANIZATION_SLUG'),
-        localsettings.get('SENTRY_PROJECT_SLUG'),
+        sentry_project
     )
     if client.is_valid():
         release_name = environment.new_release_name()
