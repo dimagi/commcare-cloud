@@ -10,16 +10,21 @@ from commcare_cloud.fab.git_repo import _github_auth_provided
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'diff_templates')
 LABELS_TO_EXPAND = [
-    "reindex/migration",
+    "product/all-users-all-environments",
+    "product/prod-india-all-users",
+    "product/feature-flag",
+    "product/all-users",
 ]
 
 
 class DeployDiff:
-    def __init__(self, repo, last_commit, deploy_commit):
+    def __init__(self, repo, last_commit, deploy_commit, new_version_details=None):
         self.repo = repo
         self.last_commit = last_commit
         self.deploy_commit = deploy_commit
+        self.new_version_details = new_version_details
         self.j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
+        register_console_filters(self.j2)
 
     @property
     def url(self):
@@ -28,7 +33,11 @@ class DeployDiff:
 
     @memoized
     def get_diff_context(self):
-        context = {}
+        context = {
+            "new_version_details": self.new_version_details,
+            "user": get_user(),
+            "LABELS_TO_EXPAND": LABELS_TO_EXPAND
+        }
         if not (_github_auth_provided() and self.last_commit and self.deploy_commit):
             context["error"] = "Insufficient info to get deploy diff."
             return context
@@ -57,12 +66,16 @@ class DeployDiff:
         context["prs_by_label"] = prs_by_label
         return context
 
-    def print_deployer_diff(self, new_version_details=None):
-        register_console_filters(self.j2)
-        template = self.j2.get_template('console.j2')
-        print(template.render(
-            new_version_details=new_version_details,
-            **self.get_diff_context())
+    def print_deployer_diff(self):
+        print(self.render_diff('console.j2'))
+
+    def get_email_diff(self):
+        return self.render_diff("email.j2")
+
+    def render_diff(self, template_name):
+        template = self.j2.get_template(template_name)
+        return template.render(
+            **self.get_diff_context()
         )
 
     def _get_pr_numbers(self):
@@ -81,22 +94,22 @@ class DeployDiff:
             return None
         assert pr_number == pr_response.number, (pr_number, pr_response.number)
 
-        labels = [label.name for label in pr_response.labels]
-
         return {
             'number': pr_response.number,
             'title': pr_response.title,
             'url': pr_response.html_url,
-            'labels': labels,
+            'labels': pr_response.labels,
             'additions': pr_response.additions,
             'deletions': pr_response.deletions,
+            'opened_by': pr_response.user.login,
+            'body': pr_response.body,
         }
 
     def _get_prs_by_label(self, pr_infos):
         prs_by_label = defaultdict(list)
         for pr in pr_infos:
             for label in pr['labels']:
-                prs_by_label[label].append(pr)
+                prs_by_label[label.name].append(pr)
         return dict(prs_by_label)
 
 
@@ -114,3 +127,11 @@ def register_console_filters(env):
 
     for name, filter_ in filters.items():
         env.filters[name] = filter_
+
+
+def get_user():
+    import getpass
+    try:
+        return getpass.getuser()
+    except KeyError:
+        return "unknown"

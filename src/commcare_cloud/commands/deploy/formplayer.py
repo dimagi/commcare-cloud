@@ -2,7 +2,7 @@ from collections import namedtuple
 from datetime import datetime
 
 import requests
-from clint.textui import indent, puts
+from clint.textui import indent
 from requests import RequestException
 
 from commcare_cloud.alias import commcare_cloud
@@ -32,7 +32,7 @@ class VersionInfo(namedtuple("VersionInfo", "commit, message, time, build_time")
 
 
 def deploy_formplayer(environment, args):
-    print(color_notice("\nPreparing to deploy formplayer to: "), end="")
+    print(color_notice("\nPreparing to deploy Formplayer to: "), end="")
     print(f"{environment.name}\n")
 
     # do this first to get the git prompt out the way
@@ -49,8 +49,11 @@ def deploy_formplayer(environment, args):
             new_version_details["Commit date"] = latest_version.time
             new_version_details["Build time"] = f"{latest_version.build_time_ago} ago ({latest_version.build_time})"
 
-    diff = DeployDiff(repo, "043b95e93f528a2ac2ddb23e2daaf2c2095eff5b", latest_version.commit)
-    diff.print_deployer_diff(new_version_details)
+    diff = DeployDiff(
+        repo, current_commit, latest_version.commit,
+        new_version_details=new_version_details
+    )
+    diff.print_deployer_diff()
 
     if not ask('Continue with deploy?', quiet=args.quiet):
         return 1
@@ -75,23 +78,7 @@ def deploy_formplayer(environment, args):
         announce_deploy_failed(environment)
         return rc
 
-    announce_deploy_success(environment, "")
-
-
-def announce_deploy_failed(environment):
-    mail_admins(
-        environment,
-        subject=f"Formpplayer deploy to {environment.name} failed.",
-        message=""
-    )
-
-
-def announce_deploy_success(environment, diff_ouptut):
-    mail_admins(
-        environment,
-        subject=f"[test] Formplayer deploy to {environment.name} successful.",
-        message=diff_ouptut
-    )
+    announce_deploy_success(environment, diff.get_email_diff())
 
 
 def run_ansible_playbook_command(environment, args):
@@ -113,17 +100,32 @@ def announce_formplayer_deploy_start(environment):
             user=get_default_username(),
             environment=environment.meta_config.deploy_env,
         ),
-        message='',
     )
 
 
-def mail_admins(environment, subject, message):
+def announce_deploy_failed(environment):
+    mail_admins(
+        environment,
+        subject=f"Formpplayer deploy to {environment.name} failed.",
+    )
+
+
+def announce_deploy_success(environment, diff_ouptut):
+    mail_admins(
+        environment,
+        subject=f"[test] Formplayer deploy to {environment.name} successful.",
+        message=diff_ouptut
+    )
+
+
+def mail_admins(environment, subject, message=''):
     if environment.fab_settings_config.email_enabled:
         commcare_cloud(
             environment.name, 'django-manage', 'mail_admins',
             '--subject', subject,
-            message,
-            '--environment', environment.meta_config.deploy_env
+            '--environment', environment.meta_config.deploy_env,
+            '--html',
+            message
         )
 
 
