@@ -388,12 +388,15 @@ pgbouncer_nlbs:
   - name: pgmain_nlb-production
     targets:
       - pgbouncer7-production
+      - pgbouncer6-production
   - name: pgucr_nlb-production
     targets:
       - pgbouncer7-production
+      - pgbouncer6-production
   - name: pgsynclogs_nlb-production
     targets:
       - pgbouncer6-production
+      - pgbouncer7-production
 
 elasticache:
   create: no
