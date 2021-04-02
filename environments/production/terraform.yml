@@ -236,7 +236,7 @@ servers:
     group: "postgresql"
     os: ubuntu_pro_bionic
   - server_name: "pgbouncer8-production"  # pgbouncer_host formplayer
-    server_instance_type: m5n.4xlarge
+    server_instance_type: m5n.xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -295,7 +295,7 @@ rds_instances:
       maintenance_work_mem: 4172000kB
 
   - identifier: "pgucr0-production"
-    instance_type: "db.t3.2xlarge"  # increased from db.t3.large due to unused db.t3 RIs
+    instance_type: "db.t3.xlarge"  # increased from db.t3.large due to unused db.t3 RIs
     storage: 500
     max_storage: 5000
     multi_az: true
