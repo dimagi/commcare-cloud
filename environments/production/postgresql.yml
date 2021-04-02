@@ -68,6 +68,7 @@ dbs:
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_hosts:
       - pgbouncer7
+      - pgbouncer6
   form_processing:
     proxy:
       host: pgbouncer3
