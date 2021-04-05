@@ -319,7 +319,7 @@ module "efs_mount__{{ efs_file_system_mount.efs_name }}__{{ az }}" {
 {% endif %}
 
 {% if existing_zone_record_update %}
-{% for record in existing_zone_record_update.records_list %}
+{% for record in existing_zone_record_update.records %}
 module "r53-record__{{ record.route_name }}" {
   source = "./modules/r53-record-create-update"
   domain_name = {{ existing_zone_record_update.domain_name|tojson }}

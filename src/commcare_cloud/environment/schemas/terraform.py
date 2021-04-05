@@ -221,4 +221,4 @@ class ExistingZoneRecordUpdate(jsonobject.JsonObject):
     record_type = jsonobject.StringProperty(default="CNAME")
     target_type = jsonobject.StringProperty()
     targets = jsonobject.ListProperty(required=False)
-    records_list = jsonobject.ListProperty(required=True)
+    records = jsonobject.ListProperty(required=True)

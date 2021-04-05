@@ -425,7 +425,7 @@ efs_file_systems:
 
 existing_zone_record_update:
     domain_name:  "staging.commcare.local"
-    records_list:
+    records:
       - route_name: commcarehq_synclogs
         record_type: "A"  ## If target_type: server, Type A supports multiple targets
         target_type: server
@@ -462,4 +462,4 @@ existing_zone_record_update:
         target_type: server
         targets:
           - pgproxy2-staging
-      
+     
