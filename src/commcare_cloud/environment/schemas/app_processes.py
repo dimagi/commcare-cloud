@@ -43,6 +43,8 @@ class AppProcessesConfig(jsonobject.JsonObject):
     gunicorn_workers_factor = jsonobject.IntegerProperty()
     gunicorn_workers_static_factor = jsonobject.IntegerProperty()
     formplayer_memory = MemorySpecProperty()
+    formplayer_maxmetaspacesize = MemorySpecProperty()
+    formplayer_g1heapregionsize = MemorySpecProperty()
     http_proxy = IpAddressAndPortProperty()
     django_command_prefix = jsonobject.StringProperty()
     celery_command_prefix = jsonobject.StringProperty()
