@@ -421,40 +421,45 @@ efs_file_systems:
     create_mount: yes
     create_record: yes
     domain_name: "staging.commcare.local"
-    route_names: "shared-efs"
+    route_name: "shared-efs"
 
 existing_zone_record_update:
     domain_name:  "staging.commcare.local"
     records_list:
-      - route_names: rds_postgres
-        record_type: "CNAME"   ## Type CNAME supports a record only
-        records: 
-          - pgformplayer0-staging
-      - route_names: commcarehq_synclogs
-        record_type: "A"  ## Type A supports multiple records
-        records: 
+      - route_name: commcarehq_synclogs
+        record_type: "A"  ## If target_type: server, Type A supports multiple targets
+        target_type: server
+        targets:
           - pgproxy2-staging
-      - route_names: proxy_form_processing
-        record_type: "A"  ## Type A supports multiple records
-        records: 
-          - pgproxy2-staging
-      - route_names: couchdb2_proxy_host
-        record_type: "A"    ## Type A supports multiple records
-        records: 
-          - couch6-staging
-      - route_names: formplayer_pgbouncer
-        record_type: "CNAME"    ## Type CNAME supports a record only
-        records: 
+      - route_name: formplayer_pgbouncer
+        target_type: pgbouncer_nlb
+        targets:
           - pgformplayer_nlb-staging
-      - route_names: pgmain_nlb
-        record_type: "CNAME"    ## Type CNAME supports a record only
-        records: 
+      - route_name: proxy_form_processing
+        record_type: "A"  ## If target_type: server, Type A supports multiple targets
+        target_type: server
+        targets: 
+          - pgproxy2-staging
+      - route_name: couchdb2_proxy_host
+        record_type: "A"    ## If target_type: server, Type A supports multiple targets
+        target_type: server
+        targets: 
+          - couch6-staging
+      - route_name: pgmain_nlb
+        target_type: pgbouncer_nlb
+        targets:
           - pgmain_nlb-staging
-      - route_names: pgsynclogs_nlb
-        record_type: "CNAME"    ## Type CNAME supports a record only
-        records: 
+      - route_name: pgsynclogs_nlb
+        target_type: pgbouncer_nlb
+        targets: 
           - pgsynclogs_nlb-staging
-      - route_names: pgucr_nlb
-        record_type: "CNAME"    ## Type CNAME supports a record only
-        records: 
+      - route_name: pgucr_nlb
+        target_type: pgbouncer_nlb
+        targets:
           - pgucr_nlb-staging
+      - route_name: p1_form_processing
+        record_type: "A"    ## If target_type: server, Type A supports multiple targets
+        target_type: server
+        targets:
+          - pgproxy2-staging
+      

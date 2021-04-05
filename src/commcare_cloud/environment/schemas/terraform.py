@@ -213,11 +213,12 @@ class EfsFileSystem(jsonobject.JsonObject):
     create_record = jsonobject.BooleanProperty(default=True)
     domain_name = jsonobject.StringProperty(required=True)
     record_type = jsonobject.StringProperty(default="CNAME")
-    route_names = jsonobject.StringProperty(required=True)
+    route_name = jsonobject.StringProperty(required=True)
 class ExistingZoneRecordUpdate(jsonobject.JsonObject):
     _allow_dynamic_properties = False
-    route_names = jsonobject.StringProperty(required=False)
+    route_name = jsonobject.StringProperty(required=False)
     domain_name = jsonobject.StringProperty(required=True)
-    record_type = jsonobject.StringProperty()
-    records = jsonobject.ListProperty(required=False)
+    record_type = jsonobject.StringProperty(default="CNAME")
+    target_type = jsonobject.StringProperty()
+    targets = jsonobject.ListProperty(required=False)
     records_list = jsonobject.ListProperty(required=True)

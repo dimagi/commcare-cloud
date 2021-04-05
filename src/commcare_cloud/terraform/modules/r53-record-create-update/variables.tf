@@ -2,7 +2,7 @@ variable "domain_name" {
   description = "Private Hosted zone name of the Route53 entry"
 }
 
-variable "route_names" {
+variable "route_name" {
   description = "DNS names to be created"
 }
 
@@ -22,7 +22,7 @@ variable "ttl" {
   default     = "300"
 }
 
-variable "records" {
+variable "targets" {
   description = "List of records"
   type        = "list"
 }

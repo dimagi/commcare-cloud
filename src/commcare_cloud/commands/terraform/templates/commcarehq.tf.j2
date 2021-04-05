@@ -311,52 +311,28 @@ module "efs_mount__{{ efs_file_system_mount.efs_name }}__{{ az }}" {
         source = "./modules/r53-record-create-update"
         create_record   = "{{ efs_file_system_route53.create_record|tojson }}"
         domain_name = {{ efs_file_system_route53.domain_name|tojson }}
-        route_names = {{ efs_file_system_route53.route_names|tojson }}
-        records = [ "${module.efs_file_system__{{ efs_file_system_route53.efs_name }}.efs_endpoint_address}" ]
+        route_name = {{ efs_file_system_route53.route_name|tojson }}
+        targets = [ "${module.efs_file_system__{{ efs_file_system_route53.efs_name }}.efs_endpoint_address}" ]
       }
 {% endfor %}
 
 {% endif %}
 
 {% if existing_zone_record_update %}
-{% for r53_record_list in existing_zone_record_update.records_list %}
-module "r53-record__{{ r53_record_list.route_names }}" {
+{% for record in existing_zone_record_update.records_list %}
+module "r53-record__{{ record.route_name }}" {
   source = "./modules/r53-record-create-update"
   domain_name = {{ existing_zone_record_update.domain_name|tojson }}
-  route_names = {{ r53_record_list.route_names|tojson }}
-  record_type = {{ r53_record_list.record_type|tojson }}
-  records = [
-      {% if r53_record_list.route_names == 'rds_postgres' %}
-        {%- for rds_postgres_instances in r53_record_list.records %}{% if not loop.first %}, {% endif %}
-          "${module.postgresql__{{ rds_postgres_instances }}.postgresql_rds_this_db_instance_endpoint }"
+  route_name = {{ record.route_name|tojson }}
+  record_type = {{ record.record_type|default("CNAME")|tojson }}
+  targets = [
+      {% if record.target_type == 'server' %}
+        {%- for target in record.targets %}{% if not loop.first %}, {% endif %}
+          "${module.server__{{ target }}.server_private_ip }"
         {%- endfor %}
-      {% elif r53_record_list.route_names == 'commcarehq_synclogs' %}
-        {%- for commcarehq_synclogs_instance in r53_record_list.records %}{% if not loop.first %}, {% endif %}
-          "${module.server__{{ commcarehq_synclogs_instance }}.server_private_ip}"
-        {%- endfor %}
-      {% elif r53_record_list.route_names == 'proxy_form_processing' %}
-        {%- for proxy_form_processing_instance in r53_record_list.records %}{% if not loop.first %}, {% endif %}
-          "${module.server__{{ proxy_form_processing_instance }}.server_private_ip}"
-        {%- endfor %}
-      {% elif r53_record_list.route_names == 'couchdb2_proxy_host' %}
-        {%- for couchdb2_proxy_host_instance in r53_record_list.records %}{% if not loop.first %}, {% endif %}
-          "${module.server__{{ couchdb2_proxy_host_instance }}.server_private_ip}"
-        {%- endfor %}
-      {% elif r53_record_list.route_names == 'formplayer_pgbouncer' %}
-        {%- for pgbouncer_nlb_r53 in r53_record_list.records %}{% if not loop.first %}, {% endif %}
-          "${module.pgbouncer_nlb__{{ pgbouncer_nlb_r53 }}.aws_lb_dns_name }"
-        {%- endfor %}
-      {% elif r53_record_list.route_names == 'pgmain_nlb' %}
-        {%- for pgmain_nlb_r53 in r53_record_list.records %}{% if not loop.first %}, {% endif %}
-          "${module.pgbouncer_nlb__{{ pgmain_nlb_r53 }}.aws_lb_dns_name }"
-        {%- endfor %}
-      {% elif r53_record_list.route_names == 'pgsynclogs_nlb' %}
-        {%- for pgsynclogs_nlb_r53 in r53_record_list.records %}{% if not loop.first %}, {% endif %}
-          "${module.pgbouncer_nlb__{{ pgsynclogs_nlb_r53 }}.aws_lb_dns_name }"
-        {%- endfor %}
-      {% elif r53_record_list.route_names == 'pgucr_nlb' %}
-        {%- for pgucr_nlb_r53 in r53_record_list.records %}{% if not loop.first %}, {% endif %}
-          "${module.pgbouncer_nlb__{{ pgucr_nlb_r53 }}.aws_lb_dns_name }"
+      {% elif record.target_type == 'pgbouncer_nlb' %}
+        {%- for target in record.targets %}{% if not loop.first %}, {% endif %}
+          "${module.pgbouncer_nlb__{{ target }}.aws_lb_dns_name }"
         {%- endfor %}
       {% endif %}
   ]
