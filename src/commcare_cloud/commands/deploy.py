@@ -16,6 +16,7 @@ from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
+from commcare_cloud.events import publish_deploy_event
 
 
 class Deploy(CommandBase):
@@ -112,7 +113,7 @@ class Deploy(CommandBase):
             )
         rc = run_ansible_playbook_command()
         if rc != 0:
-            return rc
+            return
         rc = commcare_cloud(
             args.env_name, 'run-shell-command', 'formplayer',
             ('supervisorctl reread; '
@@ -122,8 +123,8 @@ class Deploy(CommandBase):
                 deploy_env=environment.meta_config.deploy_env,
             ), '-b',
         )
-        if rc != 0:
-            return rc
+        if rc == 0:
+            publish_deploy_event("deploy_success", "formplayer", environment)
 
     @staticmethod
     def get_deploy_commcare_fab_func_args(args):

@@ -41,6 +41,7 @@ from github import GithubException
 
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
+from commcare_cloud.events import publish_deploy_event
 from fabric import utils
 from fabric.api import env, execute, parallel, roles, sudo, task
 from fabric.colors import blue, magenta, red
@@ -548,7 +549,7 @@ def _deploy_without_asking(skip_record):
         if skip_record == 'no':
             execute_with_timing(release.record_successful_release)
             execute_with_timing(release.record_successful_deploy)
-            release.publish_deploy_event("deploy_success")
+            publish_deploy_event("deploy_success", "commcare", env.ccc_environment)
         clear_cached_deploy()
 
 
