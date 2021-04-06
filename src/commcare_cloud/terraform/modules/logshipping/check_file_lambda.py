@@ -1,6 +1,6 @@
 import boto3
 import botocore
-import io, re, time
+import io, re, time, os
 from datetime import datetime
 
 def check_file(bucket, key):
@@ -74,6 +74,8 @@ def athena_query(session, params, wait = True):
 
 def handler(event, context=None, params=None):
     # get UTC date 
+    environment = os.environ['environment']
+    REGION = os.environ['AWS_REGION']
     utc_datetime = datetime.utcnow()
     year = utc_datetime.strftime('%Y')
     month = utc_datetime.strftime('%m')
@@ -84,16 +86,16 @@ def handler(event, context=None, params=None):
     TABLE = 'formplayer_request_response_logs'
 
     # S3 constant
-    S3_OUTPUT = 's3://dimagi-commcare-staging-logs'
-    S3_BUCKET = 'dimagi-commcare-staging-logs'
-    STREAM_PATH='formplayer-request-response-logs-partitioned-staging'
+    S3_OUTPUT = f"s3://dimagi-commcare-{environment}-logs"
+    S3_BUCKET = f"dimagi-commcare-{environment}-logs"
+    STREAM_PATH=f"formplayer-request-response-logs-partitioned-{environment}"
     verifyKey = f"{STREAM_PATH}/year={year}/month={month}/day={day}/hour={hour}"
 
     addPartitionQuery=f"ALTER TABLE {TABLE} ADD PARTITION (year={year}, month={month}, day={day}, hour={hour}) LOCATION 's3://{S3_BUCKET}/{STREAM_PATH}/year={year}/month={month}/day={day}/hour={hour}/';"
     print(addPartitionQuery)
 
     params = {
-        'region': 'us-east-1',
+        'region': REGION,
         'database': DATABASE,
         'bucket': S3_BUCKET,
         'path': f'{S3_BUCKET}/{STREAM_PATH}/',

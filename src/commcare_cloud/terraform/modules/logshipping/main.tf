@@ -98,6 +98,12 @@ resource "aws_lambda_function" "check_file_lambda" {
     runtime = "python3.8"
     timeout = 30
     source_code_hash = "${data.archive_file.lambda_zip.output_base64sha256}"
+
+    environment {
+      variables = {
+        environment = "${var.environment}"
+      }
+    }
 }
 
 resource "aws_cloudwatch_event_rule" "check-file-event" {
