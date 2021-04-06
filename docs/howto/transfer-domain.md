@@ -72,7 +72,7 @@ will be unable to submit forms or sync with the server.
   run the data dumps.
   - `./manage.py dump_domain_data <domain_name>` 
   - `./manage.py run_blob_export --all <domain_name>`
-- Transfer these two zip files to the new environment.
+- Transfer these two files to the new environment.
 
 
 ## 3. Prepare the new environment to be populated
@@ -99,7 +99,7 @@ will be unable to submit forms or sync with the server.
 
 - Import the dump files (each blob file will need to be imported individually)
   - `./manage.py load_domain_data <filename.zip>`
-  - `./manage.py import_blob_zip <filename.zip>`
+  - `./manage.py run_blob_import <filename.tar.gz>`
 - Rebuild elasticsearch indices
   - Rebuild the indices with the new data
     `./manage.py ptop_preindex`
