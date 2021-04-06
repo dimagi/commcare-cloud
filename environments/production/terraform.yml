@@ -82,7 +82,18 @@ servers:
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     count: 21
-    
+
+  - server_name: "es_b{i}-production"
+    server_instance_type: r5.4xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    block_device:
+      volume_size: 840
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
+    count: 11
+
   - server_name: "couchproxy3-production"
     server_instance_type: c5.xlarge
     network_tier: "db-private"

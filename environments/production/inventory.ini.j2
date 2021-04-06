@@ -162,6 +162,8 @@ shareddir1
 
 {{ __es_a__ }}
 
+{{ __es_b__ }}
+
 {{ __esmaster6__ }} elasticsearch_node_name=esmaster6
 
 {{ __esmaster7__ }} elasticsearch_node_name=esmaster7
@@ -179,6 +181,7 @@ elasticsearch_data=false
 
 [es_data:children]
 es_a
+es_b
 
 [es_data:vars]
 elasticsearch_node_zone=aws
