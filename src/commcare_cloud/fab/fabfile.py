@@ -41,6 +41,7 @@ from github import GithubException
 
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
+from commcare_cloud.events import publish_deploy_event
 from fabric import utils
 from fabric.api import env, execute, parallel, roles, sudo, task
 from fabric.colors import blue, magenta, red
@@ -146,7 +147,8 @@ def load_env():
     # except a short blacklist that we expect app-processes.yml vars to overwrite
     overlap = set(vars_not_to_overwrite) & set(vars)
     for key in overlap:
-        print('NOTE: ignoring app-processes.yml var {}={!r}. Using value {!r} instead.'.format(key, vars[key], vars_not_to_overwrite[key]))
+        print(f'NOTE: ignoring app-processes.yml var {key}={vars[key]!r}. '
+              f'Using value {vars_not_to_overwrite[key]!r} instead.')
     vars.update(vars_not_to_overwrite)
     env.update(vars)
     env.deploy_env = env.ccc_environment.meta_config.deploy_env
@@ -316,8 +318,9 @@ def _confirm_translated():
     if datetime.datetime.now().isoweekday() != 3 or env.deploy_env != 'production':
         return True
     return console.confirm(
-        "It's the weekly Wednesday deploy, did you update the translations from transifex? "
-        "Try running this handy script from the root of your commcare-hq directory:\n./scripts/update-translations.sh\n"
+        "It's the weekly Wednesday deploy, did you update the translations "
+        "from transifex? Try running this handy script from the root of your "
+        "commcare-hq directory:\n./scripts/update-translations.sh\n"
     )
 
 
@@ -501,7 +504,6 @@ def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
     cache_deploy_state(command_index + 1)
 
 
-
 def announce_deploy_start():
     if env.email_enabled:
         execute_with_timing(
@@ -547,7 +549,7 @@ def _deploy_without_asking(skip_record):
         if skip_record == 'no':
             execute_with_timing(release.record_successful_release)
             execute_with_timing(release.record_successful_deploy)
-            release.publish_deploy_event("deploy_success")
+            publish_deploy_event("deploy_success", "commcare", env.ccc_environment)
         clear_cached_deploy()
 
 
@@ -663,10 +665,7 @@ def deploy_commcare(confirm="yes", resume='no', offline='no', skip_record='no'):
     fab <env> deploy_commcare:skip_record=yes  # skip record_successful_release
     """
     _require_target()
-    if strtobool(confirm) and (
-        not _confirm_translated() or
-        not _confirm_changes()
-    ):
+    if strtobool(confirm) and not (_confirm_translated() and _confirm_changes()):
         utils.abort('Deployment aborted.')
 
     env.full_deploy = True
@@ -691,7 +690,7 @@ def deploy_commcare(confirm="yes", resume='no', offline='no', skip_record='no'):
             'Ensure that you have run `fab prepare_offline_deploy`.'
         ))
         offline_ops.check_ready()
-        if not console.confirm('Are you sure you want to do an offline deploy?'.format(default=False)):
+        if not console.confirm('Are you sure you want to do an offline deploy?'):
             utils.abort('Task aborted')
 
         # Force ansible user and prompt for password
