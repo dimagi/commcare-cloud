@@ -372,7 +372,7 @@ rds_instances:
       maintenance_work_mem: 4172000kB
 
   - identifier: "pgauditcare0-production"
-    instance_type: "db.m5.2xlarge"
+    instance_type: "db.m5.xlarge"
     storage: 1000
     multi_az: true
     engine_version: 9.6.15
