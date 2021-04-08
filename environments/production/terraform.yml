@@ -222,14 +222,14 @@ servers:
     group: "postgresql"
     os: ubuntu_pro_bionic
   - server_name: "pgbouncer6-production"  # pgbouncer_host for synclogs
-    server_instance_type: r5.8xlarge
+    server_instance_type: m5n.xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     group: "postgresql"
     os: ubuntu_pro_bionic
   - server_name: "pgbouncer7-production"  # pgbouncer_host for main, ucr
-    server_instance_type: r5.8xlarge
+    server_instance_type: m5n.xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
