@@ -181,7 +181,6 @@ servers:
     volume_encrypted: no
     group: elasticsearch
     os: bionic
-
   - server_name: "es2-india"
     server_instance_type: "t3.large"
     network_tier: "db-private"

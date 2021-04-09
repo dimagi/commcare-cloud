@@ -25,8 +25,6 @@ djangomanage0-india.instance_id: i-02902085942dd60bf
 efs_india-efs: fs-0c280ddd.efs.ap-south-1.amazonaws.com
 es0-india: 10.203.40.175
 es0-india.instance_id: i-0702187fc57ff75e3
-es1-india: 10.203.40.142
-es1-india.instance_id: i-0a12841e11822956c
 es2-india: 10.203.41.100
 es2-india.instance_id: i-0d4b15c5b4d908be0
 esmaster2-india: 10.203.41.233
