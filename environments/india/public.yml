@@ -102,6 +102,7 @@ localsettings:
     - "{{ J2ME_SITE_HOST }}"
   ASYNC_INDICATORS_TO_QUEUE: 30000
   AUDIT_ALL_VIEWS: True
+  AUDIT_TRACE_ID_HEADER: "X-Amzn-Trace-Id"
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'

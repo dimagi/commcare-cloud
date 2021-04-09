@@ -105,6 +105,7 @@ localsettings:
   ANALYTICS_DEBUG: True
   ANALYTICS_LOG_LEVEL: "debug"
   AUDIT_ALL_VIEWS: True
+  AUDIT_TRACE_ID_HEADER: "X-Amzn-Trace-Id"
   AVAILABLE_CUSTOM_RULE_CRITERIA:
     COVID_US_ASSOCIATED_USER_CASES: custom.covid.rules.custom_criteria.associated_user_case_closed
   AVAILABLE_CUSTOM_RULE_ACTIONS:
