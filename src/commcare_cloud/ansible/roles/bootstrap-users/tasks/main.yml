@@ -79,31 +79,13 @@
   tags:
     - pubkey
 
-- name: capturing username
-  pause:
-    prompt: "Please enter your Dimagi username using which you SSH into servers."
-  register: username_input
-  tags:
-    - capture-userinfo
-    - pubkey
-- debug:
-    msg: "Entered username: {{ username_input.user_input }}"
-  tags:
-    - capture-userinfo
-    - pubkey
-
-- fail: msg="The given username is not defined or empty or not a valid dev_user"
-  when: (username_input.user_input == "" ) or (username_input.user_input|length == 0) or (username_input.user_input not in "{{ dev_users.present }}")
-  tags:
-    - capture-userinfo
-    - pubkey
-
-- name: "Verifying {{ username_input.user_input }} user key in the ssh_pubkeys_string list"
+- name: "Verifying ssh_user key in the ssh_pubkeys_string list"
   assert:
     that:
-      - '"{{ lookup("file", authorized_keys_dir ~ username_input.user_input ~ ".pub" ) }}" in ssh_pubkeys_string'
+      - '"{{ lookup("file", authorized_keys_dir ~ ssh_user ~ ".pub" ) }}" in ssh_pubkeys_string'
+  when: "'ansible' not in ssh_user"
   tags:
-    - capture-userinfo
+    - validate_key
     - pubkey
 
 - name: Authorize current devs to login as ansible

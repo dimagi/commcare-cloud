@@ -11,8 +11,8 @@ from clint.textui import puts
 from six.moves import shlex_quote
 
 from commcare_cloud.alias import commcare_cloud
-from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
-from commcare_cloud.colors import color_error
+from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command, ask_string
+from commcare_cloud.colors import color_error, color_notice
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
@@ -314,7 +314,7 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         args.use_factory_auth = True
         public_vars = environment.public_vars
-        unknown_args += ('--tags=bootstrap-users', '--skip-tags=capture-userinfo',) + get_user_arg(public_vars, unknown_args, use_factory_auth=True)
+        unknown_args += ('--tags=bootstrap-users', '--skip-tags=validate_key', ) + get_user_arg(public_vars, unknown_args, use_factory_auth=True)
 
         if not public_vars.get('commcare_cloud_pem'):
             unknown_args += ('--ask-pass',)
@@ -332,8 +332,11 @@ class UpdateUsers(_AnsiblePlaybookAlias):
     """
 
     def run(self, args, unknown_args):
+        username = input('Enter ssh username: ')
+        if not ask_string(username, args):
+            username = ""
         args.playbook = 'deploy_stack.yml'
-        unknown_args += ('--tags=users',)
+        unknown_args += ('--tags=users', '-e ssh_user="'+username+'" ',)
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
@@ -345,8 +348,10 @@ class UpdateUserPublicKey(_AnsiblePlaybookAlias):
     )
 
     def run(self, args, unknown_args):
-        return "update-user-key command is deprecated. Use update-users command."
-
+        puts(color_notice(
+                "We have deprecated the update-user-key command. Please use update-users command to modify user's access.\n"
+                "Where you will be asked for your ssh_username which you use to login into servers."))
+        return 0 # exit code
 
 class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
     command = 'update-supervisor-confs'

@@ -11,6 +11,7 @@ from six.moves import input, shlex_quote
 from commcare_cloud.colors import color_code, color_error
 
 from .environment.paths import ANSIBLE_DIR
+from .environment.main import get_environment
 
 
 def ask(message, strict=False, quiet=False):
@@ -33,6 +34,16 @@ def ask_option(message, options, acceptable_responses=None):
         r = input('Please enter one of {} :'.format(', '.join(options)))
     return r
 
+def ask_string(message, args):
+    environment = get_environment(args.env_name)
+    if message not in environment.users_config.dev_users.present:
+        allowed_users = environment.users_config.dev_users.present
+        puts(color_error(
+            "Unauthorized user {}.\n\n"
+            "Please pass in one of the allowed ssh users:{}"
+            .format(message, '\n  - '.join([''] + allowed_users))))
+        return False
+    return True
 
 def has_arg(unknown_args, short_form, long_form):
     """
