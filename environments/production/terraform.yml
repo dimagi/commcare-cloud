@@ -254,7 +254,7 @@ servers:
     group: "postgresql"
     os: ubuntu_pro_bionic
   - server_name: "pgbouncer9-production"
-    server_instance_type: m5n.4xlarge
+    server_instance_type: m5n.xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
