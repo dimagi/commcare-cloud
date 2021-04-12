@@ -357,8 +357,6 @@ ANALYTICS_CONFIG = {
 
 EULA_COMPLIANCE = {{ localsettings.EULA_COMPLIANCE|default(False) }}
 
-AXES_LOCK_OUT_AT_FAILURE = False
-
 NEW_DOMAIN_RECIPIENTS = ['{{ new_domain_email }}']
 
 CUSTOM_REPORT_MAP = {
@@ -921,6 +919,10 @@ AUDIT_VIEWS= [
 
 {% if localsettings.AUDIT_ALL_VIEWS is defined %}
 AUDIT_ALL_VIEWS = {{ localsettings.AUDIT_ALL_VIEWS }}
+{% endif %}
+
+{% if localsettings.AUDIT_TRACE_ID_HEADER is defined %}
+AUDIT_TRACE_ID_HEADER = '{{ localsettings.AUDIT_TRACE_ID_HEADER }}'
 {% endif %}
 
 {% if localsettings.get('STATIC_TOGGLE_STATES') is not none %}
