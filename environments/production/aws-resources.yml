@@ -22,8 +22,6 @@ couch14-production: 10.202.40.216
 couch14-production.instance_id: i-0634cf1adc9ba838c
 couchproxy3-production: 10.202.40.196
 couchproxy3-production.instance_id: i-0b1a2bc019f113be3
-djangomanage1-production: 10.202.10.54
-djangomanage1-production.instance_id: i-06b6ff4af62079cda
 djangomanage2-production: 10.202.10.167
 djangomanage2-production.instance_id: i-03b1636303cb209d4
 efs_production-efs: fs-99495a6e.efs.us-east-1.amazonaws.com
@@ -57,18 +55,6 @@ es_a013-production: 10.202.40.229
 es_a013-production.instance_id: i-0cfd53583c5bd0c63
 es_a014-production: 10.202.40.131
 es_a014-production.instance_id: i-0a79463f91498734f
-es_a015-production: 10.202.40.58
-es_a015-production.instance_id: i-0bdbbef75b92e0a36
-es_a016-production: 10.202.40.205
-es_a016-production.instance_id: i-01e0c717cc2b67885
-es_a017-production: 10.202.40.193
-es_a017-production.instance_id: i-0a789fca9dc3bc94a
-es_a018-production: 10.202.40.44
-es_a018-production.instance_id: i-0e8a90e505c54bf3b
-es_a019-production: 10.202.40.157
-es_a019-production.instance_id: i-06e63ffa763742591
-es_a020-production: 10.202.40.81
-es_a020-production.instance_id: i-01da7eb395ac0ea4b
 es_b000-production: 10.202.41.163
 es_b000-production.instance_id: i-06307035753a3d5b7
 es_b001-production: 10.202.41.214
