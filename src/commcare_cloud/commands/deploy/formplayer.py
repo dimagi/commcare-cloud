@@ -14,6 +14,7 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import timeago
+from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff
 from commcare_cloud.fab.git_repo import get_github, github_auth_provided
 
@@ -86,6 +87,7 @@ def record_deploy_success(environment, repo, diff, start):
     record_deploy_in_datadog(environment, diff, end - start)
     update_sentry_post_deploy(environment, "formplayer", "dimagi/formplayer", diff, start, end)
     announce_deploy_success(environment, diff.get_email_diff())
+    publish_deploy_event("deploy_success", "formplayer", environment)
 
 
 def get_deploy_diff(environment, repo):

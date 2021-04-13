@@ -26,6 +26,8 @@ flower_port: 5555
 gunicorn_workers_factor: 1
 gunicorn_workers_static_factor: 0
 formplayer_memory: "3584m"
+formplayer_maxmetaspacesize: "512m"
+formplayer_g1heapregionsize: "2m"
 http_proxy: null
 django_command_prefix: ''
 celery_command_prefix: ''

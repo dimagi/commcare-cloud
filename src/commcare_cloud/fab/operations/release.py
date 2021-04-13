@@ -14,6 +14,7 @@ from fabric.contrib.project import rsync_project
 from fabric.operations import put
 
 import posixpath
+
 from commcare_cloud.environment.exceptions import EnvironmentException
 
 from ..const import (

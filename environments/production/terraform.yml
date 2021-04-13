@@ -81,8 +81,19 @@ servers:
       volume_size: 840
     group: "elasticsearch"
     os: ubuntu_pro_bionic
-    count: 21
-    
+    count: 15
+
+  - server_name: "es_b{i}-production"
+    server_instance_type: r5.4xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    block_device:
+      volume_size: 840
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
+    count: 11
+
   - server_name: "couchproxy3-production"
     server_instance_type: c5.xlarge
     network_tier: "db-private"
@@ -169,7 +180,7 @@ servers:
     volume_size: 400
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 46
+    count: 41
 
   - server_name: "shareddir1-production"
     server_instance_type: t3.micro
@@ -215,35 +226,35 @@ servers:
     group: "postgresql"
     os: bionic
   - server_name: "pgbouncer5-production"  # former pgbouncer_host formplayer
-    server_instance_type: m5n.4xlarge
+    server_instance_type: m5n.xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     group: "postgresql"
     os: ubuntu_pro_bionic
   - server_name: "pgbouncer6-production"  # pgbouncer_host for synclogs
-    server_instance_type: r5.8xlarge
+    server_instance_type: m5n.xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     group: "postgresql"
     os: ubuntu_pro_bionic
   - server_name: "pgbouncer7-production"  # pgbouncer_host for main, ucr
-    server_instance_type: r5.8xlarge
+    server_instance_type: m5n.xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     group: "postgresql"
     os: ubuntu_pro_bionic
   - server_name: "pgbouncer8-production"  # pgbouncer_host formplayer
-    server_instance_type: m5n.4xlarge
+    server_instance_type: m5n.xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     group: "postgresql"
     os: ubuntu_pro_bionic
   - server_name: "pgbouncer9-production"
-    server_instance_type: m5n.4xlarge
+    server_instance_type: m5n.xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
@@ -295,7 +306,7 @@ rds_instances:
       maintenance_work_mem: 4172000kB
 
   - identifier: "pgucr0-production"
-    instance_type: "db.t3.2xlarge"  # increased from db.t3.large due to unused db.t3 RIs
+    instance_type: "db.t3.xlarge"  # increased from db.t3.large due to unused db.t3 RIs
     storage: 500
     max_storage: 5000
     multi_az: true
@@ -372,7 +383,7 @@ rds_instances:
       maintenance_work_mem: 4172000kB
 
   - identifier: "pgauditcare0-production"
-    instance_type: "db.m5.2xlarge"
+    instance_type: "db.m5.xlarge"
     storage: 1000
     multi_az: true
     engine_version: 9.6.15
@@ -388,12 +399,15 @@ pgbouncer_nlbs:
   - name: pgmain_nlb-production
     targets:
       - pgbouncer7-production
+      - pgbouncer6-production
   - name: pgucr_nlb-production
     targets:
       - pgbouncer7-production
+      - pgbouncer6-production
   - name: pgsynclogs_nlb-production
     targets:
       - pgbouncer6-production
+      - pgbouncer7-production
 
 elasticache:
   create: no

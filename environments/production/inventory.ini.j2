@@ -137,7 +137,6 @@ pillow_a
 formplayer_c
 
 [formplayer:vars]
-extra_formplayer_args='-XX:+UseG1GC -XX:+UseStringDeduplication'
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 cchq_uid=1025
 cchq_gid=1026
@@ -161,7 +160,16 @@ formplayer_c023
 [shared_dir_host:children]
 shareddir1
 
+[shared_efs_client_host:children]
+celery
+django_manage
+proxy
+pillowtop
+webworkers
+
 {{ __es_a__ }}
+
+{{ __es_b__ }}
 
 {{ __esmaster6__ }} elasticsearch_node_name=esmaster6
 
@@ -180,9 +188,14 @@ elasticsearch_data=false
 
 [es_data:children]
 es_a
+es_b
 
-[es_data:vars]
-elasticsearch_node_zone=aws
+[es_a:vars]
+elasticsearch_node_zone=us-east-1a
+
+[es_b:vars]
+elasticsearch_node_zone=us-east-1b
+
 
 [elasticsearch:children]
 es_master

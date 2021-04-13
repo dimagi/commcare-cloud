@@ -13,6 +13,7 @@ internal_subscription_change_email: accounts+subchange+internal@dimagi.com
 billing_email: sales@dimagi.com
 invoicing_contact_email: billing-support@dimagi.com
 growth_email: growth@dimagi.com
+saas_ops_email: saas-ops@dimagi.com
 saas_reporting_email: saas-reporting@dimagi.com
 master_list_email: master-list@dimagi.com
 sales_email: sales@dimagi.com
@@ -124,6 +125,7 @@ localsettings:
   ANALYTICS_DEBUG: False
   ANALYTICS_LOG_LEVEL: "warning"
   AUDIT_ALL_VIEWS: True
+  AUDIT_TRACE_ID_HEADER: "X-Amzn-Trace-Id"
   AVAILABLE_CUSTOM_RULE_CRITERIA:
     COVID_US_ASSOCIATED_USER_CASES: custom.covid.rules.custom_criteria.associated_user_case_closed
   AVAILABLE_CUSTOM_RULE_ACTIONS:
@@ -165,7 +167,7 @@ localsettings:
     auditcare: auditcare
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
-  SECURE_HSTS_SECONDS: 300
+  SECURE_HSTS_SECONDS: "{{ nginx_hsts_max_age }}"
   SILENCED_SYSTEM_CHECKS:
     - 'security.W008' # the ALB and nginx already redirect HTTP to HTTPS so safe to silence this warning
   PILLOWTOP_MACHINE_ID: hqdb0
@@ -211,3 +213,8 @@ enable_cloudwatch_logs: true
 # hard_kill: 46, soft_kill: 36, False will remove the cron.
 celery_hours_before_hard_kill: 46
 celery_hours_before_soft_kill: 36
+
+efs_shared_mount_dir: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
+efs_shared_mount_endpoint: "shared-efs.production.commcare.local:/"
+efs_shared_mount_options: "_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
+shared_dir_gid: 1500

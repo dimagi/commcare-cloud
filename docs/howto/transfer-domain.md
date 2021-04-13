@@ -72,7 +72,7 @@ will be unable to submit forms or sync with the server.
   run the data dumps.
   - `./manage.py dump_domain_data <domain_name>` 
   - `./manage.py run_blob_export --all <domain_name>`
-- Transfer these two zip files to the new environment.
+- Transfer these two files to the new environment.
 
 
 ## 3. Prepare the new environment to be populated
@@ -99,7 +99,7 @@ will be unable to submit forms or sync with the server.
 
 - Import the dump files (each blob file will need to be imported individually)
   - `./manage.py load_domain_data <filename.zip>`
-  - `./manage.py import_blob_zip <filename.zip>`
+  - `./manage.py run_blob_import <filename.tar.gz>`
 - Rebuild elasticsearch indices
   - Rebuild the indices with the new data
     `./manage.py ptop_preindex`
@@ -136,3 +136,82 @@ will be unable to submit forms or sync with the server.
    previously, since the custom URL is no longer necessary.
 - Once the success of the migration is assured, request that a site
    administrator delete the project space on the old environment.
+
+
+# Troubleshooting
+
+When transferring data for very large projects, you may run into infrastructural
+issues with the dump and load process. This is somewhat unsurprising when you
+consider that you're dealing with the project's entire lifetime of data in a
+single pass. It may be helpful to break down the process into smaller pieces to
+minimize the impact of any failures.
+
+Blob data is already separated from everything else, which is advantageous,
+given that it's likely to be the most voluminous source of data. The rest of the
+data comes from four "dumpers" - `domain`, `toggles`, `couch`, and `sql`. You
+may use `dump_domain_data`'s `--dumper` arg to run any one (or multiple) of
+these independently. Each dumper also deals with a number of models, which you
+can also filter. Before getting started, you should run `print_domain_stats` to
+get an idea of where the project has data (even though it's not comprehensive).
+
+`domain` and `toggles` are trivially small. Assuming the project is on the SQL
+backend for forms and cases, the `couch` dumper is also _likely_ to be several
+orders of magnitude smaller than `sql`. Possible exceptions to this are projects
+with very large numbers of users, gigantic fixtures, or those which use data
+forwarding, as they'll have a large number of `RepeatRecord`s. If any of these
+models reach into the six figures or higher, you might want to dump them in
+isolation using `--include`, then `--exclude` them from the "everything else"
+couch dump. If you don't care about a particular model (eg: old repeat records),
+they can simply be excluded.
+
+```
+$ ./manage.py dump_domain_data --dumper=couch --include=RepeatRecord <domain>
+$ ./manage.py dump_domain_data --dumper=domain --dumper=toggles --dumper=couch --exclude=RepeatRecord <domain>
+```
+
+Dumping `sql` data is a bit trickier, as it's relational, meaning for example
+that `SQLLocation` and `LocationType` must be dumped together, lest they violate
+the DB's constraint checking on import. Fortunately, as of this writing, the
+biggest models are in relative isolation. There are two form submission models
+and six case models, but they don't reference each other or anything else. You
+should validate that this is still the case before proceeding, however. Here are
+some example dumps which separate out forms and cases.
+
+```
+$ ./manage.py dump_domain_data --dumper=sql --include=XFormInstanceSQL --include=XFormOperationSQL <domain>
+$ ./manage.py dump_domain_data --dumper=sql --include=CommCareCaseSQL --include=CommCareCaseIndexSQL --include=CaseAttachmentSQL --include=CaseTransaction --include=LedgerValue --include=LedgerTransaction <domain>
+$ ./manage.py dump_domain_data --dumper=sql --exclude=XFormInstanceSQL --exclude=XFormOperationSQL --exclude=CommCareCaseSQL --exclude=CommCareCaseIndexSQL --exclude=CaseAttachmentSQL --exclude=CaseTransaction --exclude=LedgerValue --exclude=LedgerTransaction <domain>
+```
+
+You may also want to separate out `BlobMeta` or `sms` models, depending on the project.
+
+If the data was already split into multiple dump files, then you can just load
+them each individually. If not, or if you'd like to split it apart further,
+you'll need to filter the `load_domain_data` command as well. Each dump file is
+a zip archive containing a file for each dumper, plus a `meta.json` file
+describing the contents. This can be useful for deciding how to approach an
+unwieldly import. You can also specify which loaders to use with the `--loader`
+argument (`domain`, `toggles`, `couch`, `sql`). You can also provide a regular
+expression to filter models via the `--object-filter` argument. Refer to the
+`meta.json` for options.
+
+Here are some useful examples:
+
+```
+# Import only Django users:
+$ ./manage.py load_domain_data path/to/dump.zip --object-filter=auth.User
+
+# Import a series of modules' models
+$ ./manage.py load_domain_data path/to/dump.zip --object-filter='\b(?:data_dictionary|app_manager|case_importer|motech|translations)'
+
+# Exclude a specific model
+$ ./manage.py load_domain_data path/to/dump.zip --object-filter='^((?!RepeatRecord).)*$'
+```
+
+Lastly, it's very helpful to know how long commands take. They run with a
+progress bar that should give an estimated time remaining, but I find it also
+helpful to wrap commands with the unix `date` command:
+
+```
+$ date; ./manage.py <dump/load command>; date
+```

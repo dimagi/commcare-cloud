@@ -357,8 +357,6 @@ ANALYTICS_CONFIG = {
 
 EULA_COMPLIANCE = {{ localsettings.EULA_COMPLIANCE|default(False) }}
 
-AXES_LOCK_OUT_AT_FAILURE = False
-
 NEW_DOMAIN_RECIPIENTS = ['{{ new_domain_email }}']
 
 CUSTOM_REPORT_MAP = {
@@ -923,6 +921,10 @@ AUDIT_VIEWS= [
 AUDIT_ALL_VIEWS = {{ localsettings.AUDIT_ALL_VIEWS }}
 {% endif %}
 
+{% if localsettings.AUDIT_TRACE_ID_HEADER is defined %}
+AUDIT_TRACE_ID_HEADER = '{{ localsettings.AUDIT_TRACE_ID_HEADER }}'
+{% endif %}
+
 {% if localsettings.get('STATIC_TOGGLE_STATES') is not none %}
 STATIC_TOGGLE_STATES = {{ localsettings.STATIC_TOGGLE_STATES }}
 {% endif %}
@@ -940,6 +942,7 @@ INTERNAL_SUBSCRIPTION_CHANGE_EMAIL = '{{ internal_subscription_change_email }}'
 BILLING_EMAIL = '{{ billing_email }}'
 INVOICING_CONTACT_EMAIL = '{{ invoicing_contact_email }}'
 GROWTH_EMAIL = '{{ growth_email }}'
+SAAS_OPS_EMAIL = '{{ saas_ops_email }}'
 SAAS_REPORTING_EMAIL = '{{ saas_reporting_email }}'
 MASTER_LIST_EMAIL = '{{ master_list_email }}'
 SALES_EMAIL = '{{ sales_email }}'
