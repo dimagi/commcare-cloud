@@ -46,7 +46,7 @@ celery_processes:
       concurrency: 1
     repeat_record_queue:
       pooling: gevent
-      concurrency: 100
+      concurrency: 3
     saved_exports_queue:
       concurrency: 4
     sms_queue:
