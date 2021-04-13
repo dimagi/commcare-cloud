@@ -108,6 +108,8 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     extra_args = tuple(extra_args)
     if not quiet:
         extra_args = ("--diff",) + extra_args
+    else:
+        extra_args = ("--one-line",) + extra_args
 
     cmd_parts = (
         'ansible', inventory_group,
