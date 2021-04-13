@@ -131,9 +131,6 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
             host_pattern,
             module,
             module_args,
-            True,
-            None,
-            False,
         )
 
 

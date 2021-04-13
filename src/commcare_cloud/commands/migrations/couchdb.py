@@ -406,16 +406,10 @@ def get_files_for_assertion(alloc_docs_by_db):
 def _run_migration(migration, ansible_context, check_mode, no_stop):
     puts(color_summary('Give ansible user access to couchdb files:'))
     user_args = "user=ansible groups=couchdb append=yes"
-    run_ansible_module(
-        migration.source_environment, ansible_context, 'couchdb2', 'user', user_args,
-        True, None, False
-    )
+    run_ansible_module(migration.source_environment, ansible_context, 'couchdb2', 'user', user_args)
 
     file_args = "path={} mode=0755".format(migration.couchdb2_data_dir)
-    run_ansible_module(
-        migration.source_environment, ansible_context, 'couchdb2', 'file', file_args,
-        True, None, False
-    )
+    run_ansible_module(migration.source_environment, ansible_context, 'couchdb2', 'file', file_args)
 
     puts(color_summary('Copy file lists to nodes:'))
     rsync_files_by_host = prepare_to_sync_files(migration, ansible_context)
@@ -454,8 +448,7 @@ def start_stop_service(environment, ansible_context, service_state, check_mode=F
     for service in ('monit', 'couchdb2'):
         args = 'name={} state={}'.format(service, service_state)
         run_ansible_module(
-            environment, ansible_context, 'couchdb2', 'service', args,
-            True, None, False, *extra_args
+            environment, ansible_context, 'couchdb2', 'service', args, extra_args=extra_args
         )
 
 

@@ -89,8 +89,8 @@ class RunAnsibleModule(CommandBase):
             return run_ansible_module(
                 environment, ansible_context,
                 args.inventory_group, args.module, args.module_args,
-                args.become, args.become_user, args.use_factory_auth,
-                *unknown_args
+                become=args.become, become_user=args.become_user,
+                use_factory_auth=args.use_factory_auth, extra_args=unknown_args
             )
 
         def run_check():
@@ -104,7 +104,7 @@ class RunAnsibleModule(CommandBase):
 
 
 def run_ansible_module(environment, ansible_context, inventory_group, module, module_args,
-                       become, become_user, factory_auth, *extra_args):
+                       become=True, become_user=None, use_factory_auth=False, extra_args=()):
     cmd_parts = (
         'ansible', inventory_group,
         '-m', module,
@@ -115,7 +115,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
 
     environment.create_generated_yml()
     public_vars = environment.public_vars
-    cmd_parts += get_user_arg(public_vars, extra_args, use_factory_auth=factory_auth)
+    cmd_parts += get_user_arg(public_vars, extra_args, use_factory_auth=use_factory_auth)
     become = become or bool(become_user)
     become_user = become_user
     needs_secrets = False
@@ -135,7 +135,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
         cmd_parts += environment.secrets_backend.get_extra_ansible_args()
         env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
 
-    cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=factory_auth)
+    cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
     print_command(cmd)
@@ -227,7 +227,7 @@ class SendDatadogEvent(CommandBase):
         return run_ansible_module(
             environment, AnsibleContext(args),
             '127.0.0.1', args.module, args.module_args,
-            False, False, False,
+            become=False
         )
 
 
