@@ -8,7 +8,7 @@ celery_processes:
   swiss0:
     repeat_record_queue,celery,export_download_queue:
       concurrency: 1
-    case_import_queue,reminder_case_update_queue:
+    case_import_queue,reminder_case_update_queue,linked_domain_queue:
       concurrency: 1
     background_queue,case_rule_queue:
       concurrency: 1

@@ -118,6 +118,7 @@ CELERY_PROCESSES = [
     CeleryProcess("flower", is_queue=False),
     CeleryProcess("icds_aggregation_queue", required=False),
     CeleryProcess("icds_dashboard_reports_queue", required=False),
+    CeleryProcess("linked_domain_queue", required=False),
     CeleryProcess("logistics_background_queue", required=False),
     CeleryProcess("logistics_reminder_queue", required=False),
     CeleryProcess("reminder_case_update_queue", blockage_threshold=15 * 60),

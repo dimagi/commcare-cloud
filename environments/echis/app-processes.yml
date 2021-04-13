@@ -16,7 +16,7 @@ celery_processes:
     repeat_record_queue:
     async_restore_queue:
   echis_server0:
-    celery,export_download_queue,email_queue,case_import_queue:
+    celery,export_download_queue,email_queue,case_import_queue,linked_domain_queue:
       concurrency: 1
     background_queue,case_rule_queue,analytics_queue:
       concurrency: 1
