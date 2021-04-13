@@ -104,14 +104,17 @@ class RunAnsibleModule(CommandBase):
 
 
 def run_ansible_module(environment, ansible_context, inventory_group, module, module_args,
-                       become=True, become_user=None, use_factory_auth=False, extra_args=()):
+                       become=True, become_user=None, use_factory_auth=False, quiet=False, extra_args=()):
+    extra_args = tuple(extra_args)
+    if not quiet:
+        extra_args = ("--diff",) + extra_args
+
     cmd_parts = (
         'ansible', inventory_group,
         '-m', module,
         '-i', environment.paths.inventory_source,
         '-a', module_args,
-        '--diff',
-    ) + tuple(extra_args)
+    ) + extra_args
 
     environment.create_generated_yml()
     public_vars = environment.public_vars
@@ -227,7 +230,7 @@ class SendDatadogEvent(CommandBase):
         return run_ansible_module(
             environment, AnsibleContext(args),
             '127.0.0.1', args.module, args.module_args,
-            become=False
+            become=False, quiet=True
         )
 
 
