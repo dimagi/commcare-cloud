@@ -143,7 +143,8 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-    print_command(cmd)
+    if not quiet:
+        print_command(cmd)
     return subprocess.call(cmd_parts, env=env_vars)
 
 
