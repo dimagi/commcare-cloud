@@ -1,5 +1,8 @@
 [couch_httpd_auth]
 auth_cache_size = {{ couchdb_auth_cache_size }}
 
+[query_server_config]
+os_process_limit = {{ couchdb_os_process_limit }}
+
 [rexi]
 server_per_node = true
