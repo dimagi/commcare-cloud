@@ -83,6 +83,7 @@ couchdb2:
   username: "{{ COUCH_USERNAME }}"
   password: "{{ COUCH_PASSWORD }}"
 couchdb2_client_max_body_size: 100M
+couchdb_os_process_limit: 125
 couchdb_reduce_limit: False
 couchdb_multiaz: True
 couchdb_placement: placement=us-east-1a:1,us-east-1b:1:us-east-1c:1
