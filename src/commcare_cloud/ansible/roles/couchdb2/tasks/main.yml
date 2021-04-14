@@ -8,6 +8,8 @@
     group: '{{ couchdb_group }}'
     mode: 0644
   notify: restart couchdb2
+  tags:
+    - couchdb_extras
 
 - name: Add placement zone config
   become: yes
