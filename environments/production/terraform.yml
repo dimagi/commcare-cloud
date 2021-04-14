@@ -103,7 +103,7 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "couch12-production"
-    server_instance_type: c5a.16xlarge
+    server_instance_type: c5a.24xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 60
@@ -114,7 +114,7 @@ servers:
     group: "couchdb2"
     os: bionic
   - server_name: "couch13-production"
-    server_instance_type: c5a.16xlarge
+    server_instance_type: c5a.24xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 60
@@ -125,7 +125,7 @@ servers:
     group: "couchdb2"
     os: bionic
   - server_name: "couch14-production"
-    server_instance_type: c5a.16xlarge
+    server_instance_type: c5a.24xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 60
