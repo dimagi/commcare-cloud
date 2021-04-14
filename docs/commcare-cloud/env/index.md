@@ -135,7 +135,7 @@ Each `<host>` must be a [host string](glossary#host-string).
 Each `<queue-name>` must be one of the following values:
 `async_restore_queue`, `background_queue`, `case_rule_queue`, `celery`,
 `email_queue`, `export_download_queue`, `icds_dashboard_reports_queue`,
-`reminder_case_update_queue`, `reminder_queue`,
+`linked_domain_queue`, `reminder_case_update_queue`, `reminder_queue`,
 `reminder_rule_queue`, `repeat_record_queue`, `saved_exports_queue`,
 `sumologic_logs_queue`, `send_report_throttled`, `sms_queue`,
 `submission_reprocessing_queue`, `ucr_indicator_queue`, `ucr_queue`.

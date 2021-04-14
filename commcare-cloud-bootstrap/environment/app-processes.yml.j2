@@ -5,7 +5,7 @@ celery_processes:
     flower: {}
     background_queue,case_rule_queue,celery,analytics_queue,case_import_queue:
       concurrency: 1
-    email_queue,reminder_case_update_queue,export_download_queue:
+    email_queue,reminder_case_update_queue,export_download_queue,linked_domain_queue:
       concurrency: 1
     reminder_rule_queue,repeat_record_queue,saved_exports_queue:
       concurrency: 1
