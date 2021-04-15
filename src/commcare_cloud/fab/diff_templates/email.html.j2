@@ -1,0 +1,75 @@
+{% macro render_messages(messages, color) -%}
+    {% for msg in messages %}
+    <p style="color:{{ color }}">{{ msg }}</p>
+    {% endfor %}
+    {% if messages %}
+    <br/>
+    {% endif %}
+{%- endmacro %}
+<html>
+<head>
+</head>
+<body>
+<h2>Deployed by {{ user }}, cheers!</h2>
+
+{{ render_messages(errors, 'firebrick') }}
+{{ render_messages(warnings, 'coral') }}
+
+{% if new_version_details %}
+<h4>New version details:</h4>
+<table width="600" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+{% for key, value in new_version_details.items() %}
+  <tr>
+    <td>{{ key }}</td>
+    <td>{{ value }}</td>
+  </tr>
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
+
+{% if pr_infos %}
+  <h4>Deployed PRs:</h4>
+  <ul>
+    {% for pr in pr_infos %}
+      <li>
+        <a href="{{ pr.url }}">#{{ pr.number }} {{ pr.title }}</a>
+        <i>opened by</i> @{{ pr.opened_by }}
+        <span class="diffstat" style="font-size:12px;font-weight:bold;color:#666;white-space:nowrap;cursor:default">
+                    <span class="text-diff-added" style="color:#55a532">
+                      +{{ pr.additions }}
+                    </span>
+                    <span class="text-diff-deleted" style="color:#bd2c00">
+                      −{{ pr.deletions }}
+                    </span>
+                </span>
+        {% for label in pr.labels %}
+          <span class="text-label" style="color:#{{ label.color }}">
+                    {{ label.name }}
+                </span>
+        {% endfor %}
+      </li>
+    {% endfor %}
+  </ul>
+  {% for label, prs in prs_by_label.items() %}
+  {% if label in LABELS_TO_EXPAND %}
+    <p>{{ label }}</p>
+    <ul>
+      {% for pr in prs %}
+        <li>
+          <a href="{{ pr.url }}">#{{ pr.number }} {{ pr.title }}</a>
+          : {{ pr.body }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% if compare_url %}
+<br/>
+<p>Here's the complete diff on github: <a href="{{ compare_url }}">{{ compare_url }}</a></p>
+{% endif %}
+</body>
+</html>

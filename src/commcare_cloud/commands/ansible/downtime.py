@@ -138,7 +138,7 @@ def supervisor_services(environment, ansible_context, action):
 def _run_command(environment, ansible_context, command, become=False):
     return run_ansible_module(
         environment, ansible_context, ','.join(COMMCARE_INVENTORY_GROUPS), 'shell', command,
-        become, None, False
+        become=become
     )
 
 

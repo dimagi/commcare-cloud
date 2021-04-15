@@ -351,7 +351,7 @@ class Environment(object):
                 self.elasticsearch_config.settings.to_json()
                 if not self.meta_config.bare_non_cchq_environment else {}
             ),
-            'new_release_name': datetime.utcnow().strftime('%Y-%m-%d_%H.%M'),
+            'new_release_name': self.new_release_name(),
             'git_repositories': [repo.to_generated_variables() for repo in self.meta_config.git_repositories],
             'deploy_keys': dict(self.meta_config.deploy_keys.items()),
         }
@@ -371,6 +371,10 @@ class Environment(object):
 
         with open(self.paths.generated_yml, 'w', encoding='utf-8') as f:
             f.write(yaml.dump(generated_variables, Dumper=PreserveUnsafeDumper))
+
+    @memoized
+    def new_release_name(self):
+        return datetime.utcnow().strftime('%Y-%m-%d_%H.%M')
 
     def translate_host(self, host, filename_for_error):
         if host == 'None' or host in self.inventory_manager.hosts:

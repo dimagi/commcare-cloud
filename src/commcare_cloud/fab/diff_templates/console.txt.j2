@@ -1,0 +1,36 @@
+{% macro render_pr(info) -%}
+    - {{ info.title|code }}: {{ info.url|highlight }} ({{ info.labels|map(attribute='name')|join(", ") }})
+{%- endmacro %}
+
+{%- if new_version_details -%}
+New version details:
+{%- for key, val in new_version_details.items() %}
+    {{ "%-20s"|format(key) }}: {{ val }}
+{%- endfor %}
+{% endif %}
+
+{% for msg in errors -%}
+{{ msg|error }}
+{%- endfor %}
+{% for msg in warnings -%}
+{{ mgs|warning }}
+{%- endfor %}
+
+{%- if pr_infos -%}
+List of PRs since last deploy:
+{% for info in pr_infos -%}
+{{ render_pr(info) }}
+{% endfor %}
+{%- endif %}
+
+{%- if prs_by_label and prs_by_label.get("reindex/migration") -%}
+You are about to deploy the following PR(s), which will trigger a reindex or migration.
+Click the URL for additional context.
+{% for info in prs_by_label.get("reindex/migration") -%}
+{{ render_pr(info) }}
+{% endfor %}
+{%- endif %}
+
+{% if compare_url -%}
+Here's the complete diff on github: {{ compare_url|highlight }}
+{%- endif %}

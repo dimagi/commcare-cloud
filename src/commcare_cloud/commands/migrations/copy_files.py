@@ -217,10 +217,7 @@ def copy_scripts_to_target_host(target_host, script_root, environment, ansible_c
 
     # remove destination path to ensure we're starting fresh
     file_args = "path={} state=absent".format(destination_path)
-    run_ansible_module(
-        environment, ansible_context, target_host, 'file', file_args,
-        True, None, False
-    )
+    run_ansible_module(environment, ansible_context, target_host, 'file', file_args)
 
     # recursively copy all rsync file lists to destination
     copy_args = "src={src}/ dest={dest} mode={mode}".format(
@@ -228,19 +225,13 @@ def copy_scripts_to_target_host(target_host, script_root, environment, ansible_c
         dest=destination_path,
         mode='0644'
     )
-    run_ansible_module(
-        environment, ansible_context, target_host, 'copy', copy_args,
-        True, None, False
-    )
+    run_ansible_module(environment, ansible_context, target_host, 'copy', copy_args)
 
     # make script executable
     file_args = "path={path} mode='0744'".format(
         path=os.path.join(destination_path, FILE_MIGRATION_RSYNC_SCRIPT)
     )
-    run_ansible_module(
-        environment, ansible_context, target_host, 'file', file_args,
-        True, None, False
-    )
+    run_ansible_module(environment, ansible_context, target_host, 'file', file_args)
 
 
 def execute_file_copy_scripts(environment, target_hosts, check_mode=True):
@@ -289,7 +280,7 @@ def _run_auth_playbook(plan, environment, ansible_context, action, working_direc
 
 def _genearate_and_fetch_key(env, host, user, ansible_context, working_directory):
     user_args = "name={} generate_ssh_key=yes".format(user)
-    run_ansible_module(env, ansible_context, host, 'user', user_args, True, None, None)
+    run_ansible_module(env, ansible_context, host, 'user', user_args)
 
     user_home_output = PrivilegedCommand(
         'ansible',
@@ -301,11 +292,11 @@ def _genearate_and_fetch_key(env, host, user, ansible_context, working_directory
     fetch_args = "src={user_home}/.ssh/id_rsa.pub dest={key_tmp} flat=yes fail_on_missing=yes".format(
         user_home=user_home, key_tmp=os.path.join(working_directory, 'id_rsa.tmp')
     )
-    run_ansible_module(env, ansible_context, host, 'fetch', fetch_args, True, None, None)
+    run_ansible_module(env, ansible_context, host, 'fetch', fetch_args)
 
 
 def _set_auth_key(env, host, user, ansible_context, working_directory, remove=False):
     state = 'absent' if remove else 'present'
     key_path = os.path.join(working_directory, 'id_rsa.tmp')
     args = "user={} state={} key={{{{ lookup('file', '{}') }}}}".format(user, state, key_path)
-    run_ansible_module(env, ansible_context, host, 'authorized_key', args, True, None, None)
+    run_ansible_module(env, ansible_context, host, 'authorized_key', args)

@@ -54,6 +54,12 @@ class Lookup(CommandBase):
 
 class _Ssh(Lookup):
 
+    arguments = Lookup.arguments + (
+        Argument("--quiet", action='store_true', default=False, help="""
+            Don't output the command to be run.
+        """),
+    )
+
     def run(self, args, ssh_args):
         if args.server == '-':
             args.server = 'django_manage[0]'
@@ -63,7 +69,8 @@ class _Ssh(Lookup):
             ssh_args = ['-p', port] + ssh_args
         cmd_parts = [self.command, address, '-t'] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-        print_command(cmd)
+        if not args.quiet:
+            print_command(cmd)
         return subprocess.call(cmd_parts)
 
 
@@ -201,7 +208,10 @@ class DjangoManage(CommandBase):
         """),
         Argument('--tee', dest='tee_file', help="""
             Tee output to the screen and to this file on the remote machine
-        """)
+        """),
+        Argument("--quiet", action='store_true', default=False, help="""
+            Don't output the command to be run.
+        """),
     )
 
     def run(self, args, manage_args):

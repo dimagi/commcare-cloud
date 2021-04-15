@@ -325,7 +325,7 @@ def _confirm_translated():
 
 
 def _confirm_changes():
-    env.deploy_metadata.diff.warn_of_migrations()
+    env.deploy_metadata.diff.print_deployer_diff()
     return console.confirm(
         'Are you sure you want to preindex and deploy to '
         '{env.deploy_env}?'.format(env=env), default=False)
@@ -858,7 +858,7 @@ def deploy_airflow():
 @task
 def preview_deploy():
     """Display the PRs that will be deployed"""
-    env.deploy_metadata.diff.warn_of_migrations()
+    env.deploy_metadata.diff.print_deployer_diff()
 
 
 def make_tasks_for_envs(available_envs):
