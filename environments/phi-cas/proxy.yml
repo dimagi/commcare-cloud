@@ -1,3 +1,0 @@
-SITE_HOST: 'www.phi-cas.commcarehq.org'
-letsencrypt_cchq_ssl: True
-primary_ssl_env: 'phi-cas'
