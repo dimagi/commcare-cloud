@@ -1,7 +1,7 @@
 datadog_custom_dir: "{{ cchq_home }}/datadog"
 datadog_parsers_repo: https://github.com/dimagi/datadog-parsers
 datadog_parsers_dest: "{{ datadog_custom_dir }}/datadog-parsers"
-datedog_parsers_version: b46f25b72ed7a98d012a17ea846c3d10c418f158
+datedog_parsers_version: 50214a5f8abe96d4fea855a0867a37ec91288afa
 datadog_parsers:
   - input: "{{ log_home }}/{{ localsettings.DEPLOY_MACHINE_NAME }}-commcarehq.couch.log"
     python_file: "{{ datadog_parsers_dest }}/couch/parsers.py"
