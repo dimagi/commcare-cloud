@@ -11,7 +11,7 @@ from clint.textui import puts
 from six.moves import shlex_quote
 
 from commcare_cloud.alias import commcare_cloud
-from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command, ask_string
+from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command, get_dev_username
 from commcare_cloud.colors import color_error, color_notice
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
@@ -332,11 +332,9 @@ class UpdateUsers(_AnsiblePlaybookAlias):
     """
 
     def run(self, args, unknown_args):
-        username = input('Enter ssh username: ')
-        if not ask_string(username, args):
-            username = ""
+        username = get_dev_username(args.env_name)
         args.playbook = 'deploy_stack.yml'
-        unknown_args += ('--tags=users', '-e ssh_user="'+username+'" ',)
+        unknown_args += ('--tags=users', '-e ssh_user=' + shlex_quote(username))
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
@@ -348,9 +346,7 @@ class UpdateUserPublicKey(_AnsiblePlaybookAlias):
     )
 
     def run(self, args, unknown_args):
-        puts(color_notice(
-                "We have deprecated the update-user-key command. Please use update-users command to modify user's access.\n"
-                "Where you will be asked for your ssh_username which you use to login into servers."))
+        puts(color_notice("The 'update-user-key' command has been removed. Please use 'update-users' instead."))
         return 0 # exit code
 
 class UpdateSupervisorConfs(_AnsiblePlaybookAlias):

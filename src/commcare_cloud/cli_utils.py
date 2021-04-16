@@ -12,6 +12,10 @@ from commcare_cloud.colors import color_code, color_error
 
 from .environment.paths import ANSIBLE_DIR
 from .environment.main import get_environment
+from .commands.terraform.aws import (
+    get_default_username,
+    print_help_message_about_the_commcare_cloud_default_username_env_var,
+)
 
 
 def ask(message, strict=False, quiet=False):
@@ -34,16 +38,26 @@ def ask_option(message, options, acceptable_responses=None):
         r = input('Please enter one of {} :'.format(', '.join(options)))
     return r
 
-def ask_string(message, args):
-    environment = get_environment(args.env_name)
-    if message not in environment.users_config.dev_users.present:
+def get_dev_username(env_name):
+    environment = get_environment(env_name)
+    username = default_username = get_default_username()
+    while True:
+        if not username or default_username.is_guess:
+            username = input(f"Enter your SSH username ({default_username}): ")
+            if not username:
+                username = default_username
+        if username in environment.users_config.dev_users.present:
+            break
         allowed_users = environment.users_config.dev_users.present
+        env_users = '\n  - '.join([''] + allowed_users)
         puts(color_error(
-            "Unauthorized user {}.\n\n"
-            "Please pass in one of the allowed ssh users:{}"
-            .format(message, '\n  - '.join([''] + allowed_users))))
-        return False
-    return True
+            f"Unauthorized user {username}.\n\n"
+            f"Please pass in one of the allowed ssh users:{env_users}"
+        ))
+        username = ""
+    if default_username.is_guess:
+        print_help_message_about_the_commcare_cloud_default_username_env_var(username)
+    return username
 
 def has_arg(unknown_args, short_form, long_form):
     """
