@@ -82,7 +82,7 @@
 - name: "Verifying ssh_user key in the ssh_pubkeys_string list"
   assert:
     that:
-      - '"{{ lookup("file", authorized_keys_dir ~ ssh_user ~ ".pub" ) }}" in ssh_pubkeys_string'
+      - 'lookup("file", authorized_keys_dir ~ ssh_user ~ ".pub" ) }} in ssh_pubkeys_string'
   when: ssh_user is not none
   tags:
     - validate_key
