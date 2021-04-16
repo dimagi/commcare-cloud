@@ -47,11 +47,12 @@ def get_pillow_env_config():
 class DeployMetadata(object):
 
     def __init__(self, code_branch, environment):
-        self.timestamp = datetime.datetime.utcnow().strftime(DATE_FMT)
+        self.timestamp = environment.new_release_name
         self._deploy_tag = None
         self._max_tags = 100
         self._code_branch = code_branch
         self._environment = environment
+        self._deploy_env = environment.meta_config.deploy_env
 
     def __getstate__(self):
         """
@@ -80,7 +81,7 @@ class DeployMetadata(object):
             self._offline_tag_commit()
             return
 
-        tag_name = "{}-{}-deploy".format(self.timestamp, self._environment)
+        tag_name = "{}-{}-deploy".format(self.timestamp, self._deploy_env)
         if github_auth_provided():
             self.repo.create_git_ref(
                 ref='refs/tags/' + tag_name,
@@ -95,11 +96,11 @@ class DeployMetadata(object):
         ), capture=True)
 
         tag_name = '{}-{}-offline-deploy'.format(
-            self.timestamp, self._environment)
+            self.timestamp, self._deploy_env)
         local('cd {staging_dir}/commcare-hq && git tag -a -m "{message}" {tag} {commit}'.format(
             staging_dir=OFFLINE_STAGING_DIR,
             message='{} offline deploy at {}'.format(
-                self._environment, self.timestamp),
+                self._deploy_env, self.timestamp),
             tag=tag_name,
             commit=commit,
         ))
@@ -124,7 +125,7 @@ class DeployMetadata(object):
                 self.repo.create_git_ref(
                     ref='refs/tags/' +
                         '{}-{}-setup_release'.format(self.timestamp,
-                                                     self._environment),
+                                                     self._deploy_env),
                     sha=self.deploy_ref,
                 )
             except UnknownObjectException:

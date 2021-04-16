@@ -2,12 +2,15 @@ from datetime import datetime
 
 import pytz
 from clint.textui import indent
+from memoized import memoized
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_summary
 from commcare_cloud.commands.deploy.utils import announce_deploy_start
+from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import run_fab_task
+from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff
 from commcare_cloud.fab.git_repo import get_github, github_auth_provided
 
@@ -25,9 +28,18 @@ def deploy_commcare(environment, args, unknown_args):
         fab_settings.append('{}={}'.format(var, rev))
 
     announce_deploy_start(environment, "CommCare HQ")
-    return commcare_cloud(environment.name, 'fab', 'deploy_commcare{}'.format(fab_func_args),
-                   '--set', ','.join(fab_settings),
-                   branch=args.branch, *unknown_args)
+    start = datetime.utcnow()
+    rc = commcare_cloud(
+        environment.name, 'fab', 'deploy_commcare{}'.format(fab_func_args),
+        '--set', ','.join(fab_settings), branch=args.branch, *unknown_args
+    )
+    if rc != 0:
+        return rc
+
+    diff = _get_diff(environment, deploy_revs)
+    if not args.skip_record:
+        record_successful_deploy(environment, diff, start)
+        publish_deploy_event("deploy_success", "commcare", environment)
 
 
 def confirm_deploy(environment, deploy_revs, diffs, args):
@@ -46,20 +58,23 @@ def confirm_deploy(environment, deploy_revs, diffs, args):
     ):
         return False
 
-    # do this first to get the git prompt out the way
-    repo = get_github().get_repo('dimagi/formplayer') if github_auth_provided() else None
-
-    deployed_version = _get_deployed_version(environment)
-    code_branch = deploy_revs['commcare']
-    latest_version = repo.get_commit(code_branch).sha
-
-    diff = DeployDiff(repo, deployed_version, latest_version, new_version_details=deploy_revs)
+    diff = _get_diff(environment, deploy_revs)
     diff.print_deployer_diff()
     if diff.deployed_commit_matches_latest_commit and not args.quiet:
-        _print_same_code_warning(code_branch)
+        _print_same_code_warning(deploy_revs['commcare'])
     return ask(
         'Are you sure you want to preindex and deploy to '
         '{env}?'.format(env=environment.name), quiet=args.quiet)
+
+
+@memoized
+def _get_diff(environment, deploy_revs):
+    repo = get_github().get_repo('dimagi/commcare-hq') if github_auth_provided() else None
+
+    deployed_version = _get_deployed_version(environment)
+    latest_version = repo.get_commit(deploy_revs['commcare']).sha if repo else None
+
+    return DeployDiff(repo, deployed_version, latest_version, new_version_details=deploy_revs)
 
 
 def _confirm_translated(environment, quiet=False):
@@ -117,6 +132,20 @@ def _print_same_code_warning(code_branch):
     print(message)
 
 
+def record_successful_deploy(environment, diff, start_time):
+    delta = datetime.utcnow() - start_time
+    args = [
+        '--user', get_default_username(),
+        '--environment', environment.meta_config.deploy_env,
+        '--url', diff.url,
+        '--minutes', str(int(delta.total_seconds() // 60)),
+        '--commit', diff.deploy_commit,
+        '--mail_admins'
+
+    ]
+    commcare_cloud(environment.name, 'django-manage', 'record_deploy_success', *args)
+
+
 def _get_deployed_version(environment):
     from fabric.api import cd, sudo
 
@@ -132,8 +161,6 @@ def _get_deployed_version(environment):
 def get_deploy_commcare_fab_func_args(args):
     fab_func_args = []
 
-    if args.quiet:
-        fab_func_args.append('confirm=no')
     if args.resume:
         fab_func_args.append('resume=yes')
     if args.skip_record:

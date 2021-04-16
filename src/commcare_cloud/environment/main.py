@@ -380,7 +380,8 @@ class Environment(object):
 
     @memoized
     def new_release_name(self):
-        return datetime.utcnow().strftime('%Y-%m-%d_%H.%M')
+        from commcare_cloud.fab.const import DATE_FMT
+        return datetime.utcnow().strftime(DATE_FMT)
 
     def translate_host(self, host, filename_for_error):
         if host == 'None' or host in self.inventory_manager.hosts:

@@ -172,7 +172,7 @@ def env_common():
 
     env.is_monolith = len(set(servers['all']) - set(servers['control'])) < 2
 
-    env.deploy_metadata = DeployMetadata(env.code_branch, env.deploy_env)
+    env.deploy_metadata = DeployMetadata(env.code_branch, env.ccc_environment)
     _setup_path()
 
     all = servers['all']
@@ -468,8 +468,6 @@ def _deploy_without_asking(skip_record):
         silent_services_restart()
         if skip_record == 'no':
             execute_with_timing(release.record_successful_release)
-            execute_with_timing(release.record_successful_deploy)
-            publish_deploy_event("deploy_success", "commcare", env.ccc_environment)
         clear_cached_deploy()
 
 
