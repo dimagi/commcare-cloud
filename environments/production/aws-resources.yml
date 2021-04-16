@@ -158,14 +158,6 @@ formplayer_c035-production: 10.202.11.97
 formplayer_c035-production.instance_id: i-04030c7b4f06ac644
 formplayer_c036-production: 10.202.11.137
 formplayer_c036-production.instance_id: i-088eff01e77e6f4fa
-formplayer_c037-production: 10.202.11.152
-formplayer_c037-production.instance_id: i-023e32f50a9c2c145
-formplayer_c038-production: 10.202.11.106
-formplayer_c038-production.instance_id: i-0e7978a9e3e4e2296
-formplayer_c039-production: 10.202.11.41
-formplayer_c039-production.instance_id: i-017ab2d7db37a6a80
-formplayer_c040-production: 10.202.11.103
-formplayer_c040-production.instance_id: i-0e8bbdd7710a3b410
 kafka1-production: 10.202.40.200
 kafka1-production.instance_id: i-0c8af5576e2c8e7a2
 kafka2-production: 10.202.40.165
