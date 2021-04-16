@@ -81,7 +81,7 @@ servers:
       volume_size: 840
     group: "elasticsearch"
     os: ubuntu_pro_bionic
-    count: 15
+    count: 11
 
   - server_name: "es_b{i}-production"
     server_instance_type: r5.4xlarge
