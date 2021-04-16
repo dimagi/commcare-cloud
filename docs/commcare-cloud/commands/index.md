@@ -1038,7 +1038,6 @@ Use `-l` instead of a command to see the full list of commands.
     pillowtop
     preindex_views             Creates a new release that runs preindex_every...
     prepare_offline_deploy
-    preview_deploy             Display the PRs that will be deployed
     reset_mvp_pillows
     restart_services
     restart_webworkers
