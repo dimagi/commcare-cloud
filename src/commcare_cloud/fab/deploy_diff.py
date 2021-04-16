@@ -32,6 +32,12 @@ class DeployDiff:
         """Human-readable diff URL"""
         return "{}/compare/{}...{}".format(self.repo.html_url, self.last_commit, self.deploy_commit)
 
+    @property
+    def deployed_commit_matches_latest_commit(self):
+        if self.last_commit and self.deploy_commit:
+            short, long = sorted([self.last_commit, self.deploy_commit], key=lambda x: len(x))
+            return self.last_commit == self.deploy_commit or long.startswith(short)
+
     @memoized
     def get_diff_context(self):
         context = {
@@ -42,13 +48,9 @@ class DeployDiff:
             "warnings": []
         }
 
-        if self.last_commit and self.deploy_commit:
-            short, long = sorted([self.last_commit, self.deploy_commit], key=lambda x: len(x))
-            if (self.last_commit == self.deploy_commit or (
-                long.startswith(short)
-            )):
-                context["errors"].append("Versions are identical. No changes since last deploy.")
-                return context
+        if self.deployed_commit_matches_latest_commit:
+            context["errors"].append("Versions are identical. No changes since last deploy.")
+            return context
 
         if not (github_auth_provided() and self.last_commit and self.deploy_commit):
             context["warnings"].append("Insufficient info to get deploy diff.")

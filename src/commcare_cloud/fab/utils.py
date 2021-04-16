@@ -135,10 +135,6 @@ class DeployMetadata(object):
             return True
         return False
 
-    @property
-    def current_ref_is_different_than_last(self):
-        return self.deploy_ref != self.last_commit_sha
-
     @memoized_property
     def diff(self):
         return DeployDiff(self.repo, self.last_commit_sha, self.deploy_ref)

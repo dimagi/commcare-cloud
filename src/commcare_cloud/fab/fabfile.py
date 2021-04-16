@@ -158,64 +158,13 @@ def _setup_env(env_name):
     env.env_name = env_name
     load_env()
     _set_code_branch(env.default_branch)
-    _confirm_environment_time(env_name)
     execute(env_common)
-    execute(_confirm_deploying_same_code)
 
 
 def _set_code_branch(default_branch):
     if not getattr(env, 'code_branch', None):
         env.code_branch = default_branch
     print("Using commcare-hq branch {}".format(env.code_branch))
-
-
-def _confirm_environment_time(env_name):
-    window = env.acceptable_maintenance_window
-    if window:
-        d = datetime.datetime.now(pytz.timezone(window['timezone']))
-        if window['hour_start'] <= d.hour < window['hour_end']:
-            return
-    else:
-        return
-
-    message = (
-        "Whoa there bud! You're deploying '%s' outside the configured maintenance window. "
-        "The current local time is %s.\n"
-        "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
-    ) % (env_name, d.strftime("%-I:%M%p on %h. %d %Z"))
-    if not console.confirm(message, default=False):
-        utils.abort('Action aborted.')
-
-
-def _confirm_deploying_same_code():
-    if env.deploy_metadata.current_ref_is_different_than_last:
-        return
-
-    if env.code_branch == 'master':
-        branch_specific_msg = "Perhaps you meant to merge a PR or specify a --set code_branch=<branch> ?"
-    elif env.code_branch == 'enterprise':
-        branch_specific_msg = (
-            "Have you tried rebuilding the enterprise branch (in HQ directory)? "
-            "./scripts/rebuildstaging --enterprise"
-        )
-    elif env.code_branch == 'autostaging':
-        branch_specific_msg = (
-            "Have you tried rebuilding the autostaging branch (in HQ directory)? "
-            "./scripts/rebuildstaging"
-        )
-    else:
-        branch_specific_msg = (
-            "Did you specify the correct branch using --set code_branch=<branch> ?"
-        )
-
-    message = (
-        "Whoa there bud! You're deploying {code_branch} which happens to be "
-        "the same code as was previously deployed to this environment.\n"
-        "{branch_specific_msg}\n"
-        "Is this intentional?"
-    ).format(code_branch=env.code_branch, branch_specific_msg=branch_specific_msg)
-    if not console.confirm(message, default=False):
-        utils.abort('Action aborted.')
 
 
 def env_common():
