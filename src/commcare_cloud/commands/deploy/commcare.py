@@ -1,20 +1,25 @@
+from datetime import datetime
+
 from clint.textui import indent
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_summary
 from commcare_cloud.commands.deploy.utils import announce_deploy_start
+from commcare_cloud.commands.utils import run_fab_task
+from commcare_cloud.fab.deploy_diff import DeployDiff
+from commcare_cloud.fab.git_repo import get_github, github_auth_provided
 
 
 def deploy_commcare(environment, args, unknown_args):
     deploy_revs, diffs = get_deploy_revs_and_diffs(environment, args)
 
-    if not confirm_deploy(deploy_revs, diffs, args):
+    if not confirm_deploy(environment, deploy_revs, diffs, args):
         return 1
 
     fab_func_args = get_deploy_commcare_fab_func_args(args)
     fab_settings = [args.fab_settings] if args.fab_settings else []
-    for name, rev in deploy_revs:
+    for name, rev in deploy_revs.items():
         var = 'code_branch' if name == 'commcare' else '{}_code_branch'.format(name)
         fab_settings.append('{}={}'.format(var, rev))
 
@@ -24,7 +29,7 @@ def deploy_commcare(environment, args, unknown_args):
                    branch=args.branch, *unknown_args)
 
 
-def confirm_deploy(deploy_revs, diffs, args):
+def confirm_deploy(environment, deploy_revs, diffs, args):
     if diffs:
         message = (
             "Whoa there bud! You're deploying non-default. "
@@ -34,12 +39,43 @@ def confirm_deploy(deploy_revs, diffs, args):
         if not ask(message, quiet=args.quiet):
             return False
 
-    print(color_summary("You are about to deploy the following code:"))
-    with indent():
-        for name, rev in deploy_revs:
-            print(color_summary("{}: {}".format(name, rev)))
+    if not _confirm_translated(environment, quiet=args.quiet):
+        return False
 
-    return ask('Continue with deploy?', quiet=args.quiet)
+    # do this first to get the git prompt out the way
+    repo = get_github().get_repo('dimagi/formplayer') if github_auth_provided() else None
+
+    deployed_version = _get_deployed_version(environment)
+    latest_version = repo.get_commit(deploy_revs['commcare']).sha
+
+    diff = DeployDiff(repo, deployed_version, latest_version, new_version_details=deploy_revs)
+    diff.print_deployer_diff()
+    return ask(
+        'Are you sure you want to preindex and deploy to '
+        '{env}?'.format(env=environment.name), quiet=args.quiet)
+
+
+def _confirm_translated(environment, quiet=False):
+    if datetime.now().isoweekday() != 3 or environment.meta_config.deploy_env != 'production':
+        return True
+    return ask(
+        "It's the weekly Wednesday deploy, did you update the translations "
+        "from transifex? Try running this handy script from the root of your "
+        "commcare-hq directory:\n./scripts/update-translations.sh\n",
+        quiet=quiet
+    )
+
+
+def _get_deployed_version(environment):
+    from fabric.api import cd, sudo
+
+    def _task():
+        with cd(environment.remote_conf.code_current):
+            return sudo('git rev-parse HEAD')
+
+    host = environment.sshable_hostnames_by_group["django_manage"][0]
+    environment.translate_host("django_manage")
+    return run_fab_task(_task, host, 'ansible', environment.get_ansible_user_password())
 
 
 def get_deploy_commcare_fab_func_args(args):
@@ -71,10 +107,10 @@ def get_deploy_revs_and_diffs(environment, args):
         branches.append((repo.name, '{}_rev'.format(repo.name), repo.version))
 
     diffs = []
-    actuals = []
+    actuals = {}
     for repo_name, arg_name, default in branches:
         actual = getattr(args, arg_name, None)
-        actuals.append((repo_name, actual or default))
+        actuals[repo_name] = actual or default
         if actual and actual != default:
             diffs.append("'{}' repo: {} != {}".format(repo_name, default, actual))
 

@@ -314,23 +314,6 @@ def mail_admins(subject, message, use_current_release=False):
         })
 
 
-def _confirm_translated():
-    if datetime.datetime.now().isoweekday() != 3 or env.deploy_env != 'production':
-        return True
-    return console.confirm(
-        "It's the weekly Wednesday deploy, did you update the translations "
-        "from transifex? Try running this handy script from the root of your "
-        "commcare-hq directory:\n./scripts/update-translations.sh\n"
-    )
-
-
-def _confirm_changes():
-    env.deploy_metadata.diff.print_deployer_diff()
-    return console.confirm(
-        'Are you sure you want to preindex and deploy to '
-        '{env.deploy_env}?'.format(env=env), default=False)
-
-
 @task
 def kill_stale_celery_workers():
     """
@@ -645,16 +628,13 @@ def manage(cmd):
 
 
 @task
-def deploy_commcare(confirm="yes", resume='no', offline='no', skip_record='no'):
+def deploy_commcare(resume='no', offline='no', skip_record='no'):
     """Preindex and deploy if it completes quickly enough, otherwise abort
-    fab <env> deploy_commcare:confirm=no  # do not confirm
     fab <env> deploy_commcare:resume=yes  # resume from previous deploy
     fab <env> deploy_commcare:offline=yes  # offline deploy
     fab <env> deploy_commcare:skip_record=yes  # skip record_successful_release
     """
     _require_target()
-    if strtobool(confirm) and not (_confirm_translated() and _confirm_changes()):
-        utils.abort('Deployment aborted.')
 
     env.full_deploy = True
 
