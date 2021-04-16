@@ -504,18 +504,6 @@ def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
     cache_deploy_state(command_index + 1)
 
 
-def announce_deploy_start():
-    if env.email_enabled:
-        execute_with_timing(
-            mail_admins,
-            "{user} has initiated a deploy to {environment}.".format(
-                user=env.user,
-                environment=env.deploy_env,
-            ),
-            ''
-        )
-
-
 def _deploy_without_asking(skip_record):
     if env.offline:
         commands = OFFLINE_DEPLOY_COMMANDS
@@ -799,7 +787,6 @@ def reset_pillow(pillow):
 
 ONLINE_DEPLOY_COMMANDS = [
     _setup_release,
-    announce_deploy_start,
     db.preindex_views,
     db.ensure_preindex_completion,
     db.ensure_checkpoints_safe,

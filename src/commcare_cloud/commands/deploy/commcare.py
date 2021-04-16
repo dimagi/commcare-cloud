@@ -3,6 +3,7 @@ from clint.textui import indent
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_summary
+from commcare_cloud.commands.deploy.utils import announce_deploy_start
 
 
 def deploy_commcare(environment, args, unknown_args):
@@ -17,6 +18,7 @@ def deploy_commcare(environment, args, unknown_args):
         var = 'code_branch' if name == 'commcare' else '{}_code_branch'.format(name)
         fab_settings.append('{}={}'.format(var, rev))
 
+    announce_deploy_start(environment, "CommCare HQ")
     return commcare_cloud(environment.name, 'fab', 'deploy_commcare{}'.format(fab_func_args),
                    '--set', ','.join(fab_settings),
                    branch=args.branch, *unknown_args)
