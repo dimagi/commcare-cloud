@@ -41,6 +41,13 @@
   when: couchdb_cluster_port is defined
   notify: restart couchdb2
 
+- name: Add new standard options to vm.args
+  become: yes
+  blockinfile:
+    path: "{{ couchdb_dir }}/etc/vm.args"
+    block: "{{ lookup('file', 'vm.args.defaults') }}"
+  notify: restart couchdb2
+
 - meta: flush_handlers
 
 - name: Add nodes
