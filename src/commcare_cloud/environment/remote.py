@@ -1,4 +1,4 @@
-from functools import cached_property
+from memoized import memoized_property
 
 
 class RemoteConf:
@@ -11,7 +11,7 @@ class RemoteConf:
         self.cchq_user = environment.public_vars.get('cchq_user', 'cchq')
         self.deploy_env = environment.meta_config.deploy_env
 
-    @cached_property
+    @memoized_property
     def code_current(self):
         return '/home/{cchq_user}/www/{deploy_env}/current'.format(
             cchq_user=self.cchq_user, deploy_env=self.deploy_env)
