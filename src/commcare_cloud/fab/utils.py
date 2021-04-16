@@ -16,11 +16,9 @@ from memoized import memoized_property
 from .const import (
     CACHED_DEPLOY_CHECKPOINT_FILENAME,
     CACHED_DEPLOY_ENV_FILENAME,
-    DATE_FMT,
     OFFLINE_STAGING_DIR,
     PROJECT_ROOT,
 )
-from .deploy_diff import DeployDiff
 from .git_repo import get_github, github_auth_provided
 
 
@@ -70,11 +68,6 @@ class DeployMetadata(object):
     @memoized_property
     def repo(self):
         return get_github().get_repo('dimagi/commcare-hq')
-
-    @memoized_property
-    def last_commit_sha(self):
-        with cd(env.code_current):
-            return sudo('git rev-parse HEAD')
 
     def tag_commit(self):
         if env.offline:
@@ -135,10 +128,6 @@ class DeployMetadata(object):
                 )
             return True
         return False
-
-    @memoized_property
-    def diff(self):
-        return DeployDiff(self.repo, self.last_commit_sha, self.deploy_ref)
 
 
 def _get_checkpoint_filename():
