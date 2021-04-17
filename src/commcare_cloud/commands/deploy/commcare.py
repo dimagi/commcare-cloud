@@ -123,13 +123,12 @@ def _print_same_code_warning(code_branch):
             "Did you specify the correct branch using --set code_branch=<branch> ?"
         )
 
-    message = (
-        "Whoa there bud! You're deploying {code_branch} which happens to be "
-        "the same code as was previously deployed to this environment.\n"
-        "{branch_specific_msg}\n"
-        "Is this intentional?"
-    ).format(code_branch=code_branch, branch_specific_msg=branch_specific_msg)
-    print(message)
+    print(
+        f"Whoa there bud! You're deploying {code_branch} which happens to be "
+        f"the same code as was previously deployed to this environment.\n"
+        f"{branch_specific_msg}\n"
+        f"Is this intentional?"
+    )
 
 
 def record_successful_deploy(environment, diff, start_time):

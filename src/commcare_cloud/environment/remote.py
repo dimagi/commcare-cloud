@@ -13,9 +13,7 @@ class RemoteConf:
 
     @memoized_property
     def code_current(self):
-        return '/home/{cchq_user}/www/{deploy_env}/current'.format(
-            cchq_user=self.cchq_user, deploy_env=self.deploy_env)
+        return f'/home/{self.cchq_user}/www/{self.deploy_env}/current'
 
     def release(self, release_name):
-        return '/home/{cchq_user}/www/{deploy_env}/releases/{release}'.format(
-            cchq_user=self.cchq_user, deploy_env=self.deploy_env, release=release_name)
+        return f'/home/{self.cchq_user}/www/{self.deploy_env}/releases/{self.release}'

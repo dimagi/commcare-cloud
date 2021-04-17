@@ -37,6 +37,7 @@ class DeployDiff:
         if self.last_commit and self.deploy_commit:
             short, long = sorted([self.last_commit, self.deploy_commit], key=lambda x: len(x))
             return self.last_commit == self.deploy_commit or long.startswith(short)
+        return False
 
     @memoized
     def get_diff_context(self):
