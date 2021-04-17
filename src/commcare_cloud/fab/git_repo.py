@@ -38,9 +38,9 @@ def _get_github_token(message, required=False):
             "Then edit {project_root}/config.py"
         ).format(project_root=PROJECT_ROOT))
         GITHUB_TOKEN = getpass('Github Token: ')
+        os.environ["GITHUB_TOKEN"] = GITHUB_TOKEN
     else:
         GITHUB_TOKEN = GITHUB_APIKEY
-    os.environ["GITHUB_TOKEN"] = GITHUB_TOKEN
     return GITHUB_TOKEN
 
 
