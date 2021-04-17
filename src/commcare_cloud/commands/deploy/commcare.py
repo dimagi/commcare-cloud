@@ -161,7 +161,8 @@ def _get_deployed_version(environment):
             return sudo('git rev-parse HEAD')
 
     host = environment.sshable_hostnames_by_group["django_manage"][0]
-    return run_fab_task(_task, host, 'ansible', environment.get_ansible_user_password())
+    res = run_fab_task(_task, host, 'ansible', environment.get_ansible_user_password())
+    return res[host]
 
 
 def get_deploy_commcare_fab_func_args(args):
