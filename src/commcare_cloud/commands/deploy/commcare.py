@@ -1,12 +1,10 @@
 from datetime import datetime
 
 import pytz
-from clint.textui import indent
 from memoized import memoized
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
-from commcare_cloud.colors import color_summary
 from commcare_cloud.commands.deploy.utils import announce_deploy_start
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import run_fab_task
@@ -40,6 +38,8 @@ def deploy_commcare(environment, args, unknown_args):
     if not args.skip_record:
         record_successful_deploy(environment, diff, start)
         publish_deploy_event("deploy_success", "commcare", environment)
+
+    return 0
 
 
 def confirm_deploy(environment, deploy_revs, diffs, args):

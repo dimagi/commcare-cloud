@@ -80,6 +80,7 @@ def deploy_formplayer(environment, args):
         return rc
 
     record_deploy_success(environment, repo, diff, start)
+    return 0
 
 
 def record_deploy_success(environment, repo, diff, start):
