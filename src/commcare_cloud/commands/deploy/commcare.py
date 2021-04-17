@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import pytz
-from memoized import memoized
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
@@ -69,14 +68,21 @@ def confirm_deploy(environment, deploy_revs, diffs, args):
         '{env}?'.format(env=environment.name), quiet=args.quiet)
 
 
-@memoized
+DEPLOY_DIFF = None
+
+
 def _get_diff(environment, deploy_revs):
+    global DEPLOY_DIFF
+    if DEPLOY_DIFF is not None:
+        return DEPLOY_DIFF
+
     repo = get_github().get_repo('dimagi/commcare-hq') if github_auth_provided() else None
 
     deployed_version = _get_deployed_version(environment)
     latest_version = repo.get_commit(deploy_revs['commcare']).sha if repo else None
 
-    return DeployDiff(repo, deployed_version, latest_version, new_version_details=deploy_revs)
+    DEPLOY_DIFF = DeployDiff(repo, deployed_version, latest_version, new_version_details=deploy_revs)
+    return DEPLOY_DIFF
 
 
 def _confirm_translated(environment, quiet=False):
