@@ -33,7 +33,7 @@ class PrivilegedCommand():
             result = sudo(self.command, user=self.user_as)
             return result
 
-        run_fab_task(_task, hosts, self.user_name, self.password, parallel_pool_size=parallel_pool_size)
+        return run_fab_task(_task, hosts, self.user_name, self.password, parallel_pool_size=parallel_pool_size)
 
 
 def run_fab_task(task_fn, hosts, username, password, parallel_pool_size=1):
