@@ -45,7 +45,7 @@ def get_pillow_env_config():
 class DeployMetadata(object):
 
     def __init__(self, code_branch, environment):
-        self.timestamp = environment.new_release_name
+        self.timestamp = environment.new_release_name()
         self._deploy_tag = None
         self._max_tags = 100
         self._code_branch = code_branch
