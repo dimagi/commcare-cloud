@@ -161,7 +161,6 @@ def _get_deployed_version(environment):
             return sudo('git rev-parse HEAD')
 
     host = environment.sshable_hostnames_by_group["django_manage"][0]
-    environment.translate_host("django_manage")
     return run_fab_task(_task, host, 'ansible', environment.get_ansible_user_password())
 
 
