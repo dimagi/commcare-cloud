@@ -5,6 +5,7 @@ from memoized import memoized
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
+from commcare_cloud.colors import color_notice
 from commcare_cloud.commands.deploy.utils import announce_deploy_start
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import run_fab_task
@@ -17,6 +18,7 @@ def deploy_commcare(environment, args, unknown_args):
     deploy_revs, diffs = get_deploy_revs_and_diffs(environment, args)
 
     if not confirm_deploy(environment, deploy_revs, diffs, args):
+        print(color_notice("Aborted by user"))
         return 1
 
     fab_func_args = get_deploy_commcare_fab_func_args(args)
@@ -93,9 +95,9 @@ def _confirm_environment_time(environment, quiet=False):
     if window:
         d = datetime.now(pytz.timezone(window['timezone']))
         if window['hour_start'] <= d.hour < window['hour_end']:
-            return
+            return True
     else:
-        return
+        return True
 
     message = (
         "Whoa there bud! You're deploying '%s' outside the configured maintenance window. "

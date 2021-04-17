@@ -69,7 +69,7 @@ class Deploy(CommandBase):
         environment = get_environment(args.env_name)
 
         deploy_component = args.component
-        if deploy_component == None:
+        if deploy_component is None:
             deploy_component = 'both' if environment.meta_config.always_deploy_formplayer else 'commcare'
 
         if deploy_component in ['commcare', 'both']:
