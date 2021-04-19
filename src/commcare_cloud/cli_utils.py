@@ -36,8 +36,9 @@ def ask_option(message, options, acceptable_responses=None):
 
 def get_dev_username(env_name):
     from .commands.terraform.aws import (
-    get_default_username,
-    print_help_message_about_the_commcare_cloud_default_username_env_var,)
+        get_default_username,
+        print_help_message_about_the_commcare_cloud_default_username_env_var,
+    )
 
     environment = get_environment(env_name)
     username = default_username = get_default_username()
