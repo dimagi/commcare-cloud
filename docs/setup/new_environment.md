@@ -332,7 +332,7 @@ If you are using virtualbox, see the [Configuring VirtualBox for testing CommCar
 Run the following command to test each of the backing services as described [here](../commcare-cloud/deploy.md#step-3-checking-services-once-deploy-is-complete).
 
 ```
-cchq monolith django-manage check_services
+$ cchq monolith django-manage check_services
 ```
 
 Following this initial setup, it is also recommended that you go through this [new environment QA plan](./new_environment_qa.md), which will exercise a wide variety of site functionality.
