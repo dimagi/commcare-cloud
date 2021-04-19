@@ -58,7 +58,7 @@ def run_fab_task(task_fn, hosts, username, password, parallel_pool_size=1):
 
 def timeago(tdelta):
     # https://github.com/hustcc/timeago (the good bits)
-    # second, minute, hour, day, week, month, year(365 days)
+    # minute, hour, day, week, month, year(365 days)
     BUCKETS = [60.0, 60.0, 24.0, 7.0, 365.0 / 7.0 / 12.0, 12.0]
     TEMPLATES = [
         "just now",

@@ -4,6 +4,7 @@ nginx_sites:
    balancers:
     - name: "{{ deploy_env }}_couchdb_{{ couchdb2_proxy_port }}"
       hosts: couchdb2
+      excluded_hosts: "{{ couch_excluded_hosts | default(None) }}"
       port: "{{ couchdb2_port }}"
       params:
         # http://nginx.org/en/docs/http/ngx_http_upstream_module.html#server
