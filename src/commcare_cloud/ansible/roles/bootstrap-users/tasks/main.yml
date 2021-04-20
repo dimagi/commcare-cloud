@@ -83,7 +83,7 @@
   assert:
     that:
       - 'lookup("file", authorized_keys_dir ~ ssh_user ~ ".pub") in ssh_pubkeys_string'
-  when: ssh_user is not none
+  when: (ssh_user)
   tags:
     - validate_key
     - pubkey
