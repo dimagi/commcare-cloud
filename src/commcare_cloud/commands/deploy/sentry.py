@@ -16,7 +16,7 @@ def update_sentry_post_deploy(environment, sentry_project, github_repo, diff, de
     localsettings = environment.public_vars["localsettings"]
     client = SentryClient(
         environment.get_secret('SENTRY_API_KEY'),
-        localsettings.get('SENTRY_ORGANIZATION_SLUG'),
+        localsettings.get('SENTRY_ORGANIZATION_SLUG', 'dimagi'),
         sentry_project
     )
     if client.is_valid():
