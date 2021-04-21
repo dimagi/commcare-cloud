@@ -12,7 +12,8 @@ from commcare_cloud.colors import color_warning, color_notice, color_summary
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
-from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_failed, announce_deploy_success
+from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_failed, \
+    announce_deploy_success, create_release_tag
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import timeago
 from commcare_cloud.events import publish_deploy_event
@@ -109,17 +110,6 @@ def get_deploy_diff(environment, repo):
         new_version_details=new_version_details
     )
     return diff
-
-
-def create_release_tag(environment, repo, diff):
-    if not github_auth_provided() or not environment.fab_settings_config.tag_deploy_commits:
-        return
-    repo.create_git_ref(
-        ref='refs/tags/{}-{}-release'.format(
-            environment.new_release_name(),
-            environment.name),
-        sha=diff.deploy_commit,
-    )
 
 
 def run_ansible_playbook_command(environment, args):

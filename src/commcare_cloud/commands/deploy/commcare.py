@@ -6,7 +6,7 @@ from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_notice
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
-from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_success
+from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_success, create_release_tag
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import run_fab_task
 from commcare_cloud.events import publish_deploy_event
@@ -142,6 +142,7 @@ def _print_same_code_warning(code_branch):
 def record_successful_deploy(environment, diff, start_time):
     end_time = datetime.utcnow()
 
+    create_release_tag(environment, diff.repo, diff)
     update_sentry_post_deploy(environment, "formplayer", diff.repo, diff, start_time, end_time)
     announce_deploy_success(environment, diff.get_email_diff())
     publish_deploy_event("deploy_success", "commcare", environment)

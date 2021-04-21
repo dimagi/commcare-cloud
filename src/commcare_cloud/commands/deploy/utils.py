@@ -1,6 +1,18 @@
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.colors import color_summary
 from commcare_cloud.commands.terraform.aws import get_default_username
+from commcare_cloud.fab.git_repo import github_auth_provided
+
+
+def create_release_tag(environment, repo, diff):
+    if not github_auth_provided() or not environment.fab_settings_config.tag_deploy_commits:
+        return
+    repo.create_git_ref(
+        ref='refs/tags/{}-{}-deploy'.format(
+            environment.new_release_name(),
+            environment.name),
+        sha=diff.deploy_commit,
+    )
 
 
 def announce_deploy_start(environment, system_name):
