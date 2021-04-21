@@ -2,33 +2,27 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import functools
 import os
+import posixpath
 from collections import namedtuple
 from datetime import datetime, timedelta
 
 from fabric import operations, utils
-from fabric.api import env, local, parallel, roles, run, sudo
+from fabric.api import env, parallel, roles, run, sudo
 from fabric.colors import red
 from fabric.context_managers import cd, shell_env
 from fabric.contrib import files
-from fabric.contrib.project import rsync_project
-from fabric.operations import put
-
-import posixpath
 
 from commcare_cloud.environment.exceptions import EnvironmentException
-
+from .formplayer import clean_formplayer_releases
 from ..const import (
     DATE_FMT,
     KEEP_UNTIL_PREFIX,
-    OFFLINE_STAGING_DIR,
     RELEASE_RECORD,
     ROLES_ALL_SRC,
-    ROLES_CONTROL,
     ROLES_DEPLOY,
     ROLES_MANAGE,
     ROLES_STATIC,
 )
-from .formplayer import clean_formplayer_releases
 
 GitConfig = namedtuple('GitConfig', 'key value')
 
@@ -64,126 +58,6 @@ def update_code(full_cluster=True):
             sudo("find . -name '*.pyc' -delete")
 
     return update
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def create_offline_dir():
-    run('mkdir -p {}'.format(env.offline_code_dir))
-
-
-@roles(ROLES_CONTROL)
-def sync_offline_dir():
-    sync_offline_to_control()
-    sync_offline_from_control()
-
-
-def sync_offline_to_control():
-    for sync_item in ['bower_components', 'node_modules', 'wheelhouse']:
-        rsync_project(
-            env.offline_code_dir,
-            os.path.join(OFFLINE_STAGING_DIR, 'commcare-hq', sync_item),
-            delete=True,
-        )
-    rsync_project(
-        env.offline_code_dir,
-        os.path.join(OFFLINE_STAGING_DIR, 'formplayer.jar'),
-    )
-
-
-def sync_offline_from_control():
-    for host in _hosts_in_roles(ROLES_ALL_SRC, exclude_roles=ROLES_DEPLOY):
-        run("rsync -rvz --exclude 'commcare-hq/*' {} {}".format(
-            env.offline_code_dir,
-            '{}@{}:{}'.format(env.user, host, env.offline_releases)
-        ))
-
-
-def _hosts_in_roles(roles, exclude_roles=None):
-    hosts = set()
-    for role, role_hosts in env.roledefs.items():
-        if role in roles:
-            hosts.update(role_hosts)
-
-    if exclude_roles:
-        hosts = hosts - _hosts_in_roles(exclude_roles)
-    return hosts
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def update_code_offline():
-    """
-    An online release usually clones from the previous release then tops
-    off the new updates from the remote github. Since we can't access the remote
-    Github, we do this:
-
-        1. Clone the current release to the user's home directory
-        2. Update that repo with any changes from the user's local copy of HQ (in offline-staging)
-        3. Clone the user's home repo to the release that is being deployed (code_root)
-    """
-    clone_current_release_to_home_directory()
-
-    git_remote_url = 'ssh://{user}@{host}{code_dir}'.format(
-        user=env.user,
-        host=env.host,
-        code_dir=os.path.join(env.offline_code_dir, 'commcare-hq')
-    )
-
-    local('cd {}/commcare-hq && git push {}/.git {}'.format(
-        OFFLINE_STAGING_DIR,
-        git_remote_url,
-        env.deploy_metadata.deploy_ref,
-    ))
-
-    # Iterate through each submodule and push master
-    local("cd {}/commcare-hq && git submodule foreach 'git push {}/$path/.git --all'".format(
-        OFFLINE_STAGING_DIR,
-        git_remote_url,
-    ))
-
-    clone_home_directory_to_release()
-    with cd(env.code_root):
-        sudo('git checkout `git rev-parse {}`'.format(env.deploy_metadata.deploy_ref))
-        sudo('git reset --hard {}'.format(env.deploy_metadata.deploy_ref))
-        sudo('git submodule update --init --recursive')
-        # remove all untracked files, including submodules
-        sudo("git clean -ffd")
-        sudo('git remote set-url origin {}'.format(env.code_repo))
-        sudo("find . -name '*.pyc' -delete")
-
-
-def clone_current_release_to_home_directory():
-    offline_hq_root = os.path.join(env.offline_code_dir, 'commcare-hq')
-    if not files.exists(offline_hq_root):
-        _clone_code_from_local_path(env.code_current, offline_hq_root, run_as_sudo=False)
-
-
-def clone_home_directory_to_release():
-    _clone_code_from_local_path(os.path.join(env.offline_code_dir, 'commcare-hq'), env.code_root, run_as_sudo=True)
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def update_bower_offline():
-    sudo('cp -r {}/bower_components {}'.format(env.offline_code_dir, env.code_root))
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def update_npm_offline():
-    sudo('cp -r {}/node_modules {}'.format(env.offline_code_dir, env.code_root))
-
-
-def _upload_and_extract(zippath, strip_components=0):
-    zipname = os.path.basename(zippath)
-    put(zippath, env.offline_code_dir)
-
-    run('tar -xzf {code_dir}/{zipname} -C {code_dir} --strip-components {components}'.format(
-        code_dir=env.offline_code_dir,
-        zipname=zipname,
-        components=strip_components,
-    ))
 
 
 def _update_code_from_previous_release(code_repo, subdir, git_env):
