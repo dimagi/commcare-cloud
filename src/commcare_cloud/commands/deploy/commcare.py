@@ -145,8 +145,11 @@ def record_successful_deploy(environment, diff, start_time):
     create_release_tag(environment, diff.repo, diff)
     update_sentry_post_deploy(environment, "formplayer", diff.repo, diff, start_time, end_time)
     announce_deploy_success(environment, diff.get_email_diff())
+    call_record_deploy_success(environment, diff, start_time, end_time)
     publish_deploy_event("deploy_success", "commcare", environment)
 
+
+def call_record_deploy_success(environment, diff, start_time, end_time):
     delta = end_time - start_time
     args = [
         '--user', get_default_username(),
