@@ -16,8 +16,9 @@ class GithubException(CommandError):
 
 
 def github_repo(repo_name, repo_is_private=False, require_write_permissions=False):
-    token = None
-    if repo_is_private or require_write_permissions:
+    # optimistically get the token to get higher rate limit from Github
+    token, _ = get_github_credentials_no_prompt()
+    if not token and (repo_is_private or require_write_permissions):
         token = get_github_credentials(repo_name, repo_is_private, require_write_permissions)
         if not token:
             raise GithubException("Github token is required.")
@@ -31,25 +32,14 @@ def github_repo(repo_name, repo_is_private=False, require_write_permissions=Fals
 def get_github_credentials(repo_name, repo_is_private, require_write_permissions):
     global GITHUB_TOKEN
 
-    if GITHUB_TOKEN is None:
-        GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
+    token, found_in_legacy_location = get_github_credentials_no_prompt()
 
-    if GITHUB_TOKEN:
-        return GITHUB_TOKEN
+    if found_in_legacy_location:
+        print(color_notice(f"[Deprecation Warning] Config file has moved."))
+        print(color_notice(f"New location is {PROJECT_ROOT}/config.py or else use the "
+                           f"'GITHUB_TOKEN' environment variable."))
 
-    try:
-        from .config import GITHUB_APIKEY
-    except ImportError:
-        try:
-            from .fab.config import GITHUB_APIKEY
-        except ImportError:
-            pass
-        else:
-            print(color_notice(f"[Deprecation Warning] Config file has moved."))
-            print(color_notice(f"New location is {PROJECT_ROOT}/config.py or else use the "
-                               f"'GITHUB_TOKEN' environment variable."))
-            GITHUB_TOKEN = GITHUB_APIKEY
-            return GITHUB_TOKEN
+    if token is None:
         print(color_warning("Github credentials not found!"))
         private = "private " if repo_is_private else ""
         print(f"Github token is required for {private}repository {repo_name}.")
@@ -60,8 +50,34 @@ def get_github_credentials(repo_name, repo_is_private, require_write_permissions
             f"    $ cp {PROJECT_ROOT}/config.example.py {PROJECT_ROOT}/config.py\n"
             f"Then edit {PROJECT_ROOT}/config.py"
         )
-        GITHUB_TOKEN = getpass('Github Token: ')
-        os.environ["GITHUB_TOKEN"] = GITHUB_TOKEN
-    else:
-        GITHUB_TOKEN = GITHUB_APIKEY
-    return GITHUB_TOKEN
+        token = getpass('Github Token: ')
+
+    os.environ["GITHUB_TOKEN"] = token  # set in env for access by subprocesses
+    GITHUB_TOKEN = token
+    return token or None
+
+
+def get_github_credentials_no_prompt():
+    """
+    :return: tuple(token, found_in_legacy_location)
+    """
+    global GITHUB_TOKEN
+
+    if GITHUB_TOKEN is None:
+        GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
+
+    if GITHUB_TOKEN is not None:
+        return GITHUB_TOKEN, False
+
+    try:
+        from .config import GITHUB_APIKEY
+        return GITHUB_APIKEY, False
+    except ImportError:
+        # check legacy location
+        try:
+            from .fab.config import GITHUB_APIKEY
+            return GITHUB_APIKEY, True
+        except ImportError:
+            pass
+
+    return None, False
