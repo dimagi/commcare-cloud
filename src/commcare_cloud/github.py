@@ -5,9 +5,14 @@ from pathlib import Path
 from github import Github
 
 from commcare_cloud.colors import color_warning, color_notice
+from commcare_cloud.commands.command_base import CommandError
 
 PROJECT_ROOT = Path(__file__).parent
 GITHUB_TOKEN = None
+
+
+class GithubException(CommandError):
+    pass
 
 
 def github_repo(repo_name, repo_is_private=False, require_write_permissions=False):
@@ -17,7 +22,7 @@ def github_repo(repo_name, repo_is_private=False, require_write_permissions=Fals
 
     repo = Github(login_or_token=token).get_repo(repo_name)
     if require_write_permissions and not (repo.permissions and repo.permissions.push):
-        raise Exception(f"Supplied token does not have write permissions for '{repo_name}'")
+        raise GithubException(f"Supplied token does not have write permissions for '{repo_name}'")
     return repo
 
 
