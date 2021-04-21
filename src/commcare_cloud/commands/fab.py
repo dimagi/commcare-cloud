@@ -15,6 +15,8 @@ from .command_base import CommandBase, Argument
 from ..environment.paths import FABFILE, get_available_envs
 from six.moves import shlex_quote
 
+from commcare_cloud.fab.git_repo import get_github_token_if_set
+
 
 class Fab(CommandBase):
     command = 'fab'

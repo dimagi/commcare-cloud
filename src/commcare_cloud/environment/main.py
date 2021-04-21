@@ -17,6 +17,8 @@ from six.moves import map
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.paths import DefaultPaths, get_role_defaults
+
+from commcare_cloud.environment.remote import RemoteConf
 from commcare_cloud.environment.schemas.app_processes import AppProcessesConfig
 from commcare_cloud.environment.schemas.aws import AwsConfig
 from commcare_cloud.environment.schemas.elasticsearch import (
@@ -39,6 +41,10 @@ class Environment(object):
     @property
     def name(self):
         return self.paths.env_name
+
+    @memoized_property
+    def remote_conf(self):
+        return RemoteConf(self)
 
     def __repr__(self):
         return "Environment(name={})".format(self.name)
@@ -374,7 +380,8 @@ class Environment(object):
 
     @memoized
     def new_release_name(self):
-        return datetime.utcnow().strftime('%Y-%m-%d_%H.%M')
+        from commcare_cloud.fab.const import DATE_FMT
+        return datetime.utcnow().strftime(DATE_FMT)
 
     def translate_host(self, host, filename_for_error):
         if host == 'None' or host in self.inventory_manager.hosts:

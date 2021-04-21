@@ -216,21 +216,14 @@ class DjangoManage(CommandBase):
 
     def run(self, args, manage_args):
         environment = get_environment(args.env_name)
-        public_vars = environment.public_vars
-        # the default 'cchq' is redundant with ansible/group_vars/all.yml
-        cchq_user = public_vars.get('cchq_user', 'cchq')
-        deploy_env = environment.meta_config.deploy_env
-        # the paths here are redundant with ansible/group_vars/all.yml
         if args.release:
-            code_dir = '/home/{cchq_user}/www/{deploy_env}/releases/{release}'.format(
-                cchq_user=cchq_user, deploy_env=deploy_env, release=args.release)
+            code_dir = environment.remote_conf.release(args.release)
         else:
-            code_dir = '/home/{cchq_user}/www/{deploy_env}/current'.format(
-                cchq_user=cchq_user, deploy_env=deploy_env)
+            code_dir = environment.remote_conf.code_current
 
         def _get_ssh_args(remote_command):
             return ['sudo -iu {cchq_user} bash -c {remote_command}'.format(
-                cchq_user=cchq_user,
+                cchq_user=environment.remote_conf.cchq_user,
                 remote_command=shlex_quote(remote_command),
             )]
 
@@ -257,7 +250,7 @@ class DjangoManage(CommandBase):
             'cd {code_dir}; {python_env}/bin/python manage.py {args}{tee_file_cmd}'
             .format(
                 python_env=python_env,
-                cchq_user=cchq_user,
+                cchq_user=environment.remote_conf.cchq_user,
                 code_dir=code_dir,
                 args=' '.join(shlex_quote(arg) for arg in manage_args),
                 tee_file_cmd=tee_file_cmd,
