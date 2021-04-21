@@ -13,14 +13,13 @@ vpc_begin_range: "10.202"
 openvpn_image: ami-5e73b923
 
 servers:
-  - server_name: "control1-production"
+  - server_name: "control2-production"
     server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 40
-    volume_encrypted: no
     group: "control"
-    os: bionic
+    os: ubuntu_pro_bionic
 
   - server_name: "djangomanage2-production"
     server_instance_type: m5.2xlarge
