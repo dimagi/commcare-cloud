@@ -19,7 +19,7 @@ DimagiKeyStore
 /dist
 /.vscode
 couchdb@*_files
-**/fab/config.py
+**/config.py
 **/migrations/*/migration_build_*/
 **/migrations/*/copy_file_scripts_*/
  

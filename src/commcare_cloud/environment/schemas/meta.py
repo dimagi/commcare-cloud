@@ -1,26 +1,15 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import re
 
 import jsonobject
-from github.MainClass import Github
+import six
 from memoized import memoized_property, memoized
 
 from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.secrets.backends import all_secrets_backends_by_name
-from commcare_cloud.fab.git_repo import get_github_token
-import six
-
-
-@memoized
-def get_github(repo):
-    token = None
-    if repo.is_private:
-        message = "This environment references a private repository: {}".format(repo.url)
-        token = get_github_token(message, required=True)
-        if not token:
-            raise EnvironmentException("Github credentials required")
-    return Github(login_or_token=token)
+from commcare_cloud.github import github_repo
 
 
 class GitRepository(jsonobject.JsonObject):
@@ -42,7 +31,7 @@ class GitRepository(jsonobject.JsonObject):
         if not match:
             raise EnvironmentException("Unable to parse repository URL: {}".format(self.url))
         repo = match.group(1)
-        return get_github(self).get_repo(repo)
+        return github_repo(repo, repo_is_private=self.is_private)
 
     @memoized
     def deploy_ref(self, code_branch):

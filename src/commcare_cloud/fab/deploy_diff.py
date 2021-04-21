@@ -7,7 +7,6 @@ from gevent.pool import Pool
 from memoized import memoized
 
 from commcare_cloud.commands.terraform.aws import get_default_username
-from commcare_cloud.fab.git_repo import github_auth_provided
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'diff_templates')
 LABELS_TO_EXPAND = [
@@ -59,7 +58,7 @@ class DeployDiff:
             context["errors"].append("Versions are identical. No changes since last deploy.")
             return context
 
-        if not (github_auth_provided() and self.current_commit and self.deploy_commit):
+        if not (self.current_commit and self.deploy_commit):
             context["warnings"].append("Insufficient info to get deploy diff.")
             return context
 
