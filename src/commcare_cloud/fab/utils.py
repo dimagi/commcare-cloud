@@ -100,21 +100,6 @@ class DeployMetadata(object):
         # turn whatever `code_branch` is into a commit hash
         return self.repo.get_commit(self._code_branch).sha
 
-    def tag_setup_release(self):
-        try:
-            self.repo.create_git_ref(
-                ref='refs/tags/' +
-                    '{}-{}-setup_release'.format(self.timestamp,
-                                                 self._deploy_env),
-                sha=self.deploy_ref,
-            )
-        except UnknownObjectException:
-            raise Exception(
-                'Github API key does not have the right settings. '
-                'Please create an API key with the public_repo scope enabled.'
-            )
-        return True
-
 
 def _get_checkpoint_filename():
     return '{}_{}'.format(env.deploy_env, CACHED_DEPLOY_CHECKPOINT_FILENAME)
