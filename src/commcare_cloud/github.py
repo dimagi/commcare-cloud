@@ -16,8 +16,8 @@ def github_repo(repo_name, repo_is_private=False, require_write_permissions=Fals
         token = get_github_credentials(repo_name, repo_is_private, require_write_permissions)
 
     repo = Github(login_or_token=token).get_repo(repo_name)
-    if require_write_permissions and not repo.permissions.push:
-        raise Exception(f"Github token does not have write permissions for '{repo_name}'")
+    if require_write_permissions and not (repo.permissions and repo.permissions.push):
+        raise Exception(f"Supplied token does not have write permissions for '{repo_name}'")
     return repo
 
 
