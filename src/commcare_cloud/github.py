@@ -19,6 +19,8 @@ def github_repo(repo_name, repo_is_private=False, require_write_permissions=Fals
     token = None
     if repo_is_private or require_write_permissions:
         token = get_github_credentials(repo_name, repo_is_private, require_write_permissions)
+        if not token:
+            raise GithubException("Github token is required.")
 
     repo = Github(login_or_token=token).get_repo(repo_name)
     if require_write_permissions and not (repo.permissions and repo.permissions.push):
