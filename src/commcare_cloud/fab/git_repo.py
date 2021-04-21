@@ -1,5 +1,7 @@
+import os
 from getpass import getpass
 
+from ansible.modules.network import system
 from fabric.colors import red
 from fabric.state import env
 from github import Github
@@ -10,8 +12,16 @@ from commcare_cloud.fab.const import PROJECT_ROOT
 GITHUB_TOKEN = None
 
 
+def get_github_token_if_set():
+    global GITHUB_TOKEN
+    return GITHUB_TOKEN
+
+
 def _get_github_token(message, required=False):
     global GITHUB_TOKEN
+
+    if GITHUB_TOKEN is None:
+        GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 
     if GITHUB_TOKEN is not None:
         if GITHUB_TOKEN or not required:
@@ -28,6 +38,7 @@ def _get_github_token(message, required=False):
             "Then edit {project_root}/config.py"
         ).format(project_root=PROJECT_ROOT))
         GITHUB_TOKEN = getpass('Github Token: ')
+        os.environ["GITHUB_TOKEN"] = GITHUB_TOKEN
     else:
         GITHUB_TOKEN = GITHUB_APIKEY
     return GITHUB_TOKEN

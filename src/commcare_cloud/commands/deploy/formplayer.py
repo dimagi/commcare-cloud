@@ -12,6 +12,7 @@ from commcare_cloud.colors import color_warning, color_notice, color_summary
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
+from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_failed, announce_deploy_success
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import timeago
 from commcare_cloud.events import publish_deploy_event
@@ -58,7 +59,7 @@ def deploy_formplayer(environment, args):
         return 1
 
     start = datetime.utcnow()
-    announce_formplayer_deploy_start(environment)
+    announce_deploy_start(environment, "Formplayer")
 
     rc = run_ansible_playbook_command(environment, args)
     if rc != 0:
@@ -79,6 +80,7 @@ def deploy_formplayer(environment, args):
         return rc
 
     record_deploy_success(environment, repo, diff, start)
+    return 0
 
 
 def record_deploy_success(environment, repo, diff, start):
@@ -130,44 +132,6 @@ def run_ansible_playbook_command(environment, args):
         use_factory_auth=False, unknown_args=('--tags=formplayer_deploy',),
         respect_ansible_skip=True,
     )
-
-
-def announce_formplayer_deploy_start(environment):
-    mail_admins(
-        environment,
-        subject="{user} has initiated a Formplayer deploy to {environment}".format(
-            user=get_default_username(),
-            environment=environment.meta_config.deploy_env,
-        ),
-    )
-
-
-def announce_deploy_failed(environment):
-    mail_admins(
-        environment,
-        subject=f"Formplayer deploy to {environment.name} failed",
-    )
-
-
-def announce_deploy_success(environment, diff_ouptut):
-    mail_admins(
-        environment,
-        subject=f"Formplayer deploy successful - {environment.name}",
-        message=diff_ouptut
-    )
-
-
-def mail_admins(environment, subject, message=''):
-    print(color_summary(f">> Sending email: {subject}"))
-    if environment.fab_settings_config.email_enabled:
-        commcare_cloud(
-            environment.name, 'django-manage', '--quiet', 'mail_admins',
-            '--subject', subject,
-            '--environment', environment.meta_config.deploy_env,
-            '--html',
-            message,
-            show_command=False
-        )
 
 
 def record_deploy_in_datadog(environment, diff, tdelta):

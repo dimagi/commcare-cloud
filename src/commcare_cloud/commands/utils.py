@@ -27,27 +27,33 @@ class PrivilegedCommand():
         self.user_as = user_as
 
     def run_command(self, hosts, parallel_pool_size=1):
-        from fabric.api import execute, sudo, env, parallel
-        if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
-            env.use_ssh_config = True
-        env.forward_agent = True
-        # pass `-E` to sudo to preserve environment for ssh agent forwarding
-        env.sudo_prefix = "sudo -SE -p '%(sudo_prompt)s' "
-        env.user = self.user_name
-        env.password = self.password
-        env.hosts = hosts
-        env.warn_only = True
+        from fabric.api import sudo
 
         def _task():
             result = sudo(self.command, user=self.user_as)
             return result
 
-        task = _task
-        if parallel_pool_size > 1:
-            task = parallel(pool_size=parallel_pool_size)(_task)
+        return run_fab_task(_task, hosts, self.user_name, self.password, parallel_pool_size=parallel_pool_size)
 
-        res = execute(task)
-        return res
+
+def run_fab_task(task_fn, hosts, username, password, parallel_pool_size=1):
+    from fabric.api import execute, env, parallel
+    if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
+        env.use_ssh_config = True
+    env.forward_agent = True
+    # pass `-E` to sudo to preserve environment for ssh agent forwarding
+    env.sudo_prefix = "sudo -SE -p '%(sudo_prompt)s' "
+    env.user = username
+    env.password = password
+    env.hosts = hosts
+    env.warn_only = True
+
+    task = task_fn
+    if parallel_pool_size > 1:
+        task = parallel(pool_size=parallel_pool_size)(task_fn)
+
+    res = execute(task)
+    return res
 
 
 def timeago(tdelta):
