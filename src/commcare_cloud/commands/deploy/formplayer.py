@@ -87,7 +87,7 @@ def record_deploy_success(environment, repo, diff, start):
     end = datetime.utcnow()
     create_release_tag(environment, repo, diff)
     record_deploy_in_datadog(environment, diff, end - start)
-    update_sentry_post_deploy(environment, "formplayer", "dimagi/formplayer", diff, start, end)
+    update_sentry_post_deploy(environment, "formplayer", repo, diff, start, end)
     announce_deploy_success(environment, diff.get_email_diff())
     publish_deploy_event("deploy_success", "formplayer", environment)
 

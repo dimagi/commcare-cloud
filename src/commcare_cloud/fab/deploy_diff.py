@@ -19,9 +19,15 @@ LABELS_TO_EXPAND = [
 
 
 class DeployDiff:
-    def __init__(self, repo, last_commit, deploy_commit, new_version_details=None):
+    def __init__(self, repo, current_commit, deploy_commit, new_version_details=None):
+        """
+        :param repo: github.Repository.Repository object
+        :param current_commit: Commit SHA of the currently deployed code
+        :param deploy_commit: Commit SHA of the code being deployed
+        :param new_version_details: dict of additional metadata to display in diff output.
+        """
         self.repo = repo
-        self.last_commit = last_commit
+        self.current_commit = current_commit
         self.deploy_commit = deploy_commit
         self.new_version_details = new_version_details
         self.j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
@@ -30,13 +36,13 @@ class DeployDiff:
     @property
     def url(self):
         """Human-readable diff URL"""
-        return "{}/compare/{}...{}".format(self.repo.html_url, self.last_commit, self.deploy_commit)
+        return "{}/compare/{}...{}".format(self.repo.html_url, self.current_commit, self.deploy_commit)
 
     @property
     def deployed_commit_matches_latest_commit(self):
-        if self.last_commit and self.deploy_commit:
-            short, long = sorted([self.last_commit, self.deploy_commit], key=lambda x: len(x))
-            return self.last_commit == self.deploy_commit or long.startswith(short)
+        if self.current_commit and self.deploy_commit:
+            short, long = sorted([self.current_commit, self.deploy_commit], key=lambda x: len(x))
+            return self.current_commit == self.deploy_commit or long.startswith(short)
         return False
 
     @memoized
@@ -53,7 +59,7 @@ class DeployDiff:
             context["errors"].append("Versions are identical. No changes since last deploy.")
             return context
 
-        if not (github_auth_provided() and self.last_commit and self.deploy_commit):
+        if not (github_auth_provided() and self.current_commit and self.deploy_commit):
             context["warnings"].append("Insufficient info to get deploy diff.")
             return context
 
@@ -87,7 +93,7 @@ class DeployDiff:
         )
 
     def _get_pr_numbers(self):
-        comparison = self.repo.compare(self.last_commit, self.deploy_commit)
+        comparison = self.repo.compare(self.current_commit, self.deploy_commit)
         return [
             int(re.search(r'Merge pull request #(\d+)',
                           repo_commit.commit.message).group(1))
