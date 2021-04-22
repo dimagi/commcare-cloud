@@ -1027,17 +1027,14 @@ Use `-l` instead of a command to see the full list of commands.
 
     apply_patch                Used to apply a git patch created via `git for...
     check_status
-    clean_offline_releases     Cleans all releases in home directory
     clean_releases             Cleans old and failed deploys from the ~/www/<...
     deploy_airflow
     deploy_commcare            Preindex and deploy if it completes quickly en...
     kill_stale_celery_workers  Kills celery workers that failed to properly g...
     manage                     run a management command
-    offline_setup_release
     perform_system_checks
     pillowtop
     preindex_views             Creates a new release that runs preindex_every...
-    prepare_offline_deploy
     reset_mvp_pillows
     restart_services
     restart_webworkers

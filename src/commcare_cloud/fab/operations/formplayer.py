@@ -14,18 +14,6 @@ from ..const import ROLES_FORMPLAYER, FORMPLAYER_BUILD_DIR, DATE_FMT
 
 
 @roles(ROLES_FORMPLAYER)
-def offline_build_formplayer():
-    build_dir = os.path.join(env.code_root, FORMPLAYER_BUILD_DIR)
-
-    if not files.exists(build_dir):
-        sudo('mkdir {}'.format(build_dir))
-    sudo('cp {}/formplayer.jar {}'.format(
-        env.offline_code_dir,
-        build_dir
-    ))
-
-
-@roles(ROLES_FORMPLAYER)
 def rollback_formplayer():
     build_dir = os.path.join(env.code_current, FORMPLAYER_BUILD_DIR)
 
