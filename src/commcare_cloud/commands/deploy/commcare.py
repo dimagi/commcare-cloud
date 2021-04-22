@@ -5,7 +5,8 @@ import pytz
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_notice
-from commcare_cloud.commands.deploy.utils import announce_deploy_start
+from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
+from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_success, create_release_tag
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import run_fab_task
 from commcare_cloud.events import publish_deploy_event
@@ -38,7 +39,6 @@ def deploy_commcare(environment, args, unknown_args):
     diff = _get_diff(environment, deploy_revs)
     if not args.skip_record:
         record_successful_deploy(environment, diff, start)
-        publish_deploy_event("deploy_success", "commcare", environment)
 
     return 0
 
@@ -140,15 +140,23 @@ def _print_same_code_warning(code_branch):
 
 
 def record_successful_deploy(environment, diff, start_time):
-    delta = datetime.utcnow() - start_time
+    end_time = datetime.utcnow()
+
+    create_release_tag(environment, diff.repo, diff)
+    update_sentry_post_deploy(environment, "commcarehq", diff.repo, diff, start_time, end_time)
+    announce_deploy_success(environment, "CommCareHQ", diff.get_email_diff())
+    call_record_deploy_success(environment, diff, start_time, end_time)
+    publish_deploy_event("deploy_success", "commcare", environment)
+
+
+def call_record_deploy_success(environment, diff, start_time, end_time):
+    delta = end_time - start_time
     args = [
         '--user', get_default_username(),
         '--environment', environment.meta_config.deploy_env,
         '--url', diff.url,
         '--minutes', str(int(delta.total_seconds() // 60)),
         '--commit', diff.deploy_commit,
-        '--mail_admins'
-
     ]
     commcare_cloud(environment.name, 'django-manage', 'record_deploy_success', *args)
 
