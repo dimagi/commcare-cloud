@@ -6,6 +6,7 @@ import jinja2
 from gevent.pool import Pool
 from memoized import memoized
 
+from commcare_cloud.colors import color_warning
 from commcare_cloud.commands.terraform.aws import get_default_username
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'diff_templates')
@@ -63,9 +64,16 @@ class DeployDiff:
             return context
 
         context["compare_url"] = self.url
+
+        if not self.repo.permissions:
+            # using unauthenticated API calls, skip diff creation to avoid hitting rate limits
+            print(color_warning("Diff generation skipped. Supply a Github token to see deploy diffs."))
+            context["warnings"].append("Diff omitted.")
+            return context
+
         pr_numbers = self._get_pr_numbers()
         if len(pr_numbers) > 500:
-            context["warnings"].append("There are too many PRs to display")
+            context["warnings"].append("There are too many PRs to display.")
             return context
         elif not pr_numbers:
             context["warnings"].append("No PRs merged since last release.")
