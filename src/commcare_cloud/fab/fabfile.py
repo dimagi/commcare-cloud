@@ -240,19 +240,14 @@ def preindex_views():
 
 
 @roles(ROLES_DEPLOY)
-def mail_admins(subject, message, use_current_release=False):
+def send_email(subject, message, use_current_release=False):
     code_dir = env.code_current if use_current_release else env.code_root
     virtualenv_dir = env.py3_virtualenv_current if use_current_release else env.py3_virtualenv_root
     with cd(code_dir):
-        sudo((
-            '%(virtualenv_dir)s/bin/python manage.py '
-            'mail_admins --subject %(subject)s %(message)s --environment %(deploy_env)s'
-        ) % {
-            'virtualenv_dir': virtualenv_dir,
-            'subject': pipes.quote(subject),
-            'message': pipes.quote(message),
-            'deploy_env': pipes.quote(env.deploy_env),
-        })
+        sudo(
+            f'{virtualenv_dir}/bin/python manage.py '
+            f'send_email --to-admins --subject {pipes.quote(subject)} {pipes.quote(message)}'
+        )
 
 
 @task
@@ -409,7 +404,7 @@ def _deploy_without_asking(skip_record):
         for index, command in enumerate(ONLINE_DEPLOY_COMMANDS):
             deploy_checkpoint(index, command.__name__, execute_with_timing, command)
     except PreindexNotFinished:
-        mail_admins(
+        send_email(
             " You can't deploy to {} yet. There's a preindex in process.".format(env.env_name),
             ("Preindexing is taking a while, so hold tight "
              "and wait for an email saying it's done. "
@@ -417,7 +412,7 @@ def _deploy_without_asking(skip_record):
         )
     except Exception:
         execute_with_timing(
-            mail_admins,
+            send_email,
             "Deploy to {environment} failed. Try resuming with "
             "fab {environment} deploy:resume=yes.".format(environment=env.env_name),
             traceback_string()
