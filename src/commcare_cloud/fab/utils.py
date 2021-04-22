@@ -7,8 +7,7 @@ import sys
 import traceback
 from io import open
 
-from fabric.api import env, execute, local
-from fabric.context_managers import cd, settings
+from fabric.api import env, execute
 from fabric.operations import sudo
 from github import UnknownObjectException
 from memoized import memoized_property
@@ -16,7 +15,6 @@ from memoized import memoized_property
 from .const import (
     CACHED_DEPLOY_CHECKPOINT_FILENAME,
     CACHED_DEPLOY_ENV_FILENAME,
-    OFFLINE_STAGING_DIR,
     PROJECT_ROOT,
 )
 from commcare_cloud.github import github_repo
@@ -70,33 +68,8 @@ class DeployMetadata(object):
         tag_commits = getattr(env, "tag_deploy_commits", None)
         return github_repo('dimagi/commcare-hq', require_write_permissions=tag_commits)
 
-    def _offline_tag_commit(self):
-        commit = local('cd {}/commcare-hq && git show-ref --hash --heads {}'.format(
-            OFFLINE_STAGING_DIR,
-            env.deploy_metadata.deploy_ref,
-        ), capture=True)
-
-        tag_name = '{}-{}-offline-deploy'.format(
-            self.timestamp, self._deploy_env)
-        local('cd {staging_dir}/commcare-hq && git tag -a -m "{message}" {tag} {commit}'.format(
-            staging_dir=OFFLINE_STAGING_DIR,
-            message='{} offline deploy at {}'.format(
-                self._deploy_env, self.timestamp),
-            tag=tag_name,
-            commit=commit,
-        ))
-
-        with settings(warn_only=True):
-            local('cd {staging_dir}/commcare-hq && git push origin {tag}'.format(
-                staging_dir=OFFLINE_STAGING_DIR,
-                tag=tag_name,
-            ))
-
     @memoized_property
     def deploy_ref(self):
-        if env.offline:
-            return env.code_branch
-
         # turn whatever `code_branch` is into a commit hash
         return self.repo.get_commit(self._code_branch).sha
 

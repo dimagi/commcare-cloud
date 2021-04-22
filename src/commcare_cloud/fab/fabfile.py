@@ -28,32 +28,27 @@ Server layout:
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
-import datetime
+
 import functools
 import os
 import pipes
 import posixpath
-from distutils.util import strtobool
 from getpass import getpass
 
-import pytz
-from github import GithubException
-
-from commcare_cloud.environment.main import get_environment
-from commcare_cloud.environment.paths import get_available_envs
-from commcare_cloud.events import publish_deploy_event
 from fabric import utils
 from fabric.api import env, execute, parallel, roles, sudo, task
 from fabric.colors import blue, magenta, red
 from fabric.context_managers import cd
 from fabric.contrib import console, files
 from fabric.operations import require
+from github import GithubException
 
+from commcare_cloud.environment.main import get_environment
+from commcare_cloud.environment.paths import get_available_envs
 from .checks import check_servers
 from .const import ROLES_ALL_SERVICES, ROLES_ALL_SRC, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .exceptions import PreindexNotFinished
 from .operations import airflow, db, formplayer
-from .operations import offline as offline_ops
 from .operations import release, staticfiles, supervisor
 from .utils import (
     DeployMetadata,
@@ -117,8 +112,6 @@ def _setup_path():
 
     env.services = posixpath.join(env.code_root, 'services')
     env.db = '%s_%s' % (env.project, env.deploy_env)
-    env.offline_releases = posixpath.join('/home/{}/releases'.format(env.user))
-    env.offline_code_dir = posixpath.join('{}/{}'.format(env.offline_releases, 'offline'))
     env.airflow_home = posixpath.join(env.home, 'airflow')
     env.airflow_env = posixpath.join(env.airflow_home, 'env')
     env.airflow_code_root = posixpath.join(env.airflow_home, 'pipes')
@@ -221,7 +214,6 @@ def env_common():
     env.roles = ['deploy']
     env.hosts = env.roledefs['deploy']
     env.resume = False
-    env.offline = False
     env.full_deploy = False
     env.supervisor_roles = ROLES_ALL_SERVICES
 
@@ -275,28 +267,6 @@ def kill_stale_celery_workers():
 def rollback_formplayer():
     execute(formplayer.rollback_formplayer)
     execute(supervisor.restart_formplayer)
-
-
-@task
-def offline_setup_release(keep_days=0):
-    env.offline = True
-    execute_with_timing(release.create_offline_dir)
-    execute_with_timing(release.sync_offline_dir)
-
-    execute_with_timing(release.create_code_dir)
-    execute_with_timing(release.update_code_offline)
-
-    execute_with_timing(release.clone_virtualenv)
-    execute_with_timing(copy_release_files)
-
-    execute_with_timing(release.update_bower_offline)
-    execute_with_timing(release.update_npm_offline)
-
-
-@task
-def prepare_offline_deploy():
-    offline_ops.prepare_files()
-    offline_ops.prepare_formplayer_build()
 
 
 def parse_int_or_exit(val):
@@ -435,13 +405,8 @@ def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
 
 
 def _deploy_without_asking(skip_record):
-    if env.offline:
-        commands = OFFLINE_DEPLOY_COMMANDS
-    else:
-        commands = ONLINE_DEPLOY_COMMANDS
-
     try:
-        for index, command in enumerate(commands):
+        for index, command in enumerate(ONLINE_DEPLOY_COMMANDS):
             deploy_checkpoint(index, command.__name__, execute_with_timing, command)
     except PreindexNotFinished:
         mail_admins(
@@ -548,14 +513,6 @@ def clean_releases(keep=3):
 
 
 @task
-def clean_offline_releases():
-    """
-    Cleans all releases in home directory
-    """
-    execute(release.clean_offline_releases)
-
-
-@task
 @roles(['deploy'])
 def manage(cmd):
     """
@@ -573,10 +530,9 @@ def manage(cmd):
 
 
 @task
-def deploy_commcare(resume='no', offline='no', skip_record='no'):
+def deploy_commcare(resume='no', skip_record='no'):
     """Preindex and deploy if it completes quickly enough, otherwise abort
     fab <env> deploy_commcare:resume=yes  # resume from previous deploy
-    fab <env> deploy_commcare:offline=yes  # offline deploy
     fab <env> deploy_commcare:skip_record=yes  # skip record_successful_release
     """
     _require_target()
@@ -594,21 +550,6 @@ def deploy_commcare(resume='no', offline='no', skip_record='no'):
         env.resume = True
         env.checkpoint_index = checkpoint_index or 0
         print(magenta('You are about to resume the deploy in {}'.format(env.code_root)))
-
-    env.offline = offline == 'yes'
-
-    if env.offline:
-        print(magenta(
-            'You are about to run an offline deploy.'
-            'Ensure that you have run `fab prepare_offline_deploy`.'
-        ))
-        offline_ops.check_ready()
-        if not console.confirm('Are you sure you want to do an offline deploy?'):
-            utils.abort('Task aborted')
-
-        # Force ansible user and prompt for password
-        env.user = 'ansible'
-        env.password = getpass('Enter the password for the ansbile user: ')
 
     _deploy_without_asking(skip_record)
 
@@ -725,23 +666,6 @@ ONLINE_DEPLOY_COMMANDS = [
     db.flip_es_aliases,
     staticfiles.pull_manifest,
     staticfiles.pull_staticfiles_cache,
-    release.clean_releases,
-]
-
-OFFLINE_DEPLOY_COMMANDS = [
-    offline_setup_release,
-    db.preindex_views,
-    db.ensure_preindex_completion,
-    db.ensure_checkpoints_safe,
-    staticfiles.version_static,
-    staticfiles.collectstatic,
-    staticfiles.compress,
-    staticfiles.update_translations,
-    formplayer.offline_build_formplayer,
-    conditionally_stop_pillows_and_celery_during_migrate,
-    db.create_kafka_topics,
-    db.flip_es_aliases,
-    staticfiles.pull_manifest,
     release.clean_releases,
 ]
 
