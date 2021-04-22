@@ -255,6 +255,15 @@ servers:
     group: "rabbitmq"
     os: ubuntu_pro_bionic
 
+  - server_name: "rabbit4-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "rabbitmq"
+    os: ubuntu_pro_bionic
+
   - server_name: "kafka2-staging"
     server_instance_type: t3.medium
     network_tier: "db-private"

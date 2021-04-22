@@ -68,6 +68,8 @@ rabbit2-staging: 10.201.10.239
 rabbit2-staging.instance_id: i-01bfeae5f4febaddf
 rabbit3-staging: 10.201.10.175
 rabbit3-staging.instance_id: i-0b9337eaa43eb4d77
+rabbit4-staging: 10.201.11.17
+rabbit4-staging.instance_id: i-0eae4b3b4acdacbf0
 vpn-staging: 10.201.20.112
 vpn-staging.instance_id: i-0e43738c0151d44b7
 vpn-staging.public_ip: 54.227.170.89
