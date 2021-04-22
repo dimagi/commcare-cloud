@@ -6,7 +6,10 @@ import jinja2
 from gevent.pool import Pool
 from memoized import memoized
 
-from commcare_cloud.colors import color_warning
+from commcare_cloud.colors import (
+    color_warning, color_error, color_success,
+    color_highlight, color_summary, color_code
+)
 from commcare_cloud.commands.terraform.aws import get_default_username
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'diff_templates')
@@ -135,15 +138,13 @@ class DeployDiff:
 
 
 def register_console_filters(env):
-    from fabric.colors import red, blue, cyan, yellow, green, magenta
-
     filters = {
-        "error": red,
-        "success": green,
-        "highlight": yellow,
-        "summary": blue,
-        "warning": magenta,
-        "code": cyan,
+        "error": color_error,
+        "success": color_success,
+        "highlight": color_highlight,
+        "summary": color_summary,
+        "warning": color_warning,
+        "code": color_code,
     }
 
     for name, filter_ in filters.items():
