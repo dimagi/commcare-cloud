@@ -373,6 +373,9 @@ where `{email}` is the email address you would like to use as the username.
 
 ### Add a new CommCare build
 
-In order to create new versions of applications created in the CommCareHQ app builder, you will need to add the latest `CommCare Mobile` and `CommCare Core` builds to your server.
+In order to create new versions of applications created in the CommCareHQ app builder, you will need to add the the latest `CommCare Mobile` and `CommCare Core` builds to your server. You can do this by running the command below - it wil fetch the latest version from Github.
 
-To add a build to your server visit `<server url>/builds/edit_menu` and follow the instructions under "Import a new build from the build server"
+``` bash
+$ cchq monolith django-manage add_commcare_build --latest
+```
+
