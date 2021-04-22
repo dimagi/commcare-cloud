@@ -38,6 +38,8 @@ def get_github_credentials(repo_name, repo_is_private, require_write_permissions
         print(color_notice(f"[Deprecation Warning] Config file has moved."))
         print(color_notice(f"New location is {PROJECT_ROOT}/config.py or else use the "
                            f"'GITHUB_TOKEN' environment variable."))
+        print(color_notice(f"\nYou can move the config to the new location as follows:"))
+        print(color_notice(f"    $ mv {PROJECT_ROOT}/fab/config.py {PROJECT_ROOT}/config.py\n"))
 
     if token is None:
         print(color_warning("Github credentials not found!"))
