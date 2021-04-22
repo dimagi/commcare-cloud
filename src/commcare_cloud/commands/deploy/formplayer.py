@@ -20,6 +20,8 @@ from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff
 from commcare_cloud.fab.git_repo import get_github, github_auth_provided
 
+FORMPLAYER = "Formplayer"
+
 AWS_BASE_URL_ENV = {
     "staging": "https://s3.amazonaws.com/dimagi-formplayer-jars/staging/latest-successful"
 }
@@ -60,11 +62,11 @@ def deploy_formplayer(environment, args):
         return 1
 
     start = datetime.utcnow()
-    announce_deploy_start(environment, "Formplayer")
+    announce_deploy_start(environment, FORMPLAYER)
 
     rc = run_ansible_playbook_command(environment, args)
     if rc != 0:
-        announce_deploy_failed(environment)
+        announce_deploy_failed(environment, FORMPLAYER)
         return rc
 
     rc = commcare_cloud(
@@ -77,7 +79,7 @@ def deploy_formplayer(environment, args):
         ), '-b',
     )
     if rc != 0:
-        announce_deploy_failed(environment)
+        announce_deploy_failed(environment, FORMPLAYER)
         return rc
 
     record_deploy_success(environment, repo, diff, start)
@@ -89,7 +91,7 @@ def record_deploy_success(environment, repo, diff, start):
     create_release_tag(environment, repo, diff)
     record_deploy_in_datadog(environment, diff, end - start)
     update_sentry_post_deploy(environment, "formplayer", repo, diff, start, end)
-    announce_deploy_success(environment, diff.get_email_diff())
+    announce_deploy_success(environment, FORMPLAYER, diff.get_email_diff())
     publish_deploy_event("deploy_success", "formplayer", environment)
 
 

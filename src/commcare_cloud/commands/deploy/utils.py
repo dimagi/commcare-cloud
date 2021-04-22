@@ -15,29 +15,29 @@ def create_release_tag(environment, repo, diff):
     )
 
 
-def announce_deploy_start(environment, system_name):
+def announce_deploy_start(environment, service_name):
     send_email(
         environment,
         subject="{user} has initiated a {system_name} deploy to {environment}".format(
             user=get_default_username(),
-            system_name=system_name,
+            system_name=service_name,
             environment=environment.meta_config.deploy_env,
         ),
     )
 
 
-def announce_deploy_failed(environment):
+def announce_deploy_failed(environment, service_name):
     send_email(
         environment,
-        subject=f"Formplayer deploy to {environment.name} failed",
+        subject=f"{service_name} deploy to {environment.name} failed",
     )
 
 
-def announce_deploy_success(environment, diff_ouptut):
+def announce_deploy_success(environment, service_name, diff_ouptut):
     recipient = environment.public_vars.get('daily_deploy_email', None)
     send_email(
         environment,
-        subject=f"Formplayer deploy successful - {environment.name}",
+        subject=f"{service_name} deploy successful - {environment.name}",
         message=diff_ouptut,
         to_admins=not recipient,
         recipients=[recipient] if recipient else None
