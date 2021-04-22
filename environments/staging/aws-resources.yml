@@ -66,8 +66,6 @@ proxy6-staging: 10.201.10.71
 proxy6-staging.instance_id: i-0644a5a4454bc8d25
 rabbit2-staging: 10.201.10.239
 rabbit2-staging.instance_id: i-01bfeae5f4febaddf
-rabbit3-staging: 10.201.10.175
-rabbit3-staging.instance_id: i-0b9337eaa43eb4d77
 rabbit4-staging: 10.201.11.17
 rabbit4-staging.instance_id: i-0eae4b3b4acdacbf0
 vpn-staging: 10.201.20.112
