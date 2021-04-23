@@ -6,8 +6,11 @@ import jinja2
 from gevent.pool import Pool
 from memoized import memoized
 
+from commcare_cloud.colors import (
+    color_warning, color_error, color_success,
+    color_highlight, color_summary, color_code
+)
 from commcare_cloud.commands.terraform.aws import get_default_username
-from commcare_cloud.fab.git_repo import github_auth_provided
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'diff_templates')
 LABELS_TO_EXPAND = [
@@ -59,14 +62,21 @@ class DeployDiff:
             context["errors"].append("Versions are identical. No changes since last deploy.")
             return context
 
-        if not (github_auth_provided() and self.current_commit and self.deploy_commit):
+        if not (self.current_commit and self.deploy_commit):
             context["warnings"].append("Insufficient info to get deploy diff.")
             return context
 
         context["compare_url"] = self.url
+
+        if not self.repo.permissions:
+            # using unauthenticated API calls, skip diff creation to avoid hitting rate limits
+            print(color_warning("Diff generation skipped. Supply a Github token to see deploy diffs."))
+            context["warnings"].append("Diff omitted.")
+            return context
+
         pr_numbers = self._get_pr_numbers()
         if len(pr_numbers) > 500:
-            context["warnings"].append("There are too many PRs to display")
+            context["warnings"].append("There are too many PRs to display.")
             return context
         elif not pr_numbers:
             context["warnings"].append("No PRs merged since last release.")
@@ -128,15 +138,13 @@ class DeployDiff:
 
 
 def register_console_filters(env):
-    from fabric.colors import red, blue, cyan, yellow, green, magenta
-
     filters = {
-        "error": red,
-        "success": green,
-        "highlight": yellow,
-        "summary": blue,
-        "warning": magenta,
-        "code": cyan,
+        "error": color_error,
+        "success": color_success,
+        "highlight": color_highlight,
+        "summary": color_summary,
+        "warning": color_warning,
+        "code": color_code,
     }
 
     for name, filter_ in filters.items():

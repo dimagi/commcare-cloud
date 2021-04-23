@@ -18,7 +18,7 @@ from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import timeago
 from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff
-from commcare_cloud.fab.git_repo import get_github, github_auth_provided
+from commcare_cloud.github import github_repo
 
 FORMPLAYER = "Formplayer"
 
@@ -52,8 +52,8 @@ def deploy_formplayer(environment, args):
     print(color_notice("\nPreparing to deploy Formplayer to: "), end="")
     print(f"{environment.name}\n")
 
-    # do this first to get the git prompt out the way
-    repo = get_github().get_repo('dimagi/formplayer') if github_auth_provided() else None
+    tag_commits = environment.fab_settings_config.tag_deploy_commits
+    repo = github_repo('dimagi/formplayer', require_write_permissions=tag_commits)
 
     diff = get_deploy_diff(environment, repo)
     diff.print_deployer_diff()
@@ -129,9 +129,7 @@ def run_ansible_playbook_command(environment, args):
 def record_deploy_in_datadog(environment, diff, tdelta):
     if environment.public_vars.get('DATADOG_ENABLED', False):
         print(color_summary(f">> Recording deploy in Datadog"))
-        diff_url = ""
-        if github_auth_provided():
-            diff_url = f"\nDiff link: [Git Diff]({diff.url})"
+        diff_url = f"\nDiff link: [Git Diff]({diff.url})"
         deploy_notification_text = (
             "Formplayer has been successfully deployed to "
             "*{}* by *{}* in *{}* minutes.\nRelease Name: {}{}".format(

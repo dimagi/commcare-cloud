@@ -323,8 +323,6 @@ def _setup_release(keep_days=2, full_cluster=True):
                 "Repository: {}\n".format(e.data["message"], repo.url)
             )
 
-    if env.full_deploy:
-        env.deploy_metadata.tag_setup_release()
     execute_with_timing(release.create_code_dir(full_cluster))
 
     update_code = release.update_code(full_cluster)

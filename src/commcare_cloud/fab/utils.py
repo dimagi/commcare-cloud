@@ -17,7 +17,7 @@ from .const import (
     CACHED_DEPLOY_ENV_FILENAME,
     PROJECT_ROOT,
 )
-from .git_repo import get_github, github_auth_provided
+from commcare_cloud.github import github_repo
 
 
 def execute_with_timing(fn, *args, **kwargs):
@@ -65,38 +65,13 @@ class DeployMetadata(object):
 
     @memoized_property
     def repo(self):
-        return get_github().get_repo('dimagi/commcare-hq')
-
-    def tag_commit(self):
-        tag_name = "{}-{}-deploy".format(self.timestamp, self._deploy_env)
-        if github_auth_provided():
-            self.repo.create_git_ref(
-                ref='refs/tags/' + tag_name,
-                sha=self.deploy_ref,
-            )
-            self._deploy_tag = tag_name
+        tag_commits = getattr(env, "tag_deploy_commits", None)
+        return github_repo('dimagi/commcare-hq', require_write_permissions=tag_commits)
 
     @memoized_property
     def deploy_ref(self):
         # turn whatever `code_branch` is into a commit hash
         return self.repo.get_commit(self._code_branch).sha
-
-    def tag_setup_release(self):
-        if github_auth_provided():
-            try:
-                self.repo.create_git_ref(
-                    ref='refs/tags/' +
-                        '{}-{}-setup_release'.format(self.timestamp,
-                                                     self._deploy_env),
-                    sha=self.deploy_ref,
-                )
-            except UnknownObjectException:
-                raise Exception(
-                    'Github API key does not have the right settings. '
-                    'Please create an API key with the public_repo scope enabled.'
-                )
-            return True
-        return False
 
 
 def _get_checkpoint_filename():

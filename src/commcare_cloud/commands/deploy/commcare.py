@@ -11,7 +11,7 @@ from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import run_fab_task
 from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff
-from commcare_cloud.fab.git_repo import get_github, github_auth_provided
+from commcare_cloud.github import github_repo
 
 
 def deploy_commcare(environment, args, unknown_args):
@@ -76,7 +76,8 @@ def _get_diff(environment, deploy_revs):
     if DEPLOY_DIFF is not None:
         return DEPLOY_DIFF
 
-    repo = get_github().get_repo('dimagi/commcare-hq') if github_auth_provided() else None
+    tag_commits = environment.fab_settings_config.tag_deploy_commits
+    repo = github_repo('dimagi/commcare-hq', require_write_permissions=tag_commits)
 
     deployed_version = _get_deployed_version(environment)
     latest_version = repo.get_commit(deploy_revs['commcare']).sha if repo else None
