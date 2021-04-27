@@ -149,7 +149,7 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 80
+      volume_size: 150
       encrypted: true
     group: "couchdb2"
     os: ubuntu_pro_bionic
@@ -160,7 +160,7 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 80
+      volume_size: 150
       encrypted: true
     group: "couchdb2"
     os: ubuntu_pro_bionic
