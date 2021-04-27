@@ -1,15 +1,12 @@
 - name: Update setuptools
   pip: name=setuptools state=latest
-  become: yes
 
 - name: Install ndg-httpsclient so we can download couch
   pip:
     name:
       - ndg-httpsclient
-  become: yes
 
 - name: Create couchdb2 dirs
-  become: yes
   file:
     path: "{{ item }}"
     state: directory
@@ -28,3 +25,20 @@
     - apt_key: url=https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc state=present
     - apt_repository: repo="deb https://packages.erlang-solutions.com/ubuntu bionic contrib" state=present
   when: ansible_distribution_version == '18.04'
+
+- name: Install Erlang dependencies
+  apt:
+    name:
+      - esl-erlang=1:22.3.4.9-1
+      - erlang-mode=1:22.3.4.9-1
+    force: yes
+  when: couchdb_version is version('3.0.0', '>=')
+
+- name: Install Erlang dependencies 
+  apt:
+    name:
+      - esl-erlang=1:21.3.8.17-1
+      - erlang-mode=1:21.3.8.17-1
+    force: yes
+  when: couchdb_version is version('3.0.0', '<')
+

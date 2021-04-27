@@ -83,6 +83,7 @@ couchdb2:
   username: "{{ COUCH_USERNAME }}"
   password: "{{ COUCH_PASSWORD }}"
 couchdb2_client_max_body_size: 100M
+couchdb_version: '3.1.1'
 couchdb_os_process_limit: 125
 couchdb_reduce_limit: False
 couchdb_multiaz: True

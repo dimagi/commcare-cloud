@@ -1,6 +1,20 @@
 ---
+
+- name: Stop monit
+  shell: /bin/true
+  notify: stop monit
+
+- name: Stop couchdb2
+  shell: /bin/true
+  notify: stop couchdb2
+
+- meta: flush_handlers
+
+- name: Kill pending couchdb2 processes
+  shell: pkill epmd; sleep 7
+  ignore_errors: yes
+
 - name: Copy extra config
-  become: yes
   template:
     src: extras.ini.j2
     dest: "{{ couchdb_etc_local_dir }}/extras.ini"
@@ -12,7 +26,6 @@
     - couchdb_extras
 
 - name: Add placement zone config
-  become: yes
   lineinfile:
     path: /usr/local/couchdb2/couchdb/etc/default.ini
     regexp: '^placement='
@@ -23,7 +36,6 @@
   tags: zone_update
 
 - name: Ensure that the Erlang VM listens on a known minimum port no.
-  become: yes
   lineinfile:
     dest: "{{ couchdb_dir }}/etc/vm.args"
     line: "-kernel inet_dist_listen_min {{ couchdb_cluster_port }}"
@@ -32,23 +44,38 @@
   when: couchdb_cluster_port is defined
 
 - name: Ensure that the Erlang VM listens on a known maximum port no.
-  become: yes
   lineinfile:
     dest: "{{ couchdb_dir }}/etc/vm.args"
     line: "-kernel inet_dist_listen_max {{ couchdb_cluster_port }}"
     insertafter: '^-kernel inet_dist_listen_min {{ couchdb_cluster_port }}'
     state: present
   when: couchdb_cluster_port is defined
-  notify: restart couchdb2
 
 - name: Add new standard options to vm.args
-  become: yes
   blockinfile:
     path: "{{ couchdb_dir }}/etc/vm.args"
     block: "{{ lookup('file', 'vm.args.defaults') }}"
-  notify: restart couchdb2
+  when: couchdb_version is version('3.0.0', '>=')
+
+- name: Start couchdb2
+  shell: /bin/true
+  notify: start couchdb2
 
 - meta: flush_handlers
+
+- name: Add nodes
+  uri:
+    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_port }}/_node/_local/_nodes/couchdb@{{ item|ipaddr }}"
+    method: PUT
+    user: "{{ couchdb2.username }}"
+    password: "{{ couchdb2.password }}"
+    force_basic_auth: true
+    status_code: 201, 409 # 409 means already set up (conflict)
+    body: '{}'
+  when: couchdb_version is version('3.0.0', '>=') and inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
+  with_items: "{{ groups.couchdb2 }}"
+  tags:
+    - add_couch_nodes
 
 - name: Add nodes
   uri:
@@ -59,7 +86,7 @@
     force_basic_auth: true
     status_code: 201, 409 # 409 means already set up (conflict)
     body: '{}'
-  when: inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
+  when: couchdb_version is version('3.0.0', '<') and inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
   with_items: "{{ groups.couchdb2 }}"
   tags:
     - add_couch_nodes
@@ -84,7 +111,6 @@
    - _global_changes
 
 - name: Copy couch restart script (cleanup)
-  become: yes
   file:
     dest: "/usr/local/sbin/couch2-restarter.sh"
     state: absent
@@ -92,7 +118,6 @@
     - cron
 
 - name: Create Cron job (cleanup)
-  become: yes
   cron:
     name: "Reboot Couch"
     job: "/usr/local/sbin/couch2-restarter.sh > /dev/null"
@@ -103,7 +128,6 @@
     - cron
 
 - name: Create couch backup dir
-  become: yes
   file:
     path: "{{ couch_backup_dir }}"
     state: directory
@@ -116,7 +140,6 @@
     - backups
 
 - name: Copy couch backup script
-  become: yes
   template:
     src: "create_couchdb_backup.sh.j2"
     dest: "/usr/local/sbin/create_couchdb_backup.sh"
@@ -130,21 +153,32 @@
     - backups
 
 - name: Copy couch restore script
-  become: yes
   template:
-    src: "restore_couchdb_backup.sh.j2"
+    src: "restore_couchdb3_backup.sh.j2"
     dest: "/usr/local/sbin/restore_couchdb_backup.sh"
     group: couchdb
     owner: couchdb
     mode: 0700
     backup: yes
-  when: backup_couch|bool
+  when: couchdb_version is version('3.0.0', '>=') and backup_couch|bool
+  tags:
+    - cron
+    - backups
+
+- name: Copy couch restore script
+  template:
+    src: "restore_couchdb2_backup.sh.j2"
+    dest: "/usr/local/sbin/restore_couchdb_backup.sh"
+    group: couchdb
+    owner: couchdb
+    mode: 0700
+    backup: yes
+  when: couchdb_version is version('3.0.0', '<') and backup_couch|bool
   tags:
     - cron
     - backups
 
 - name: Create Hourly Cron job 
-  become: yes
   cron:
     name: "Backup couchdb hourly"
     job: "/usr/local/sbin/create_couchdb_backup.sh hourly {{ couchdb_backup_hours * 60 }}"
@@ -159,7 +193,6 @@
     - backups
 
 - name: Create Daily Cron job
-  become: yes
   cron:
     name: "Backup couchdb daily"
     job: "/usr/local/sbin/create_couchdb_backup.sh daily {{ couchdb_backup_days }}"
@@ -174,7 +207,6 @@
     - backups
 
 - name: Create Weekly Cron job
-  become: yes
   cron:
     name: "Backup coudhdb weekly"
     job: "/usr/local/sbin/create_couchdb_backup.sh weekly {{ couchdb_backup_weeks * 7 }}"
@@ -189,7 +221,6 @@
     - backups
 
 - name: Set up check_s3_backups
-  become: yes
   import_role:
     name: backups
     tasks_from: set_up_check_s3_backups.yml
@@ -203,7 +234,6 @@
   when: compact_couch_cron and inventory_hostname == groups.couchdb2.0
 
 - name: Set up aws credentials
-  become: yes
   import_role:
     name: backups
     tasks_from: set_up_aws_credentials.yml
@@ -220,15 +250,17 @@
   tags: after-reboot
 
 - name: couchdb2 monit config
-  become: yes
   template:
     src: "monit.couchdb2.j2"
     dest: "/etc/monit/conf.d/couchdb2"
     group: root
     owner: root
     mode: 0640
-  notify: reload monit
   tags: monit
+
+- name: Restart monit
+  shell: /bin/true
+  notify: restart monit
 
 - meta: flush_handlers
 
@@ -241,3 +273,4 @@
   until: not result.failed or 'process not presently configured with monit' not in result.msg
   retries: 5
   delay: 20
+
