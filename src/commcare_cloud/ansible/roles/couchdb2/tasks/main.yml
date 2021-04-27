@@ -11,7 +11,13 @@
 - meta: flush_handlers
 
 - name: Kill pending couchdb2 processes
-  shell: pkill epmd; sleep 7
+  shell: |
+    pkill beam.smp
+    pkill epmd
+    pkill memsup
+    pkill cpu_sup
+    pkill couchjs
+    sleep 60
   ignore_errors: yes
 
 - name: Copy extra config
