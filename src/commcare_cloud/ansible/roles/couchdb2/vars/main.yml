@@ -1,6 +1,6 @@
 ---
-couchdb_port : 15984
-couchdb_node_port : 15986
+couchdb_port : "{{ couchdb2_port }}"
+couchdb_node_port : "{{ couchdb2_local_port }}"
 couchdb_dir: /usr/local/couchdb2/couchdb
 couchdb_data_dir: '{{ encrypted_root }}/couchdb2'
 couchdb_secure: False
