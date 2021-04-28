@@ -205,7 +205,6 @@ def create_code_dir(full_cluster=True):
     roles_to_use = _get_roles(full_cluster)
 
     @roles(roles_to_use)
-    @parallel
     def create():
         sudo('mkdir -p {}'.format(env.code_root))
 
@@ -229,7 +228,7 @@ def record_successful_release():
         files.append(RELEASE_RECORD, str(env.code_root), use_sudo=True)
 
 
-#TODO make this a nicer task
+# TODO make this a nicer task
 @roles(ROLES_ALL_SRC)
 @parallel
 def update_current(release=None):
