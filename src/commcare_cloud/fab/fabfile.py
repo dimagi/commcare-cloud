@@ -103,7 +103,7 @@ def _setup_path():
     env.log_dir = posixpath.join(env.home, 'www', env.deploy_env, 'log')
     env.releases = posixpath.join(env.root, 'releases')
     env.code_current = posixpath.join(env.root, 'current')
-    env.code_root = posixpath.join(env.releases, env.deploy_metadata.timestamp)
+    env.code_root = posixpath.join(env.releases, env.ccc_environment.new_release_name())
     env.project_root = posixpath.join(env.code_root, env.project)
     env.project_media = posixpath.join(env.code_root, 'media')
 
@@ -165,7 +165,7 @@ def env_common():
 
     env.is_monolith = len(set(servers['all']) - set(servers['control'])) < 2
 
-    env.deploy_metadata = DeployMetadata(env.code_branch, env.ccc_environment)
+    env.deploy_metadata = DeployMetadata(env.code_branch)
     _setup_path()
 
     all = servers['all']

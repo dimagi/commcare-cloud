@@ -42,8 +42,7 @@ def get_pillow_env_config():
 
 class DeployMetadata(object):
 
-    def __init__(self, code_branch, environment):
-        self.timestamp = environment.new_release_name()
+    def __init__(self, code_branch):
         self._code_branch = code_branch
 
     def __getstate__(self):
