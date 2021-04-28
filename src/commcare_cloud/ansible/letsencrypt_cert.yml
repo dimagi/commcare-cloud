@@ -42,6 +42,17 @@
         when: not certbot_install is changed
       when: certbot_version.rc != 0 or certbot_version.stdout.split()[1] is version(certbot_min_version, '<')
 
+    - name: Check that /etc/letsencrypt/cli.ini exists
+      stat:
+        path: /etc/letsencrypt/cli.ini
+      register: stat_result
+
+    - name: Create the file, if not exist already
+      file:
+        path: /etc/letsencrypt/cli.ini
+        state: touch
+      when: not stat_result.stat.exists
+
     - name: Update cerbot to use alternate root chain
       lineinfile:
         dest: /etc/letsencrypt/cli.ini
@@ -81,7 +92,7 @@
       command: "certbot certonly --webroot -w /var/www/letsencrypt/ -m {{ root_email }} --agree-tos -n -d {{ item }} --expand"
       with_items: "{{ extra_sites }}"
       when: extra_sites is defined
-    
+
     - name: Reload Nginx
       service:
         name: nginx
