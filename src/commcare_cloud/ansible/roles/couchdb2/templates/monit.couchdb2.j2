@@ -1,6 +1,6 @@
  check process couchdb2 with pidfile {{ couchdb_dir }}/var/run/couchdb2.pid
    group database
    group couchdb2
-   start program = "/etc/init.d/couchdb2 start"
-   stop program = "/etc/init.d/couchdb2 stop"
+   start program = "/bin/systemctl start couchdb2"
+   stop program = "/bin/systemctl stop couchdb2"
    if failed host {{ inventory_hostname }} port {{ couchdb2_port }} then restart
