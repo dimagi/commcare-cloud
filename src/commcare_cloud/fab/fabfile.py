@@ -536,7 +536,7 @@ def deploy_commcare(resume='no', skip_record='no'):
 
     if resume == 'yes':
         try:
-            cached_payload = retrieve_cached_deploy_env()
+            cached_payload = retrieve_cached_deploy_env(env.deploy_env)
             checkpoint_index = retrieve_cached_deploy_checkpoint()
         except Exception:
             print(red('Unable to resume deploy, please start anew'))

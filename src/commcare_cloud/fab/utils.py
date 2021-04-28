@@ -74,24 +74,24 @@ def _get_checkpoint_filename():
     return '{}_{}'.format(env.deploy_env, CACHED_DEPLOY_CHECKPOINT_FILENAME)
 
 
-def _get_env_filename():
-    return '{}_{}'.format(env.deploy_env, CACHED_DEPLOY_ENV_FILENAME)
+def _get_env_filename(env_name):
+    return '{}_{}'.format(env_name, CACHED_DEPLOY_ENV_FILENAME)
 
 
 def cache_deploy_state(command_index):
     with open(os.path.join(PROJECT_ROOT, _get_checkpoint_filename()), 'wb') as f:
         pickle.dump(command_index, f)
-    with open(os.path.join(PROJECT_ROOT, _get_env_filename()), 'wb') as f:
+    with open(os.path.join(PROJECT_ROOT, _get_env_filename(env.deploy_env)), 'wb') as f:
         pickle.dump(env, f)
 
 
 def clear_cached_deploy():
     os.remove(os.path.join(PROJECT_ROOT, _get_checkpoint_filename()))
-    os.remove(os.path.join(PROJECT_ROOT, _get_env_filename()))
+    os.remove(os.path.join(PROJECT_ROOT, _get_env_filename(env.deploy_env)))
 
 
-def retrieve_cached_deploy_env():
-    filename = os.path.join(PROJECT_ROOT, _get_env_filename())
+def retrieve_cached_deploy_env(env_name):
+    filename = os.path.join(PROJECT_ROOT, _get_env_filename(env_name))
     return _retrieve_cached(filename)
 
 
