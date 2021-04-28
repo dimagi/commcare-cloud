@@ -44,11 +44,7 @@ class DeployMetadata(object):
 
     def __init__(self, code_branch, environment):
         self.timestamp = environment.new_release_name()
-        self._deploy_tag = None
-        self._max_tags = 100
         self._code_branch = code_branch
-        self._environment = environment
-        self._deploy_env = environment.meta_config.deploy_env
 
     def __getstate__(self):
         """
