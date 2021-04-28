@@ -63,9 +63,9 @@
     block: "{{ lookup('file', 'vm.args.defaults') }}"
   when: couchdb_version is version('3.0.0', '>=')
 
-- name: Start couchdb2
+- name: Restart couchdb2
   shell: /bin/true
-  notify: start couchdb2
+  notify: restart couchdb2
 
 - meta: flush_handlers
 

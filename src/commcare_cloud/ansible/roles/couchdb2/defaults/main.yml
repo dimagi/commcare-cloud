@@ -4,7 +4,6 @@ couch_backup_dir: "{{ encrypted_root }}/backups/couchdb2"
 backup_couch: False
 remote_couch_backup: False
 couch_s3: False
-couchdb_version: '2.3.1'
 couchdb_user: couchdb
 couchdb_group: couchdb
 couchdb_backup_days: 2

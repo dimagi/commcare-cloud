@@ -6,6 +6,11 @@ os_process_limit = {{ couchdb_os_process_limit }}
 
 [rexi]
 server_per_node = true
+; set this to true if all nodes are on 3.1.1
+; to save some intra-cluster network bandwidth
+;use_kill_all = true
 
 [couchdb]
 os_process_timeout = 20000
+; set limit to previous default of 4GB on 2.3.1
+max_document_size = 4000000000
