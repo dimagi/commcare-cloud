@@ -27,7 +27,7 @@ class Deploy(CommandBase):
     )
 
     arguments = (
-        Argument('component', nargs='?', choices=['commcare', 'formplayer'], help="""
+        Argument('component', nargs='?', choices=['commcare', 'formplayer', 'both'], help="""
             The component to deploy. If not specified, will deploy CommCare, or
             both, if always_deploy_formplayer is set in meta.yml
         """),
