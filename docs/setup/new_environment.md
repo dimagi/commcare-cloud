@@ -59,7 +59,18 @@ This document will walk you through the process of setting up a new monolith ser
 1. Install Required Packages
 
     ``` bash
-    $ sudo apt update && sudo apt install python-pip sshpass
+    $ sudo apt update && sudo apt install python3-pip sshpass
+    ```
+   Now update your pip3 version; you might encounter installation issues otherwise.
+    ``` bash
+    $ sudo -H pip3 install --upgrade pip
+    ```
+   Make python3 your default python version.
+    ``` bash
+    $ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+    ```
+   Lastly, install the following:
+    ``` bash
     $ sudo pip install ansible virtualenv virtualenvwrapper --ignore-installed six
     ```
 
@@ -79,8 +90,12 @@ This document will walk you through the process of setting up a new monolith ser
     
     You can read more about the files contained in this environments folder [here](../commcare-cloud/env/index.md).
 
-1. Update to the real domain name. This example configuration contains
-   references to `monolith.commcarehq.test`. Update the following:
+1. Now it’s time to update the real domain name.
+   ``` bash
+   $ cd ~/environments/monolith/
+   ```
+
+   This example configuration contains references to `monolith.commcarehq.test`. Update the following:
 
    - `proxy.yml`
      - `SITE_HOST`
@@ -89,7 +104,6 @@ This document will walk you through the process of setting up a new monolith ser
      - `server_email`
      - `default_from_email`
      - `root_email`
-
 
 ### Install commcare-cloud
 
@@ -107,6 +121,7 @@ and when you see it ask you this:
 Do you want to have the CommCare Cloud environment setup on login?
 (y/n):
 ```
+
 answer with `y`.
 
 For more information, see [Installing commcare-cloud](installation.md#step-2)
@@ -207,7 +222,7 @@ Even though we will be running all commands locally, we still need to add the us
 1. Copy the example fab config file:
 
     ``` bash
-    $ cp ~/commcare-cloud/src/commcare_cloud/fab/config.example.py ~/commcare-cloud/src/commcare_cloud/fab/config.py
+    $ cp ~/commcare-cloud/src/commcare_cloud/config.example.py ~/commcare-cloud/src/commcare_cloud/fab/config.py
     ```
 
 1. Update the known hosts file
@@ -217,13 +232,23 @@ Even though we will be running all commands locally, we still need to add the us
     ```
 
 ### Generate secured passwords for the vault
-
+In this step, we'll generate passwords in the `vault.yml` file. This file will store all the passwords used in this
+   CommCare environment
 ```bash
 $ python ~/commcare-cloud/commcare-cloud-bootstrap/generate_vault_passwords.py --env='monolith'
 ```
 
+1. Before we encrypt the `vault.yml` file, have a look at the `vault.yml` file.
+   ``` bash
+   $ cat ~/environments/monolith/vault.yml
+   ```
+   Find and copy / note down the following password value: `ansible_sudo_pass`. We’re going to need this in the future
+   when we deploy CommCare HQ.
 
-1. Next, we're going to set up an encrypted "ansible vault" file.  This will store all the passwords used in this CommCare environment.  You'll need to create a strong password and save it somewhere safe.  This is the master password that grants access to the vault.  You'll need it for any future changes to this file, as well as when you deploy or make configuration changes to this machine.
+
+2. Next, we're going to set up an encrypted "ansible vault" file. You'll need to create a strong password and save it somewhere safe. This is the master password
+   that grants access to the vault. You'll need it for any future changes to this file, as well as when you deploy or
+   make configuration changes to this machine.
 
     Encrypt the provided vault file, using that password:
 
@@ -250,6 +275,7 @@ ansible-playbook /home/{username}/commcare-cloud/src/commcare_cloud/ansible/depl
 Vault Password for 'monolith': <password from encrypting vault.yml>
 SSH password:<root user's password>
 ```
+
 This will run a series of ansible commands that will take quite a long time to run.
 
 If there are failures during the install, which may happen due to timing issues, you can continue running the playbook with:
@@ -279,15 +305,17 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
     ``` bash
     $ commcare-cloud monolith deploy
     ```
-    
-    You can read more about the deploy process in the [deploy documentation](../commcare-cloud/deploy.md).
+   When prompted for the `sudo` password, enter the `ansible_sudo_pass` value obtained
+   in [Step 2](#generate-secured-passwords-for-the-vault) just before you encrypted the `vault.yml` file.
+
+   You can read more about the deploy process in the [deploy documentation](../commcare-cloud/deploy.md).
+
 
 1. If deploy fails, you can restart where it left off:
 
     ``` bash
     $ commcare-cloud monolith deploy --resume
     ```
-
 
 ## Step 5: Setting set up valid SSL certificates
 
@@ -308,7 +336,6 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
     ```bash
     $ cchq monolith ansible-playbook deploy_proxy.yml --skip-check
     ```
-
 
 ## Step 6: Cleanup
 
