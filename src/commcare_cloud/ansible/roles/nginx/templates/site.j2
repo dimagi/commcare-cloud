@@ -13,7 +13,7 @@ upstream {{ balancer.name }} {
   {% endif %}
 
 {% for host in groups[balancer.hosts] | default(balancer.hosts) %}
-{% if not balancer.excluded_hosts or host not in groups[balancer.excluded_hosts] | default([]) %}
+{% if not balancer.get('excluded_hosts') or host not in groups[balancer.get('excluded_hosts')] | default([]) %}
   server {{ host }}:{{ balancer.port }}{% for key, value in (balancer.params | default({})).items() %} {{ key }}={{ value }}{% endfor %};
 {% endif %}
 {% endfor %}

@@ -6,3 +6,4 @@ special_sites: []
 primary_ssl_env: ""
 nginx_hsts_max_age: null
 nginx_worker_rlimit_nofile: null
+couch_excluded_hosts: null
