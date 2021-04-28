@@ -45,13 +45,13 @@ from github import GithubException
 
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
+from commcare_cloud.github import github_repo
 from .checks import check_servers
 from .const import ROLES_ALL_SERVICES, ROLES_ALL_SRC, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .exceptions import PreindexNotFinished
 from .operations import airflow, db, formplayer
 from .operations import release, staticfiles, supervisor
 from .utils import (
-    DeployMetadata,
     cache_deploy_state,
     clear_cached_deploy,
     execute_with_timing,
@@ -165,7 +165,9 @@ def env_common():
 
     env.is_monolith = len(set(servers['all']) - set(servers['control'])) < 2
 
-    env.deploy_metadata = DeployMetadata(env.code_branch)
+    # turn whatever `code_branch` is into a commit hash
+    env.deploy_ref = github_repo('dimagi/commcare-hq').get_commit(env.code_branch).sha
+
     _setup_path()
 
     all = servers['all']
@@ -312,7 +314,6 @@ def _setup_release(keep_days=2, full_cluster=True):
     :param keep_days: The number of days to keep this release before it will be purged
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
-    deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
     for repo in env.ccc_environment.meta_config.git_repositories:
         try:
             repo.deploy_ref  # noqa
@@ -326,7 +327,7 @@ def _setup_release(keep_days=2, full_cluster=True):
     execute_with_timing(release.create_code_dir(full_cluster))
 
     update_code = release.update_code(full_cluster)
-    execute_with_timing(update_code, deploy_ref)
+    execute_with_timing(update_code, env.deploy_ref)
     for repo in env.ccc_environment.meta_config.git_repositories:
         var_name = "{}_code_branch".format(repo.name)
         repo_deploy_ref = repo.deploy_ref(getattr(env, var_name, None))

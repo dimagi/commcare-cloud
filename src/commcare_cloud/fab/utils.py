@@ -40,35 +40,6 @@ def get_pillow_env_config():
     return pillows
 
 
-class DeployMetadata(object):
-
-    def __init__(self, code_branch):
-        self._code_branch = code_branch
-
-    def __getstate__(self):
-        """
-        HACK: Remove memoized property values to allow object to be pickled
-        Removes any attribute that begins with '_' and ends with '_cache'
-        which is the naming scheme for memoized properties
-        """
-        state = dict(self.__dict__)
-        for key in list(state):
-            if key.startswith('_') and key.endswith('_cache'):
-                del state[key]
-
-        return state
-
-    @memoized_property
-    def repo(self):
-        tag_commits = getattr(env, "tag_deploy_commits", None)
-        return github_repo('dimagi/commcare-hq', require_write_permissions=tag_commits)
-
-    @memoized_property
-    def deploy_ref(self):
-        # turn whatever `code_branch` is into a commit hash
-        return self.repo.get_commit(self._code_branch).sha
-
-
 def _get_checkpoint_filename():
     return '{}_{}'.format(env.deploy_env, CACHED_DEPLOY_CHECKPOINT_FILENAME)
 
