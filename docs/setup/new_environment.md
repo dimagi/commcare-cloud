@@ -222,7 +222,7 @@ Even though we will be running all commands locally, we still need to add the us
 1. Copy the example fab config file:
 
     ``` bash
-    $ cp ~/commcare-cloud/src/commcare_cloud/config.example.py ~/commcare-cloud/src/commcare_cloud/fab/config.py
+    $ cp ~/commcare-cloud/src/commcare_cloud/fab/config.example.py ~/commcare-cloud/src/commcare_cloud/fab/config.py
     ```
 
 1. Update the known hosts file
