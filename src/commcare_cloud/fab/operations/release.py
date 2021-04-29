@@ -228,7 +228,6 @@ def record_successful_release():
         files.append(RELEASE_RECORD, str(env.code_root), use_sudo=True)
 
 
-# TODO make this a nicer task
 @roles(ROLES_ALL_SRC)
 @parallel
 def update_current(release=None):

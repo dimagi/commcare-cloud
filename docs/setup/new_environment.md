@@ -65,7 +65,12 @@ This document will walk you through the process of setting up a new monolith ser
     ``` bash
     $ sudo -H pip3 install --upgrade pip
     ```
-   Make python3 your default python version.
+   Check your default python version for python 3.x
+   ``` bash
+   $ python --version
+   ```
+   If your default version is not 3.x or if running the command failed due to command `python` not found, make python3
+   your default by running the command below, otherwise skip it.
     ``` bash
     $ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
     ```
