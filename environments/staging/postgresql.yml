@@ -50,22 +50,32 @@ dbs:
       host: pgproxy2
     partitions:
       p1:
-        pgbouncer_host: pgproxy2
+        pgbouncer_endpoint: pgformprocessing_nlb
+        pgbouncer_hosts:
+          - pgproxy2
         shards: [0, 99]
         query_stats: True
       p2:
-        pgbouncer_host: pgproxy2
+        pgbouncer_endpoint: pgformprocessing_nlb
+        pgbouncer_hosts:
+          - pgproxy2
         shards: [100, 199]
         query_stats: True
       p3:
-        pgbouncer_host: pgproxy2
+        pgbouncer_endpoint: pgformprocessing_nlb
+        pgbouncer_hosts:
+          - pgproxy2
         shards: [200, 299]
         query_stats: True
       p4:
-        pgbouncer_host: pgproxy2
+        pgbouncer_endpoint: pgformprocessing_nlb
+        pgbouncer_hosts:
+          - pgproxy2
         shards: [300, 399]
         query_stats: True
       p5:
-        pgbouncer_host: pgproxy2
+        pgbouncer_endpoint: pgformprocessing_nlb
+        pgbouncer_hosts:
+          - pgproxy2
         shards: [400, 511]
         query_stats: True
