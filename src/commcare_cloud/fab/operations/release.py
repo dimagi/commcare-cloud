@@ -380,7 +380,7 @@ def mark_keep_until(full_cluster=True):
 @roles(ROLES_ALL_SRC)
 @parallel
 def apply_patch(filepath):
-    destination = '/home/{}/{}.patch'.format(env.user, env.deploy_metadata.timestamp)
+    destination = '/home/{}/{}.patch'.format(env.user, env.ccc_environment.new_release_name())
     operations.put(
         filepath,
         destination,
@@ -393,7 +393,7 @@ def apply_patch(filepath):
 @roles(ROLES_ALL_SRC)
 @parallel
 def reverse_patch(filepath):
-    destination = '/home/{}/{}.patch'.format(env.user, env.deploy_metadata.timestamp)
+    destination = '/home/{}/{}.patch'.format(env.user, env.ccc_environment.new_release_name())
     operations.put(
         filepath,
         destination,
