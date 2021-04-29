@@ -8,7 +8,7 @@ from clint.textui import indent
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, check_branch
-from commcare_cloud.colors import color_notice, color_summary, color_warning
+from commcare_cloud.colors import color_notice, color_summary, color_warning, color_error
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
@@ -18,6 +18,7 @@ from commcare_cloud.commands.deploy.formplayer import deploy_formplayer
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
+from commcare_cloud.fab.utils import retrieve_cached_deploy_env
 
 
 class Deploy(CommandBase):
@@ -67,6 +68,14 @@ class Deploy(CommandBase):
     def run(self, args, unknown_args):
         check_branch(args)
         environment = get_environment(args.env_name)
+        if args.resume:
+            try:
+                # use cached env to ensure consistency with last deploy
+                cached_fab_env = retrieve_cached_deploy_env(environment.deploy_env)
+            except Exception:
+                print(color_error('Unable to resume deploy, please start anew'))
+            else:
+                environment = cached_fab_env.ccc_environment
 
         deploy_component = args.component
         if deploy_component is None:
