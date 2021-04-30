@@ -234,7 +234,7 @@ Even though we will be running all commands locally, we still need to add the us
 1. Copy the example fab config file:
 
     ``` bash
-    $ cp ~/commcare-cloud/src/commcare_cloud/config.example.py ~/commcare-cloud/src/commcare_cloud/fab/config.py
+    $ cp ~/commcare-cloud/src/commcare_cloud/config.example.py ~/commcare-cloud/src/commcare_cloud/config.py
     ```
 
 1. Update the known hosts file
@@ -340,6 +340,11 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
 
     ```bash
     $ commcare-cloud monolith ansible-playbook letsencrypt_cert.yml --skip-check
+    ```
+   Note: you might or might not need to create the `/etc/letsencrypt` directory yourself. If the command above fails due
+   to no such directory found, create one with the following command:
+    ``` bash
+    $ sudo mkdir /etc/letsencrypt
     ```
 
 2. Update settings to take advantage of new certs:
