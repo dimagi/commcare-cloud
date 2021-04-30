@@ -102,13 +102,27 @@ class DeployDiff:
             **self.get_diff_context()
         )
 
-    def _get_pr_numbers(self):
+    def _get_commits_on_master_since_last_deploy(self):
+        last_deployed_commit = self.repo.get_commit(self.current_commit)
+        return self.repo.get_commits(sha='master', since=last_deployed_commit.commit.author.date)
+
+    def _get_merge_commits_since_last_deploy(self):
         comparison = self.repo.compare(self.current_commit, self.deploy_commit)
         return [
-            int(re.search(r'Merge pull request #(\d+)',
-                          repo_commit.commit.message).group(1))
+            repo_commit
             for repo_commit in comparison.commits
             if repo_commit.commit.message.startswith('Merge pull request')
+        ]
+
+    def _get_pr_numbers(self):
+        merge_commits_since_last_deploy = self._get_merge_commits_since_last_deploy()
+        master_commits_since_last_deploy = self._get_commits_on_master_since_last_deploy()
+        # only care about merge commits on master
+        return [
+            int(re.search(r'Merge pull request #(\d+)',
+                          merge_commit.commit.message).group(1))
+            for merge_commit in merge_commits_since_last_deploy
+            if merge_commit in master_commits_since_last_deploy
         ]
 
     def _get_pr_info(self, pr_number):
