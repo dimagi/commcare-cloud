@@ -1061,15 +1061,15 @@ Deploy CommCare
 
 ```
 commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_REV] [--set FAB_SETTINGS]
-                            [{commcare,formplayer}]
+                            [{commcare,formplayer} [{commcare,formplayer} ...]]
 ```
 
 ##### Positional Arguments
 
 ###### `{commcare,formplayer}`
 
-The component to deploy. If not specified, will deploy CommCare, or
-both, if always_deploy_formplayer is set in meta.yml
+Component(s) to deploy. Default is 'commcare', or if
+always_deploy_formplayer is set in meta.yml, 'commcare formplayer'
 
 ##### Optional Arguments
 
