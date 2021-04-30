@@ -2,7 +2,7 @@ fake_ssl_cert: yes
 SITE_HOST: 'staging.commcarehq.org'
 J2ME_SITE_HOST: 'j2mestaging.commcarehq.org'
 primary_ssl_env: "staging"
-nginx_hsts_max_age: 86400 # 24 hours
+nginx_hsts_max_age: 604800 # 1 week
 
 trusted_proxies:
   - 10.201.0.0/16
