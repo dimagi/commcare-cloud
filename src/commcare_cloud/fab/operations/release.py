@@ -205,6 +205,7 @@ def create_code_dir(full_cluster=True):
     roles_to_use = _get_roles(full_cluster)
 
     @roles(roles_to_use)
+    @parallel
     def create():
         sudo('mkdir -p {}'.format(env.code_root))
 
