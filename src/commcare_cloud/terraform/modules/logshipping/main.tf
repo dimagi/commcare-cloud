@@ -109,7 +109,7 @@ resource "aws_lambda_function" "check_file_lambda" {
 resource "aws_cloudwatch_event_rule" "check-file-event" {
     name = "check-file-event"
     description = "check-file-event"
-    schedule_expression = "cron(15 * * * ? *)"
+    schedule_expression = "cron(*/15 * * * ? *)"
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_to_call_check_file" {
