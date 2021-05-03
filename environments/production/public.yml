@@ -205,7 +205,7 @@ commcare_cloud_pem: ~/.ssh/id_rsa
 
 kinesis_flows:
   - file_pattern: "/opt/data/formplayer/log/request_response.*log"
-    delivery_stream: "formplayer-request-response-logs-production"
+    delivery_stream: "formplayer-request-response-logs-partitioned-production"
 
 enable_cloudwatch_logs: true
 
