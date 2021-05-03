@@ -14,8 +14,12 @@ FILE_STATUS = {
 
 def update_sentry_post_deploy(environment, sentry_project, github_repo, diff, deploy_start, deploy_end):
     localsettings = environment.public_vars["localsettings"]
+    try:
+        sentry_api_key = environment.get_secret('SENTRY_API_KEY')
+    except KeyError:
+        return
     client = SentryClient(
-        environment.get_secret('SENTRY_API_KEY'),
+        sentry_api_key,
         localsettings.get('SENTRY_ORGANIZATION_SLUG', 'dimagi'),
         sentry_project
     )
