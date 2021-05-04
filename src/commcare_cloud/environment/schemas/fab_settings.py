@@ -26,6 +26,7 @@ class FabSettingsConfig(jsonobject.JsonObject):
     shared_dir_for_staticfiles = jsonobject.StringProperty(default=None)
     deploy_event_url = jsonobject.StringProperty(default=None)
     generate_deploy_diffs = jsonobject.BooleanProperty(default=True)
+    custom_deploy_details = jsonobject.DictProperty()
 
     @classmethod
     def wrap(cls, data):
