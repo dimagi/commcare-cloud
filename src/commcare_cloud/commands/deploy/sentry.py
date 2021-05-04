@@ -25,7 +25,7 @@ def update_sentry_post_deploy(environment, sentry_project, github_repo, diff, de
     )
     if client.is_valid():
         release_name = environment.new_release_name()
-        commits = get_release_commits(github_repo, diff.current_commit, diff.deploy_commit)
+        commits = get_release_commits(diff)
         client.create_release(release_name, commits)
         client.create_deploy(
             release_name, environment.meta_config.env_monitoring_id,
@@ -64,14 +64,14 @@ class SentryClient(namedtuple("SentryClient", "api_key, org_slug, project_slug")
         requests.post(releases_url, headers=headers, json=payload)
 
 
-def get_release_commits(git_repo, base, head):
+def get_release_commits(diff):
     # https://docs.sentry.io/product/releases/setup/manual-setup-releases/
-    comparison = git_repo.compare(base, head)
+    comparison = diff.git_comparison
     commits = []
     for commit in comparison.commits:
         author = commit.commit.author
         commits.append({
-            "repository": git_repo.full_name,
+            "repository": diff.repo.full_name,
             "author_name": author.name,
             "author_email": author.email,
             "timestamp": author.date.strftime(ISO_DATETIME_FORMAT),
