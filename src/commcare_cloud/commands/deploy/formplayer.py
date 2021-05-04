@@ -109,7 +109,8 @@ def get_deploy_diff(environment, repo):
         new_version_details["Build time"] = f"{latest_version.build_time_ago} ({latest_version.build_time})"
     diff = DeployDiff(
         repo, current_commit, latest_version.commit,
-        new_version_details=new_version_details
+        new_version_details=new_version_details,
+        generate_diff=environment.fab_settings_config.generate_deploy_diffs
     )
     return diff
 

@@ -25,7 +25,10 @@ def update_sentry_post_deploy(environment, sentry_project, github_repo, diff, de
     )
     if client.is_valid():
         release_name = environment.new_release_name()
-        commits = get_release_commits(github_repo, diff.current_commit, diff.deploy_commit)
+        if environment.fab_settings_config.generate_deploy_diffs:
+            commits = get_release_commits(github_repo, diff.current_commit, diff.deploy_commit)
+        else:
+            commits = None
         client.create_release(release_name, commits)
         client.create_deploy(
             release_name, environment.meta_config.env_monitoring_id,
@@ -41,8 +44,9 @@ class SentryClient(namedtuple("SentryClient", "api_key, org_slug, project_slug")
         payload = {
             'version': release_name,
             'projects': [self.project_slug],
-            'commits': commit_data
         }
+        if commit_data is not None:
+            payload['commits'] = commit_data
 
         headers = {'Authorization': 'Bearer {}'.format(self.api_key), }
         releases_url = f"https://sentry.io/api/0/organizations/{self.org_slug}/releases/"
