@@ -12,4 +12,4 @@ couchdb_backup_hours: 1
 couchdb_auth_cache_size: 200
 compact_couch_cron: False
 couch_backup_hourly: False
-couchdb_os_process_limit: 1000
+couchdb_os_process_limit: 100
