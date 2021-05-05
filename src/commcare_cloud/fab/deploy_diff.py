@@ -4,6 +4,7 @@ from collections import defaultdict
 
 import jinja2
 from gevent.pool import Pool
+from github.GithubException import GithubException
 from memoized import memoized
 
 from commcare_cloud.colors import (
@@ -82,7 +83,13 @@ class DeployDiff:
             context["warnings"].append("Diff omitted.")
             return context
 
-        pr_numbers = self._get_pr_numbers()
+        try:
+            pr_numbers = self._get_pr_numbers()
+        except GithubException as e:
+            print(color_error(f"Error getting diff commits: {e}"))
+            context["warnings"].append("There was an error fetching the PRs since the last deploy.")
+            return context
+
         if len(pr_numbers) > 500:
             context["warnings"].append("There are too many PRs to display.")
             return context
@@ -120,7 +127,12 @@ class DeployDiff:
         ]
 
     def _get_pr_info(self, pr_number):
-        pr_response = self.repo.get_pull(pr_number)
+        try:
+            pr_response = self.repo.get_pull(pr_number)
+        except GithubException as e:
+            print(color_error(f"Error getting PR details for {pr_number}: {e}"))
+            return None
+
         if not pr_response.number:
             # Likely rate limited by Github API
             return None

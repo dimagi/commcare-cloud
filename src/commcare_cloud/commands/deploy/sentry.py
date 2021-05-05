@@ -1,5 +1,8 @@
 import requests
+from github.GithubException import GithubException
 from jsonobject.base import namedtuple
+
+from commcare_cloud.colors import color_error
 
 ISO_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
@@ -26,7 +29,11 @@ def update_sentry_post_deploy(environment, sentry_project, github_repo, diff, de
     if client.is_valid():
         release_name = environment.new_release_name()
         if environment.fab_settings_config.generate_deploy_diffs:
-            commits = get_release_commits(github_repo, diff.current_commit, diff.deploy_commit)
+            try:
+                commits = get_release_commits(github_repo, diff.current_commit, diff.deploy_commit)
+            except GithubException as e:
+                print(color_error(f"Error getting release commits: {e}"))
+                commits = None
         else:
             commits = None
         client.create_release(release_name, commits)
