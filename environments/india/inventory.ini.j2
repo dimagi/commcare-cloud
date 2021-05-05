@@ -38,6 +38,7 @@ es_data
 {{ __formplayer1__ }}
 {{ __pillow2__ }}
 {{ __kafka1__ }} kafka_broker_id=0
+{{ __rabbit2__ }}
 {{ __pgbouncer0__ }}
 {{ __pgbouncer1__ }} pgbouncer_processes=2
 {{ __proxy1__ }}
@@ -88,6 +89,7 @@ pgsynclogs_nlb
 
 [rabbitmq:children]
 kafka1
+rabbit2
 
 [zookeeper:children]
 kafka1

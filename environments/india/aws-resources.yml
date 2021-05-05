@@ -52,6 +52,8 @@ pillow2-india.instance_id: i-0c3daf0e2c06ff5e8
 proxy1-india: 10.203.20.59
 proxy1-india.instance_id: i-03eb10798f91c6cc7
 proxy1-india.public_ip: 13.233.97.201
+rabbit2-india: 10.203.41.5
+rabbit2-india.instance_id: i-07497784641ede41d
 redis0-india: 10.203.40.128
 redis0-india.instance_id: i-047d3ade5d47a86cf
 vpn-india: 10.203.20.132
