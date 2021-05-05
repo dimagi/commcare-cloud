@@ -1,16 +1,21 @@
+from github.GithubException import GithubException
+
 from commcare_cloud.alias import commcare_cloud
-from commcare_cloud.colors import color_summary
+from commcare_cloud.colors import color_summary, color_error
 from commcare_cloud.commands.terraform.aws import get_default_username
 
 
 def create_release_tag(environment, repo, diff):
     if environment.fab_settings_config.tag_deploy_commits:
-        repo.create_git_ref(
-            ref='refs/tags/{}-{}-deploy'.format(
-                environment.new_release_name(),
-                environment.name),
-            sha=diff.deploy_commit,
-        )
+        try:
+            repo.create_git_ref(
+                ref='refs/tags/{}-{}-deploy'.format(
+                    environment.new_release_name(),
+                    environment.name),
+                sha=diff.deploy_commit,
+            )
+        except GithubException as e:
+            print(color_error(f"Error creating release tag: {e}"))
 
 
 def announce_deploy_start(environment, service_name):
