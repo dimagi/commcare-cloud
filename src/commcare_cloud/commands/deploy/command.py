@@ -90,17 +90,22 @@ class Deploy(CommandBase):
             if environment.meta_config.always_deploy_formplayer:
                 deploy_component.append('formplayer')
 
+        rc = 0
         if 'commcare' in deploy_component:
             if 'formplayer' not in deploy_component:
                 _warn_no_formplayer()
-            return deploy_commcare(environment, args, unknown_args)
+            rc = deploy_commcare(environment, args, unknown_args)
         if 'formplayer' in deploy_component:
             if 'commcare' not in deploy_component:
                 if args.commcare_rev:
                     print(color_warning('--commcare-rev does not apply to a formplayer deploy and will be ignored'))
                 if args.fab_settings:
                     print(color_warning('--set does not apply to a formplayer deploy and will be ignored'))
-            return deploy_formplayer(environment, args)
+            if rc:
+                print(color_error("Skipping formplayer because commcare failed"))
+            else:
+                rc = deploy_formplayer(environment, args)
+        return rc
 
 
 def _warn_no_formplayer():
