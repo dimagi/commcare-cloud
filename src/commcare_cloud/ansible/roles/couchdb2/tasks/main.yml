@@ -1,24 +1,21 @@
 ---
 
-- name: Stop monit
-  shell: /bin/true
-  notify: stop monit
-
-- name: Stop couchdb2
-  shell: /bin/true
-  notify: stop couchdb2
-
-- meta: flush_handlers
-
-- name: Kill pending couchdb2 processes
-  shell: |
-    pkill beam.smp
-    pkill epmd
-    pkill memsup
-    pkill cpu_sup
-    pkill couchjs
-    sleep 60
-  ignore_errors: yes
+- name: Prepare for upgrade/downgrade
+  block:
+    - name: Stop monit
+      service: name=monit state=stopped
+    - name: Stop couchdb2
+      service: name=couchdb2 state=stopped
+    - name: Kill pending couchdb2 processes
+      shell: |
+        pkill beam.smp
+        pkill epmd
+        pkill memsup
+        pkill cpu_sup
+        pkill couchjs
+        sleep 60
+      ignore_errors: yes
+  when: couchdb_version != couchdb_version_current and couchdb_version_current != "none"
 
 - name: Copy extra config
   template:
@@ -38,8 +35,10 @@
     line: "{{ couchdb_placement }}"
     insertafter: '^\[cluster\]'
   check_mode: true
+  notify: restart couchdb2
   when: couchdb_multiaz is defined
-  tags: zone_update
+  tags:
+    - zone_update
 
 - name: Ensure that the Erlang VM listens on a known minimum port no.
   lineinfile:
@@ -47,6 +46,7 @@
     line: "-kernel inet_dist_listen_min {{ couchdb_cluster_port }}"
     insertafter: '^-sasl sasl_error_logger false'   
     state: present
+  notify: restart couchdb2
   when: couchdb_cluster_port is defined
 
 - name: Ensure that the Erlang VM listens on a known maximum port no.
@@ -55,44 +55,34 @@
     line: "-kernel inet_dist_listen_max {{ couchdb_cluster_port }}"
     insertafter: '^-kernel inet_dist_listen_min {{ couchdb_cluster_port }}'
     state: present
+  notify: restart couchdb2
   when: couchdb_cluster_port is defined
 
 - name: Add new standard options to vm.args
   blockinfile:
     path: "{{ couchdb_dir }}/etc/vm.args"
     block: "{{ lookup('file', 'vm.args.defaults') }}"
+  notify: restart couchdb2
   when: couchdb_version is version('3.0.0', '>=')
 
-- name: Restart couchdb2
+- name: Start couchdb2
   shell: /bin/true
-  notify: restart couchdb2
+  notify: start couchdb2
+  tags:
+    - after-reboot
 
 - meta: flush_handlers
 
 - name: Add nodes
   uri:
-    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_port }}/_node/_local/_nodes/couchdb@{{ item|ipaddr }}"
+    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{% if couchdb_version is version('3.0.0', '>=') %}{{ couchdb_port }}/_node/_local{% else %}{{ couchdb_node_port }}{% endif %}/_nodes/couchdb@{{ item|ipaddr }}"
     method: PUT
     user: "{{ couchdb2.username }}"
     password: "{{ couchdb2.password }}"
     force_basic_auth: true
     status_code: 201, 409 # 409 means already set up (conflict)
     body: '{}'
-  when: couchdb_version is version('3.0.0', '>=') and inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
-  with_items: "{{ groups.couchdb2 }}"
-  tags:
-    - add_couch_nodes
-
-- name: Add nodes
-  uri:
-    url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{{ couchdb_node_port }}/_nodes/couchdb@{{ item|ipaddr }}"
-    method: PUT
-    user: "{{ couchdb2.username }}"
-    password: "{{ couchdb2.password }}"
-    force_basic_auth: true
-    status_code: 201, 409 # 409 means already set up (conflict)
-    body: '{}'
-  when: couchdb_version is version('3.0.0', '<') and inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
+  when: inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
   with_items: "{{ groups.couchdb2 }}"
   tags:
     - add_couch_nodes
@@ -160,26 +150,13 @@
 
 - name: Copy couch restore script
   template:
-    src: "restore_couchdb3_backup.sh.j2"
+    src: "restore_couchdb_backup.sh.j2"
     dest: "/usr/local/sbin/restore_couchdb_backup.sh"
     group: couchdb
     owner: couchdb
     mode: 0700
     backup: yes
-  when: couchdb_version is version('3.0.0', '>=') and backup_couch|bool
-  tags:
-    - cron
-    - backups
-
-- name: Copy couch restore script
-  template:
-    src: "restore_couchdb2_backup.sh.j2"
-    dest: "/usr/local/sbin/restore_couchdb_backup.sh"
-    group: couchdb
-    owner: couchdb
-    mode: 0700
-    backup: yes
-  when: couchdb_version is version('3.0.0', '<') and backup_couch|bool
+  when: backup_couch|bool
   tags:
     - cron
     - backups
@@ -251,10 +228,6 @@
     - cron
     - backups
 
-- name: start the couchdb2 service
-  service: name="couchdb2" state=started enabled=yes
-  tags: after-reboot
-
 - name: couchdb2 monit config
   template:
     src: "monit.couchdb2.j2"
@@ -262,21 +235,24 @@
     group: root
     owner: root
     mode: 0640
-  tags: monit
-
-- name: Restart monit
-  shell: /bin/true
   notify: restart monit
+  tags:
+    - monit
+
+- name: Start monit
+  shell: /bin/true
+  notify: start monit
 
 - meta: flush_handlers
 
 - monit:
     name: couchdb2
     state: monitored
-  tags: monit
   ignore_errors: "{{ ansible_check_mode }}"
   register: result
   until: not result.failed or 'process not presently configured with monit' not in result.msg
   retries: 5
   delay: 20
+  tags:
+    - monit
 

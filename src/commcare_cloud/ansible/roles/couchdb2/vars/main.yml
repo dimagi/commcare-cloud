@@ -1,4 +1,5 @@
 ---
+
 couchdb_port : "{{ couchdb2_port }}"
 couchdb_node_port : "{{ couchdb2_local_port }}"
 couchdb_dir: /usr/local/couchdb2/couchdb
@@ -22,3 +23,4 @@ couchdb_async_io_threads: 64
 couchdb_require_valid_user: false
 couchdb_require_valid_user_node_local: false
 couchdb_httpd_auth_secret: "{{ couchdb2.password|hash('sha256') }}"
+

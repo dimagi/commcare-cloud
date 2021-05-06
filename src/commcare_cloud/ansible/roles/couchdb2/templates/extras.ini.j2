@@ -8,7 +8,7 @@ os_process_limit = {{ couchdb_os_process_limit }}
 server_per_node = true
 ; set this to true if all nodes are on 3.1.1
 ; to save some intra-cluster network bandwidth
-;use_kill_all = true
+use_kill_all = {{ couchdb_rexi_use_kill_all }}
 
 [couchdb]
 os_process_timeout = 20000
