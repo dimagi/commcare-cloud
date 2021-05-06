@@ -75,7 +75,7 @@ class DeployDiff:
             disabled_msg = "Deploy diffs disabled for this environment."
             print(color_warning(disabled_msg))
             context["warnings"].append(disabled_msg)
-            return
+            return context
 
         if not self.repo.permissions:
             # using unauthenticated API calls, skip diff creation to avoid hitting rate limits
