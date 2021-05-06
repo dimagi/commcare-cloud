@@ -82,7 +82,16 @@ def _get_diff(environment, deploy_revs):
     deployed_version = _get_deployed_version(environment)
     latest_version = repo.get_commit(deploy_revs['commcare']).sha if repo else None
 
-    DEPLOY_DIFF = DeployDiff(repo, deployed_version, latest_version, new_version_details=deploy_revs)
+    new_version_details = {
+        'Branch deployed': ', '.join([f'{repo}: {ref}' for repo, ref in deploy_revs.items()])
+    }
+    if environment.fab_settings_config.custom_deploy_details:
+        new_version_details.update(environment.fab_settings_config.custom_deploy_details)
+    DEPLOY_DIFF = DeployDiff(
+        repo, deployed_version, latest_version,
+        new_version_details=new_version_details,
+        generate_diff=environment.fab_settings_config.generate_deploy_diffs
+    )
     return DEPLOY_DIFF
 
 

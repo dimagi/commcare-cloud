@@ -23,17 +23,19 @@ LABELS_TO_EXPAND = [
 
 
 class DeployDiff:
-    def __init__(self, repo, current_commit, deploy_commit, new_version_details=None):
+    def __init__(self, repo, current_commit, deploy_commit, new_version_details=None, generate_diff=True):
         """
         :param repo: github.Repository.Repository object
         :param current_commit: Commit SHA of the currently deployed code
         :param deploy_commit: Commit SHA of the code being deployed
         :param new_version_details: dict of additional metadata to display in diff output.
+        :param generate_diff: True if deploy diffs should be produced
         """
         self.repo = repo
         self.current_commit = current_commit
         self.deploy_commit = deploy_commit
         self.new_version_details = new_version_details
+        self.generate_diff = generate_diff
         self.j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
         register_console_filters(self.j2)
 
@@ -68,6 +70,12 @@ class DeployDiff:
             return context
 
         context["compare_url"] = self.url
+
+        if not self.generate_diff:
+            disabled_msg = "Deploy diffs disabled for this environment."
+            print(color_warning(disabled_msg))
+            context["warnings"].append(disabled_msg)
+            return
 
         if not self.repo.permissions:
             # using unauthenticated API calls, skip diff creation to avoid hitting rate limits
