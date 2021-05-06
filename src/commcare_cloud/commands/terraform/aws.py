@@ -354,10 +354,20 @@ def aws_sign_in(environment, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES, 
 
 def is_ec2_instance_in_account(account_id):
     try:
-        aws_instance_identity_doc = requests.get(
-            'http://169.254.169.254/latest/dynamic/instance-identity/document',
-            timeout=.100
+        token_api_headers = {
+            'X-aws-ec2-metadata-token-ttl-seconds': '21600',
+        }
+        token_api_response = requests.put('http://169.254.169.254/latest/api/token', headers=token_api_headers)
+        if token_api_response.status_code==200:
+            TOKEN = token_api_response.text
+            headers = {	'X-aws-ec2-metadata-token': TOKEN,	}
+            aws_instance_identity_doc = requests.get('http://169.254.169.254/latest/dynamic/instance-identity/document',
+            timeout=.100,
+            headers=headers
         ).json()
+        else:
+            return False
+
     except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
         return False
 
