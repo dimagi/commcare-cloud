@@ -1,10 +1,10 @@
 ---
 
-- name: start couchdb2
-  service: name=couchdb2 state=started
-
 - name: restart couchdb2
   service: name=couchdb2 state=restarted
+
+- name: start couchdb2
+  service: name=couchdb2 state=started
 
 - name: stop couchdb2
   service: name=couchdb2 state=stopped

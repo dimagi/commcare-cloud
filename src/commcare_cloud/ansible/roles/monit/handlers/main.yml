@@ -1,7 +1,4 @@
 ---
-- name: start monit
-  become: yes
-  service: name=monit state=started
 
 - name: restart monit
   become: yes
@@ -11,6 +8,11 @@
   become: yes
   service: name=monit state=reloaded
 
+- name: start monit
+  become: yes
+  service: name=monit state=started
+
 - name: stop monit
   become: yes
   service: name=monit state=stopped
+
