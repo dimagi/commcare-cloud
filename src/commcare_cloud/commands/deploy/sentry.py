@@ -27,7 +27,8 @@ def update_sentry_post_deploy(environment, sentry_project, github_repo, diff, de
         sentry_project
     )
     if client.is_valid():
-        release_name = environment.new_release_name()
+        # this must match the release name used in commcare-hq when configuring the Sentry API
+        release_name = f"{environment.new_release_name()}-{environment.meta_config.env_monitoring_id}"
         if environment.fab_settings_config.generate_deploy_diffs:
             try:
                 commits = get_release_commits(github_repo, diff.current_commit, diff.deploy_commit)
