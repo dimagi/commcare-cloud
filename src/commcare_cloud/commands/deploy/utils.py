@@ -18,14 +18,15 @@ def create_release_tag(environment, repo, diff):
             print(color_error(f"Error creating release tag: {e}"))
 
 
-def announce_deploy_start(environment, service_name):
+def announce_deploy_start(environment, service_name, commcare_rev=None):
+    user = get_default_username()
+    env_name = environment.meta_config.deploy_env
+    subject = f"{user} has initiated a {service_name} deploy to {env_name}"
+    if commcare_rev:
+        subject = f"ATTENTION: {user} has initiated {service_name} deploy with branch {commcare_rev} to {env_name}"
     send_email(
         environment,
-        subject="{user} has initiated a {system_name} deploy to {environment}".format(
-            user=get_default_username(),
-            system_name=service_name,
-            environment=environment.meta_config.deploy_env,
-        ),
+        subject=subject,
     )
 
 
