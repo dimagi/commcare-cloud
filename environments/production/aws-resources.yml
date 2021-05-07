@@ -199,6 +199,8 @@ rabbit2-production: 10.202.42.100
 rabbit2-production.instance_id: i-0afd113aa270a774d
 rabbit3-production: 10.202.42.102
 rabbit3-production.instance_id: i-08f06ed3dea9f37e6
+rabbit4-production: 10.202.42.240
+rabbit4-production.instance_id: i-045c144016f6f8978
 shareddir1-production: 10.202.40.218
 shareddir1-production.instance_id: i-0d1e0f3874426383e
 vpn-production: 10.202.20.194
