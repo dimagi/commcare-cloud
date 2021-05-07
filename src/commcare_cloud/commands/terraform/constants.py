@@ -10,6 +10,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/image/$
 ^/a/([\w\.:-]+)/apps/edit_form_attr/([\w-]+)/([\w-]+)/([\w-]+)/$
 ^/a/([\w\.:-]+)/apps/edit_form_attr_api/([\w-]+)/([\w-]+)/([\w-]+)/$
+^/a/([\w\.:-]+)/apps/edit_module_detail_screens/([\w-]+)/([\w-]+)/$
 ^/a/([\w\.:-]+)/apps/patch_xform/([\w-]+)/([\w-]+)/$
 ^/a/([\w\.:-]+)/apps/view/([\w-]+)/languages/bulk_app_translations/upload/$
 ^/a/([\w\.:-]+)/cloudcare/api/readable_questions/$
