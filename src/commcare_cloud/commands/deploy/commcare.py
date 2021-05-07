@@ -27,7 +27,7 @@ def deploy_commcare(environment, args, unknown_args):
         var = 'code_branch' if name == 'commcare' else '{}_code_branch'.format(name)
         fab_settings.append('{}={}'.format(var, rev))
 
-    announce_deploy_start(environment, "CommCare HQ")
+    announce_deploy_start(environment, "CommCare HQ", args.commcare_rev)
     start = datetime.utcnow()
     rc = commcare_cloud(
         environment.name, 'fab', 'deploy_commcare{}'.format(fab_func_args),
