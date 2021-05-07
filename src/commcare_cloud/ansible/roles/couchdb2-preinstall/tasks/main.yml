@@ -1,15 +1,27 @@
+---
+
+- name: Get current couchdb path
+  stat:
+    path: /usr/local/couchdb2/couchdb
+  register: couchdb_current_path
+
+- name: Set current couchdb version
+  set_fact:
+    couchdb_version_current: "{{ couchdb_current_path.stat.lnk_target | regex_search('apache-couchdb-(\\d\\.\\d\\.\\d)$', '\\1') | first if couchdb_current_path.stat.lnk_target is defined else 'none' }}"
+
+- name: Print current couchdb version
+  debug:
+    var: couchdb_version_current
+
 - name: Update setuptools
   pip: name=setuptools state=latest
-  become: yes
 
 - name: Install ndg-httpsclient so we can download couch
   pip:
     name:
       - ndg-httpsclient
-  become: yes
 
-- name: Create couchdb2 dirs
-  become: yes
+- name: Create couchdb dirs
   file:
     path: "{{ item }}"
     state: directory
@@ -28,3 +40,11 @@
     - apt_key: url=https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc state=present
     - apt_repository: repo="deb https://packages.erlang-solutions.com/ubuntu bionic contrib" state=present
   when: ansible_distribution_version == '18.04'
+
+- name: Install Erlang dependencies
+  apt:
+    name:
+      - esl-erlang={{ couchdb_erlang_version }}
+      - erlang-mode={{ couchdb_erlang_version }}
+    force: yes
+

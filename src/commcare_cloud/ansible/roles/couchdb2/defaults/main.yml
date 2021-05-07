@@ -13,3 +13,4 @@ couchdb_auth_cache_size: 200
 compact_couch_cron: False
 couch_backup_hourly: False
 couchdb_os_process_limit: 100
+couchdb_rexi_use_kill_all: 'false'

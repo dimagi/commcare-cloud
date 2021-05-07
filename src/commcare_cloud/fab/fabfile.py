@@ -314,9 +314,6 @@ def _setup_release(keep_days=2, full_cluster=True):
     :param keep_days: The number of days to keep this release before it will be purged
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
-    if not env.password:
-        env.password = getpass('Enter sudo password: ')
-
     for repo in env.ccc_environment.meta_config.git_repositories:
         try:
             repo.deploy_ref  # noqa

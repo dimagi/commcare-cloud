@@ -56,7 +56,8 @@ couch_dbs:
     username: "{{ COUCH_USERNAME }}"
     password: "{{ COUCH_PASSWORD }}"
     is_https: False
-
+couchdb_version: '3.1.1'
+couchdb_rexi_use_kill_all: 'true'
 couchdb_reduce_limit: False
 couchdb_cluster_settings:
   q: 8

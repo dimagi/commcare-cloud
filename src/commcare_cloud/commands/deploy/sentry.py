@@ -28,10 +28,12 @@ def update_sentry_post_deploy(environment, sentry_project, github_repo, diff, de
     )
     if client.is_valid():
         release_name = environment.new_release_name()
-        try:
-            commits = get_release_commits(diff)
-        except GithubException as e:
-            print(color_error(f"Error getting release commits: {e}"))
+        if environment.fab_settings_config.generate_deploy_diffs:
+            try:
+                commits = get_release_commits(diff)
+            except GithubException as e:
+                print(color_error(f"Error getting release commits: {e}"))
+        else:
             commits = None
         client.create_release(release_name, commits)
         client.create_deploy(

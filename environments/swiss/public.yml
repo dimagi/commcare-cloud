@@ -51,7 +51,8 @@ couch_dbs:
 couchdb2:
   username: "{{ COUCH_USERNAME }}"
   password: "{{ COUCH_PASSWORD }}"
-
+couchdb_version: '3.1.1'
+couchdb_rexi_use_kill_all: 'true'
 couchdb_use_haproxy: True
 
 BROKER_URL: 'redis://{{ groups.redis.0 }}:6379/0'
