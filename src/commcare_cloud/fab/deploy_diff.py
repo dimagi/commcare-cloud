@@ -5,7 +5,7 @@ from collections import defaultdict
 import jinja2
 from gevent.pool import Pool
 from github.GithubException import GithubException
-from memoized import memoized
+from memoized import memoized, memoized_property
 
 from commcare_cloud.colors import (
     color_warning, color_error, color_success,
@@ -117,8 +117,12 @@ class DeployDiff:
             **self.get_diff_context()
         )
 
+    @memoized_property
+    def git_comparison(self):
+        return self.repo.compare(self.current_commit, self.deploy_commit)
+
     def _get_pr_numbers(self):
-        comparison = self.repo.compare(self.current_commit, self.deploy_commit)
+        comparison = self.git_comparison
         return [
             int(re.search(r'Merge pull request #(\d+)',
                           repo_commit.commit.message).group(1))
