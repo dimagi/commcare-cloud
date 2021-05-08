@@ -40,7 +40,7 @@ servers:
     count: 17
 
   - server_name: "web_b{i}-production"
-    server_instance_type: r5.2xlarge
+    server_instance_type: r5.4xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
