@@ -89,7 +89,8 @@ couchdb2:
 couchdb_compaction_settings:
   _default: '[{db_fragmentation, "50%"}, {view_fragmentation, "50%"}, {from, "22:00"}, {to, "03:00"}]'
 
-
+couchdb_version: '3.1.1'
+couchdb_rexi_use_kill_all: 'true'
 couchdb2_client_max_body_size: 100M
 couchdb_os_process_limit: 1000
 couchdb_reduce_limit: False
