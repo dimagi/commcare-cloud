@@ -1,4 +1,6 @@
+from datetime import datetime
 from github.GithubException import GithubException
+import pytz
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.colors import color_summary, color_error
@@ -78,3 +80,10 @@ def send_email(environment, subject, message='', to_admins=True, recipients=None
             *args,
             show_command=False
         )
+
+def within_maintenance_window(environment):
+    window = environment.fab_settings_config.acceptable_maintenance_window
+    if window:
+        d = datetime.now(pytz.timezone(window['timezone']))
+        return window['hour_start'] <= d.hour < window['hour_end']
+    return True
