@@ -22,10 +22,22 @@ def create_release_tag(environment, repo, diff):
 
 def announce_deploy_start(environment, service_name, commcare_rev=None):
     user = get_default_username()
+    is_nonstandard_deploy_time = not within_maintenance_window(environment)
+    is_non_default_branch = (
+        commcare_rev != environment.fab_settings_config.default_branch and
+        commcare_rev != None
+    )
     env_name = environment.meta_config.deploy_env
-    subject = f"{user} has initiated a {service_name} deploy to {env_name}"
-    if commcare_rev:
+    subject = ""
+    if is_non_default_branch and is_nonstandard_deploy_time:
+        subject = f"ATTENTION: {user} has initiated {service_name} deploy outside maintenance window with branch {commcare_rev} to {env_name}"
+    elif is_nonstandard_deploy_time:
+        subject = f"ATTENTION: {user} has initiated {service_name} deploy outside maintenance window to {env_name}"
+    elif is_non_default_branch:
         subject = f"ATTENTION: {user} has initiated {service_name} deploy with branch {commcare_rev} to {env_name}"
+    else:
+        subject = f"{user} has initiated a {service_name} deploy to {env_name}"
+
     send_email(
         environment,
         subject=subject,
