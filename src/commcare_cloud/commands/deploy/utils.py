@@ -28,7 +28,6 @@ def announce_deploy_start(environment, service_name, commcare_rev=None):
         commcare_rev is not None
     )
     env_name = environment.meta_config.deploy_env
-    subject = ""
     subject = f"{user} has initiated a {service_name} deploy to {env_name}"
     prefix = ""
     if is_nonstandard_deploy_time:
