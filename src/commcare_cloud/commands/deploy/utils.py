@@ -25,18 +25,19 @@ def announce_deploy_start(environment, service_name, commcare_rev=None):
     is_nonstandard_deploy_time = not within_maintenance_window(environment)
     is_non_default_branch = (
         commcare_rev != environment.fab_settings_config.default_branch and
-        commcare_rev != None
+        commcare_rev is not None
     )
     env_name = environment.meta_config.deploy_env
     subject = ""
-    if is_non_default_branch and is_nonstandard_deploy_time:
-        subject = f"ATTENTION: {user} has initiated {service_name} deploy outside maintenance window with branch {commcare_rev} to {env_name}"
-    elif is_nonstandard_deploy_time:
-        subject = f"ATTENTION: {user} has initiated {service_name} deploy outside maintenance window to {env_name}"
-    elif is_non_default_branch:
-        subject = f"ATTENTION: {user} has initiated {service_name} deploy with branch {commcare_rev} to {env_name}"
-    else:
-        subject = f"{user} has initiated a {service_name} deploy to {env_name}"
+    subject = f"{user} has initiated a {service_name} deploy to {env_name}"
+    prefix = ""
+    if is_nonstandard_deploy_time:
+        subject += " outside maintenance window"
+        prefix = "ATTENTION: "
+    if is_non_default_branch:
+        subject += f" with non-default branch '{commcare_rev}'"
+        prefix = "ATTENTION: "
+    subject = f"{prefix}{subject}"
 
     send_email(
         environment,
