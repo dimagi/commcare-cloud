@@ -1,4 +1,6 @@
+from datetime import datetime
 from github.GithubException import GithubException
+import pytz
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.colors import color_summary, color_error
@@ -18,14 +20,27 @@ def create_release_tag(environment, repo, diff):
             print(color_error(f"Error creating release tag: {e}"))
 
 
-def announce_deploy_start(environment, service_name):
+def announce_deploy_start(environment, service_name, commcare_rev=None):
+    user = get_default_username()
+    is_nonstandard_deploy_time = not within_maintenance_window(environment)
+    is_non_default_branch = (
+        commcare_rev != environment.fab_settings_config.default_branch and
+        commcare_rev is not None
+    )
+    env_name = environment.meta_config.deploy_env
+    subject = f"{user} has initiated a {service_name} deploy to {env_name}"
+    prefix = ""
+    if is_nonstandard_deploy_time:
+        subject += " outside maintenance window"
+        prefix = "ATTENTION: "
+    if is_non_default_branch:
+        subject += f" with non-default branch '{commcare_rev}'"
+        prefix = "ATTENTION: "
+    subject = f"{prefix}{subject}"
+
     send_email(
         environment,
-        subject="{user} has initiated a {system_name} deploy to {environment}".format(
-            user=get_default_username(),
-            system_name=service_name,
-            environment=environment.meta_config.deploy_env,
-        ),
+        subject=subject,
     )
 
 
@@ -77,3 +92,10 @@ def send_email(environment, subject, message='', to_admins=True, recipients=None
             *args,
             show_command=False
         )
+
+def within_maintenance_window(environment):
+    window = environment.fab_settings_config.acceptable_maintenance_window
+    if window:
+        d = datetime.now(pytz.timezone(window['timezone']))
+        return window['hour_start'] <= d.hour < window['hour_end']
+    return True

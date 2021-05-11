@@ -6,7 +6,7 @@ from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_notice
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
-from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_success, create_release_tag
+from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_success, create_release_tag, within_maintenance_window
 from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.commands.utils import run_fab_task
 from commcare_cloud.events import publish_deploy_event
@@ -27,7 +27,7 @@ def deploy_commcare(environment, args, unknown_args):
         var = 'code_branch' if name == 'commcare' else '{}_code_branch'.format(name)
         fab_settings.append('{}={}'.format(var, rev))
 
-    announce_deploy_start(environment, "CommCare HQ")
+    announce_deploy_start(environment, "CommCare HQ", args.commcare_rev)
     start = datetime.utcnow()
     rc = commcare_cloud(
         environment.name, 'fab', 'deploy_commcare{}'.format(fab_func_args),
@@ -107,14 +107,10 @@ def _confirm_translated(environment, quiet=False):
 
 
 def _confirm_environment_time(environment, quiet=False):
-    window = environment.fab_settings_config.acceptable_maintenance_window
-    if window:
-        d = datetime.now(pytz.timezone(window['timezone']))
-        if window['hour_start'] <= d.hour < window['hour_end']:
-            return True
-    else:
+    if within_maintenance_window(environment):
         return True
-
+    window = environment.fab_settings_config.acceptable_maintenance_window
+    d = datetime.now(pytz.timezone(window['timezone']))
     message = (
         "Whoa there bud! You're deploying '%s' outside the configured maintenance window. "
         "The current local time is %s.\n"

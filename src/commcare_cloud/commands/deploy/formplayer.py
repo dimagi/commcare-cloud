@@ -62,7 +62,7 @@ def deploy_formplayer(environment, args):
         return 1
 
     start = datetime.utcnow()
-    announce_deploy_start(environment, FORMPLAYER)
+    announce_deploy_start(environment, FORMPLAYER, args.commcare_rev)
 
     rc = run_ansible_playbook_command(environment, args)
     if rc != 0:
