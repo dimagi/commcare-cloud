@@ -201,8 +201,6 @@ rabbit3-production: 10.202.42.102
 rabbit3-production.instance_id: i-08f06ed3dea9f37e6
 rabbit4-production: 10.202.42.240
 rabbit4-production.instance_id: i-045c144016f6f8978
-shareddir1-production: 10.202.40.218
-shareddir1-production.instance_id: i-0d1e0f3874426383e
 vpn-production: 10.202.20.194
 vpn-production.instance_id: i-0f1b5684281df2e97
 vpn-production.public_ip: 18.235.223.2
