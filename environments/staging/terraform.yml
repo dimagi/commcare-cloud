@@ -389,6 +389,9 @@ pgbouncer_nlbs:
   - name: "pgsynclogs_nlb-staging"
     targets:
       - pgproxy2-staging
+  - name: "pgshard_nlb-staging"
+    targets:
+      - pgbouncer0-staging
 
 elasticache:
   create: no
