@@ -207,7 +207,6 @@ module "openvpn" {
 module "Users" {
   source = "./modules/iam"
   account_alias = "${var.account_alias}"
-  environment = "${var.environment}"
 }
 
 {%- for user in (users if manage_users else []) %}
