@@ -83,3 +83,58 @@ resource "aws_iam_instance_profile" "commcare_server_instance_profile" {
   name = "CommCareServerRole"
   role = "${aws_iam_role.commcare_server_role.name}"
 }
+
+resource "aws_iam_role" "formplayerlogbucket_role" {
+  name = "formplayerlogbucket_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+          "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "formplayerlog_policy" {
+  name = "formplayerlog_bucket_policy"
+  policy = <<EOF
+{
+	"Version": "2012-10-17",
+	"Statement": [{
+			"Effect": "Allow",
+			"Action": [
+				"s3:ListAllMyBuckets"
+			],
+			"Resource": "arn:aws:s3:::*"
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"s3:GetObject",
+				"s3:ListBucket",
+				"s3:PutObject",
+				"s3:PutObjectAcl",
+				"s3:RestoreObject"
+			],
+			"Resource": [
+				"arn:aws:s3:::dimagi-commcare-${var.environment}-logs",
+				"arn:aws:s3:::dimagi-commcare-${var.environment}-logs/*"
+			]
+		}
+	]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "formplayerlogbucket_roleattachment" {
+  role       = "${aws_iam_role.formplayerlogbucket_role.name}"
+  policy_arn = "${aws_iam_policy.formplayerlog_policy.arn}"
+}
