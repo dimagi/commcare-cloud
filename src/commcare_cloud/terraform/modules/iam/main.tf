@@ -24,4 +24,3 @@ resource "aws_iam_policy" "force_mfa" {
   description = "This policy allows users to manage their own passwords and MFA devices but nothing else unless they authenticate with MFA"
   policy = "${file("${path.module}/EnforceMFAPolicy.json")}"
 }
-
