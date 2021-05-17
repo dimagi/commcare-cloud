@@ -134,6 +134,8 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
         return context[var_name]
 
     def _set_secret(self, var, value):
+    # No effort is made to preserve the original YAML format (comments, etc.),
+    # and no edge cases are handled (e.g. vault does not exist, etc.)
         data = self._get_vault_variables() or {}
         data[var] = value
         vault = Vault(self._get_ansible_vault_password())
