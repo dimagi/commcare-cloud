@@ -22,7 +22,8 @@ from six.moves import configparser, input, shlex_quote
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_notice, color_success
 from commcare_cloud.commands.command_base import Argument, CommandBase
-from commcare_cloud.user_utils import get_default_username
+from commcare_cloud.user_utils import get_default_username, \
+    print_help_message_about_the_commcare_cloud_default_username_env_var
 from commcare_cloud.environment.main import get_environment
 
 
@@ -289,12 +290,6 @@ class AwsFillInventoryHelper(object):
 
 
 DEFAULT_SIGN_IN_DURATION_MINUTES = 30
-
-
-def print_help_message_about_the_commcare_cloud_default_username_env_var(username):
-    puts(color_notice("Did you know? You can put"))
-    puts(color_notice("    export COMMCARE_CLOUD_DEFAULT_USERNAME={}".format(username)))
-    puts(color_notice("in your profile to never have to type that in again! 🌈"))
 
 
 class AwsSignIn(CommandBase):
