@@ -8,7 +8,7 @@ variable "stack" {
 
 variable "tf_s3_bucket" {
   description = "S3 bucket Terraform can use for state"
-  default     = "dimagi-terraform"
+  default     = "{{ state_bucket }}"
 }
 
 module "network" {
