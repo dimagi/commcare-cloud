@@ -5,7 +5,7 @@ resource aws_instance "server" {
     format("%s-%s", var.network_tier, var.az)
   ]
   key_name                = var.key_name
-  vpc_security_group_ids  = var.security_group_options[var.network_tier]
+  vpc_security_group_ids  = compact(var.security_group_options[var.network_tier])
   source_dest_check       = false
   iam_instance_profile    = var.iam_instance_profile
 

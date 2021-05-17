@@ -183,7 +183,7 @@ resource "aws_eip" "nat_gateway" {
   vpc = true
   tags = {
     Name        = "nat-gateway-ip-${var.env}"
-    Environment = "nat-gateway-test-env-${var.env}"
+    Environment = "production"
     Group       = "Network"
   }
 }
