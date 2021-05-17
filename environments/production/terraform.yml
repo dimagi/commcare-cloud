@@ -143,20 +143,11 @@ servers:
     volume_encrypted: yes
     group: "rabbitmq"
     os: ubuntu_pro_bionic
-  
-  - server_name: "rabbit3-production"
-    server_instance_type: c5.4xlarge
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 80
-    volume_encrypted: yes
-    group: "rabbitmq"
-    os: ubuntu_pro_bionic
 
-  - server_name: "rabbit4-production"
+  - server_name: "rabbit5-production"
     server_instance_type: c5.4xlarge
     network_tier: "db-private"
-    az: "c"
+    az: "b"
     volume_size: 80
     volume_encrypted: yes
     group: "rabbitmq"
