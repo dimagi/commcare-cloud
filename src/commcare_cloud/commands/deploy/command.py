@@ -15,7 +15,7 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.deploy.commcare import deploy_commcare
 from commcare_cloud.commands.deploy.formplayer import deploy_formplayer
-from commcare_cloud.commands.terraform.aws import get_default_username
+from commcare_cloud.user_utils import get_default_username
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
 from commcare_cloud.fab.utils import retrieve_cached_deploy_env

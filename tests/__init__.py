@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from mock import patch
 
-from commcare_cloud.commands.terraform.aws import StringIsGuess
+from commcare_cloud.user_utils import StringIsGuess
 
 
 def setup_package():
