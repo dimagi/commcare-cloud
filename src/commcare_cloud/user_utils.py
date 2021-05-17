@@ -1,5 +1,6 @@
 import getpass
 import os
+import subprocess
 
 import six
 from clint.textui import puts
@@ -58,3 +59,40 @@ def print_help_message_about_the_commcare_cloud_default_username_env_var(usernam
     puts(color_notice("Did you know? You can put"))
     puts(color_notice("    export COMMCARE_CLOUD_DEFAULT_USERNAME={}".format(username)))
     puts(color_notice("in your profile to never have to type that in again! 🌈"))
+
+
+@memoized
+def get_default_ssh_username(host):
+    for line in subprocess.check_output(['ssh', host, '-G']).decode('utf8').splitlines():
+        if line.startswith("user "):
+            return StringIsGuess(line.split()[1], is_guess=False)
+    return StringIsGuess(getpass.getuser(), is_guess=False)
+
+
+def get_ssh_username(host, env_name):
+    environment = get_environment(env_name)
+    username = default_username = get_default_ssh_username(host)
+    while True:
+        if not username or default_username.is_guess:
+            username = input(f"Enter your SSH username ({default_username}): ")
+            if not username:
+                username = default_username
+        if username in environment.users_config.dev_users.present:
+            break
+        allowed_users = environment.users_config.dev_users.present
+        env_users = '\n  - '.join([''] + allowed_users)
+        puts(color_error(
+            f"Unauthorized user {username}.\n\n"
+            f"Please pass in one of the allowed ssh users:{env_users}"
+        ))
+        username = ""
+    if default_username.is_guess:
+        print_help_message_about_default_ssh_username(username)
+    return username
+
+
+def print_help_message_about_default_ssh_username(username):
+    puts(color_notice("Did you know? You can use the '~/.ssh/config' file to set your SSH username."))
+    puts(color_notice(""))
+    puts(color_notice("Host *"))
+    puts(color_notice(f"    User {username}"))
