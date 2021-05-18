@@ -24,7 +24,8 @@ and the new environment will live in it's own linked account.
     give your account access to the bucket using the Canonical User ID.
 7. Run
     ```bash
-    COMMCARE_CLOUD_DEFAULT_USERNAME=root cchq <env> aws-sign-in
+    COMMCARE_CLOUD_DEFAULT_USERNAME=root
+    cchq <env> aws-sign-in
     cchq <env> terraform init
     AWS_PROFILE=<account_alias>:session aws dlm create-default-role --region <region>
     cchq <env> terraform apply
