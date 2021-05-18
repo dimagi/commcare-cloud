@@ -62,7 +62,7 @@ def get_default_ssh_username(host):
     for line in subprocess.check_output(['ssh', host, '-G']).decode('utf8').splitlines():
         if line.startswith("user "):
             return StringIsGuess(line.split()[1], is_guess=False)
-    return StringIsGuess(getpass.getuser(), is_guess=False)
+    return StringIsGuess(getpass.getuser(), is_guess=True)
 
 
 DEFAULT_SSH_USERNAME_MESSAGE = """
