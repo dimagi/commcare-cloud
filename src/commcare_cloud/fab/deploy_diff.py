@@ -11,7 +11,7 @@ from commcare_cloud.colors import (
     color_warning, color_error, color_success,
     color_highlight, color_summary, color_code
 )
-from commcare_cloud.commands.terraform.aws import get_default_username
+from commcare_cloud.user_utils import get_default_username
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'diff_templates')
 LABELS_TO_EXPAND = [

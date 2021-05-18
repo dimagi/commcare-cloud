@@ -4,7 +4,7 @@ import pytz
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.colors import color_summary, color_error
-from commcare_cloud.commands.terraform.aws import get_default_username
+from commcare_cloud.user_utils import get_default_username
 
 
 def create_release_tag(environment, repo, diff):

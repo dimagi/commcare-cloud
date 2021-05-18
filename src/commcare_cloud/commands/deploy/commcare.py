@@ -7,7 +7,7 @@ from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_notice
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
 from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_success, create_release_tag, within_maintenance_window
-from commcare_cloud.commands.terraform.aws import get_default_username
+from commcare_cloud.user_utils import get_default_username
 from commcare_cloud.commands.utils import run_fab_task
 from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff

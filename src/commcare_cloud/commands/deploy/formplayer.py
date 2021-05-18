@@ -14,7 +14,7 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
 from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_failed, \
     announce_deploy_success, create_release_tag
-from commcare_cloud.commands.terraform.aws import get_default_username
+from commcare_cloud.user_utils import get_default_username
 from commcare_cloud.commands.utils import timeago
 from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff

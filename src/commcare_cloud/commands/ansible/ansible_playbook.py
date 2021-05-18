@@ -11,7 +11,8 @@ from clint.textui import puts
 from six.moves import shlex_quote
 
 from commcare_cloud.alias import commcare_cloud
-from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command, get_dev_username
+from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
+from commcare_cloud.user_utils import get_dev_username
 from commcare_cloud.colors import color_error, color_notice
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
