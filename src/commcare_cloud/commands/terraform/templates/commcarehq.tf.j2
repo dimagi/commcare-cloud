@@ -92,7 +92,6 @@ module "server_iam_role" {
 module "server__{{ server_name }}" {
   source = "./modules/server"
 
-
   server_name = {{ server_name|tojson }}
   server_instance_type = {{ server_spec.server_instance_type|tojson }}
   network_tier = {{ server_spec.network_tier|tojson }}
