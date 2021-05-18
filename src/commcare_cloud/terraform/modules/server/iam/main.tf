@@ -84,8 +84,8 @@ resource "aws_iam_instance_profile" "commcare_server_instance_profile" {
   role = "${aws_iam_role.commcare_server_role.name}"
 }
 
-resource "aws_iam_role" "formplayerlogbucket_role" {
-  name = "formplayerlogbucket_role"
+resource "aws_iam_role" "formplayer_log_role" {
+  name = "formplayerlogbucketrole"
 
   assume_role_policy = <<EOF
 {
@@ -96,16 +96,19 @@ resource "aws_iam_role" "formplayerlogbucket_role" {
       "Principal": {
           "Service": "ec2.amazonaws.com"
       },
-      "Action": "sts:AssumeRole"
+      "Action": "sts:AssumeRole",
+      "Sid": ""
     }
   ]
 }
 EOF
 }
 
-resource "aws_iam_policy" "formplayerlog_policy" {
+resource "aws_iam_role_policy" "formplayerlog_policy" {
   name = "formplayerlog_bucket_policy"
-  policy = <<EOF
+  role = "${aws_iam_role.formplayer_log_role.id}"
+
+  policy = <<-EOF
 {
 	"Version": "2012-10-17",
 	"Statement": [{
@@ -131,10 +134,10 @@ resource "aws_iam_policy" "formplayerlog_policy" {
 		}
 	]
 }
-EOF
+  EOF
 }
 
-resource "aws_iam_role_policy_attachment" "formplayerlogbucket_roleattachment" {
-  role       = "${aws_iam_role.formplayerlogbucket_role.name}"
-  policy_arn = "${aws_iam_policy.formplayerlog_policy.arn}"
+resource "aws_iam_instance_profile" "formplayerlogbucket_instance_profile" {
+  name = "FormplayerLogBucketRole"
+  role = "${aws_iam_role.formplayer_log_role.name}"
 }
