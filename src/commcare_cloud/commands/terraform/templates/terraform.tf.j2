@@ -5,7 +5,7 @@ terraform {
     region  = {{ state_bucket_region|tojson }}
     encrypt = true
   }
-  required_version = "~> 0.12.0, < 0.12.31"
+  required_version = "~> 0.12.30"
 }
 
 provider "aws" {

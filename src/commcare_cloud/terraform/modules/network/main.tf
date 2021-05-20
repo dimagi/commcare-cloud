@@ -410,9 +410,7 @@ resource "aws_security_group" "db-private" {
     from_port   = 6432
     to_port     = 6432
     protocol    = "tcp"
-    cidr_blocks = [
-      "${aws_subnet.subnet-db-private.*.cidr_block}",
-    ]
+    cidr_blocks = aws_subnet.subnet-db-private.*.cidr_block
   }
 
   ingress {
