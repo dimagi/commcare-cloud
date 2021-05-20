@@ -3,7 +3,7 @@ variable "subnet_ids_efs" {
 }
 
 variable "securitygroup_id" {
-  type        = "list"
+  type        = list
   description = "If the nodes are not in VPC, these are the names of the Security Groups. If the nodes are in a VPC, these are the IDs of the VPC security groups"
 }
 
@@ -13,4 +13,6 @@ variable "file_system_id" {
 
 variable "create_mount" {
   description = "Flag to enable/disable EFS aws_efs_mount_target"
+  default     = true
+  type        = bool
 }

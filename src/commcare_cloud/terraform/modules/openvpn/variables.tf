@@ -11,13 +11,26 @@ data "aws_ami" "openvpn_image" {
 variable "openvpn_image" {
   default = ""
 }
-variable "key_name" {}
-variable "environment" {}
-variable "instance_subnet" {}
-variable "vpn_size" {}
-variable "vpc_id" {}
-variable "vpc_cidr" {}
+
+variable "key_name" {
+}
+
+variable "environment" {
+}
+
+variable "instance_subnet" {
+}
+
+variable "vpn_size" {
+}
+
+variable "vpc_id" {
+}
+
+variable "vpc_cidr" {
+}
 
 locals {
-  openvpn_image = "${var.openvpn_image != "" ? var.openvpn_image : data.aws_ami.openvpn_image.id}"
+  openvpn_image = var.openvpn_image != "" ? var.openvpn_image : data.aws_ami.openvpn_image.id
 }
+
