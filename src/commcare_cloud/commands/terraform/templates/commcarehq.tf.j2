@@ -50,7 +50,7 @@ data "aws_iam_role" "data_lifecycle_role" {
 
 resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
   description        = "Data Volume Backup Policy"
-  execution_role_arn = "${data.aws_iam_role.data_lifecycle_role.arn}"
+  execution_role_arn = data.aws_iam_role.data_lifecycle_role.arn
   state              = "ENABLED"
 
   policy_details {
@@ -97,6 +97,7 @@ module "server__{{ server_name }}" {
   network_tier = {{ server_spec.network_tier|tojson }}
   az = {{ server_spec.az|tojson }}
   volume_size = {{ server_spec.volume_size|tojson }}
+  volume_type = {{ server_spec.volume_type|tojson }}
   volume_encrypted = {{ server_spec.volume_encrypted|tojson }}
   secondary_volume_size = {{ server_spec.block_device.volume_size|default(0)|tojson }}
   secondary_volume_type = {{ server_spec.block_device.volume_type|default("")|tojson }}
@@ -138,8 +139,8 @@ resource "aws_efs_file_system" "formplayer" {
 
 {%- for az in az_codes %}
 resource "aws_efs_mount_target" "formplayer-{{ az }}" {
-  file_system_id = "${aws_efs_file_system.formplayer.id}"
-  subnet_id      = "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+  file_system_id = aws_efs_file_system.formplayer.id
+  subnet_id      = lookup(module.network.subnets-app-private, "{{ az }}", "")
   security_groups = ["${module.network.app-private-sg}"]
 }
 {% endfor %}
@@ -175,6 +176,7 @@ module "elasticache-module-base" {
   automatic_failover    = {{ elasticache_cluster.automatic_failover|tojson }}
   transit_encryption    = {{ elasticache_cluster.transit_encryption|tojson }}
   at_rest_encryption    = {{ elasticache_cluster.at_rest_encryption|tojson }}
+  multi_az              = {{ elasticache_cluster.multi_az|tojson }}
   auto_minor_version    = {{ elasticache_cluster.auto_minor_version|tojson }}
   maintenance_window    = {{ elasticache_cluster.maintenance_window|tojson }}
   snapshot_retention    = {{ elasticache_cluster.snapshot_retention|tojson }}

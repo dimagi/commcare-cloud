@@ -4,11 +4,8 @@ variable "namespace" {
 
 variable "create" {
   description = "Flag to enable/disable EFS file-system"
-  default     = "true"
-}
-
-variable "create_access" {
-  description = "Flag to enable/disable EFS Access-point file-system"
+  default     = true
+  type        = bool
 }
 
 variable "transition_to_ia" {
@@ -17,4 +14,10 @@ variable "transition_to_ia" {
 
 variable "efs_name" {
   description = "indicate EFS name - Human readable"
+}
+
+variable "create_access" {
+  description = "Flag to enable/disable EFS file-system"
+  default     = true
+  type        = bool
 }

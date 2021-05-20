@@ -1,10 +1,10 @@
 variable "region" {}
 variable "environment" {}
 variable "azs" {
-  type = "list"
+  type = list
 }
 variable "az_codes" {
-  type = "list"
+  type = list
 }
 variable "vpc_begin_range" {}
 
@@ -68,28 +68,28 @@ variable "dns_zone_id" {}
 variable "dns_domain" {}
 variable "internal_ssl_cert_arn" {}
 variable "external_routes" {
-  type = "list"
+  type = list
   default = []
 }
 
 variable "vpn_connections" {
-  type = "list"
+  type = list
   default = []
 }
 
 variable "vpn_connection_routes" {
-  type = "list"
+  type = list
   default = []
 }
 
 # Redis/ElastiCache variables
 variable "redis" {
-  type = "map"
+  type = map(string)
   default = {}
 }
 
 variable "rds_instances" {
-  type = "list"
+  type = list
   default = []
 }
 
@@ -97,11 +97,11 @@ variable "account_alias" {}
 
 variable "key_name" {}
 variable "servers" {
-  type = "list"
+  type = list
   default = []
 }
 
 variable "proxy_servers" {
-  type = "list"
+  type = list
   default = []
 }
