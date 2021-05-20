@@ -300,7 +300,7 @@ rds_instances:
     storage: 500
     max_storage: 5000
     multi_az: true
-    engine_version: 9.6.15
+    engine_version: 9.6.20
 
   - identifier: "pgshard1-production"
     instance_type: "db.m5.4xlarge"
@@ -353,7 +353,7 @@ rds_instances:
     storage: 1000
     max_storage: 60500
     multi_az: true
-    engine_version: 9.6.15
+    engine_version: 9.6.20
     params:
       work_mem: 2457kB
       shared_buffers: 3840MB
@@ -376,7 +376,7 @@ rds_instances:
     instance_type: "db.m5.xlarge"
     storage: 1000
     multi_az: true
-    engine_version: 9.6.15
+    engine_version: 9.6.20
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
