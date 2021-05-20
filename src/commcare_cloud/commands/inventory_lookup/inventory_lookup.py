@@ -68,9 +68,12 @@ class _Ssh(Lookup):
         if ':' in address:
             address, port = address.split(':')
             ssh_args = ['-p', port] + ssh_args
-        if '@' not in address:
+        if '@' in address:
+            username, address = address.split('@')
+            username = get_ssh_username(address, args.env_name, requested_username=username)
+        elif '@' not in address:
             username = get_ssh_username(address, args.env_name)
-            address = f"{username}@{address}"
+        address = f"{username}@{address}"
         cmd_parts = [self.command, address, '-t'] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         if not args.quiet:

@@ -73,24 +73,26 @@ Host *
 """
 
 
-def get_ssh_username(host, env_name):
+def get_ssh_username(host, env_name, requested_username=None):
     """Use `ssh -G <host>` to get the SSH username and verify it against
     the list of users configured in the environment."""
-    username = get_default_ssh_username(host)
+    if requested_username:
+        username = StringIsGuess(requested_username, is_guess=False)
+    else:
+        username = get_default_ssh_username(host)
     return _check_username(env_name, username, DEFAULT_SSH_USERNAME_MESSAGE)
 
 
 def _check_username(env_name, username, message):
     default_username = username
-    environment = get_environment(env_name)
+    allowed_users = ["ansible"] + get_environment(env_name).users_config.dev_users.present
     while True:
         if not username or default_username.is_guess:
             username = input(f"Enter your SSH username ({default_username}): ")
             if not username:
                 username = default_username
-        if username in environment.users_config.dev_users.present:
+        if username in allowed_users:
             break
-        allowed_users = environment.users_config.dev_users.present
         env_users = '\n  - '.join([''] + allowed_users)
         puts(color_error(
             f"Unauthorized user {username}.\n\n"
