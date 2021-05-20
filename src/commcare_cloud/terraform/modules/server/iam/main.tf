@@ -1,7 +1,7 @@
 resource "aws_iam_role" "commcare_server_role" {
   name = "CommCareServerRole"
 
-  assume_role_policy = <<EOF
+  assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -15,24 +15,24 @@ resource "aws_iam_role" "commcare_server_role" {
     }
   ]
 }
-EOF
+POLICY
 }
 
 resource "aws_iam_role_policy_attachment" "server_role_attach_cloudwatch_policy" {
-  role       = "${aws_iam_role.commcare_server_role.name}"
+  role       = aws_iam_role.commcare_server_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
 resource "aws_iam_role_policy_attachment" "server_role_attach_awsmanagedinstance_policy" {
-  role       = "${aws_iam_role.commcare_server_role.name}"
+  role       = aws_iam_role.commcare_server_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_role_policy" "request_response_stream_put_policy" {
   name = "RequestResponseStreamPutPolicy"
-  role = "${aws_iam_role.commcare_server_role.id}"
+  role = aws_iam_role.commcare_server_role.id
 
-  policy = <<-EOF
+  policy = <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -48,14 +48,14 @@ resource "aws_iam_role_policy" "request_response_stream_put_policy" {
     }
   ]
 }
-  EOF
+  POLICY
 }
 
 resource "aws_iam_role_policy" "commcare_secrets_access_policy" {
   name = "CommCareSecretsAccess"
-  role = "${aws_iam_role.commcare_server_role.id}"
+  role = aws_iam_role.commcare_server_role.id
 
-  policy = <<-EOF
+  policy = <<POLICY
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -76,18 +76,20 @@ resource "aws_iam_role_policy" "commcare_secrets_access_policy" {
         }
     ]
 }
-  EOF
+  POLICY
 }
 
 resource "aws_iam_instance_profile" "commcare_server_instance_profile" {
   name = "CommCareServerRole"
-  role = "${aws_iam_role.commcare_server_role.name}"
+  role = aws_iam_role.commcare_server_role.name
 }
 
 resource "aws_iam_role" "formplayer_log_role" {
   name = "formplayerlogbucketrole"
+  resource "aws_iam_role" "formplayerlogbucket_role" {
+  name = "formplayerlogbucket_role"
 
-  assume_role_policy = <<EOF
+  assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -101,14 +103,14 @@ resource "aws_iam_role" "formplayer_log_role" {
     }
   ]
 }
-EOF
+POLICY
 }
 
 resource "aws_iam_role_policy" "formplayerlog_policy" {
   name = "formplayerlog_bucket_policy"
   role = "${aws_iam_role.formplayer_log_role.id}"
 
-  policy = <<-EOF
+  policy = <<POLICY
 {
 	"Version": "2012-10-17",
 	"Statement": [{
@@ -134,10 +136,15 @@ resource "aws_iam_role_policy" "formplayerlog_policy" {
 		}
 	]
 }
-  EOF
+POLICY
 }
 
 resource "aws_iam_instance_profile" "formplayerlogbucket_instance_profile" {
   name = "FormplayerLogBucketRole"
   role = "${aws_iam_role.formplayer_log_role.name}"
+}
+
+resource "aws_iam_role_policy_attachment" "formplayerlogbucket_roleattachment" {
+  role       = aws_iam_role.formplayerlogbucket_role.name
+  policy_arn = aws_iam_policy.formplayerlog_policy.arn 
 }

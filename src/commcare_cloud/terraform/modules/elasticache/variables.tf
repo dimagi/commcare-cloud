@@ -9,8 +9,8 @@ variable "create" {
   default = true
 }
 variable "elasticache_subnets" {
-  type = "list"
+  type = list
 }
 variable "security_group_ids" {
-  type = "list"
+  type = list
 }

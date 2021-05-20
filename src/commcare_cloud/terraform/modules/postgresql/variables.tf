@@ -1,21 +1,24 @@
 variable "rds_instance" {
   description = "Wrapper for all inputs, to make this module more meta-programmable"
-  type = "map"
+  type = map
 }
 
 variable "parameters" {
-  type = "list"
+  type = list
 }
 variable "vpc_security_group_ids" {
-  type = "list"
+  type = list
 }
 
 variable "subnet_ids" {
-  type = "list"
+  type = list
 }
 
-variable "create" {}
+variable "create" {
+}
 
-variable "apply_immediately" {}
+variable "apply_immediately" {
+  type = bool
+}
 
 variable "environment" {}

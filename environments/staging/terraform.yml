@@ -404,6 +404,7 @@ elasticache_cluster:
   automatic_failover: true
   transit_encryption: false
   at_rest_encryption: true
+  multi_az: true
   auto_minor_version: false
   cluster_size: 2
   maintenance_window: "sun:03:30-sun:04:30"
