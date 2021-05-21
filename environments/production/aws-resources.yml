@@ -12,6 +12,8 @@ celery_a005-production: 10.202.12.213
 celery_a005-production.instance_id: i-0cdd79c56bd5c006d
 celery_a006-production: 10.202.12.222
 celery_a006-production.instance_id: i-0f1272b602a757a91
+control1-production: 10.202.10.158
+control1-production.instance_id: i-0cff282a9692b2f47
 control2-production: 10.202.10.212
 control2-production.instance_id: i-0e290f7ceefb5e096
 couch12-production: 10.202.40.52
