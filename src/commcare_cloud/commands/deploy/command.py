@@ -1,21 +1,16 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
+
 import sys
 from textwrap import dedent
 
-from clint.textui import indent
-
-from commcare_cloud.alias import commcare_cloud
-from commcare_cloud.cli_utils import ask, check_branch
-from commcare_cloud.colors import color_notice, color_summary, color_warning, color_error
+from commcare_cloud.cli_utils import check_branch
+from commcare_cloud.colors import color_notice, color_warning, color_error
 from commcare_cloud.commands import shared_args
-from commcare_cloud.commands.ansible import ansible_playbook
-from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.deploy.commcare import deploy_commcare
 from commcare_cloud.commands.deploy.formplayer import deploy_formplayer
-from commcare_cloud.user_utils import get_default_username
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
 from commcare_cloud.fab.utils import retrieve_cached_deploy_env
