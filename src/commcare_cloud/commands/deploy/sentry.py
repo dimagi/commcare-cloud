@@ -33,6 +33,7 @@ def update_sentry_post_deploy(environment, sentry_project, github_repo, diff, de
             try:
                 commits = get_release_commits(diff)
             except GithubException as e:
+                commits = None
                 print(color_error(f"Error getting release commits: {e}"))
         else:
             commits = None
