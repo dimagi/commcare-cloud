@@ -395,6 +395,11 @@ pgbouncer_nlbs:
     targets:
       - pgbouncer0-staging
 
+proxy_albs:
+  - name: "proxycouch_alb-staging"
+    targets:
+      - couch6-staging
+
 elasticache:
   create: no
 

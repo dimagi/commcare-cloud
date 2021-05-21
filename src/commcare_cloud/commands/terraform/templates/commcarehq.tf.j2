@@ -289,6 +289,27 @@ module "pgbouncer_nlb__{{ pgbouncer_nlb.name }}" {
 
 {% endfor %}
 
+{% for proxy_alb in proxy_albs %}
+module "proxy_alb__{{ proxy_alb.name }}" {
+  source = "./modules/proxy_alb"
+  vpc_id   = "${module.network.vpc-id}"
+  alb_identifier = "{{ proxy_alb.identifier }}"
+  security_groups = ["${module.network.db-private-sg}"]
+  subnets = [
+    {%- for az in az_codes %}{% if not loop.first %}, {% endif %}
+    "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+    {%- endfor %}
+  ]
+  environment = "${var.environment}"
+  server_ids = [
+    {%- for server_id in proxy_alb.targets %}{% if not loop.first %}, {% endif %}
+    "${module.server__{{ server_id }}.server}"
+    {%- endfor %}
+  ]
+}
+
+{% endfor %}
+
 {% if efs_file_systems %}
 {% for efs_file_system in efs_file_systems %}
 module "efs_file_system__{{ efs_file_system.efs_name }}" {
