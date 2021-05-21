@@ -213,9 +213,11 @@ swap_size=8G
 [couchdb2_proxy:children]
 couchproxy3
 
+{{ __control1__ }}
 {{ __control2__ }}
 
 [control:children]
+control1
 control2
 
 {{ __djangomanage2__ }}
