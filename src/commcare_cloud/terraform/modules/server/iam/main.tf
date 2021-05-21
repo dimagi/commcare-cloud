@@ -86,8 +86,6 @@ resource "aws_iam_instance_profile" "commcare_server_instance_profile" {
 
 resource "aws_iam_role" "formplayer_log_role" {
   name = "formplayerlogbucketrole"
-  resource "aws_iam_role" "formplayerlogbucket_role" {
-  name = "formplayerlogbucket_role"
 
   assume_role_policy = <<POLICY
 {
@@ -136,15 +134,10 @@ resource "aws_iam_role_policy" "formplayerlog_policy" {
 		}
 	]
 }
-POLICY
+  POLICY
 }
 
 resource "aws_iam_instance_profile" "formplayerlogbucket_instance_profile" {
   name = "FormplayerLogBucketRole"
-  role = "${aws_iam_role.formplayer_log_role.name}"
-}
-
-resource "aws_iam_role_policy_attachment" "formplayerlogbucket_roleattachment" {
-  role       = aws_iam_role.formplayerlogbucket_role.name
-  policy_arn = aws_iam_policy.formplayerlog_policy.arn 
+  role = aws_iam_role.formplayer_log_role.name
 }
