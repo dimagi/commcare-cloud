@@ -136,15 +136,10 @@ resource "aws_iam_role_policy" "formplayerlog_policy" {
 		}
 	]
 }
-POLICY
+  POLICY
 }
 
 resource "aws_iam_instance_profile" "formplayerlogbucket_instance_profile" {
   name = "FormplayerLogBucketRole"
-  role = "${aws_iam_role.formplayer_log_role.name}"
-}
-
-resource "aws_iam_role_policy_attachment" "formplayerlogbucket_roleattachment" {
-  role       = aws_iam_role.formplayerlogbucket_role.name
-  policy_arn = aws_iam_policy.formplayerlog_policy.arn 
+  role = aws_iam_role.formplayer_log_role.name
 }
