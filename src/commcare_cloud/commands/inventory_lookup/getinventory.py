@@ -9,7 +9,6 @@ import re
 import attr
 from ansible.utils.display import Display
 
-from commcare_cloud.user_utils import get_default_username
 from commcare_cloud.environment.main import get_environment
 
 display = Display()
