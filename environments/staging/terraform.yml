@@ -27,6 +27,7 @@ servers:
     network_tier: "app-private"
     az: "b"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: webworkers
     os: ubuntu_pro_bionic
@@ -35,6 +36,7 @@ servers:
     network_tier: "app-private"
     az: "b"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: webworkers
     os: ubuntu_pro_bionic
@@ -251,6 +253,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -259,6 +262,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -267,6 +271,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -275,6 +280,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -284,6 +290,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
