@@ -5,11 +5,11 @@ terraform {
     region  = {{ state_bucket_region|tojson }}
     encrypt = true
   }
-  required_version = "~> 0.11.0, < 0.11.15"
+  required_version = "~> 0.12.30"
 }
 
 provider "aws" {
-  version = "~> 2.68"
+  version = "~> 3.22"
   region  = {{ region|tojson }}
 }
 
@@ -24,5 +24,5 @@ provider "aws" {
 }
 
 variable "rds_password" {
-  type = "string"
+  type = string
 }

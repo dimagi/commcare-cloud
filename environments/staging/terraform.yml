@@ -194,9 +194,11 @@ servers:
     network_tier: "db-private"
     az: "b"
     volume_size: 30
+    volume_type: "gp3"
     volume_encrypted: yes
     block_device:
       volume_size: 80
+      volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
     os: ubuntu_pro_bionic
@@ -404,6 +406,7 @@ elasticache_cluster:
   automatic_failover: true
   transit_encryption: false
   at_rest_encryption: true
+  multi_az: true
   auto_minor_version: false
   cluster_size: 2
   maintenance_window: "sun:03:30-sun:04:30"

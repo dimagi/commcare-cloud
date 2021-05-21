@@ -71,6 +71,7 @@ class ServerConfig(jsonobject.JsonObject):
     network_tier = jsonobject.StringProperty(choices=['app-private', 'public', 'db-private'])
     az = jsonobject.StringProperty()
     volume_size = jsonobject.IntegerProperty(default=20)
+    volume_type = jsonobject.StringProperty(default='gp2')
     volume_encrypted = jsonobject.BooleanProperty(default=True, required=True)
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
@@ -117,7 +118,7 @@ class ServerConfig(jsonobject.JsonObject):
 
 class BlockDevice(jsonobject.JsonObject):
     _allow_dynamic_properties = False
-    volume_type = jsonobject.StringProperty(default='gp2', choices=['gp2', 'io1', 'standard'])
+    volume_type = jsonobject.StringProperty(default='gp2', choices=['gp2', 'gp3', 'io1', 'standard'])
     volume_size = jsonobject.IntegerProperty(required=True)
     encrypted = jsonobject.BooleanProperty(default=True, required=True)
 
@@ -190,6 +191,7 @@ class ElasticacheClusterConfig(jsonobject.JsonObject):
     automatic_failover = jsonobject.BooleanProperty(default=True)
     transit_encryption = jsonobject.BooleanProperty(default=False)
     at_rest_encryption = jsonobject.BooleanProperty(default=True)
+    multi_az = jsonobject.BooleanProperty(default=True)
     auto_minor_version = jsonobject.BooleanProperty(default=False)
     cluster_size = jsonobject.IntegerProperty(default=1)
     maintenance_window = jsonobject.StringProperty(default="sun:03:30-sun:04:30")
