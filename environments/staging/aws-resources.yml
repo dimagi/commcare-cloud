@@ -4,8 +4,11 @@ control1-staging: 10.201.10.170
 control1-staging.instance_id: i-04ed8ae39462cca8f
 couch12-staging: 10.201.41.72
 couch12-staging.instance_id: i-05329c6c630cbeb7b
+<<<<<<< HEAD
 couch13-staging: 10.201.41.223
 couch13-staging.instance_id: i-0bb571d1765a241dc
+=======
+>>>>>>> removing stopped couch nodes which are not part of cluster
 couch15-staging: 10.201.42.109
 couch15-staging.instance_id: i-0f618ee36887bb494
 couch6-staging: 10.201.40.74
