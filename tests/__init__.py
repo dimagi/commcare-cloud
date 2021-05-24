@@ -11,7 +11,7 @@ def setup_package():
         patch.dict("os.environ", COMMCARE_CLOUD_DEFAULT_USERNAME=""),
         # handle memoized decorator (in case get_default_username has already been called)
         patch(
-            "commcare_cloud.commands.inventory_lookup.getinventory.get_default_username",
+            "commcare_cloud.user_utils.get_default_username",
             lambda: StringIsGuess("", is_guess=True),
         ),
 

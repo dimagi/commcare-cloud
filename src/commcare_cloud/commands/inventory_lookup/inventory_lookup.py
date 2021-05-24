@@ -69,7 +69,7 @@ class _Ssh(Lookup):
             address, port = address.split(':')
             ssh_args = ['-p', port] + ssh_args
         if '@' in address:
-            username, address = address.split('@')
+            username, address = address.split('@', 1)
             username = get_ssh_username(address, args.env_name, requested_username=username)
         elif '@' not in address:
             username = get_ssh_username(address, args.env_name)
