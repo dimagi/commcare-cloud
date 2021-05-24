@@ -85,6 +85,12 @@ def get_aws_resources(environment):
         '--output', 'json', '--region', config.region,
     ])
 
+    alb_endpoints = aws_cli(environment, [
+        'aws', 'elbv2', 'describe-load-balancers',
+        '--query', "LoadBalancers[?Type=='application'].[LoadBalancerName,DNSName]",
+        '--output', 'json', '--region', config.region,
+    ])
+
     efs_info = [{
         'name': name,
         'efs_id': efs_id,
@@ -110,6 +116,10 @@ def get_aws_resources(environment):
     for name, endpoint in nlb_endpoints:
         assert name not in resources
         resources[name.replace('-nlb-', '_nlb-')] = endpoint
+
+    for name, endpoint in alb_endpoints:
+        assert name not in resources
+        resources[name.replace('-alb-', '_alb-')] = endpoint
 
     for info in efs_info:
         resources['{name}-efs'.format(**info)] = info['efs_dns']
@@ -243,6 +253,10 @@ class AwsFillInventoryHelper(object):
         for pgbouncer_nlb in self.environment.terraform_config.pgbouncer_nlbs:
             context.update(
                 self.get_host_group_definition(resource_name=pgbouncer_nlb.name)
+            )
+        for internal_alb in self.environment.terraform_config.internal_albs:
+            context.update(
+                self.get_host_group_definition(resource_name=internal_alb.name)
             )
 
         return context

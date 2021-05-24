@@ -289,11 +289,12 @@ module "pgbouncer_nlb__{{ pgbouncer_nlb.name }}" {
 
 {% endfor %}
 
-{% for proxy_alb in proxy_albs %}
-module "proxy_alb__{{ proxy_alb.name }}" {
-  source = "./modules/proxy_alb"
+{% for internal_alb in internal_albs %}
+module "internal_alb__{{ internal_alb.name }}" {
+  source = "./modules/internal_alb"
   vpc_id   = "${module.network.vpc-id}"
-  alb_identifier = "{{ proxy_alb.identifier }}"
+  alb_identifier = "{{ internal_alb.identifier }}"
+  port = "{{ internal_alb.port }}"
   security_groups = ["${module.network.db-private-sg}"]
   subnets = [
     {%- for az in az_codes %}{% if not loop.first %}, {% endif %}
@@ -302,7 +303,7 @@ module "proxy_alb__{{ proxy_alb.name }}" {
   ]
   environment = "${var.environment}"
   server_ids = [
-    {%- for server_id in proxy_alb.targets %}{% if not loop.first %}, {% endif %}
+    {%- for server_id in internal_alb.targets %}{% if not loop.first %}, {% endif %}
     "${module.server__{{ server_id }}.server}"
     {%- endfor %}
   ]

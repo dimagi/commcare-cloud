@@ -45,7 +45,7 @@ rds_pgformplayer0
 {{ __pgucr_nlb__ }}
 {{ __pgsynclogs_nlb__ }}
 {{ __pgshard_nlb__ }}
-{{ __proxycouch_alb__ }}
+{{ __couch_alb__ }}
 
 [postgresql:children]
 pgproxy2
@@ -87,7 +87,7 @@ couch14
 couch15
 couch16
 couch17
-proxycouch_alb
+couch_alb
 
 [couchdb2_proxy:children]
 couch6
@@ -188,7 +188,7 @@ pgmain_nlb
 pgucr_nlb
 pgsynclogs_nlb
 pgshard_nlb
-proxycouch_alb
+couch_alb
 
 
 [django_manage:children]
