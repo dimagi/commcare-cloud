@@ -12,26 +12,29 @@ variable "route_names" {
 
 variable "type" {
   description = "Type of record in route53"
-  type        = "string"
+  type        = string
   default     = "CNAME"
 }
 
 variable "ttl" {
   description = "Time to live"
+  type = number
   default     = 300
 }
 
 variable "records" {
   description = "List of records"
-  type        = "list"
+  type        = list
 }
 
 variable "create" {
   description = "Flag to enable/disable r53-private-zone-create-update"
-  default     = "true"
+  type        = bool
+  default     = true
 }
 
 variable "create_record" {
   description = "Flag to enable/disable r53-private-zone-create record"
-  default     = "true"
+  type        = bool
+  default     = true
 }
