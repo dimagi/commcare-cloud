@@ -60,6 +60,7 @@ def get_nodes(config):
             address,
             config.control_node_port,
             config.control_node_local_port,
+            config.couchdb_version,
             config.username,
             config._password,
             None
