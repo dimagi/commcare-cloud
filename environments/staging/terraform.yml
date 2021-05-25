@@ -166,7 +166,7 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "couch12-staging"
-    server_instance_type: "t3.large"
+    server_instance_type: "t3.xlarge"
     network_tier: "db-private"
     az: "b"
     volume_size: 30
