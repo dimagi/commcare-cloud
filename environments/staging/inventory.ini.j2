@@ -69,12 +69,13 @@ pgbouncer0
 couch6
 couch12
 couch15
-couch16
-couch17
 couch_alb
 
 [couchdb2_proxy:children]
-couch6
+couch_alb
+
+[couchdb2_alb:children]
+couch_alb
 
 {{ __rabbit2__ }}
 {{ __rabbit4__ }}

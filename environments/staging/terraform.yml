@@ -359,6 +359,8 @@ internal_albs:
     port: 15984
     targets:
       - couch6-staging
+      - couch12-staging
+      - couch15-staging
 
 elasticache:
   create: no
