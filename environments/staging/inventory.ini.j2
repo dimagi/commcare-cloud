@@ -60,17 +60,40 @@ pgbouncer0
 
 {{ __couch6__ }}
 
-{{ __couch12__ }}
+{{ __couch7__ }}
 
-{{ __couch15__ }}
+{{ __couch8__ }}
+
+{{ __couch12__ }}
 
 {{ __couch13__ }}
 
+{{ __couch14__ }}
+
+{{ __couch15__ }}
+
+<<<<<<< HEAD
+{{ __couch13__ }}
+=======
+{{ __couch16__ }}
+
+{{ __couch17__ }}
+>>>>>>> Revert "removing stopped couch nodes which are not part of cluster"
+
 [couchdb2:children]
 couch6
+couch7
+couch8
 couch12
-couch15
 couch13
+couch14
+couch15
+<<<<<<< HEAD
+couch13
+=======
+couch16
+couch17
+>>>>>>> Revert "removing stopped couch nodes which are not part of cluster"
 
 [couchdb2_proxy:children]
 couch6

@@ -5,14 +5,29 @@ control1-staging.instance_id: i-04ed8ae39462cca8f
 couch12-staging: 10.201.41.72
 couch12-staging.instance_id: i-05329c6c630cbeb7b
 <<<<<<< HEAD
+<<<<<<< HEAD
 couch13-staging: 10.201.41.223
 couch13-staging.instance_id: i-0bb571d1765a241dc
 =======
 >>>>>>> removing stopped couch nodes which are not part of cluster
+=======
+couch13-staging: 10.201.41.26
+couch13-staging.instance_id: i-07620fde7486b8ef0
+couch14-staging: 10.201.41.73
+couch14-staging.instance_id: i-06e6fbd1811f92275
+>>>>>>> Revert "removing stopped couch nodes which are not part of cluster"
 couch15-staging: 10.201.42.109
 couch15-staging.instance_id: i-0f618ee36887bb494
+couch16-staging: 10.201.42.220
+couch16-staging.instance_id: i-0455c2721242ddde0
+couch17-staging: 10.201.42.185
+couch17-staging.instance_id: i-0baac7bd48f3c963d
 couch6-staging: 10.201.40.74
 couch6-staging.instance_id: i-01b32f8a2eebe07bc
+couch7-staging: 10.201.40.221
+couch7-staging.instance_id: i-0361f071191cd66c0
+couch8-staging: 10.201.40.18
+couch8-staging.instance_id: i-06d9f01ac9c8cb6b8
 es10-staging: 10.201.41.31
 es10-staging.instance_id: i-08c2645edf582d4b6
 es6-staging: 10.201.40.126
