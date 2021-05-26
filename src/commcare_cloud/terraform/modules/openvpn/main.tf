@@ -14,7 +14,6 @@ resource "aws_instance" "vpn_host" {
     reboot
 EOF
 
-
   disable_api_termination = true
 
   root_block_device {
@@ -24,12 +23,7 @@ EOF
   }
 
   lifecycle {
-    ignore_changes = [
-      root_block_device.0.volume_type,
-      user_data,
-      key_name,
-      iam_instance_profile,
-    ]
+    ignore_changes = ["root_block_device.0.volume_type", "user_data", "key_name", "iam_instance_profile", "ebs_optimized"]
   }
 
   tags = {

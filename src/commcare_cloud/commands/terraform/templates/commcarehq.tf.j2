@@ -204,8 +204,7 @@ module "openvpn" {
   openvpn_image = "${var.openvpn_image}"
   environment = "${var.environment}"
   vpn_size = "${var.openvpn_instance_type}"
-  # hardcoded, should be configurable like the others
-  instance_subnet = "${module.network.subnets-public["{{ openvpn_az }}"]}"
+  instance_subnet = "${module.network.subnets-public[var.openvpn_az]}"
   vpc_id = "${module.network.vpc-id}"
   vpc_cidr = "${module.network.vpc-cidr}"
   key_name = "${var.key_name}"
