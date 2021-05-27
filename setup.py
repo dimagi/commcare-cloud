@@ -9,7 +9,7 @@ install_deps = [
     'attrs>=18.1.0',
     'boto3>=1.9.131',
     'clint',
-    'couchdb-cluster-admin>=0.6.0',
+    'couchdb-cluster-admin>=0.7.0',
     'cryptography>=3.2',
     'datadog==0.2.0',
     'dimagi-memoized>=1.1.0',
