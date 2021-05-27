@@ -17,6 +17,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/cloudcare/apps/report_formplayer_error
 ^/a/([\w\.:-]+)/data/export/custom/download_data_files/$
 ^/a/([\w\.:-]+)/data_dictionary/import$
+^/a/([\w\.:-]+)/dhis2/map/(\w+)/$
 ^/a/([\w\.:-]+)/fixtures/edit_lookup_tables/upload/$
 ^/a/([\w\.:-]+)/fixtures/fixapi/
 ^/a/([\w\.:-]+)/importer/excel/bulk_upload_api/$
