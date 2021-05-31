@@ -1,3 +1,5 @@
+# elasticache-cluster-v0.2.0
+[rameshganne] - Updating module to support Terraform v12 or higher and including multi_az_enabled attribute.
 # elasticache-cluster-v0.1.3
 [rameshganne] - Updated module to support Elasticache clsuter-enabled & clsuter-disabled.
 # elasticache-cluster-v0.1.2

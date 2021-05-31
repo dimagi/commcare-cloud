@@ -27,6 +27,7 @@ servers:
     network_tier: "app-private"
     az: "b"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: webworkers
     os: ubuntu_pro_bionic
@@ -35,6 +36,7 @@ servers:
     network_tier: "app-private"
     az: "b"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: webworkers
     os: ubuntu_pro_bionic
@@ -144,7 +146,7 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "couch12-staging"
-    server_instance_type: "t3.xlarge"
+    server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -261,6 +263,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -269,6 +272,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -277,6 +281,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -285,6 +290,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -294,6 +300,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -346,6 +353,7 @@ elasticache_cluster:
   automatic_failover: true
   transit_encryption: false
   at_rest_encryption: true
+  multi_az: true
   auto_minor_version: false
   cluster_size: 2
   maintenance_window: "sun:03:30-sun:04:30"

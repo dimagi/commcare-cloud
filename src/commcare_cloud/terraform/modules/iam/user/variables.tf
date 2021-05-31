@@ -1,2 +1,7 @@
-variable "username" {}
-variable "administrators_iam_group" {}
+variable "username" {
+}
+
+variable "administrators_iam_group" {
+    type = list
+}
+
