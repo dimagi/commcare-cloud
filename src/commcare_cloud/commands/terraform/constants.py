@@ -6,6 +6,8 @@
 from __future__ import unicode_literals
 COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/api/v([\d\.]+)/form/$
+^/a/([\w\.:-]+)/api/v0.6/case/$
+^/a/([\w\.:-]+)/api/v0.6/case/([\w-]+)/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/app_logo/([\w\-]+)/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/image/$
 ^/a/([\w\.:-]+)/apps/edit_form_attr/([\w-]+)/([\w-]+)/([\w-]+)/$
@@ -29,6 +31,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/receiver/submission/?$
 ^/a/([\w\.:-]+)/settings/users/commcare/fields/$
 ^/a/([\w\.:-]+)/settings/users/commcare/upload/$
+^/a/([\w\.:-]+)/settings/users/web/upload/$
 ^/formplayer/new-form$
 ^/formplayer/validate_form$
 ^/gvi/api/sms/$
