@@ -335,6 +335,15 @@ pgbouncer_nlbs:
     targets:
       - pgbouncer0-staging
 
+internal_albs:
+  - name: "couch_alb-staging"
+    listener_port: 25984
+    target_port: 15984
+    targets:
+      - couch6-staging
+      - couch13-staging
+      - couch15-staging
+
 elasticache:
   create: no
 
