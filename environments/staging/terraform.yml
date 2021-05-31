@@ -394,7 +394,7 @@ internal_albs:
     target_port: 15984
     targets:
       - couch6-staging
-      - couch12-staging
+      - couch13-staging
       - couch15-staging
 
 elasticache:
