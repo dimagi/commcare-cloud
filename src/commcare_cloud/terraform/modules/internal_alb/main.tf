@@ -16,7 +16,7 @@ resource "aws_lb" "this" {
 
 resource "aws_lb_target_group" "this" {
   name     = "${var.alb_identifier}"
-  port     = "${var.port}"
+  port     = "${var.target_port}"
   protocol = "HTTP"
   vpc_id   = "${var.vpc_id}"
 
@@ -37,12 +37,12 @@ resource "aws_lb_target_group_attachment" "this" {
   count = "${length(var.server_ids)}"
   target_group_arn = "${aws_lb_target_group.this.arn}"
   target_id        = "${var.server_ids[count.index]}"
-  port             = "${var.port}"
+  port             = "${var.target_port}"
 }
 
 resource "aws_lb_listener" "this" {
   load_balancer_arn = "${aws_lb.this.arn}"
-  port              = "80"
+  port              = "${var.listener_port}"
   protocol          = "HTTP"
 
   default_action {

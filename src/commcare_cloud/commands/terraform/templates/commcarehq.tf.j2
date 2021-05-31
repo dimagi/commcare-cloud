@@ -294,7 +294,8 @@ module "internal_alb__{{ internal_alb.name }}" {
   source = "./modules/internal_alb"
   vpc_id   = "${module.network.vpc-id}"
   alb_identifier = "{{ internal_alb.identifier }}"
-  port = "{{ internal_alb.port }}"
+  target_port = "{{ internal_alb.target_port }}"
+  listener_port = "{{ internal_alb.listener_port }}"
   security_groups = ["${module.network.db-private-sg}"]
   subnets = [
     {%- for az in az_codes %}{% if not loop.first %}, {% endif %}

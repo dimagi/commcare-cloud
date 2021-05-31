@@ -177,7 +177,8 @@ class InternalAlbs(jsonobject.JsonObject):
     name = jsonobject.StringProperty(required=True)
     identifier = jsonobject.StringProperty(required=False)
     targets = jsonobject.ListProperty(str)
-    port = jsonobject.IntegerProperty(required=True)
+    target_port = jsonobject.IntegerProperty(required=True)
+    listener_port = jsonobject.IntegerProperty(required=True)
 
     @classmethod
     def wrap(cls, data):

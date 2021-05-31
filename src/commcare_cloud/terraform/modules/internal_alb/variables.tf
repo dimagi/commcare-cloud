@@ -9,7 +9,8 @@ variable "server_ids" {
 }
 
 variable "alb_identifier" {}
-variable "port" {}
+variable "target_port" {}
+variable "listener_port" {}
 variable "security_groups" {
   type = "list"
 }
