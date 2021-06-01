@@ -65,7 +65,6 @@ server.forward-headers-strategy=NATIVE
 spring.cache.type=caffeine
 {% endif %}
 
-{% if formplayer_detailed_tagging_domains is defined %}
-detailed_tagging.domains={{ formplayer_detailed_tagging_domains|join(',') }}
+{% if formplayer_detailed_tags is defined %}
 detailed_tagging.tag_names={{ formplayer_detailed_tags|join(',') }}
 {% endif %}
