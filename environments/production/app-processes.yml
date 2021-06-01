@@ -86,6 +86,8 @@ pillows:
     case-pillow:
       num_processes: 17
       dedicated_migration_process: True
+    CaseSearchToElasticsearchPillow:
+      num_processes: 34
     user-pillow:
       num_processes: 1
     group-pillow:
