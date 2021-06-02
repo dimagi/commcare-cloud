@@ -29,6 +29,7 @@ EOF
       user_data,
       key_name,
       iam_instance_profile,
+      ebs_optimized,
     ]
   }
 

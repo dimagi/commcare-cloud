@@ -144,28 +144,6 @@ servers:
       encrypted: true
     group: "couchdb2"
     os: ubuntu_pro_bionic
-  - server_name: "couch7-staging"
-    server_instance_type: "t3.large"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 150
-      encrypted: true
-    group: "couchdb2"
-    os: ubuntu_pro_bionic
-  - server_name: "couch8-staging"
-    server_instance_type: "t3.large"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 150
-      encrypted: true
-    group: "couchdb2"
-    os: ubuntu_pro_bionic
 
   - server_name: "couch12-staging"
     server_instance_type: "t3.large"
@@ -184,18 +162,6 @@ servers:
     network_tier: "db-private"
     az: "b"
     volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 80
-      encrypted: true
-    group: "couchdb2"
-    os: ubuntu_pro_bionic
-
-  - server_name: "couch14-staging"
-    server_instance_type: "t3.large"
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 30
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
@@ -206,30 +172,6 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "couch15-staging"
-    server_instance_type: "t3.large"
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 80
-      encrypted: true
-    group: "couchdb2"
-    os: ubuntu_pro_bionic
-
-  - server_name: "couch16-staging"
-    server_instance_type: "t3.large"
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 80
-      encrypted: true
-    group: "couchdb2"
-    os: ubuntu_pro_bionic
-
-  - server_name: "couch17-staging"
     server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "c"

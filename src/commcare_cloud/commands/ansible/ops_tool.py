@@ -10,6 +10,7 @@ import sys
 from collections import defaultdict
 from io import open
 from operator import attrgetter, itemgetter
+from distutils.version import LooseVersion
 
 import yaml
 from clint.textui import indent, puts
@@ -249,16 +250,17 @@ class CouchDBClusterInfo(CommandBase):
     """)
 
     arguments = (
-        Argument("--raw", action="store_true", help="Output raw shard allocations as YAML instead of printing tables."),
+        Argument("--raw", action="store_true", help="Output raw shard allocations as YAML instead of printing tables"),
         Argument("--shard-counts", action="store_true", help="Include document counts for each shard"),
         Argument("--database", help="Only show output for this database"),
         Argument("--couch-port", default=15984, type=int, help="CouchDB port. Defaults to 15984"),
-        Argument("--couch-local-port", default=15986, type=int, help="CouchDB node local port. Defaults to 15986"),
+        Argument("--couch-local-port", default=15986, type=int, help="CouchDB local port (only applicable to CouchDB version < '3.0.0'). Defaults to 15986"),
+        Argument("--couchdb-version", default=None, help="CouchDB version. Assumes '2.3.1' or couchdb_version if set in public.yml"),
     )
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
-        couch_config = get_couch_config(environment, port=args.couch_port, local_port=args.couch_local_port)
+        couch_config = get_couch_config(environment, port=args.couch_port, local_port=args.couch_local_port, couchdb_version=args.couchdb_version)
 
         db_list = sorted(get_db_list(couch_config.get_control_node()))
         if args.database:
@@ -300,12 +302,17 @@ class CouchDBClusterInfo(CommandBase):
         return 0
 
 
-def get_couch_config(environment, nodes=None, port=15984, local_port=15986):
+def get_couch_config(environment, nodes=None, port=15984, local_port=15986, couchdb_version=None):
     couch_nodes = nodes or environment.groups['couchdb2']
+    if couchdb_version is None:
+        couchdb_version = environment.public_vars.get('couchdb_version', '2.3.1')
+    if LooseVersion(couchdb_version) >= LooseVersion('3.0.0'):
+        local_port = port
     config = Config(
         control_node_ip=couch_nodes[0],
         control_node_port=port,
         control_node_local_port=local_port,
+        couchdb_version=couchdb_version,
         username=environment.get_secret('COUCH_USERNAME'),
         aliases={
             'couchdb@{}'.format(node): get_machine_alias(environment, node) for node in couch_nodes

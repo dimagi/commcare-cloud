@@ -25,8 +25,8 @@ module "formplayer_request_response_logs_firehose_stream" {
   account_id = var.account_id
   log_bucket_name = local.log_bucket_name
   log_bucket_arn = aws_s3_bucket.log_bucket.arn
-  log_bucket_prefix = local.formplayer_request_response_log_bucket_prefix
-  log_bucket_error_prefix = local.formplayer_request_response_log_bucket_error_prefix
+  log_bucket_prefix = "${local.formplayer_request_response_log_bucket_prefix}/${local.hive_prefix}"
+  log_bucket_error_prefix = "${local.formplayer_request_response_log_bucket_error_prefix}/${local.hive_error_prefix}"
   firehose_stream_name = local.formplayer_request_response_log_bucket_prefix
 }
   resource "aws_iam_role" "check_file_lambda" {
