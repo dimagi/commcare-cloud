@@ -480,7 +480,6 @@ resource "aws_security_group" "db-private" {
       # which keys might be set in maps assigned here, so it has
       # produced a comprehensive set here. Consider simplifying
       # this after confirming which keys can be set in practice.
-
       cidr_blocks      = lookup(egress.value, "cidr_blocks", null)
       description      = lookup(egress.value, "description", null)
       from_port        = lookup(egress.value, "from_port", null)

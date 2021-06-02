@@ -18,7 +18,6 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
-    volume_encrypted: no
     group: "control"
     os: bionic
 
