@@ -831,10 +831,6 @@ Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a 
     ```
     curl -XPOST 'http://<es_url>/_cluster/reroute' -d ' {"commands" :[{"allocate": {"shard": 0, "node": "es34", "allow_primary": true, "index": "xforms_2020-02-20"}}]}'
     ```
-  - Example reroute command to allocate replica shard
-    ```
-    curl -XPOST 'http://<es_url>/_cluster/reroute' -d ' {"commands" :[{"allocate": {"shard": 0, "node": "es34", "index": "xforms_2020-02-20"}}]}'
-    ```
 
     ```
     curl -XPOST 'http://<es_url>:<port>/_cluster/reroute' -d '{
@@ -847,6 +843,12 @@ Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a 
         ]
       }'
     ```
+
+  - Example reroute command to allocate replica shard
+    ```
+    curl -XPOST 'http://<es_url>/_cluster/reroute' -d ' {"commands" :[{"allocate": {"shard": 0, "node": "es34", "index": "xforms_2020-02-20"}}]}'
+    ```
+
 - Replicas won’t get auto assigned. To assign replicas, auto shard allocation needs to be enabled
   - Make sure no primaries are unassigned
   - Turn on auto shard allocation using
