@@ -175,7 +175,7 @@ localsettings:
         class: 'pillowtop.pillow.interface.ConstructedPillow'
         instance: 'corehq.pillows.case_search.get_case_search_to_elasticsearch_pillow'
         params:
-          index_name: 'case_search_2021-06-01'
+          index_name: 'case_search_2021-06-04'
           index_alias: 'case_search-1'
   SECURE_HSTS_SECONDS: "{{ nginx_hsts_max_age }}"
   SILENCED_SYSTEM_CHECKS:
