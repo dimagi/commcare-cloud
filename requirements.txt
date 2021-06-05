@@ -5,7 +5,7 @@
 #    pip-compile --output-file=requirements.txt setup.py
 #
 ansible-vault==1.1.1      # via commcare-cloud (setup.py)
-ansible==2.9.13           # via ansible-vault, commcare-cloud (setup.py)
+ansible==2.9.20           # via ansible-vault, commcare-cloud (setup.py)
 argparse==1.4.0           # via commcare-cloud (setup.py), couchdb-cluster-admin
 args==0.1.0               # via clint
 attrs==20.2.0             # via commcare-cloud (setup.py)
@@ -50,7 +50,7 @@ s3transfer==0.3.3         # via boto3
 simplejson==3.17.2        # via commcare-cloud (setup.py)
 six==1.15.0               # via bcrypt, commcare-cloud (setup.py), cryptography, fabric3, jsonobject, pynacl, python-dateutil
 tabulate==0.8.7           # via commcare-cloud (setup.py)
-urllib3==1.25.10          # via botocore, requests
+urllib3==1.26.5          # via botocore, requests
 wrapt==1.12.1             # via deprecated
 zipp==3.2.0               # via importlib-metadata, importlib-resources
 zope.event==4.5.0         # via gevent

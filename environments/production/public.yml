@@ -66,8 +66,9 @@ formplayer_purge_time_spec: '10d'
 formplayer_sensitive_data_logging: true
 formplayer_forward_ip_proxy: true
 formplayer_enable_cache: true
-formplayer_detailed_tagging_domains: "{{ detailed_tagging_domains }}"
-formplayer_detailed_tags: []
+formplayer_detailed_tags:
+  - form_name
+  - module_name
 
 KSPLICE_ACTIVE: yes
 
