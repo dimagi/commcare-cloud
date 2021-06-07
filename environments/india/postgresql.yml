@@ -51,19 +51,34 @@ dbs:
     partitions:
       p1:
         shards: [0, 204]
-        pgbouncer_host: pgbouncer0
+        pgbouncer_endpoint: pgshard_nlb
+        pgbouncer_hosts:
+          - pgbouncer1
+          - pgbouncer0
       p2:
         shards: [205, 409]
-        pgbouncer_host: pgbouncer0
+        pgbouncer_endpoint: pgshard_nlb
+        pgbouncer_hosts:
+          - pgbouncer1
+          - pgbouncer0
       p3:
         shards: [410, 614]
-        pgbouncer_host: pgbouncer0
+        pgbouncer_endpoint: pgshard_nlb
+        pgbouncer_hosts:
+          - pgbouncer1
+          - pgbouncer0
       p4:
         shards: [615, 819]
-        pgbouncer_host: pgbouncer0
+        pgbouncer_endpoint: pgshard_nlb
+        pgbouncer_hosts:
+          - pgbouncer1
+          - pgbouncer0
       p5:
         shards: [820, 1023]
-        pgbouncer_host: pgbouncer0
+        pgbouncer_endpoint: pgshard_nlb
+        pgbouncer_hosts:
+          - pgbouncer1
+          - pgbouncer0
   custom:
     - django_alias: aaa-data
       name: aaa-data

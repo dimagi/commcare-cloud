@@ -274,6 +274,9 @@ pgbouncer_nlbs:
   - name: pgsynclogs_nlb-india
     targets:
       - pgbouncer0-india
+  - name: pgshard_nlb-india
+    targets:
+      - pgbouncer0-india
 
 
 elasticache_cluster:

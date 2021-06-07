@@ -47,6 +47,7 @@ es_data
 {{ __pgmain_nlb__ }}
 {{ __pgucr_nlb__ }}
 {{ __pgsynclogs_nlb__ }}
+{{ __pgshard_nlb__ }}
 
 
 [citusdb_worker:children]
@@ -86,6 +87,7 @@ pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
 pgsynclogs_nlb
+pgshard_nlb
 
 [rabbitmq:children]
 kafka1
@@ -142,3 +144,4 @@ pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
 pgsynclogs_nlb
+pgshard_nlb
