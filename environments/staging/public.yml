@@ -71,7 +71,7 @@ new_domain_email: inquiries@dimagi.com
 
 couch_dbs:
   default:
-    host: "{{ groups.couchdb2_proxy.0 }}"
+    host: "{{ groups.couchdb2_alb.0 }}"
     port: "{{ couchdb2_proxy_port }}"
     name: staging_commcarehq
     username: "{{ COUCH_USERNAME }}"

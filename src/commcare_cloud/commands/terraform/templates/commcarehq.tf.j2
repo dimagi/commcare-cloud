@@ -286,6 +286,29 @@ module "pgbouncer_nlb__{{ pgbouncer_nlb.name }}" {
 
 {% endfor %}
 
+{% for internal_alb in internal_albs %}
+module "internal_alb__{{ internal_alb.name }}" {
+  source = "./modules/internal_alb"
+  vpc_id   = "${module.network.vpc-id}"
+  alb_identifier = "{{ internal_alb.identifier }}"
+  target_port = "{{ internal_alb.target_port }}"
+  listener_port = "{{ internal_alb.listener_port }}"
+  security_groups = ["${module.network.db-private-sg}"]
+  subnets = [
+    {%- for az in az_codes %}{% if not loop.first %}, {% endif %}
+    "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+    {%- endfor %}
+  ]
+  environment = "${var.environment}"
+  server_ids = [
+    {%- for server_id in internal_alb.targets %}{% if not loop.first %}, {% endif %}
+    "${module.server__{{ server_id }}.server}"
+    {%- endfor %}
+  ]
+}
+
+{% endfor %}
+
 {% if efs_file_systems %}
 {% for efs_file_system in efs_file_systems %}
 module "efs_file_system__{{ efs_file_system.efs_name }}" {
