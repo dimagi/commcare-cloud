@@ -2,8 +2,6 @@ celery3-staging: 10.201.10.216
 celery3-staging.instance_id: i-0c544ab25e0364153
 control1-staging: 10.201.10.170
 control1-staging.instance_id: i-04ed8ae39462cca8f
-couch12-staging: 10.201.41.72
-couch12-staging.instance_id: i-05329c6c630cbeb7b
 couch13-staging: 10.201.41.223
 couch13-staging.instance_id: i-0bb571d1765a241dc
 couch15-staging: 10.201.42.109
