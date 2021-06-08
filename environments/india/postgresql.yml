@@ -54,36 +54,42 @@ dbs:
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer1
-          - pgbouncer0
+          - pgbouncer2
       p2:
         shards: [205, 409]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer1
-          - pgbouncer0
+          - pgbouncer2
       p3:
         shards: [410, 614]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer1
-          - pgbouncer0
+          - pgbouncer2
       p4:
         shards: [615, 819]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer1
-          - pgbouncer0
+          - pgbouncer2
       p5:
         shards: [820, 1023]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer1
-          - pgbouncer0
+          - pgbouncer2
   custom:
     - django_alias: aaa-data
       name: aaa-data
       django_migrate: True  # AAA dashboard models are stored here
-      pgbouncer_host: pgbouncer0
+      pgbouncer_endpoint: pgshard_nlb
+      pgbouncer_hosts:
+        - pgbouncer1
+        - pgbouncer2
     - name: airflow
       django_migrate: False
-      pgbouncer_host: pgbouncer0
+      pgbouncer_endpoint: pgshard_nlb
+      pgbouncer_hosts:
+        - pgbouncer1
+        - pgbouncer2

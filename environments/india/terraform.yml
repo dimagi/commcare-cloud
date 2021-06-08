@@ -234,6 +234,15 @@ servers:
     group: "postgresql"
     os: ubuntu_pro_bionic
 
+  - server_name: "pgbouncer2-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: ubuntu_pro_bionic
+
   - server_name: "rabbit2-india"
     server_instance_type: t3.small
     network_tier: "db-private"
@@ -276,7 +285,8 @@ pgbouncer_nlbs:
       - pgbouncer0-india
   - name: pgshard_nlb-india
     targets:
-      - pgbouncer0-india
+      - pgbouncer1-india
+      - pgbouncer2-india
 
 
 elasticache_cluster:

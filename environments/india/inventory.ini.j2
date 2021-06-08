@@ -41,6 +41,7 @@ es_data
 {{ __rabbit2__ }}
 {{ __pgbouncer0__ }}
 {{ __pgbouncer1__ }} pgbouncer_processes=2
+{{ __pgbouncer2__ }} pgbouncer_processes=2
 {{ __proxy1__ }}
 {{ __rds_pgmain0__ }}
 {{ __pgformplayer_nlb__ }}
@@ -83,6 +84,7 @@ pgbouncer0
 
 [pgbouncer:children]
 pgbouncer1
+pgbouncer2
 pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
