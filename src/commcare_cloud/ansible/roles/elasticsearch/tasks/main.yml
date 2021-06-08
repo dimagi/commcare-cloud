@@ -231,3 +231,24 @@
     mode: 0640
   notify: reload monit
   tags: monit
+
+- name: ElasticSearchlogs
+  include_role:
+    name: ansible-logrotate
+  vars:
+    logrotate_scripts:
+      - name: "elasticsearch"
+        path: "{{ elasticsearch_data_dir }}/logs/*.log"
+        options:
+          - hourly
+          - size 750M
+          - rotate 7
+          - missingok
+          - compress
+          - delaycompress
+          - copytruncate
+          - nocreate
+          - notifempty
+  tags:
+    - elasticsearch
+    - logging
