@@ -4,7 +4,6 @@ dev_users:
     - biyeun
     - cellowitz
     - csmit
-    - cstahl
     - ctsims
     - czue
     - dmiller
@@ -41,3 +40,4 @@ dev_users:
     - knguyen
     - sbansal
     - dchung
+    - cstahl
