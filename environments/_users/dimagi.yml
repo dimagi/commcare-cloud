@@ -7,7 +7,6 @@ dev_users:
     - cstahl
     - ctsims
     - czue
-    - dchung
     - dmiller
     - droberts
     - esoergel
@@ -41,3 +40,4 @@ dev_users:
     - rkumar
     - knguyen
     - sbansal
+    - dchung
