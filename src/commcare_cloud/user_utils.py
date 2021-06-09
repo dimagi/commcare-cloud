@@ -100,5 +100,5 @@ def _check_username(env_name, username, message):
         ))
         username = ""
     if default_username.is_guess:
-        print(color_notice(message.format(username)))
+        print(color_notice(message.format(username=username)))
     return username
