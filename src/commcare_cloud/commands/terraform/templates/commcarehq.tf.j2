@@ -85,6 +85,7 @@ module "server_iam_role" {
   account_id = {{ account_id|tojson }}
   region_name = "${var.region}"
   formplayer_request_response_logs_firehose_stream_arn = "${module.logshipping.formplayer_request_response_logs_firehose_stream_arn}"
+  account_alias =  "${var.account_alias}"
 }
 
 {% for server_spec in servers + proxy_servers %}
