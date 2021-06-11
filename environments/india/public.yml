@@ -24,7 +24,6 @@ citus_postgresql_port: 5432
 aws_region: 'ap-south-1'
 
 formplayer_sensitive_data_logging: true
-formplayer_enable_cache: true
 
 nofile_limit: 65536
 
