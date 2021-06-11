@@ -16,7 +16,9 @@ variable "openvpn_image" {
 variable "openvpn_instance_type" {
   default = "t2.small"
 }
-
+variable "openvpn_az" {
+  default = "a"
+}
 
 data "aws_ami" "ubuntu_pro_bionic" {
   // should match what is on

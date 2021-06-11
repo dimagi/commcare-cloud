@@ -13,6 +13,10 @@ provider "aws" {
   region  = {{ region|tojson }}
 }
 
+provider "archive" {
+  version = "1.3.0"
+}
+
 // for global accelerator which can only be configured in us-west-2
 provider "aws" {
   alias = "us-west-2"

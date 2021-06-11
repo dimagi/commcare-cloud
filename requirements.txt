@@ -5,7 +5,7 @@
 #    pip-compile --output-file=requirements.txt setup.py
 #
 ansible-vault==1.1.1      # via commcare-cloud (setup.py)
-ansible==2.9.13           # via ansible-vault, commcare-cloud (setup.py)
+ansible==2.9.20           # via ansible-vault, commcare-cloud (setup.py)
 argparse==1.4.0           # via commcare-cloud (setup.py), couchdb-cluster-admin
 args==0.1.0               # via clint
 attrs==20.2.0             # via commcare-cloud (setup.py)
@@ -16,7 +16,7 @@ certifi==2020.6.20        # via requests
 cffi==1.14.3              # via bcrypt, cryptography, pynacl
 chardet==3.0.4            # via requests
 clint==0.5.1              # via commcare-cloud (setup.py)
-couchdb-cluster-admin==0.6.0  # via commcare-cloud (setup.py)
+couchdb-cluster-admin==0.7.0  # via commcare-cloud (setup.py)
 cryptography==3.3.2         # via ansible, commcare-cloud (setup.py), paramiko
 datadog==0.2.0            # via commcare-cloud (setup.py)
 decorator==4.4.2          # via datadog

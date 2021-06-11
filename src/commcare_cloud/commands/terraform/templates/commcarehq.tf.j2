@@ -8,7 +8,7 @@ variable "stack" {
 
 variable "tf_s3_bucket" {
   description = "S3 bucket Terraform can use for state"
-  default     = "dimagi-terraform"
+  default     = "{{ state_bucket }}"
 }
 
 module "network" {
@@ -85,6 +85,7 @@ module "server_iam_role" {
   account_id = {{ account_id|tojson }}
   region_name = "${var.region}"
   formplayer_request_response_logs_firehose_stream_arn = "${module.logshipping.formplayer_request_response_logs_firehose_stream_arn}"
+  account_alias =  "${var.account_alias}"
 }
 
 {% for server_spec in servers + proxy_servers %}
@@ -101,7 +102,12 @@ module "server__{{ server_name }}" {
   secondary_volume_size = {{ server_spec.block_device.volume_size|default(0)|tojson }}
   secondary_volume_type = {{ server_spec.block_device.volume_type|default("")|tojson }}
   secondary_volume_encrypted = {{ server_spec.block_device.encrypted|default(False)|tojson }}
+
+{% if server_name == "control1-production" %}
+  iam_instance_profile = "${module.server_iam_role.formplayerlogbucket_instance_profile}"
+{% else %}
   iam_instance_profile = "${module.server_iam_role.commcare_server_instance_profile}"
+{% endif %}
 
 {% if server_spec.os == 'ubuntu_pro_bionic' %}
   server_image = "${data.aws_ami.ubuntu_pro_bionic.id}"
@@ -197,8 +203,7 @@ module "openvpn" {
   openvpn_image = "${var.openvpn_image}"
   environment = "${var.environment}"
   vpn_size = "${var.openvpn_instance_type}"
-  # hardcoded, should be configurable like the others
-  instance_subnet = "${module.network.subnets-public["a"]}"
+  instance_subnet = "${module.network.subnets-public[var.openvpn_az]}"
   vpc_id = "${module.network.vpc-id}"
   vpc_cidr = "${module.network.vpc-cidr}"
   key_name = "${var.key_name}"
@@ -275,6 +280,29 @@ module "pgbouncer_nlb__{{ pgbouncer_nlb.name }}" {
   environment = "${var.environment}"
   server_ids = [
     {%- for server_id in pgbouncer_nlb.targets %}{% if not loop.first %}, {% endif %}
+    "${module.server__{{ server_id }}.server}"
+    {%- endfor %}
+  ]
+}
+
+{% endfor %}
+
+{% for internal_alb in internal_albs %}
+module "internal_alb__{{ internal_alb.name }}" {
+  source = "./modules/internal_alb"
+  vpc_id   = "${module.network.vpc-id}"
+  alb_identifier = "{{ internal_alb.identifier }}"
+  target_port = "{{ internal_alb.target_port }}"
+  listener_port = "{{ internal_alb.listener_port }}"
+  security_groups = ["${module.network.db-private-sg}"]
+  subnets = [
+    {%- for az in az_codes %}{% if not loop.first %}, {% endif %}
+    "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+    {%- endfor %}
+  ]
+  environment = "${var.environment}"
+  server_ids = [
+    {%- for server_id in internal_alb.targets %}{% if not loop.first %}, {% endif %}
     "${module.server__{{ server_id }}.server}"
     {%- endfor %}
   ]

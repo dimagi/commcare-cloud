@@ -39,6 +39,7 @@ that machine is also the control machine.
 ## Services
 
 ### CommCare Services
+- [Adding new machines](howto/new-machine.md)
 - [Pillowtop](services/pillowtop.md) (aka 'change feeds')
 
 ### 3rd party services

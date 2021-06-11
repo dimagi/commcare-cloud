@@ -11,6 +11,7 @@ from six.moves import shlex_quote
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.environment.main import get_environment
+from commcare_cloud.user_utils import get_ssh_username
 from ..ansible.helpers import get_default_ssh_options_as_cmd_parts
 
 from ...colors import color_error
@@ -67,6 +68,12 @@ class _Ssh(Lookup):
         if ':' in address:
             address, port = address.split(':')
             ssh_args = ['-p', port] + ssh_args
+        if '@' in address:
+            username, address = address.split('@', 1)
+            username = get_ssh_username(address, args.env_name, requested_username=username)
+        elif '@' not in address:
+            username = get_ssh_username(address, args.env_name)
+        address = f"{username}@{address}"
         cmd_parts = [self.command, address, '-t'] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         if not args.quiet:

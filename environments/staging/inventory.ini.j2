@@ -44,6 +44,8 @@ rds_pgformplayer0
 {{ __pgmain_nlb__ }}
 {{ __pgucr_nlb__ }}
 {{ __pgsynclogs_nlb__ }}
+{{ __pgshard_nlb__ }}
+{{ __couch_alb__ }}
 
 [postgresql:children]
 pgproxy2
@@ -52,41 +54,28 @@ pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
 pgsynclogs_nlb
+pgshard_nlb
 
 [pgbouncer:children]
 pgbouncer0
 
 {{ __couch6__ }}
 
-{{ __couch7__ }}
-
-{{ __couch8__ }}
-
-{{ __couch12__ }}
+{{ __couch15__ }}
 
 {{ __couch13__ }}
 
-{{ __couch14__ }}
-
-{{ __couch15__ }}
-
-{{ __couch16__ }}
-
-{{ __couch17__ }}
-
 [couchdb2:children]
 couch6
-couch7
-couch8
-couch12
-couch13
-couch14
 couch15
-couch16
-couch17
+couch13
+couch_alb
 
 [couchdb2_proxy:children]
-couch6
+couch_alb
+
+[couchdb2_alb:children]
+couch_alb
 
 {{ __rabbit2__ }}
 {{ __rabbit4__ }}
@@ -122,14 +111,14 @@ celery3
 # Amazon EC2
 pillow3
 
-{{ __formplayer3__ }}
-
 {{ __formplayer4__ }}
+
+{{ __formplayer5__ }}
 
 [formplayer:children]
 # Amazon EC2
-formplayer3
 formplayer4
+formplayer5
 
 [formplayer:vars]
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
@@ -183,6 +172,8 @@ pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
 pgsynclogs_nlb
+pgshard_nlb
+couch_alb
 
 
 [django_manage:children]

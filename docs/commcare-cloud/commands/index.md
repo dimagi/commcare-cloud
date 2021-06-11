@@ -1061,15 +1061,15 @@ Deploy CommCare
 
 ```
 commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_REV] [--set FAB_SETTINGS]
-                            [{commcare,formplayer}]
+                            [{commcare,formplayer} [{commcare,formplayer} ...]]
 ```
 
 ##### Positional Arguments
 
 ###### `{commcare,formplayer}`
 
-The component to deploy. If not specified, will deploy CommCare, or
-both, if always_deploy_formplayer is set in meta.yml
+Component(s) to deploy. Default is 'commcare', or if
+always_deploy_formplayer is set in meta.yml, 'commcare formplayer'
 
 ##### Optional Arguments
 
@@ -1341,7 +1341,7 @@ Output information about the CouchDB cluster.
 
 ```
 commcare-cloud <env> couchdb-cluster-info [--raw] [--shard-counts] [--database DATABASE] [--couch-port COUCH_PORT]
-                                          [--couch-local-port COUCH_LOCAL_PORT]
+                                          [--couch-local-port COUCH_LOCAL_PORT] [--couchdb-version COUCHDB_VERSION]
 ```
 
 ##### Shard counts are displayed as follows
@@ -1355,7 +1355,7 @@ commcare-cloud <env> couchdb-cluster-info [--raw] [--shard-counts] [--database D
 
 ###### `--raw`
 
-Output raw shard allocations as YAML instead of printing tables.
+Output raw shard allocations as YAML instead of printing tables
 
 ###### `--shard-counts`
 
@@ -1371,7 +1371,11 @@ CouchDB port. Defaults to 15984
 
 ###### `--couch-local-port COUCH_LOCAL_PORT`
 
-CouchDB node local port. Defaults to 15986
+CouchDB local port (only applicable to CouchDB version < '3.0.0'). Defaults to 15986
+
+###### `--couchdb-version COUCHDB_VERSION`
+
+CouchDB version. Assumes '2.3.1' or couchdb_version if set in public.yml
 
 ---
 

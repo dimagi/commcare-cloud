@@ -29,7 +29,7 @@ servers:
     group: control
     os: bionic
   - server_name: "djangomanage0-india"
-    server_instance_type: "t3.small"
+    server_instance_type: "t3.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -234,6 +234,23 @@ servers:
     group: "postgresql"
     os: ubuntu_pro_bionic
 
+  - server_name: "pgbouncer2-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: ubuntu_pro_bionic
+
+  - server_name: "rabbit2-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "rabbitmq"
+    os: ubuntu_pro_bionic
 
 proxy_servers:
   - server_name: "proxy1-india"
@@ -266,6 +283,10 @@ pgbouncer_nlbs:
   - name: pgsynclogs_nlb-india
     targets:
       - pgbouncer0-india
+  - name: pgshard_nlb-india
+    targets:
+      - pgbouncer1-india
+      - pgbouncer2-india
 
 
 elasticache_cluster:

@@ -12,7 +12,8 @@ from six.moves import shlex_quote
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
-from commcare_cloud.colors import color_error
+from commcare_cloud.user_utils import get_dev_username
+from commcare_cloud.colors import color_error, color_notice
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
@@ -314,7 +315,7 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         args.use_factory_auth = True
         public_vars = environment.public_vars
-        unknown_args += ('--tags=bootstrap-users',) + get_user_arg(public_vars, unknown_args, use_factory_auth=True)
+        unknown_args += ('--tags=bootstrap-users', '--skip-tags=validate_key') + get_user_arg(public_vars, unknown_args, use_factory_auth=True)
 
         if not public_vars.get('commcare_cloud_pem'):
             unknown_args += ('--ask-pass',)
@@ -332,8 +333,9 @@ class UpdateUsers(_AnsiblePlaybookAlias):
     """
 
     def run(self, args, unknown_args):
+        username = get_dev_username(args.env_name)
         args.playbook = 'deploy_stack.yml'
-        unknown_args += ('--tags=users',)
+        unknown_args += ('--tags=users', '-e ssh_user=' + shlex_quote(username))
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
@@ -345,13 +347,8 @@ class UpdateUserPublicKey(_AnsiblePlaybookAlias):
     )
 
     def run(self, args, unknown_args):
-        args.playbook = 'deploy_stack.yml'
-        unknown_args += (
-            '--tags=pubkey',
-            '--extra-vars={{"dev_users": {{"present": [{}]}}}}'.format(args.username),
-        )
-        return AnsiblePlaybook(self.parser).run(args, unknown_args)
-
+        puts(color_notice("The 'update-user-key' command has been removed. Please use 'update-users' instead."))
+        return 0 # exit code
 
 class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
     command = 'update-supervisor-confs'

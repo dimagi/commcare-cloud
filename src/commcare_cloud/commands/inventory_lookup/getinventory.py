@@ -9,7 +9,6 @@ import re
 import attr
 from ansible.utils.display import Display
 
-from commcare_cloud.commands.terraform.aws import get_default_username
 from commcare_cloud.environment.main import get_environment
 
 display = Display()
@@ -64,11 +63,7 @@ def get_server_address(environment, group):
             raise HostMatchException("Non-numeric group index: {}".format(index))
 
     if not username:
-        default_username = get_default_username()
-        if default_username.is_guess:
-            username = ""
-        else:
-            username = "{}@".format(default_username)
+        username = ""
 
     if re.match(r'(\d+\.?){4}', group):
         # short circuit for IP addresses

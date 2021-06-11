@@ -4,3 +4,6 @@ tag_deploy_commits: True
 use_shared_dir_for_staticfiles: True
 shared_dir_for_staticfiles: /mnt/shared_staging/temp
 deploy_event_url: https://api.github.com/repos/dimagi/dimagi-qa/dispatches
+generate_deploy_diffs: False
+custom_deploy_details:
+  View staging branches here: https://github.com/dimagi/commcare-hq/blob/autostaging/scripts/staging.yaml

@@ -17,7 +17,7 @@ from .const import (
     CACHED_DEPLOY_ENV_FILENAME,
     PROJECT_ROOT,
 )
-from .git_repo import get_github, github_auth_provided
+from commcare_cloud.github import github_repo
 
 
 def execute_with_timing(fn, *args, **kwargs):
@@ -40,87 +40,28 @@ def get_pillow_env_config():
     return pillows
 
 
-class DeployMetadata(object):
-
-    def __init__(self, code_branch, environment):
-        self.timestamp = environment.new_release_name()
-        self._deploy_tag = None
-        self._max_tags = 100
-        self._code_branch = code_branch
-        self._environment = environment
-        self._deploy_env = environment.meta_config.deploy_env
-
-    def __getstate__(self):
-        """
-        HACK: Remove memoized property values to allow object to be pickled
-        Removes any attribute that begins with '_' and ends with '_cache'
-        which is the naming scheme for memoized properties
-        """
-        state = dict(self.__dict__)
-        for key in list(state):
-            if key.startswith('_') and key.endswith('_cache'):
-                del state[key]
-
-        return state
-
-    @memoized_property
-    def repo(self):
-        return get_github().get_repo('dimagi/commcare-hq')
-
-    def tag_commit(self):
-        tag_name = "{}-{}-deploy".format(self.timestamp, self._deploy_env)
-        if github_auth_provided():
-            self.repo.create_git_ref(
-                ref='refs/tags/' + tag_name,
-                sha=self.deploy_ref,
-            )
-            self._deploy_tag = tag_name
-
-    @memoized_property
-    def deploy_ref(self):
-        # turn whatever `code_branch` is into a commit hash
-        return self.repo.get_commit(self._code_branch).sha
-
-    def tag_setup_release(self):
-        if github_auth_provided():
-            try:
-                self.repo.create_git_ref(
-                    ref='refs/tags/' +
-                        '{}-{}-setup_release'.format(self.timestamp,
-                                                     self._deploy_env),
-                    sha=self.deploy_ref,
-                )
-            except UnknownObjectException:
-                raise Exception(
-                    'Github API key does not have the right settings. '
-                    'Please create an API key with the public_repo scope enabled.'
-                )
-            return True
-        return False
-
-
 def _get_checkpoint_filename():
     return '{}_{}'.format(env.deploy_env, CACHED_DEPLOY_CHECKPOINT_FILENAME)
 
 
-def _get_env_filename():
-    return '{}_{}'.format(env.deploy_env, CACHED_DEPLOY_ENV_FILENAME)
+def _get_env_filename(env_name):
+    return '{}_{}'.format(env_name, CACHED_DEPLOY_ENV_FILENAME)
 
 
 def cache_deploy_state(command_index):
     with open(os.path.join(PROJECT_ROOT, _get_checkpoint_filename()), 'wb') as f:
         pickle.dump(command_index, f)
-    with open(os.path.join(PROJECT_ROOT, _get_env_filename()), 'wb') as f:
+    with open(os.path.join(PROJECT_ROOT, _get_env_filename(env.deploy_env)), 'wb') as f:
         pickle.dump(env, f)
 
 
 def clear_cached_deploy():
     os.remove(os.path.join(PROJECT_ROOT, _get_checkpoint_filename()))
-    os.remove(os.path.join(PROJECT_ROOT, _get_env_filename()))
+    os.remove(os.path.join(PROJECT_ROOT, _get_env_filename(env.deploy_env)))
 
 
-def retrieve_cached_deploy_env():
-    filename = os.path.join(PROJECT_ROOT, _get_env_filename())
+def retrieve_cached_deploy_env(env_name):
+    filename = os.path.join(PROJECT_ROOT, _get_env_filename(env_name))
     return _retrieve_cached(filename)
 
 

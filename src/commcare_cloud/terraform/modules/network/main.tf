@@ -332,6 +332,15 @@ resource "aws_security_group" "db-private" {
   }
 
   ingress {
+    from_port   = 6432
+    to_port     = 6432
+    protocol    = "tcp"
+    cidr_blocks = [
+      "${aws_subnet.subnet-db-private.*.cidr_block}",
+    ]
+  }
+
+  ingress {
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"

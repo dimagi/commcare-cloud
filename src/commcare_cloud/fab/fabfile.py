@@ -45,13 +45,13 @@ from github import GithubException
 
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
+from commcare_cloud.github import github_repo
 from .checks import check_servers
 from .const import ROLES_ALL_SERVICES, ROLES_ALL_SRC, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .exceptions import PreindexNotFinished
 from .operations import airflow, db, formplayer
 from .operations import release, staticfiles, supervisor
 from .utils import (
-    DeployMetadata,
     cache_deploy_state,
     clear_cached_deploy,
     execute_with_timing,
@@ -103,7 +103,7 @@ def _setup_path():
     env.log_dir = posixpath.join(env.home, 'www', env.deploy_env, 'log')
     env.releases = posixpath.join(env.root, 'releases')
     env.code_current = posixpath.join(env.root, 'current')
-    env.code_root = posixpath.join(env.releases, env.deploy_metadata.timestamp)
+    env.code_root = posixpath.join(env.releases, env.ccc_environment.new_release_name())
     env.project_root = posixpath.join(env.code_root, env.project)
     env.project_media = posixpath.join(env.code_root, 'media')
 
@@ -165,7 +165,9 @@ def env_common():
 
     env.is_monolith = len(set(servers['all']) - set(servers['control'])) < 2
 
-    env.deploy_metadata = DeployMetadata(env.code_branch, env.ccc_environment)
+    # turn whatever `code_branch` is into a commit hash
+    env.deploy_ref = github_repo('dimagi/commcare-hq').get_commit(env.code_branch).sha
+
     _setup_path()
 
     all = servers['all']
@@ -240,19 +242,14 @@ def preindex_views():
 
 
 @roles(ROLES_DEPLOY)
-def mail_admins(subject, message, use_current_release=False):
+def send_email(subject, message, use_current_release=False):
     code_dir = env.code_current if use_current_release else env.code_root
     virtualenv_dir = env.py3_virtualenv_current if use_current_release else env.py3_virtualenv_root
     with cd(code_dir):
-        sudo((
-            '%(virtualenv_dir)s/bin/python manage.py '
-            'mail_admins --subject %(subject)s %(message)s --environment %(deploy_env)s'
-        ) % {
-            'virtualenv_dir': virtualenv_dir,
-            'subject': pipes.quote(subject),
-            'message': pipes.quote(message),
-            'deploy_env': pipes.quote(env.deploy_env),
-        })
+        sudo(
+            f'{virtualenv_dir}/bin/python manage.py '
+            f'send_email --to-admins --subject {pipes.quote(subject)} {pipes.quote(message)}'
+        )
 
 
 @task
@@ -317,7 +314,6 @@ def _setup_release(keep_days=2, full_cluster=True):
     :param keep_days: The number of days to keep this release before it will be purged
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
-    deploy_ref = env.deploy_metadata.deploy_ref  # Make sure we have a valid commit
     for repo in env.ccc_environment.meta_config.git_repositories:
         try:
             repo.deploy_ref  # noqa
@@ -328,12 +324,10 @@ def _setup_release(keep_days=2, full_cluster=True):
                 "Repository: {}\n".format(e.data["message"], repo.url)
             )
 
-    if env.full_deploy:
-        env.deploy_metadata.tag_setup_release()
     execute_with_timing(release.create_code_dir(full_cluster))
 
     update_code = release.update_code(full_cluster)
-    execute_with_timing(update_code, deploy_ref)
+    execute_with_timing(update_code, env.deploy_ref)
     for repo in env.ccc_environment.meta_config.git_repositories:
         var_name = "{}_code_branch".format(repo.name)
         repo_deploy_ref = repo.deploy_ref(getattr(env, var_name, None))
@@ -411,7 +405,7 @@ def _deploy_without_asking(skip_record):
         for index, command in enumerate(ONLINE_DEPLOY_COMMANDS):
             deploy_checkpoint(index, command.__name__, execute_with_timing, command)
     except PreindexNotFinished:
-        mail_admins(
+        send_email(
             " You can't deploy to {} yet. There's a preindex in process.".format(env.env_name),
             ("Preindexing is taking a while, so hold tight "
              "and wait for an email saying it's done. "
@@ -419,7 +413,7 @@ def _deploy_without_asking(skip_record):
         )
     except Exception:
         execute_with_timing(
-            mail_admins,
+            send_email,
             "Deploy to {environment} failed. Try resuming with "
             "fab {environment} deploy:resume=yes.".format(environment=env.env_name),
             traceback_string()
@@ -543,7 +537,7 @@ def deploy_commcare(resume='no', skip_record='no'):
 
     if resume == 'yes':
         try:
-            cached_payload = retrieve_cached_deploy_env()
+            cached_payload = retrieve_cached_deploy_env(env.deploy_env)
             checkpoint_index = retrieve_cached_deploy_checkpoint()
         except Exception:
             print(red('Unable to resume deploy, please start anew'))

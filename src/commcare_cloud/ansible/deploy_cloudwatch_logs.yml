@@ -17,6 +17,12 @@
           - file_path: "/var/log/syslog*"
             log_group_name_suffix: "var-log-syslog"
             should_include: true
+          - file_path: "/var/log/unattended-upgrades/unattended-upgrades.log"
+            log_group_name_suffix: "var-log-unattended-upgrades"
+            should_include: true
+          - file_path: "/var/log/apt/history.log"
+            log_group_name_suffix: "var-log-apt-history"
+            should_include: true
           # formplayer
           - file_path: "/home/cchq/www/{{ deploy_env }}/log/formplayer*.log"
             log_group_name_suffix: "formplayer"
@@ -49,7 +55,7 @@
             log_stream_name_suffix: "nginx_error"
             should_include: "{{ 'couchdb2_proxy' in group_names }}"
           # couchdb2
-          - file_path: "/usr/local/couchdb2/apache-couchdb-2.3.1/var/log/couchdb.stderr*"
+          - file_path: "/usr/local/couchdb2/couchdb/var/log/couchdb.stderr*"
             log_group_name_suffix: "couchdb2"
             log_stream_name_suffix: "stderr"
             should_include: "{{ 'couchdb2' in group_names }}"

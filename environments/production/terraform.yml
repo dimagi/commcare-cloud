@@ -13,6 +13,15 @@ vpc_begin_range: "10.202"
 openvpn_image: ami-5e73b923
 
 servers:
+  - server_name: "control1-production"
+    server_instance_type: "t3a.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: no
+    group: "control"
+    os: bionic
+
   - server_name: "control2-production"
     server_instance_type: "t3a.large"
     network_tier: "app-private"
@@ -40,7 +49,7 @@ servers:
     count: 17
 
   - server_name: "web_b{i}-production"
-    server_instance_type: r5.2xlarge
+    server_instance_type: r5.4xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
@@ -80,7 +89,7 @@ servers:
       volume_size: 840
     group: "elasticsearch"
     os: ubuntu_pro_bionic
-    count: 11
+    count: 16
 
   - server_name: "es_b{i}-production"
     server_instance_type: r5.4xlarge
@@ -91,7 +100,7 @@ servers:
       volume_size: 840
     group: "elasticsearch"
     os: ubuntu_pro_bionic
-    count: 11
+    count: 16
 
   - server_name: "couchproxy3-production"
     server_instance_type: c5.xlarge
@@ -143,11 +152,11 @@ servers:
     volume_encrypted: yes
     group: "rabbitmq"
     os: ubuntu_pro_bionic
-  
-  - server_name: "rabbit3-production"
+
+  - server_name: "rabbit5-production"
     server_instance_type: c5.4xlarge
     network_tier: "db-private"
-    az: "c"
+    az: "b"
     volume_size: 80
     volume_encrypted: yes
     group: "rabbitmq"
@@ -180,15 +189,6 @@ servers:
     group: "formplayer"
     os: ubuntu_pro_bionic
     count: 37
-
-  - server_name: "shareddir1-production"
-    server_instance_type: t3.micro
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 100
-    volume_encrypted: no
-    group: "shared_dir_host"
-    os: bionic
 
   - server_name: "kafka1-production"
     server_instance_type: t3.medium
@@ -296,7 +296,7 @@ rds_instances:
     instance_type: "db.m5.8xlarge"
     storage: 10000
     multi_az: true
-    engine_version: 9.6.15
+    engine_version: 9.6.20
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
@@ -309,14 +309,14 @@ rds_instances:
     storage: 500
     max_storage: 5000
     multi_az: true
-    engine_version: 9.6.15
+    engine_version: 9.6.20
 
   - identifier: "pgshard1-production"
     instance_type: "db.m5.4xlarge"
     storage: 500
     max_storage: 2500
     multi_az: true
-    engine_version: 9.6.15
+    engine_version: 9.6.20
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 5000
@@ -325,7 +325,7 @@ rds_instances:
     storage: 500
     max_storage: 2500
     multi_az: true
-    engine_version: 9.6.15
+    engine_version: 9.6.20
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 5000
@@ -334,7 +334,7 @@ rds_instances:
     storage: 500
     max_storage: 2500
     multi_az: true
-    engine_version: 9.6.15
+    engine_version: 9.6.20
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 5000
@@ -343,7 +343,7 @@ rds_instances:
     storage: 500
     max_storage: 2500
     multi_az: true
-    engine_version: 9.6.15
+    engine_version: 9.6.20
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 5000
@@ -352,7 +352,7 @@ rds_instances:
     storage: 500
     max_storage: 2500
     multi_az: true
-    engine_version: 9.6.15
+    engine_version: 9.6.20
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 5000
@@ -362,7 +362,7 @@ rds_instances:
     storage: 1000
     max_storage: 60500
     multi_az: true
-    engine_version: 9.6.15
+    engine_version: 9.6.20
     params:
       work_mem: 2457kB
       shared_buffers: 3840MB
@@ -373,7 +373,7 @@ rds_instances:
     instance_type: "db.m5.2xlarge"
     storage: 24000
     multi_az: true
-    engine_version: 9.6.15
+    engine_version: 9.6.20
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
@@ -385,7 +385,7 @@ rds_instances:
     instance_type: "db.m5.xlarge"
     storage: 1000
     multi_az: true
-    engine_version: 9.6.15
+    engine_version: 9.6.20
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000

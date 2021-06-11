@@ -122,6 +122,8 @@ will be unable to submit forms or sync with the server.
 
 ## 6. Turn on the new environment
 
+- If desired, configure rate limiting to throttle the backlog of pending form
+  submissions to handle a dramatic spike in load.
 - Change the DNS entry for the proxy URL to point to the new environment. This
   will cause mobile devices to contact the new servers, bringing them back
   on-line.

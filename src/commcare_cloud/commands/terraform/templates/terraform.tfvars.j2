@@ -4,8 +4,14 @@ environment = {{ environment|tojson }}
 {%- if openvpn_image %}
 openvpn_image = {{ openvpn_image|tojson }}
 {%- endif %}
+{%- if openvpn_instance_type %}
+openvpn_instance_type = {{ openvpn_instance_type|tojson }}
+{%- endif %}
 azs = {{ azs|tojson }}
 az_codes = {{ az_codes|tojson }}
+{%- if openvpn_az %}
+openvpn_az = {{ openvpn_az|tojson }}
+{%- endif %}
 vpc_begin_range = {{ vpc_begin_range|tojson }}
 dns_domain = ""
 # Set the DNS Domain name to be used (should match the name for the Zone ID)

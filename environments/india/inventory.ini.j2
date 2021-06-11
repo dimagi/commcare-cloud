@@ -38,14 +38,17 @@ es_data
 {{ __formplayer1__ }}
 {{ __pillow2__ }}
 {{ __kafka1__ }} kafka_broker_id=0
+{{ __rabbit2__ }}
 {{ __pgbouncer0__ }}
 {{ __pgbouncer1__ }} pgbouncer_processes=2
+{{ __pgbouncer2__ }} pgbouncer_processes=2
 {{ __proxy1__ }}
 {{ __rds_pgmain0__ }}
 {{ __pgformplayer_nlb__ }}
 {{ __pgmain_nlb__ }}
 {{ __pgucr_nlb__ }}
 {{ __pgsynclogs_nlb__ }}
+{{ __pgshard_nlb__ }}
 
 
 [citusdb_worker:children]
@@ -81,13 +84,16 @@ pgbouncer0
 
 [pgbouncer:children]
 pgbouncer1
+pgbouncer2
 pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
 pgsynclogs_nlb
+pgshard_nlb
 
 [rabbitmq:children]
 kafka1
+rabbit2
 
 [zookeeper:children]
 kafka1
@@ -140,3 +146,4 @@ pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
 pgsynclogs_nlb
+pgshard_nlb

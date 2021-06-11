@@ -97,11 +97,11 @@ pgucr_nlb
 pgsynclogs_nlb
 
 {{ __rabbit2__ }}
-{{ __rabbit3__ }}
+{{ __rabbit5__ }}
 
 [rabbitmq:children]
 rabbit2
-rabbit3
+rabbit5
 
 [rabbitmq:vars]
 swap_size=2G
@@ -154,11 +154,6 @@ use_monit_for_formplayer=true
 [formplayer_with_monit:children]
 formplayer_c014
 formplayer_c023
-
-{{ __shareddir1__ }}
-
-[shared_dir_host:children]
-shareddir1
 
 [shared_efs_client_host:children]
 celery
@@ -218,6 +213,7 @@ swap_size=8G
 [couchdb2_proxy:children]
 couchproxy3
 
+{{ __control1__ }}
 {{ __control2__ }}
 
 [control:children]

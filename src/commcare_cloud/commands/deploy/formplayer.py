@@ -12,12 +12,15 @@ from commcare_cloud.colors import color_warning, color_notice, color_summary
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
-from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_failed, announce_deploy_success
-from commcare_cloud.commands.terraform.aws import get_default_username
+from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_failed, \
+    announce_deploy_success, create_release_tag
+from commcare_cloud.user_utils import get_default_username
 from commcare_cloud.commands.utils import timeago
 from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff
-from commcare_cloud.fab.git_repo import get_github, github_auth_provided
+from commcare_cloud.github import github_repo
+
+FORMPLAYER = "Formplayer"
 
 AWS_BASE_URL_ENV = {
     "staging": "https://s3.amazonaws.com/dimagi-formplayer-jars/staging/latest-successful"
@@ -49,8 +52,8 @@ def deploy_formplayer(environment, args):
     print(color_notice("\nPreparing to deploy Formplayer to: "), end="")
     print(f"{environment.name}\n")
 
-    # do this first to get the git prompt out the way
-    repo = get_github().get_repo('dimagi/formplayer') if github_auth_provided() else None
+    tag_commits = environment.fab_settings_config.tag_deploy_commits
+    repo = github_repo('dimagi/formplayer', require_write_permissions=tag_commits)
 
     diff = get_deploy_diff(environment, repo)
     diff.print_deployer_diff()
@@ -59,11 +62,11 @@ def deploy_formplayer(environment, args):
         return 1
 
     start = datetime.utcnow()
-    announce_deploy_start(environment, "Formplayer")
+    announce_deploy_start(environment, FORMPLAYER, args.commcare_rev)
 
     rc = run_ansible_playbook_command(environment, args)
     if rc != 0:
-        announce_deploy_failed(environment)
+        announce_deploy_failed(environment, FORMPLAYER)
         return rc
 
     rc = commcare_cloud(
@@ -76,7 +79,7 @@ def deploy_formplayer(environment, args):
         ), '-b',
     )
     if rc != 0:
-        announce_deploy_failed(environment)
+        announce_deploy_failed(environment, FORMPLAYER)
         return rc
 
     record_deploy_success(environment, repo, diff, start)
@@ -88,7 +91,7 @@ def record_deploy_success(environment, repo, diff, start):
     create_release_tag(environment, repo, diff)
     record_deploy_in_datadog(environment, diff, end - start)
     update_sentry_post_deploy(environment, "formplayer", repo, diff, start, end)
-    announce_deploy_success(environment, diff.get_email_diff())
+    announce_deploy_success(environment, FORMPLAYER, diff.get_email_diff())
     publish_deploy_event("deploy_success", "formplayer", environment)
 
 
@@ -106,20 +109,10 @@ def get_deploy_diff(environment, repo):
         new_version_details["Build time"] = f"{latest_version.build_time_ago} ({latest_version.build_time})"
     diff = DeployDiff(
         repo, current_commit, latest_version.commit,
-        new_version_details=new_version_details
+        new_version_details=new_version_details,
+        generate_diff=environment.fab_settings_config.generate_deploy_diffs
     )
     return diff
-
-
-def create_release_tag(environment, repo, diff):
-    if not github_auth_provided() or not environment.fab_settings_config.tag_deploy_commits:
-        return
-    repo.create_git_ref(
-        ref='refs/tags/{}-{}-release'.format(
-            environment.new_release_name(),
-            environment.name),
-        sha=diff.deploy_commit,
-    )
 
 
 def run_ansible_playbook_command(environment, args):
@@ -137,9 +130,7 @@ def run_ansible_playbook_command(environment, args):
 def record_deploy_in_datadog(environment, diff, tdelta):
     if environment.public_vars.get('DATADOG_ENABLED', False):
         print(color_summary(f">> Recording deploy in Datadog"))
-        diff_url = ""
-        if github_auth_provided():
-            diff_url = f"\nDiff link: [Git Diff]({diff.url})"
+        diff_url = f"\nDiff link: [Git Diff]({diff.url})"
         deploy_notification_text = (
             "Formplayer has been successfully deployed to "
             "*{}* by *{}* in *{}* minutes.\nRelease Name: {}{}".format(

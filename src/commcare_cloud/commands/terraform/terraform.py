@@ -14,9 +14,9 @@ from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.terraform import postgresql_units
 from commcare_cloud.commands.terraform.aws import (
     aws_sign_in,
-    get_default_username,
-    print_help_message_about_the_commcare_cloud_default_username_env_var,
 )
+from commcare_cloud.user_utils import get_default_username, \
+    print_help_message_about_the_commcare_cloud_default_username_env_var
 from commcare_cloud.commands.terraform.constants import (
     COMMCAREHQ_XML_POST_URLS_REGEX,
     COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX,

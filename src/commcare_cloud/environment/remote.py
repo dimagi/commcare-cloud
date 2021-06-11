@@ -16,4 +16,4 @@ class RemoteConf:
         return f'/home/{self.cchq_user}/www/{self.deploy_env}/current'
 
     def release(self, release_name):
-        return f'/home/{self.cchq_user}/www/{self.deploy_env}/releases/{self.release}'
+        return f'/home/{self.cchq_user}/www/{self.deploy_env}/releases/{release_name}'

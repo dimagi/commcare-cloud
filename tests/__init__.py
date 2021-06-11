@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from mock import patch
 
-from commcare_cloud.commands.terraform.aws import StringIsGuess
+from commcare_cloud.user_utils import StringIsGuess
 
 
 def setup_package():
@@ -11,7 +11,7 @@ def setup_package():
         patch.dict("os.environ", COMMCARE_CLOUD_DEFAULT_USERNAME=""),
         # handle memoized decorator (in case get_default_username has already been called)
         patch(
-            "commcare_cloud.commands.inventory_lookup.getinventory.get_default_username",
+            "commcare_cloud.user_utils.get_default_username",
             lambda: StringIsGuess("", is_guess=True),
         ),
 

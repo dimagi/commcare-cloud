@@ -4,6 +4,7 @@ locals {
   // for more regions
   aws_elb_account_map = {
     us-east-1 = "127311923021"
+    us-west-1 = "027434742980"
     ap-south-1 = "718504428378"
   }
   log_bucket_alb_prefix = "frontend-alb-${var.environment}"

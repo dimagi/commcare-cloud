@@ -64,10 +64,33 @@
   tags:
     - new_ansible_sudo_pass
 
+- name: lookup ssh pubkeys from authorized_keys_dir and create ssh_pubkeys_list
+  set_fact:
+    ssh_pubkeys_list: "{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
+  with_items:
+    "{{ dev_users.present }}"
+  register: ssh_pubkeys_results_list
+  tags:
+    - pubkey
+
+- name: iterate over ssh_pubkeys_list and join into a string
+  set_fact:
+    ssh_pubkeys_string: "{{ ssh_pubkeys_results_list.results | map(attribute='ansible_facts.ssh_pubkeys_list') | list | join('\n') }}"
+  tags:
+    - pubkey
+
+- name: "Verifying ssh_user key in the ssh_pubkeys_string list"
+  assert:
+    that:
+      - 'lookup("file", authorized_keys_dir ~ ssh_user ~ ".pub") in ssh_pubkeys_string'
+  when: (ssh_user)
+  tags:
+    - validate_key
+    - pubkey
+
 - name: Authorize current devs to login as ansible
   become: yes
-  authorized_key: user=ansible state=present key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
-  with_items: '{{ dev_users.present }}'
+  authorized_key: user=ansible state=present key="{{ ssh_pubkeys_string }}" exclusive=yes
   tags:
     - pubkey
 

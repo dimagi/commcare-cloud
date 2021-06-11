@@ -90,9 +90,17 @@
     tags:
       - dns
       - after-reboot
+  
+  - name: Checks resolv.conf stat
+    stat:
+      path: /etc/resolv.conf
+    register: etc_resolv_conf
+    tags:
+      - dns
+      - after-reboot
 
   - name: Updating resolv.conf symbolic link 
-    when: ansible_distribution == "Ubuntu" and resolvconf.stat.exists
+    when: ansible_distribution == "Ubuntu" and resolvconf.stat.exists and etc_resolv_conf.stat.islnk is defined and etc_resolv_conf.stat.islnk
     become: yes
     file:
       src: /run/systemd/resolve/resolv.conf

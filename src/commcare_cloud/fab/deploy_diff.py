@@ -4,10 +4,14 @@ from collections import defaultdict
 
 import jinja2
 from gevent.pool import Pool
-from memoized import memoized
+from github.GithubException import GithubException
+from memoized import memoized, memoized_property
 
-from commcare_cloud.commands.terraform.aws import get_default_username
-from commcare_cloud.fab.git_repo import github_auth_provided
+from commcare_cloud.colors import (
+    color_warning, color_error, color_success,
+    color_highlight, color_summary, color_code
+)
+from commcare_cloud.user_utils import get_default_username
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'diff_templates')
 LABELS_TO_EXPAND = [
@@ -19,17 +23,19 @@ LABELS_TO_EXPAND = [
 
 
 class DeployDiff:
-    def __init__(self, repo, current_commit, deploy_commit, new_version_details=None):
+    def __init__(self, repo, current_commit, deploy_commit, new_version_details=None, generate_diff=True):
         """
         :param repo: github.Repository.Repository object
         :param current_commit: Commit SHA of the currently deployed code
         :param deploy_commit: Commit SHA of the code being deployed
         :param new_version_details: dict of additional metadata to display in diff output.
+        :param generate_diff: True if deploy diffs should be produced
         """
         self.repo = repo
         self.current_commit = current_commit
         self.deploy_commit = deploy_commit
         self.new_version_details = new_version_details
+        self.generate_diff = generate_diff
         self.j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
         register_console_filters(self.j2)
 
@@ -59,14 +65,33 @@ class DeployDiff:
             context["errors"].append("Versions are identical. No changes since last deploy.")
             return context
 
-        if not (github_auth_provided() and self.current_commit and self.deploy_commit):
+        if not (self.current_commit and self.deploy_commit):
             context["warnings"].append("Insufficient info to get deploy diff.")
             return context
 
         context["compare_url"] = self.url
-        pr_numbers = self._get_pr_numbers()
+
+        if not self.generate_diff:
+            disabled_msg = "Deploy diffs disabled for this environment."
+            print(color_warning(disabled_msg))
+            context["warnings"].append(disabled_msg)
+            return context
+
+        if not self.repo.permissions:
+            # using unauthenticated API calls, skip diff creation to avoid hitting rate limits
+            print(color_warning("Diff generation skipped. Supply a Github token to see deploy diffs."))
+            context["warnings"].append("Diff omitted.")
+            return context
+
+        try:
+            pr_numbers = self._get_pr_numbers()
+        except GithubException as e:
+            print(color_error(f"Error getting diff commits: {e}"))
+            context["warnings"].append("There was an error fetching the PRs since the last deploy.")
+            return context
+
         if len(pr_numbers) > 500:
-            context["warnings"].append("There are too many PRs to display")
+            context["warnings"].append("There are too many PRs to display.")
             return context
         elif not pr_numbers:
             context["warnings"].append("No PRs merged since last release.")
@@ -92,8 +117,12 @@ class DeployDiff:
             **self.get_diff_context()
         )
 
+    @memoized_property
+    def git_comparison(self):
+        return self.repo.compare(self.current_commit, self.deploy_commit)
+
     def _get_pr_numbers(self):
-        comparison = self.repo.compare(self.current_commit, self.deploy_commit)
+        comparison = self.git_comparison
         return [
             int(re.search(r'Merge pull request #(\d+)',
                           repo_commit.commit.message).group(1))
@@ -102,7 +131,12 @@ class DeployDiff:
         ]
 
     def _get_pr_info(self, pr_number):
-        pr_response = self.repo.get_pull(pr_number)
+        try:
+            pr_response = self.repo.get_pull(pr_number)
+        except GithubException as e:
+            print(color_error(f"Error getting PR details for {pr_number}: {e}"))
+            return None
+
         if not pr_response.number:
             # Likely rate limited by Github API
             return None
@@ -128,15 +162,13 @@ class DeployDiff:
 
 
 def register_console_filters(env):
-    from fabric.colors import red, blue, cyan, yellow, green, magenta
-
     filters = {
-        "error": red,
-        "success": green,
-        "highlight": yellow,
-        "summary": blue,
-        "warning": magenta,
-        "code": cyan,
+        "error": color_error,
+        "success": color_success,
+        "highlight": color_highlight,
+        "summary": color_summary,
+        "warning": color_warning,
+        "code": color_code,
     }
 
     for name, filter_ in filters.items():

@@ -3,7 +3,7 @@ state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-1"
 environment: "staging"
-ssl_policy: 'ELBSecurityPolicy-FS-1-2-Res-2019-08'
+ssl_policy: 'ELBSecurityPolicy-FS-1-2-Res-2020-10'
 azs:
   - "us-east-1a"
   - "us-east-1b"
@@ -107,7 +107,7 @@ servers:
     group: celery
     os: ubuntu_pro_bionic
 
-  - server_name: "formplayer3-staging"
+  - server_name: "formplayer4-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
@@ -119,7 +119,7 @@ servers:
     group: formplayer
     os: ubuntu_pro_bionic
 
-  - server_name: "formplayer4-staging"
+  - server_name: "formplayer5-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
@@ -138,41 +138,7 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 80
-      encrypted: true
-    group: "couchdb2"
-    os: ubuntu_pro_bionic
-  - server_name: "couch7-staging"
-    server_instance_type: "t3.large"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 80
-      encrypted: true
-    group: "couchdb2"
-    os: ubuntu_pro_bionic
-  - server_name: "couch8-staging"
-    server_instance_type: "t3.large"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 80
-      encrypted: true
-    group: "couchdb2"
-    os: ubuntu_pro_bionic
-
-  - server_name: "couch12-staging"
-    server_instance_type: "t3.large"
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 80
+      volume_size: 150
       encrypted: true
     group: "couchdb2"
     os: ubuntu_pro_bionic
@@ -189,43 +155,7 @@ servers:
     group: "couchdb2"
     os: ubuntu_pro_bionic
 
-  - server_name: "couch14-staging"
-    server_instance_type: "t3.large"
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 80
-      encrypted: true
-    group: "couchdb2"
-    os: ubuntu_pro_bionic
-
   - server_name: "couch15-staging"
-    server_instance_type: "t3.large"
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 80
-      encrypted: true
-    group: "couchdb2"
-    os: ubuntu_pro_bionic
-
-  - server_name: "couch16-staging"
-    server_instance_type: "t3.large"
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 30
-    volume_encrypted: yes
-    block_device:
-      volume_size: 80
-      encrypted: true
-    group: "couchdb2"
-    os: ubuntu_pro_bionic
-
-  - server_name: "couch17-staging"
     server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "c"
@@ -389,6 +319,18 @@ pgbouncer_nlbs:
   - name: "pgsynclogs_nlb-staging"
     targets:
       - pgproxy2-staging
+  - name: "pgshard_nlb-staging"
+    targets:
+      - pgbouncer0-staging
+
+internal_albs:
+  - name: "couch_alb-staging"
+    listener_port: 25984
+    target_port: 15984
+    targets:
+      - couch6-staging
+      - couch13-staging
+      - couch15-staging
 
 elasticache:
   create: no

@@ -43,6 +43,9 @@ kafka_log_dir: "{{ encrypted_root }}/kafka"
 
 rabbitmq_version: 3.8.5-1
 
+#RabbitMQ Broker URL
+BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
+
 control_machine_ip: 10.162.36.196
 
 run_websockets_wsgi: True
@@ -55,7 +58,8 @@ couch_dbs:
     username: "{{ COUCH_USERNAME }}"
     password: "{{ COUCH_PASSWORD }}"
     is_https: False
-
+couchdb_version: '3.1.1'
+couchdb_rexi_use_kill_all: 'true'
 couchdb_reduce_limit: False
 couchdb_cluster_settings:
   q: 8
@@ -228,7 +232,7 @@ firehose_endpoint: "firehose.ap-south-1.amazonaws.com"
 kinesis_endpoint: "kinesis.ap-south-1.amazonaws.com"
 kinesis_flows:
   - file_pattern: "/opt/data/formplayer/log/request_response.*log"
-    delivery_stream: "formplayer-request-response-logs-india"
+    delivery_stream: "formplayer-request-response-logs-partitioned-india"
 
 enable_cloudwatch_logs: true
 

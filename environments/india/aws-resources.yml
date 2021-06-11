@@ -42,9 +42,12 @@ pgbouncer0-india: 10.203.40.199
 pgbouncer0-india.instance_id: i-05aabe9136e92475c
 pgbouncer1-india: 10.203.40.200
 pgbouncer1-india.instance_id: i-0ccb10bb6d8048ea1
+pgbouncer2-india: 10.203.41.203
+pgbouncer2-india.instance_id: i-001ade36607a36a83
 pgformplayer_nlb-india: pgformplayer-nlb-india-bd402933c980310c.elb.ap-south-1.amazonaws.com
 pgmain0-india: pgmain0-india.ccqpd1xrju8m.ap-south-1.rds.amazonaws.com
 pgmain_nlb-india: pgmain-nlb-india-4747ab10b065afa3.elb.ap-south-1.amazonaws.com
+pgshard_nlb-india: pgshard-nlb-india-337a6ad6c13111c1.elb.ap-south-1.amazonaws.com
 pgsynclogs_nlb-india: pgsynclogs-nlb-india-8facd1c4825bca96.elb.ap-south-1.amazonaws.com
 pgucr_nlb-india: pgucr-nlb-india-7cab226e7a1d3928.elb.ap-south-1.amazonaws.com
 pillow2-india: 10.203.10.9
@@ -52,6 +55,8 @@ pillow2-india.instance_id: i-0c3daf0e2c06ff5e8
 proxy1-india: 10.203.20.59
 proxy1-india.instance_id: i-03eb10798f91c6cc7
 proxy1-india.public_ip: 13.233.97.201
+rabbit2-india: 10.203.41.5
+rabbit2-india.instance_id: i-07497784641ede41d
 redis0-india: 10.203.40.128
 redis0-india.instance_id: i-047d3ade5d47a86cf
 vpn-india: 10.203.20.132

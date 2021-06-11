@@ -38,7 +38,6 @@ aws_region: 'us-east-1'
 
 formplayer_archive_time_spec: '10m'
 formplayer_sensitive_data_logging: true
-formplayer_detailed_tagging_domains: "{{ detailed_tagging_domains }}"
 formplayer_detailed_tags:
     - form_name
     - module_name
@@ -71,7 +70,7 @@ new_domain_email: inquiries@dimagi.com
 
 couch_dbs:
   default:
-    host: "{{ groups.couchdb2_proxy.0 }}"
+    host: "{{ groups.couchdb2_alb.0 }}"
     port: "{{ couchdb2_proxy_port }}"
     name: staging_commcarehq
     username: "{{ COUCH_USERNAME }}"
@@ -82,7 +81,9 @@ couchdb2:
   username: "{{ COUCH_USERNAME }}"
   password: "{{ COUCH_PASSWORD }}"
 couchdb2_client_max_body_size: 100M
+couchdb_version: '3.1.1'
 couchdb_os_process_limit: 125
+couchdb_rexi_use_kill_all: 'true'
 couchdb_reduce_limit: False
 couchdb_multiaz: True
 couchdb_placement: placement=us-east-1a:1,us-east-1b:1:us-east-1c:1
@@ -126,6 +127,7 @@ localsettings:
   ENABLE_SOFT_ASSERT_EMAILS: True
   IS_DIMAGI_ENVIRONMENT: True
   ENFORCE_TWO_FACTOR_FOR_SUPERUSERS: False
+  ENFORCE_SSO_LOGIN: True
   EULA_COMPLIANCE: True
   HQ_INSTANCE: 'staging'
   INVOICE_FROM_ADDRESS:
@@ -173,7 +175,7 @@ commcare_cloud_pem: ~/.ssh/id_rsa
 
 kinesis_flows:
   - file_pattern: "/opt/data/formplayer/log/request_response.*log"
-    delivery_stream: "formplayer-request-response-logs-staging"
+    delivery_stream: "formplayer-request-response-logs-partitioned-staging"
 
 enable_cloudwatch_logs: true
 

@@ -581,8 +581,8 @@ INTERNAL_DATA = {
 
 COUCH_STALE_QUERY = 'update_after'
 
-API_THROTTLE_REQUESTS = 5
-API_THROTTLE_TIMEFRAME = 10
+CCHQ_API_THROTTLE_REQUESTS = 25
+CCHQ_API_THROTTLE_TIMEFRAME = 15
 
 {% if 'ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE' in localsettings %}
 ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE = {{ localsettings.ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE }}
@@ -757,6 +757,10 @@ TWO_FACTOR_CALL_GATEWAY = 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
 
 {% if 'ENFORCE_TWO_FACTOR_FOR_SUPERUSERS' in localsettings %}
 ENFORCE_TWO_FACTOR_FOR_SUPERUSERS = {{ localsettings.ENFORCE_TWO_FACTOR_FOR_SUPERUSERS }}
+{% endif %}
+
+{% if 'ENFORCE_SSO_LOGIN' in localsettings %}
+ENFORCE_SSO_LOGIN = {{ localsettings.ENFORCE_SSO_LOGIN }}
 {% endif %}
 
 {% if localsettings.get('CUSTOM_LANDING_TEMPLATE') and localsettings.CUSTOM_LANDING_TEMPLATE is not mapping %}
@@ -1003,6 +1007,10 @@ ES_SEARCH_TIMEOUT = {{ localsettings.ES_SEARCH_TIMEOUT }}
 
 {% if localsettings.ES_XFORM_INDEX_NAME is defined %}
 ES_XFORM_INDEX_NAME = '{{ localsettings.ES_XFORM_INDEX_NAME }}'
+{% endif %}
+
+{% if localsettings.ES_CASE_SEARCH_INDEX_NAME is defined %}
+ES_CASE_SEARCH_INDEX_NAME = '{{ localsettings.ES_CASE_SEARCH_INDEX_NAME }}'
 {% endif %}
 
 {% if localsettings.ES_XFORM_DISABLE_ALL is defined %}
