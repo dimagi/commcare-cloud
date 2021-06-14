@@ -2,5 +2,6 @@ dev_users:
   present:
   - pkasha
   - rganne
+  - lravula
   absent:
   - schinthala
