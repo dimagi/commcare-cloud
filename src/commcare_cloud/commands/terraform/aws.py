@@ -364,7 +364,7 @@ def is_ec2_instance_in_account(account_id):
                 'http://169.254.169.254/latest/dynamic/instance-identity/document',
                 timeout=.100,
                 headers={'X-aws-ec2-metadata-token': token_api_response.text},
-        ).json()
+            ).json()
         else:
             return False
 
