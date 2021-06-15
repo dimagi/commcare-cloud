@@ -238,10 +238,10 @@
   vars:
     logrotate_scripts:
       - name: "elasticsearch"
-        path: "{{ elasticsearch_data_dir }}/logs/*.log"
+        path: "{{ elasticsearch_data_dir }}/logs/*.log.????-??-??"
         options:
-          - hourly
-          - size 750M
+          - daily
+          - size 50M
           - rotate 7
           - missingok
           - compress
