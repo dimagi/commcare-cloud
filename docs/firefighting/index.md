@@ -827,7 +827,7 @@ Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a 
   - Shard assignment can be checked via Elasticsearch [shards API](https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-shards.html) or the shards graph on Elasticsearch datadog dashboard
 - If any primaries are not allocated. Use rereoute API ([official docs](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/cluster-reroute.html))
   - Reroute according to existing shard allocation
-  - The rerouting of unassigned primary shards will cause data loss (w.r.t es_2.4.6).
+  - The rerouting of unassigned primary shards will cause data loss (w.r.t es_2.4.6). <br>
   :warning: The <b>allow_primary</b> parameter will force a new empty primary shard to be allocated without any data. If a node which has a copy of the original shard (including data) rejoins the cluster later on, that data will be deleted: the old shard copy will be replaced by the new live shard copy.
 
   - Example reroute command to allocate replica shard
