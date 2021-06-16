@@ -44,7 +44,7 @@ cryptography==3.3.2
     #   ansible
     #   commcare-cloud (setup.py)
     #   paramiko
-datadog==0.2.0
+datadog==0.41.0
     # via commcare-cloud (setup.py)
 decorator==4.4.2
     # via datadog
