@@ -55,7 +55,7 @@ module "postgresql" {
   family = "postgres${local.computed_major_engine_version}"
 
   # DB option group
-  major_engine_version = major_engine_version = local.major_engine_version == "" ? local.computed_major_engine_version : var.major_engine_version
+  major_engine_version = local.major_engine_version == "" ? local.computed_major_engine_version : var.major_engine_version
   monitoring_interval = "${var.rds_instance["monitoring_interval"]}"
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
 
