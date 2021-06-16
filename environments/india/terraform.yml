@@ -288,6 +288,14 @@ pgbouncer_nlbs:
       - pgbouncer1-india
       - pgbouncer2-india
 
+internal_albs:
+  - name: "couch_alb-india"
+    listener_port: 25984
+    target_port: 15984
+    targets:
+      - couch5-india
+      - couch8-india
+      - couch9-india
 
 elasticache_cluster:
   create: yes
