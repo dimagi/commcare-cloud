@@ -11,7 +11,7 @@ install_deps = [
     'clint',
     'couchdb-cluster-admin>=0.7.0',
     'cryptography>=3.2',
-    'datadog==0.2.0',
+    'datadog>=0.2.0',
     'dimagi-memoized>=1.1.0',
     'dnspython',
     'Fabric3>=1.10.2,<1.11',
