@@ -1,5 +1,7 @@
 locals {
   create = "${(var.create && lookup(var.rds_instance, "create", true)) ? 1 : 0}"
+  major_version = "${substr("${var.rds_instance["engine_version"]}", 0, 3)}"
+  computed_major_engine_version = "${local.major_version == "9.6" ? "9.6" : "${element(split(".", var.rds_instance["engine_version"]),0)}"}"
 }
 module "postgresql" {
   source = "terraform-aws-modules/rds/aws"
@@ -41,10 +43,11 @@ module "postgresql" {
   subnet_ids = "${var.subnet_ids}"
 
   # DB parameter group
-  family = "postgres9.6"
+  family = "postgres${local.computed_major_engine_version}"
+
 
   # DB option group
-  major_engine_version = "9.6"
+  major_engine_version = "${local.computed_major_engine_version}"
   monitoring_interval = "${var.rds_instance["monitoring_interval"]}"
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
 

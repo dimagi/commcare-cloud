@@ -268,6 +268,11 @@ rds_instances:
     storage: 500
     multi_az: true
     engine_version: 9.6.9
+  - identifier: "pgtest0-india"
+    instance_type: "db.t3.small"
+    storage: 20
+    multi_az: true
+    engine_version: "12.5"
 
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-india

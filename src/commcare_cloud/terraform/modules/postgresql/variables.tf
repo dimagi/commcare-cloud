@@ -19,3 +19,8 @@ variable "create" {}
 variable "apply_immediately" {}
 
 variable "environment" {}
+
+variable "major_version" {
+  type = "string"
+  default = "9.6"
+}
