@@ -44,6 +44,7 @@ es_data
 {{ __pgbouncer2__ }} pgbouncer_processes=2
 {{ __proxy1__ }}
 {{ __rds_pgmain0__ }}
+{{ __rds_pgtest0__ }}
 {{ __pgformplayer_nlb__ }}
 {{ __pgmain_nlb__ }}
 {{ __pgucr_nlb__ }}
@@ -144,6 +145,7 @@ djangomanage0
 
 [remote_postgresql:children]
 rds_pgmain0
+rds_pgtest0
 
 [ansible_skip:children]
 remote_postgresql
