@@ -19,6 +19,7 @@ servers:
     az: "a"
     volume_size: 50
     volume_encrypted: yes
+    volume_type: "gp3"
     group: "control"
     os: ubuntu_pro_bionic
 
@@ -97,6 +98,7 @@ servers:
     az: "a"
     volume_size: 80
     volume_encrypted: yes
+    volume_type: "gp3"
     group: pillowtop
     os: ubuntu_pro_bionic
 
@@ -106,6 +108,7 @@ servers:
     az: "a"
     volume_size: 80
     volume_encrypted: yes
+    volume_type: "gp3"
     group: celery
     os: ubuntu_pro_bionic
 
@@ -115,9 +118,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: formplayer
     os: ubuntu_pro_bionic
 
@@ -127,9 +132,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: formplayer
     os: ubuntu_pro_bionic
 
@@ -139,9 +146,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 150
       encrypted: true
+      volume_type: "gp3"
     group: "couchdb2"
     os: ubuntu_pro_bionic
 
@@ -165,9 +174,11 @@ servers:
     az: "c"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: "couchdb2"
     os: ubuntu_pro_bionic
 
@@ -177,6 +188,7 @@ servers:
     az: "a"
     volume_size: 80
     volume_encrypted: yes
+    volume_type: "gp3"
     group: "rabbitmq"
     os: ubuntu_pro_bionic
 
@@ -186,6 +198,7 @@ servers:
     az: "b"
     volume_size: 80
     volume_encrypted: yes
+    volume_type: "gp3"
     group: "rabbitmq"
     os: ubuntu_pro_bionic
 
