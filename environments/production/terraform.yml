@@ -409,8 +409,7 @@ pgbouncer_nlbs:
       - pgbouncer7-production
   - name: pgshard_nlb-production
     targets:
-      - pgbouncer6-production
-      - pgbouncer7-production
+      - pgbouncer9-production
 
 
 elasticache:

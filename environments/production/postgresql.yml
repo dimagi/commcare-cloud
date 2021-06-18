@@ -72,7 +72,7 @@ dbs:
   form_processing:
     proxy:
       host: pgbouncer3
-      pgbouncer_endpoint: pgshard_nlb
+      pgbouncer_endpoint: pgbouncer3
       pgbouncer_hosts:
         - pgbouncer3
         - pgbouncer9
