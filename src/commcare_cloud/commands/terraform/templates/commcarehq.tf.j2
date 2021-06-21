@@ -309,8 +309,9 @@ module "internal_alb__{{ internal_alb.name }}" {
 
 {% if ec2_auto_recovery %}
 {% for cloudwatch_alarm in ec2_auto_recovery %}
-module "cloudwatch_alarm__staging" {
+module "cloudwatch_alarm__{{ cloudwatch_alarm.name_prefix }}" {
   source = "./modules/cloudwatch"
+  name_prefix = {{ cloudwatch_alarm.name_prefix|tojson }}
   ec2_instance_ids = [
     {%- for instance_ids in cloudwatch_alarm.targets %}{% if not loop.first %}, {% endif %}
     "${module.server__{{ instance_ids }}.server}"

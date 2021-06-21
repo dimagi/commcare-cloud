@@ -355,8 +355,12 @@ internal_albs:
       - couch15-staging
 
 ec2_auto_recovery:
-  - targets:
-      - pillow3-staging
+  - name_prefix: formplayer4-staging
+    targets: 
+      - formplayer4-staging
+  - name_prefix: formplayer5-staging
+    targets: 
+      - formplayer5-staging
       
 elasticache:
   create: no

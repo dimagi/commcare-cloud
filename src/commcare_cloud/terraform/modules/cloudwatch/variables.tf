@@ -1,18 +1,18 @@
-variable "name_prefix_system" {
+variable "name_prefix" {
   description = "Name to be prefixed to all resources"
-  default     = "%sauto-recover-system-%02d"
+  default     = ""
   type        = string
 }
 
-variable "name_prefix_instance" {
-  description = "Name to be prefixed to all resources"
-  default     = "%sauto-recover-instance-%02d"
-  type        = string
-}
-
-variable "name_format" {
+variable "name_format_system" {
   description = "Naming scheme as a string, to use with the format() function."
-  default     = "%sec2-%02d"
+  default     = "%s-system-auto-recover-%02d"
+  type        = string
+}
+
+variable "name_format_instance" {
+  description = "Naming scheme as a string, to use with the format() function."
+  default     = "%s-instance-auto-recover-%02d"
   type        = string
 }
 
