@@ -1,0 +1,6 @@
+
+target_allocation:
+   - couch12:1
+   - couch13:1
+   - couch11:1
+
