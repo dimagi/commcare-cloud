@@ -354,6 +354,10 @@ internal_albs:
       - couch13-staging
       - couch15-staging
 
+ec2_auto_recovery:
+  - targets:
+      - pillow3-staging
+      
 elasticache:
   create: no
 
