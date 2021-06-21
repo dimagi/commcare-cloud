@@ -238,4 +238,5 @@ class EfsFileSystem(jsonobject.JsonObject):
 class Ec2AutoRecovery(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     targets = jsonobject.ListProperty(str)
+    name_prefix = jsonobject.StringProperty(required=True)
         

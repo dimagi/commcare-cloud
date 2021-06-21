@@ -6,7 +6,7 @@ data "aws_partition" "current" {
 
 resource "aws_cloudwatch_metric_alarm" "auto-recover-instance" {
   count               = length(compact(var.ec2_instance_ids))
-  alarm_name          = format(var.name_format, var.name_prefix_instance, count.index + 1)
+  alarm_name          = format(var.name_format_instance, var.name_prefix, count.index + 1)
   metric_name         = "StatusCheckFailed_Instance"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "2"
@@ -32,7 +32,7 @@ resource "aws_cloudwatch_metric_alarm" "auto-recover-instance" {
 
 resource "aws_cloudwatch_metric_alarm" "auto-recover-system" {
   count               = length(compact(var.ec2_instance_ids))
-  alarm_name          = format(var.name_format, var.name_prefix_system, count.index + 1)
+  alarm_name          = format(var.name_format_system, var.name_prefix, count.index + 1)
   metric_name         = "StatusCheckFailed_System"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "2"
