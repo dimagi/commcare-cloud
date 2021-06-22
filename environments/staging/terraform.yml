@@ -48,9 +48,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
   - server_name: "es7-staging"
@@ -59,9 +61,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
   - server_name: "es8-staging"
@@ -69,8 +73,10 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 30
+    volume_type: "gp3"
     block_device:
       volume_size: 80
+      volume_type: "gp3"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
   - server_name: "es9-staging"
@@ -78,8 +84,10 @@ servers:
     network_tier: "db-private"
     az: "b"
     volume_size: 30
+    volume_type: "gp3"
     block_device:
       volume_size: 80
+      volume_type: "gp3"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
   - server_name: "es10-staging"
@@ -87,8 +95,10 @@ servers:
     network_tier: "db-private"
     az: "b"
     volume_size: 30
+    volume_type: "gp3"
     block_device:
       volume_size: 80
+      volume_type: "gp3"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
 
@@ -208,9 +218,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: "kafka"
     os: bionic
 
@@ -220,9 +232,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: "kafka"
     os: ubuntu_pro_bionic
 
@@ -232,9 +246,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: "kafka"
     os: ubuntu_pro_bionic
 
@@ -244,9 +260,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: postgresql
     os: ubuntu_pro_bionic
 
@@ -256,6 +274,7 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     group: postgresql
     os: ubuntu_pro_bionic
 
