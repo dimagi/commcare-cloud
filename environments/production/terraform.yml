@@ -420,6 +420,15 @@ pgbouncer_nlbs:
       - pgbouncer6-production
       - pgbouncer7-production
 
+internal_albs:
+  - name: "couch_alb-production"
+    listener_port: 25984
+    target_port: 15984
+    targets:
+      - couch11-production
+      - couch12-production
+      - couch13-production
+
 elasticache:
   create: no
 
