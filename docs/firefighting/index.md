@@ -829,7 +829,7 @@ Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a 
   - Reroute according to existing shard allocation
   - Example reroute command to allocate primary shard
     ```
-    curl -XPOST 'http://<es_url>/_cluster/reroute' -d ' {"commands" :[{"allocate": {"shard": 0, "node": "es34", "allow_primary": true, "index": "xforms_2020-02-20"}}’
+    curl -XPOST 'http://<es_url>/_cluster/reroute' -d ' {"commands" :[{"allocate": {"shard": 0, "node": "es34", "index": "xforms_2020-02-20"}}’
     ```
   - Example reroute command to allocate replica shard
     ```
