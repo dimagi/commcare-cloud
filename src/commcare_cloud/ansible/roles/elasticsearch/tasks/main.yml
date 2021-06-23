@@ -232,23 +232,27 @@
   notify: reload monit
   tags: monit
 
-- name: ElasticSearchlogs
-  include_role:
-    name: ansible-logrotate
-  vars:
-    logrotate_scripts:
-      - name: "elasticsearch"
-        path: "{{ elasticsearch_data_dir }}/logs/*.log.????-??-??"
-        options:
-          - daily
-          - size 50M
-          - rotate 7
-          - missingok
-          - compress
-          - delaycompress
-          - copytruncate
-          - nocreate
-          - notifempty
+- name: Copy elasticsearch log_retention file
+  template:
+    src: "delete_older_eslogs.sh.j2"
+    dest: "/usr/local/sbin/delete_older_eslogs.sh"
+    group: root
+    owner: root
+    mode: 0700
+    backup: yes
+  when: elasticsearch_deletelogs|bool
   tags:
-    - elasticsearch
-    - logging
+    - cron
+
+- name: Create Daily Cron job to delete elasticsearch_logs
+  cron:
+    name: "delete older elasticsearch logs"
+    job: "/usr/local/sbin/delete_older_eslogs.sh {{ delete_older_logs_days }}"
+    minute: 20
+    hour: "{{ nadir_hour|default(0) }}"
+    weekday: "1,2,3,4,5,6"
+    user: root
+    cron_file: delete_eslogs
+    state: '{{ "present" if elasticsearch_deletelogs else "absent"}}'
+  tags:
+    - cron

@@ -5,6 +5,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
+elasticsearch_deletelogs: True
 
 kafka_version: 2.6.1
 kafka_scala_version: 2.13
