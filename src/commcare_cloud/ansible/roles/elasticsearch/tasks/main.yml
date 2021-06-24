@@ -234,25 +234,25 @@
 
 - name: Copy elasticsearch log_retention file
   template:
-    src: "delete_older_eslogs.sh.j2"
-    dest: "/usr/local/sbin/delete_older_eslogs.sh"
+    src: "delete_older_es_logs.sh.j2"
+    dest: "/usr/local/sbin/delete_older_es_logs.sh"
     group: root
     owner: root
     mode: 0700
     backup: yes
-  when: elasticsearch_deletelogs|bool
+  when: elasticsearch_delete_old_logs|bool
   tags:
     - cron
 
 - name: Create Daily Cron job to delete elasticsearch_logs
   cron:
     name: "delete older elasticsearch logs"
-    job: "/usr/local/sbin/delete_older_eslogs.sh {{ delete_older_logs_days }}"
+    job: "/usr/local/sbin/delete_older_es_logs.sh {{ elasticsearch_log_retention_days }}"
     minute: 20
     hour: "{{ nadir_hour|default(0) }}"
     weekday: "1,2,3,4,5,6"
     user: root
     cron_file: delete_eslogs
-    state: '{{ "present" if elasticsearch_deletelogs else "absent"}}'
+    state: '{{ "present" if elasticsearch_delete_old_logs else "absent"}}'
   tags:
     - cron
