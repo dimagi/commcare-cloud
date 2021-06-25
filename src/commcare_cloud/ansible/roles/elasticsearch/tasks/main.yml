@@ -252,7 +252,7 @@
     hour: "{{ nadir_hour|default(0) }}"
     weekday: "1,2,3,4,5,6"
     user: root
-    cron_file: delete_eslogs
+    cron_file: delete_older_es_logs
     state: '{{ "present" if elasticsearch_delete_old_logs else "absent"}}'
   tags:
     - cron
