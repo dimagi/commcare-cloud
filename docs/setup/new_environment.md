@@ -341,11 +341,6 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
     ```bash
     $ commcare-cloud monolith ansible-playbook letsencrypt_cert.yml --skip-check
     ```
-   Note: you might or might not need to create the `/etc/letsencrypt` directory yourself. If the command above fails due
-   to no such directory found, create one with the following command:
-    ``` bash
-    $ sudo mkdir /etc/letsencrypt
-    ```
 
 2. Update settings to take advantage of new certs:
     ```

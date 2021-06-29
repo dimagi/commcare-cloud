@@ -42,6 +42,17 @@
         when: not certbot_install is changed
       when: certbot_version.rc != 0 or certbot_version.stdout.split()[1] is version(certbot_min_version, '<')
 
+    - name: Check that /etc/letsencrypt/ exists
+      stat:
+        path: /etc/letsencrypt/
+      register: stat_result
+
+    - name: Create the directory, if not exist already
+      file:
+        path: /etc/letsencrypt/
+        state: directory
+      when: not stat_result.stat.exists
+
     - name: Check that /etc/letsencrypt/cli.ini exists
       stat:
         path: /etc/letsencrypt/cli.ini
