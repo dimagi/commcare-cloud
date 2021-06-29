@@ -79,6 +79,7 @@ class ServerConfig(jsonobject.JsonObject):
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
     os = jsonobject.StringProperty(required=True, choices=['trusty', 'bionic', 'ubuntu_pro_bionic'])
+    server_auto_recovery = jsonobject.BooleanProperty(default=False)
     count = jsonobject.IntegerProperty(default=None)
 
     @classmethod

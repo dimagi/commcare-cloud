@@ -42,6 +42,8 @@ module "postgresql" {
 
   # DB parameter group
   family = "postgres9.6"
+  parameter_group_description = "Database parameter group for ${var.rds_instance["identifier"]}"
+  db_subnet_group_description = "Database subnet group for ${var.rds_instance["identifier"]}"
 
   # DB option group
   major_engine_version = "9.6"
@@ -50,6 +52,7 @@ module "postgresql" {
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
 
   # Snapshot name upon DB deletion
+  skip_final_snapshot = true
   final_snapshot_identifier = "final-snapshot-${var.rds_instance["identifier"]}"
   copy_tags_to_snapshot = true
 
@@ -63,4 +66,5 @@ module "postgresql" {
     Environment = var.environment
     Group = "postgresql"
   }
+  timeouts = {}
 }
