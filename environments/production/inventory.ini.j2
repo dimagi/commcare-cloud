@@ -61,6 +61,8 @@ mobile_webworkers
 
 {{ __pgsynclogs_nlb__ }}
 
+{{ __couch_alb__ }}
+
 [remote_postgresql:children]
 rds_pgmain0
 rds_pgformplayer0
@@ -95,6 +97,7 @@ pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
 pgsynclogs_nlb
+couch_alb
 
 {{ __rabbit2__ }}
 {{ __rabbit5__ }}
@@ -204,6 +207,7 @@ es_data
 couch11
 couch12
 couch13
+couch_alb
 
 [couchdb2:vars]
 swap_size=8G
@@ -211,7 +215,10 @@ swap_size=8G
 {{ __couchproxy3__ }}
 
 [couchdb2_proxy:children]
-couchproxy3
+couch_alb
+
+[couchdb2_alb:children]
+couch_alb
 
 {{ __control1__ }}
 {{ __control2__ }}
