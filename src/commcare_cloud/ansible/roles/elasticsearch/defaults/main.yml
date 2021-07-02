@@ -17,3 +17,5 @@ backup_es_swift: no
 elasticsearch_enable_inline_groovy_scripts: True
 elasticsearch_service_name: elasticsearch
 elasticsearch_node_name: "{{ hostname }}"
+elasticsearch_delete_old_logs: False
+elasticsearch_log_retention_days: 7
