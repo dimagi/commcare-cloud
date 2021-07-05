@@ -29,7 +29,7 @@ servers:
     group: control
     os: bionic
   - server_name: "djangomanage0-india"
-    server_instance_type: "t3.xlarge"
+    server_instance_type: "t3.small"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -288,6 +288,14 @@ pgbouncer_nlbs:
       - pgbouncer1-india
       - pgbouncer2-india
 
+internal_albs:
+  - name: "couch_alb-india"
+    listener_port: 25984
+    target_port: 15984
+    targets:
+      - couch5-india
+      - couch8-india
+      - couch9-india
 
 elasticache_cluster:
   create: yes

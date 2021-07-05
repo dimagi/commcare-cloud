@@ -9,6 +9,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'indiahqes-1.x'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
+elasticsearch_delete_old_logs: True
 
 backup_blobdb: False
 backup_postgres: plain
@@ -52,7 +53,7 @@ run_websockets_wsgi: True
 
 couch_dbs:
   default:
-    host: "{{ groups.couchdb2_proxy[0] }}"
+    host: "{{ groups.couchdb2_alb[0] }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ COUCH_USERNAME }}"

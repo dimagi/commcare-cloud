@@ -2,8 +2,8 @@ resource "aws_lb" "this" {
   name               = "${var.alb_identifier}"
   internal           = true
   load_balancer_type = "application"
-  subnets = var.subnets
-  security_groups    = var.security_groups
+  subnets = ["${var.subnets}"]
+  security_groups    = ["${var.security_groups}"]
   idle_timeout  = 1200
 
   enable_deletion_protection = true

@@ -7,6 +7,10 @@ newest first.
 
 ## Changelog
 
+### **2021-06-09** [Migrate forms & cases from Couch to SQL](0044-migrate-forms-to-sql.md)
+A series of management commands must be run to check for and migrate domains'
+forms & cases from Couch to SQL.
+
 ### **2021-03-23** [Optionally configure auditcare db](0043-optionally-configure-auditcare-db.md)
 Some enterprise deployments of CommCare use a backend feature called
 "auditcare" as part of their audit logging strategy. Auditcare is enabled by

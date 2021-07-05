@@ -110,6 +110,18 @@ servers:
     group: "couchdb2_proxy"
     os: ubuntu_pro_bionic
 
+  - server_name: "couch11-production"
+    server_instance_type: c5a.24xlarge
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 60
+    volume_encrypted: no
+    block_device:
+      volume_size: 8000
+      encrypted: yes
+    group: "couchdb2"
+    os: bionic
+
   - server_name: "couch12-production"
     server_instance_type: c5a.24xlarge
     network_tier: "db-private"
@@ -411,6 +423,15 @@ pgbouncer_nlbs:
     targets:
       - pgbouncer9-production
 
+
+internal_albs:
+  - name: "couch_alb-production"
+    listener_port: 25984
+    target_port: 15984
+    targets:
+      - couch11-production
+      - couch12-production
+      - couch13-production
 
 elasticache:
   create: no
