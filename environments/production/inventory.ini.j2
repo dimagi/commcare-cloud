@@ -63,6 +63,8 @@ mobile_webworkers
 
 {{ __pgshard_nlb__ }}
 
+{{ __couch_alb__ }}
+
 [remote_postgresql:children]
 rds_pgmain0
 rds_pgformplayer0
@@ -99,6 +101,7 @@ pgmain_nlb
 pgucr_nlb
 pgsynclogs_nlb
 pgshard_nlb
+couch_alb
 
 {{ __rabbit2__ }}
 {{ __rabbit5__ }}
