@@ -93,9 +93,21 @@
     daemon_reload: yes
   when: ansible_distribution_version == '18.04'
 
+# Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
+- shell: /bin/true
+  changed_when: false
+  register: no_tags
+
+- name: start Kafka service
+  service: name=kafka-server enabled=yes state=started
+  when: no_tags is not defined
+  register: kafka_service_started
+  tags: after-reboot
+
+#Restarting a service right after it's been started can cause an inconsistent state. adding condition.
 - name: Enable and start Kafka service
   service: name=kafka-server enabled=yes state=restarted
-  tags: after-reboot
+  when: kafka_service_started.changed == False
 
 - name: Add Kafka binaries to PATH
   copy: src=kafka.sh dest=/etc/profile.d/ owner=root group=root mode=0644
