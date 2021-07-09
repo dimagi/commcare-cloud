@@ -25,6 +25,7 @@ dev_users:
     - schauhan
     - sherbers
     - spokhriyal
+    - rcostello
   absent:
     - astone
     - wpride
