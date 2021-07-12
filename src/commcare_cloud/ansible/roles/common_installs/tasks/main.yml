@@ -86,6 +86,25 @@
       - chrony
   when: use_chrony
 
+- name: Check if amazon timesync ip already defined in file
+  lineinfile:
+    state: absent
+    path: "/etc/chrony/chrony.conf"
+    regexp: "^server 169.254.169.123 prefer iburst"
+  when: use_chrony
+  check_mode: true
+  changed_when: false
+  register: check
+
+- name: add new line
+  lineinfile:
+    state: present
+    dest: "/etc/chrony/chrony.conf"
+    insertbefore: '^pool ntp.ubuntu.com '
+    line: server 169.254.169.123 prefer iburst
+  notify: restart chrony
+  when: check.found == 0 and use_chrony
+
 - include: trusty_apt_installs.yml
   when: ansible_distribution_version == '14.04'
 
