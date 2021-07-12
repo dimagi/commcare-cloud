@@ -61,6 +61,8 @@ mobile_webworkers
 
 {{ __pgsynclogs_nlb__ }}
 
+{{ __pgshard_nlb__ }}
+
 {{ __couch_alb__ }}
 
 [remote_postgresql:children]
@@ -90,6 +92,7 @@ pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
 pgsynclogs_nlb
+pgshard_nlb
 
 [ansible_skip:children]
 remote_postgresql
@@ -97,6 +100,7 @@ pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
 pgsynclogs_nlb
+pgshard_nlb
 couch_alb
 
 {{ __rabbit2__ }}

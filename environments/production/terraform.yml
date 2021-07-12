@@ -419,6 +419,10 @@ pgbouncer_nlbs:
     targets:
       - pgbouncer6-production
       - pgbouncer7-production
+  - name: pgshard_nlb-production
+    targets:
+      - pgbouncer9-production
+
 
 internal_albs:
   - name: "couch_alb-production"

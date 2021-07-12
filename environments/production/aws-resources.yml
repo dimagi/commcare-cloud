@@ -203,6 +203,7 @@ pgshard2-production: pgshard2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.co
 pgshard3-production: pgshard3-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard4-production: pgshard4-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard5-production: pgshard5-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgshard_nlb-production: pgshard-nlb-production-46239ca59f830bfc.elb.us-east-1.amazonaws.com
 pgsynclog0-production: pgsynclog0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgsynclogs_nlb-production: pgsynclogs-nlb-production-a0590d45cd55994b.elb.us-east-1.amazonaws.com
 pgucr0-production: pgucr0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com

@@ -80,35 +80,35 @@ dbs:
       p1:
         shards: [0, 204]
         host: rds_pgshard1
-        pgbouncer_endpoint: pgbouncer9
+        pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer3
           - pgbouncer9
       p2:
         shards: [205, 409]
         host: rds_pgshard2
-        pgbouncer_endpoint: pgbouncer9
+        pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer3
           - pgbouncer9
       p3:
         shards: [410, 614]
         host: rds_pgshard3
-        pgbouncer_endpoint: pgbouncer9
+        pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer3
           - pgbouncer9
       p4:
         shards: [615, 819]
         host: rds_pgshard4
-        pgbouncer_endpoint: pgbouncer9
+        pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer3
           - pgbouncer9
       p5:
         shards: [820, 1023]
         host: rds_pgshard5
-        pgbouncer_endpoint: pgbouncer9
+        pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer3
           - pgbouncer9
