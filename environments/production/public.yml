@@ -39,6 +39,7 @@ elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a7
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
+elasticsearch_delete_old_logs: True
 
 nofile_limit: 65536
 
