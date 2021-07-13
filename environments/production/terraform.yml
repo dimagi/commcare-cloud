@@ -103,7 +103,7 @@ servers:
     count: 16
 
   - server_name: "couchproxy3-production"
-    server_instance_type: c5.xlarge
+    server_instance_type: m3.medium
     network_tier: "db-private"
     az: "a"
     volume_size: 80
