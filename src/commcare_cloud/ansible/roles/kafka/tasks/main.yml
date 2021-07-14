@@ -104,7 +104,7 @@
   register: kafka_service_started
   tags: after-reboot
 
-#Restarting a service right after it's been started can cause an inconsistent state. adding condition.
+# Restarting a service right after it's been started will cause an unnecessary/non-idempotent restart
 - name: Enable and start Kafka service
   service: name=kafka-server enabled=yes state=restarted
   when: kafka_service_started.changed == False
