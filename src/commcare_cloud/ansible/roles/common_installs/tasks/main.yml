@@ -56,7 +56,6 @@
       - htop
       - tmpreaper # remove files older than x days
       - mailutils
-      - ntp
       - at
       - screen
       - sysstat
@@ -78,6 +77,14 @@
       - libpango1.0-0
       - auditd
 
+# Install ntp package
+- name: Install NTP package when Chrony is not defined.
+  become: yes
+  apt:
+    name:
+      - ntp
+  when: not use_chrony
+
 # Install chrony package
 - name: Install chrony package
   become: yes
@@ -86,16 +93,6 @@
       - chrony
   when: use_chrony
 
-- name: Check if amazon timesync ip already defined in file
-  lineinfile:
-    state: absent
-    path: "/etc/chrony/chrony.conf"
-    regexp: "^server 169.254.169.123 prefer iburst"
-  when: use_chrony
-  check_mode: true
-  changed_when: false
-  register: check
-
 - name: add new line
   lineinfile:
     state: present
@@ -103,7 +100,7 @@
     insertbefore: '^pool ntp.ubuntu.com '
     line: server 169.254.169.123 prefer iburst
   notify: restart chrony
-  when: check.found == 0 and use_chrony
+  when: use_chrony
 
 - include: trusty_apt_installs.yml
   when: ansible_distribution_version == '14.04'
