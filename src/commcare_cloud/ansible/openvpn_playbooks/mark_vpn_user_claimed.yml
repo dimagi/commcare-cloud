@@ -5,6 +5,9 @@
       assert:
         that: "vpn_user in dev_users.present"
         fail_msg: "Cannot activate {{ vpn_user }} because user does not exist. User must be in dev_users."
+    - name: "Assert that the password is 24 characters or longer"
+      assert:
+        that: vpn_user_password|length >= 24
     - name: "Set {{ vpn_user }} password"
       become: yes
       user:
@@ -15,4 +18,4 @@
       shell: "passwd {{ vpn_user }} -x -1"
   vars_prompt:
     - name: vpn_user_password
-      prompt: "Enter new VPN password"
+      prompt: "Please use your Password Manager to randomly generate a new password 24 characters or longer\nEnter new VPN password"
