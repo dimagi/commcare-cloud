@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import os
 import subprocess
 import sys
 
@@ -13,6 +14,7 @@ from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.user_utils import get_ssh_username
 from ..ansible.helpers import get_default_ssh_options_as_cmd_parts
+from ..terraform.aws import aws_sign_in, is_aws_env, is_ec2_instance_in_account
 
 from ...colors import color_error
 from .getinventory import (get_monolith_address, get_server_address,
@@ -61,7 +63,7 @@ class _Ssh(Lookup):
         """),
     )
 
-    def run(self, args, ssh_args):
+    def run(self, args, ssh_args, env_vars=None):
         if args.server == '-':
             args.server = 'django_manage[0]'
         address = self.lookup_server_address(args)
@@ -78,7 +80,7 @@ class _Ssh(Lookup):
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         if not args.quiet:
             print_command(cmd)
-        return subprocess.call(cmd_parts)
+        return subprocess.call(cmd_parts, env=env_vars)
 
 
 class Ssh(_Ssh):
@@ -93,14 +95,20 @@ class Ssh(_Ssh):
     """
 
     def run(self, args, ssh_args):
+        environment = get_environment(args.env_name)
+        use_aws_ssm_with_instance_id = None
+        env_vars = None
 
         if 'control' in split_host_group(args.server).group and '-A' not in ssh_args:
             # Always include ssh agent forwarding on control machine
             ssh_args = ['-A'] + ssh_args
+            if is_aws_env(environment) and not is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id):
+                use_aws_ssm_with_instance_id = environment.get_host_vars(environment.groups['control'][0])['ec2_instance_id']
+                env_vars = os.environ.copy()
+                env_vars.update({'AWS_PROFILE': aws_sign_in(environment)})
 
-        environment = get_environment(args.env_name)
-        ssh_args = get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=ssh_args) + ssh_args
-        return super(Ssh, self).run(args, ssh_args)
+        ssh_args = get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=ssh_args, use_aws_ssm_with_instance_id=use_aws_ssm_with_instance_id) + ssh_args
+        return super(Ssh, self).run(args, ssh_args, env_vars=env_vars)
 
 
 class Mosh(_Ssh):
