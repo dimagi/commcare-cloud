@@ -15,6 +15,7 @@ from commcare_cloud.environment.main import get_environment
 from commcare_cloud.user_utils import get_ssh_username
 from ..ansible.helpers import get_default_ssh_options_as_cmd_parts
 from ..terraform.aws import aws_sign_in, is_aws_env, is_ec2_instance_in_account
+from ...alias import commcare_cloud
 
 from ...colors import color_error
 from .getinventory import (get_monolith_address, get_server_address,
@@ -41,9 +42,7 @@ class Lookup(CommandBase):
 
     def lookup_server_address(self, args):
         try:
-            if not args.server:
-                return get_monolith_address(args.env_name)
-            return get_server_address(args.env_name, args.server)
+            return lookup_server_address(args.env_name, args.server)
         except Exception as e:
             self.parser.error("\n" + str(e))
 
@@ -53,6 +52,12 @@ class Lookup(CommandBase):
                 "Ignoring extra argument(s): {}\n".format(unknown_args)
             )
         print(self.lookup_server_address(args))
+
+
+def lookup_server_address(env_name, server):
+    if not server:
+        return get_monolith_address(env_name)
+    return get_server_address(env_name, server)
 
 
 class _Ssh(Lookup):
@@ -277,3 +282,28 @@ class DjangoManage(CommandBase):
         else:
             ssh_args = _get_ssh_args(remote_command)
             return Ssh(self.parser).run(args, ssh_args)
+
+
+class ForwardPort(CommandBase):
+    command = 'forward-port'
+    help = """
+    Port forward to access a remote admin console
+    """
+    _SERVICES = {
+        'flower': ('celery[0]', 5555),
+        'couch': ('couchdb2_proxy[0]', 25984),
+        'elasticsearch': ('elasticsearch[0]', 9200),
+    }
+
+    arguments = (
+        Argument('service', choices=_SERVICES.keys(), help=f"""
+            The remote service to port forward. Must be one of {','.join(sorted(_SERVICES.keys()))}.
+        """),
+    )
+
+    def run(self, args, unknown_args):
+        environment = get_environment(args.env_name)
+        remote_host_key, remote_port = self._SERVICES[args.service]
+        loopback_address = f'127.0.{environment.terraform_config.vpc_begin_range}'
+        remote_host = lookup_server_address(args.env_name, remote_host_key)
+        return commcare_cloud(args.env_name, 'ssh', 'control', '-gNL', f'{loopback_address}:{remote_port}:{remote_host}:{remote_port}')

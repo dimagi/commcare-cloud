@@ -34,7 +34,7 @@ from .commands.ansible.ansible_playbook import (
 from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping, SendDatadogEvent
 from .commands.fab import Fab
-from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux
+from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux, ForwardPort
 from .commands.ansible.ops_tool import ListDatabases, CeleryResourceReport, PillowResourceReport, \
     CouchDBClusterInfo, UpdateLocalKnownHosts, PillowTopicAssignments
 from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
@@ -90,6 +90,7 @@ COMMAND_GROUPS = OrderedDict([
         AwsFillInventory,
         OpenvpnActivateUser,
         OpenvpnClaimUser,
+        ForwardPort,
     ])
 ])
 
