@@ -309,4 +309,4 @@ class ForwardPort(CommandBase):
         remote_host_key, remote_port = self._SERVICES[args.service]
         loopback_address = f'127.0.{environment.terraform_config.vpc_begin_range}'
         remote_host = lookup_server_address(args.env_name, remote_host_key)
-        return commcare_cloud(args.env_name, 'ssh', 'control', '-gNL', f'{loopback_address}:{remote_port}:{remote_host}:{remote_port}')
+        return commcare_cloud(args.env_name, 'ssh', 'control', '-NL', f'{loopback_address}:{remote_port}:{remote_host}:{remote_port}')
