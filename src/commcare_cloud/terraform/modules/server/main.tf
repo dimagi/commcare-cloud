@@ -62,6 +62,7 @@ resource "aws_volume_attachment" "ebs_att" {
   device_name = "/dev/sdf"
   volume_id   = aws_ebs_volume.ebs_volume[count.index].id
   instance_id = aws_instance.server.id
+<<<<<<< HEAD
 }
 
 data "aws_region" "current" {
@@ -120,4 +121,6 @@ resource "aws_cloudwatch_metric_alarm" "auto-recover-system" {
       var.alarm_actions,
     ),
   )
+=======
+>>>>>>> 9704a45a3798316b935602b4a887ab406bb8d27a
 }

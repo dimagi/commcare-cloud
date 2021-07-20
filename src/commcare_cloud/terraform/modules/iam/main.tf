@@ -49,3 +49,4 @@ resource "aws_iam_role_policy_attachment" "AmazonRDSEnhancedMonitoringRole" {
   role       = aws_iam_role.rds-monitoring-role.name
   policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
+

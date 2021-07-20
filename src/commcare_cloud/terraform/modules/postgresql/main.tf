@@ -48,7 +48,10 @@ module "postgresql" {
   # DB option group
   major_engine_version = "9.6"
   monitoring_interval = var.rds_instance["monitoring_interval"]
+<<<<<<< HEAD
   monitoring_role_arn = var.rds_instance["monitoring_role_arn"]
+=======
+>>>>>>> 9704a45a3798316b935602b4a887ab406bb8d27a
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
 
   # Snapshot name upon DB deletion
