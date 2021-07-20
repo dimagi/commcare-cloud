@@ -107,7 +107,10 @@ class Ssh(_Ssh):
         if 'control' in split_host_group(args.server).group and '-A' not in ssh_args:
             # Always include ssh agent forwarding on control machine
             ssh_args = ['-A'] + ssh_args
-            if is_aws_env(environment) and not is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id):
+
+            if os.environ.get('COMMCARE_CLOUD_USE_AWS_SSM') == '1' and \
+                    is_aws_env(environment) and \
+                    not is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id):
                 use_aws_ssm_with_instance_id = environment.get_host_vars(environment.groups['control'][0])['ec2_instance_id']
                 env_vars = os.environ.copy()
                 env_vars.update({'AWS_PROFILE': aws_sign_in(environment)})
