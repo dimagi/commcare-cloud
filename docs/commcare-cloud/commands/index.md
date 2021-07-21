@@ -11,7 +11,7 @@ All `commcare-cloud` commands take the following form:
 ```
 commcare-cloud [--control]
                <env>
-               {after-reboot,ansible-playbook,ap,aws-fill-inventory,aws-list,aws-sign-in,bootstrap-users,celery-resource-report,copy-files,couchdb-cluster-info,deploy,deploy-stack,aps,django-manage,downtime,export-sentry-events,fab,list-postgresql-dbs,lookup,migrate-couchdb,migrate_couchdb,migrate-secrets,mosh,openvpn-activate-user,openvpn-claim-user,pillow-resource-report,pillow-topic-assignments,ping,run-module,run-shell-command,secrets,send-datadog-event,service,ssh,terraform,terraform-migrate-state,tmux,update-config,update-local-known-hosts,update-supervisor-confs,update-user-key,update-users,validate-environment-settings}
+               {after-reboot,ansible-playbook,ap,aws-fill-inventory,aws-list,aws-sign-in,bootstrap-users,celery-resource-report,copy-files,couchdb-cluster-info,deploy,deploy-stack,aps,django-manage,downtime,export-sentry-events,fab,forward-port,list-postgresql-dbs,lookup,migrate-couchdb,migrate_couchdb,migrate-secrets,mosh,openvpn-activate-user,openvpn-claim-user,pillow-resource-report,pillow-topic-assignments,ping,run-module,run-shell-command,secrets,send-datadog-event,service,ssh,terraform,terraform-migrate-state,tmux,update-config,update-local-known-hosts,update-supervisor-confs,update-user-key,update-users,validate-environment-settings}
                ...
 ```
 
@@ -1543,5 +1543,21 @@ Must be one of the defined ssh users defined for the environment.
 ###### `--use-factory-auth`
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
+
+---
+
+#### `forward-port`
+
+Port forward to access a remote admin console
+
+```
+commcare-cloud <env> forward-port {flower,couch,elasticsearch}
+```
+
+##### Positional Arguments
+
+###### `{flower,couch,elasticsearch}`
+
+The remote service to port forward. Must be one of couch,elasticsearch,flower.
 
 ---
