@@ -134,6 +134,7 @@ localsettings:
   REDIS_HOST: "localhost"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
+  REQUIRE_TWO_FACTOR_FOR_SUPERUSERS: True
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: False
   SES_CONFIGURATION_SET: swiss-email-events
