@@ -1,0 +1,9 @@
+#!/bin/bash
+DAYS_TO_RETAIN_LOGS=$1
+
+# Remove old logs
+find {{ elasticsearch_data_dir }}/logs -mtime "+${DAYS_TO_RETAIN_LOGS}" -name "{{ elasticsearch_cluster_name }}.log.*" -delete
+
+# Remove old slowlogs
+find {{ elasticsearch_data_dir }}/logs -mtime "+${DAYS_TO_RETAIN_LOGS}" -name "{{ elasticsearch_cluster_name }}_index_search_slowlog.log.*" -delete
+find {{ elasticsearch_data_dir }}/logs -mtime "+${DAYS_TO_RETAIN_LOGS}" -name "{{ elasticsearch_cluster_name }}_index_indexing_slowlog.log.*" -delete

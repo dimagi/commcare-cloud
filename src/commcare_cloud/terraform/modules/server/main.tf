@@ -63,3 +63,61 @@ resource "aws_volume_attachment" "ebs_att" {
   volume_id   = aws_ebs_volume.ebs_volume[count.index].id
   instance_id = aws_instance.server.id
 }
+
+data "aws_region" "current" {
+}
+
+data "aws_partition" "current" {
+}
+
+resource "aws_cloudwatch_metric_alarm" "auto-recover-instance" {
+  count   = var.server_auto_recovery == true ? 1 : 0
+  alarm_name          = format(var.name_format_instance, var.server_name, count.index + 1)
+  metric_name         = "StatusCheckFailed_Instance"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "2"
+
+  dimensions = {
+    InstanceId = aws_instance.server.id
+  }
+
+  namespace         = "AWS/EC2"
+  period            = "60"
+  statistic         = "Minimum"
+  threshold         = "0"
+  alarm_description = "Auto-recover the instance if the Instance status check fails for two minutes"
+  alarm_actions = compact(
+    concat(
+      [
+        "arn:${data.aws_partition.current.partition}:automate:${data.aws_region.current.name}:ec2:reboot",
+      ],
+      var.alarm_actions,
+    ),
+  )
+}
+
+resource "aws_cloudwatch_metric_alarm" "auto-recover-system" {
+  count   = var.server_auto_recovery == true ? 1 : 0
+  alarm_name          = format(var.name_format_system, var.server_name, count.index + 1)
+  metric_name         = "StatusCheckFailed_System"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "2"
+
+  dimensions = {
+    InstanceId = aws_instance.server.id
+  }
+
+  namespace         = "AWS/EC2"
+  period            = "60"
+  statistic         = "Minimum"
+  threshold         = "0"
+  alarm_description = "Auto-recover the instance if the system status check fails for two minutes"
+  alarm_actions = compact(
+    concat(
+      [
+        "arn:${data.aws_partition.current.partition}:automate:${data.aws_region.current.name}:ec2:recover",
+      ],
+      var.alarm_actions,
+    ),
+  )
+}

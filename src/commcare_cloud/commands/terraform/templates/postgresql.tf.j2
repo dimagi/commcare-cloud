@@ -16,6 +16,7 @@ module "postgresql__{{ rds_instance.identifier }}" {
     maintenance_window = {{ rds_instance.maintenance_window|tojson }}
     port = {{ rds_instance.port|tojson }}
     monitoring_interval = 60
+    monitoring_role_arn = module.Users.rds-monitoring-role.arn
   }
   parameters = [
     {%- for param in postgresql_params[rds_instance.identifier] %}

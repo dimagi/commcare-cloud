@@ -1,0 +1,23 @@
+title: Migrate forms & cases from Couch to SQL
+key: migrate_forms_to_sql
+date: 2021-06-09
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  A series of management commands must be run to check for and migrate domains'
+  forms & cases from Couch to SQL.
+
+details: |
+  Historically CommCareHQ stored form submissions and case data in CouchDB.
+  About 5 years ago the default storage backend was changed from Couch to SQL,
+  and all domains created since then should be using the SQL backend. However,
+  a bug allowed some Couch domains to be created since then. It is recommended
+  to check for and migrate all relevant domains since the Couch form processor
+  is slated for removal, and domains using it will stop working if they are not
+  migrated before that happens.
+
+update_steps: |
+  Follow the steps outlined in the 
+  [migration document](https://github.com/dimagi/commcare-hq/blob/master/corehq/apps/couch_sql_migration/README.md)
+  to find and migrate all Couch domains in your environment.

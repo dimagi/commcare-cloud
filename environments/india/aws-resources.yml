@@ -20,6 +20,7 @@ couch8-india: 10.203.41.220
 couch8-india.instance_id: i-0d457c1b437388a95
 couch9-india: 10.203.42.224
 couch9-india.instance_id: i-050882587b588a76b
+couch_alb-india: internal-couch-alb-india-410194548.ap-south-1.elb.amazonaws.com
 djangomanage0-india: 10.203.10.37
 djangomanage0-india.instance_id: i-02902085942dd60bf
 efs_india-efs: fs-0c280ddd.efs.ap-south-1.amazonaws.com
@@ -42,9 +43,12 @@ pgbouncer0-india: 10.203.40.199
 pgbouncer0-india.instance_id: i-05aabe9136e92475c
 pgbouncer1-india: 10.203.40.200
 pgbouncer1-india.instance_id: i-0ccb10bb6d8048ea1
+pgbouncer2-india: 10.203.41.203
+pgbouncer2-india.instance_id: i-001ade36607a36a83
 pgformplayer_nlb-india: pgformplayer-nlb-india-bd402933c980310c.elb.ap-south-1.amazonaws.com
 pgmain0-india: pgmain0-india.ccqpd1xrju8m.ap-south-1.rds.amazonaws.com
 pgmain_nlb-india: pgmain-nlb-india-4747ab10b065afa3.elb.ap-south-1.amazonaws.com
+pgshard_nlb-india: pgshard-nlb-india-337a6ad6c13111c1.elb.ap-south-1.amazonaws.com
 pgsynclogs_nlb-india: pgsynclogs-nlb-india-8facd1c4825bca96.elb.ap-south-1.amazonaws.com
 pgucr_nlb-india: pgucr-nlb-india-7cab226e7a1d3928.elb.ap-south-1.amazonaws.com
 pillow2-india: 10.203.10.9

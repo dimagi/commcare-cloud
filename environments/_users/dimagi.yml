@@ -4,10 +4,8 @@ dev_users:
     - biyeun
     - cellowitz
     - csmit
-    - cstahl
     - ctsims
     - czue
-    - dchung
     - dmiller
     - droberts
     - esoergel
@@ -15,12 +13,10 @@ dev_users:
     - gherceg
     - jmiller
     - jschweers
-    - knguyen
     - matthewriley
     - mkangia
     - mperosa
     - nhooper
-    - rnegi
     - rpietersen
     - sgoyal
     - skelly
@@ -28,6 +24,7 @@ dev_users:
     - schauhan
     - sherbers
     - spokhriyal
+    - rcostello
   absent:
     - astone
     - wpride
@@ -40,4 +37,8 @@ dev_users:
     - jemord
     - sgoswami
     - rkumar
+    - knguyen
     - sbansal
+    - dchung
+    - cstahl
+    - rnegi

@@ -13,14 +13,6 @@ vpc_begin_range: "10.202"
 openvpn_image: ami-5e73b923
 
 servers:
-  - server_name: "control1-production"
-    server_instance_type: "t3a.large"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    group: "control"
-    os: bionic
-
   - server_name: "control2-production"
     server_instance_type: "t3a.large"
     network_tier: "app-private"
@@ -102,12 +94,24 @@ servers:
     count: 11
 
   - server_name: "couchproxy3-production"
-    server_instance_type: c5.xlarge
+    server_instance_type: m3.medium
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     group: "couchdb2_proxy"
     os: ubuntu_pro_bionic
+
+  - server_name: "couch11-production"
+    server_instance_type: c5a.24xlarge
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 60
+    volume_encrypted: no
+    block_device:
+      volume_size: 8000
+      encrypted: yes
+    group: "couchdb2"
+    os: bionic
 
   - server_name: "couch12-production"
     server_instance_type: c5a.24xlarge
@@ -121,17 +125,6 @@ servers:
     group: "couchdb2"
     os: bionic
   - server_name: "couch13-production"
-    server_instance_type: c5a.24xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 60
-    volume_encrypted: no
-    block_device:
-      volume_size: 15360
-      encrypted: no
-    group: "couchdb2"
-    os: bionic
-  - server_name: "couch14-production"
     server_instance_type: c5a.24xlarge
     network_tier: "db-private"
     az: "a"
@@ -181,7 +174,7 @@ servers:
     count: 2
 
   - server_name: "formplayer_c{i}-production"
-    server_instance_type: m5.4xlarge
+    server_instance_type: r5.2xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 400
@@ -406,6 +399,19 @@ pgbouncer_nlbs:
     targets:
       - pgbouncer6-production
       - pgbouncer7-production
+  - name: pgshard_nlb-production
+    targets:
+      - pgbouncer9-production
+
+
+internal_albs:
+  - name: "couch_alb-production"
+    listener_port: 25984
+    target_port: 15984
+    targets:
+      - couch11-production
+      - couch12-production
+      - couch13-production
 
 elasticache:
   create: no

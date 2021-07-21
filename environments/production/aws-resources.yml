@@ -12,16 +12,15 @@ celery_a005-production: 10.202.12.213
 celery_a005-production.instance_id: i-0cdd79c56bd5c006d
 celery_a006-production: 10.202.12.222
 celery_a006-production.instance_id: i-0f1272b602a757a91
-control1-production: 10.202.10.158
-control1-production.instance_id: i-0cff282a9692b2f47
 control2-production: 10.202.10.212
 control2-production.instance_id: i-0e290f7ceefb5e096
+couch11-production: 10.202.42.190
+couch11-production.instance_id: i-0aef627c2e6abe669
 couch12-production: 10.202.40.52
 couch12-production.instance_id: i-0e9aaeea3a117206e
 couch13-production: 10.202.40.154
 couch13-production.instance_id: i-00a287226e9555670
-couch14-production: 10.202.40.216
-couch14-production.instance_id: i-0634cf1adc9ba838c
+couch_alb-production: internal-couch-alb-production-4251727.us-east-1.elb.amazonaws.com
 couchproxy3-production: 10.202.40.196
 couchproxy3-production.instance_id: i-0b1a2bc019f113be3
 djangomanage2-production: 10.202.10.167
@@ -180,6 +179,7 @@ pgshard2-production: pgshard2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.co
 pgshard3-production: pgshard3-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard4-production: pgshard4-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard5-production: pgshard5-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgshard_nlb-production: pgshard-nlb-production-46239ca59f830bfc.elb.us-east-1.amazonaws.com
 pgsynclog0-production: pgsynclog0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgsynclogs_nlb-production: pgsynclogs-nlb-production-a0590d45cd55994b.elb.us-east-1.amazonaws.com
 pgucr0-production: pgucr0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com

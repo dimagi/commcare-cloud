@@ -19,7 +19,8 @@ class TerraformConfig(jsonobject.JsonObject):
     region = jsonobject.StringProperty()
     environment = jsonobject.StringProperty()
     openvpn_image = jsonobject.StringProperty()
-    openvpn_az = jsonobject.StringProperty(default='a')
+    openvpn_instance_type = jsonobject.StringProperty()
+    openvpn_az = jsonobject.StringProperty()
     azs = jsonobject.ListProperty(str)
     az_codes = jsonobject.ListProperty(str, default=['a', 'b', 'c'])
     ssl_policy = jsonobject.StringProperty(default="ELBSecurityPolicy-2016-08")
@@ -30,10 +31,12 @@ class TerraformConfig(jsonobject.JsonObject):
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)
     pgbouncer_nlbs = jsonobject.ListProperty(lambda: PgbouncerNlbs)
+    internal_albs = jsonobject.ListProperty(lambda: InternalAlbs)
     elasticache = jsonobject.ObjectProperty(lambda: ElasticacheConfig, default=None)
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
     r53_private_zone = jsonobject.ObjectProperty(lambda: RoutePrivateZoneConfig, default=None)
     efs_file_systems = jsonobject.ListProperty(lambda: EfsFileSystem, default=None)
+    ec2_auto_recovery = jsonobject.ListProperty(lambda: Ec2AutoRecovery, default=None)
 
     @classmethod
     def wrap(cls, data):
@@ -76,6 +79,7 @@ class ServerConfig(jsonobject.JsonObject):
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
     os = jsonobject.StringProperty(required=True, choices=['trusty', 'bionic', 'ubuntu_pro_bionic'])
+    server_auto_recovery = jsonobject.BooleanProperty(default=False)
     count = jsonobject.IntegerProperty(default=None)
 
     @classmethod
@@ -171,7 +175,22 @@ class PgbouncerNlbs(jsonobject.JsonObject):
             raise ValueError("commcare-cloud requires pgbouncer nlb identifier to be of the form 'pg{name}-nlb-{environment}'")
         return self
 
+class InternalAlbs(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    name = jsonobject.StringProperty(required=True)
+    identifier = jsonobject.StringProperty(required=False)
+    targets = jsonobject.ListProperty(str)
+    target_port = jsonobject.IntegerProperty(required=True)
+    listener_port = jsonobject.IntegerProperty(required=True)
 
+    @classmethod
+    def wrap(cls, data):
+        self = super(InternalAlbs, cls).wrap(data)
+        if not self.identifier:
+            self.identifier = self.name.replace('_', '-')
+        if not re.match('[a-z]+-alb-[a-z]+', self.identifier):
+            raise ValueError("commcare-cloud requires internal alb identifier to be of the form 'internal{name}-alb-{environment}'")
+        return self
 
 class ElasticacheConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
@@ -216,3 +235,9 @@ class EfsFileSystem(jsonobject.JsonObject):
     domain_name = jsonobject.StringProperty(required=True)
     record_type = jsonobject.StringProperty(default="CNAME")
     route_names = jsonobject.StringProperty(required=True)
+
+class Ec2AutoRecovery(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    targets = jsonobject.ListProperty(str)
+    name_prefix = jsonobject.StringProperty(required=True)
+        

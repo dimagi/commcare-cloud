@@ -5,6 +5,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
+elasticsearch_delete_old_logs: True
 
 kafka_version: 2.6.1
 kafka_scala_version: 2.13
@@ -38,7 +39,6 @@ aws_region: 'us-east-1'
 
 formplayer_archive_time_spec: '10m'
 formplayer_sensitive_data_logging: true
-formplayer_enable_cache: false
 formplayer_detailed_tags:
     - form_name
     - module_name
@@ -71,7 +71,7 @@ new_domain_email: inquiries@dimagi.com
 
 couch_dbs:
   default:
-    host: "{{ groups.couchdb2_proxy.0 }}"
+    host: "{{ groups.couchdb2_alb.0 }}"
     port: "{{ couchdb2_proxy_port }}"
     name: staging_commcarehq
     username: "{{ COUCH_USERNAME }}"
@@ -189,3 +189,7 @@ efs_shared_mount_dir: "shared{{ '_' ~ deploy_env if deploy_env != 'production' e
 efs_shared_mount_endpoint: "shared-efs.staging.commcare.local:/"
 efs_shared_mount_options: "_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
 shared_dir_gid: 1500
+
+# for better time syncronization on aws servers
+# replace ntp with chrony.
+use_chrony: True

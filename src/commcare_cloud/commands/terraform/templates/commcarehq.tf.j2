@@ -85,6 +85,7 @@ module "server_iam_role" {
   account_id = {{ account_id|tojson }}
   region_name = "${var.region}"
   formplayer_request_response_logs_firehose_stream_arn = "${module.logshipping.formplayer_request_response_logs_firehose_stream_arn}"
+  account_alias =  "${var.account_alias}"
 }
 
 {% for server_spec in servers + proxy_servers %}
@@ -102,12 +103,8 @@ module "server__{{ server_name }}" {
   secondary_volume_size = {{ server_spec.block_device.volume_size|default(0)|tojson }}
   secondary_volume_type = {{ server_spec.block_device.volume_type|default("")|tojson }}
   secondary_volume_encrypted = {{ server_spec.block_device.encrypted|default(False)|tojson }}
-
-{% if server_name == "control1-production" %}
-  iam_instance_profile = "${module.server_iam_role.formplayerlogbucket_instance_profile}"
-{% else %}
+  server_auto_recovery = {{ server_spec.server_auto_recovery|default(False)|tojson }}
   iam_instance_profile = "${module.server_iam_role.commcare_server_instance_profile}"
-{% endif %}
 
 {% if server_spec.os == 'ubuntu_pro_bionic' %}
   server_image = "${data.aws_ami.ubuntu_pro_bionic.id}"
@@ -204,8 +201,7 @@ module "openvpn" {
   openvpn_image = "${var.openvpn_image}"
   environment = "${var.environment}"
   vpn_size = "${var.openvpn_instance_type}"
-  # hardcoded, should be configurable like the others
-  instance_subnet = "${module.network.subnets-public["{{ openvpn_az }}"]}"
+  instance_subnet = "${module.network.subnets-public[var.openvpn_az]}"
   vpc_id = "${module.network.vpc-id}"
   vpc_cidr = "${module.network.vpc-cidr}"
   key_name = "${var.key_name}"
@@ -289,6 +285,43 @@ module "pgbouncer_nlb__{{ pgbouncer_nlb.name }}" {
 
 {% endfor %}
 
+{% for internal_alb in internal_albs %}
+module "internal_alb__{{ internal_alb.name }}" {
+  source = "./modules/internal_alb"
+  vpc_id   = "${module.network.vpc-id}"
+  alb_identifier = "{{ internal_alb.identifier }}"
+  target_port = "{{ internal_alb.target_port }}"
+  listener_port = "{{ internal_alb.listener_port }}"
+  security_groups = ["${module.network.db-private-sg}"]
+  subnets = [
+    {%- for az in az_codes %}{% if not loop.first %}, {% endif %}
+    "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+    {%- endfor %}
+  ]
+  environment = "${var.environment}"
+  server_ids = [
+    {%- for server_id in internal_alb.targets %}{% if not loop.first %}, {% endif %}
+    "${module.server__{{ server_id }}.server}"
+    {%- endfor %}
+  ]
+}
+
+{% endfor %}
+
+{% if ec2_auto_recovery %}
+{% for cloudwatch_alarm in ec2_auto_recovery %}
+module "cloudwatch_alarm__{{ cloudwatch_alarm.name_prefix }}" {
+  source = "./modules/cloudwatch"
+  name_prefix = {{ cloudwatch_alarm.name_prefix|tojson }}
+  ec2_instance_ids = [
+    {%- for instance_ids in cloudwatch_alarm.targets %}{% if not loop.first %}, {% endif %}
+    "${module.server__{{ instance_ids }}.server}"
+    {%- endfor %}
+  ]
+}
+{% endfor %}
+{% endif %}
+
 {% if efs_file_systems %}
 {% for efs_file_system in efs_file_systems %}
 module "efs_file_system__{{ efs_file_system.efs_name }}" {
@@ -302,7 +335,7 @@ module "efs_file_system__{{ efs_file_system.efs_name }}" {
 {% endfor %}
 
 {%- for az in az_codes %}
-{%- for efs_file_system_mount in efs_file_systems %} 
+{%- for efs_file_system_mount in efs_file_systems %}{% if not loop.first %}, {% endif %} 
 module "efs_mount__{{ efs_file_system_mount.efs_name }}__{{ az }}" {
   source = "./modules/efs_file_system/mount-point"
   create_mount   = "{{ efs_file_system_mount.create_mount|tojson }}"
@@ -313,7 +346,7 @@ module "efs_mount__{{ efs_file_system_mount.efs_name }}__{{ az }}" {
 {% endfor %}
 {% endfor %}
 
-{%- for efs_file_system_route53 in efs_file_systems %}
+{%- for efs_file_system_route53 in efs_file_systems %}{% if not loop.first %}, {% endif %}
     module "efs_route53__{{ efs_file_system_route53.efs_name }}" {
         source = "./modules/r53-record-create-update"
         create_record   = "{{ efs_file_system_route53.create_record|tojson }}"

@@ -98,6 +98,7 @@ localsettings:
   COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
   COUCH_USERNAME: "{{ COUCH_USERNAME }}"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
+  DEVICE_LOGS_ENABLED: no
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
@@ -105,6 +106,7 @@ localsettings:
   ELASTICSEARCH_MAJOR_VERSION: 2
   IS_DIMAGI_ENVIRONMENT: True
   EULA_COMPLIANCE: True
+  ENFORCE_SSO_LOGIN: True
   HQ_INSTANCE: 'swiss'
   HUBSPOT_API_ID:
   HUBSPOT_API_KEY:

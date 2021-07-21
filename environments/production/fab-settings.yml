@@ -2,6 +2,6 @@ tag_deploy_commits: True
 use_shared_dir_for_staticfiles: True
 shared_dir_for_staticfiles: /mnt/shared/temp
 acceptable_maintenance_window:
-  hour_start: 1
-  hour_end: 3
+  hour_start: 2
+  hour_end: 4
   timezone: US/Eastern

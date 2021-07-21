@@ -39,6 +39,7 @@ elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a7
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
+elasticsearch_delete_old_logs: True
 
 nofile_limit: 65536
 
@@ -65,8 +66,9 @@ filebeat_inputs:
 formplayer_purge_time_spec: '10d'
 formplayer_sensitive_data_logging: true
 formplayer_forward_ip_proxy: true
-formplayer_enable_cache: true
-formplayer_detailed_tags: []
+formplayer_detailed_tags:
+  - form_name
+  - module_name
 
 KSPLICE_ACTIVE: yes
 
@@ -74,7 +76,7 @@ run_websockets_wsgi: True
 
 couch_dbs:
   default:
-    host: "{{ groups.couchdb2_proxy.0 }}"
+    host: "{{ groups.couchdb2_alb[0] }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ COUCH_USERNAME }}"
@@ -135,6 +137,7 @@ localsettings:
   BANK_SWIFT_CODE: 'CTZIUS33'
   BIGCOUCH: True
   BIGCOUCH_QUORUM_COUNT: 2
+  CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE: "reminder_case_update_bulk_queue"
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_REINDEX_SCHEDULE: {'timedelta': {'minutes': 5}}
@@ -146,7 +149,9 @@ localsettings:
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
+  ENFORCE_SSO_LOGIN: False
   ELASTICSEARCH_MAJOR_VERSION: 2
+  ES_CASE_SEARCH_INDEX_NAME: "case_search_2021-06-04"
   IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'www'
   INACTIVITY_TIMEOUT: 20160

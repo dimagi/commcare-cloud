@@ -23,6 +23,9 @@
           - file_path: "/var/log/apt/history.log"
             log_group_name_suffix: "var-log-apt-history"
             should_include: true
+          - file_path: "/var/log/commands.log"
+            log_group_name_suffix: "var-log-commands"
+            should_include: true
           # formplayer
           - file_path: "/home/cchq/www/{{ deploy_env }}/log/formplayer*.log"
             log_group_name_suffix: "formplayer"

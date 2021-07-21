@@ -23,3 +23,30 @@ resource "aws_iam_policy" "force_mfa" {
   policy      = file("${path.module}/EnforceMFAPolicy.json")
 }
 
+### Enhanced monitoring
+
+data "aws_partition" "current" {}
+
+data "aws_iam_policy_document" "rds-monitoring-role" {
+  statement {
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["monitoring.rds.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "rds-monitoring-role" {
+  name               = "rds-monitoring-role"
+  assume_role_policy = data.aws_iam_policy_document.rds-monitoring-role.json
+}
+
+resource "aws_iam_role_policy_attachment" "AmazonRDSEnhancedMonitoringRole" {
+  role       = aws_iam_role.rds-monitoring-role.name
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+}
+

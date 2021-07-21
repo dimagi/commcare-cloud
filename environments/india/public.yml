@@ -9,6 +9,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'indiahqes-1.x'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
+elasticsearch_delete_old_logs: True
 
 backup_blobdb: False
 backup_postgres: plain
@@ -24,7 +25,6 @@ citus_postgresql_port: 5432
 aws_region: 'ap-south-1'
 
 formplayer_sensitive_data_logging: true
-formplayer_enable_cache: true
 
 nofile_limit: 65536
 
@@ -53,7 +53,7 @@ run_websockets_wsgi: True
 
 couch_dbs:
   default:
-    host: "{{ groups.couchdb2_proxy[0] }}"
+    host: "{{ groups.couchdb2_alb[0] }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ COUCH_USERNAME }}"
@@ -120,6 +120,7 @@ localsettings:
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
+  ENFORCE_SSO_LOGIN: True
   ELASTICSEARCH_MAJOR_VERSION: 2
   IS_DIMAGI_ENVIRONMENT: True
   EULA_COMPLIANCE: True
@@ -241,3 +242,7 @@ efs_shared_mount_dir: "shared{{ '_' ~ deploy_env if deploy_env != 'production' e
 efs_shared_mount_endpoint: "shared-efs.india.commcare.local:/"
 efs_shared_mount_options: "_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
 shared_dir_gid: 1500
+
+# for better time syncronization on aws servers
+# replace ntp with chrony.
+use_chrony: True
