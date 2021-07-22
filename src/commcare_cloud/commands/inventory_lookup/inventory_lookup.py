@@ -17,7 +17,7 @@ from ..ansible.helpers import get_default_ssh_options_as_cmd_parts
 from ..terraform.aws import aws_sign_in, is_aws_env, is_ec2_instance_in_account
 from ...alias import commcare_cloud
 
-from ...colors import color_error
+from ...colors import color_error, color_notice
 from .getinventory import (get_monolith_address, get_server_address,
                            split_host_group)
 
@@ -306,7 +306,22 @@ class ForwardPort(CommandBase):
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
+        nice_name = environment.terraform_config.account_alias
         remote_host_key, remote_port = self._SERVICES[args.service]
         loopback_address = f'127.0.{environment.terraform_config.vpc_begin_range}'
         remote_host = lookup_server_address(args.env_name, remote_host_key)
-        return commcare_cloud(args.env_name, 'ssh', 'control', '-NL', f'{loopback_address}:{remote_port}:{remote_host}:{remote_port}')
+        puts(color_notice('Make sure you have done the following:'))
+        puts(color_notice(f'  - Run `sudo ifconfig lo0 alias {loopback_address}`.'))
+        puts(color_notice(f'  - Edit `/etc/hosts` (with sudo) to include the line `{loopback_address} {nice_name}`.'))
+        puts(color_notice(f'  - Exit and retry this command after those changes.'))
+        puts()
+        puts(color_notice(f'{args.env_name} {args.service} should now be available to you at {nice_name}:{remote_port}'))
+        puts(color_notice(f'^C to stop port-forwarding and exit'))
+        puts()
+        try:
+            return commcare_cloud(args.env_name, 'ssh', 'control', '-NL', f'{loopback_address}:{remote_port}:{remote_host}:{remote_port}')
+        except KeyboardInterrupt:
+            puts()
+            puts('Connection closed.')
+            # ^C this is how we expect the user to terminate this command, so no need to print a stacktrace
+            return 0
