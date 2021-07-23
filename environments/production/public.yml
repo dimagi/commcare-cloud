@@ -124,6 +124,7 @@ localsettings:
     - testserver
     - proxytest.commcarehq.org
     - "{{ J2ME_SITE_HOST }}"
+  ALLOW_MAKE_SUPERUSER_COMMAND: False
   ANALYTICS_DEBUG: False
   ANALYTICS_LOG_LEVEL: "warning"
   AUDIT_ALL_VIEWS: True
