@@ -17,7 +17,7 @@ from ..ansible.helpers import get_default_ssh_options_as_cmd_parts
 from ..terraform.aws import aws_sign_in, is_aws_env, is_ec2_instance_in_account
 from ...alias import commcare_cloud
 
-from ...colors import color_error, color_notice
+from ...colors import color_error, color_notice, color_link
 from .getinventory import (get_monolith_address, get_server_address,
                            split_host_group)
 
@@ -326,8 +326,8 @@ class ForwardPort(CommandBase):
                 return -1
             puts()
 
-        puts(color_notice(f'{args.env_name} {args.service} should now be available to you at {nice_name}:{remote_port}'))
-        puts(color_notice(f'^C to stop port-forwarding and exit'))
+        puts(color_notice(f'You should now be able to reach {args.env_name} {args.service} at {color_link(f"http://{nice_name}:{remote_port}/")}.'))
+        puts(f'Interrupt with ^C to stop port-forwarding and exit.')
         puts()
         try:
             return commcare_cloud(args.env_name, 'ssh', 'control', '-NL', f'{loopback_address}:{remote_port}:{remote_host}:{remote_port}')
