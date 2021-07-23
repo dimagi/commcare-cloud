@@ -9,7 +9,7 @@ import sys
 from clint.textui import puts
 from six.moves import shlex_quote
 
-from commcare_cloud.cli_utils import print_command
+from commcare_cloud.cli_utils import print_command, ask
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.user_utils import get_ssh_username
@@ -310,11 +310,22 @@ class ForwardPort(CommandBase):
         remote_host_key, remote_port = self._SERVICES[args.service]
         loopback_address = f'127.0.{environment.terraform_config.vpc_begin_range}'
         remote_host = lookup_server_address(args.env_name, remote_host_key)
-        puts(color_notice('Make sure you have done the following:'))
-        puts(color_notice(f'  - Run `sudo ifconfig lo0 alias {loopback_address}`.'))
-        puts(color_notice(f'  - Edit `/etc/hosts` (with sudo) to include the line `{loopback_address} {nice_name}`.'))
-        puts(color_notice(f'  - Exit and retry this command after those changes.'))
-        puts()
+
+        while not self.is_loopback_address_set_up(loopback_address):
+            puts(color_error('To make this work you will need to run set up a special loopback address on your local machine:'))
+            puts(color_notice(f'  - Mac: Run `sudo ifconfig lo0 alias {loopback_address}`.'))
+            puts(color_notice(f'  - Linux: Run `sudo ip addr add {loopback_address}/8 dev lo`.'))
+            if not ask("Follow the instructions above or type n to exit. Ready to continue?"):
+                return -1
+            puts()
+
+        while not self.is_etc_hosts_alias_set_up(loopback_address, nice_name):
+            puts(color_error('Okay, now the last step is to set up a special alias in your /etc/hosts:'))
+            puts(color_notice(f'  - Edit /etc/hosts (e.g. `sudo vim /etc/hosts`) and add the line `{loopback_address} {nice_name}` to it.'))
+            if not ask("Follow the instructions above or type n to exit. Ready to continue?"):
+                return -1
+            puts()
+
         puts(color_notice(f'{args.env_name} {args.service} should now be available to you at {nice_name}:{remote_port}'))
         puts(color_notice(f'^C to stop port-forwarding and exit'))
         puts()
@@ -325,3 +336,22 @@ class ForwardPort(CommandBase):
             puts('Connection closed.')
             # ^C this is how we expect the user to terminate this command, so no need to print a stacktrace
             return 0
+
+    @staticmethod
+    def is_loopback_address_set_up(loopback_address):
+        try:
+            subprocess.check_output(f'ifconfig | grep {shlex_quote(loopback_address)}', shell=True)
+        except subprocess.CalledProcessError:
+            return False
+        else:
+            return True
+
+    @staticmethod
+    def is_etc_hosts_alias_set_up(loopback_address, nice_name):
+
+        try:
+            subprocess.check_output(f'grep {shlex_quote(f"{loopback_address} {nice_name}")} /etc/hosts', shell=True)
+        except subprocess.CalledProcessError:
+            return False
+        else:
+            return True
