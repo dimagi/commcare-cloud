@@ -341,12 +341,10 @@ class ForwardPort(CommandBase):
     def is_loopback_address_set_up(loopback_address):
         try:
             # Use either ifconfig or ip, whichever is available
-            subprocess.check_output(f'{{ ifconfig || ip addr show dev lo; }} | grep {shlex_quote(loopback_address)}', shell=True)
+            subprocess.check_output(f'{{ ifconfig 2> /dev/null || ip addr show dev lo; }} | grep {shlex_quote(loopback_address)}', shell=True)
         except subprocess.CalledProcessError:
-            print("NO")
             return False
         else:
-            print("YES")
             return True
 
     @staticmethod
