@@ -355,7 +355,7 @@ class ForwardPort(CommandBase):
     @staticmethod
     def is_etc_hosts_alias_set_up(loopback_address, nice_name):
 
-        grep_regex = rf"{loopback_address}\s+{nice_name}"
+        grep_regex = rf"^{loopback_address}\s+{nice_name}"
         try:
             subprocess.check_output(f'grep -E {shlex_quote(grep_regex)} /etc/hosts', shell=True)
         except subprocess.CalledProcessError:
