@@ -3,6 +3,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import os
+import socket
 import subprocess
 import sys
 
@@ -354,11 +355,10 @@ class ForwardPort(CommandBase):
 
     @staticmethod
     def is_etc_hosts_alias_set_up(loopback_address, nice_name):
-
-        grep_regex = rf"^{loopback_address}\s+{nice_name}"
         try:
-            subprocess.check_output(f'grep -E {shlex_quote(grep_regex)} /etc/hosts', shell=True)
-        except subprocess.CalledProcessError:
+            resolved = socket.gethostbyname(nice_name)
+        except socket.gaierror:
             return False
         else:
-            return True
+            return resolved == loopback_address
+
