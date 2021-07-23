@@ -104,6 +104,7 @@ localsettings:
   ALLOWED_HOSTS:
     - j2mestaging.commcarehq.org
     - testserver
+  ALLOW_MAKE_SUPERUSER_COMMAND: False  
   ANALYTICS_DEBUG: True
   ANALYTICS_LOG_LEVEL: "debug"
   AUDIT_ALL_VIEWS: True
