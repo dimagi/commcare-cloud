@@ -14,7 +14,8 @@ from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.user_utils import get_ssh_username
 from ..ansible.helpers import get_default_ssh_options_as_cmd_parts
-from ..terraform.aws import aws_sign_in, is_aws_env, is_ec2_instance_in_account
+from ..terraform.aws import aws_sign_in, is_aws_env, is_ec2_instance_in_account, \
+    is_session_manager_plugin_installed
 from ...alias import commcare_cloud
 
 from ...colors import color_error, color_notice, color_link
@@ -111,6 +112,10 @@ class Ssh(_Ssh):
             if os.environ.get('COMMCARE_CLOUD_USE_AWS_SSM') == '1' and \
                     is_aws_env(environment) and \
                     not is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id):
+                if not is_session_manager_plugin_installed():
+                    puts(color_error("Before you can use AWS SSM to connect, you must install the AWS session-manager-plugin"))
+                    puts(f"{color_notice('See ')}{color_link('https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html')}{color_notice(' for instructions.')}")
+                    return -1
                 use_aws_ssm_with_instance_id = environment.get_host_vars(environment.groups['control'][0])['ec2_instance_id']
                 env_vars = os.environ.copy()
                 env_vars.update({'AWS_PROFILE': aws_sign_in(environment)})

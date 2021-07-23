@@ -371,6 +371,16 @@ def is_ec2_instance_in_account(account_id):
     return aws_instance_identity_doc.get('accountId') == account_id
 
 
+def is_session_manager_plugin_installed():
+    try:
+        # swallow output
+        subprocess.check_output('session-manager-plugin', shell=True)
+    except subprocess.CalledProcessError:
+        return False
+    else:
+        return True
+
+
 @memoized
 def _aws_sign_in_with_sso(environment):
     """
