@@ -31,8 +31,8 @@
 
 - name: Add Couch apt repo (for libmozjs dependency)
   block:
-    - apt_key: url=https://couchdb.apache.org/repo/bintray-pubkey.asc state=present
-    - apt_repository: repo="deb https://apache.bintray.com/couchdb-deb bionic main" state=present
+    - apt_key: url=https://couchdb.apache.org/repo/keys.asc state=present
+    - apt_repository: repo="deb https://apache.jfrog.io/artifactory/couchdb-deb bionic main" state=present
   when: ansible_distribution_version == '18.04'
 
 - name: Add Erlang apt repo
