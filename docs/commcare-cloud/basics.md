@@ -79,6 +79,11 @@ $ cchq <env> django-manage dbshell --database <dbalias>
 # check services
 $ cchq <env> django-manage check-services
 ```
+
+## A note about system users
+
+`commcare-cloud` creates and uses the `ansible` user on machines that it manages. You should not login as this user or use it for other things other than automated tasks run by the ansible process. This is especially applicable when you have a `control` machine that runs other commcare processes. 
+
 ---
 
 [︎⬅︎ Overview](..)
