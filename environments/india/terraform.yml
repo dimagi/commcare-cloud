@@ -34,6 +34,7 @@ servers:
     az: "a"
     volume_size: 80
     volume_encrypted: no
+    volume_type: "gp3"
     group: control
     os: bionic
   - server_name: "web0-india"
@@ -42,6 +43,7 @@ servers:
     az: "a"
     volume_size: 500
     volume_encrypted: no
+    volume_type: "gp3"
     group: control
     os: bionic
   - server_name: "web1-india"
@@ -50,6 +52,7 @@ servers:
     az: "a"
     volume_size: 80
     volume_encrypted: no
+    volume_type: "gp3"
     group: control
     os: bionic
   - server_name: "citusmaster0-india"
@@ -58,6 +61,7 @@ servers:
     az: "a"
     volume_size: 150
     volume_encrypted: no
+    volume_type: "gp3"
     group: citusdb_master
     os: bionic
   - server_name: "citusworker0-india"
@@ -66,6 +70,7 @@ servers:
     az: "a"
     volume_size: 150
     volume_encrypted: no
+    volume_type: "gp3"
     group: citusdb_worker
     os: bionic
   - server_name: "citusworker1-india"
@@ -74,6 +79,7 @@ servers:
     az: "a"
     volume_size: 150
     volume_encrypted: no
+    volume_type: "gp3"
     group: citusdb_worker
     os: bionic
   - server_name: "citusworker2-india"
@@ -82,6 +88,7 @@ servers:
     az: "a"
     volume_size: 150
     volume_encrypted: no
+    volume_type: "gp3"
     group: citusdb_worker
     os: bionic
 
@@ -91,6 +98,7 @@ servers:
     az: "a"
     volume_size: 60
     volume_encrypted: no
+    volume_type: "gp3"
     group: celery
     os: bionic
   - server_name: "celery2-india"
@@ -99,6 +107,7 @@ servers:
     az: "a"
     volume_size: 60
     volume_encrypted: no
+    volume_type: "gp3"
     group: celery
     os: bionic
   - server_name: "celery3-india"
@@ -107,6 +116,7 @@ servers:
     az: "a"
     volume_size: 60
     volume_encrypted: no
+    volume_type: "gp3"
     group: celery
     os: bionic
 
@@ -196,8 +206,10 @@ servers:
     az: "a"
     volume_size: 200
     volume_encrypted: no
+    volume_type: "gp3"
     group: formplayer
     os: bionic
+    server_auto_recovery: true
 
   - server_name: "pillow2-india"
     server_instance_type: "t3.xlarge"
@@ -205,6 +217,7 @@ servers:
     az: "a"
     volume_size: 60
     volume_encrypted: no
+    volume_type: "gp3"
     group: pillowtop
     os: bionic
 
@@ -214,6 +227,7 @@ servers:
     az: "a"
     volume_size: 50
     volume_encrypted: no
+    volume_type: "gp3"
     group: kafka
     os: bionic
 
@@ -249,6 +263,7 @@ servers:
     az: "b"
     volume_size: 80
     volume_encrypted: yes
+    volume_type: "gp3"
     group: "rabbitmq"
     os: ubuntu_pro_bionic
 
