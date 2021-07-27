@@ -338,10 +338,7 @@ AWS_CLI_CACHE_DIR = os.path.expanduser('~/.aws/cli/cache/')
 
 
 def is_aws_env(environment):
-    if environment.terraform_config:
-        return True
-    else:
-        return False
+    return bool(environment.terraform_config)
 
 
 @memoized
