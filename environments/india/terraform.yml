@@ -26,6 +26,7 @@ servers:
     az: "a"
     volume_size: 80
     volume_encrypted: no
+    volume_type: "gp3"
     group: control
     os: bionic
   - server_name: "djangomanage0-india"
@@ -34,6 +35,7 @@ servers:
     az: "a"
     volume_size: 80
     volume_encrypted: no
+    volume_type: "gp3"
     group: control
     os: bionic
   - server_name: "web0-india"
@@ -42,6 +44,7 @@ servers:
     az: "a"
     volume_size: 500
     volume_encrypted: no
+    volume_type: "gp3"
     group: control
     os: bionic
   - server_name: "web1-india"
@@ -50,6 +53,7 @@ servers:
     az: "a"
     volume_size: 80
     volume_encrypted: no
+    volume_type: "gp3"
     group: control
     os: bionic
   - server_name: "citusmaster0-india"
@@ -58,6 +62,7 @@ servers:
     az: "a"
     volume_size: 150
     volume_encrypted: no
+    volume_type: "gp3"
     group: citusdb_master
     os: bionic
   - server_name: "citusworker0-india"
@@ -66,6 +71,7 @@ servers:
     az: "a"
     volume_size: 150
     volume_encrypted: no
+    volume_type: "gp3"
     group: citusdb_worker
     os: bionic
   - server_name: "citusworker1-india"
@@ -74,6 +80,7 @@ servers:
     az: "a"
     volume_size: 150
     volume_encrypted: no
+    volume_type: "gp3"
     group: citusdb_worker
     os: bionic
   - server_name: "citusworker2-india"
@@ -82,6 +89,7 @@ servers:
     az: "a"
     volume_size: 150
     volume_encrypted: no
+    volume_type: "gp3"
     group: citusdb_worker
     os: bionic
 
@@ -91,6 +99,7 @@ servers:
     az: "a"
     volume_size: 60
     volume_encrypted: no
+    volume_type: "gp3"
     group: celery
     os: bionic
   - server_name: "celery2-india"
@@ -99,6 +108,7 @@ servers:
     az: "a"
     volume_size: 60
     volume_encrypted: no
+    volume_type: "gp3"
     group: celery
     os: bionic
   - server_name: "celery3-india"
@@ -107,6 +117,7 @@ servers:
     az: "a"
     volume_size: 60
     volume_encrypted: no
+    volume_type: "gp3"
     group: celery
     os: bionic
 
@@ -116,9 +127,11 @@ servers:
     az: "a"
     volume_size: 60
     volume_encrypted: no
+    volume_type: "gp3"
     block_device:
       volume_size: 270
       encrypted: no
+      volume_type: "gp3"
     group: couchdb2
     os: bionic
   
@@ -128,9 +141,11 @@ servers:
     az: "b"
     volume_size: 60
     volume_encrypted: no
+    volume_type: "gp3"
     block_device:
       volume_size: 250
       encrypted: no
+      volume_type: "gp3"
     group: couchdb2
     os: bionic
   - server_name: "couch9-india"
@@ -139,9 +154,11 @@ servers:
     az: "c"
     volume_size: 60
     volume_encrypted: no
+    volume_type: "gp3"
     block_device:
       volume_size: 250
       encrypted: no
+      volume_type: "gp3"
     group: couchdb2
     os: bionic
 
@@ -152,6 +169,7 @@ servers:
     az: "b"
     volume_size: 40
     volume_encrypted: no
+    volume_type: "gp3"
     group: "elasticsearch"
     os: bionic
     
@@ -161,6 +179,7 @@ servers:
     az: "b"
     volume_size: 40
     volume_encrypted: no
+    volume_type: "gp3"
     group: "elasticsearch"
     os: bionic
     
@@ -170,6 +189,7 @@ servers:
     az: "a"
     volume_size: 40
     volume_encrypted: no
+    volume_type: "gp3"
     group: "elasticsearch"
     os: bionic
 
@@ -179,6 +199,7 @@ servers:
     az: "a"
     volume_size: 150
     volume_encrypted: no
+    volume_type: "gp3"
     group: elasticsearch
     os: bionic
   - server_name: "es2-india"
@@ -187,6 +208,7 @@ servers:
     az: "b"
     volume_size: 150
     volume_encrypted: no
+    volume_type: "gp3"
     group: elasticsearch
     os: ubuntu_pro_bionic
 
@@ -196,8 +218,10 @@ servers:
     az: "a"
     volume_size: 200
     volume_encrypted: no
+    volume_type: "gp3"
     group: formplayer
     os: bionic
+    server_auto_recovery: true
 
   - server_name: "pillow2-india"
     server_instance_type: "t3.xlarge"
@@ -205,6 +229,7 @@ servers:
     az: "a"
     volume_size: 60
     volume_encrypted: no
+    volume_type: "gp3"
     group: pillowtop
     os: bionic
 
@@ -214,6 +239,7 @@ servers:
     az: "a"
     volume_size: 50
     volume_encrypted: no
+    volume_type: "gp3"
     group: kafka
     os: bionic
 
@@ -223,6 +249,7 @@ servers:
     az: "a"
     volume_size: 80
     volume_encrypted: no
+    volume_type: "gp3"
     group: "postgresql"
     os: bionic
   - server_name: "pgbouncer1-india"
@@ -231,6 +258,7 @@ servers:
     az: "a"
     volume_size: 80
     volume_encrypted: yes
+    volume_type: "gp3"
     group: "postgresql"
     os: ubuntu_pro_bionic
 
@@ -240,6 +268,7 @@ servers:
     az: "b"
     volume_size: 80
     volume_encrypted: yes
+    volume_type: "gp3"
     group: "postgresql"
     os: ubuntu_pro_bionic
 
@@ -249,6 +278,7 @@ servers:
     az: "b"
     volume_size: 80
     volume_encrypted: yes
+    volume_type: "gp3"
     group: "rabbitmq"
     os: ubuntu_pro_bionic
 
@@ -259,6 +289,7 @@ proxy_servers:
     az: "a"
     volume_size: 80
     volume_encrypted: no
+    volume_type: "gp3"
     group: proxy
     os: bionic
 
@@ -267,7 +298,7 @@ rds_instances:
     instance_type: "db.t3.large"
     storage: 500
     multi_az: true
-    engine_version: 9.6.9
+    engine_version: 9.6.20
 
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-india
@@ -307,6 +338,7 @@ elasticache_cluster:
   at_rest_encryption: true
   auto_minor_version: false
   cluster_size: 2
+  multi_az: true
   maintenance_window: "sun:00:30-sun:01:30"
   snapshot_retention: 7
   snapshot_window: "10:30-11:30"
@@ -320,7 +352,7 @@ r53_private_zone:
 efs_file_systems:
   - efs_name: "efs_india"
     create: yes
-    transition_to_ia:  "AFTER_14_DAYS"
+    transition_to_ia:  "AFTER_7_DAYS"
     create_access: no
     create_mount: yes
     create_record: yes
