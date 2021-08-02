@@ -334,9 +334,31 @@ module "efs_mount__{{ efs_file_system_mount.efs_name }}__{{ az }}" {
         source = "./modules/r53-record-create-update"
         create_record   = "{{ efs_file_system_route53.create_record|tojson }}"
         domain_name = {{ efs_file_system_route53.domain_name|tojson }}
-        route_names = {{ efs_file_system_route53.route_names|tojson }}
-        records = [ "${module.efs_file_system__{{ efs_file_system_route53.efs_name }}.efs_endpoint_address}" ]
+        route_name = {{ efs_file_system_route53.route_name|tojson }}
+        targets = [ "${module.efs_file_system__{{ efs_file_system_route53.efs_name }}.efs_endpoint_address}" ]
       }
 {% endfor %}
 
+{% endif %}
+
+{% if existing_zone_record_update %}
+{% for record in existing_zone_record_update.records %}
+module "r53-record__{{ record.route_name }}" {
+  source = "./modules/r53-record-create-update"
+  domain_name = {{ existing_zone_record_update.domain_name|tojson }}
+  route_name = {{ record.route_name|tojson }}
+  record_type = {{ record.record_type|default("CNAME")|tojson }}
+  targets = [
+      {% if record.target_type == 'server' %}
+        {%- for target in record.targets %}{% if not loop.first %}, {% endif %}
+          "${module.server__{{ target }}.server_private_ip }"
+        {%- endfor %}
+      {% elif record.target_type == 'pgbouncer_nlb' %}
+        {%- for target in record.targets %}{% if not loop.first %}, {% endif %}
+          "${module.pgbouncer_nlb__{{ target }}.aws_lb_dns_name }"
+        {%- endfor %}
+      {% endif %}
+  ]
+}
+{% endfor %}
 {% endif %}
