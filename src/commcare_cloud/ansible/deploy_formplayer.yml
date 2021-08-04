@@ -35,9 +35,19 @@
         file_type=directory
       register: releases
 
-    - name: Keep the last 2 releases
-      file:
+    - name: Check for current release
+      stat:
         path="{{ item.path }}"
-        state=absent
-      with_items:
-        - "{{ (releases.files | sort(attribute='ctime'))[:-2] }}"
+      with_items: "{{ (releases.files | sort(attribute='ctime')) }}"
+      register: stat_results
+
+    - debug: msg="{{ item.lnk_source }}"
+      with_items: "{{ stat_results }}"
+      when: item.stat.exists == true
+
+#    - name: Keep the last 2 releases
+#      file:
+#        path="{{ item.path }}"
+#        state=absent
+#      with_items:
+#        - "{{ (releases.files | sort(attribute='ctime'))[:-2] }}"
