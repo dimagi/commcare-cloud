@@ -1,0 +1,26 @@
+---
+- name: Cleanup formplayer releases
+  hosts: formplayer
+  tasks:
+    - name: List of releases
+      find:
+        paths="{{ formplayer_releases_dir }}"
+        file_type=directory
+      register: releases
+
+    - name: Get stats on current release
+      stat:
+        path="{{ formplayer_current_dir }}"
+      register: current_release
+
+    - debug: msg="{{ current_release.stat.lnk_target }}"
+
+    - debug: msg="{{ item.path }}"
+      with_items:
+        - "{{ (releases.files | sort(attribute='ctime'))[:-2] }}"
+      when: item.path != current_release.stat.lnk_target
+
+    - debug: msg="{{ item.path }}"
+      with_items:
+        - "{{ (releases.files | sort(attribute='ctime'))[:-2] }}"
+      when: item.path != current_release.stat.lnk_target

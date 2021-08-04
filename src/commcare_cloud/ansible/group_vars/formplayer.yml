@@ -1,2 +1,3 @@
 datadog_integration_jmx: true
-formplayer_build_dir: '/home/cchq/www/staging/formplayer_build/releases'
+test_formplayer_build_dir: '/home/cchq/www/staging/formplayer_build/releases'
+test_formplayer_current_dir: '/home/cchq/www/staging/formplayer_build/current'

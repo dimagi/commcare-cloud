@@ -31,23 +31,19 @@
   tasks:
     - name: List of releases
       find:
-        paths="{{ formplayer_build_dir }}"
+        paths="{{ test_formplayer_build_dir }}"
         file_type=directory
       register: releases
 
-    - name: Check for current release
+    - name: Get stats on current release
       stat:
+        path="{{ test_formplayer_current_dir }}"
+      register: current_release
+
+    - name: Delete all releases except the current and most recent 2 releases
+      file:
         path="{{ item.path }}"
-      with_items: "{{ (releases.files | sort(attribute='ctime')) }}"
-      register: stat_results
-
-    - debug: msg="{{ item.lnk_source }}"
-      with_items: "{{ stat_results }}"
-      when: item.stat.exists == true
-
-#    - name: Keep the last 2 releases
-#      file:
-#        path="{{ item.path }}"
-#        state=absent
-#      with_items:
-#        - "{{ (releases.files | sort(attribute='ctime'))[:-2] }}"
+        state=absent
+      with_items:
+        - "{{ (releases.files | sort(attribute='ctime'))[:-2] }}"
+      when: item.path != current_release.stat.lnk_target
