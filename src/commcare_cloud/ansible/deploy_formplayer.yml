@@ -25,19 +25,3 @@
       tags: kinesis-agent
   handlers:
     - include: roles/monit/handlers/main.yml
-
-- name: Cleanup formplayer releases
-  hosts: formplayer
-  tasks:
-    - name: List of releases
-      find:
-        paths="{{ formplayer_build_dir }}"
-        file_type=directory
-      register: releases
-
-    - name: Keep the last 2 releases
-      file:
-        path="{{ item.path }}"
-        state=absent
-      with_items:
-        - "{{ (releases.files | sort(attribute='ctime'))[:-2] }}"
