@@ -46,7 +46,7 @@ servers:
     volume_size: 40
     group: "mobile_webworkers"
     os: ubuntu_pro_bionic
-    count: 9
+    count: 12
 
 
   - server_name: "esmaster6-production"
