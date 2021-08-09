@@ -134,8 +134,9 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     max_storage = jsonobject.IntegerProperty(default=0)
     create = jsonobject.BooleanProperty(default=True)
     username = "root"
-    backup_window = "06:27-06:57"
-    backup_retention = 30
+    backup_window = jsonobject.StringProperty(default="06:27-06:57")
+    backup_retention = jsonobject.IntegerProperty(default=30)
+    monitoring_interval = jsonobject.IntegerProperty(default=60)
     maintenance_window = "sat:08:27-sat:08:57"
     port = 5432
     params = jsonobject.DictProperty()
@@ -179,7 +180,7 @@ class InternalAlbs(jsonobject.JsonObject):
     targets = jsonobject.ListProperty(str)
     target_port = jsonobject.IntegerProperty(required=True)
     listener_port = jsonobject.IntegerProperty(required=True)
-
+    health_check_interval = jsonobject.IntegerProperty(default=30)
     @classmethod
     def wrap(cls, data):
         self = super(InternalAlbs, cls).wrap(data)

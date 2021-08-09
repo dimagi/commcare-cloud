@@ -49,6 +49,9 @@ resource "aws_ebs_volume" "ebs_volume" {
     VolumeType = "data"
     GroupDetail = "${var.group_tag}:data"
   }
+   lifecycle {
+    ignore_changes = ["type", "ebs_optimized", "tags"]
+  }
 }
 
 resource "aws_volume_attachment" "ebs_att" {

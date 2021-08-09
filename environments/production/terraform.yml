@@ -289,12 +289,15 @@ rds_instances:
     storage: 10000
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
       # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
       # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
       maintenance_work_mem: 4172000kB
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
 
   - identifier: "pgucr0-production"
     instance_type: "db.t3.xlarge"  # increased from db.t3.large due to unused db.t3 RIs
@@ -302,6 +305,10 @@ rds_instances:
     max_storage: 5000
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
+    params:
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
 
   - identifier: "pgshard1-production"
     instance_type: "db.m5.4xlarge"
@@ -309,45 +316,60 @@ rds_instances:
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: 5000
+      log_min_duration_statement: ""
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
   - identifier: "pgshard2-production"
     instance_type: "db.m5.4xlarge"
     storage: 500
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: 5000
+      log_min_duration_statement: ""
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
   - identifier: "pgshard3-production"
     instance_type: "db.m5.4xlarge"
     storage: 500
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: 5000
+      log_min_duration_statement: ""
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
   - identifier: "pgshard4-production"
     instance_type: "db.m5.4xlarge"
     storage: 500
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: 5000
+      log_min_duration_statement: ""
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
   - identifier: "pgshard5-production"
     instance_type: "db.m5.4xlarge"
     storage: 500
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: 5000
+      log_min_duration_statement: ""
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
 
   - identifier: "pgsynclog0-production"
     instance_type: "db.t3.xlarge"
@@ -360,6 +382,7 @@ rds_instances:
       shared_buffers: 3840MB
       effective_cache_size: 11520MB
       maintenance_work_mem: 960MB
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
 
   - identifier: "pgformplayer0-production"
     instance_type: "db.m5.2xlarge"
@@ -378,6 +401,9 @@ rds_instances:
     storage: 1000
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
+    monitoring_interval: 0
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
@@ -408,6 +434,7 @@ internal_albs:
   - name: "couch_alb-production"
     listener_port: 25984
     target_port: 15984
+    health_check_interval: 29
     targets:
       - couch11-production
       - couch12-production
