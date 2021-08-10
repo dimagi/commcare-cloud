@@ -1,10 +1,28 @@
 from datetime import datetime
+
+import attr
 from github.GithubException import GithubException
 import pytz
+from memoized import memoized
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.colors import color_summary, color_error
 from commcare_cloud.user_utils import get_default_username
+
+
+@attr.s
+class DeployContext:
+    # commcare or formplayer
+    service_name = attr.ib()
+    # branch or commit that's being deployed
+    revision = attr.ib()
+    diff = attr.ib()
+    start_time = attr.ib()
+
+    @property
+    @memoized
+    def user(self):
+        return get_default_username()
 
 
 def create_release_tag(environment, repo, diff):
@@ -20,21 +38,20 @@ def create_release_tag(environment, repo, diff):
             print(color_error(f"Error creating release tag: {e}"))
 
 
-def announce_deploy_start(environment, service_name, commcare_rev=None):
-    user = get_default_username()
+def announce_deploy_start(environment, context):
     is_nonstandard_deploy_time = not within_maintenance_window(environment)
     is_non_default_branch = (
-        commcare_rev != environment.fab_settings_config.default_branch and
-        commcare_rev is not None
+        context.commcare_rev != environment.fab_settings_config.default_branch and
+        context.commcare_rev is not None
     )
     env_name = environment.meta_config.deploy_env
-    subject = f"{user} has initiated a {service_name} deploy to {env_name}"
+    subject = f"{context.user} has initiated a {context.service_name} deploy to {env_name}"
     prefix = ""
     if is_nonstandard_deploy_time:
         subject += " outside maintenance window"
         prefix = "ATTENTION: "
     if is_non_default_branch:
-        subject += f" with non-default branch '{commcare_rev}'"
+        subject += f" with non-default branch '{context.commcare_rev}'"
         prefix = "ATTENTION: "
     subject = f"{prefix}{subject}"
 
@@ -44,10 +61,10 @@ def announce_deploy_start(environment, service_name, commcare_rev=None):
     )
 
 
-def announce_deploy_failed(environment, service_name):
+def announce_deploy_failed(environment, context):
     send_email(
         environment,
-        subject=f"{service_name} deploy to {environment.name} failed",
+        subject=f"{context.service_name} deploy to {environment.name} failed",
     )
 
 
