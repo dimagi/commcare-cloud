@@ -4,14 +4,6 @@ celery2-india: 10.203.10.117
 celery2-india.instance_id: i-0bdb686f4debfa0ea
 celery3-india: 10.203.10.197
 celery3-india.instance_id: i-066916915bf1780ad
-citusmaster0-india: 10.203.10.175
-citusmaster0-india.instance_id: i-0c9cfa08ee44ff64b
-citusworker0-india: 10.203.10.21
-citusworker0-india.instance_id: i-01e9392ce60c664cf
-citusworker1-india: 10.203.10.84
-citusworker1-india.instance_id: i-0e8cf091d0f78edb4
-citusworker2-india: 10.203.10.151
-citusworker2-india.instance_id: i-02d9652cc9df716a7
 control0-india: 10.203.10.246
 control0-india.instance_id: i-0e0fc5019d73f5e4d
 couch5-india: 10.203.40.178
@@ -37,6 +29,7 @@ esmaster4-india.instance_id: i-02bb135074807fdc3
 formplayer-efs: fs-9d4fdd4c.efs.ap-south-1.amazonaws.com
 formplayer1-india: 10.203.10.208
 formplayer1-india.instance_id: i-06d49a9454098e895
+frontend_alb-india: internal-frontend-alb-india-500199263.ap-south-1.elb.amazonaws.com
 kafka1-india: 10.203.40.207
 kafka1-india.instance_id: i-030605a66f963c250
 pgbouncer0-india: 10.203.40.199
@@ -58,8 +51,6 @@ proxy1-india.instance_id: i-03eb10798f91c6cc7
 proxy1-india.public_ip: 13.233.97.201
 rabbit2-india: 10.203.41.5
 rabbit2-india.instance_id: i-07497784641ede41d
-redis0-india: 10.203.40.128
-redis0-india.instance_id: i-047d3ade5d47a86cf
 vpn-india: 10.203.20.132
 vpn-india.instance_id: i-09246579f454f94a3
 vpn-india.public_ip: 13.127.238.159
