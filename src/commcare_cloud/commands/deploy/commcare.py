@@ -7,7 +7,7 @@ from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_notice
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
 from commcare_cloud.commands.deploy.utils import (
-    announce_deploy_start,
+    record_deploy_start,
     announce_deploy_success,
     create_release_tag,
     within_maintenance_window,
@@ -38,7 +38,7 @@ def deploy_commcare(environment, args, unknown_args):
         start_time=datetime.utcnow()
     )
 
-    announce_deploy_start(environment, context)
+    record_deploy_start(environment, context)
     rc = commcare_cloud(
         environment.name, 'fab', 'deploy_commcare{}'.format(fab_func_args),
         '--set', ','.join(fab_settings), branch=args.branch, *unknown_args
@@ -160,7 +160,7 @@ def record_successful_deploy(environment, context):
     diff = context.diff
     create_release_tag(environment, diff.repo, diff)
     update_sentry_post_deploy(environment, "commcarehq", diff.repo, diff, context.start_time, end_time)
-    announce_deploy_success(environment, "CommCareHQ", diff.get_email_diff())
+    announce_deploy_success(environment, context)
     call_record_deploy_success(environment, context, end_time)
     publish_deploy_event("deploy_success", "commcare", environment)
 

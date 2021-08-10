@@ -12,7 +12,7 @@ from commcare_cloud.colors import color_warning, color_notice, color_summary
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
-from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_failed, \
+from commcare_cloud.commands.deploy.utils import record_deploy_start, record_deploy_failed, \
     announce_deploy_success, create_release_tag, DeployContext
 from commcare_cloud.user_utils import get_default_username
 from commcare_cloud.commands.utils import timeago
@@ -66,11 +66,11 @@ def deploy_formplayer(environment, args):
     if not ask('Continue with deploy?', quiet=args.quiet):
         return 1
 
-    announce_deploy_start(environment, context)
+    record_deploy_start(environment, context)
 
     rc = run_ansible_playbook_command(environment, args)
     if rc != 0:
-        announce_deploy_failed(environment, context.service_name)
+        record_deploy_failed(environment, context.service_name)
         return rc
 
     rc = commcare_cloud(
@@ -83,7 +83,7 @@ def deploy_formplayer(environment, args):
         ), '-b',
     )
     if rc != 0:
-        announce_deploy_failed(environment, context.service_name)
+        record_deploy_failed(environment, context.service_name)
         return rc
 
     record_deploy_success(environment, context)
@@ -97,7 +97,7 @@ def record_deploy_success(environment, context):
     create_release_tag(environment, repo, diff)
     record_deploy_in_datadog(environment, diff, end - context.start_time)
     update_sentry_post_deploy(environment, "formplayer", repo, diff, context.start_time, end)
-    announce_deploy_success(environment, context.service_name, diff.get_email_diff())
+    announce_deploy_success(environment, context)
     publish_deploy_event("deploy_success", "formplayer", environment)
 
 

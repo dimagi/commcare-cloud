@@ -7,6 +7,7 @@ from memoized import memoized
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.colors import color_summary, color_error
+from commcare_cloud.commands.deploy.slack import notify_slack_deploy_start, notify_slack_deploy_end
 from commcare_cloud.user_utils import get_default_username
 
 
@@ -18,11 +19,18 @@ class DeployContext:
     revision = attr.ib()
     diff = attr.ib()
     start_time = attr.ib()
+    metadata = attr.ib(factory=dict)
 
     @property
     @memoized
     def user(self):
         return get_default_username()
+
+    def set_meta_value(self, key, value):
+        self.metadata[key] = value
+
+    def get_meta_value(self, key):
+        return self.metadata.get(key)
 
 
 def create_release_tag(environment, repo, diff):
@@ -38,7 +46,12 @@ def create_release_tag(environment, repo, diff):
             print(color_error(f"Error creating release tag: {e}"))
 
 
-def announce_deploy_start(environment, context):
+def record_deploy_start(environment, context):
+    notify_slack_deploy_start(environment, context)
+    send_deploy_start_email(environment, context)
+
+
+def send_deploy_start_email(environment, context):
     is_nonstandard_deploy_time = not within_maintenance_window(environment)
     is_non_default_branch = (
         context.commcare_rev != environment.fab_settings_config.default_branch and
@@ -61,19 +74,21 @@ def announce_deploy_start(environment, context):
     )
 
 
-def announce_deploy_failed(environment, context):
+def record_deploy_failed(environment, context):
+    notify_slack_deploy_end(environment, context, is_success=False)
     send_email(
         environment,
         subject=f"{context.service_name} deploy to {environment.name} failed",
     )
 
 
-def announce_deploy_success(environment, service_name, diff_ouptut):
+def announce_deploy_success(environment, context):
+    notify_slack_deploy_end(environment, context, is_success=False)
     recipient = environment.public_vars.get('daily_deploy_email', None)
     send_email(
         environment,
-        subject=f"{service_name} deploy successful - {environment.name}",
-        message=diff_ouptut,
+        subject=f"{context.service_name} deploy successful - {environment.name}",
+        message=context.diff.get_email_diff(),
         to_admins=not recipient,
         recipients=[recipient] if recipient else None
     )
