@@ -137,6 +137,7 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     backup_window = "06:27-06:57"
     backup_retention = 30
     maintenance_window = "sat:08:27-sat:08:57"
+    monitoring_interval = 60
     port = 5432
     params = jsonobject.DictProperty()
 
