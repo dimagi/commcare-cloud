@@ -41,6 +41,15 @@ resource "aws_ebs_volume" "ebs_volume" {
   type = "${var.secondary_volume_type}"
   encrypted = "${var.secondary_volume_encrypted}"
 
+  lifecycle {
+    ignore_changes = [
+      "type",
+      # temporarily ignore the "BackupPlan" tag until it's managed properly
+      "tags.BackupPlan",
+      "tags.%"
+    ]
+  }
+
   tags {
     Name = "data-vol-${var.server_name}"
     ServerName = "${var.server_name}"
