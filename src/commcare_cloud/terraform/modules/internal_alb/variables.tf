@@ -25,3 +25,5 @@ variable "security_groups" {
   type = list(string)
 }
 
+variable "health_check_interval" {}
+

@@ -292,6 +292,7 @@ module "internal_alb__{{ internal_alb.name }}" {
   alb_identifier = "{{ internal_alb.identifier }}"
   target_port = "{{ internal_alb.target_port }}"
   listener_port = "{{ internal_alb.listener_port }}"
+  health_check_interval = "{{ internal_alb.health_check_interval }}"
   security_groups = ["${module.network.db-private-sg}"]
   subnets = [
     {%- for az in az_codes %}{% if not loop.first %}, {% endif %}
