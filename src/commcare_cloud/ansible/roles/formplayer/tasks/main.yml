@@ -71,7 +71,7 @@
   block:
   - name: List of releases
     find:
-      paths="{{ formplayer_releases_dir }}"
+      paths="{{ formplayer_releases_base_dir }}"
       file_type=directory
     register: releases
 
