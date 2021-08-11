@@ -289,6 +289,8 @@ rds_instances:
     storage: 10000
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
@@ -303,6 +305,7 @@ rds_instances:
     max_storage: 5000
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
     params:
       max_connections: 'least({dbinstanceclassmemory/9531392},5000)'
 
@@ -312,6 +315,8 @@ rds_instances:
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: null
@@ -322,6 +327,8 @@ rds_instances:
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: null
@@ -332,6 +339,8 @@ rds_instances:
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: null
@@ -342,6 +351,8 @@ rds_instances:
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: null
@@ -352,6 +363,8 @@ rds_instances:
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: null
@@ -387,6 +400,8 @@ rds_instances:
     storage: 1000
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
