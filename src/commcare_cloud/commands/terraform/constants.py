@@ -38,6 +38,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/jserror/$
 ^/log_email_event/([\w]+)/?$
 ^/telerivet/in/?$
+^/telerivet/status/([\w\-]+)/$
 """.strip().split()
 
 COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX = """
