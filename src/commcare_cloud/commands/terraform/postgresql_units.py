@@ -58,6 +58,7 @@ UNITS_BY_PARAM = {
     'deadlock_timeout': MS,
     'lock_timeout': MS,
     'log_autovacuum_min_duration': MS,
+    'log_min_duration_statement': MS,
     'max_standby_archive_delay': MS,
     'max_standby_streaming_delay': MS,
     'statement_timeout': MS,

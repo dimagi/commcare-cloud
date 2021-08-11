@@ -320,7 +320,7 @@ rds_instances:
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: ""
+      log_min_duration_statement: null
       max_connections: "least({dbinstanceclassmemory/9531392},5000)"
   - identifier: "pgshard2-production"
     instance_type: "db.m5.4xlarge"
@@ -332,7 +332,7 @@ rds_instances:
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: ""
+      log_min_duration_statement: null
       max_connections: "least({dbinstanceclassmemory/9531392},5000)"
   - identifier: "pgshard3-production"
     instance_type: "db.m5.4xlarge"
@@ -344,7 +344,7 @@ rds_instances:
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: ""
+      log_min_duration_statement: null
       max_connections: "least({dbinstanceclassmemory/9531392},5000)"
   - identifier: "pgshard4-production"
     instance_type: "db.m5.4xlarge"
@@ -356,7 +356,7 @@ rds_instances:
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: ""
+      log_min_duration_statement: null
       max_connections: "least({dbinstanceclassmemory/9531392},5000)"
   - identifier: "pgshard5-production"
     instance_type: "db.m5.4xlarge"
@@ -368,7 +368,7 @@ rds_instances:
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: ""
+      log_min_duration_statement: null
       max_connections: "least({dbinstanceclassmemory/9531392},5000)"
 
   - identifier: "pgsynclog0-production"
@@ -434,7 +434,7 @@ internal_albs:
   - name: "couch_alb-production"
     listener_port: 25984
     target_port: 15984
-    health_check_interval: 29
+    health_check_interval: 30
     targets:
       - couch11-production
       - couch12-production
