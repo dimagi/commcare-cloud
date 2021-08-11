@@ -402,6 +402,7 @@ rds_instances:
     engine_version: 9.6.20
     backup_window: "23:00-01:00"
     backup_retention: 7
+    monitoring_interval: 0
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
