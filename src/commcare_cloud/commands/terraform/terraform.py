@@ -115,7 +115,7 @@ class UnauthorizedUser(Exception):
 def format_param_for_terraform(param_name, param_value):
     return {
         'name': param_name,
-        'value': postgresql_units.convert_to_standard_unit(param_name, param_value),
+        'value': '' if param_value is None else postgresql_units.convert_to_standard_unit(param_name, param_value),
         # Anything listed as "dynamic" in
         #   https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html
         # will be applied *immediately*, ignoring this flag. See:

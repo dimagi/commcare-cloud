@@ -14,3 +14,4 @@ variable "listener_port" {}
 variable "security_groups" {
   type = "list"
 }
+variable "health_check_interval" {}
