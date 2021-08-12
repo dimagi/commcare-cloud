@@ -57,8 +57,8 @@ resource "aws_ebs_volume" "ebs_volume" {
   }
    lifecycle {
     ignore_changes = [
-      type,
       # temporarily ignore the "BackupPlan" tag until it's managed properly
+      tags,
       tags.BackupPlan
       ]
   }
