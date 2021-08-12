@@ -74,7 +74,7 @@ class ServerConfig(jsonobject.JsonObject):
     network_tier = jsonobject.StringProperty(choices=['app-private', 'public', 'db-private'])
     az = jsonobject.StringProperty()
     volume_size = jsonobject.IntegerProperty(default=20)
-    volume_type = jsonobject.StringProperty(default='gp2')
+    volume_type = jsonobject.StringProperty(default='gp3')
     volume_encrypted = jsonobject.BooleanProperty(default=True, required=True)
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()

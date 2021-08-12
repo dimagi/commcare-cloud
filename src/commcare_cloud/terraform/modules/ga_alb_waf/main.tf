@@ -664,5 +664,12 @@ resource "aws_globalaccelerator_endpoint_group" "front_end" {
   // these are unused because when pointing to an ALB it uses those health checks instead
   health_check_port = 80
   health_check_path = "/"
+  lifecycle {
+    ignore_changes = [
+      // Present Health_check_path value is undefined. In latest AWS provider, default value is '/' If the protocol is HTTP/S
+      // reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/globalaccelerator_endpoint_group
+      health_check_path
+      ]
+  }
 }
 
