@@ -299,9 +299,9 @@ class ForwardPort(CommandBase):
     Port forward to access a remote admin console
     """
     _SERVICES = {
-        'flower': ('celery[0]', 5555),
-        'couch': ('couchdb2_proxy[0]', 25984),
-        'elasticsearch': ('elasticsearch[0]', 9200),
+        'flower': ('celery[0]', 5555, '/'),
+        'couch': ('couchdb2_proxy[0]', 25984, '/_utils/'),
+        'elasticsearch': ('elasticsearch[0]', 9200, '/'),
     }
 
     arguments = (
@@ -313,7 +313,7 @@ class ForwardPort(CommandBase):
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         nice_name = environment.terraform_config.account_alias
-        remote_host_key, remote_port = self._SERVICES[args.service]
+        remote_host_key, remote_port, url_path = self._SERVICES[args.service]
         loopback_address = f'127.0.{environment.terraform_config.vpc_begin_range}'
         remote_host = lookup_server_address(args.env_name, remote_host_key)
         local_port = self.get_random_available_port()
@@ -333,7 +333,7 @@ class ForwardPort(CommandBase):
                 return -1
             puts()
 
-        puts(color_notice(f'You should now be able to reach {args.env_name} {args.service} at {color_link(f"http://{nice_name}:{local_port}/")}.'))
+        puts(color_notice(f'You should now be able to reach {args.env_name} {args.service} at {color_link(f"http://{nice_name}:{local_port}{url_path}")}.'))
         puts(f'Interrupt with ^C to stop port-forwarding and exit.')
         puts()
         try:
