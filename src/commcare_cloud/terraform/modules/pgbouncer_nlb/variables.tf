@@ -1,11 +1,11 @@
 variable "environment" {}
 variable "subnets" {
-  type = "list"
+  type = list
 }
 variable "vpc_id" {}
 
 variable "server_ids" {
-  type = "list"
+  type = list
 }
 
 variable "nlb_identifier" {}

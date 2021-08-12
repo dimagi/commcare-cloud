@@ -15,7 +15,7 @@ module "postgresql__{{ rds_instance.identifier }}" {
     backup_retention = {{ rds_instance.backup_retention|tojson }}
     maintenance_window = {{ rds_instance.maintenance_window|tojson }}
     port = {{ rds_instance.port|tojson }}
-    monitoring_interval = 60
+    monitoring_interval = {{ rds_instance.monitoring_interval|tojson }}
   }
   parameters = [
     {%- for param in postgresql_params[rds_instance.identifier] %}
@@ -27,7 +27,7 @@ module "postgresql__{{ rds_instance.identifier }}" {
     {%- endfor %}
   ]
   subnet_ids = "${values(module.network.subnets-db-private)}"
-  vpc_security_group_ids = ["${module.network.rds-sg}", "${module.network.vpn-connections-sg}"]
+  vpc_security_group_ids = compact(["${module.network.rds-sg}", "${module.network.vpn-connections-sg}"])
   create = "true"
   apply_immediately = "{{ "true" if apply_immediately else "false" }}"
   environment = "${var.environment}"

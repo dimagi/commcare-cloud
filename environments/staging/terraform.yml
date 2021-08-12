@@ -19,6 +19,7 @@ servers:
     az: "a"
     volume_size: 50
     volume_encrypted: yes
+    volume_type: "gp3"
     group: "control"
     os: ubuntu_pro_bionic
 
@@ -27,6 +28,7 @@ servers:
     network_tier: "app-private"
     az: "b"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: webworkers
     os: ubuntu_pro_bionic
@@ -35,6 +37,7 @@ servers:
     network_tier: "app-private"
     az: "b"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: webworkers
     os: ubuntu_pro_bionic
@@ -45,9 +48,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
   - server_name: "es7-staging"
@@ -56,9 +61,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
   - server_name: "es8-staging"
@@ -66,8 +73,10 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 30
+    volume_type: "gp3"
     block_device:
       volume_size: 80
+      volume_type: "gp3"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
   - server_name: "es9-staging"
@@ -75,8 +84,10 @@ servers:
     network_tier: "db-private"
     az: "b"
     volume_size: 30
+    volume_type: "gp3"
     block_device:
       volume_size: 80
+      volume_type: "gp3"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
   - server_name: "es10-staging"
@@ -84,8 +95,10 @@ servers:
     network_tier: "db-private"
     az: "b"
     volume_size: 30
+    volume_type: "gp3"
     block_device:
       volume_size: 80
+      volume_type: "gp3"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
 
@@ -95,6 +108,7 @@ servers:
     az: "a"
     volume_size: 80
     volume_encrypted: yes
+    volume_type: "gp3"
     group: pillowtop
     os: ubuntu_pro_bionic
 
@@ -104,6 +118,7 @@ servers:
     az: "a"
     volume_size: 80
     volume_encrypted: yes
+    volume_type: "gp3"
     group: celery
     os: ubuntu_pro_bionic
 
@@ -113,11 +128,14 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: formplayer
     os: ubuntu_pro_bionic
+    server_auto_recovery: true
 
   - server_name: "formplayer5-staging"
     server_instance_type: "t3.large"
@@ -125,11 +143,14 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: formplayer
     os: ubuntu_pro_bionic
+    server_auto_recovery: true
 
   - server_name: "couch6-staging"
     server_instance_type: "t3.large"
@@ -137,9 +158,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 150
       encrypted: true
+      volume_type: "gp3"
     group: "couchdb2"
     os: ubuntu_pro_bionic
 
@@ -148,9 +171,11 @@ servers:
     network_tier: "db-private"
     az: "b"
     volume_size: 30
+    volume_type: "gp3"
     volume_encrypted: yes
     block_device:
       volume_size: 80
+      volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
     os: ubuntu_pro_bionic
@@ -161,9 +186,11 @@ servers:
     az: "c"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: "couchdb2"
     os: ubuntu_pro_bionic
 
@@ -173,6 +200,7 @@ servers:
     az: "a"
     volume_size: 80
     volume_encrypted: yes
+    volume_type: "gp3"
     group: "rabbitmq"
     os: ubuntu_pro_bionic
 
@@ -182,6 +210,7 @@ servers:
     az: "b"
     volume_size: 80
     volume_encrypted: yes
+    volume_type: "gp3"
     group: "rabbitmq"
     os: ubuntu_pro_bionic
 
@@ -191,9 +220,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: "kafka"
     os: bionic
 
@@ -203,9 +234,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: "kafka"
     os: ubuntu_pro_bionic
 
@@ -215,9 +248,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: "kafka"
     os: ubuntu_pro_bionic
 
@@ -227,9 +262,11 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       encrypted: true
+      volume_type: "gp3"
     group: postgresql
     os: ubuntu_pro_bionic
 
@@ -239,6 +276,7 @@ servers:
     az: "a"
     volume_size: 30
     volume_encrypted: yes
+    volume_type: "gp3"
     group: postgresql
     os: ubuntu_pro_bionic
 
@@ -249,6 +287,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -257,6 +296,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -265,6 +305,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -273,6 +314,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -282,6 +324,7 @@ proxy_servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    volume_type: "gp3"
     volume_encrypted: yes
     group: "proxy"
     os: ubuntu_pro_bionic
@@ -294,7 +337,7 @@ rds_instances:
     engine_version: 9.6.9
     params:
       shared_preload_libraries: pg_stat_statements
-      track_io_timing: true
+      track_io_timing: 1
 
   - identifier: "pgformplayer0-staging"
     instance_type: "db.t3.small"
@@ -303,7 +346,7 @@ rds_instances:
     engine_version: 9.6.20
     params:
       shared_preload_libraries: pg_stat_statements
-      track_io_timing: true
+      track_io_timing: 1
 
 pgbouncer_nlbs:
   - name: "pgformplayer_nlb-staging"
@@ -332,6 +375,7 @@ internal_albs:
       - couch13-staging
       - couch15-staging
 
+      
 elasticache:
   create: no
 
@@ -343,6 +387,7 @@ elasticache_cluster:
   automatic_failover: true
   transit_encryption: false
   at_rest_encryption: true
+  multi_az: true
   auto_minor_version: false
   cluster_size: 2
   maintenance_window: "sun:03:30-sun:04:30"
@@ -358,7 +403,7 @@ r53_private_zone:
 efs_file_systems:
   - efs_name: "efs_staging"
     create: yes
-    transition_to_ia:  "AFTER_14_DAYS"
+    transition_to_ia:  "AFTER_7_DAYS"
     create_access: no
     create_mount: yes
     create_record: yes
