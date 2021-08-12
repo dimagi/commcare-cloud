@@ -13,10 +13,6 @@
 {{ __esmaster4__ }} elasticsearch_node_name=esmaster4 elasticsearch_node_zone=ap-south-1a
 {{ __es0__ }} elasticsearch_node_name=es0 elasticsearch_node_zone=ap-south-1a
 {{ __es2__ }} elasticsearch_node_name=es2 elasticsearch_node_zone=ap-south-1b
-{{ __citusmaster0__ }}
-{{ __citusworker0__ }}
-{{ __citusworker1__ }}
-{{ __citusworker2__ }}
 
 [es_master:children]
 esmaster2
@@ -51,20 +47,6 @@ es_data
 {{ __pgshard_nlb__ }}
 {{ __couch_alb__ }}
 
-
-[citusdb_worker:children]
-citusworker0
-citusworker1
-citusworker2
-
-[citusdb_master:children]
-citusmaster0
-
-[citusdb:children]
-citusmaster0
-citusworker0
-citusworker1
-citusworker2
 
 [pg_standby:children]
 # empty

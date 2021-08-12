@@ -50,7 +50,7 @@ data "aws_iam_role" "data_lifecycle_role" {
 
 resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
   description        = "Data Volume Backup Policy"
-  execution_role_arn = "${data.aws_iam_role.data_lifecycle_role.arn}"
+  execution_role_arn = data.aws_iam_role.data_lifecycle_role.arn
   state              = "ENABLED"
 
   policy_details {
@@ -98,10 +98,12 @@ module "server__{{ server_name }}" {
   network_tier = {{ server_spec.network_tier|tojson }}
   az = {{ server_spec.az|tojson }}
   volume_size = {{ server_spec.volume_size|tojson }}
+  volume_type = {{ server_spec.volume_type|tojson }}
   volume_encrypted = {{ server_spec.volume_encrypted|tojson }}
   secondary_volume_size = {{ server_spec.block_device.volume_size|default(0)|tojson }}
   secondary_volume_type = {{ server_spec.block_device.volume_type|default("")|tojson }}
   secondary_volume_encrypted = {{ server_spec.block_device.encrypted|default(False)|tojson }}
+  server_auto_recovery = {{ server_spec.server_auto_recovery|default(False)|tojson }}
   iam_instance_profile = "${module.server_iam_role.commcare_server_instance_profile}"
 
 {% if server_spec.os == 'ubuntu_pro_bionic' %}
@@ -114,7 +116,7 @@ module "server__{{ server_name }}" {
  environment = "${var.environment}"
   vpc_id = "${module.network.vpc-id}"
   subnet_options = "${local.subnet_options}"
-  security_group_options = "${local.security_group_options}"
+  security_group_options = local.security_group_options
   key_name = "${var.key_name}"
   group_tag= {{ server_spec.group|tojson }}
 }
@@ -134,8 +136,8 @@ resource "aws_efs_file_system" "formplayer" {
 
 {%- for az in az_codes %}
 resource "aws_efs_mount_target" "formplayer-{{ az }}" {
-  file_system_id = "${aws_efs_file_system.formplayer.id}"
-  subnet_id      = "${lookup(module.network.subnets-app-private, "{{ az }}", "")}"
+  file_system_id = aws_efs_file_system.formplayer.id
+  subnet_id      = lookup(module.network.subnets-app-private, "{{ az }}", "")
   security_groups = ["${module.network.app-private-sg}"]
 }
 {% endfor %}
@@ -152,7 +154,7 @@ module "Redis" {
   parameter_group_name = "{{ elasticache.parameter_group_name }}"
   port                 = 6379
   elasticache_subnets  = "${values(module.network.subnets-db-private)}"
-  security_group_ids   = ["${module.network.elasticache-sg}", "${module.network.vpn-connections-sg}"]
+  security_group_ids   = compact(["${module.network.elasticache-sg}", "${module.network.vpn-connections-sg}"])
 }
 {% endif %}
 
@@ -162,8 +164,8 @@ module "elasticache-module-base" {
   create               = "{{ elasticache_cluster.create|tojson }}"
   namespace             = "${var.environment}-elasticache-cluster"
   cluster_id            = "${var.environment}-elasticache-cluster"
-  subnet_ids_cache      = ["${values(module.network.subnets-db-private)}"]
-  securitygroup_id      = ["${module.network.db-private-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"]
+  subnet_ids_cache      = "${values(module.network.subnets-db-private)}"
+  securitygroup_id      = compact(["${module.network.db-private-sg}", "${module.network.ssh-sg}", "${module.network.vpn-connections-sg}"])
   cache_engine          = {{ elasticache_cluster.cache_engine|tojson }}
   cache_engine_version  = {{ elasticache_cluster.cache_engine_version|tojson }}
   cache_node_type       = {{ elasticache_cluster.cache_node_type|tojson }}
@@ -171,6 +173,7 @@ module "elasticache-module-base" {
   automatic_failover    = {{ elasticache_cluster.automatic_failover|tojson }}
   transit_encryption    = {{ elasticache_cluster.transit_encryption|tojson }}
   at_rest_encryption    = {{ elasticache_cluster.at_rest_encryption|tojson }}
+  multi_az              = {{ elasticache_cluster.multi_az|tojson }}
   auto_minor_version    = {{ elasticache_cluster.auto_minor_version|tojson }}
   maintenance_window    = {{ elasticache_cluster.maintenance_window|tojson }}
   snapshot_retention    = {{ elasticache_cluster.snapshot_retention|tojson }}
@@ -189,7 +192,7 @@ module "r53-private-zone-create" {
   domain_name = {{ r53_private_zone.domain_name|tojson }}
   route_names = {{ r53_private_zone.route_names|tojson }}
   create_record      = "{{ r53_private_zone.create_record|tojson }}"
-  records     = ["${module.elasticache-module-base.primary_configuration_endpoint_address}"]
+  records     = module.elasticache-module-base.primary_configuration_endpoint_address
 }
 {% endif %}
 
@@ -306,6 +309,20 @@ module "internal_alb__{{ internal_alb.name }}" {
 
 {% endfor %}
 
+{% if ec2_auto_recovery %}
+{% for cloudwatch_alarm in ec2_auto_recovery %}
+module "cloudwatch_alarm__{{ cloudwatch_alarm.name_prefix }}" {
+  source = "./modules/cloudwatch"
+  name_prefix = {{ cloudwatch_alarm.name_prefix|tojson }}
+  ec2_instance_ids = [
+    {%- for instance_ids in cloudwatch_alarm.targets %}{% if not loop.first %}, {% endif %}
+    "${module.server__{{ instance_ids }}.server}"
+    {%- endfor %}
+  ]
+}
+{% endfor %}
+{% endif %}
+
 {% if efs_file_systems %}
 {% for efs_file_system in efs_file_systems %}
 module "efs_file_system__{{ efs_file_system.efs_name }}" {
@@ -336,7 +353,7 @@ module "efs_mount__{{ efs_file_system_mount.efs_name }}__{{ az }}" {
         create_record   = "{{ efs_file_system_route53.create_record|tojson }}"
         domain_name = {{ efs_file_system_route53.domain_name|tojson }}
         route_names = {{ efs_file_system_route53.route_names|tojson }}
-        records = [ "${module.efs_file_system__{{ efs_file_system_route53.efs_name }}.efs_endpoint_address}" ]
+        records = module.efs_file_system__{{ efs_file_system_route53.efs_name }}.efs_endpoint_address
       }
 {% endfor %}
 

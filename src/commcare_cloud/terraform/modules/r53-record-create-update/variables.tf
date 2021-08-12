@@ -8,26 +8,29 @@ variable "route_names" {
 
 variable "private_zone" {
   description = "True if the the hosted zone is private"
-  default     = "true"
+  default     = true
+  type = bool
 }
 
 variable "record_type" {
   description = "Type of record in route53"
-  type        = "string"
+  type        = string
   default     = "CNAME"
 }
 
 variable "ttl" {
   description = "Time to live"
-  default     = "300"
+  type = number
+  default     = 300
 }
 
 variable "records" {
   description = "List of records"
-  type        = "list"
+  type        = list
 }
 
 variable "create_record" {
   description = "Flag to enable/disable r53-private-zone-create record"
-  default     = "true"
+  default     = true
+  type = bool
 }
