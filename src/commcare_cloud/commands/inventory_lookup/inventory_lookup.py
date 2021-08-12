@@ -316,6 +316,7 @@ class ForwardPort(CommandBase):
         remote_host_key, remote_port = self._SERVICES[args.service]
         loopback_address = f'127.0.{environment.terraform_config.vpc_begin_range}'
         remote_host = lookup_server_address(args.env_name, remote_host_key)
+        local_port = self.get_random_available_port()
 
         while not self.is_loopback_address_set_up(loopback_address):
             puts(color_error('To make this work you will need to run set up a special loopback address on your local machine:'))
@@ -332,11 +333,11 @@ class ForwardPort(CommandBase):
                 return -1
             puts()
 
-        puts(color_notice(f'You should now be able to reach {args.env_name} {args.service} at {color_link(f"http://{nice_name}:{remote_port}/")}.'))
+        puts(color_notice(f'You should now be able to reach {args.env_name} {args.service} at {color_link(f"http://{nice_name}:{local_port}/")}.'))
         puts(f'Interrupt with ^C to stop port-forwarding and exit.')
         puts()
         try:
-            return commcare_cloud(args.env_name, 'ssh', 'control', '-NL', f'{loopback_address}:{remote_port}:{remote_host}:{remote_port}')
+            return commcare_cloud(args.env_name, 'ssh', 'control', '-NL', f'{loopback_address}:{local_port}:{remote_host}:{remote_port}')
         except KeyboardInterrupt:
             puts()
             puts('Connection closed.')
@@ -362,3 +363,12 @@ class ForwardPort(CommandBase):
         else:
             return resolved == loopback_address
 
+    @staticmethod
+    def get_random_available_port():
+        try:
+            tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            tcp.bind(('', 0))
+            addr, port = tcp.getsockname()
+            return port
+        finally:
+            tcp.close()
