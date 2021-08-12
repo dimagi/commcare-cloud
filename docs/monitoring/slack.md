@@ -11,7 +11,7 @@ access token.
 
     Run the following command and paste in the token when prompted:
     ```shell
-    commcrea-cloud <env> secrets edit slack_token
+    commcare-cloud <env> secrets edit slack_token
     ```
 3. Set the value of `slack_notifications_channel` in the environment `meta.yml` file. This
 should be the name of the Slack channel to send notifications to.
