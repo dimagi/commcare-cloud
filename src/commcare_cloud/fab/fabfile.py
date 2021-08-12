@@ -402,6 +402,7 @@ def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
 
 def _deploy_without_asking(skip_record):
     try:
+        raise PreindexNotFinished()
         for index, command in enumerate(ONLINE_DEPLOY_COMMANDS):
             deploy_checkpoint(index, command.__name__, execute_with_timing, command)
     except PreindexNotFinished:
@@ -411,6 +412,7 @@ def _deploy_without_asking(skip_record):
              "and wait for an email saying it's done. "
              "Thank you for using AWESOME DEPLOY.")
         )
+        raise
     except Exception:
         execute_with_timing(
             send_email,
