@@ -51,6 +51,7 @@ pillows:
       num_processes: 1
     SqlSMSPillow:
       num_processes: 1
+      processor_chunk_size: 1
     UpdateUserSyncHistoryPillow:
       num_processes: 1
     UserCacheInvalidatePillow:
@@ -67,3 +68,4 @@ pillows:
       num_processes: 1
     user-pillow:
       num_processes: 1
+      processor_chunk_size: 1
