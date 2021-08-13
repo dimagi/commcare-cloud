@@ -57,7 +57,7 @@ def announce_deploy_success(environment, service_name, diff_ouptut):
         environment,
         subject=f"{service_name} deploy successful - {environment.name}",
         message=diff_ouptut,
-        to_admins=not recipient,
+        to_admins=True,
         recipients=[recipient] if recipient else None
     )
 

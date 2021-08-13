@@ -411,6 +411,7 @@ def _deploy_without_asking(skip_record):
              "and wait for an email saying it's done. "
              "Thank you for using AWESOME DEPLOY.")
         )
+        raise
     except Exception:
         execute_with_timing(
             send_email,
