@@ -337,6 +337,10 @@ AWS_SSO_CACHE_DIR = os.path.expanduser('~/.aws/sso/cache/')
 AWS_CLI_CACHE_DIR = os.path.expanduser('~/.aws/cli/cache/')
 
 
+def is_aws_env(environment):
+    return bool(environment.terraform_config)
+
+
 @memoized
 def aws_sign_in(environment, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES, force_new=False):
     if is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id):
@@ -372,6 +376,16 @@ def is_ec2_instance_in_account(account_id):
         return False
 
     return aws_instance_identity_doc.get('accountId') == account_id
+
+
+def is_session_manager_plugin_installed():
+    try:
+        # swallow output
+        subprocess.check_output('session-manager-plugin', shell=True)
+    except subprocess.CalledProcessError:
+        return False
+    else:
+        return True
 
 
 @memoized
