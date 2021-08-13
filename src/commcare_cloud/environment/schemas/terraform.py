@@ -122,7 +122,7 @@ class ServerConfig(jsonobject.JsonObject):
 
 class BlockDevice(jsonobject.JsonObject):
     _allow_dynamic_properties = False
-    volume_type = jsonobject.StringProperty(default='gp2', choices=['gp2', 'gp3', 'io1', 'standard'])
+    volume_type = jsonobject.StringProperty(default='gp3', choices=['gp2', 'gp3', 'io1', 'standard'])
     volume_size = jsonobject.IntegerProperty(required=True)
     encrypted = jsonobject.BooleanProperty(default=True, required=True)
 
