@@ -402,7 +402,6 @@ def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
 
 def _deploy_without_asking(skip_record):
     try:
-        raise PreindexNotFinished()
         for index, command in enumerate(ONLINE_DEPLOY_COMMANDS):
             deploy_checkpoint(index, command.__name__, execute_with_timing, command)
     except PreindexNotFinished:
