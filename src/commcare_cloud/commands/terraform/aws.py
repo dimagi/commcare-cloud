@@ -360,9 +360,13 @@ def is_ec2_instance_in_account(account_id):
     try:
         # AWS Metadata v2 requires multiple requests in this format as per
         # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html
-        token_api_response = requests.put('http://169.254.169.254/latest/api/token', headers={
-            'X-aws-ec2-metadata-token-ttl-seconds': '21600',
-        })
+        token_api_response = requests.put(
+            'http://169.254.169.254/latest/api/token',
+            timeout=.100,
+            headers={
+                'X-aws-ec2-metadata-token-ttl-seconds': '21600',
+            }
+        )
         if token_api_response.status_code == 200:
             aws_instance_identity_doc = requests.get(
                 'http://169.254.169.254/latest/dynamic/instance-identity/document',
