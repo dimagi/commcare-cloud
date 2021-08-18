@@ -75,7 +75,7 @@ def send_deploy_start_email(environment, context):
 
 
 def record_deploy_failed(environment, context):
-    notify_slack_deploy_end(environment, context, is_success=False)
+    notify_slack_deploy_end(environment, context, is_success=True)
     send_email(
         environment,
         subject=f"{context.service_name} deploy to {environment.name} failed",

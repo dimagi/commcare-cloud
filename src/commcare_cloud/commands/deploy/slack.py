@@ -45,7 +45,7 @@ class SlackClient:
         if is_success:
             message = "*Deploy Success* :checkered_flag:"
         else:
-            message = "*Deploy Success* :x:"
+            message = "*Deploy Failed* :x:"
         blocks = self._get_message_blocks(message, context)
         self._post(blocks, thread_ts=thread_ts)
 
