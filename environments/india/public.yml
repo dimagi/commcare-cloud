@@ -41,6 +41,7 @@ kafka_scala_version: 2.12
 kafka_inter_broker_protocol_version: 2.4
 kafka_log_message_format_version: 2.4
 kafka_log_dir: "{{ encrypted_root }}/kafka"
+kafka_log_retention: 1344 # 56 days
 
 rabbitmq_version: 3.8.5-1
 

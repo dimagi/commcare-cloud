@@ -35,6 +35,8 @@ aws_versioning_enabled: false
 
 KSPLICE_ACTIVE: yes
 
+kafka_log_retention: 1344 # 56 days
+
 nameservers:
   - 8.8.8.8
   - 8.8.4.4
