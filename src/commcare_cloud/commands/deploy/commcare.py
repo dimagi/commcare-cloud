@@ -6,8 +6,13 @@ from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_notice
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
-from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_success, create_release_tag, within_maintenance_window
-from commcare_cloud.user_utils import get_default_username
+from commcare_cloud.commands.deploy.utils import (
+    record_deploy_start,
+    announce_deploy_success,
+    create_release_tag,
+    within_maintenance_window,
+    DeployContext
+)
 from commcare_cloud.commands.utils import run_fab_task
 from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff
@@ -16,7 +21,6 @@ from commcare_cloud.github import github_repo
 
 def deploy_commcare(environment, args, unknown_args):
     deploy_revs, diffs = get_deploy_revs_and_diffs(environment, args)
-
     if not confirm_deploy(environment, deploy_revs, diffs, args):
         print(color_notice("Aborted by user"))
         return 1
@@ -27,8 +31,14 @@ def deploy_commcare(environment, args, unknown_args):
         var = 'code_branch' if name == 'commcare' else '{}_code_branch'.format(name)
         fab_settings.append('{}={}'.format(var, rev))
 
-    announce_deploy_start(environment, "CommCare HQ", args.commcare_rev)
-    start = datetime.utcnow()
+    context = DeployContext(
+        service_name="CommCare HQ",
+        revision=args.commcare_rev,
+        diff=_get_diff(environment, deploy_revs),
+        start_time=datetime.utcnow()
+    )
+
+    record_deploy_start(environment, context)
     rc = commcare_cloud(
         environment.name, 'fab', 'deploy_commcare{}'.format(fab_func_args),
         '--set', ','.join(fab_settings), branch=args.branch, *unknown_args
@@ -36,9 +46,8 @@ def deploy_commcare(environment, args, unknown_args):
     if rc != 0:
         return rc
 
-    diff = _get_diff(environment, deploy_revs)
     if not args.skip_record:
-        record_successful_deploy(environment, diff, start)
+        record_successful_deploy(environment, context)
 
     return 0
 
@@ -145,24 +154,25 @@ def _print_same_code_warning(code_branch):
     )
 
 
-def record_successful_deploy(environment, diff, start_time):
+def record_successful_deploy(environment, context):
     end_time = datetime.utcnow()
 
+    diff = context.diff
     create_release_tag(environment, diff.repo, diff)
-    update_sentry_post_deploy(environment, "commcarehq", diff.repo, diff, start_time, end_time)
-    announce_deploy_success(environment, "CommCareHQ", diff.get_email_diff())
-    call_record_deploy_success(environment, diff, start_time, end_time)
+    update_sentry_post_deploy(environment, "commcarehq", diff.repo, diff, context.start_time, end_time)
+    announce_deploy_success(environment, context)
+    call_record_deploy_success(environment, context, end_time)
     publish_deploy_event("deploy_success", "commcare", environment)
 
 
-def call_record_deploy_success(environment, diff, start_time, end_time):
-    delta = end_time - start_time
+def call_record_deploy_success(environment, context, end_time):
+    delta = end_time - context.start_time
     args = [
-        '--user', get_default_username(),
+        '--user', context.user_time,
         '--environment', environment.meta_config.deploy_env,
-        '--url', diff.url,
+        '--url', context.diff.url,
         '--minutes', str(int(delta.total_seconds() // 60)),
-        '--commit', diff.deploy_commit,
+        '--commit', context.diff.deploy_commit,
     ]
     commcare_cloud(environment.name, 'django-manage', 'record_deploy_success', *args)
 

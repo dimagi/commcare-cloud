@@ -8,3 +8,4 @@ users:
   - fissionlabs
   - fission-warehouse
 secrets_backend: aws-secrets
+slack_notifications_channel: gtd-staging

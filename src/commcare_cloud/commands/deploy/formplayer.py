@@ -12,15 +12,13 @@ from commcare_cloud.colors import color_warning, color_notice, color_summary
 from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
-from commcare_cloud.commands.deploy.utils import announce_deploy_start, announce_deploy_failed, \
-    announce_deploy_success, create_release_tag
+from commcare_cloud.commands.deploy.utils import record_deploy_start, record_deploy_failed, \
+    announce_deploy_success, create_release_tag, DeployContext
 from commcare_cloud.user_utils import get_default_username
 from commcare_cloud.commands.utils import timeago
 from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff
 from commcare_cloud.github import github_repo
-
-FORMPLAYER = "Formplayer"
 
 AWS_BASE_URL_ENV = {
     "staging": "https://s3.amazonaws.com/dimagi-formplayer-jars/staging/latest-successful"
@@ -58,15 +56,21 @@ def deploy_formplayer(environment, args):
     diff = get_deploy_diff(environment, repo)
     diff.print_deployer_diff()
 
+    context = DeployContext(
+        service_name="Formplayer",
+        revision=args.commcare_rev,
+        diff=diff,
+        start_time=datetime.utcnow()
+    )
+
     if not ask('Continue with deploy?', quiet=args.quiet):
         return 1
 
-    start = datetime.utcnow()
-    announce_deploy_start(environment, FORMPLAYER, args.commcare_rev)
+    record_deploy_start(environment, context)
 
     rc = run_ansible_playbook_command(environment, args)
     if rc != 0:
-        announce_deploy_failed(environment, FORMPLAYER)
+        record_deploy_failed(environment, context.service_name)
         return rc
 
     rc = commcare_cloud(
@@ -79,19 +83,21 @@ def deploy_formplayer(environment, args):
         ), '-b',
     )
     if rc != 0:
-        announce_deploy_failed(environment, FORMPLAYER)
+        record_deploy_failed(environment, context.service_name)
         return rc
 
-    record_deploy_success(environment, repo, diff, start)
+    record_deploy_success(environment, context)
     return 0
 
 
-def record_deploy_success(environment, repo, diff, start):
+def record_deploy_success(environment, context):
     end = datetime.utcnow()
+    diff = context.diff
+    repo = diff.repo
     create_release_tag(environment, repo, diff)
-    record_deploy_in_datadog(environment, diff, end - start)
-    update_sentry_post_deploy(environment, "formplayer", repo, diff, start, end)
-    announce_deploy_success(environment, FORMPLAYER, diff.get_email_diff())
+    record_deploy_in_datadog(environment, diff, end - context.start_time)
+    update_sentry_post_deploy(environment, "formplayer", repo, diff, context.start_time, end)
+    announce_deploy_success(environment, context)
     publish_deploy_event("deploy_success", "formplayer", environment)
 
 
