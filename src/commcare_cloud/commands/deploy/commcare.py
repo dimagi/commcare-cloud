@@ -168,7 +168,7 @@ def record_successful_deploy(environment, context):
 def call_record_deploy_success(environment, context, end_time):
     delta = end_time - context.start_time
     args = [
-        '--user', context.user_time,
+        '--user', context.user,
         '--environment', environment.meta_config.deploy_env,
         '--url', context.diff.url,
         '--minutes', str(int(delta.total_seconds() // 60)),
