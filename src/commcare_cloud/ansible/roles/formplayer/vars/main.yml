@@ -10,6 +10,7 @@ formplayer_build_url: "{{
 }}"
 formplayer_current_dir: "{{ formplayer_build_dir }}/current"
 formplayer_release_dir: '{{ formplayer_build_dir }}/releases/{{ new_release_name }}'
+formplayer_releases_base_dir: '{{ formplayer_build_dir }}/releases'
 _formplayer_target_dir: "{{
   formplayer_current_dir
   if _should_update_formplayer_in_place

@@ -1,4 +1,4 @@
 SITE_HOST: 'swiss.commcarehq.org'
 letsencrypt_cchq_ssl: True
 primary_ssl_env: 'swiss'
-nginx_hsts_max_age: 604800 # 1 week
+nginx_hsts_max_age: 2419200 # 1 month

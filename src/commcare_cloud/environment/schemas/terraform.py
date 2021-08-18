@@ -36,6 +36,7 @@ class TerraformConfig(jsonobject.JsonObject):
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
     r53_private_zone = jsonobject.ObjectProperty(lambda: RoutePrivateZoneConfig, default=None)
     efs_file_systems = jsonobject.ListProperty(lambda: EfsFileSystem, default=None)
+    ec2_auto_recovery = jsonobject.ListProperty(lambda: Ec2AutoRecovery, default=None)
 
     @classmethod
     def wrap(cls, data):
@@ -73,10 +74,12 @@ class ServerConfig(jsonobject.JsonObject):
     network_tier = jsonobject.StringProperty(choices=['app-private', 'public', 'db-private'])
     az = jsonobject.StringProperty()
     volume_size = jsonobject.IntegerProperty(default=20)
+    volume_type = jsonobject.StringProperty(default='gp3')
     volume_encrypted = jsonobject.BooleanProperty(default=True, required=True)
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
     os = jsonobject.StringProperty(required=True, choices=['trusty', 'bionic', 'ubuntu_pro_bionic'])
+    server_auto_recovery = jsonobject.BooleanProperty(default=False)
     count = jsonobject.IntegerProperty(default=None)
 
     @classmethod
@@ -119,7 +122,7 @@ class ServerConfig(jsonobject.JsonObject):
 
 class BlockDevice(jsonobject.JsonObject):
     _allow_dynamic_properties = False
-    volume_type = jsonobject.StringProperty(default='gp2', choices=['gp2', 'io1', 'standard'])
+    volume_type = jsonobject.StringProperty(default='gp3', choices=['gp2', 'gp3', 'io1', 'standard'])
     volume_size = jsonobject.IntegerProperty(required=True)
     encrypted = jsonobject.BooleanProperty(default=True, required=True)
 
@@ -134,8 +137,9 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     max_storage = jsonobject.IntegerProperty(default=0)
     create = jsonobject.BooleanProperty(default=True)
     username = "root"
-    backup_window = "06:27-06:57"
-    backup_retention = 30
+    backup_window = jsonobject.StringProperty(default="06:27-06:57")
+    backup_retention = jsonobject.IntegerProperty(default=30)
+    monitoring_interval = jsonobject.IntegerProperty(default=60)
     maintenance_window = "sat:08:27-sat:08:57"
     port = 5432
     params = jsonobject.DictProperty()
@@ -179,7 +183,7 @@ class InternalAlbs(jsonobject.JsonObject):
     targets = jsonobject.ListProperty(str)
     target_port = jsonobject.IntegerProperty(required=True)
     listener_port = jsonobject.IntegerProperty(required=True)
-
+    health_check_interval = jsonobject.IntegerProperty(default=30)
     @classmethod
     def wrap(cls, data):
         self = super(InternalAlbs, cls).wrap(data)
@@ -207,6 +211,7 @@ class ElasticacheClusterConfig(jsonobject.JsonObject):
     automatic_failover = jsonobject.BooleanProperty(default=True)
     transit_encryption = jsonobject.BooleanProperty(default=False)
     at_rest_encryption = jsonobject.BooleanProperty(default=True)
+    multi_az = jsonobject.BooleanProperty(default=True)
     auto_minor_version = jsonobject.BooleanProperty(default=False)
     cluster_size = jsonobject.IntegerProperty(default=1)
     maintenance_window = jsonobject.StringProperty(default="sun:03:30-sun:04:30")
@@ -231,3 +236,9 @@ class EfsFileSystem(jsonobject.JsonObject):
     domain_name = jsonobject.StringProperty(required=True)
     record_type = jsonobject.StringProperty(default="CNAME")
     route_names = jsonobject.StringProperty(required=True)
+
+class Ec2AutoRecovery(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    targets = jsonobject.ListProperty(str)
+    name_prefix = jsonobject.StringProperty(required=True)
+        

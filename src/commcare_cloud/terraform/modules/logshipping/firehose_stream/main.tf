@@ -1,7 +1,7 @@
 data "aws_region" "current" {}
 
 resource "aws_kinesis_firehose_delivery_stream" "firehose_stream" {
-  name = "${var.firehose_stream_name}"
+  name = var.firehose_stream_name
   destination = "extended_s3"
   server_side_encryption {
     enabled = true
@@ -11,11 +11,11 @@ resource "aws_kinesis_firehose_delivery_stream" "firehose_stream" {
     prefix = "${var.log_bucket_prefix}/"
     error_output_prefix = "${var.log_bucket_error_prefix}/"
     kms_key_arn = "arn:aws:kms:${data.aws_region.current.name}:${var.account_id}:alias/aws/s3"
-    bucket_arn = "${var.log_bucket_arn}"
-    role_arn = "${aws_iam_role.firehose_role.arn}"
+    bucket_arn = var.log_bucket_arn
+    role_arn = aws_iam_role.firehose_role.arn
   }
-  tags {
-    Environment = "${var.environment}"
+  tags = {
+    Environment = var.environment
   }
 }
 
@@ -29,8 +29,8 @@ EOF
 
 resource "aws_iam_role_policy" "firehose_role" {
   name = "${var.firehose_stream_name}-role-policy"
-  role = "${aws_iam_role.firehose_role.id}"
-  policy = <<EOF
+  role = aws_iam_role.firehose_role.id
+  policy = <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -131,5 +131,6 @@ resource "aws_iam_role_policy" "firehose_role" {
       }
     }
   ]
-}EOF
+}
+POLICY
 }

@@ -89,7 +89,7 @@ def announce_deploy_success(environment, context):
         environment,
         subject=f"{context.service_name} deploy successful - {environment.name}",
         message=context.diff.get_email_diff(),
-        to_admins=not recipient,
+        to_admins=True,
         recipients=[recipient] if recipient else None
     )
 
