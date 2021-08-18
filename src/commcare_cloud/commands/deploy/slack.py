@@ -1,5 +1,8 @@
 import requests
+from clint.textui import puts
 from requests import RequestException
+
+from commcare_cloud.colors import color_warning
 
 
 class SlackException(Exception):
@@ -12,7 +15,10 @@ def notify_slack_deploy_start(environment, context):
     except SlackException:
         return
 
-    client.send_deploy_start_message(context)
+    try:
+        client.send_deploy_start_message(context)
+    except SlackException as e:
+        puts(color_warning(f"Error sending Slack notification: {e}"))
 
 
 def notify_slack_deploy_end(environment, context, is_success):
@@ -21,7 +27,10 @@ def notify_slack_deploy_end(environment, context, is_success):
     except SlackException:
         return
 
-    client.send_deploy_end_message(context, is_success)
+    try:
+        client.send_deploy_end_message(context, is_success)
+    except SlackException as e:
+        puts(color_warning(f"Error sending Slack notification: {e}"))
 
 
 class SlackClient:
