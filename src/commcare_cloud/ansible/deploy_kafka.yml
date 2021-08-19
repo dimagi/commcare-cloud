@@ -21,17 +21,6 @@
   roles:
     - {role: kafka, tags: 'kafka'}
 
-- name: Disable THP
-  become: true
-  hosts:
-    - zookeeper
-    - kafka
-  tags:
-    - kernel_tuning
-    - after-reboot
-  roles:
-    - role: kernel_tune
- 
 - name: cleanup
   hosts: kafka
   become: true

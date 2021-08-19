@@ -72,16 +72,6 @@
   tags:
     - pg_standby
 
-# Disables transparent huge pages (THP)
-- name: Disable THP
-  become: true
-  hosts: postgresql:pg_standby:!citusdb
-  tags:
-   - kernel_tuning
-   - after-reboot
-  roles:
-    - role: kernel_tune 
-
 - name: Install and configure pg_repack
   hosts: postgresql
   become: true

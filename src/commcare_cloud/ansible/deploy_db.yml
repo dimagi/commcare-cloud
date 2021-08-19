@@ -44,17 +44,3 @@
     - celery
   roles:
     - {role: java, tags: java}
-
-# Disables transparent huge pages (THP)
-- name: Disable THP
-  become: true
-  hosts:
-    - redis
-    - elasticsearch
-    - rabbitmq
-    - formplayer
-  tags:
-    - kernel_tuning
-    - after-reboot
-  roles:
-    - role: kernel_tune
