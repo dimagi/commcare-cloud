@@ -14,8 +14,14 @@ access token.
     commcare-cloud <env> secrets edit slack_token
     ```
 3. Set the value of `slack_notifications_channel` in the environment `meta.yml` file. This
-should be the name of the Slack channel to send notifications to.
+should be the ID of the Slack channel to send notifications to.
 
     ```yml
-    slack_notifications_channel: "deploy_notifications"
+    slack_notifications_channel: "C0WLJ3XYZ"
     ```
+
+   To get the ID you can open the channel in a web browser and copy the ID from the URL:
+
+   ```
+   https://app.slack.com/client/.../C0WLJ3XYZ
+   ```
