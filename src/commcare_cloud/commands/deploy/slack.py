@@ -59,18 +59,13 @@ class SlackClient:
         self._post_blocks(blocks, thread_ts=thread_ts)
 
     def _post_blocks(self, blocks, thread_ts=None):
-        headers = {'Authorization': f'Bearer {self.slack_token}'}
         data = {
             "channel": self.channel,
             "blocks": blocks
         }
         if thread_ts:
             data["thread_ts"] = thread_ts
-        response = requests.post("https://slack.com/api/chat.postMessage", json=data, headers=headers)
-        try:
-            response.raise_for_status()
-        except RequestException as e:
-            raise SlackException(e)
+        response = self._post("https://slack.com/api/chat.postMessage", data)
         return response.json()["ts"]
 
     def _get_message_blocks(self, message, context):
@@ -101,3 +96,12 @@ class SlackClient:
                 ]
             }
         ]
+
+    def _post(self, url, data):
+        headers = {'Authorization': f'Bearer {self.slack_token}'}
+        response = requests.post(url, json=data, headers=headers)
+        try:
+            response.raise_for_status()
+        except RequestException as e:
+            raise SlackException(e)
+        return response
