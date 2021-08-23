@@ -46,7 +46,7 @@ class SlackClient:
 
     def send_deploy_start_message(self, context):
         blocks = self._get_message_blocks("*Deploy Started* :rocket:", context)
-        thread_ts = self._post(blocks)
+        thread_ts = self._post_blocks(blocks)
         context.set_meta_value('slack_thread_ts', thread_ts)
 
     def send_deploy_end_message(self, context, is_success):
@@ -56,9 +56,9 @@ class SlackClient:
         else:
             message = "*Deploy Failed* :x:"
         blocks = self._get_message_blocks(message, context)
-        self._post(blocks, thread_ts=thread_ts)
+        self._post_blocks(blocks, thread_ts=thread_ts)
 
-    def _post(self, blocks, thread_ts=None):
+    def _post_blocks(self, blocks, thread_ts=None):
         headers = {'Authorization': f'Bearer {self.slack_token}'}
         data = {
             "channel": self.channel,
