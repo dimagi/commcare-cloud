@@ -48,7 +48,7 @@ class SlackClient:
         self._post("https://slack.com/api/conversations.join", {"channel": self.channel})
 
     def send_deploy_start_message(self, context):
-        blocks = self._get_message_blocks("*Deploy Started* :rocket:", context)
+        blocks = self._get_message_blocks("*Deploy Started*", context)
         response = self._post_blocks(blocks)
         context.set_meta_value('slack_thread_ts', response["ts"])
 
