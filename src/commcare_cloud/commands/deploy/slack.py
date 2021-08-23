@@ -44,10 +44,13 @@ class SlackClient:
         if not self.channel:
             raise SlackException("Channel not configured")
 
+        # bot must have joined the channel in order to create reactions
+        self._post("https://slack.com/api/conversations.join", {"channel": self.channel})
+
     def send_deploy_start_message(self, context):
         blocks = self._get_message_blocks("*Deploy Started* :rocket:", context)
-        thread_ts = self._post_blocks(blocks)
-        context.set_meta_value('slack_thread_ts', thread_ts)
+        response = self._post_blocks(blocks)
+        context.set_meta_value('slack_thread_ts', response["ts"])
 
     def send_deploy_end_message(self, context, is_success):
         thread_ts = context.get_meta_value('slack_thread_ts')
@@ -56,6 +59,8 @@ class SlackClient:
         else:
             message = "*Deploy Failed* :x:"
         blocks = self._get_message_blocks(message, context)
+        emoji = "white_check_mark" if is_success else "x"
+        self._post_reaction(thread_ts, emoji)
         self._post_blocks(blocks, thread_ts=thread_ts)
 
     def _post_blocks(self, blocks, thread_ts=None):
@@ -66,7 +71,7 @@ class SlackClient:
         if thread_ts:
             data["thread_ts"] = thread_ts
         response = self._post("https://slack.com/api/chat.postMessage", data)
-        return response.json()["ts"]
+        return response.json()
 
     def _get_message_blocks(self, message, context):
         env_name = self.environment.meta_config.deploy_env
@@ -96,6 +101,14 @@ class SlackClient:
                 ]
             }
         ]
+
+    def _post_reaction(self, thread_ts, emoji_name):
+        data = {
+            "channel": self.channel,
+            "name": emoji_name,
+            "timestamp": thread_ts
+        }
+        self._post("https://slack.com/api/reactions.add", data)
 
     def _post(self, url, data):
         headers = {'Authorization': f'Bearer {self.slack_token}'}
