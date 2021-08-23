@@ -7,6 +7,13 @@ To configure commcare-cloud to send messages to Slack:
 
 1. Create a [Slack app](https://api.slack.com/authentication/basics) and copy the
 access token.
+
+   The app  will require the following authentication scopes:
+
+   1. channels:join
+   2. chat:write
+   3. reactions:write
+
 2. Set the access token as a commcare-cloud secret:
 
     Run the following command and paste in the token when prompted:
