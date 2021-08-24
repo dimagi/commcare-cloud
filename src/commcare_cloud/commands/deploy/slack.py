@@ -1,8 +1,21 @@
+from enum import Enum
+
 import requests
 from clint.textui import puts
 from requests import RequestException
 
 from commcare_cloud.colors import color_warning
+
+
+class Emoji(Enum):
+    success = 'checkered_flag'
+    failure = 'x'
+    success_reaction = 'white_check_mark'
+    failure_reaction = 'x'
+
+    @property
+    def code(self):
+        return f":{self.value}:"
 
 
 class SlackException(Exception):
@@ -55,12 +68,12 @@ class SlackClient:
     def send_deploy_end_message(self, context, is_success):
         thread_ts = context.get_meta_value('slack_thread_ts')
         if is_success:
-            message = "*Deploy Success* :checkered_flag:"
+            message = f"*Deploy Success* {Emoji.success.code}"
         else:
-            message = "*Deploy Failed* :x:"
+            message = f"*Deploy Failed* {Emoji.failure.code}"
         blocks = self._get_message_blocks(message, context)
-        emoji = "white_check_mark" if is_success else "x"
-        self._post_reaction(thread_ts, emoji)
+        reaction_emoji = Emoji.success_reaction if is_success else Emoji.failure_reaction
+        self._post_reaction(thread_ts, reaction_emoji)
         self._post_blocks(blocks, thread_ts=thread_ts)
 
     def _post_blocks(self, blocks, thread_ts=None):
@@ -102,10 +115,10 @@ class SlackClient:
             }
         ]
 
-    def _post_reaction(self, thread_ts, emoji_name):
+    def _post_reaction(self, thread_ts, emoji):
         data = {
             "channel": self.channel,
-            "name": emoji_name,
+            "name": emoji.value,
             "timestamp": thread_ts
         }
         self._post("https://slack.com/api/reactions.add", data)
