@@ -108,7 +108,7 @@ servers:
     volume_type: "gp3"
     block_device:
       volume_size: 250
-      encrypted: no
+      encrypted: yes
       volume_type: "gp3"
     group: couchdb2
     os: bionic
