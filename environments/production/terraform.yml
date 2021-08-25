@@ -166,7 +166,7 @@ servers:
     count: 2
 
   - server_name: "formplayer_c{i}-production"
-    server_instance_type: r5.2xlarge
+    server_instance_type: m5a.4xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 400
