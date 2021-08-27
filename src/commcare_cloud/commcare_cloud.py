@@ -104,14 +104,23 @@ def run_on_control_instead(args, sys_argv):
     argv = sys_argv[1:]
     argv.remove('--control')
     executable = 'commcare-cloud'
+    force_latest_code = hasattr(args, 'branch')
     branch = getattr(args, 'branch', 'master')
     default_virtualenv = "ansible" if sys.version_info[0] == 2 else "cchq"
     venv = os.environ.get("CCHQ_VIRTUALENV", default_virtualenv)
+    if force_latest_code:
+        bash_commands_template = (
+            '{env}cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
+            '&& git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
+        )
+    else:
+        bash_commands_template = (
+            '{env}cd ~/commcare-cloud && source ~/.virtualenvs/${{CCHQ_VIRTUALENV:-cchq}}/bin/activate '
+            '&& {cchq} {cchq_args}'
+        )
     cmd_parts = [
         executable, args.env_name, 'ssh', 'control[0]', '-t',
-        '{env}cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
-        '&& git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
-        .format(
+        bash_commands_template.format(
             env=('export CCHQ_VIRTUALENV=%s; ' % venv if venv else ''),
             branch=branch,
             cchq=executable,
