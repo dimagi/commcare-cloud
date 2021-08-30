@@ -129,7 +129,7 @@ servers:
     os: bionic
 
   - server_name: "rabbit2-production"
-    server_instance_type: c5.4xlarge
+    server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "c"
     volume_size: 80
@@ -138,7 +138,7 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "rabbit5-production"
-    server_instance_type: c5.4xlarge
+    server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 80
