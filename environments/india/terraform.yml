@@ -177,7 +177,7 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "formplayer1-india"
-    server_instance_type: "t3.2xlarge"
+    server_instance_type: "t3.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 200
