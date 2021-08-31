@@ -100,11 +100,8 @@ COMMAND_TYPES = sorted(
 )
 
 
-def run_on_control_instead(args, sys_argv):
-    argv = sys_argv[1:]
-    argv.remove('--control')
+def run_on_control_instead(args, argv, force_latest_code):
     executable = 'commcare-cloud'
-    force_latest_code = hasattr(args, 'branch')
     branch = getattr(args, 'branch', 'master')
     default_virtualenv = "ansible" if sys.version_info[0] == 2 else "cchq"
     venv = os.environ.get("CCHQ_VIRTUALENV", default_virtualenv)
@@ -159,6 +156,15 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
         you will have to remain connected to the the control machine
         for the entirety of the run.
     """).add_to_parser(parser)
+    Argument('--control-setup', choices=['yes', 'no'], help="""
+        Implies --control, and overrides the command's skip_setup_on_control_by_default value.
+
+        If set to 'yes', the latest version of the branch will be pulled and commcare-cloud will
+        have all its dependencies updated before the command is run.
+        If set to 'no', the command will be run on whatever checkout/install of commcare-cloud
+        is already on the control machine.
+        Otherwise, this defaults to 'no' if command.skip_setup_on_control_by_default is True, otherwise to 'yes'.
+    """).add_to_parser(parser),
     subparsers = parser.add_subparsers(dest='command')
 
     commands = {}
@@ -200,17 +206,54 @@ def call_commcare_cloud(input_argv=sys.argv):
 
     args, unknown_args = parser.parse_known_args(raw_args)
 
-    if args.control:
-        run_on_control_instead(args, input_argv)
+    command = commands[args.command]
+
+    if args.control or args.control_setup:
+        if args.control_setup is None:
+            force_latest_code = not command.skip_setup_on_control_by_default
+        elif args.control_setup == 'yes':
+            force_latest_code = True
+        else:
+            force_latest_code = False
+
+        argv = _get_cleaned_args_for_control(args, input_argv)
+        run_on_control_instead(args, argv, force_latest_code)
 
     try:
-        exit_code = commands[args.command].run(args, unknown_args)
+        exit_code = command.run(args, unknown_args)
     except CommandError as e:
         puts(color_error(str(e), bold=True))
         return 1
 
     return exit_code
 
+
+def _get_cleaned_args_for_control(args, input_argv):
+    """
+    Prepares input_argv to be used in run_on_control_instead
+
+    Strips the executable (e.g. cchq) from the front
+    and strips out --control and --control-setup args
+
+    """
+    argv = input_argv[1:]
+    if args.control:
+        argv.remove('--control')
+    if args.control_setup is not None:
+        try:
+            i = argv.index('--control-setup')
+        except ValueError:
+            if '--control-setup=yes' in argv:
+                argv.remove('--control-setup=yes')
+            elif '--control-setup=no' in argv:
+                argv.remove('--control-setup=no')
+            else:
+                raise ValueError(
+                    'Something went wrong with the parsing. --control-setup should be set to yes or no.')
+        else:
+            # delete '--control-setup', and then delete the value that comes after it
+            del argv[i:i + 2]
+    return argv
 
 def main():
     exit_code = call_commcare_cloud()
