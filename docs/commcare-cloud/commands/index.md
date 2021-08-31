@@ -9,7 +9,7 @@
 All `commcare-cloud` commands take the following form:
 
 ```
-commcare-cloud [--control]
+commcare-cloud [--control] [--control-setup {yes,no}]
                <env>
                {after-reboot,ansible-playbook,ap,aws-fill-inventory,aws-list,aws-sign-in,bootstrap-users,celery-resource-report,copy-files,couchdb-cluster-info,deploy,deploy-stack,aps,django-manage,downtime,export-sentry-events,fab,forward-port,list-postgresql-dbs,lookup,migrate-couchdb,migrate_couchdb,migrate-secrets,mosh,openvpn-activate-user,openvpn-claim-user,pillow-resource-report,pillow-topic-assignments,ping,run-module,run-shell-command,secrets,send-datadog-event,service,ssh,terraform,terraform-migrate-state,tmux,update-config,update-local-known-hosts,update-supervisor-confs,update-user-key,update-users,validate-environment-settings}
                ...
@@ -38,6 +38,16 @@ update the code, and run the same command entered locally but with
 `--control` removed. For long-running commands,
 you will have to remain connected to the the control machine
 for the entirety of the run.
+
+### `--control-setup {yes,no}`
+
+Implies --control, and overrides the command's skip_setup_on_control_by_default value.
+
+If set to 'yes', the latest version of the branch will be pulled and commcare-cloud will
+have all its dependencies updated before the command is run.
+If set to 'no', the command will be run on whatever checkout/install of commcare-cloud
+is already on the control machine.
+Otherwise, this defaults to 'no' if command.skip_setup_on_control_by_default is True, otherwise to 'yes'.
 
 
 ## `cchq` alias
