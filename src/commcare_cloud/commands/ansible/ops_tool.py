@@ -206,6 +206,8 @@ class PillowTopicAssignments(CommandBase):
     Print out the list of Kafka partitions assigned to each pillow process.
     """
 
+    skip_setup_on_control_by_default = True
+
     arguments = (
         Argument('pillow_name', help=(
             "Name of the pillow."
