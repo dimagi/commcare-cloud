@@ -113,7 +113,7 @@ servers:
     volume_encrypted: no
     block_device:
       volume_size: 15360
-      encrypted: no
+      encrypted: yes
     group: "couchdb2"
     os: bionic
   - server_name: "couch13-production"
@@ -124,7 +124,7 @@ servers:
     volume_encrypted: no
     block_device:
       volume_size: 15360
-      encrypted: no
+      encrypted: yes
     group: "couchdb2"
     os: bionic
 
