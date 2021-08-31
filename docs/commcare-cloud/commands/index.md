@@ -188,6 +188,9 @@ when `<server>` is `control`.
 
 All trailing arguments are passed directly to `ssh`.
 
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
+
 ##### Positional Arguments
 
 ###### `server`
@@ -374,6 +377,9 @@ Run an arbitrary command via the Ansible shell module.
 commcare-cloud <env> run-shell-command [--silence-warnings] [--use-factory-auth] inventory_group shell_command
 ```
 
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
+
 ##### Example
 
 ```
@@ -531,6 +537,9 @@ runs `./manage.py ...` on the first django_manage machine of &lt;env&gt; or
 server you specify.
 Omit &lt;command&gt; to see a full list of possible commands.
 
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
+
 ##### Example
 
 To open a django shell in a tmux window using the `2018-04-13_18.16` release.
@@ -582,6 +591,9 @@ Connect to a remote host with ssh and open a tmux session.
 ```
 commcare-cloud <env> tmux [--quiet] [server] [remote_command]
 ```
+
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
 
 ##### Example
 
@@ -655,6 +667,9 @@ Print out the list of Kafka partitions assigned to each pillow process.
 ```
 commcare-cloud <env> pillow-topic-assignments [--csv] pillow_name
 ```
+
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
 
 ##### Positional Arguments
 

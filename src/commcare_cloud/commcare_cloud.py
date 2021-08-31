@@ -171,11 +171,21 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
 
     for command_type in COMMAND_TYPES:
         assert issubclass(command_type, CommandBase), command_type
+        description = inspect.cleandoc(command_type.help)
+        if command_type.skip_setup_on_control_by_default:
+            parts = description.split('Example:\n')
+
+            description = 'Example:\n'.join([parts[0] + (
+                "\n\n"
+                "When used with --control, this command skips the slow setup.\n"
+                "To force setup, use --control-setup=yes instead.\n\n"
+            )] + parts[1:])
+
         cmd = command_type(subparsers.add_parser(
             command_type.command,
             help=inspect.cleandoc(command_type.help).splitlines()[0],
             aliases=command_type.aliases,
-            description=inspect.cleandoc(command_type.help),
+            description=description,
             formatter_class=subparser_formatter_class,
             add_help=add_help)
         )
