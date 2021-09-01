@@ -163,7 +163,7 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
         have all its dependencies updated before the command is run.
         If set to 'no', the command will be run on whatever checkout/install of commcare-cloud
         is already on the control machine.
-        Otherwise, this defaults to 'no' if command.skip_setup_on_control_by_default is True, otherwise to 'yes'.
+        This defaults to 'no' if command.skip_setup_on_control_by_default is True, otherwise to 'yes'.
     """).add_to_parser(parser),
     subparsers = parser.add_subparsers(dest='command')
 
@@ -221,10 +221,8 @@ def call_commcare_cloud(input_argv=sys.argv):
     if args.control or args.control_setup:
         if args.control_setup is None:
             force_latest_code = not command.skip_setup_on_control_by_default
-        elif args.control_setup == 'yes':
-            force_latest_code = True
         else:
-            force_latest_code = False
+            force_latest_code = args.control_setup == 'yes'
 
         argv = _get_cleaned_args_for_control(args, input_argv)
         run_on_control_instead(args, argv, force_latest_code)
@@ -253,13 +251,7 @@ def _get_cleaned_args_for_control(args, input_argv):
         try:
             i = argv.index('--control-setup')
         except ValueError:
-            if '--control-setup=yes' in argv:
-                argv.remove('--control-setup=yes')
-            elif '--control-setup=no' in argv:
-                argv.remove('--control-setup=no')
-            else:
-                raise ValueError(
-                    'Something went wrong with the parsing. --control-setup should be set to yes or no.')
+            argv = [a for a in argv if not a.startswith('--control-setup=')]
         else:
             # delete '--control-setup', and then delete the value that comes after it
             del argv[i:i + 2]

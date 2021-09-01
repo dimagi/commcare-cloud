@@ -47,7 +47,7 @@ If set to 'yes', the latest version of the branch will be pulled and commcare-cl
 have all its dependencies updated before the command is run.
 If set to 'no', the command will be run on whatever checkout/install of commcare-cloud
 is already on the control machine.
-Otherwise, this defaults to 'no' if command.skip_setup_on_control_by_default is True, otherwise to 'yes'.
+This defaults to 'no' if command.skip_setup_on_control_by_default is True, otherwise to 'yes'.
 
 
 ## `cchq` alias
