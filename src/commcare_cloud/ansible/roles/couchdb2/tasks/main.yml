@@ -24,7 +24,9 @@
     owner: '{{ couchdb_user }}'
     group: '{{ couchdb_group }}'
     mode: 0644
-  notify: restart couchdb2
+  notify:
+    - restart couchdb2
+    - config changes
   tags:
     - couchdb_extras
 

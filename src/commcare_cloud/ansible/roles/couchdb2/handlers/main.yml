@@ -2,10 +2,20 @@
 
 - name: restart couchdb2
   service: name=couchdb2 state=restarted
+  when: "'couchdb_extras' not in ansible_run_tags"
 
 - name: start couchdb2
   service: name=couchdb2 state=started
 
 - name: stop couchdb2
   service: name=couchdb2 state=stopped
+
+- name: config changes
+  pause:
+    prompt: >-
+      The configuration changes won't be applied until CouchDB is restarted
+      (please follow your internal documentation to do that safely), or the
+      runtime configuration modified manually (e.g. via API calls) if
+      applicable. Press Enter to acknowledge and continue
+  when: "'couchdb_extras' in ansible_run_tags"
 
