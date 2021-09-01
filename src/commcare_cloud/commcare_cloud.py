@@ -100,18 +100,24 @@ COMMAND_TYPES = sorted(
 )
 
 
-def run_on_control_instead(args, sys_argv):
-    argv = sys_argv[1:]
-    argv.remove('--control')
+def run_on_control_instead(args, argv, force_latest_code):
     executable = 'commcare-cloud'
     branch = getattr(args, 'branch', 'master')
     default_virtualenv = "ansible" if sys.version_info[0] == 2 else "cchq"
     venv = os.environ.get("CCHQ_VIRTUALENV", default_virtualenv)
+    if force_latest_code:
+        bash_commands_template = (
+            '{env}cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
+            '&& git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
+        )
+    else:
+        bash_commands_template = (
+            '{env}cd ~/commcare-cloud && source ~/.virtualenvs/${{CCHQ_VIRTUALENV:-cchq}}/bin/activate '
+            '&& {cchq} {cchq_args}'
+        )
     cmd_parts = [
         executable, args.env_name, 'ssh', 'control[0]', '-t',
-        '{env}cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
-        '&& git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
-        .format(
+        bash_commands_template.format(
             env=('export CCHQ_VIRTUALENV=%s; ' % venv if venv else ''),
             branch=branch,
             cchq=executable,
@@ -150,17 +156,36 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
         you will have to remain connected to the the control machine
         for the entirety of the run.
     """).add_to_parser(parser)
+    Argument('--control-setup', choices=['yes', 'no'], help="""
+        Implies --control, and overrides the command's run_setup_on_control_by_default value.
+
+        If set to 'yes', the latest version of the branch will be pulled and commcare-cloud will
+        have all its dependencies updated before the command is run.
+        If set to 'no', the command will be run on whatever checkout/install of commcare-cloud
+        is already on the control machine.
+        This defaults to 'yes' if command.run_setup_on_control_by_default is True, otherwise to 'no'.
+    """).add_to_parser(parser),
     subparsers = parser.add_subparsers(dest='command')
 
     commands = {}
 
     for command_type in COMMAND_TYPES:
         assert issubclass(command_type, CommandBase), command_type
+        description = inspect.cleandoc(command_type.help)
+        if not command_type.run_setup_on_control_by_default:
+            parts = description.split('Example:\n')
+
+            description = 'Example:\n'.join([parts[0] + (
+                "\n\n"
+                "When used with --control, this command skips the slow setup.\n"
+                "To force setup, use --control-setup=yes instead.\n\n"
+            )] + parts[1:])
+
         cmd = command_type(subparsers.add_parser(
             command_type.command,
             help=inspect.cleandoc(command_type.help).splitlines()[0],
             aliases=command_type.aliases,
-            description=inspect.cleandoc(command_type.help),
+            description=description,
             formatter_class=subparser_formatter_class,
             add_help=add_help)
         )
@@ -191,17 +216,46 @@ def call_commcare_cloud(input_argv=sys.argv):
 
     args, unknown_args = parser.parse_known_args(raw_args)
 
-    if args.control:
-        run_on_control_instead(args, input_argv)
+    command = commands[args.command]
+
+    if args.control or args.control_setup:
+        if args.control_setup is None:
+            force_latest_code = command.run_setup_on_control_by_default
+        else:
+            force_latest_code = args.control_setup == 'yes'
+
+        argv = _get_cleaned_args_for_control(args, input_argv)
+        run_on_control_instead(args, argv, force_latest_code)
 
     try:
-        exit_code = commands[args.command].run(args, unknown_args)
+        exit_code = command.run(args, unknown_args)
     except CommandError as e:
         puts(color_error(str(e), bold=True))
         return 1
 
     return exit_code
 
+
+def _get_cleaned_args_for_control(args, input_argv):
+    """
+    Prepares input_argv to be used in run_on_control_instead
+
+    Strips the executable (e.g. cchq) from the front
+    and strips out --control and --control-setup args
+
+    """
+    argv = input_argv[1:]
+    if args.control:
+        argv.remove('--control')
+    if args.control_setup is not None:
+        try:
+            i = argv.index('--control-setup')
+        except ValueError:
+            argv = [a for a in argv if not a.startswith('--control-setup=')]
+        else:
+            # delete '--control-setup', and then delete the value that comes after it
+            del argv[i:i + 2]
+    return argv
 
 def main():
     exit_code = call_commcare_cloud()

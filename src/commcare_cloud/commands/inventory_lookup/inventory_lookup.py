@@ -101,6 +101,8 @@ class Ssh(_Ssh):
     All trailing arguments are passed directly to `ssh`.
     """
 
+    run_setup_on_control_by_default = False
+
     def run(self, args, ssh_args):
         environment = get_environment(args.env_name)
         use_aws_ssm_with_instance_id = None
@@ -158,6 +160,9 @@ class Tmux(_Ssh):
     commcare-cloud <env> tmux -
     ```
     """
+
+    run_setup_on_control_by_default = False
+
     arguments = _Ssh.arguments + (
         Argument('remote_command', nargs='?', help="""
             Command to run in the tmux.
@@ -218,6 +223,8 @@ class DjangoManage(CommandBase):
     commcare-cloud <env> django-manage --tmux shell --server web0
     ```
     """
+
+    run_setup_on_control_by_default = False
 
     arguments = (
         Argument('--tmux', action='store_true', default=False, help="""

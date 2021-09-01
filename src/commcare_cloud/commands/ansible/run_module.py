@@ -162,6 +162,8 @@ class RunShellCommand(CommandBase):
     to get disk usage stats for `/opt/data` on every machine.
     """
 
+    run_setup_on_control_by_default = False
+
     arguments = (
         shared_args.INVENTORY_GROUP_ARG,
         Argument('shell_command', help="""
