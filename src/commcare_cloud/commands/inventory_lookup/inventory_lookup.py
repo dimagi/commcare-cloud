@@ -101,7 +101,7 @@ class Ssh(_Ssh):
     All trailing arguments are passed directly to `ssh`.
     """
 
-    skip_setup_on_control_by_default = True
+    run_setup_on_control_by_default = False
 
     def run(self, args, ssh_args):
         environment = get_environment(args.env_name)
@@ -161,7 +161,7 @@ class Tmux(_Ssh):
     ```
     """
 
-    skip_setup_on_control_by_default = True
+    run_setup_on_control_by_default = False
 
     arguments = _Ssh.arguments + (
         Argument('remote_command', nargs='?', help="""
@@ -224,7 +224,7 @@ class DjangoManage(CommandBase):
     ```
     """
 
-    skip_setup_on_control_by_default = True
+    run_setup_on_control_by_default = False
 
     arguments = (
         Argument('--tmux', action='store_true', default=False, help="""

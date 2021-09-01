@@ -157,13 +157,13 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
         for the entirety of the run.
     """).add_to_parser(parser)
     Argument('--control-setup', choices=['yes', 'no'], help="""
-        Implies --control, and overrides the command's skip_setup_on_control_by_default value.
+        Implies --control, and overrides the command's run_setup_on_control_by_default value.
 
         If set to 'yes', the latest version of the branch will be pulled and commcare-cloud will
         have all its dependencies updated before the command is run.
         If set to 'no', the command will be run on whatever checkout/install of commcare-cloud
         is already on the control machine.
-        This defaults to 'no' if command.skip_setup_on_control_by_default is True, otherwise to 'yes'.
+        This defaults to 'yes' if command.run_setup_on_control_by_default is True, otherwise to 'no'.
     """).add_to_parser(parser),
     subparsers = parser.add_subparsers(dest='command')
 
@@ -172,7 +172,7 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
     for command_type in COMMAND_TYPES:
         assert issubclass(command_type, CommandBase), command_type
         description = inspect.cleandoc(command_type.help)
-        if command_type.skip_setup_on_control_by_default:
+        if not command_type.run_setup_on_control_by_default:
             parts = description.split('Example:\n')
 
             description = 'Example:\n'.join([parts[0] + (
@@ -220,7 +220,7 @@ def call_commcare_cloud(input_argv=sys.argv):
 
     if args.control or args.control_setup:
         if args.control_setup is None:
-            force_latest_code = not command.skip_setup_on_control_by_default
+            force_latest_code = command.run_setup_on_control_by_default
         else:
             force_latest_code = args.control_setup == 'yes'
 
