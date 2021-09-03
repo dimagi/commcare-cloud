@@ -75,7 +75,7 @@ def push_manifest(use_current_release=False):
     if env.use_shared_dir_for_staticfiles:
         with cd(env.code_root if not use_current_release else env.code_current):
             git_hash = _get_git_hash()
-            sudo('mkdir -p {env.shared_dir_for_staticfiles}/{git_hash}')
+            sudo('mkdir -p {env.shared_dir_for_staticfiles}/{git_hash}'.format(env=env, git_hash=git_hash))
             # copy staticfiles/CACHE/** to {env.shared_dir_for_staticfiles}/{git_hash}/staticfiles/CACHE/**
             sudo("rsync -r --delete"
                  " --include='staticfiles/' --include='CACHE/' --include='staticfiles/CACHE/**' --exclude='*'"
