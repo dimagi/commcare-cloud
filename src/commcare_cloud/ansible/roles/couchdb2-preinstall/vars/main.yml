@@ -1,3 +1,3 @@
 ---
 
-couchdb_erlang_version: "{{ '1:22.3.4.9-1' if couchdb_version is version('3.0.0', '>=') else '1:21.3.8.17-1' }}"
+couchdb_erlang_version: "{{ '1:20.3.8.26-1' if couchdb_version is version('3.0.0', '>=') else '1:19.3.6.13-1' }}"
