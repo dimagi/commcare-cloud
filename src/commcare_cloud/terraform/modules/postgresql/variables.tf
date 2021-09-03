@@ -22,3 +22,7 @@ variable "apply_immediately" {
 }
 
 variable "environment" {}
+
+variable "major_engine_version" {
+  default = ""
+}
