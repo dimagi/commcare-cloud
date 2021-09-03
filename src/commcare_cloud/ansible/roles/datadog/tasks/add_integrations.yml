@@ -21,7 +21,6 @@
   notify: restart datadog
   tags:
     - datadog_integrations
-    - formplayer_deploy
   when: item is defined and item.enabled
   with_items:
     - {"name": "airflow", "enabled": "{{ datadog_integration_airflow }}"}
