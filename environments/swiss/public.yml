@@ -35,6 +35,8 @@ aws_versioning_enabled: false
 
 KSPLICE_ACTIVE: yes
 
+kafka_log_retention: 1344 # 56 days
+
 nameservers:
   - 8.8.8.8
   - 8.8.4.4
@@ -98,6 +100,7 @@ localsettings:
   COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
   COUCH_USERNAME: "{{ COUCH_USERNAME }}"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
+  DEVICE_LOGS_ENABLED: no
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
@@ -105,6 +108,7 @@ localsettings:
   ELASTICSEARCH_MAJOR_VERSION: 2
   IS_DIMAGI_ENVIRONMENT: True
   EULA_COMPLIANCE: True
+  ENFORCE_SSO_LOGIN: True
   HQ_INSTANCE: 'swiss'
   HUBSPOT_API_ID:
   HUBSPOT_API_KEY:
@@ -132,6 +136,7 @@ localsettings:
   REDIS_HOST: "localhost"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
+  REQUIRE_TWO_FACTOR_FOR_SUPERUSERS: True
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: False
   SES_CONFIGURATION_SET: swiss-email-events

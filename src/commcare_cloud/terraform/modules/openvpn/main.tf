@@ -1,46 +1,53 @@
 # This module will build out an initial OpenVPN server.
 
-resource aws_instance "vpn_host" {
-  ami                    = "${local.openvpn_image}"
-  instance_type          = "${var.vpn_size}"
-  subnet_id              = "${var.instance_subnet}"
-  key_name               = "${var.key_name}"
-  vpc_security_group_ids = ["${aws_security_group.openvpn-access-sg.id}"]
+resource "aws_instance" "vpn_host" {
+  ami                    = local.openvpn_image
+  instance_type          = var.vpn_size
+  subnet_id              = var.instance_subnet
+  key_name               = var.key_name
+  vpc_security_group_ids = [aws_security_group.openvpn-access-sg.id]
   source_dest_check      = false
-  user_data = <<-EOF
+  user_data              = <<-EOF
     #!/bin/bash
     hostnamectl set-hostname "vpn-${var.environment}"
     yum update -y
     reboot
-    EOF
+EOF
+
 
   disable_api_termination = true
 
   root_block_device {
     volume_size           = 40
-    volume_type           = "gp2"
+    volume_type           = "gp3"
     delete_on_termination = true
   }
 
   lifecycle {
-    ignore_changes = ["root_block_device.0.volume_type", "user_data", "key_name", "iam_instance_profile", "ebs_optimized"]
+    ignore_changes = [
+      root_block_device.0.volume_type,
+      user_data,
+      key_name,
+      iam_instance_profile,
+      ebs_optimized,
+    ]
   }
 
-  tags {
+  tags = {
     Name        = "vpn-${var.environment}"
-    Environment = "${var.environment}"
-    Group = "openvpn"
+    Environment = var.environment
+    Group       = "openvpn"
   }
 }
 
-resource aws_eip "vpn_ip" {
+resource "aws_eip" "vpn_ip" {
   vpc      = true
-  instance = "${aws_instance.vpn_host.id}"
+  instance = aws_instance.vpn_host.id
 
-  tags {
+  tags = {
     Name        = "vpn-public-ip-${var.environment}"
-    Environment = "${var.environment}"
-    Group = "openvpn"
+    Environment = var.environment
+    Group       = "openvpn"
   }
 }
 
@@ -48,7 +55,7 @@ resource aws_eip "vpn_ip" {
 resource "aws_security_group" "openvpn-access-sg" {
   name        = "openvpn-access-sg"
   description = "Allow traffic for managing and using OpenVPN"
-  vpc_id      = "${var.vpc_id}"
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 1194
@@ -61,7 +68,7 @@ resource "aws_security_group" "openvpn-access-sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${var.vpc_cidr}"]
+    cidr_blocks = [var.vpc_cidr]
   }
 
   ingress {
@@ -90,7 +97,7 @@ resource "aws_security_group" "openvpn-access-sg" {
     from_port   = -1
     to_port     = -1
     protocol    = "icmp"
-    cidr_blocks = ["${var.vpc_cidr}"]
+    cidr_blocks = [var.vpc_cidr]
   }
 
   egress {
@@ -101,7 +108,10 @@ resource "aws_security_group" "openvpn-access-sg" {
   }
 
   lifecycle {
-    ignore_changes = ["key_name", "description", "name"]
+    ignore_changes = [
+      description,
+      name,
+    ]
   }
 }
 

@@ -14,3 +14,10 @@ use_kill_all = {{ couchdb_rexi_use_kill_all }}
 os_process_timeout = 20000
 ; set limit to previous default of 4GB on 2.3.1
 max_document_size = 4000000000
+
+; compaction settings
+[smoosh.ratio_dbs]
+min_priority = 1.3
+
+[smoosh.ratio_views]
+min_priority = 1.3

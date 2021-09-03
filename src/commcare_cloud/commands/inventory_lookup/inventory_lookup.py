@@ -2,19 +2,24 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import os
+import socket
 import subprocess
 import sys
 
 from clint.textui import puts
 from six.moves import shlex_quote
 
-from commcare_cloud.cli_utils import print_command
+from commcare_cloud.cli_utils import print_command, ask
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.user_utils import get_ssh_username
 from ..ansible.helpers import get_default_ssh_options_as_cmd_parts
+from ..terraform.aws import aws_sign_in, is_aws_env, is_ec2_instance_in_account, \
+    is_session_manager_plugin_installed
+from ...alias import commcare_cloud
 
-from ...colors import color_error
+from ...colors import color_error, color_notice, color_link
 from .getinventory import (get_monolith_address, get_server_address,
                            split_host_group)
 
@@ -39,9 +44,7 @@ class Lookup(CommandBase):
 
     def lookup_server_address(self, args):
         try:
-            if not args.server:
-                return get_monolith_address(args.env_name)
-            return get_server_address(args.env_name, args.server)
+            return lookup_server_address(args.env_name, args.server)
         except Exception as e:
             self.parser.error("\n" + str(e))
 
@@ -53,6 +56,12 @@ class Lookup(CommandBase):
         print(self.lookup_server_address(args))
 
 
+def lookup_server_address(env_name, server):
+    if not server:
+        return get_monolith_address(env_name)
+    return get_server_address(env_name, server)
+
+
 class _Ssh(Lookup):
 
     arguments = Lookup.arguments + (
@@ -61,7 +70,7 @@ class _Ssh(Lookup):
         """),
     )
 
-    def run(self, args, ssh_args):
+    def run(self, args, ssh_args, env_vars=None):
         if args.server == '-':
             args.server = 'django_manage[0]'
         address = self.lookup_server_address(args)
@@ -78,7 +87,7 @@ class _Ssh(Lookup):
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         if not args.quiet:
             print_command(cmd)
-        return subprocess.call(cmd_parts)
+        return subprocess.call(cmd_parts, **({'env': env_vars} if env_vars else {}))
 
 
 class Ssh(_Ssh):
@@ -92,15 +101,30 @@ class Ssh(_Ssh):
     All trailing arguments are passed directly to `ssh`.
     """
 
+    run_setup_on_control_by_default = False
+
     def run(self, args, ssh_args):
+        environment = get_environment(args.env_name)
+        use_aws_ssm_with_instance_id = None
+        env_vars = None
 
         if 'control' in split_host_group(args.server).group and '-A' not in ssh_args:
             # Always include ssh agent forwarding on control machine
             ssh_args = ['-A'] + ssh_args
 
-        environment = get_environment(args.env_name)
-        ssh_args = get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=ssh_args) + ssh_args
-        return super(Ssh, self).run(args, ssh_args)
+            if os.environ.get('COMMCARE_CLOUD_USE_AWS_SSM') == '1' and \
+                    is_aws_env(environment) and \
+                    not is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id):
+                if not is_session_manager_plugin_installed():
+                    puts(color_error("Before you can use AWS SSM to connect, you must install the AWS session-manager-plugin"))
+                    puts(f"{color_notice('See ')}{color_link('https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html')}{color_notice(' for instructions.')}")
+                    return -1
+                use_aws_ssm_with_instance_id = environment.get_host_vars(environment.groups['control'][0])['ec2_instance_id']
+                env_vars = os.environ.copy()
+                env_vars.update({'AWS_PROFILE': aws_sign_in(environment)})
+
+        ssh_args = get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=ssh_args, use_aws_ssm_with_instance_id=use_aws_ssm_with_instance_id) + ssh_args
+        return super(Ssh, self).run(args, ssh_args, env_vars=env_vars)
 
 
 class Mosh(_Ssh):
@@ -136,6 +160,9 @@ class Tmux(_Ssh):
     commcare-cloud <env> tmux -
     ```
     """
+
+    run_setup_on_control_by_default = False
+
     arguments = _Ssh.arguments + (
         Argument('remote_command', nargs='?', help="""
             Command to run in the tmux.
@@ -196,6 +223,8 @@ class DjangoManage(CommandBase):
     commcare-cloud <env> django-manage --tmux shell --server web0
     ```
     """
+
+    run_setup_on_control_by_default = False
 
     arguments = (
         Argument('--tmux', action='store_true', default=False, help="""
@@ -269,3 +298,84 @@ class DjangoManage(CommandBase):
         else:
             ssh_args = _get_ssh_args(remote_command)
             return Ssh(self.parser).run(args, ssh_args)
+
+
+class ForwardPort(CommandBase):
+    command = 'forward-port'
+    help = """
+    Port forward to access a remote admin console
+    """
+    _SERVICES = {
+        'flower': ('celery[0]', 5555, '/'),
+        'couch': ('couchdb2_proxy[0]', 25984, '/_utils/'),
+        'elasticsearch': ('elasticsearch[0]', 9200, '/'),
+    }
+
+    arguments = (
+        Argument('service', choices=_SERVICES.keys(), help=f"""
+            The remote service to port forward. Must be one of {','.join(sorted(_SERVICES.keys()))}.
+        """),
+    )
+
+    def run(self, args, unknown_args):
+        environment = get_environment(args.env_name)
+        nice_name = environment.terraform_config.account_alias
+        remote_host_key, remote_port, url_path = self._SERVICES[args.service]
+        loopback_address = f'127.0.{environment.terraform_config.vpc_begin_range}'
+        remote_host = lookup_server_address(args.env_name, remote_host_key)
+        local_port = self.get_random_available_port()
+
+        while not self.is_loopback_address_set_up(loopback_address):
+            puts(color_error('To make this work you will need to run set up a special loopback address on your local machine:'))
+            puts(color_notice(f'  - Mac: Run `sudo ifconfig lo0 alias {loopback_address}`.'))
+            puts(color_notice(f'  - Linux: Run `sudo ip addr add {loopback_address}/8 dev lo`.'))
+            if not ask("Follow the instructions above or type n to exit. Ready to continue?"):
+                return -1
+            puts()
+
+        while not self.is_etc_hosts_alias_set_up(loopback_address, nice_name):
+            puts(color_error('Okay, now the last step is to set up a special alias in your /etc/hosts:'))
+            puts(color_notice(f'  - Edit /etc/hosts (e.g. `sudo vim /etc/hosts`) and add the line `{loopback_address} {nice_name}` to it.'))
+            if not ask("Follow the instructions above or type n to exit. Ready to continue?"):
+                return -1
+            puts()
+
+        puts(color_notice(f'You should now be able to reach {args.env_name} {args.service} at {color_link(f"http://{nice_name}:{local_port}{url_path}")}.'))
+        puts(f'Interrupt with ^C to stop port-forwarding and exit.')
+        puts()
+        try:
+            return commcare_cloud(args.env_name, 'ssh', 'control', '-NL', f'{loopback_address}:{local_port}:{remote_host}:{remote_port}')
+        except KeyboardInterrupt:
+            puts()
+            puts('Connection closed.')
+            # ^C this is how we expect the user to terminate this command, so no need to print a stacktrace
+            return 0
+
+    @staticmethod
+    def is_loopback_address_set_up(loopback_address):
+        try:
+            # Use either ifconfig or ip, whichever is available
+            subprocess.check_output(f'ping -c 1 -W 1 {shlex_quote(loopback_address)}', shell=True)
+        except subprocess.CalledProcessError:
+            return False
+        else:
+            return True
+
+    @staticmethod
+    def is_etc_hosts_alias_set_up(loopback_address, nice_name):
+        try:
+            resolved = socket.gethostbyname(nice_name)
+        except socket.gaierror:
+            return False
+        else:
+            return resolved == loopback_address
+
+    @staticmethod
+    def get_random_available_port():
+        try:
+            tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            tcp.bind(('', 0))
+            addr, port = tcp.getsockname()
+            return port
+        finally:
+            tcp.close()

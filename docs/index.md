@@ -55,15 +55,16 @@ that machine is also the control machine.
     - [Add a new Celery machine](howto/add-celery-machines.md)
 - [Redis](services/redis.md)
 
-### Optional
-- [Airflow](services/airflow.md)
-
 ## Optional but recommended
 - [Set up Sentry for error messages](monitoring/set-up-sentry.md)
 - [Set up Datadog for monitoring your infrastructure and CommCare](monitoring/setup_datadog.md)
 - [Firefighting](firefighting/index.md)
 - [Backup and Restore](./commcare-cloud/backup.md)
 - [Deploying code changes to CommCareHQ](./commcare-cloud/deploy.md)
+
+### Optional
+- [Slack for notifications](monitoring/slack.md)
+- [Airflow](services/airflow.md)
 
 ## Specialized howtos
 - [White label a CommCare instance](howto/white-label.md)

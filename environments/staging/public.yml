@@ -5,6 +5,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
+elasticsearch_delete_old_logs: True
 
 kafka_version: 2.6.1
 kafka_scala_version: 2.13
@@ -103,14 +104,11 @@ localsettings:
   ALLOWED_HOSTS:
     - j2mestaging.commcarehq.org
     - testserver
+  ALLOW_MAKE_SUPERUSER_COMMAND: False  
   ANALYTICS_DEBUG: True
   ANALYTICS_LOG_LEVEL: "debug"
   AUDIT_ALL_VIEWS: True
   AUDIT_TRACE_ID_HEADER: "X-Amzn-Trace-Id"
-  AVAILABLE_CUSTOM_RULE_CRITERIA:
-    COVID_US_ASSOCIATED_USER_CASES: custom.covid.rules.custom_criteria.associated_user_case_closed
-  AVAILABLE_CUSTOM_RULE_ACTIONS:
-    COVID_US_CLOSE_CASES_ASSIGNED_CHECKIN: custom.covid.rules.custom_actions.close_cases_assigned_to_checkin
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
@@ -188,3 +186,7 @@ efs_shared_mount_dir: "shared{{ '_' ~ deploy_env if deploy_env != 'production' e
 efs_shared_mount_endpoint: "shared-efs.staging.commcare.local:/"
 efs_shared_mount_options: "_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
 shared_dir_gid: 1500
+
+# for better time syncronization on aws servers
+# replace ntp with chrony.
+use_chrony: True

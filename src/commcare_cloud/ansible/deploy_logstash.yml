@@ -5,7 +5,7 @@
   vars:
     sansible_logstash_family: 7.x
     sansible_java_version: 8
-    sansible_java_apt_keyserver: 'http://keys.gnupg.net'
+    sansible_java_apt_keyserver: 'https://keyserver.ubuntu.com'
     sansible_logstash_version: 1:7.5.2-1
     sansible_logstash_plugins:
       - logstash-patterns-core
@@ -30,7 +30,7 @@
   gather_facts: true
   vars:
     sansible_java_version: 8
-    sansible_java_apt_keyserver: 'http://keys.gnupg.net'
+    sansible_java_apt_keyserver: 'https://keyserver.ubuntu.com'
     filebeat_version: 7.x
   tasks:
     - import_role:

@@ -13,15 +13,6 @@ vpc_begin_range: "10.202"
 openvpn_image: ami-5e73b923
 
 servers:
-  - server_name: "control1-production"
-    server_instance_type: "t3a.large"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    volume_encrypted: no
-    group: "control"
-    os: bionic
-
   - server_name: "control2-production"
     server_instance_type: "t3a.large"
     network_tier: "app-private"
@@ -55,7 +46,7 @@ servers:
     volume_size: 40
     group: "mobile_webworkers"
     os: ubuntu_pro_bionic
-    count: 9
+    count: 12
 
 
   - server_name: "esmaster6-production"
@@ -89,7 +80,7 @@ servers:
       volume_size: 840
     group: "elasticsearch"
     os: ubuntu_pro_bionic
-    count: 16
+    count: 11
 
   - server_name: "es_b{i}-production"
     server_instance_type: r5.4xlarge
@@ -100,15 +91,19 @@ servers:
       volume_size: 840
     group: "elasticsearch"
     os: ubuntu_pro_bionic
-    count: 16
+    count: 11
 
-  - server_name: "couchproxy3-production"
-    server_instance_type: c5.xlarge
+  - server_name: "couch11-production"
+    server_instance_type: c5a.24xlarge
     network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    group: "couchdb2_proxy"
-    os: ubuntu_pro_bionic
+    az: "c"
+    volume_size: 60
+    volume_encrypted: no
+    block_device:
+      volume_size: 8000
+      encrypted: yes
+    group: "couchdb2"
+    os: bionic
 
   - server_name: "couch12-production"
     server_instance_type: c5a.24xlarge
@@ -132,20 +127,9 @@ servers:
       encrypted: no
     group: "couchdb2"
     os: bionic
-  - server_name: "couch14-production"
-    server_instance_type: c5a.24xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 60
-    volume_encrypted: no
-    block_device:
-      volume_size: 15360
-      encrypted: no
-    group: "couchdb2"
-    os: bionic
 
   - server_name: "rabbit2-production"
-    server_instance_type: c5.4xlarge
+    server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "c"
     volume_size: 80
@@ -154,7 +138,7 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "rabbit5-production"
-    server_instance_type: c5.4xlarge
+    server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 80
@@ -182,13 +166,14 @@ servers:
     count: 2
 
   - server_name: "formplayer_c{i}-production"
-    server_instance_type: m5.4xlarge
+    server_instance_type: m5a.4xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 400
     group: "formplayer"
     os: ubuntu_pro_bionic
     count: 37
+    server_auto_recovery: true
 
   - server_name: "kafka1-production"
     server_instance_type: t3.medium
@@ -297,12 +282,15 @@ rds_instances:
     storage: 10000
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
       # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
       # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
       maintenance_work_mem: 4172000kB
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
 
   - identifier: "pgucr0-production"
     instance_type: "db.t3.xlarge"  # increased from db.t3.large due to unused db.t3 RIs
@@ -310,6 +298,10 @@ rds_instances:
     max_storage: 5000
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
+    params:
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
 
   - identifier: "pgshard1-production"
     instance_type: "db.m5.4xlarge"
@@ -317,45 +309,60 @@ rds_instances:
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: 5000
+      log_min_duration_statement: null
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
   - identifier: "pgshard2-production"
     instance_type: "db.m5.4xlarge"
     storage: 500
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: 5000
+      log_min_duration_statement: null
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
   - identifier: "pgshard3-production"
     instance_type: "db.m5.4xlarge"
     storage: 500
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: 5000
+      log_min_duration_statement: null
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
   - identifier: "pgshard4-production"
     instance_type: "db.m5.4xlarge"
     storage: 500
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: 5000
+      log_min_duration_statement: null
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
   - identifier: "pgshard5-production"
     instance_type: "db.m5.4xlarge"
     storage: 500
     max_storage: 2500
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: 5000
+      log_min_duration_statement: null
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
 
   - identifier: "pgsynclog0-production"
     instance_type: "db.t3.xlarge"
@@ -368,6 +375,7 @@ rds_instances:
       shared_buffers: 3840MB
       effective_cache_size: 11520MB
       maintenance_work_mem: 960MB
+      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
 
   - identifier: "pgformplayer0-production"
     instance_type: "db.m5.2xlarge"
@@ -383,9 +391,12 @@ rds_instances:
 
   - identifier: "pgauditcare0-production"
     instance_type: "db.m5.xlarge"
-    storage: 1000
+    storage: 2000
     multi_az: true
     engine_version: 9.6.20
+    backup_window: "23:00-01:00"
+    backup_retention: 7
+    monitoring_interval: 0
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
@@ -407,6 +418,20 @@ pgbouncer_nlbs:
     targets:
       - pgbouncer6-production
       - pgbouncer7-production
+  - name: pgshard_nlb-production
+    targets:
+      - pgbouncer9-production
+
+
+internal_albs:
+  - name: "couch_alb-production"
+    listener_port: 25984
+    target_port: 15984
+    health_check_interval: 30
+    targets:
+      - couch11-production
+      - couch12-production
+      - couch13-production
 
 elasticache:
   create: no

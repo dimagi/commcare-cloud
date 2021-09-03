@@ -132,6 +132,10 @@ if ! grep -q init-ansible ~/.profile 2>/dev/null; then
             echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
             printf "${YELLOW}→ Added init script to ~/.profile\n"
         ;;
+        [Nn]* )
+            echo '# [ -t 1 ] && source ~/init-ansible' >> ~/.profile
+            printf "${YELLOW}→ Okay, I won't ask you again. Added a line you can uncomment in ~/.profile if you want it later.\n"
+        ;;
         * )
             printf "\n${BLUE}You can always set it up later by running this command:\n"
             printf "${BLUE}echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile${NC}\n"

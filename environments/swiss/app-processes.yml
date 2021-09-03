@@ -45,6 +45,7 @@ pillows:
       num_processes: 1
     SqlSMSPillow:
       num_processes: 1
+      processor_chunk_size: 1
     UnknownUsersPillow:
       num_processes: 1
     UpdateUserSyncHistoryPillow:

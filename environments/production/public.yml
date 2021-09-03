@@ -39,6 +39,7 @@ elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a7
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
+elasticsearch_delete_old_logs: True
 
 nofile_limit: 65536
 
@@ -75,7 +76,7 @@ run_websockets_wsgi: True
 
 couch_dbs:
   default:
-    host: "{{ groups.couchdb2_proxy.0 }}"
+    host: "{{ groups.couchdb2_alb[0] }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ COUCH_USERNAME }}"
@@ -123,19 +124,17 @@ localsettings:
     - testserver
     - proxytest.commcarehq.org
     - "{{ J2ME_SITE_HOST }}"
+  ALLOW_MAKE_SUPERUSER_COMMAND: False
   ANALYTICS_DEBUG: False
   ANALYTICS_LOG_LEVEL: "warning"
   AUDIT_ALL_VIEWS: True
   AUDIT_TRACE_ID_HEADER: "X-Amzn-Trace-Id"
-  AVAILABLE_CUSTOM_RULE_CRITERIA:
-    COVID_US_ASSOCIATED_USER_CASES: custom.covid.rules.custom_criteria.associated_user_case_closed
-  AVAILABLE_CUSTOM_RULE_ACTIONS:
-    COVID_US_CLOSE_CASES_ASSIGNED_CHECKIN: custom.covid.rules.custom_actions.close_cases_assigned_to_checkin
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
   BIGCOUCH: True
   BIGCOUCH_QUORUM_COUNT: 2
+  CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE: "reminder_case_update_bulk_queue"
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_REINDEX_SCHEDULE: {'timedelta': {'minutes': 5}}
@@ -147,6 +146,7 @@ localsettings:
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
+  ENFORCE_SSO_LOGIN: True
   ELASTICSEARCH_MAJOR_VERSION: 2
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2021-06-04"
   IS_DIMAGI_ENVIRONMENT: True
@@ -220,3 +220,7 @@ efs_shared_mount_dir: "shared{{ '_' ~ deploy_env if deploy_env != 'production' e
 efs_shared_mount_endpoint: "shared-efs.production.commcare.local:/"
 efs_shared_mount_options: "_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
 shared_dir_gid: 1500
+
+# for better time syncronization on aws servers
+# replace ntp with chrony.
+use_chrony: True

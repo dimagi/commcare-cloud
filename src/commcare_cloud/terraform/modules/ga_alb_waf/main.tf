@@ -7,23 +7,32 @@ locals {
     us-west-1 = "027434742980"
     ap-south-1 = "718504428378"
   }
-  log_bucket_alb_prefix = "frontend-alb-${var.environment}"
-  log_bucket_waf_prefix = "frontend-waf-${var.environment}"
+  log_bucket_alb_prefix       = "frontend-alb-${var.environment}"
+  log_bucket_waf_prefix       = "frontend-waf-${var.environment}"
   log_bucket_waf_error_prefix = "frontend-waf-${var.environment}-error"
 }
 
-data "aws_region" "current" {}
-
+data "aws_region" "current" {
+}
 
 resource "aws_wafv2_regex_pattern_set" "allow_xml_post_urls" {
   name        = "XML_POST_urls"
   description = "URLs that should circumvent CrossSiteScripting_BODY rule"
   scope       = "REGIONAL"
 
-  regular_expression = ["${var.commcarehq_xml_post_urls_regex}"]
+  dynamic "regular_expression" {
+    for_each = var.commcarehq_xml_post_urls_regex
+    content {
+      # TF-UPGRADE-TODO: The automatic upgrade tool can't predict
+      # which keys might be set in maps assigned here, so it has
+      # produced a comprehensive set here. Consider simplifying
+      # this after confirming which keys can be set in practice.
 
-  tags = {
+      regex_string = regular_expression.value.regex_string
+    }
   }
+
+  tags = {}
 }
 
 resource "aws_wafv2_regex_pattern_set" "allow_xml_querystring_urls" {
@@ -31,10 +40,19 @@ resource "aws_wafv2_regex_pattern_set" "allow_xml_querystring_urls" {
   description = "URLs that should circumvent CrossSiteScripting_QUERYSTRING rule"
   scope       = "REGIONAL"
 
-  regular_expression = ["${var.commcarehq_xml_querystring_urls_regex}"]
+  dynamic "regular_expression" {
+    for_each = var.commcarehq_xml_querystring_urls_regex
+    content {
+      # TF-UPGRADE-TODO: The automatic upgrade tool can't predict
+      # which keys might be set in maps assigned here, so it has
+      # produced a comprehensive set here. Consider simplifying
+      # this after confirming which keys can be set in practice.
 
-  tags = {
+      regex_string = regular_expression.value.regex_string
+    }
   }
+
+  tags = {}
 }
 
 resource "aws_wafv2_ip_set" "temp_block" {
@@ -43,8 +61,7 @@ resource "aws_wafv2_ip_set" "temp_block" {
   ip_address_version = "IPV4"
   addresses          = []
 
-  tags = {
-  }
+  tags = {}
 }
 
 resource "aws_wafv2_ip_set" "permanent_block" {
@@ -52,20 +69,20 @@ resource "aws_wafv2_ip_set" "permanent_block" {
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
   description        = "Manually Added IPs for denial"
+
   # The actual list of IP addresses is managed through AWS Console directly
-  addresses          = []
+  addresses = []
   lifecycle {
-    ignore_changes = ["addresses"]
+    ignore_changes = [addresses]
   }
 
-  tags = {
-  }
+  tags = {}
 }
 
 resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
-  name = "CommCareWhitelistRules"
+  name     = "CommCareWhitelistRules"
   capacity = "100"
-  scope = "REGIONAL"
+  scope    = "REGIONAL"
   visibility_config {
     cloudwatch_metrics_enabled = true
     metric_name                = "CommCareWhitelistRules"
@@ -73,18 +90,20 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
   }
 
   rule {
-    name = "AllowXMLQuerystring"
+    name     = "AllowXMLQuerystring"
     priority = 0
 
     action {
-      allow {}
+      allow {
+      }
     }
 
     statement {
       regex_pattern_set_reference_statement {
-        arn = "${aws_wafv2_regex_pattern_set.allow_xml_querystring_urls.arn}"
+        arn = aws_wafv2_regex_pattern_set.allow_xml_querystring_urls.arn
         field_to_match {
-          uri_path {}
+          uri_path {
+          }
         }
         text_transformation {
           priority = 0
@@ -95,24 +114,26 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
 
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name = "AllowXMLQuerystring"
-      sampled_requests_enabled = true
+      metric_name                = "AllowXMLQuerystring"
+      sampled_requests_enabled   = true
     }
   }
 
   rule {
-    name = "AllowXMLBody"
+    name     = "AllowXMLBody"
     priority = 1
 
     action {
-      allow {}
+      allow {
+      }
     }
 
     statement {
       regex_pattern_set_reference_statement {
-        arn = "${aws_wafv2_regex_pattern_set.allow_xml_post_urls.arn}"
+        arn = aws_wafv2_regex_pattern_set.allow_xml_post_urls.arn
         field_to_match {
-          uri_path {}
+          uri_path {
+          }
         }
         text_transformation {
           priority = 0
@@ -123,77 +144,83 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
 
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name = "AllowXMLBody"
-      sampled_requests_enabled = true
+      metric_name                = "AllowXMLBody"
+      sampled_requests_enabled   = true
     }
   }
 }
 
 resource "aws_wafv2_rule_group" "dimagi_block_rules" {
-  name = "DimagiBlockRules"
+  name     = "DimagiBlockRules"
   capacity = "25"
-  scope = "REGIONAL"
+  scope    = "REGIONAL"
   visibility_config {
     cloudwatch_metrics_enabled = true
     metric_name                = "DimagiBlockRules"
     sampled_requests_enabled   = true
   }
   rule {
-    name = "BlockTemporaryIPs"
+    name     = "BlockTemporaryIPs"
     priority = 0
 
     action {
-      block {}
+      block {
+      }
     }
 
     statement {
       ip_set_reference_statement {
-        arn = "${aws_wafv2_ip_set.temp_block.arn}"
+        arn = aws_wafv2_ip_set.temp_block.arn
       }
     }
 
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name = "BlockTemporaryIPs"
-      sampled_requests_enabled = true
+      metric_name                = "BlockTemporaryIPs"
+      sampled_requests_enabled   = true
     }
   }
   rule {
-    name = "BlockManualDenyList"
+    name     = "BlockManualDenyList"
     priority = 1
 
     action {
-      block {}
+      block {
+      }
     }
 
     statement {
       ip_set_reference_statement {
-        arn = "${aws_wafv2_ip_set.permanent_block.arn}"
+        arn = aws_wafv2_ip_set.permanent_block.arn
       }
     }
 
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name = "BlockManualDenyList"
-      sampled_requests_enabled = true
+      metric_name                = "BlockManualDenyList"
+      sampled_requests_enabled   = true
     }
   }
 }
 
 resource "aws_wafv2_web_acl" "front_end" {
   default_action {
-    allow {}
+    allow {
+    }
   }
-  name = "frontend-waf-${var.environment}"
+  name  = "frontend-waf-${var.environment}"
   scope = "REGIONAL"
 
   rule {
     priority = "0"
-    name = "DimagiBlockRules"
-    override_action { none {} }
+    name     = "DimagiBlockRules"
+    override_action {
+      none {
+      }
+    }
     statement {
       rule_group_reference_statement {
-        arn = "${aws_wafv2_rule_group.dimagi_block_rules.arn}"
+        arn = aws_wafv2_rule_group.dimagi_block_rules.arn
       }
     }
     visibility_config {
@@ -204,11 +231,14 @@ resource "aws_wafv2_web_acl" "front_end" {
   }
   rule {
     priority = "1"
-    name = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
-    override_action { none {} }
+    name     = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+    override_action {
+      none {
+      }
+    }
     statement {
       managed_rule_group_statement {
-        name = "AWSManagedRulesKnownBadInputsRuleSet"
+        name        = "AWSManagedRulesKnownBadInputsRuleSet"
         vendor_name = "AWS"
       }
     }
@@ -220,11 +250,14 @@ resource "aws_wafv2_web_acl" "front_end" {
   }
   rule {
     priority = "2"
-    name = "AWS-AWSManagedRulesLinuxRuleSet"
-    override_action { none {} }
+    name     = "AWS-AWSManagedRulesLinuxRuleSet"
+    override_action {
+      none {
+      }
+    }
     statement {
       managed_rule_group_statement {
-        name = "AWSManagedRulesLinuxRuleSet"
+        name        = "AWSManagedRulesLinuxRuleSet"
         vendor_name = "AWS"
       }
     }
@@ -236,14 +269,21 @@ resource "aws_wafv2_web_acl" "front_end" {
   }
   rule {
     priority = "3"
-    name = "AWS-AWSManagedRulesSQLiRuleSet"
-    override_action { none {} }
+    name     = "AWS-AWSManagedRulesSQLiRuleSet"
+    override_action {
+      none {
+      }
+    }
     statement {
       managed_rule_group_statement {
-        name = "AWSManagedRulesSQLiRuleSet"
+        name        = "AWSManagedRulesSQLiRuleSet"
         vendor_name = "AWS"
-        excluded_rule { name = "SQLi_BODY" }
-        excluded_rule { name = "SQLi_QUERYARGUMENTS" }
+        excluded_rule {
+          name = "SQLi_BODY"
+        }
+        excluded_rule {
+          name = "SQLi_QUERYARGUMENTS"
+        }
       }
     }
     visibility_config {
@@ -254,11 +294,14 @@ resource "aws_wafv2_web_acl" "front_end" {
   }
   rule {
     priority = "4"
-    name = "AWS-AWSManagedRulesAmazonIpReputationList"
-    override_action { none {} }
+    name     = "AWS-AWSManagedRulesAmazonIpReputationList"
+    override_action {
+      none {
+      }
+    }
     statement {
       managed_rule_group_statement {
-        name = "AWSManagedRulesAmazonIpReputationList"
+        name        = "AWSManagedRulesAmazonIpReputationList"
         vendor_name = "AWS"
       }
     }
@@ -271,11 +314,14 @@ resource "aws_wafv2_web_acl" "front_end" {
 
   rule {
     priority = "5"
-    name = "CommCareWhitelistRules"
-    override_action { none {} }
+    name     = "CommCareWhitelistRules"
+    override_action {
+      none {
+      }
+    }
     statement {
       rule_group_reference_statement {
-        arn = "${aws_wafv2_rule_group.commcare_whitelist_rules.arn}"
+        arn = aws_wafv2_rule_group.commcare_whitelist_rules.arn
       }
     }
     visibility_config {
@@ -286,19 +332,36 @@ resource "aws_wafv2_web_acl" "front_end" {
   }
   rule {
     priority = "6"
-    name = "AWS-AWSManagedRulesCommonRuleSet"
-    override_action { none {} }
+    name     = "AWS-AWSManagedRulesCommonRuleSet"
+    override_action {
+      none {
+      }
+    }
     statement {
       managed_rule_group_statement {
-        name = "AWSManagedRulesCommonRuleSet"
+        name        = "AWSManagedRulesCommonRuleSet"
         vendor_name = "AWS"
-        excluded_rule { name = "EC2MetaDataSSRF_COOKIE" }
-        excluded_rule { name = "GenericRFI_BODY" }
-        excluded_rule { name = "SizeRestrictions_BODY" }
-        excluded_rule { name = "GenericLFI_BODY" }
-        excluded_rule { name = "GenericRFI_QUERYARGUMENTS" }
-        excluded_rule { name = "NoUserAgent_HEADER" }
-        excluded_rule { name = "SizeRestrictions_QUERYSTRING" }
+        excluded_rule {
+          name = "EC2MetaDataSSRF_COOKIE"
+        }
+        excluded_rule {
+          name = "GenericRFI_BODY"
+        }
+        excluded_rule {
+          name = "SizeRestrictions_BODY"
+        }
+        excluded_rule {
+          name = "GenericLFI_BODY"
+        }
+        excluded_rule {
+          name = "GenericRFI_QUERYARGUMENTS"
+        }
+        excluded_rule {
+          name = "NoUserAgent_HEADER"
+        }
+        excluded_rule {
+          name = "SizeRestrictions_QUERYSTRING"
+        }
       }
     }
     visibility_config {
@@ -313,42 +376,49 @@ resource "aws_wafv2_web_acl" "front_end" {
     metric_name                = "frontend-waf-${var.environment}"
     sampled_requests_enabled   = true
   }
-
 }
 
 module "firehose_stream" {
-  source = "../logshipping/firehose_stream"
-  environment = "${var.environment}"
-  account_id = "${var.account_id}"
-  log_bucket_name = "${var.log_bucket_name}"
-  log_bucket_arn = "${var.log_bucket_arn}"
-  log_bucket_prefix = "${local.log_bucket_waf_prefix}"
-  log_bucket_error_prefix = "${local.log_bucket_waf_error_prefix}"
-  firehose_stream_name= "aws-waf-logs-frontend-waf-${var.environment}"
+  source                  = "../logshipping/firehose_stream"
+  environment             = var.environment
+  account_id              = var.account_id
+  log_bucket_name         = var.log_bucket_name
+  log_bucket_arn          = var.log_bucket_arn
+  log_bucket_prefix       = local.log_bucket_waf_prefix
+  log_bucket_error_prefix = local.log_bucket_waf_error_prefix
+  firehose_stream_name    = "aws-waf-logs-frontend-waf-${var.environment}"
 }
 
 resource "aws_wafv2_web_acl_association" "front_end" {
-  resource_arn = "${aws_lb.front_end.arn}"
-  web_acl_arn  = "${aws_wafv2_web_acl.front_end.arn}"
+  resource_arn = aws_lb.front_end.arn
+  web_acl_arn  = aws_wafv2_web_acl.front_end.arn
 }
 
 resource "aws_wafv2_web_acl_logging_configuration" "front_end" {
-  log_destination_configs = ["${module.firehose_stream.firehose_stream_arn}"]
-  resource_arn            = "${aws_wafv2_web_acl.front_end.arn}"
+  # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+  # force an interpolation expression to be interpreted as a list by wrapping it
+  # in an extra set of list brackets. That form was supported for compatibility in
+  # v0.11, but is no longer supported in Terraform v0.12.
+  #
+  # If the expression in the following list itself returns a list, remove the
+  # brackets to avoid interpretation as a list of lists. If the expression
+  # returns a single list item then leave it as-is and remove this TODO comment.
+  log_destination_configs = [module.firehose_stream.firehose_stream_arn]
+  resource_arn            = aws_wafv2_web_acl.front_end.arn
 }
 
 resource "aws_s3_bucket_public_access_block" "front_end_alb_logs" {
-  bucket = "${var.log_bucket_name}"
+  bucket = var.log_bucket_name
 
-  block_public_acls   = true
-  block_public_policy = true
-  ignore_public_acls = true
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
   restrict_public_buckets = true
 }
 
 // To analyze logs, see https://docs.aws.amazon.com/athena/latest/ug/application-load-balancer-logs.html
 resource "aws_s3_bucket_policy" "front_end_alb_logs" {
-  bucket = "${var.log_bucket_name}"
+  bucket = var.log_bucket_name
   policy = <<POLICY
 {
   "Id": "AWSConsole-AccessLogs-Policy-1589489332145",
@@ -389,6 +459,7 @@ resource "aws_s3_bucket_policy" "front_end_alb_logs" {
   ]
 }
 POLICY
+
 }
 
 resource "aws_athena_workgroup" "primary" {
@@ -409,23 +480,23 @@ resource "aws_lb" "front_end" {
   name               = "frontend-alb-${var.environment}"
   internal           = true
   load_balancer_type = "application"
-  security_groups    = ["${var.security_groups}"]
-  subnets            = ["${var.subnets}"]
-  idle_timeout  = 1200
+  security_groups    = var.security_groups
+  subnets            = var.subnets
+  idle_timeout       = 1200
 
-  depends_on = ["aws_s3_bucket_policy.front_end_alb_logs"]
+  depends_on = [aws_s3_bucket_policy.front_end_alb_logs]
 
   enable_deletion_protection = true
 
   access_logs {
-    bucket  = "${var.log_bucket_name}"
-    prefix  = "${local.log_bucket_alb_prefix}"
+    bucket  = var.log_bucket_name
+    prefix  = local.log_bucket_alb_prefix
     enabled = true
   }
 
-  tags {
-    Environment = "${var.environment}"
-    Group = "frontend"
+  tags = {
+    Environment = var.environment
+    Group       = "frontend"
   }
 }
 
@@ -433,37 +504,37 @@ resource "aws_lb_target_group" "front_end" {
   name     = "proxy-tg-${var.environment}"
   port     = 443
   protocol = "HTTPS"
-  vpc_id   = "${var.vpc_id}"
-  tags {
-    Environment = "${var.environment}"
-    Group = "frontend"
+  vpc_id   = var.vpc_id
+  tags = {
+    Environment = var.environment
+    Group       = "frontend"
   }
 
   health_check {
-    protocol = "HTTPS"
-    enabled = true
-    path = "/healthz"
-    matcher = "200"
-    healthy_threshold = 5
+    protocol            = "HTTPS"
+    enabled             = true
+    path                = "/healthz"
+    matcher             = "200"
+    healthy_threshold   = 5
     unhealthy_threshold = 2
   }
 }
 
 resource "aws_lb_target_group_attachment" "front_end_proxy" {
-  count = "${length(var.proxy_server_ids)}"
-  target_group_arn = "${aws_lb_target_group.front_end.arn}"
-  target_id        = "${var.proxy_server_ids[count.index]}"
+  count            = length(var.proxy_server_ids)
+  target_group_arn = aws_lb_target_group.front_end.arn
+  target_id        = var.proxy_server_ids[count.index]
   port             = 443
 }
 
 resource "aws_acm_certificate" "front_end" {
-  domain_name       = "${var.SITE_HOST}"
+  domain_name       = var.SITE_HOST
   validation_method = "DNS"
 
-  tags {
-    Name = "SITE_HOST-${var.environment}"
-    Environment = "${var.environment}"
-    Group = "frontend"
+  tags = {
+    Name        = "SITE_HOST-${var.environment}"
+    Environment = var.environment
+    Group       = "frontend"
   }
 
   lifecycle {
@@ -472,14 +543,14 @@ resource "aws_acm_certificate" "front_end" {
 }
 
 resource "aws_acm_certificate" "front_end_no_www" {
-  count = "${var.NO_WWW_SITE_HOST == "" ? 0 : 1}"
-  domain_name       = "${var.NO_WWW_SITE_HOST}"
+  count             = var.NO_WWW_SITE_HOST == "" ? 0 : 1
+  domain_name       = var.NO_WWW_SITE_HOST
   validation_method = "DNS"
 
-  tags {
-    Name = "NO_WWW_SITE_HOST-${var.environment}"
-    Environment = "${var.environment}"
-    Group = "frontend"
+  tags = {
+    Name        = "NO_WWW_SITE_HOST-${var.environment}"
+    Environment = var.environment
+    Group       = "frontend"
   }
 
   lifecycle {
@@ -488,14 +559,14 @@ resource "aws_acm_certificate" "front_end_no_www" {
 }
 
 resource "aws_acm_certificate" "front_end_alternate_hosts" {
-  count = "${length(var.ALTERNATE_HOSTS)}"
-  domain_name       = "${var.ALTERNATE_HOSTS[count.index]}"
+  count             = length(var.ALTERNATE_HOSTS)
+  domain_name       = var.ALTERNATE_HOSTS[count.index]
   validation_method = "DNS"
 
-  tags {
-    Name = "ALTERNATE_HOSTS-${count.index}-${var.environment}"
-    Environment = "${var.environment}"
-    Group = "frontend"
+  tags = {
+    Name        = "ALTERNATE_HOSTS-${count.index}-${var.environment}"
+    Environment = var.environment
+    Group       = "frontend"
   }
 
   lifecycle {
@@ -504,34 +575,34 @@ resource "aws_acm_certificate" "front_end_alternate_hosts" {
 }
 
 resource "aws_acm_certificate_validation" "front_end" {
-  certificate_arn = "${aws_acm_certificate.front_end.arn}"
+  certificate_arn = aws_acm_certificate.front_end.arn
 }
 
 resource "aws_acm_certificate_validation" "front_end_no_www" {
-  count = "${var.NO_WWW_SITE_HOST == "" ? 0 : 1}"
-  certificate_arn = "${aws_acm_certificate.front_end_no_www.arn}"
+  count           = var.NO_WWW_SITE_HOST == "" ? 0 : 1
+  certificate_arn = aws_acm_certificate.front_end_no_www[0].arn
 }
 
 resource "aws_acm_certificate_validation" "front_end_alternate_hosts" {
-  count = "${length(var.ALTERNATE_HOSTS)}"
-  certificate_arn = "${aws_acm_certificate.front_end_alternate_hosts.*.arn[count.index]}"
+  count           = length(var.ALTERNATE_HOSTS)
+  certificate_arn = aws_acm_certificate.front_end_alternate_hosts[count.index].arn
 }
 
 resource "aws_lb_listener" "front_end" {
-  load_balancer_arn = "${aws_lb.front_end.arn}"
+  load_balancer_arn = aws_lb.front_end.arn
   port              = "443"
   protocol          = "HTTPS"
-  ssl_policy        = "${var.ssl_policy}"
-  certificate_arn   = "${aws_acm_certificate.front_end.arn}"
+  ssl_policy        = var.ssl_policy
+  certificate_arn   = aws_acm_certificate.front_end.arn
 
   default_action {
     type             = "forward"
-    target_group_arn = "${aws_lb_target_group.front_end.arn}"
+    target_group_arn = aws_lb_target_group.front_end.arn
   }
 }
 
 resource "aws_lb_listener" "front_end_http_redirect" {
-  load_balancer_arn = "${aws_lb.front_end.arn}"
+  load_balancer_arn = aws_lb.front_end.arn
   port              = "80"
   protocol          = "HTTP"
 
@@ -547,28 +618,28 @@ resource "aws_lb_listener" "front_end_http_redirect" {
 }
 
 resource "aws_lb_listener_certificate" "front_end_no_www" {
-  count = "${var.NO_WWW_SITE_HOST == "" ? 0 : 1}"
-  listener_arn    = "${aws_lb_listener.front_end.arn}"
-  certificate_arn = "${aws_acm_certificate.front_end_no_www.arn}"
+  count           = var.NO_WWW_SITE_HOST == "" ? 0 : 1
+  listener_arn    = aws_lb_listener.front_end.arn
+  certificate_arn = aws_acm_certificate.front_end_no_www[0].arn
 }
 
 resource "aws_lb_listener_certificate" "front_end_alternate_hosts" {
-  count = "${length(var.ALTERNATE_HOSTS)}"
-  listener_arn    = "${aws_lb_listener.front_end.arn}"
-  certificate_arn = "${aws_acm_certificate.front_end_alternate_hosts.*.arn[count.index]}"
+  count           = length(var.ALTERNATE_HOSTS)
+  listener_arn    = aws_lb_listener.front_end.arn
+  certificate_arn = aws_acm_certificate.front_end_alternate_hosts[count.index].arn
 }
 
 resource "aws_globalaccelerator_accelerator" "front_end" {
-  provider = "aws.us-west-2"
-  name = "frontend-globalaccelerator-${var.environment}"
-  tags {
-    Environment = "${var.environment}"
-    Group = "frontend"
+  provider = aws.us-west-2
+  name     = "frontend-globalaccelerator-${var.environment}"
+  tags = {
+    Environment = var.environment
+    Group       = "frontend"
   }
 }
 
 resource "aws_globalaccelerator_listener" "front_end" {
-  accelerator_arn = "${aws_globalaccelerator_accelerator.front_end.id}"
+  accelerator_arn = aws_globalaccelerator_accelerator.front_end.id
   protocol        = "TCP"
 
   port_range {
@@ -583,14 +654,22 @@ resource "aws_globalaccelerator_listener" "front_end" {
 }
 
 resource "aws_globalaccelerator_endpoint_group" "front_end" {
-  listener_arn = "${aws_globalaccelerator_listener.front_end.id}"
+  listener_arn = aws_globalaccelerator_listener.front_end.id
 
   endpoint_configuration {
-    endpoint_id = "${aws_lb.front_end.arn}"
+    endpoint_id = aws_lb.front_end.arn
     weight      = 128
   }
 
   // these are unused because when pointing to an ALB it uses those health checks instead
   health_check_port = 80
-  health_check_path = ""
+  health_check_path = "/"
+  lifecycle {
+    ignore_changes = [
+      // Present Health_check_path value is undefined. In latest AWS provider, default value is '/' If the protocol is HTTP/S
+      // reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/globalaccelerator_endpoint_group
+      health_check_path
+      ]
+  }
 }
+

@@ -206,6 +206,8 @@ class PillowTopicAssignments(CommandBase):
     Print out the list of Kafka partitions assigned to each pillow process.
     """
 
+    run_setup_on_control_by_default = False
+
     arguments = (
         Argument('pillow_name', help=(
             "Name of the pillow."
@@ -416,11 +418,14 @@ def _get_host_key_map(known_host_lines):
     for line in known_host_lines:
         if not line:
             continue
-        csv_hosts, key_type, key = line.split(' ')
+        # line is formatted "<hosts> <key_type> <key> <key_type> <key> ..."
+        csv_hosts, *key_types_keys_list = line.split(' ')
+        key_type_key_pairs = chunked(key_types_keys_list, 2)
         # filter out empty hosts ('[]:port' is empty host with non-standard port)
         hosts = [h for h in csv_hosts.split(',') if h and '[]' not in h]
         for host in hosts:
-            keys_by_host[(host, key_type)] = key
+            for key_type, key in key_type_key_pairs:
+                keys_by_host[(host, key_type)] = key
     return keys_by_host
 
 
@@ -437,3 +442,17 @@ def _get_lines(proc):
         return str(color_error('timeout\n')), []
     else:
         return None, out.splitlines()
+
+
+def chunked(iterable, n, fillvalue=None):
+    """
+    Collect data into fixed-length chunks
+
+    >>> list(chunked('ABCDEFG', 3, 'x'))
+    [('A', 'B', 'C'), ('D', 'E', 'F'), ('G', 'x', 'x')]
+
+    """
+    # Pulled shamelessly from itertools recipes
+    # https://docs.python.org/3/library/itertools.html#itertools-recipes
+    args = [iter(iterable)] * n
+    return itertools.zip_longest(*args, fillvalue=fillvalue)

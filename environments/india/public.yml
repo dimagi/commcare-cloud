@@ -9,6 +9,7 @@ elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'indiahqes-1.x'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
+elasticsearch_delete_old_logs: True
 
 backup_blobdb: False
 backup_postgres: plain
@@ -40,6 +41,7 @@ kafka_scala_version: 2.12
 kafka_inter_broker_protocol_version: 2.4
 kafka_log_message_format_version: 2.4
 kafka_log_dir: "{{ encrypted_root }}/kafka"
+kafka_log_retention: 1344 # 56 days
 
 rabbitmq_version: 3.8.5-1
 
@@ -52,7 +54,7 @@ run_websockets_wsgi: True
 
 couch_dbs:
   default:
-    host: "{{ groups.couchdb2_proxy[0] }}"
+    host: "{{ groups.couchdb2_alb[0] }}"
     port: "{{ couchdb2_proxy_port }}"
     name: commcarehq
     username: "{{ COUCH_USERNAME }}"
@@ -103,6 +105,7 @@ localsettings:
   ALLOWED_HOSTS:
     - "{{ CAS_SITE_HOST }}"
     - "{{ J2ME_SITE_HOST }}"
+  ALLOW_MAKE_SUPERUSER_COMMAND: False  
   ASYNC_INDICATORS_TO_QUEUE: 30000
   AUDIT_ALL_VIEWS: True
   AUDIT_TRACE_ID_HEADER: "X-Amzn-Trace-Id"
@@ -119,6 +122,7 @@ localsettings:
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
+  ENFORCE_SSO_LOGIN: True
   ELASTICSEARCH_MAJOR_VERSION: 2
   IS_DIMAGI_ENVIRONMENT: True
   EULA_COMPLIANCE: True
@@ -152,6 +156,7 @@ localsettings:
   REDIS_HOST: "redis.india.commcare.local"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
+  REQUIRE_TWO_FACTOR_FOR_SUPERUSERS: True
   SAVED_EXPORT_ACCESS_CUTOFF: 180
   SMS_GATEWAY_URL: ''
   SMS_QUEUE_ENABLED: True
@@ -240,3 +245,7 @@ efs_shared_mount_dir: "shared{{ '_' ~ deploy_env if deploy_env != 'production' e
 efs_shared_mount_endpoint: "shared-efs.india.commcare.local:/"
 efs_shared_mount_options: "_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
 shared_dir_gid: 1500
+
+# for better time syncronization on aws servers
+# replace ntp with chrony.
+use_chrony: True

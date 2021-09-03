@@ -55,14 +55,3 @@
     - roles/citusdb/vars/pgbouncer_workers.yml
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}
-
-# Disables transparent huge pages (THP)
-- name: Disable THP
-  become: true
-  hosts:
-    - citusdb
-  tags:
-    - kernel_tuning
-    - after-reboot
-  roles:
-    - role: kernel_tune

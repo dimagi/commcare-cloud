@@ -16,6 +16,8 @@ class CommandBase(object):
     aliases = ()
     arguments = ()
 
+    run_setup_on_control_by_default = True
+
     def __init__(self, parser):
         self.parser = parser
 
