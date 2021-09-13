@@ -194,8 +194,6 @@ proxy3-production: 10.202.10.237
 proxy3-production.instance_id: i-0eb4444059792b400
 proxy4-production: 10.202.10.67
 proxy4-production.instance_id: i-0c410330787ab0505
-proxy5-production: 10.202.10.226
-proxy5-production.instance_id: i-0e15d77f95a9e7bbc
 rabbit2-production: 10.202.42.100
 rabbit2-production.instance_id: i-0afd113aa270a774d
 rabbit5-production: 10.202.41.96
