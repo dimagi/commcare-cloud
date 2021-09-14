@@ -16,6 +16,12 @@ resource aws_instance "server" {
     encrypted             = var.volume_encrypted
     volume_type           = var.volume_type
     delete_on_termination = true
+    tags = {
+      Name = "vol-${var.server_name}"
+      ServerName = var.server_name
+      Environment = var.environment
+      Group = var.group_tag
+    }
   }
   lifecycle {
     ignore_changes = [user_data, key_name, root_block_device.0.delete_on_termination,
@@ -26,12 +32,7 @@ resource aws_instance "server" {
     Environment = var.environment
     Group = var.group_tag
   }
-  volume_tags = {
-    Name = "vol-${var.server_name}"
-    ServerName = var.server_name
-    Environment = var.environment
-    Group = var.group_tag
-  }
+
   metadata_options {
     http_endpoint               = "enabled"
     http_put_response_hop_limit = 1
