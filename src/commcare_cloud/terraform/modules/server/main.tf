@@ -32,7 +32,6 @@ resource aws_instance "server" {
     Environment = var.environment
     Group = var.group_tag
   }
-
   metadata_options {
     http_endpoint               = "enabled"
     http_put_response_hop_limit = 1
