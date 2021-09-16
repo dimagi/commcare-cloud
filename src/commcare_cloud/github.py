@@ -52,6 +52,10 @@ def get_github_credentials(repo_name, repo_is_private, require_write_permissions
             f"    $ cp {PROJECT_ROOT}/config.example.py {PROJECT_ROOT}/config.py\n"
             f"Then edit {PROJECT_ROOT}/config.py"
         )
+        print(color_notice(
+            "To generate a Github apikey follow these instructions: https://github.com/blog/1509-personal-api-tokens\n"
+            "For permissions choose repo > public_repo"
+        ))
         token = getpass('Github Token: ')
 
     os.environ["GITHUB_TOKEN"] = token  # set in env for access by subprocesses
