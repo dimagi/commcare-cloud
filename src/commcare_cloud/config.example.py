@@ -3,6 +3,6 @@
 
 # On a control machine shared with others,
 # leave this as None to be prompted for a token each time instead,
-# to avoid storing private github token where even trusted others could access it.
+# to avoid storing private github token where others could access it.
 
 GITHUB_APIKEY = None
