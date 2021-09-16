@@ -46,7 +46,7 @@ fi
 
 if [ ! -f "${FAB_CONFIG}" ]
 then
-    for OLD_FAB_CONFIG_DIR in "${COMMCARE_CLOUD_REPO}/src/commcare_cloud/fab/config.py"
+    for OLD_FAB_CONFIG_DIR in "${COMMCARE_CLOUD_REPO}/src/commcare_cloud/fab"
     do
         if [ -d "${OLD_FAB_CONFIG_DIR}" ]
         then
