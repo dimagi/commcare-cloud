@@ -9,7 +9,8 @@ function git_remote_get_url() {
     git remote show ${1} | head -n2 | tail -n1 | grep -o '[^ ]*$'
 }
 COMMCARE_CLOUD_REPO="$(realpath $(dirname $0)/..)"
-FAB_CONFIG="${COMMCARE_CLOUD_REPO}/src/commcare_cloud/fab/config.py"
+FAB_CONFIG="${COMMCARE_CLOUD_REPO}/src/commcare_cloud/config.py"
+FAB_CONFIG_EXAMPLE="${COMMCARE_CLOUD_REPO}/src/commcare_cloud/config.example.py"
 ORIGIN=$(git_remote_get_url origin)
 OLD_ORIGIN_HTTPS_RE="https://github.com/dimagi/commcarehq-ansible(.git)?"
 OLD_ORIGIN_SSH_RE="git@github.com:dimagi/commcarehq-ansible(.git)?"
@@ -45,13 +46,11 @@ fi
 
 if [ ! -f "${FAB_CONFIG}" ]
 then
-    for OLD_FAB_DIR in "${COMMCARE_CLOUD_REPO}/../commcare-hq/deployment/commcare-hq-deploy" \
-                       "${COMMCARE_CLOUD_REPO}/../commcare-hq-deploy" \
-                       "${COMMCARE_CLOUD_REPO}/fab"
+    for OLD_FAB_CONFIG_DIR in "${COMMCARE_CLOUD_REPO}/src/commcare_cloud/fab/config.py"
     do
-        if [ -d "${OLD_FAB_DIR}" ]
+        if [ -d "${OLD_FAB_CONFIG_DIR}" ]
         then
-            OLD_FAB_CONFIG="${OLD_FAB_DIR}/fab/config.py"
+            OLD_FAB_CONFIG="${OLD_FAB_CONFIG_DIR}/config.py"
             if [ -f "${OLD_FAB_CONFIG}" ]
             then
                 cp "${OLD_FAB_CONFIG}" "${FAB_CONFIG}"
@@ -66,9 +65,8 @@ fi
 # fab config _still_ doesn't exist, note that we were unsuccessful in inferring it
 if [ ! -f "${FAB_CONFIG}" ]
 then
-    printf "${RED}✗ ${FAB_CONFIG} does not exist and suitable location to copy it from was not found.\n"
-    printf "${BLUE}  This file is just a convenience, so this is a non-critical error.\n"
-    printf "${BLUE}  If you have fab/config.py in a previous location, then copy it to ${FAB_CONFIG}.\n"
+    cp "${FAB_CONFIG_EXAMPLE}" "${FAB_CONFIG}"
+    printf "${YELLOW}→ Copied $(realpath ${FAB_CONFIG_EXAMPLE}) to ${FAB_CONFIG}\n"
 fi
 
 printf "${NC}"
