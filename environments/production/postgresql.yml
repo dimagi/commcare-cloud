@@ -42,7 +42,7 @@ dbs:
     host: rds_pgmain0
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_hosts:
-      - pgbouncer7
+      - pgbouncer9
       - pgbouncer6
   formplayer:
     host: rds_pgformplayer0
@@ -54,7 +54,7 @@ dbs:
     host: rds_pgucr0
     pgbouncer_endpoint: pgucr_nlb
     pgbouncer_hosts:
-      - pgbouncer7
+      - pgbouncer9
       - pgbouncer6
     query_stats: True
   synclogs:
@@ -62,12 +62,12 @@ dbs:
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
       - pgbouncer6
-      - pgbouncer7
+      - pgbouncer9
   auditcare:
     host: rds_pgauditcare0
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_hosts:
-      - pgbouncer7
+      - pgbouncer9
       - pgbouncer6
   form_processing:
     proxy:
