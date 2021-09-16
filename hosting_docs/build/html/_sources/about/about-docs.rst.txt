@@ -1,7 +1,7 @@
 About Docs
 ==========
 
-This documentation is relevant for those who want to host CommCareHQ locally on their infrastructure. CmmCareHQ is offered through Dimagi managed cloud with free and tiered subscription models. If you are looking for something else please see below.
+This documentation is relevant for those who want to host CommCareHQ locally on their infrastructure. CommCareHQ is offered through Dimagi managed cloud with free and tiered subscription models. If you are looking for something else please see below.
 
 - If you are interested in using CommCareHQ without having to host yourself, please check out our clould offering at https://www.commcarehq.org.
 - Docs on how to use CommCareHQ https://wiki.commcarehq.org/display/commcarepublic/Home

@@ -9,9 +9,10 @@ Welcome to CommCareHQ Deployment's documentation!
 .. toctree::
    :maxdepth: 2
 
-   About <about/about-docs>
+   About <about>
    Deploy <installation/prereqs/1-considerations>
    Operations <operations/1-overview>
    Scaling Services <scaling/1-overview>
    Backups and Disaster Recovery <backups/1-overview>
    Reference Material <reference/0-overview>
+   Security <security/0-overview>
