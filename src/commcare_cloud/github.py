@@ -53,7 +53,7 @@ def get_github_credentials(repo_name, repo_is_private, require_write_permissions
             f"Then edit {PROJECT_ROOT}/config.py"
         )
         print(color_notice(
-            "To generate a Github apikey follow these instructions: https://github.com/blog/1509-personal-api-tokens\n"
+            "To generate a GitHub access token, follow these instructions: https://github.com/blog/1509-personal-api-tokens\n"
             "For permissions choose repo > public_repo"
         ))
         token = getpass('Github Token: ')
