@@ -51,6 +51,9 @@ dbs:
     pgbouncer_hosts:
       - pgbouncer5
       - pgbouncer8
+      - pgbouncer7
+      - pgbouncer9
+      - pgbouncer6
   ucr:
     host: rds_pgucr0
     pgbouncer_endpoint: pgucr_nlb
