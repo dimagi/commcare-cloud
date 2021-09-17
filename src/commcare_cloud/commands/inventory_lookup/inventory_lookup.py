@@ -6,6 +6,7 @@ import os
 import socket
 import subprocess
 import sys
+from inspect import isfunction
 
 from clint.textui import puts
 from six.moves import shlex_quote
@@ -306,7 +307,7 @@ class ForwardPort(CommandBase):
     Port forward to access a remote admin console
     """
     _SERVICES = {
-        'flower': ('celery[0]', 5555, '/'),
+        'flower': (lambda env: ForwardPort.get_flower_machine(env), 5555, '/'),
         'couch': ('couchdb2_proxy[0]', 25984, '/_utils/'),
         'elasticsearch': ('elasticsearch[0]', 9200, '/'),
     }
@@ -321,6 +322,8 @@ class ForwardPort(CommandBase):
         environment = get_environment(args.env_name)
         nice_name = environment.terraform_config.account_alias
         remote_host_key, remote_port, url_path = self._SERVICES[args.service]
+        if isfunction(remote_host_key):
+            remote_host_key = remote_host_key(environment)
         loopback_address = f'127.0.{environment.terraform_config.vpc_begin_range}'
         remote_host = lookup_server_address(args.env_name, remote_host_key)
         local_port = self.get_random_available_port()
@@ -379,3 +382,11 @@ class ForwardPort(CommandBase):
             return port
         finally:
             tcp.close()
+
+    @staticmethod
+    def get_flower_machine(env):
+        return next(
+            celery_host
+            for celery_host, celery_options_by_queue in env.app_processes_config.celery_processes.items()
+            if 'flower' in celery_options_by_queue
+        )
