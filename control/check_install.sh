@@ -46,15 +46,11 @@ fi
 
 if [ ! -f "${FAB_CONFIG}" ]
 then
-    OLD_FAB_CONFIG_DIR="${COMMCARE_CLOUD_REPO}/src/commcare_cloud/fab"
-    if [ -d "${OLD_FAB_CONFIG_DIR}" ]
+    OLD_FAB_CONFIG="${COMMCARE_CLOUD_REPO}/src/commcare_cloud/fab/config.py"
+    if [ -f "${OLD_FAB_CONFIG}" ]
     then
-        OLD_FAB_CONFIG="${OLD_FAB_CONFIG_DIR}/config.py"
-        if [ -f "${OLD_FAB_CONFIG}" ]
-        then
-            cp "${OLD_FAB_CONFIG}" "${FAB_CONFIG}"
-            printf "${YELLOW}→ Copied $(realpath ${OLD_FAB_CONFIG}) to ${FAB_CONFIG}\n"
-        fi
+        cp "${OLD_FAB_CONFIG}" "${FAB_CONFIG}"
+        printf "${YELLOW}→ Copied $(realpath ${OLD_FAB_CONFIG}) to ${FAB_CONFIG}\n"
     fi
 else
     printf "${GREEN}✓ ${FAB_CONFIG} exists\n"
