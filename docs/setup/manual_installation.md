@@ -15,16 +15,16 @@ Download and run the `control/init.sh` script. This should be run from your home
 ```
 source <(curl -s https://raw.githubusercontent.com/dimagi/commcare-cloud/master/control/init.sh)
 ```
+You will see the following prompt
+```
+Do you want to have the CommCare Cloud environment setup on login?
+(y/n):
+```
+If you answer 'y' then a line will be added to your .profile that will automatically run `source ~/init-ansible`
+when you log in, sets up the commcare-cloud environment.
+Otherwise, you can choose to run `source ~/init-ansible` manually to setup the environment during future sessions.
 
 You may now use `commcare-cloud` or its shorter alias `cchq` whenever you're in the virtualenv.
-
-`~/init-ansible` may be used in future sessions to activate the virtualenv and
-update requirements. If you want that to happen automatically when you create a
-new interactive shell, add the following to your `~/.profile`:
-
-```sh
-[ -t 1 ] && source ~/init-ansible
-```
 
 ## Manual setup
 
