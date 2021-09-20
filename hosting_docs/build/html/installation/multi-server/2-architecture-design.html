@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Hosting Considerations &mdash; CommCareHQ Deployment  documentation</title>
+  <title>Service Architecture and Inventory File &mdash; CommCareHQ Deployment  documentation</title>
   
 
   
@@ -40,7 +40,9 @@
 
     
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Bootstrapping and Configuring the installation" href="3-configuring-bootstrapping.html" />
+    <link rel="prev" title="Planning the installation" href="1-overview-plan.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,65 +87,89 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../about/about-docs.html">About</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../about/about-docs.html#a-word-of-caution">A word of caution</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../prereqs/1-considerations.html">Deploy</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../prereqs/1-considerations.html#commcare-cluster-management">CommCare Cluster Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../prereqs/1-considerations.html#many-processes">Many processes</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../prereqs/1-considerations.html#physical-server-management">Physical Server Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../prereqs/1-considerations.html#network-connection">Network Connection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../prereqs/1-considerations.html#power-source">Power Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../prereqs/1-considerations.html#physical-security">Physical Security</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../prereqs/1-considerations.html#temperature-control">Temperature Control</a></li>
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../about/index.html">About</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../about/about-hq.html">About a CommCareHQ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about/about-docs.html">About this Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../about/about-docs.html#a-word-of-caution">A word of caution</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../operations/1-overview.html">Operations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../operations/1-overview.html#commcare-cluster-management">CommCare Cluster Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../operations/1-overview.html#many-processes">Many processes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Deploy CommCareHQ</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../monolith/1-easy_install_test.html">Quick Install on Single Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../prereqs/index.html">Prerequisites to Setup CommCareHQ in Production</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../prereqs/1-considerations.html">Hosting Considerations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../prereqs/1-considerations.html#commcare-cluster-management">CommCare Cluster Management</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../prereqs/1-considerations.html#many-processes">Many processes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../operations/1-overview.html#physical-server-management">Physical Server Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../operations/1-overview.html#network-connection">Network Connection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../operations/1-overview.html#power-source">Power Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../operations/1-overview.html#physical-security">Physical Security</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../operations/1-overview.html#temperature-control">Temperature Control</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../scaling/1-overview.html">Scaling Services</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../scaling/1-overview.html#commcare-cluster-management">CommCare Cluster Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../scaling/1-overview.html#many-processes">Many processes</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../scaling/1-overview.html#physical-server-management">Physical Server Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../scaling/1-overview.html#network-connection">Network Connection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../scaling/1-overview.html#power-source">Power Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../scaling/1-overview.html#physical-security">Physical Security</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../scaling/1-overview.html#temperature-control">Temperature Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../prereqs/1-considerations.html#physical-server-management">Physical Server Management</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../prereqs/1-considerations.html#network-connection">Network Connection</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../prereqs/1-considerations.html#power-source">Power Source</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../prereqs/1-considerations.html#physical-security">Physical Security</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../prereqs/1-considerations.html#temperature-control">Temperature Control</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/0-overview.html">Reference Material</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../reference/0-overview.html#commcare-cluster-management">CommCare Cluster Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../reference/0-overview.html#many-processes">Many processes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../prereqs/2-architecture.html">Architecture Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../prereqs/3-deployment-options.html">Deployment Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../prereqs/4-requirements.html">Team and hardware requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../prereqs/5-software-and-tools.html">Software and Tools requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../prereqs/6-commcare-cloud.html">CommCare Cloud Deployment Tool</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../reference/0-overview.html#physical-server-management">Physical Server Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../reference/0-overview.html#network-connection">Network Connection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../reference/0-overview.html#power-source">Power Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../reference/0-overview.html#physical-security">Physical Security</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../reference/0-overview.html#temperature-control">Temperature Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../monolith/2-install-prod.html">Production Monolith Install</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Multi Server Installation</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1-overview-plan.html">Planning the installation</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Service Architecture and Inventory File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3-configuring-bootstrapping.html">Bootstrapping and Configuring the installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4-installation.html">Running the installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5-troubleshooting.html">Troubleshooting the installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7-testing.html">Testing the Install</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../data-import/index.html">Importing Data from other CommCareHQ Server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../data-import/1-exporting-from-hq.html">Exporting from commcarehq.org</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../data-import/2-importing-and-test.html">Hosting Considerations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="6-go-live-checklist.html">Go Live Checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../operations/1-index.html">Operations and Maintenance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/2-deploys.html">Application Deploys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/3-monitoring.html">Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/4-maintenance.html">Maintenance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/5-infrastructure.html">Infrastructure Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/6-troubleshooting.html">Support and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../operations/7-backups.html">Backups</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../scaling/1-index.html">How to Scale</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../scaling/2-webworkers.html">Webworkers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../scaling/3-postgres.html">PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../scaling/4-redis.html">Redis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../scaling/5-elasticsearch.html">Elasticsearch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../scaling/6-sizing.html">Infrastructure Sizing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../backups_dr/1-index.html">Backups and Disaster Recovery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../backups_dr/2-backups-guide.html">Taking Backups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../backups_dr/3-restore-guide.html">Restoring Backups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../backups_dr/4-dr-setup.html">Disaster Recovery Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../security/1-security.html">Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/0-index.html">Reference Material</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/1-commcare-cloud.html">CommCare Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/2-commands.html">commcare-cloud Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/3-user-access-security.html">User Access and Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/4-ansible-resources.html">Ansible Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/5-inventory-file.html">Inventory File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/6-settings.html">Public.yml Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/7-log-files.html">Log files</a></li>
 </ul>
 </li>
 </ul>
@@ -194,7 +220,11 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Hosting Considerations</li>
+          <li><a href="../index.html">About CommCareHQ</a> &raquo;</li>
+        
+          <li><a href="index.html">Multi Server Installation</a> &raquo;</li>
+        
+      <li>Service Architecture and Inventory File</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -213,122 +243,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="hosting-considerations">
-<h1>Hosting Considerations<a class="headerlink" href="#hosting-considerations" title="Permalink to this headline">¶</a></h1>
-<p>If you are interested in running a CommCare server environment there are
-a number of serious obstacles to consider before taking the plunge. If
-you are already managing a CommCare server environment and are finding
-it challenging, you may also find thinking about the considerations
-listed here helpful before deciding your next steps.</p>
-<div class="section" id="commcare-cluster-management">
-<h2>CommCare Cluster Management<a class="headerlink" href="#commcare-cluster-management" title="Permalink to this headline">¶</a></h2>
-<p>CommCare HQ is a complex, distributed software application, made up of
-dozens of processes and several pieces of third-party open source
-database software. It has been built for scale rather than simplicity,
-and as a result even for small deployments a CommCare server or server
-cluster can be challenging to maintain.</p>
-<div class="section" id="many-processes">
-<h3>Many processes<a class="headerlink" href="#many-processes" title="Permalink to this headline">¶</a></h3>
-<p>While the setup automation should work out of the box, once you’re up
-and running you will have to troubleshoot any issues yourself. This
-means being familiar enough with every piece of third-party database
-software to be able to debug issues and bring it back to life or recover
-from some other bad state; it also means understanding what each of the
-many types of CommCare application processes does well enough to
-troubleshoot issues.</p>
-<p>CommCare HQ relies on the following open source technologies:</p>
-<ul class="simple">
-<li><p>PostgreSQL</p></li>
-<li><p>PL/Proxy and a custom sharding setup</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pg_backup</span></code> and streaming replication</p></li>
-<li><p>CouchDB</p></li>
-<li><p>Redis</p></li>
-<li><p>Riak/Riak CS (mandatory for multi-server environments)</p></li>
-<li><p>Elasticsearch</p></li>
-<li><p>Kafka (and Zookeeper)</p></li>
-<li><p>RabbitMQ</p></li>
-<li><p>Nginx</p></li>
-</ul>
-<p>CommCare HQ also employs different types of application processes each
-with its own distinct purpose and set of functionality:</p>
-<ul class="simple">
-<li><p>Web workers</p></li>
-<li><p>Asynchronous task processors (Celery)</p></li>
-<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Extract,_transform,_load">ETL</a>
-processes (“Pillowtop”) that themselves come in a number of different
-flavors and fill a number of different roles</p></li>
-<li><p>The CommCare mobile engine exposed as a webservice (“Formplayer”)</p></li>
-</ul>
-<p>You will also need some familiarity with the following sysadmin tools:</p>
-<ul class="simple">
-<li><p>Monit</p></li>
-<li><p>Supervisor</p></li>
-<li><p>Ansible</p></li>
-<li><p>Fabric</p></li>
-<li><p>EcryptFS</p></li>
-<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Logical_Volume_Manager_%28Linux%29">LVM</a>
-(optional)</p></li>
-</ul>
-</div>
-</div>
-<div class="section" id="physical-server-management">
-<h2>Physical Server Management<a class="headerlink" href="#physical-server-management" title="Permalink to this headline">¶</a></h2>
-<p>This section is for people interested in owning the physical hardware
-running their servers. If you will be using an established data center
-or modern hosting provider, this doesn’t apply.</p>
-<p>It can be tempting to want to run CommCare HQ on server hardware that
-you own. After all, a server is just a computer connected to the
-internet, with enough RAM, CPU, and Disk to run the software it’s
-hosting. However, in practice, there’s a lot more that goes into it.</p>
-<div class="section" id="network-connection">
-<h3>Network Connection<a class="headerlink" href="#network-connection" title="Permalink to this headline">¶</a></h3>
-<p>One of the biggest difficulties in maintaining physical server hardware
-is that to be reliable it must <strong>always</strong> be connected to the internet
-over a stable and reliable network. In many of the areas of the world
-that are most interested in self-hosting for data-sovereignty reasons,
-network connectivity is notoriously spotty. Real data centers will go to
-great lengths to keep their servers always connected to the public
-internet, including network redundancy. It can be close to impossible to
-do this at the level of one or two servers in an office, so in practice,
-these servers will experience large rates of downtime.</p>
-</div>
-<div class="section" id="power-source">
-<h3>Power Source<a class="headerlink" href="#power-source" title="Permalink to this headline">¶</a></h3>
-<p>Another often-overlooked challenge with managing physical hardware is
-maintaining a reliable power source. In many areas of the world that use
-CommCare, reliable power is not a given. Even with a generator, unless
-there’s a sophisticated battery backup system in place, it will take a
-number of seconds for the generator to kick in, and even the slightest
-blip in power supply will cause a server to shut off without warning.
-Thus, without a well-planned system in place for maintaining consistent
-power even through a grid outage, these servers will experience a lot of
-downtime and will be at risk for data corruption as a result of powering
-off without warning.</p>
-</div>
-<div class="section" id="physical-security">
-<h3>Physical Security<a class="headerlink" href="#physical-security" title="Permalink to this headline">¶</a></h3>
-<p>Real data centers are highly guarded by security personnel and have
-authorization protocols preventing physical access to the servers except
-by a small handful of entrusted individuals. With physical access to a
-machine, a malicious or unwitting person can steal private information
-or cause untold damage including deletion of all data. In the typical
-office environment, maintaining an appropriate level of physical
-security around the hardware is not a given, and will require concerted
-effort and planning.</p>
-</div>
-<div class="section" id="temperature-control">
-<h3>Temperature Control<a class="headerlink" href="#temperature-control" title="Permalink to this headline">¶</a></h3>
-<p>Computer hardware gives off a tremendous amount of heat. Servers are
-<strong>hot</strong>, and so are many of the areas of the world that use CommCare.
-Real data centers are carefully designed to manage heat flow and sites
-are often specifically chosen for environmental features such as cold
-outdoor temperature or proximity to a vast water source for cooling.
-Overheating is a very real issue and when it happens it will lead to
-unpredictable hardware failure.</p>
-<hr class="docutils" />
-<p><a class="reference external" href="..">︎⬅︎ Overview</a></p>
-</div>
-</div>
+  <div class="section" id="service-architecture-and-inventory-file">
+<h1>Service Architecture and Inventory File<a class="headerlink" href="#service-architecture-and-inventory-file" title="Permalink to this headline">¶</a></h1>
+<p>Guide on how to decide which services go on which servers and how to create the Inventory file.</p>
 </div>
 
 
@@ -336,6 +253,10 @@ unpredictable hardware failure.</p>
            
           </div>
           <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="3-configuring-bootstrapping.html" class="btn btn-neutral float-right" title="Bootstrapping and Configuring the installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="1-overview-plan.html" class="btn btn-neutral float-left" title="Planning the installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 
