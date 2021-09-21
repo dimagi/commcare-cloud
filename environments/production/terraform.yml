@@ -400,12 +400,10 @@ pgbouncer_nlbs:
       - pgbouncer5-production
       - pgbouncer8-production
       - pgbouncer7-production
-      - pgbouncer9-production
       - pgbouncer6-production
   - name: pgmain_nlb-production
     targets:
       - pgbouncer7-production
-      - pgbouncer9-production
       - pgbouncer6-production
   - name: pgucr_nlb-production
     targets:
