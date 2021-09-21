@@ -6,6 +6,10 @@
 Welcome to CommCareHQ Deployment's documentation!
 =================================================
 
+
+.. warning::
+    This is work in progress. Please visit http://dimagi.github.io/commcare-cloud/ for docs
+
 .. toctree::
    :maxdepth: 4
 
