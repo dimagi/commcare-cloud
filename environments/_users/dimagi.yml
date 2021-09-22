@@ -23,7 +23,6 @@ dev_users:
     - sravfeyn
     - schauhan
     - sherbers
-    - spokhriyal
     - rcostello
   absent:
     - astone
