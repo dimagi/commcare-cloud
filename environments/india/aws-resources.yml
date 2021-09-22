@@ -38,7 +38,7 @@ pgbouncer1-india: 10.203.40.200
 pgbouncer1-india.instance_id: i-0ccb10bb6d8048ea1
 pgbouncer2-india: 10.203.41.203
 pgbouncer2-india.instance_id: i-001ade36607a36a83
-pgformplayer_nlb-india: pgformplayer-nlb-india-bd402933c980310c.elb.ap-south-1.amazonaws.com
+pgformplayer_nlb-india: pgformplayer-nlb-india-ea6dd4c1a194c9bb.elb.ap-south-1.amazonaws.com
 pgmain0-india: pgmain0-india.ccqpd1xrju8m.ap-south-1.rds.amazonaws.com
 pgmain_nlb-india: pgmain-nlb-india-4747ab10b065afa3.elb.ap-south-1.amazonaws.com
 pgshard_nlb-india: pgshard-nlb-india-337a6ad6c13111c1.elb.ap-south-1.amazonaws.com
