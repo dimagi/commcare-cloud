@@ -262,7 +262,7 @@ rds_instances:
     instance_type: "db.t3.large"
     storage: 500
     multi_az: true
-    engine_version: 9.6.20
+    engine_version: "10.17"
 
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-india
