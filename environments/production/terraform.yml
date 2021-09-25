@@ -30,7 +30,7 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "web_a{i}-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: r5.xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
