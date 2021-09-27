@@ -98,7 +98,7 @@ servers:
     network_tier: "db-private"
     az: "c"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     block_device:
       volume_size: 8000
       encrypted: yes
@@ -110,7 +110,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     block_device:
       volume_size: 8000
       encrypted: yes
@@ -121,7 +121,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     block_device:
       volume_size: 8000
       encrypted: yes
