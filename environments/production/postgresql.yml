@@ -43,16 +43,12 @@ dbs:
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_hosts:
       - pgbouncer7
-      - pgbouncer9
       - pgbouncer6
   formplayer:
     host: rds_pgformplayer0
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_hosts:
-      - pgbouncer5
-      - pgbouncer8
       - pgbouncer7
-      - pgbouncer9
       - pgbouncer6
   ucr:
     host: rds_pgucr0
@@ -91,6 +87,8 @@ dbs:
         pgbouncer_hosts:
           - pgbouncer3
           - pgbouncer9
+          - pgbouncer7
+          - pgbouncer6
       p2:
         shards: [205, 409]
         host: rds_pgshard2
@@ -98,6 +96,8 @@ dbs:
         pgbouncer_hosts:
           - pgbouncer3
           - pgbouncer9
+          - pgbouncer7
+          - pgbouncer6
       p3:
         shards: [410, 614]
         host: rds_pgshard3
@@ -105,6 +105,8 @@ dbs:
         pgbouncer_hosts:
           - pgbouncer3
           - pgbouncer9
+          - pgbouncer7
+          - pgbouncer6
       p4:
         shards: [615, 819]
         host: rds_pgshard4
@@ -112,6 +114,8 @@ dbs:
         pgbouncer_hosts:
           - pgbouncer3
           - pgbouncer9
+          - pgbouncer7
+          - pgbouncer6
       p5:
         shards: [820, 1023]
         host: rds_pgshard5
@@ -119,3 +123,5 @@ dbs:
         pgbouncer_hosts:
           - pgbouncer3
           - pgbouncer9
+          - pgbouncer7
+          - pgbouncer6

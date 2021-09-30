@@ -397,8 +397,6 @@ rds_instances:
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-production
     targets:
-      - pgbouncer5-production
-      - pgbouncer8-production
       - pgbouncer7-production
       - pgbouncer6-production
   - name: pgmain_nlb-production
@@ -418,6 +416,8 @@ pgbouncer_nlbs:
   - name: pgshard_nlb-production
     targets:
       - pgbouncer9-production
+      - pgbouncer6-production
+      - pgbouncer7-production
 
 
 internal_albs:
