@@ -418,6 +418,8 @@ pgbouncer_nlbs:
       - pgbouncer9-production
       - pgbouncer6-production
       - pgbouncer7-production
+      - pgbouncer5-production
+      - pgbouncer8-production
 
 
 internal_albs:
