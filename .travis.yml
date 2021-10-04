@@ -9,6 +9,7 @@ env:
   global:
     - ANSIBLE_ROLES_PATH="~/.ansible/roles"
     - TRAVIS_TEST=1
+    - ANSIBLE_VERBOSITY=4
   matrix:
     - TEST=main
 
