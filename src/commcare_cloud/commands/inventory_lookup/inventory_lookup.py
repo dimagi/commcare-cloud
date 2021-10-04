@@ -113,7 +113,7 @@ class Ssh(_Ssh):
             # Always include ssh agent forwarding on control machine
             ssh_args = ['-A'] + ssh_args
 
-            if os.environ.get('COMMCARE_CLOUD_USE_AWS_SSM') == '1' and \
+            if os.environ.get('COMMCARE_CLOUD_USE_AWS_SSM') != '0' and \
                     is_aws_env(environment) and \
                     not is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id):
                 if not is_session_manager_plugin_installed():

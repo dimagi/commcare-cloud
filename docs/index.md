@@ -65,6 +65,7 @@ that machine is also the control machine.
 ### Optional
 - [Slack for notifications](monitoring/slack.md)
 - [Airflow](services/airflow.md)
+- [Performance benchmarking](howto/perf_testing.md)
 
 ## Specialized howtos
 - [White label a CommCare instance](howto/white-label.md)
