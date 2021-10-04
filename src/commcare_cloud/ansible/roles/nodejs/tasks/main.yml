@@ -9,7 +9,7 @@
 
 - name: Add git nodejs repo
   apt_repository:
-    repo: 'deb https://deb.nodesource.com/node_12.x bionic main'
+    repo: 'deb http://deb.nodesource.com/node_12.x bionic main'
     state: present
   become: yes
   when: ansible_distribution_version == '18.04'
