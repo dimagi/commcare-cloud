@@ -283,7 +283,7 @@ rds_instances:
       # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
       # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
       maintenance_work_mem: 4172000kB
-      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgucr0-production"
     instance_type: "db.t3.xlarge"  # increased from db.t3.large due to unused db.t3 RIs
@@ -386,10 +386,14 @@ rds_instances:
     instance_type: "db.t3.small"
     storage: 100
     multi_az: true
-    engine_version: 9.6.20
+    engine_version: "10.17"
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
+      # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
+      # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
+      maintenance_work_mem: 4172000kB
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgauditcare0-production"
     instance_type: "db.m5.xlarge"
