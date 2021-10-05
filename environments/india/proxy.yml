@@ -5,6 +5,6 @@ J2ME_SITE_HOST: 'j2me-india.commcarehq.org'
 tableau_server: 'tableau2.internal.commcarehq.org'
 TABLEAU_HOST: 'icds.commcarehq.org'
 primary_ssl_env: "india"
-nginx_hsts_max_age: 2419200 # 1 month
+nginx_hsts_max_age: 9676800 # 4 months
 trusted_proxies:
   - 10.203.0.0/16
