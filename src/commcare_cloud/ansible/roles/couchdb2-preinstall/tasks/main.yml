@@ -50,6 +50,5 @@
   apt:
     name:
       - esl-erlang={{ couchdb_erlang_version }}
-      - erlang-mode={{ couchdb_erlang_version }}
     force: yes
 
