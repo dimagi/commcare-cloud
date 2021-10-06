@@ -283,7 +283,7 @@ rds_instances:
       # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
       # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
       maintenance_work_mem: 4172000kB
-      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgucr0-production"
     instance_type: "db.t3.xlarge"  # increased from db.t3.large due to unused db.t3 RIs
@@ -306,8 +306,9 @@ rds_instances:
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: null
-      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
+      log_min_duration_statement: -1
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
+
   - identifier: "pgshard2-production"
     instance_type: "db.m5.4xlarge"
     storage: 500
@@ -318,8 +319,8 @@ rds_instances:
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: null
-      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
+      log_min_duration_statement: -1
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
   - identifier: "pgshard3-production"
     instance_type: "db.m5.4xlarge"
     storage: 500
@@ -330,8 +331,8 @@ rds_instances:
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: null
-      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
+      log_min_duration_statement: -1
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
   - identifier: "pgshard4-production"
     instance_type: "db.m5.4xlarge"
     storage: 500
@@ -342,8 +343,8 @@ rds_instances:
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: null
-      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
+      log_min_duration_statement: -1
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
   - identifier: "pgshard5-production"
     instance_type: "db.m5.4xlarge"
     storage: 500
@@ -354,8 +355,8 @@ rds_instances:
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements
-      log_min_duration_statement: null
-      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
+      log_min_duration_statement: -1
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgsynclog0-production"
     instance_type: "db.t3.xlarge"
