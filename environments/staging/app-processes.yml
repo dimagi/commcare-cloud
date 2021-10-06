@@ -8,7 +8,7 @@ management_commands:
     run_pillow_retry_queue:
 celery_processes:
   'celery3':
-    repeat_record_queue,reminder_case_update_queue,reminder_rule_queue,export_download_queue,case_import_queue:
+    repeat_record_queue,reminder_case_update_queue,reminder_rule_queue,export_download_queue,case_import_queue,dedupe_rule_queue:
       concurrency: 4
     celery:
       concurrency: 4
