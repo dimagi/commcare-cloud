@@ -189,24 +189,16 @@ class AwsFillInventory(CommandBase):
 class AwsFillInventoryHelper(object):
     def __init__(self, environment, inventory_ini_j2, resources):
         self.environment = environment
-        self.inventory_ini_j2 = inventory_ini_j2
+        self.template = inventory_ini_j2
         self.resources = resources
 
     def render(self):
         return jinja2.Template(self.template, keep_trailing_newline=True).render(self.context)
 
     @property
-    def template(self):
-        template = self.inventory_ini_j2
-        if self.vpn_name in self.resources:
-            template += self.openvpn_ini_j2
-        return template
-
-    @property
     def context(self):
         context = {
             'aws_resources': self.resources,
-            'vpn_subdomain_name': "vpn.{}".format(self.environment.proxy_config.SITE_HOST)
         }
 
         servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
@@ -269,17 +261,6 @@ class AwsFillInventoryHelper(object):
     @property
     def vpn_name(self):
         return 'vpn-{}'.format(self.env_suffix)
-
-    @property
-    def openvpn_ini_j2(self):
-        return textwrap.dedent("""
-        [openvpn]
-        {{ aws_resources['%(vpn_name)s'] }}  # ansible_host={{ aws_resources['%(vpn_name)s.public_ip'] }}
-
-        [openvpn:vars]
-        subdomain_name={{ vpn_subdomain_name }}
-        hostname=%(vpn_name)s
-        """ % {'vpn_name': self.vpn_name})
 
     def get_host_group_definition(self, resource_name, vars=(), prefix=''):
         context = {}

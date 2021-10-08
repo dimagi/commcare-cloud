@@ -449,24 +449,6 @@ resource "aws_security_group" "db-private" {
   }
 
   ingress {
-    from_port = 9200
-    to_port   = 9200
-    protocol  = "tcp"
-    cidr_blocks = [
-      "${var.openvpn_ip}/32",
-    ]
-  }
-
-  ingress {
-    from_port = 25984
-    to_port   = 25984
-    protocol  = "tcp"
-    cidr_blocks = [
-      "${var.openvpn_ip}/32",
-    ]
-  }
-
-  ingress {
     from_port = 0
     to_port   = 0
     protocol  = "-1"
