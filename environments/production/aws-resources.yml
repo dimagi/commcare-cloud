@@ -189,7 +189,7 @@ pillow_a001-production: 10.202.12.224
 pillow_a001-production.instance_id: i-0008c3994698bc6ea
 proxy2-production: 10.202.20.123
 proxy2-production.instance_id: i-08707523172eb37bf
-proxy2-production.public_ip: 3.84.181.229
+proxy2-production.public_ip: 54.160.242.205
 proxy3-production: 10.202.10.237
 proxy3-production.instance_id: i-0eb4444059792b400
 proxy4-production: 10.202.10.67
@@ -247,15 +247,3 @@ web_b004-production: 10.202.11.67
 web_b004-production.instance_id: i-04517fbbc7c33df2f
 web_b005-production: 10.202.11.102
 web_b005-production.instance_id: i-09b76cfccbff64e79
-web_b006-production: 10.202.11.203
-web_b006-production.instance_id: i-09a9b00f2c8c78c38
-web_b007-production: 10.202.11.86
-web_b007-production.instance_id: i-0d91634acc1b3b0ec
-web_b008-production: 10.202.11.134
-web_b008-production.instance_id: i-0d01e8b20a926db00
-web_b009-production: 10.202.11.84
-web_b009-production.instance_id: i-04a98e4e884184941
-web_b010-production: 10.202.11.188
-web_b010-production.instance_id: i-03a845780fa9421af
-web_b011-production: 10.202.11.45
-web_b011-production.instance_id: i-0af74a79c115f73e6

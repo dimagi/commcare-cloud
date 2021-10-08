@@ -9,6 +9,7 @@ couch15-staging.instance_id: i-0f618ee36887bb494
 couch6-staging: 10.201.40.74
 couch6-staging.instance_id: i-01b32f8a2eebe07bc
 couch_alb-staging: internal-couch-alb-staging-546646078.us-east-1.elb.amazonaws.com
+efs_staging-efs: fs-9e8f8369.efs.us-east-1.amazonaws.com
 es10-staging: 10.201.41.31
 es10-staging.instance_id: i-08c2645edf582d4b6
 es6-staging: 10.201.40.126
@@ -20,11 +21,11 @@ es8-staging.instance_id: i-0d9e988943761e595
 es9-staging: 10.201.41.168
 es9-staging.instance_id: i-02073b820430efb60
 formplayer-efs: fs-ba70cd39.efs.us-east-1.amazonaws.com
-efs-staging-mount-dns: shared-efs.staging.commcare.local
 formplayer4-staging: 10.201.10.18
 formplayer4-staging.instance_id: i-07ad9548c23f0aa68
 formplayer5-staging: 10.201.10.139
 formplayer5-staging.instance_id: i-09e0754049b4ea4aa
+frontend_alb-staging: internal-frontend-alb-staging-383875913.us-east-1.elb.amazonaws.com
 kafka2-staging: 10.201.40.170
 kafka2-staging.instance_id: i-08a404d6bad630a35
 kafka3-staging: 10.201.40.224
