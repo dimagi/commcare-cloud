@@ -3,7 +3,7 @@ CHANGELOG_MD = $(patsubst %.yml, docs/%.md, $(CHANGELOG_YML))
 autogen = src/commcare_cloud/help_cache/ansible.txt src/commcare_cloud/help_cache/ansible-playbook.txt docs/commcare-cloud/commands/index.md docs/changelog/index.md src/commcare_cloud/ansible/roles/ebsnvme/files/_vendor/ebsnvme-id $(CHANGELOG_MD)
 all : $(autogen)
 
-REQUIREMENTS=$(shell python -c 'import sys; print("requirements%s.txt" % (3 if sys.version_info[0] == 3 else ""))')
+REQUIREMENTS=requirements.txt
 PIP_COMPILE = pip-compile --output-file ${REQUIREMENTS} setup.py
 
 ANSIBLE_ENV=COLUMNS=80
