@@ -110,8 +110,6 @@ pillows:
       num_processes: 1
     SqlSMSPillow:
       num_processes: 1
-    UCLAPatientFluffPillow:
-      num_processes: 1
     UpdateUserSyncHistoryPillow:
       num_processes: 4
     UserCacheInvalidatePillow:
