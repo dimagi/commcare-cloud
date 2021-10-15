@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements.txt setup.py
 #
-ansible==2.9.26
+ansible==4.2.0
     # via
     #   ansible-vault
     #   commcare-cloud (setup.py)
