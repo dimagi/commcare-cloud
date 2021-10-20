@@ -45,7 +45,7 @@ celery_processes:
       concurrency: 1
     reminder_queue:
       pooling: gevent
-      concurrency: 20
+      concurrency: 40
     reminder_rule_queue:
       concurrency: 1
     repeat_record_queue:
@@ -82,6 +82,9 @@ celery_processes:
       concurrency: 50
     ush_background_tasks:
       concurrency: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 40
 
 pillows:
   pillow_a000:
