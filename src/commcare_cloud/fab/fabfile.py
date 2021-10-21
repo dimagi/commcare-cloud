@@ -117,17 +117,6 @@ def _setup_path():
     env.airflow_code_root = posixpath.join(env.airflow_home, 'pipes')
 
 
-def _override_code_root_to_current():
-    env.code_root = env.code_current
-    env.project_root = posixpath.join(env.code_root, env.project)
-    env.project_media = posixpath.join(env.code_root, 'media')
-
-    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3.6')
-    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3.6')
-
-    env.services = posixpath.join(env.code_root, 'services')
-
-
 def load_env():
     env.ccc_environment = get_environment(env.env_name)
     vars_not_to_overwrite = {key: value for key, value in env.items()
