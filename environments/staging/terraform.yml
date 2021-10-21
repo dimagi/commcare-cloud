@@ -32,6 +32,7 @@ servers:
     volume_encrypted: yes
     group: webworkers
     os: ubuntu_pro_bionic
+    server_auto_recovery: true
   - server_name: "web8-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
@@ -41,6 +42,7 @@ servers:
     volume_encrypted: yes
     group: webworkers
     os: ubuntu_pro_bionic
+    server_auto_recovery: true
 
   - server_name: "es6-staging"
     server_instance_type: "t3.medium"
