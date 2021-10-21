@@ -1,5 +1,5 @@
 [program:{{ project }}-{{ deploy_env }}-celerybeat]
-command={{ py3_virtualenv_home }}/bin/celery
+command={{ virtualenv_home }}/bin/celery
     -A corehq beat
     --loglevel=INFO
 directory={{ code_home }}
