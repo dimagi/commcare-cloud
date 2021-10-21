@@ -46,7 +46,7 @@ def postgresql():
 @runs_once
 def perform_system_checks(current=False):
     path = env.code_current if current else env.code_root
-    venv = env.py3_virtualenv_current if current else env.py3_virtualenv_root
+    venv = env.virtualenv_current if current else env.virtualenv_root
     with cd(path):
         sudo('%s/bin/python manage.py check --deploy' % venv)
         sudo('%s/bin/python manage.py check --deploy -t database' % venv)

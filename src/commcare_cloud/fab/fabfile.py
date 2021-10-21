@@ -107,8 +107,8 @@ def _setup_path():
     env.project_root = posixpath.join(env.code_root, env.project)
     env.project_media = posixpath.join(env.code_root, 'media')
 
-    env.py3_virtualenv_current = posixpath.join(env.code_current, 'python_env-3.6')
-    env.py3_virtualenv_root = posixpath.join(env.code_root, 'python_env-3.6')
+    env.virtualenv_current = posixpath.join(env.code_current, 'python_env-3.6')
+    env.virtualenv_root = posixpath.join(env.code_root, 'python_env-3.6')
 
     env.services = posixpath.join(env.code_root, 'services')
     env.db = '%s_%s' % (env.project, env.deploy_env)
@@ -233,7 +233,7 @@ def preindex_views():
 @roles(ROLES_DEPLOY)
 def send_email(subject, message, use_current_release=False):
     code_dir = env.code_current if use_current_release else env.code_root
-    virtualenv_dir = env.py3_virtualenv_current if use_current_release else env.py3_virtualenv_root
+    virtualenv_dir = env.virtualenv_current if use_current_release else env.virtualenv_root
     with cd(code_dir):
         sudo(
             f'{virtualenv_dir}/bin/python manage.py '
@@ -511,7 +511,7 @@ def manage(cmd):
     """
     _require_target()
     with cd(env.code_current):
-        sudo('{env.py3_virtualenv_current}/bin/python manage.py {cmd}'
+        sudo('{env.virtualenv_current}/bin/python manage.py {cmd}'
              .format(env=env, cmd=cmd))
 
 
@@ -627,7 +627,7 @@ def reset_pillow(pillow):
     ))
     with cd(env.code_root):
         command = '{virtualenv_root}/bin/python manage.py ptop_reset_checkpoint {pillow} --noinput'.format(
-            virtualenv_root=env.py3_virtualenv_root,
+            virtualenv_root=env.virtualenv_root,
             pillow=pillow,
         )
         sudo(command)

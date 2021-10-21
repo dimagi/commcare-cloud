@@ -21,7 +21,7 @@ def preindex_views():
             '8 {user}" {mail_flag} | at -t `date -d "5 seconds" '
             '+%m%d%H%M.%S`'
         ).format(
-            virtualenv_root=env.py3_virtualenv_root,
+            virtualenv_root=env.virtualenv_root,
             code_root=env.code_root,
             user=env.user,
             mail_flag='--mail' if env.email_enabled else ''
@@ -51,7 +51,7 @@ def ensure_checkpoints_safe():
     extras = '--print-only' if env.ignore_kafka_checkpoint_warning else ''
     with cd(env.code_root):
         try:
-            sudo('{env.py3_virtualenv_root}/bin/python manage.py validate_kafka_pillow_checkpoints {extras}'.format(
+            sudo('{env.virtualenv_root}/bin/python manage.py validate_kafka_pillow_checkpoints {extras}'.format(
                 env=env, extras=extras
             ))
         except Exception as e:
@@ -74,7 +74,7 @@ def _is_preindex_complete():
             ('{virtualenv_root}/bin/python '
             '{code_root}/manage.py preindex_everything '
             '--check').format(
-                virtualenv_root=env.py3_virtualenv_root,
+                virtualenv_root=env.virtualenv_root,
                 code_root=env.code_root,
                 user=env.user,
             ),
@@ -85,20 +85,20 @@ def _is_preindex_complete():
 def flip_es_aliases():
     """Flip elasticsearch aliases to the latest version"""
     with cd(env.code_root):
-        sudo('%(py3_virtualenv_root)s/bin/python manage.py ptop_es_manage --flip_all_aliases' % env)
+        sudo('%(virtualenv_root)s/bin/python manage.py ptop_es_manage --flip_all_aliases' % env)
 
 
 @roles(ROLES_DEPLOY)
 def migrate():
     """run migrations on remote environment"""
     with cd(env.code_root):
-        sudo('%(py3_virtualenv_root)s/bin/python manage.py sync_finish_couchdb_hq' % env)
-        sudo('%(py3_virtualenv_root)s/bin/python manage.py migrate_multi --noinput' % env)
+        sudo('%(virtualenv_root)s/bin/python manage.py sync_finish_couchdb_hq' % env)
+        sudo('%(virtualenv_root)s/bin/python manage.py migrate_multi --noinput' % env)
 
 
 @roles(ROLES_DEPLOY)
 def set_in_progress_flag(use_current_release=False):
-    venv = env.py3_virtualenv_root if not use_current_release else env.py3_virtualenv_current
+    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
     with cd(env.code_root if not use_current_release else env.code_current):
         sudo('{}/bin/python manage.py deploy_in_progress'.format(venv))
 
@@ -109,7 +109,7 @@ def migrations_exist():
     Check if there exists database migrations to run
     """
     with cd(env.code_root):
-        result = sudo('%(py3_virtualenv_root)s/bin/python manage.py showmigrations | grep "\[ ]" | wc -l' % env)
+        result = sudo('%(virtualenv_root)s/bin/python manage.py showmigrations | grep "\[ ]" | wc -l' % env)
         try:
             # This command usually returns some logging and then then number of migrations
             result = result.splitlines()
@@ -125,4 +125,4 @@ def migrations_exist():
 def create_kafka_topics():
     """Create kafka topics if needed.  This is pretty fast."""
     with cd(env.code_root):
-        sudo('%(py3_virtualenv_root)s/bin/python manage.py create_kafka_topics' % env)
+        sudo('%(virtualenv_root)s/bin/python manage.py create_kafka_topics' % env)
