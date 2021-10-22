@@ -438,7 +438,7 @@ CACHES = {
 }
 
 ELASTICSEARCH_HOSTS = [
-    {% for es_host in groups.elasticsearch -%}
+    {% for es_host in groups.es_coordinator -%}
     '{{ es_host }}',
     {% endfor -%}
 ]
