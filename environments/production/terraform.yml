@@ -47,6 +47,7 @@ servers:
     group: "mobile_webworkers"
     os: ubuntu_pro_bionic
     count: 6
+    server_auto_recovery: true
 
 
   - server_name: "esmaster6-production"

@@ -47,6 +47,7 @@ servers:
     volume_type: "gp3"
     group: control
     os: bionic
+    server_auto_recovery: true
   - server_name: "web1-india"
     server_instance_type: "r5a.xlarge"
     network_tier: "app-private"
@@ -56,6 +57,7 @@ servers:
     volume_type: "gp3"
     group: control
     os: bionic
+    server_auto_recovery: true
 
   - server_name: "celery1-india"
     server_instance_type: "t3.large"
