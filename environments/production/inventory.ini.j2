@@ -177,12 +177,6 @@ webworkers
 
 {{ __esmaster8__ }} elasticsearch_node_name=esmaster8
 
-{{ __escoordinator1__ }} elasticsearch_node_name=escoordinator1 elasticsearch_node_zone=us-east-1a
-
-{{ __escoordinator2__ }} elasticsearch_node_name=escoordinator2 elasticsearch_node_zone=us-east-1b
-
-{{ __escoordinator3__ }} elasticsearch_node_name=escoordinator3 elasticsearch_node_zone=us-east-1c
-
 [es_master:children]
 esmaster6
 esmaster7
@@ -206,16 +200,6 @@ elasticsearch_node_zone=us-east-1b
 [elasticsearch:children]
 es_master
 es_data
-es_coordinator
-
-[es_coordinator:children]
-escoordinator1
-escoordinator2
-escoordinator3
-
-[es_coordinator:vars]
-elasticsearch_master=false
-elasticsearch_data=false
 
 {{ __couch11__ }}
 {{ __couch12__ }}
