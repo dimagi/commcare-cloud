@@ -844,7 +844,7 @@ Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a 
   - Wait for replicas to get assigned.
 - Finally **remember to turn off** auto shard allocation using
     ```
-    curl 'http://<es_url>/_cluster/settings/' -X PUT  --data ‘{"persistent":{"cluster.routing.allocation.enable":"none"}}'
+    curl 'http://<es_url>/_cluster/settings/' -X PUT  --data '{"persistent":{"cluster.routing.allocation.enable":"none"}}'
     ```
 
 
