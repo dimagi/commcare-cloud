@@ -30,6 +30,6 @@ roles:
     version: 2.3.1  
 
 collections:
-  - name: https://github.com/dimagi/commcare-logstash/releases/download/V0.9.4/dimagi-commcare_logstash-0.9.4.tar.gz
+  - name: https://github.com/dimagi/commcare-logstash/releases/download/V0.9.5/dimagi-commcare_logstash-0.9.5.tar.gz
   - name: https://github.com/dimagi/commcare-prometheus/releases/download/V0.1.10/dimagi-commcare_prometheus-0.1.10.tar.gz
   - name: community.general
