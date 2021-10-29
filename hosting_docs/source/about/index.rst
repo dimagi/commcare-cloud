@@ -28,4 +28,6 @@ If you or your organization is hosting or interested in hosting its own CommCare
 How to use this Guide
 ---------------------
 
-This
+Write below content
+
+<Read and understad prereqs, read the deploy section for first time deploy and deploy checklist, read ops and management for regular administration, read scaling section to scale services, do backups and security, and finally reference material>
