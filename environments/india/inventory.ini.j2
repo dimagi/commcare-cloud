@@ -13,6 +13,9 @@
 {{ __esmaster4__ }} elasticsearch_node_name=esmaster4 elasticsearch_node_zone=ap-south-1a
 {{ __es0__ }} elasticsearch_node_name=es0 elasticsearch_node_zone=ap-south-1a
 {{ __es2__ }} elasticsearch_node_name=es2 elasticsearch_node_zone=ap-south-1b
+{{ __escoordinator1__ }} elasticsearch_node_name=escoordinator1 elasticsearch_node_zone=ap-south-1a
+{{ __escoordinator2__ }} elasticsearch_node_name=escoordinator2 elasticsearch_node_zone=ap-south-1b
+{{ __escoordinator3__ }} elasticsearch_node_name=escoordinator3 elasticsearch_node_zone=ap-south-1c
 
 [es_master:children]
 esmaster2
@@ -30,6 +33,16 @@ es2
 [elasticsearch:children]
 es_master
 es_data
+es_coordinator
+
+[es_coordinator:children]
+escoordinator1
+escoordinator2
+escoordinator3
+
+[es_coordinator:vars]
+elasticsearch_master=false
+elasticsearch_data=false
 
 {{ __formplayer1__ }}
 {{ __pillow2__ }}
