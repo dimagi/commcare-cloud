@@ -11,4 +11,5 @@ Overview on scaling CommCareHQ
    /scaling/3-postgres
    /scaling/4-redis
    /scaling/5-elasticsearch
-   /scaling/6-sizing
+   /scaling/6-sizing-buckets
+   /scaling/7-sizing
