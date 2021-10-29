@@ -1,3 +1,5 @@
+.. _multi-server-install:
+
 Multi Server Installation
 =========================
 

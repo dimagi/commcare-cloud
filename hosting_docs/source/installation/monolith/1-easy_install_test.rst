@@ -1,3 +1,5 @@
+.. _quick-install:
+
 Quick Install on Single Server
 ==============================
 

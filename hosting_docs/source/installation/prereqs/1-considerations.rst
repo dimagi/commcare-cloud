@@ -1,3 +1,5 @@
+.. _hosting-considerations:
+
 Hosting Considerations
 ======================
 

@@ -1,7 +1,9 @@
+.. _hosting-prereqs:
+
 Prerequisites to Setup CommCareHQ in Production
 ===============================================
 
-Write Intro about what HQ is and how it can be used. Mention about SaaS offerings and clarify that these docs are for self-hosting
+In this section, we list down various prerequisites for hosting CommCareHQ successfully.
 
 .. toctree::
    :maxdepth: 4
