@@ -2,6 +2,14 @@
   hosts: "{{ groups.webworkers.0 }}"
   become: true
   tasks:
+    - name: Sync couch views
+      become: yes
+      become_user: "{{ cchq_user }}"
+      django_manage:
+        command: 'sync_couch_views'
+        app_path: "{{ code_home }}"
+        virtualenv: "{{ py3_virtualenv_home }}"
+      when: CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL
     - name: Migrate DB
       become: yes
       become_user: "{{ cchq_user }}"

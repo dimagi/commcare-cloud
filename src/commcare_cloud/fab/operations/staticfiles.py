@@ -53,6 +53,8 @@ def collectstatic(use_current_release=False):
     """
     venv = env.py3_virtualenv_root if not use_current_release else env.py3_virtualenv_current
     with cd(env.code_root if not use_current_release else env.code_current):
+        if not use_current_release:
+            sudo('rm -rf staticfiles')
         sudo('{}/bin/python manage.py collectstatic --noinput -v 0'.format(venv))
         sudo('{}/bin/python manage.py fix_less_imports_collectstatic'.format(venv))
         sudo('{}/bin/python manage.py compilejsi18n'.format(venv))
@@ -75,7 +77,7 @@ def push_manifest(use_current_release=False):
     if env.use_shared_dir_for_staticfiles:
         with cd(env.code_root if not use_current_release else env.code_current):
             git_hash = _get_git_hash()
-            sudo('mkdir -p {env.shared_dir_for_staticfiles}/{git_hash}')
+            sudo('mkdir -p {env.shared_dir_for_staticfiles}/{git_hash}'.format(env=env, git_hash=git_hash))
             # copy staticfiles/CACHE/** to {env.shared_dir_for_staticfiles}/{git_hash}/staticfiles/CACHE/**
             sudo("rsync -r --delete"
                  " --include='staticfiles/' --include='CACHE/' --include='staticfiles/CACHE/**' --exclude='*'"

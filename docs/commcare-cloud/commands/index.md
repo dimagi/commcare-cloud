@@ -9,7 +9,7 @@
 All `commcare-cloud` commands take the following form:
 
 ```
-commcare-cloud [--control]
+commcare-cloud [--control] [--control-setup {yes,no}]
                <env>
                {after-reboot,ansible-playbook,ap,aws-fill-inventory,aws-list,aws-sign-in,bootstrap-users,celery-resource-report,copy-files,couchdb-cluster-info,deploy,deploy-stack,aps,django-manage,downtime,export-sentry-events,fab,forward-port,list-postgresql-dbs,lookup,migrate-couchdb,migrate_couchdb,migrate-secrets,mosh,openvpn-activate-user,openvpn-claim-user,pillow-resource-report,pillow-topic-assignments,ping,run-module,run-shell-command,secrets,send-datadog-event,service,ssh,terraform,terraform-migrate-state,tmux,update-config,update-local-known-hosts,update-supervisor-confs,update-user-key,update-users,validate-environment-settings}
                ...
@@ -38,6 +38,16 @@ update the code, and run the same command entered locally but with
 `--control` removed. For long-running commands,
 you will have to remain connected to the the control machine
 for the entirety of the run.
+
+### `--control-setup {yes,no}`
+
+Implies --control, and overrides the command's run_setup_on_control_by_default value.
+
+If set to 'yes', the latest version of the branch will be pulled and commcare-cloud will
+have all its dependencies updated before the command is run.
+If set to 'no', the command will be run on whatever checkout/install of commcare-cloud
+is already on the control machine.
+This defaults to 'yes' if command.run_setup_on_control_by_default is True, otherwise to 'no'.
 
 
 ## `cchq` alias
@@ -177,6 +187,9 @@ This will also automatically add the ssh argument `-A`
 when `<server>` is `control`.
 
 All trailing arguments are passed directly to `ssh`.
+
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
 
 ##### Positional Arguments
 
@@ -364,6 +377,9 @@ Run an arbitrary command via the Ansible shell module.
 commcare-cloud <env> run-shell-command [--silence-warnings] [--use-factory-auth] inventory_group shell_command
 ```
 
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
+
 ##### Example
 
 ```
@@ -521,6 +537,9 @@ runs `./manage.py ...` on the first django_manage machine of &lt;env&gt; or
 server you specify.
 Omit &lt;command&gt; to see a full list of possible commands.
 
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
+
 ##### Example
 
 To open a django shell in a tmux window using the `2018-04-13_18.16` release.
@@ -572,6 +591,9 @@ Connect to a remote host with ssh and open a tmux session.
 ```
 commcare-cloud <env> tmux [--quiet] [server] [remote_command]
 ```
+
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
 
 ##### Example
 
@@ -645,6 +667,9 @@ Print out the list of Kafka partitions assigned to each pillow process.
 ```
 commcare-cloud <env> pillow-topic-assignments [--csv] pillow_name
 ```
+
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
 
 ##### Positional Arguments
 

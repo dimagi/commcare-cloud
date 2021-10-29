@@ -33,6 +33,7 @@ class PillowOptions(jsonobject.JsonObject):
     dedicated_migration_process = jsonobject.BooleanProperty(default=False)
     total_processes = jsonobject.IntegerProperty(default=None, exclude_if_none=True)
     processor_chunk_size = jsonobject.IntegerProperty(default=None, exclude_if_none=True)
+    exclude_ucrs = jsonobject.StringProperty(default=None, exclude_if_none=True)
 
 
 class AppProcessesConfig(jsonobject.JsonObject):

@@ -29,6 +29,11 @@
   with_items:
     - "{{ couchdb_parent_srcs_dir }}"
 
+- name: Remove old Couch apt repo
+  block:
+    - apt_key: id=8756C4F765C9AC3CB6B85D62379CE192D401AB61 state=absent
+    - apt_repository: repo="deb https://apache.bintray.com/couchdb-deb bionic main" state=absent
+
 - name: Add Couch apt repo (for libmozjs dependency)
   block:
     - apt_key: url=https://couchdb.apache.org/repo/keys.asc state=present
@@ -45,6 +50,5 @@
   apt:
     name:
       - esl-erlang={{ couchdb_erlang_version }}
-      - erlang-mode={{ couchdb_erlang_version }}
     force: yes
 

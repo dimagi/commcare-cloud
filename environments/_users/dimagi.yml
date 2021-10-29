@@ -1,5 +1,6 @@
 dev_users:
   present:
+    - adunn
     - aphulera
     - biyeun
     - cellowitz
@@ -14,6 +15,7 @@ dev_users:
     - jmiller
     - jschweers
     - matthewriley
+    - mlee
     - mkangia
     - mperosa
     - nhooper
@@ -23,7 +25,6 @@ dev_users:
     - sravfeyn
     - schauhan
     - sherbers
-    - spokhriyal
     - rcostello
   absent:
     - astone
@@ -42,3 +43,4 @@ dev_users:
     - dchung
     - cstahl
     - rnegi
+    - spokhriyal

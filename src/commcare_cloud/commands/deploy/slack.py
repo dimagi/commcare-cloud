@@ -61,24 +61,20 @@ class SlackClient:
         self._post("https://slack.com/api/conversations.join", {"channel": self.channel})
 
     def send_deploy_start_message(self, context):
+        message = f"Deploy of '{context.service_name}' to '{self.environment.meta_config.deploy_env}' started"
         blocks = self._get_message_blocks("*Deploy Started*", context)
-        response = self._post_blocks(blocks)
+        response = self._post_message(message, blocks)
         context.set_meta_value('slack_thread_ts', response["ts"])
 
     def send_deploy_end_message(self, context, is_success):
         thread_ts = context.get_meta_value('slack_thread_ts')
-        if is_success:
-            message = f"*Deploy Success* {Emoji.success.code}"
-        else:
-            message = f"*Deploy Failed* {Emoji.failure.code}"
-        blocks = self._get_message_blocks(message, context)
         reaction_emoji = Emoji.success_reaction if is_success else Emoji.failure_reaction
         self._post_reaction(thread_ts, reaction_emoji)
-        self._post_blocks(blocks, thread_ts=thread_ts)
 
-    def _post_blocks(self, blocks, thread_ts=None):
+    def _post_message(self, notification_text, blocks, thread_ts=None):
         data = {
             "channel": self.channel,
+            "text": notification_text,
             "blocks": blocks
         }
         if thread_ts:

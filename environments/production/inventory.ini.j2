@@ -1,13 +1,11 @@
 {{ __proxy2__ }}
 {{ __proxy3__ }}
 {{ __proxy4__ }}
-{{ __proxy5__ }}
 
 [proxy:children]
 proxy2
 proxy3
 proxy4
-proxy5
 
 {{ __web_a__ }}
 
@@ -214,7 +212,7 @@ couch13
 couch_alb
 
 [couchdb2:vars]
-swap_size=8G
+swap_size=27G
 
 [couchdb2_proxy:children]
 couch_alb

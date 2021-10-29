@@ -1,5 +1,5 @@
 dev_users:
-  present:
-    - mlee
+  present: []
   absent:
+    # only for users we want to completely remove
     - mliang

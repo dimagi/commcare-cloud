@@ -23,7 +23,10 @@
         - logging
       logrotate_scripts:
         - name: "{{ deploy_env }}_couchdb2"
-          path: "{{ couchdb_dir }}/var/log/*.stderr"
+          paths:
+            - "{{ couchdb_dir }}/var/log/*.stderr"
+            - "{{ couchdb_dir }}/var/log/*.stdout"
+            - "{{ couchdb_dir }}/var/log/*.log"
           options:
             - hourly
             - size 300M
@@ -35,7 +38,6 @@
             - nocreate
             - notifempty
 
-              
 - name: Couchdb2 proxy
   hosts: couchdb2_proxy
   become: true
