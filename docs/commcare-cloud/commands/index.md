@@ -708,12 +708,16 @@ commcare-cloud <env> secrets {view,edit,list-append,list-remove} secret_name
 Migrate secrets from one backend to another
 
 ```
-commcare-cloud <env> migrate-secrets from_backend
+commcare-cloud <env> migrate-secrets [--to-backend TO_BACKEND] from_backend
 ```
 
 ##### Positional Arguments
 
 ###### `from_backend`
+
+##### Optional Arguments
+
+###### `--to-backend TO_BACKEND`
 
 ---
 
