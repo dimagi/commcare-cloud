@@ -98,8 +98,7 @@
       owner: "{{ cchq_user }}"
       group: "{{ cchq_user }}"
 
-  # This task has the additional effect of creating the virtualenv if it does not exist
-  # i.e. on a python2 install that is getting a python3 env for the first time
+  # This task has the additional effect of creating the virtualenv
   - name: Upgrade python packages
     become: true
     pip:
