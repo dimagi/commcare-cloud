@@ -85,12 +85,16 @@ class MigrateSecrets(CommandBase):
 
     arguments = (
         Argument(dest='from_backend'),
+        Argument('--to-backend', default=None),
     )
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         from_backend = all_secrets_backends_by_name[args.from_backend].from_environment(environment)
-        to_backend = environment.secrets_backend
+        if args.to_backend:
+            to_backend = all_secrets_backends_by_name[args.to_backend].from_environment(environment)
+        else:
+            to_backend = environment.secrets_backend
         if from_backend.name == to_backend.name:
             puts(color_error(
                 'Refusing to copy from {from_backend.name} to {to_backend.name}: backends must differ'
