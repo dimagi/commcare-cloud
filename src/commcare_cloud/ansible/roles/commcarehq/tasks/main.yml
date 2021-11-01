@@ -104,7 +104,6 @@
     become: true
     pip:
       name:
-        - six
         - pip
         - setuptools
       state: latest
