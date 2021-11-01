@@ -290,11 +290,11 @@ rds_instances:
     storage: 500
     max_storage: 5000
     multi_az: true
-    engine_version: 9.6.20
+    engine_version: "10.17"
     backup_window: "23:00-01:00"
     backup_retention: 7
     params:
-      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard1-production"
     instance_type: "db.m5.4xlarge"
@@ -363,13 +363,13 @@ rds_instances:
     storage: 1000
     max_storage: 60500
     multi_az: true
-    engine_version: 9.6.20
+    engine_version: "10.17"
     params:
       work_mem: 2457kB
       shared_buffers: 3840MB
       effective_cache_size: 11520MB
       maintenance_work_mem: 960MB
-      max_connections: "least({dbinstanceclassmemory/9531392},5000)"
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
       vacuum_cost_limit: 2000
 
   - identifier: "pgformplayer0-production"
@@ -388,7 +388,7 @@ rds_instances:
     instance_type: "db.m5.xlarge"
     storage: 2000
     multi_az: true
-    engine_version: 9.6.20
+    engine_version: "10.17"
     backup_window: "23:00-01:00"
     backup_retention: 7
     monitoring_interval: 0
