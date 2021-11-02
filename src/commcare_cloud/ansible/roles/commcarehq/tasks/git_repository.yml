@@ -24,7 +24,7 @@
   - name: install pip requirements ({{ item.url }})
     pip:
       requirements: "{{ repo_dest }}/{{ item.requirements_path }}"
-      virtualenv: "{{ py3_virtualenv_source }}"
+      virtualenv: "{{ virtualenv_source }}"
       virtualenv_python: "python3.6"
       chdir: "{{ code_source }}"
     when: item.requirements_path|default(None) and not testing|default(False)

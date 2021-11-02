@@ -98,17 +98,15 @@
       owner: "{{ cchq_user }}"
       group: "{{ cchq_user }}"
 
-  # This task has the additional effect of creating the virtualenv if it does not exist
-  # i.e. on a python2 install that is getting a python3 env for the first time
+  # This task has the additional effect of creating the virtualenv
   - name: Upgrade python packages
     become: true
     pip:
       name:
-        - six
         - pip
         - setuptools
       state: latest
-      virtualenv: "{{ py3_virtualenv_home }}"
+      virtualenv: "{{ virtualenv_home }}"
       virtualenv_python: "python3.6"
     tags:
       - py3
@@ -117,7 +115,7 @@
     become: true
     pip:
       requirements: "{{ code_home }}/requirements/prod-requirements.txt"
-      virtualenv: "{{ py3_virtualenv_home }}"
+      virtualenv: "{{ virtualenv_home }}"
       chdir: "{{ code_home }}"
     tags:
       - never  # means only when the following tag is specified
@@ -144,7 +142,7 @@
     recurse: yes
   loop:
     - "{{ code_source }}"
-    - "{{ py3_virtualenv_source }}"
+    - "{{ virtualenv_source }}"
     - "{{ code_home }}"
   tags:
     - py3

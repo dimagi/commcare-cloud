@@ -4,7 +4,7 @@ import datetime
 import time
 
 from fabric.context_managers import cd, settings, hide
-from fabric.api import roles, sudo, env, parallel
+from fabric.api import roles, sudo, env
 from fabric.decorators import runs_once
 
 from ..exceptions import PreindexNotFinished
@@ -15,17 +15,9 @@ from ..const import ROLES_PILLOWTOP, ROLES_DEPLOY
 @runs_once
 def preindex_views():
     with cd(env.code_root):
-        sudo((
-            'echo "{virtualenv_root}/bin/python '
-            '{code_root}/manage.py preindex_everything '
-            '8 {user}" {mail_flag} | at -t `date -d "5 seconds" '
-            '+%m%d%H%M.%S`'
-        ).format(
-            virtualenv_root=env.py3_virtualenv_root,
-            code_root=env.code_root,
-            user=env.user,
-            mail_flag='--mail' if env.email_enabled else ''
-        ))
+        command = f'{env.virtualenv_root}/bin/python {env.code_root}/manage.py preindex_everything 8 {env.user}'
+        mail_flag = '--mail' if env.email_enabled else ''
+        sudo(f'echo "{command}" {mail_flag} | at -t `date -d "5 seconds" +%m%d%H%M.%S`')
 
 
 def ensure_preindex_completion():
@@ -51,33 +43,24 @@ def ensure_checkpoints_safe():
     extras = '--print-only' if env.ignore_kafka_checkpoint_warning else ''
     with cd(env.code_root):
         try:
-            sudo('{env.py3_virtualenv_root}/bin/python manage.py validate_kafka_pillow_checkpoints {extras}'.format(
-                env=env, extras=extras
-            ))
-        except Exception as e:
-            if not env.ignore_kafka_checkpoint_warning:
-                message = (
-                    "Deploy failed, likely because kafka checkpoints weren't available.\n"
-                    "Scroll up for more detailed information.\n"
-                    "You can rerun with --set ignore_kafka_checkpoint_warning=true to prevent this error from blocking the deploy."
-                ).format(e)
-                raise Exception(message)
-            else:
+            sudo(f'{env.virtualenv_root}/bin/python manage.py validate_kafka_pillow_checkpoints {extras}')
+        except Exception:
+            if env.ignore_kafka_checkpoint_warning:
                 # if we were forcing and still got an error this is likely a bug so we should raise it
                 raise
+            raise Exception(
+                "Deploy failed, likely because kafka checkpoints weren't available.\n"
+                "Scroll up for more detailed information.\n"
+                "You can rerun with --set ignore_kafka_checkpoint_warning=true "
+                "to prevent this error from blocking the deploy."
+            )
 
 
 @roles(ROLES_DEPLOY)
 def _is_preindex_complete():
     with settings(warn_only=True), hide('warnings'):
         return sudo(
-            ('{virtualenv_root}/bin/python '
-            '{code_root}/manage.py preindex_everything '
-            '--check').format(
-                virtualenv_root=env.py3_virtualenv_root,
-                code_root=env.code_root,
-                user=env.user,
-            ),
+            f'{env.virtualenv_root}/bin/python {env.code_root}/manage.py preindex_everything --check'
         ).succeeded
 
 
@@ -85,22 +68,22 @@ def _is_preindex_complete():
 def flip_es_aliases():
     """Flip elasticsearch aliases to the latest version"""
     with cd(env.code_root):
-        sudo('%(py3_virtualenv_root)s/bin/python manage.py ptop_es_manage --flip_all_aliases' % env)
+        sudo(f'{env.virtualenv_root}/bin/python manage.py ptop_es_manage --flip_all_aliases')
 
 
 @roles(ROLES_DEPLOY)
 def migrate():
     """run migrations on remote environment"""
     with cd(env.code_root):
-        sudo('%(py3_virtualenv_root)s/bin/python manage.py sync_finish_couchdb_hq' % env)
-        sudo('%(py3_virtualenv_root)s/bin/python manage.py migrate_multi --noinput' % env)
+        sudo(f'{env.virtualenv_root}/bin/python manage.py sync_finish_couchdb_hq')
+        sudo(f'{env.virtualenv_root}/bin/python manage.py migrate_multi --noinput')
 
 
 @roles(ROLES_DEPLOY)
 def set_in_progress_flag(use_current_release=False):
-    venv = env.py3_virtualenv_root if not use_current_release else env.py3_virtualenv_current
+    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
     with cd(env.code_root if not use_current_release else env.code_current):
-        sudo('{}/bin/python manage.py deploy_in_progress'.format(venv))
+        sudo(f'{venv}/bin/python manage.py deploy_in_progress')
 
 
 @roles(ROLES_DEPLOY)
@@ -109,7 +92,7 @@ def migrations_exist():
     Check if there exists database migrations to run
     """
     with cd(env.code_root):
-        result = sudo('%(py3_virtualenv_root)s/bin/python manage.py showmigrations | grep "\[ ]" | wc -l' % env)
+        result = sudo(f'{env.virtualenv_root}/bin/python manage.py showmigrations | grep "\\[ ]" | wc -l')
         try:
             # This command usually returns some logging and then then number of migrations
             result = result.splitlines()
@@ -125,4 +108,4 @@ def migrations_exist():
 def create_kafka_topics():
     """Create kafka topics if needed.  This is pretty fast."""
     with cd(env.code_root):
-        sudo('%(py3_virtualenv_root)s/bin/python manage.py create_kafka_topics' % env)
+        sudo(f'{env.virtualenv_root}/bin/python manage.py create_kafka_topics')

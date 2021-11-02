@@ -155,7 +155,7 @@ def _clone_virtual_env(virtualenv_current, virtualenv_root):
 @roles(ROLES_ALL_SRC)
 @parallel
 def clone_virtualenv():
-    _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
+    _clone_virtual_env(env.virtualenv_current, env.virtualenv_root)
 
 
 def update_virtualenv(full_cluster=True):
@@ -174,11 +174,11 @@ def update_virtualenv(full_cluster=True):
         exists = functools.partial(files.exists, use_sudo=True)
 
         # Optimization if we have current setup (i.e. not the first deploy)
-        if exists(env.py3_virtualenv_current) and not exists(env.py3_virtualenv_root):
-            _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
-        elif not exists(env.py3_virtualenv_current):
+        if exists(env.virtualenv_current) and not exists(env.virtualenv_root):
+            _clone_virtual_env(env.virtualenv_current, env.virtualenv_root)
+        elif not exists(env.virtualenv_current):
             raise EnvironmentException(
-                "Virtual environment not found: {}".format(env.py3_virtualenv_current)
+                "Virtual environment not found: {}".format(env.virtualenv_current)
             )
 
         requirements_files = [join("requirements", "prod-requirements.txt")]
@@ -189,14 +189,11 @@ def update_virtualenv(full_cluster=True):
         )
 
         with cd(env.code_root):
-            cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
-                env.sudo_user, env.py3_virtualenv_root)
-
-            proxy = " --proxy={}".format(env.http_proxy) if env.http_proxy else ""
-            sudo("{} pip install --quiet --upgrade --timeout=60{} pip-tools".format(
-                cmd_prefix, proxy))
-            sudo("{} pip-sync --quiet --pip-args='--timeout=60{}' {}".format(
-                cmd_prefix, proxy, " ".join(requirements_files)))
+            cmd_prefix = f'{env.virtualenv_root}/bin/'
+            proxy = f" --proxy={env.http_proxy}" if env.http_proxy else ""
+            reqs = " ".join(requirements_files)
+            sudo(f"{cmd_prefix}pip install --quiet --upgrade --timeout=60{proxy} pip-tools")
+            sudo(f"{cmd_prefix}pip-sync --quiet --pip-args='--timeout=60{proxy}' {reqs}")
 
     return update
 
@@ -218,7 +215,7 @@ def kill_stale_celery_workers(delay=0):
         sudo(
             'echo "{}/bin/python manage.py '
             'kill_stale_celery_workers" '
-            '| at now + {} minutes'.format(env.py3_virtualenv_current, delay)
+            '| at now + {} minutes'.format(env.virtualenv_current, delay)
         )
 
 

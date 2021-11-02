@@ -76,7 +76,7 @@
     AIRFLOW_HOME: "{{ airflow_home }}"
   loop:
     - {"var": "CCHQ_HOME", "val": "{{ code_home }}"}
-    - {"var": "CCHQ_PY_ENV", "val": "{{ py3_virtualenv_home }}"}
+    - {"var": "CCHQ_PY_ENV", "val": "{{ virtualenv_home }}"}
 
 - name: Purge old logs
   become: yes
