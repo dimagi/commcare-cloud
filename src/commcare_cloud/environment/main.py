@@ -115,6 +115,10 @@ class Environment(object):
         except FileNotFoundError:
             return {}
 
+    @property
+    def python_version(self):
+        return self.public_vars.get('python_version', '3.6')
+
     @memoized_property
     def _disallowed_public_variables(self):
         return set(get_role_defaults('postgresql_base').keys()) | \
