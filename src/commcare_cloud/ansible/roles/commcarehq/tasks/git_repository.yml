@@ -30,7 +30,7 @@
     when: item.requirements_path|default(None) and not testing|default(False)
     tags:
       - slow
-      - py3
+      - python
 
   when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists
   become: true

@@ -16,7 +16,7 @@
   register: add_python_ppa_trusty
   when: ansible_distribution_version == '14.04'
   tags:
-    - py3
+    - python
 
 - name: Update package list
   apt: update_cache=yes
@@ -27,7 +27,7 @@
     add_python_ppa_trusty is defined and add_python_ppa_trusty is changed or
     add_python_ppa_bionic is defined and add_python_ppa_bionic is changed
   tags:
-    - py3
+    - python
 
 
 - name: Install python packages
@@ -37,7 +37,7 @@
       - python{{ python_version }}
       - python{{ python_version }}-dev
   tags:
-    - py3
+    - python
 
 # Install base packages, common to all servers
 - name: Install common packages

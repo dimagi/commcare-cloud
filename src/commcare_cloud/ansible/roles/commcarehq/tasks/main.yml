@@ -122,9 +122,9 @@
       virtualenv_python: "{{ python_name }}"
     when: not (virtualenv_path | path).exists()
     tags:
-      - py3
+      - python
 
-  - name: install pip requirements if py3 tag specified
+  - name: install pip requirements if "python" tag specified
     become: true
     pip:
       requirements: "{{ code_home }}/requirements/prod-requirements.txt"
@@ -132,7 +132,7 @@
       chdir: "{{ code_home }}"
     tags:
       - never  # means only when the following tag is specified
-      - py3
+      - python
     when: not testing|default(False)
 
   - name: create "python_env" symlink
@@ -158,7 +158,7 @@
     group: "{{ cchq_user }}"
     recurse: yes
   tags:
-    - py3
+    - python
 
 - name: chown localsettings
   become: true
