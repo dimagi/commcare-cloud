@@ -11,10 +11,11 @@
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
   register: add_postgres_repo
 
-- name: Add Python PPA for trusty
-  apt_repository: repo='ppa:deadsnakes/ppa' state=present
-  register: add_python_ppa_trusty
-  when: ansible_distribution_version == '14.04'
+- name: Add Python PPA
+  apt_repository:
+    repo: 'ppa:deadsnakes/ppa'
+    state: '{{ "present" if use_deadsnakes else "absent" }}'
+  register: add_deadsnakes_ppa
   tags:
     - python
 
@@ -24,7 +25,7 @@
     add_mosh_repo is defined and add_mosh_repo is changed or
     add_postgres_repo is defined and add_postgres_repo is changed or
     add_pango_repo is defined and add_pango_repo is changed or
-    add_python_ppa_trusty is defined and add_python_ppa_trusty is changed or
+    add_deadsnakes_ppa is defined and add_deadsnakes_ppa is changed or
     add_python_ppa_bionic is defined and add_python_ppa_bionic is changed
   tags:
     - python
