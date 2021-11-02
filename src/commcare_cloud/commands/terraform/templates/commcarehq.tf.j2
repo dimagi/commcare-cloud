@@ -20,7 +20,6 @@ module "network" {
   vpn_connections   = "${var.vpn_connections}"
   vpn_connection_routes = "${var.vpn_connection_routes}"
   external_routes   = "${var.external_routes}"
-  openvpn_ip        = "${module.openvpn.openvpn-server-ip}"
 }
 
 
@@ -195,17 +194,6 @@ module "r53-private-zone-create" {
   records     = module.elasticache-module-base.primary_configuration_endpoint_address
 }
 {% endif %}
-
-module "openvpn" {
-  source = "./modules/openvpn"
-  openvpn_image = "${var.openvpn_image}"
-  environment = "${var.environment}"
-  vpn_size = "${var.openvpn_instance_type}"
-  instance_subnet = "${module.network.subnets-public[var.openvpn_az]}"
-  vpc_id = "${module.network.vpc-id}"
-  vpc_cidr = "${module.network.vpc-cidr}"
-  key_name = "${var.key_name}"
-}
 
 module "Users" {
   source = "./modules/iam"
