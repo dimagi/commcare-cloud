@@ -189,14 +189,11 @@ def update_virtualenv(full_cluster=True):
         )
 
         with cd(env.code_root):
-            cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
-                env.sudo_user, env.virtualenv_root)
-
-            proxy = " --proxy={}".format(env.http_proxy) if env.http_proxy else ""
-            sudo("{} pip install --quiet --upgrade --timeout=60{} pip-tools".format(
-                cmd_prefix, proxy))
-            sudo("{} pip-sync --quiet --pip-args='--timeout=60{}' {}".format(
-                cmd_prefix, proxy, " ".join(requirements_files)))
+            cmd_prefix = f'{env.virtualenv_root}/bin/'
+            proxy = f" --proxy={env.http_proxy}" if env.http_proxy else ""
+            reqs = " ".join(requirements_files)
+            sudo(f"{cmd_prefix}pip install --quiet --upgrade --timeout=60{proxy} pip-tools")
+            sudo(f"{cmd_prefix}pip-sync --quiet --pip-args='--timeout=60{proxy}' {reqs}")
 
     return update
 

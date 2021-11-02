@@ -27,7 +27,10 @@ def ping():
         print("[%s] vmware swap: %s" % (hostname, vmswap))
     #with hide('running'):
 
+
 ELASTICSEARCH_CHECKED = False
+
+
 @roles(ROLES_ELASTICSEARCH)
 def elasticsearch():
     global ELASTICSEARCH_CHECKED
@@ -35,6 +38,7 @@ def elasticsearch():
         run("curl -XGET 'http://%s:9200/_cluster/health?pretty=true'" % env.host)
         ELASTICSEARCH_CHECKED = True
     run('service elasticsearch status')
+
 
 @roles(ROLES_POSTGRESQL)
 def postgresql():

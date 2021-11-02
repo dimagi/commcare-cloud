@@ -511,8 +511,7 @@ def manage(cmd):
     """
     _require_target()
     with cd(env.code_current):
-        sudo('{env.virtualenv_current}/bin/python manage.py {cmd}'
-             .format(env=env, cmd=cmd))
+        sudo(f'{env.virtualenv_current}/bin/python manage.py {cmd}')
 
 
 @task
@@ -626,11 +625,7 @@ def reset_pillow(pillow):
         pillow=pillow
     ))
     with cd(env.code_root):
-        command = '{virtualenv_root}/bin/python manage.py ptop_reset_checkpoint {pillow} --noinput'.format(
-            virtualenv_root=env.virtualenv_root,
-            pillow=pillow,
-        )
-        sudo(command)
+        sudo(f'{env.virtualenv_root}/bin/python manage.py ptop_reset_checkpoint {pillow} --noinput')
     supervisor.supervisor_command('start {prefix}-{pillow}'.format(
         prefix=prefix,
         pillow=pillow
