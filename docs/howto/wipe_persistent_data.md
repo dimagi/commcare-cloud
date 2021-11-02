@@ -65,7 +65,7 @@ Rebuilding environment
        $ cchq monolith django-manage check_services
        $ sudo -iu cchq  # Required to set CCHQ_IS_FRESH_INSTALL=1
        (cchq) $ cd www/monolith/current
-       (cchq) $ source python_env-3.6/bin/activate
+       (cchq) $ source python_env/bin/activate
        (cchq) $ env CCHQ_IS_FRESH_INSTALL=1 ./manage.py migrate_multi
        (cchq) $ exit
 

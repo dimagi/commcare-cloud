@@ -7,7 +7,7 @@ metrics_home: "{{ www_home }}/metrics"
 legacy_service_home: "{{ code_home }}/services"
 service_home: "{{ www_home }}/services"
 python_version: '3.6'
-virtualenv_home: "{{ code_home }}/python_env-{{ python_version }}"
+virtualenv_home: "{{ code_home }}/python_env"
 nginx_static_home: "{{ code_home }}/staticfiles"
 encrypted_root: "/opt/data"
 root_encryption_mode: "ecryptfs"

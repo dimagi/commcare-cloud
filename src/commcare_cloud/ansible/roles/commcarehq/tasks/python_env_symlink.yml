@@ -1,0 +1,7 @@
+# Remove when symlink exists on all machines in all environments.
+- name: create "python_env" symlink
+  file:
+    src: python_env-{{ python_version }}
+    dest: "{{ virtualenv_home }}"
+    state: link
+    force: True

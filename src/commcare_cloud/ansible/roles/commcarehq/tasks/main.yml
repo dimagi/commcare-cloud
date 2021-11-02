@@ -72,12 +72,11 @@
     - "{{ service_home }}"
   tags: services
 
-- name: check for existing release
-  stat: path="{{ code_home }}/localsettings.py"
-  register: current_release
-
-- block:
+- name: Clone source repositories
+  when: not ((code_home | path) / "localsettings.py").exists()
+  block:
   - name: Clone CommCare source repository
+    # This also creates the virtualenv when initializing a new machine
     include_tasks: git_repository.yml
     loop:
       - url: "{{ commcarehq_repository }}"
@@ -98,32 +97,6 @@
       owner: "{{ cchq_user }}"
       group: "{{ cchq_user }}"
 
-  # This task has the additional effect of creating the virtualenv
-  - name: Upgrade python packages
-    become: true
-    pip:
-      name:
-        - pip
-        - setuptools
-      state: latest
-      virtualenv: "{{ virtualenv_home }}"
-      virtualenv_python: "{{ python_name }}"
-    tags:
-      - py3
-
-  - name: install pip requirements if py3 tag specified
-    become: true
-    pip:
-      requirements: "{{ code_home }}/requirements/prod-requirements.txt"
-      virtualenv: "{{ virtualenv_home }}"
-      chdir: "{{ code_home }}"
-    tags:
-      - never  # means only when the following tag is specified
-      - py3
-    when: not testing|default(False)
-
-  when: not current_release.stat.exists
-
 - name: copy localsettings
   become: true
   template:
@@ -133,17 +106,57 @@
     - localsettings
     - hq-localsettings
 
+- name: Setup python_env
+  vars:
+    virtualenv_name: python_env-{{ python_version }}
+    virtualenv_path: "{{ code_home | realpath }}/{{ virtualenv_name }}"
+  block:
+  - name: Create virtualenv for new Python version
+    become: true
+    pip:
+      name:
+        - pip
+        - setuptools
+      state: latest
+      virtualenv: "{{ virtualenv_path }}"
+      virtualenv_python: "{{ python_name }}"
+    when: not (virtualenv_path | path).exists()
+    tags:
+      - py3
+
+  - name: install pip requirements if py3 tag specified
+    become: true
+    pip:
+      requirements: "{{ code_home }}/requirements/prod-requirements.txt"
+      virtualenv: "{{ virtualenv_path }}"
+      chdir: "{{ code_home }}"
+    tags:
+      - never  # means only when the following tag is specified
+      - py3
+    when: not testing|default(False)
+
+  - name: create "python_env" symlink
+    # All references to the virtualenv should be made using this symlink. This
+    # allows Python to be upgraded without having to change other parts of the
+    # system (e.g., supervisor configs).
+    #
+    # Direct references to .../python_env-3.6 are allowed since the symlink may
+    # not exist in Python 3.6 environments.
+    file:
+      src: "{{ virtualenv_name }}"
+      dest: "{{ virtualenv_home }}"
+      state: link
+      force: True
+    tags:
+      - python
+
 - name: chown clone
   file:
-    path: "{{ item }}"
+    path: "{{ code_home | realpath }}"
     state: directory
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     recurse: yes
-  loop:
-    - "{{ code_source }}"
-    - "{{ virtualenv_source }}"
-    - "{{ code_home }}"
   tags:
     - py3
 
