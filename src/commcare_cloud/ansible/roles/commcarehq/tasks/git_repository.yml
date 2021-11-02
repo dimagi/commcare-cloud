@@ -25,7 +25,7 @@
     pip:
       requirements: "{{ repo_dest }}/{{ item.requirements_path }}"
       virtualenv: "{{ virtualenv_source }}"
-      virtualenv_python: "python3.6"
+      virtualenv_python: "{{ python_name }}"
       chdir: "{{ code_source }}"
     when: item.requirements_path|default(None) and not testing|default(False)
     tags:

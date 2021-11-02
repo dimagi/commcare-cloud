@@ -107,7 +107,7 @@
         - setuptools
       state: latest
       virtualenv: "{{ virtualenv_home }}"
-      virtualenv_python: "python3.6"
+      virtualenv_python: "{{ python_name }}"
     tags:
       - py3
 

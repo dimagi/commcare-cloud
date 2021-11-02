@@ -30,12 +30,12 @@
     - py3
 
 
-- name: Install python3.6 packages
+- name: Install python packages
   become: yes
   apt:
     name:
-      - python3.6
-      - python3.6-dev
+      - python{{ python_version }}
+      - python{{ python_version }}-dev
   tags:
     - py3
 
