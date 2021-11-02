@@ -107,8 +107,11 @@ def _setup_path():
     env.project_root = posixpath.join(env.code_root, env.project)
     env.project_media = posixpath.join(env.code_root, 'media')
 
-    env.virtualenv_current = posixpath.join(env.code_current, 'python_env-3.6')
-    env.virtualenv_root = posixpath.join(env.code_root, 'python_env-3.6')
+    # TODO remove when machines are no longer running Python 3.6
+    python_env = "python_env-3.6" if env.ccc_environment.python_version == "3.6" else "python_env"
+
+    env.virtualenv_current = posixpath.join(env.code_current, python_env)
+    env.virtualenv_root = posixpath.join(env.code_root, python_env)
 
     env.services = posixpath.join(env.code_root, 'services')
     env.db = '%s_%s' % (env.project, env.deploy_env)

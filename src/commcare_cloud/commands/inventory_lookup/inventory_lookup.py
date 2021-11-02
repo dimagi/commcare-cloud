@@ -282,22 +282,16 @@ class DjangoManage(CommandBase):
         else:
             tee_file_cmd = ''
 
-        python_env = 'python_env-3.6'
-        remote_command = (
-            'cd {code_dir}; {python_env}/bin/python manage.py {args}{tee_file_cmd}'
-            .format(
-                python_env=python_env,
-                cchq_user=environment.remote_conf.cchq_user,
-                code_dir=code_dir,
-                args=' '.join(shlex_quote(arg) for arg in manage_args),
-                tee_file_cmd=tee_file_cmd,
-            )
-        )
+        # TODO remove when machines are no longer running Python 3.6
+        python_env = "python_env-3.6" if environment.python_version == "3.6" else "python_env"
+
+        sh_args = ' '.join(shlex_quote(arg) for arg in manage_args)
+        command = f'cd {code_dir}; {python_env}/bin/python manage.py {sh_args}{tee_file_cmd}'
         if args.tmux:
-            args.remote_command = remote_command
+            args.remote_command = command
             return Tmux(self.parser).run(args, [])
         else:
-            ssh_args = _get_ssh_args(remote_command)
+            ssh_args = _get_ssh_args(command)
             return Ssh(self.parser).run(args, ssh_args)
 
 
