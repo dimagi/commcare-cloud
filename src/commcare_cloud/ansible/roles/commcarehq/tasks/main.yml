@@ -114,12 +114,12 @@
   vars:
     virtualenv_name: python_env-{{ python_version }}
     virtualenv_path: "{{ code_home }}/{{ virtualenv_name }}"
+  tags:
+    - python
   block:
   - name: check for virtualenv
     stat: path="{{ virtualenv_path }}"
     register: virtualenv_dir
-    tags:
-      - python
 
   - name: Create virtualenv for new Python version
     become: true
@@ -131,8 +131,6 @@
       virtualenv: "{{ virtualenv_path }}"
       virtualenv_python: "{{ python_name }}"
     when: not virtualenv_dir.stat.exists
-    tags:
-      - python
 
   - name: install pip requirements if "python" tag specified
     become: true
@@ -141,8 +139,7 @@
       virtualenv: "{{ virtualenv_path }}"
       chdir: "{{ code_home }}"
     tags:
-      - never  # means only when the following tag is specified
-      - python
+      - never  # means only when the 'python' tag is specified
     when: not testing|default(False)
 
   - name: create "python_env" symlink
@@ -157,8 +154,6 @@
       dest: "{{ virtualenv_home }}"
       state: link
       force: True
-    tags:
-      - python
 
 - name: chown clone
   file:
