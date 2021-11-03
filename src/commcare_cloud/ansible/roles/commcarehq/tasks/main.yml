@@ -72,8 +72,12 @@
     - "{{ service_home }}"
   tags: services
 
+- name: check for existing release (via localsettings.py)
+  stat: path="{{ code_home }}/localsettings.py"
+  register: current_localsettings
+
 - name: Clone source repositories
-  when: not ((code_home | path) / "localsettings.py").exists()
+  when: not current_localsettings.stat.exists
   block:
   - name: Clone CommCare source repository
     # This also creates the virtualenv when initializing a new machine
@@ -109,8 +113,14 @@
 - name: Setup python_env
   vars:
     virtualenv_name: python_env-{{ python_version }}
-    virtualenv_path: "{{ code_home | realpath }}/{{ virtualenv_name }}"
+    virtualenv_path: "{{ code_home }}/{{ virtualenv_name }}"
   block:
+  - name: check for virtualenv
+    stat: path="{{ virtualenv_path }}"
+    register: virtualenv_dir
+    tags:
+      - python
+
   - name: Create virtualenv for new Python version
     become: true
     pip:
@@ -120,7 +130,7 @@
       state: latest
       virtualenv: "{{ virtualenv_path }}"
       virtualenv_python: "{{ python_name }}"
-    when: not (virtualenv_path | path).exists()
+    when: not virtualenv_dir.stat.exists
     tags:
       - python
 
@@ -152,7 +162,7 @@
 
 - name: chown clone
   file:
-    path: "{{ code_home | realpath }}"
+    path: "{{ code_home }}"
     state: directory
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
