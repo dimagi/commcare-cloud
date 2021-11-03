@@ -106,11 +106,16 @@
   template:
     src: localsettings.py.j2
     dest: "{{ code_home }}/localsettings.py"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0600
   tags:
     - localsettings
     - hq-localsettings
 
 - name: Setup python_env
+  become: true
+  become_user: "{{ cchq_user }}"
   vars:
     virtualenv_name: python_env-{{ python_version }}
     virtualenv_path: "{{ code_home }}/{{ virtualenv_name }}"
@@ -154,25 +159,3 @@
       dest: "{{ virtualenv_home }}"
       state: link
       force: True
-
-- name: chown clone
-  file:
-    path: "{{ code_home }}"
-    state: directory
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-    recurse: yes
-  tags:
-    - python
-
-- name: chown localsettings
-  become: true
-  file:
-    path: "{{ code_home }}/localsettings.py"
-    state: file
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-    mode: 0600
-  tags:
-    - localsettings
-    - hq-localsettings
