@@ -12,3 +12,4 @@ About various operations involved in running CommCareHQ. Overview here
    /operations/4-maintenance
    /operations/5-infrastructure
    /operations/6-troubleshooting
+   /operations/8-roles.rst
