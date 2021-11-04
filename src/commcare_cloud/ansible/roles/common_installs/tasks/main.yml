@@ -40,6 +40,15 @@
   tags:
     - python
 
+- name: Install extra python packages
+  become: yes
+  apt:
+    name:
+      - python{{ python_version }}-distutils  # for virtualenv
+  when: python_version == '3.9'
+  tags:
+    - python
+
 # Install base packages, common to all servers
 - name: Install common packages
   become: yes
