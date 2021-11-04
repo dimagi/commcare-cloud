@@ -159,3 +159,5 @@
       dest: "{{ virtualenv_home }}"
       state: link
       force: True
+    tags:
+      - services
