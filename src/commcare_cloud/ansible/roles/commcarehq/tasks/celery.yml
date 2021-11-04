@@ -61,7 +61,7 @@
 
 - name: add "DigiCert SHA2 Secure Server CA" certificate to certifi
   blockinfile:
-    path: "{{ virtualenv_home }}/lib/{{ python_name }}/site-packages/certifi/cacert.pem"
+    path: "{{ virtualenv_home }}/lib/python{{ python_version }}/site-packages/certifi/cacert.pem"
     block: |
       -----BEGIN CERTIFICATE-----
       MIIE6DCCA9CgAwIBAgIQAnQuqhfKjiHHF7sf/P0MoDANBgkqhkiG9w0BAQsFADBh
