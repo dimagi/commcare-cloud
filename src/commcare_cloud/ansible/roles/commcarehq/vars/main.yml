@@ -1,7 +1,7 @@
 code_releases: "{{ www_home }}/releases"
 code_source: "{{ code_releases }}/{{ ansible_date_time.date }}_{{ ansible_date_time.hour }}.{{ ansible_date_time.minute }}"
-virtualenv_source: "{{ code_source }}/python_env-3.6"
-virtualenv_home: "{{ code_home }}/python_env-3.6"
+python_name: python{{ python_version }}
+virtualenv_source: "{{ code_source }}/python_env-{{ python_version }}"
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
 OLD_BROKER_URL: "{{ ('amqp://' + OLD_AMQP_USER + ':' + OLD_AMQP_PASSWORD + '@' + OLD_AMQP_HOST + ':5672/' + OLD_AMQP_NAME) if OLD_AMQP_HOST else None }}"
 
