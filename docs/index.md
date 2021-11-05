@@ -61,6 +61,7 @@ that machine is also the control machine.
 - [Firefighting](firefighting/index.md)
 - [Backup and Restore](./commcare-cloud/backup.md)
 - [Deploying code changes to CommCare HQ](./commcare-cloud/deploy.md)
+- [BitLy for App shortcodes](services/bitly.md)
 
 ### Optional
 - [Slack for notifications](monitoring/slack.md)

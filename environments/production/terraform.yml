@@ -40,13 +40,14 @@ servers:
     count: 17
 
   - server_name: "web_b{i}-production"
-    server_instance_type: r5.8xlarge
+    server_instance_type: m5.2xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
     group: "mobile_webworkers"
     os: ubuntu_pro_bionic
     count: 6
+    server_auto_recovery: true
 
 
   - server_name: "esmaster6-production"

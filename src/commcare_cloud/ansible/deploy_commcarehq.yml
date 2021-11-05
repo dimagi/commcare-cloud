@@ -32,6 +32,12 @@
         state: absent
   tags: services
 
+- name: Ensure python_env symlink
+  hosts: commcarehq
+  tasks:
+  - import_tasks: roles/commcarehq/tasks/python_env_symlink.yml
+    tags: services
+
 - name: Celery Supervisor Config
   hosts:
     - celery

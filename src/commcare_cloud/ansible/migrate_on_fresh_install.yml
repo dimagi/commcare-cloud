@@ -2,6 +2,7 @@
   hosts: "{{ groups.webworkers.0 }}"
   become: true
   tasks:
+    - import_tasks: roles/commcarehq/tasks/python_env_symlink.yml
     - name: Sync couch views
       become: yes
       become_user: "{{ cchq_user }}"
