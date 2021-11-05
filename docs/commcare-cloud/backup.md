@@ -8,7 +8,7 @@ You should read this section carefully and understand what each of these setting
 
 ------
 
-Each primary data-store that CommCareHQ uses can have backups turned on or off based settings in [`public.yml`](./env/index.md#publicyml) or the vault file. All settings mentioned below are to be placed in `public.yml` unless otherwise specified.
+Each primary data-store that CommCare HQ uses can have backups turned on or off based settings in [`public.yml`](./env/index.md#publicyml) or the vault file. All settings mentioned below are to be placed in `public.yml` unless otherwise specified.
 
 After making changes to these settings you will need to run:
 
@@ -70,7 +70,7 @@ After [adding your credentials](#amazon-s3-credentials) to the vault file, set:
 
 ### Restoring PostgreSQL Backups
 
-You should first stop all CommCareHQ services:
+You should first stop all CommCare HQ services:
 
 ``` bash
 $ commcare-cloud <env> downtime start

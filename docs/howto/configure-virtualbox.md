@@ -1,4 +1,4 @@
-# Configuring VirtualBox for testing CommCareHQ
+# Configuring VirtualBox for testing CommCare HQ
 
 ## Step 1: Download and Install VirtualBox
 
@@ -39,7 +39,7 @@ With these settings:
     ``` bash
     $ ssh username@localhost -P 2222
     ```
-- Access CommCareHQ from a browser at:
+- Access CommCare HQ from a browser at:
     ```
     https://localhost:8083
     ```
@@ -82,7 +82,7 @@ With these settings:
     ``` bash
     $ ssh username@{ip address of the guest}
     ```
-- Access CommCareHQ from a browser at:
+- Access CommCare HQ from a browser at:
     ```
     https://monolith.commcarehq.test
     ```
