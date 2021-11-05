@@ -848,8 +848,9 @@ SECURE_CONTENT_TYPE_NOSNIFF = {{ localsettings.get('SECURE_CONTENT_TYPE_NOSNIFF'
 SECURE_BROWSER_XSS_FILTER = {{ localsettings.get('SECURE_BROWSER_XSS_FILTER', True) }}
 SECURE_HSTS_SECONDS = {{ localsettings.get('SECURE_HSTS_SECONDS', 0) }}
 SECURE_HSTS_INCLUDE_SUBDOMAINS = {{ localsettings.get('SECURE_HSTS_INCLUDE_SUBDOMAINS', True) }}
-SILENCED_SYSTEM_CHECKS = {{ localsettings.get('SILENCED_SYSTEM_CHECKS', [])|to_json }}
 {% endif %}
+
+SILENCED_SYSTEM_CHECKS = {{ localsettings.get('SILENCED_SYSTEM_CHECKS', [])|to_json }}
 
 BYPASS_SESSIONS_FOR_MOBILE = {{localsettings.get('BYPASS_SESSIONS_FOR_MOBILE', False)}}
 
