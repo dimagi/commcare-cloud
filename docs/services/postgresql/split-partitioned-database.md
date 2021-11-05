@@ -64,7 +64,7 @@ At the end of this process shards 0 & 1 should be on *pg2* and shards 2 & 3 will
 ## Important Notes
 
 By default pglogical does not replicate any DDL commands.
-This means that any CommCareHQ migrations may not be applied to the target databases while logical replication is active.
+This means that any CommCare HQ migrations may not be applied to the target databases while logical replication is active.
 It is recommended to not deploy any changes during the time when splitting the database.
 More technical information can be found at https://github.com/2ndQuadrant/pglogical/blob/REL2_x_STABLE/docs/README.md#ddl
 

@@ -60,7 +60,7 @@ that machine is also the control machine.
 - [Set up Datadog for monitoring your infrastructure and CommCare](monitoring/setup_datadog.md)
 - [Firefighting](firefighting/index.md)
 - [Backup and Restore](./commcare-cloud/backup.md)
-- [Deploying code changes to CommCareHQ](./commcare-cloud/deploy.md)
+- [Deploying code changes to CommCare HQ](./commcare-cloud/deploy.md)
 
 ### Optional
 - [Slack for notifications](monitoring/slack.md)

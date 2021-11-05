@@ -1,6 +1,6 @@
 # Datadog for monitoring
 
-Datadog is a monotoring tool that has support for variety of applications and is easily extendable which is why in our case it is used for monitoring various system, application metrics and also custom CommCareHQ metrics. You can read more about datadog in their [docs](https://docs.datadoghq.com)
+Datadog is a monotoring tool that has support for variety of applications and is easily extendable which is why in our case it is used for monitoring various system, application metrics and also custom CommCare HQ metrics. You can read more about datadog in their [docs](https://docs.datadoghq.com)
 
 commcare-cloud can setup the requisite datadog integration automatically when you do full stack deploy. You will need to set `DATADOG_ENABLED` to `True` in your environment's public.yml file and add your account api keys to your vault file.
 

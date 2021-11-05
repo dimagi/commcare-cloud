@@ -2,9 +2,9 @@
 
 ## What is the Control Machine
 
-The machine where `commcare-cloud` is installed is known as the control machine. It is a single machine where you will be able to run any service checks, deploy code changes and update CommCareHQ code.
+The machine where `commcare-cloud` is installed is known as the control machine. It is a single machine where you will be able to run any service checks, deploy code changes and update CommCare HQ code.
 
-If you are running a [monolith installation](./new_environment.md) this will be the same machine that you installed all the CommCareHQ services on. 
+If you are running a [monolith installation](./new_environment.md) this will be the same machine that you installed all the CommCare HQ services on.
 
 We recommend that the control machine be in the same datacenter or network as the rest of your server fleet. 
 

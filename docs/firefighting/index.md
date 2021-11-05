@@ -105,7 +105,7 @@ Service logs: `cchq <env> service <service_name> logs`
 
 # Switching to Maintenance Page
 
-To switch to the Maintenance page, if you stop all web workers then the proxy will revert to "CommCareHQ is currently undergoing maintenance...".
+To switch to the Maintenance page, if you stop all web workers then the proxy will revert to "CommCare HQ is currently undergoing maintenance...".
 
 ```bash
 $ cchq <env> service webworker stop

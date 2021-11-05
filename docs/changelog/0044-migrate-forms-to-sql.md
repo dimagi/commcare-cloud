@@ -17,7 +17,7 @@ A series of management commands must be run to check for and migrate domains'
 forms & cases from Couch to SQL.
 
 ## Details
-Historically CommCareHQ stored form submissions and case data in CouchDB.
+Historically CommCare HQ stored form submissions and case data in CouchDB.
 About 5 years ago the default storage backend was changed from Couch to SQL,
 and all domains created since then should be using the SQL backend. However,
 a bug allowed some Couch domains to be created since then. It is recommended
@@ -30,7 +30,7 @@ Follow the steps outlined in the
 [migration document](https://github.com/dimagi/commcare-hq/blob/8f11208ad6510473003ef4c5eef74fa5e1bc1bed/corehq/apps/couch_sql_migration/README.md)
 to find and migrate all Couch domains in your environment.
 
-It is necessary to check out an older version of CommCareHQ to run the
+It is necessary to check out an older version of CommCare HQ to run the
 migration since the migration code has been deleted on the main branch.
 After running the command `cd $RELEASE_PATH` in the [setup steps](https://github.com/dimagi/commcare-hq/blob/8f11208ad6510473003ef4c5eef74fa5e1bc1bed/corehq/apps/couch_sql_migration/README.md#setup),
 run the following command to checkout a version that contains the migration

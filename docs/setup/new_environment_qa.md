@@ -1,7 +1,7 @@
 # Testing your new CommCare Environment
 
 This document can be used to ensure that your self-hosted CommCare
-environment is working as expected by running through key CommCareHQ
+environment is working as expected by running through key CommCare HQ
 processes. We'll go through these routines and processes step-by-step
 and when complete, you can be confident that your CommCare instance is
 set up correctly. In total, this plan will take about one hour to
@@ -15,7 +15,7 @@ page](../firefighting/index.md).
 
 ## Step 1: Logging in
 
-Simply logging into CommCareHQ tests multiple processes.
+Simply logging into CommCare HQ tests multiple processes.
 
 Begin by logging into your application with your username and password.
 
@@ -141,23 +141,23 @@ created in the previous step.
 Remaining on your mobile device, access and submit your registration
 form to create a case and then the followup form to add additional
 properties to that case. We'll verify this case was successfully created
-in CommCareHQ shortly. After submitting both the Registration and
+in CommCare HQ shortly. After submitting both the Registration and
 Followup form, press the blue 'Sync with Server' button on the CommCare
 mobile app's home screen. This will ensure the forms on your device are
-pushed to CommCareHQ.
+pushed to CommCare HQ.
 
 **This step tests:** When you attempt to build the app, you may see an error
 "Unable to validate form", this likely indicates that Formplayer isn't running
-or isn't connected properly to CommCareHQ. The act of logging in on your mobile
+or isn't connected properly to CommCare HQ. The act of logging in on your mobile
 device for the first time automatically syncs with the server. Logging in
 validates that mobile devices are able to connect with the server.
 
 
 ## Step 4b: Submitting forms through Web Apps
 
-'Web Apps' is a method of submitting data to CommCareHQ online and with a
+'Web Apps' is a method of submitting data to CommCare HQ online and with a
 desktop or laptop. Web Apps must be enabled separately under your application's
-Advanced Settings. Return to CommCareHQ and then click the gear icon next to
+Advanced Settings. Return to CommCare HQ and then click the gear icon next to
 your application's name. Next, click 'Advanced Settings' to enable Web Apps and
 save. Upon completing this step, a purple banner will appear under your
 application's name.
@@ -170,9 +170,9 @@ newly created version, it's important to toggle the 'Released/In Test' button to
 'Released.'
 
 After marking your version as released, click 'Web Apps' in the top ribbon of
-CommCareHQ. There, you'll notice a purple button labeled, 'Login As.' Click that
+CommCare HQ. There, you'll notice a purple button labeled, 'Login As.' Click that
 and choose your Mobile Worker. While you can submit forms as a Web User (your
-CommCareHQ login), most CommCare users structure their apps around submissions
+CommCare HQ login), most CommCare users structure their apps around submissions
 from Mobile Workers. Using 'Login As' allows you to submit forms as a mobile
 worker via Web Apps.
 
@@ -189,13 +189,13 @@ next step.
 
 ## Step 5: Viewing submitted data in reports
 
-In this step, we will run a few key CommCareHQ reports to ensure data
+In this step, we will run a few key CommCare HQ reports to ensure data
 was received and accessible.
 
 We've now submitted data from either a mobile device, Web Apps or both.
-Let's now view this data in CommCareHQ. If still in Web Apps, click
+Let's now view this data in CommCare HQ. If still in Web Apps, click
 'Show Full Menu' at the top of the screen to view the ribbon. Otherwise,
-simply access CommCareHQ and click 'Reports', then 'Submit History.'
+simply access CommCare HQ and click 'Reports', then 'Submit History.'
 
 On the Submit History report, simply accept the defaults and click the
 blue Apply button. You'll be shown all the forms submitted for your
@@ -219,13 +219,13 @@ uses Elasticsearch and its detail use PSQL.
 
 ## Step 6a: Exporting CommCare Data: Case Export
 
-CommCareHQ offers multiple ways to retrieve and export your data. This
+CommCare HQ offers multiple ways to retrieve and export your data. This
 section will highlight two of these methods; a standard case export and
-the creation of an OData feed, which can be used to hook up CommCareHQ
+the creation of an OData feed, which can be used to hook up CommCare HQ
 to Tableau and Power BI.
 
 A standard case export can be done by clicking 'Data' from the top
-ribbon on CommCareHQ and choosing 'Export Case Data.' Then, click the
+ribbon on CommCare HQ and choosing 'Export Case Data.' Then, click the
 '+Add Export' button and define the Application and Case Type in the
 modal that appears. Though the application name may differ, your screen
 will look like:
@@ -252,7 +252,7 @@ stored in Redis.
 
 ## Step 6b: (Optional) Exporting CommCare Data: OData Feed
 
-CommCareHQ uses multiple API endpoints to allow users to access their data. One
+CommCare HQ uses multiple API endpoints to allow users to access their data. One
 of the APIs built into the CommCare UI is the OData Feed export that can be
 integrated with Power BI and Tableau. If applicable to your project, let's use
 this to further ensure our access to CommCare data is sound.
@@ -271,7 +271,7 @@ This will return you back to the PowerBi/Tableau Integration page with a
 newly created OData Feed. To test, we'll simply view the feed's data in
 the URL line of your browser, rather than connect to a BI tool. Click
 'Copy OData Feed Link' and then open a new tab in your browser. Paste in
-this link and enter your CommCareHQ credentials. In a couple moments,
+this link and enter your CommCare HQ credentials. In a couple moments,
 you'll see your case information in JSON format in your browser
 
 **This step tests:** At least one API endpoint within CommCare. This
@@ -280,7 +280,7 @@ routine also uses Elasticsearch.
 
 ## Step 7: Mobile worker upload
 
-Lastly, let's validate a data upload in CommCareHQ. Navigate back to
+Lastly, let's validate a data upload in CommCare HQ. Navigate back to
 Users in the top ribbon and click Mobile Workers. Next, click 'Download
 Mobile Workers' and once the file is ready, 'Download Users.' This will
 download an xlsx file with Mobile Worker information. Upon opening the

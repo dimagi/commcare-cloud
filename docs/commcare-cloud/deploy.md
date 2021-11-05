@@ -1,12 +1,12 @@
 # Deploying CommCare HQ code changes
 
-This document will walk you through the process of updating the CommCareHQ code on your server using `commcare-cloud`.
+This document will walk you through the process of updating the CommCare HQ code on your server using `commcare-cloud`.
 
 ## Prerequisites
 
 Ensure that you have a working version of `commcare-cloud` which is configured to act on your monolith or fleet of servers. You can find more information on setting up `commcare-cloud` in the [installing `commcare-cloud`](../setup/installation.md) documentation. 
 
-If you don't yet have a server with CommCareHQ, you can try [setting up a monolith](../setup/new_environment.md). 
+If you don't yet have a server with CommCare HQ, you can try [setting up a monolith](../setup/new_environment.md).
 
 All commands listed here will be run from your control machine which has `commcare-cloud` installed.
 
@@ -20,9 +20,9 @@ $ update-code
 
 This command will update the `commcare-cloud` command from GitHub and apply any updates required. You can see exactly what this command does in [this file](https://github.com/dimagi/commcare-cloud/blob/master/control/update_code.sh).
 
-## Step 2: Deploy new CommCareHQ code to all machines
+## Step 2: Deploy new CommCare HQ code to all machines
 
-CommCareHQ is deployed using [`fabric`](http://www.fabfile.org/), which ensures only the necessary code is deployed to each machine.
+CommCare HQ is deployed using [`fabric`](http://www.fabfile.org/), which ensures only the necessary code is deployed to each machine.
 
 Envoke the `deploy` command by running:
 
@@ -55,7 +55,7 @@ $ commcare-cloud <env> django-manage check_services
 
 This will provide a list of all services which are running in an unexpected state.
 
-You may also wish to monitor the following pages, which provide similar information if you are logged in to CommCareHQ as a superuser:
+You may also wish to monitor the following pages, which provide similar information if you are logged in to CommCare HQ as a superuser:
 
   * `https://<commcare url>/hq/admin/system/`
   * `https://<commcare url>/hq/admin/system/check_services`
@@ -84,7 +84,7 @@ $ commcare-cloud <env> deploy --resume
 
 ## Roll back a failed deploy
 
-You may also wish to revert to a previous version of the CommCareHQ code if the version you just deployed was not working for some reason. Before reverting, you should ensure that there were no database migrations that were run during the previous deploy that would break if you revert to a previous version.
+You may also wish to revert to a previous version of the CommCare HQ code if the version you just deployed was not working for some reason. Before reverting, you should ensure that there were no database migrations that were run during the previous deploy that would break if you revert to a previous version.
 
 ``` bash
 $ commcare-cloud <env> fab rollback
@@ -122,7 +122,7 @@ Internally at Dimagi the main cloud environment is deployed **every weekday**.
 
 However, for locally hosted deployments, we recommend deploying **once a week** (for example, every Wednesday), to keep up to date with new features and security patches.
 
-Since CommCareHQ is an Open Source project, you can see all the new features that were recently merged by looking at the [merged pull requests](https://github.com/dimagi/commcare-hq/pulls?q=is%3Apr+is%3Aclosed "merged pull requests") on GitHub.
+Since CommCare HQ is an Open Source project, you can see all the new features that were recently merged by looking at the [merged pull requests](https://github.com/dimagi/commcare-hq/pulls?q=is%3Apr+is%3Aclosed "merged pull requests") on GitHub.
 
 ## Formplayer deploy
 
