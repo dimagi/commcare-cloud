@@ -372,9 +372,9 @@ rds_instances:
 
   - identifier: "pgsynclog1-production"
     instance_type: "db.t3.xlarge"
-    storage: 20000
+    storage: 5000
     multi_az: true
-    engine_version: 9.6.20
+    engine_version: "10.17"
     params:
       work_mem: 2457kB
       shared_buffers: 3840MB
