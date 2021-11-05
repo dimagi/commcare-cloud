@@ -22,7 +22,7 @@ your cluster to migrate blob metadata from CouchDB to SQL.
 
 ## Steps to update
 Before executing any shell commands, set the `ENV` variable to the name of the
-CommCare HQ environment you are migrating.
+CommCareHQ environment you are migrating.
 
 ```sh
 ENV=your_environment_name

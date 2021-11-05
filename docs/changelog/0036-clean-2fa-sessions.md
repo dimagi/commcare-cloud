@@ -17,7 +17,7 @@ It is stronly recommended to sanitize legacy Django sessions after upgrading
 to Django 2.2.
 
 ## Details
-CommCare HQ has recently been upgraded to use Django 2.2. The change includes a
+CommCareHQ has recently been upgraded to use Django 2.2. The change includes a
 library upgrade that patches CVE-2020-15105. See the
 [security advisory](https://github.com/Bouke/django-two-factor-auth/security/advisories/GHSA-vhr6-pvjm-9qwf)
 for complete details.

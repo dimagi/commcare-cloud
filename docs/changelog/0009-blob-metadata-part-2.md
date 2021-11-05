@@ -23,7 +23,7 @@ to migrate blob metadata within the form processor SQL database(s).
 
 ## Steps to update
 Before executing any shell commands, set the `ENV` variable to the name of the
-CommCare HQ environment you are migrating.
+CommCareHQ environment you are migrating.
 
 ```sh
 ENV=your_environment_name
