@@ -7,3 +7,15 @@
     name:
       - zookeeper
       - zookeeperd
+
+- name: configure server id
+  template: src=myid.j2 dest="{{zookeeper_conf_dir}}/myid"
+  tags: zoo_conf
+
+- name: configure Zookeeper properties
+  template: src=zoo.cfg.j2 dest="{{zookeeper_conf_dir}}/zoo.cfg"
+  tags: zoo_conf
+
+- name: restart zookeeper service
+  service: name=zookeeper state=restarted
+  tags: zoo_conf
