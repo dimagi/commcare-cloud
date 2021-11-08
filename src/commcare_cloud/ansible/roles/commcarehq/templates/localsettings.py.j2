@@ -438,15 +438,9 @@ CACHES = {
 }
 
 ELASTICSEARCH_HOSTS = [
-{% if groups.es_coordinator %}
-	{% for es_host in groups.es_coordinator -%}
+    {% for es_host in groups.es_coordinator|default(groups.elasticsearch) -%}
         '{{ es_host }}',
     {% endfor -%}
-{% else %}
-	{% for es_host in groups.elasticsearch -%}
-        '{{ es_host }}',
-    {% endfor -%}
-{% endif %}
 ]
 ELASTICSEARCH_PORT = {{ ELASTICSEARCH_PORT }}
 
