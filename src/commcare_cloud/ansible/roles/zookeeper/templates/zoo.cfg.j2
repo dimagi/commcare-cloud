@@ -19,11 +19,7 @@ clientPort=2181
 # The fist port is used by followers to connect to the leader
 # The second one is used for leader election
 
-
-#server.1=10.201.40.170:2888:3888
-#server.2=10.201.40.85:2888:3888
-#server.3=10.201.40.122:2888:3888
-
+# The Current node IP should be replaced with 0.0.0.0 in each node.
 {% for host in groups['zookeeper'] %}
 {% if host == inventory_hostname %}
 server.{{ host }} = 0.0.0.0:2888:3888
