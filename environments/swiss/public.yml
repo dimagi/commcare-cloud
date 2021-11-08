@@ -129,11 +129,6 @@ localsettings:
   #  PILLOWTOP_MACHINE_ID:
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
-  SILENCED_SYSTEM_CHECKS:
-    - 'security.W004' # we handle Strict-Transport-Security in nginx (see .../roles/nginx/vars/cchq_ssl.yml)
-    - 'security.W006' # we handle X-Content-Type-Options in nginx (see .../roles/nginx/vars/cchq_ssl.yml)
-    - 'security.W007' # we handle X-XSS-Protection in nginx (see .../roles/nginx/vars/cchq_ssl.yml)
-    - 'security.W008' # the ALB and nginx already redirect HTTP to HTTPS so safe to silence this warning
   REDIS_DB: '0'
   REDIS_HOST: "localhost"
   REDIS_PORT: '6379'

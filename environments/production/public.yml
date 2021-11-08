@@ -169,11 +169,6 @@ localsettings:
     auditcare: auditcare
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
-  SILENCED_SYSTEM_CHECKS:
-    - 'security.W004' # we handle Strict-Transport-Security in nginx (see .../roles/nginx/vars/cchq_ssl.yml)
-    - 'security.W006' # we handle X-Content-Type-Options in nginx (see .../roles/nginx/vars/cchq_ssl.yml)
-    - 'security.W007' # we handle X-XSS-Protection in nginx (see .../roles/nginx/vars/cchq_ssl.yml)
-    - 'security.W008' # the ALB and nginx already redirect HTTP to HTTPS so safe to silence this warning
   PILLOWTOP_MACHINE_ID: hqdb0
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes
