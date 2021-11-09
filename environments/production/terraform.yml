@@ -417,7 +417,7 @@ rds_instances:
 
   - identifier: "pgauditcare0-production"
     instance_type: "db.m5.xlarge"
-    storage: 2000
+    storage: 10000
     multi_az: true
     engine_version: "10.17"
     backup_window: "23:00-01:00"
