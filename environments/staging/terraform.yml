@@ -103,6 +103,17 @@ servers:
       volume_type: "gp3"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
+  - server_name: "es11-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      volume_type: "gp3"
+    group: "elasticsearch"
+    os: ubuntu_pro_bionic
 
   - server_name: "pillow3-staging"
     server_instance_type: "t3.xlarge"
