@@ -103,7 +103,11 @@ module "server__{{ server_name }}" {
   secondary_volume_type = {{ server_spec.block_device.volume_type|default("")|tojson }}
   secondary_volume_encrypted = {{ server_spec.block_device.encrypted|default(False)|tojson }}
   server_auto_recovery = {{ server_spec.server_auto_recovery|default(False)|tojson }}
-  iam_instance_profile = "${module.server_iam_role.commcare_server_instance_profile}"
+  {% if server_name == "djangomanage2-production" %}
+    iam_instance_profile = "${module.server_iam_role.commcare_server_custom_instance_profile}"
+  {% else %}
+    iam_instance_profile = "${module.server_iam_role.commcare_server_instance_profile}"
+  {% endif %}
 
 {% if server_spec.os == 'ubuntu_pro_bionic' %}
   server_image = "${data.aws_ami.ubuntu_pro_bionic.id}"
