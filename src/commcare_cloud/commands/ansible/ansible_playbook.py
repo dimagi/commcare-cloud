@@ -50,7 +50,7 @@ class AnsiblePlaybook(CommandBase):
             The ansible playbook .yml file to run.
             Options are the `*.yml` files located under `commcare_cloud/ansible`
             which is under `src` for an egg install and under
-            `<virtualenv>/lib/python3.6/site-packages` for a wheel install.
+            `<virtualenv>/lib/python<version>/site-packages` for a wheel install.
         """)
     )
 

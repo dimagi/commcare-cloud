@@ -16,7 +16,6 @@
       accept_hostkey: yes
       update: yes
       key_file: "{{ deploy_key|default(omit, true) }}"
-    become_user: "{{ cchq_user }}"
     tags:
       - git
       - slow
@@ -24,13 +23,14 @@
   - name: install pip requirements ({{ item.url }})
     pip:
       requirements: "{{ repo_dest }}/{{ item.requirements_path }}"
-      virtualenv: "{{ py3_virtualenv_source }}"
-      virtualenv_python: "python3.6"
+      virtualenv: "{{ virtualenv_source }}"
+      virtualenv_python: "{{ python_name }}"
       chdir: "{{ code_source }}"
     when: item.requirements_path|default(None) and not testing|default(False)
     tags:
       - slow
-      - py3
+      - python
 
   when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists
   become: true
+  become_user: "{{ cchq_user }}"

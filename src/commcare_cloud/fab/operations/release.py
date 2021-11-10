@@ -139,25 +139,6 @@ def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
             cmd_fn(' && '.join(git_remote_submodule_config))
 
 
-def _clone_virtual_env(virtualenv_current, virtualenv_root):
-    print('Cloning virtual env')
-    # There's a bug in virtualenv-clone that doesn't allow us to clone envs from symlinks
-    current_virtualenv = sudo('readlink -f {}'.format(virtualenv_current))
-    sudo("virtualenv-clone {} {}".format(current_virtualenv, virtualenv_root))
-    # There was a bug for a while that made new machines set up with commcare-cloud
-    # reference current in their virtualenvs instead of their absolute path
-    # this line automatically detects and fixes that.
-    # It's a noop in steady-state but essentially for fixing the issue.
-    sudo('sed -i -e "s~{virtualenv_current}~{virtualenv_root}~g" $(find {virtualenv_root}/bin/ -type f)'
-         .format(virtualenv_current=virtualenv_current, virtualenv_root=virtualenv_root))
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def clone_virtualenv():
-    _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
-
-
 def update_virtualenv(full_cluster=True):
     """
     update external dependencies on remote host
@@ -171,15 +152,10 @@ def update_virtualenv(full_cluster=True):
     @parallel
     def update():
         join = functools.partial(posixpath.join, env.code_root)
-        exists = functools.partial(files.exists, use_sudo=True)
 
-        # Optimization if we have current setup (i.e. not the first deploy)
-        if exists(env.py3_virtualenv_current) and not exists(env.py3_virtualenv_root):
-            _clone_virtual_env(env.py3_virtualenv_current, env.py3_virtualenv_root)
-        elif not exists(env.py3_virtualenv_current):
-            raise EnvironmentException(
-                "Virtual environment not found: {}".format(env.py3_virtualenv_current)
-            )
+        python_path = f"{env.virtualenv_root}/bin/python{env.ccc_environment.python_version}"
+        if not files.exists(python_path, use_sudo=True):
+            _clone_virtualenv(env)
 
         requirements_files = [join("requirements", "prod-requirements.txt")]
         requirements_files.extend(
@@ -189,16 +165,33 @@ def update_virtualenv(full_cluster=True):
         )
 
         with cd(env.code_root):
-            cmd_prefix = 'export HOME=/home/{} && source {}/bin/activate && '.format(
-                env.sudo_user, env.py3_virtualenv_root)
-
-            proxy = " --proxy={}".format(env.http_proxy) if env.http_proxy else ""
-            sudo("{} pip install --quiet --upgrade --timeout=60{} pip-tools".format(
-                cmd_prefix, proxy))
-            sudo("{} pip-sync --quiet --pip-args='--timeout=60{}' {}".format(
-                cmd_prefix, proxy, " ".join(requirements_files)))
+            cmd_prefix = f'{env.virtualenv_root}/bin/'
+            proxy = f" --proxy={env.http_proxy}" if env.http_proxy else ""
+            reqs = " ".join(requirements_files)
+            sudo(f"{cmd_prefix}pip install --quiet --upgrade --timeout=60{proxy} pip-tools")
+            sudo(f"{cmd_prefix}pip-sync --quiet --pip-args='--timeout=60{proxy}' {reqs}")
 
     return update
+
+
+def _clone_virtualenv(env):
+    print('Cloning virtual env')
+    python_version = env.ccc_environment.python_version
+    virtualenv_name = f"python_env-{python_version}"
+    virtualenv_current = posixpath.join(env.code_current, virtualenv_name)
+    # There's a bug in virtualenv-clone that doesn't allow us to clone envs from symlinks
+    old_virtualenv_path = sudo(f'readlink -f {virtualenv_current}')
+    if not files.exists(old_virtualenv_path, use_sudo=True):
+        raise EnvironmentException(f"virtualenv not found: {old_virtualenv_path}")
+
+    join = functools.partial(posixpath.join, env.code_root)
+    new_virtualenv_path = join(virtualenv_name)
+
+    python_env = join("python_env") if python_version == '3.6' else env.virtualenv_root
+    assert os.path.basename(python_env) != virtualenv_name, python_env
+
+    sudo(f"virtualenv-clone {old_virtualenv_path} {new_virtualenv_path}")
+    sudo(f"ln -nfs {virtualenv_name} {python_env}")
 
 
 def create_code_dir(full_cluster=True):
@@ -218,7 +211,7 @@ def kill_stale_celery_workers(delay=0):
         sudo(
             'echo "{}/bin/python manage.py '
             'kill_stale_celery_workers" '
-            '| at now + {} minutes'.format(env.py3_virtualenv_current, delay)
+            '| at now + {} minutes'.format(env.virtualenv_current, delay)
         )
 
 

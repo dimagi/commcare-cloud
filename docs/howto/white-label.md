@@ -1,6 +1,6 @@
-# White label an existing CommCareHQ instance
+# White label an existing CommCare HQ instance
 
-Describes how to have two URLs point to the same CommCareHQ environment and
+Describes how to have two URLs point to the same CommCare HQ environment and
 serve separate branding for each.
 
 ## Customization possible

@@ -2,13 +2,14 @@
   hosts: "{{ groups.webworkers.0 }}"
   become: true
   tasks:
+    - import_tasks: roles/commcarehq/tasks/python_env_symlink.yml
     - name: Sync couch views
       become: yes
       become_user: "{{ cchq_user }}"
       django_manage:
         command: 'sync_couch_views'
         app_path: "{{ code_home }}"
-        virtualenv: "{{ py3_virtualenv_home }}"
+        virtualenv: "{{ virtualenv_home }}"
       when: CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL
     - name: Migrate DB
       become: yes
@@ -16,7 +17,7 @@
       django_manage:
         command: 'migrate_multi --noinput'
         app_path: "{{ code_home }}"
-        virtualenv: "{{ py3_virtualenv_home }}"
+        virtualenv: "{{ virtualenv_home }}"
       environment:
         CCHQ_IS_FRESH_INSTALL: 1
       when: CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL
@@ -26,5 +27,5 @@
       django_manage:
         command: 'configure_pl_proxy_cluster --create_only'
         app_path: "{{ code_home }}"
-        virtualenv: "{{ py3_virtualenv_home }}"
+        virtualenv: "{{ virtualenv_home }}"
       when: CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL and SEPARATE_FORM_PROCESSING_DBS

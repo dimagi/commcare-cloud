@@ -708,12 +708,16 @@ commcare-cloud <env> secrets {view,edit,list-append,list-remove} secret_name
 Migrate secrets from one backend to another
 
 ```
-commcare-cloud <env> migrate-secrets from_backend
+commcare-cloud <env> migrate-secrets [--to-backend TO_BACKEND] from_backend
 ```
 
 ##### Positional Arguments
 
 ###### `from_backend`
+
+##### Optional Arguments
+
+###### `--to-backend TO_BACKEND`
 
 ---
 
@@ -769,7 +773,7 @@ commcare-cloud <env> ansible-playbook deploy_proxy.yml --limit=proxy
 The ansible playbook .yml file to run.
 Options are the `*.yml` files located under `commcare_cloud/ansible`
 which is under `src` for an egg install and under
-`<virtualenv>/lib/python3.6/site-packages` for a wheel install.
+`<virtualenv>/lib/python<version>/site-packages` for a wheel install.
 
 ##### Optional Arguments
 

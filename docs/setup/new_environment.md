@@ -1,15 +1,15 @@
-# Setting up a new CommCareHQ environment on a single machine
+# Setting up a new CommCare HQ environment on a single machine
 
-This document will walk you through the process of setting up a new monolith server to run CommCareHQ
+This document will walk you through the process of setting up a new monolith server to run CommCare HQ
 
 ## Prerequisites
 
 * A single server (referred to as the "monolith" from here) with:
-    * At least: 4vCPUs, 16GB RAM, 20GB drive. This is the _absolute minimum_ required to run CommCareHQ as a demo, and
+    * At least: 4vCPUs, 16GB RAM, 20GB drive. This is the _absolute minimum_ required to run CommCare HQ as a demo, and
       any production environment should be given many more resources.
     * Ubuntu 18.04 server 64-bit installed
     * If you are using VirtualBox, you can follow the instructions
-      on [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md).
+      on [Configuring VirtualBox for testing CommCare HQ](../howto/configure-virtualbox.md).
     * A domain name which directs to your server.
 * Access to the monolith via SSH with a user who has sudo access. If you installed the base Ubuntu 18.04 image yourself,
   this should be the default.
@@ -359,18 +359,18 @@ Deploying CommcareHQ for the first time needs a few things enabled first.
 CommCare Cloud will no longer need the root user to be accessible via the password. The password can be removed if you
 wish.
 
-## Step 7: Running CommCareHQ
+## Step 7: Running CommCare HQ
 
 ### Learning `commcare-cloud` basics
 
 In general it will be useful to understand all the commands on the [commcare-cloud basics](../commcare-cloud/basics.md)
 page.
 
-### Accessing CommCareHQ from a browser
+### Accessing CommCare HQ from a browser
 
-If everything went well, you should now be able to access CommCareHQ from a browser.
+If everything went well, you should now be able to access CommCare HQ from a browser.
 
-If you are using virtualbox, see the [Configuring VirtualBox for testing CommCareHQ](../howto/configure-virtualbox.md)
+If you are using virtualbox, see the [Configuring VirtualBox for testing CommCare HQ](../howto/configure-virtualbox.md)
 page to find the URL which depends on your networking setup.
 
 ### Testing your new CommCare Environment
@@ -390,7 +390,7 @@ this [new environment QA plan](./new_environment_qa.md), which will exercise a w
 If you face any issues, it is recommended to review the [Troubleshooting first time setup](./troubleshooting.md)
 documentation.
 
-### Firefighting issues once CommCareHQ is running
+### Firefighting issues once CommCare HQ is running
 
 You may also wish to look at the [Firefighting](../firefighting/index.md) page which lists out common issues
 that `commcare-cloud` can resolve.
@@ -407,11 +407,11 @@ $ commcare-cloud monolith after-reboot all
 
 You should be familiar with [Expectations for Ongoing Maintenance](../system/maintenance-expectations.md)
 
-## Step 8: Getting started with CommCareHQ
+## Step 8: Getting started with CommCare HQ
 
 ### Make a user
 
-If you are following this process, we assume you have some knowledge of CommCareHQ and may already have data you want to
+If you are following this process, we assume you have some knowledge of CommCare HQ and may already have data you want to
 migrate to your new cluster. By default, the monolith deploy scripts will be in `Enterprise` mode, which means there is
 no sign up screen. You can change this and other settings in the localsettings file, and following
 the [localsettings deploy instructions](../commcare-cloud/basics.md#update-commcare-hq-local-settings).
@@ -426,7 +426,7 @@ where `{email}` is the email address you would like to use as the username.
 
 ### Add a new CommCare build
 
-In order to create new versions of applications created in the CommCareHQ app builder, you will need to add the the
+In order to create new versions of applications created in the CommCare HQ app builder, you will need to add the the
 latest `CommCare Mobile` and `CommCare Core` builds to your server. You can do this by running the command below - it
 will fetch the latest version from GitHub.
 

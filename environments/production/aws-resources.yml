@@ -68,6 +68,12 @@ es_b009-production: 10.202.41.61
 es_b009-production.instance_id: i-057b35080b008655a
 es_b010-production: 10.202.41.25
 es_b010-production.instance_id: i-0bd0893c173836138
+escoordinator1-production: 10.202.40.229
+escoordinator1-production.instance_id: i-03d91db6fcb8e1c78
+escoordinator2-production: 10.202.41.254
+escoordinator2-production.instance_id: i-07ecbcef9f5dee6a4
+escoordinator3-production: 10.202.42.87
+escoordinator3-production.instance_id: i-0ee6b34daa79d7cdf
 esmaster6-production: 10.202.41.220
 esmaster6-production.instance_id: i-0dc3880f9a73f8d5e
 esmaster7-production: 10.202.41.228

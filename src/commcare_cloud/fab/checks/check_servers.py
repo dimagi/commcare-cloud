@@ -27,7 +27,10 @@ def ping():
         print("[%s] vmware swap: %s" % (hostname, vmswap))
     #with hide('running'):
 
+
 ELASTICSEARCH_CHECKED = False
+
+
 @roles(ROLES_ELASTICSEARCH)
 def elasticsearch():
     global ELASTICSEARCH_CHECKED
@@ -35,6 +38,7 @@ def elasticsearch():
         run("curl -XGET 'http://%s:9200/_cluster/health?pretty=true'" % env.host)
         ELASTICSEARCH_CHECKED = True
     run('service elasticsearch status')
+
 
 @roles(ROLES_POSTGRESQL)
 def postgresql():
@@ -46,7 +50,7 @@ def postgresql():
 @runs_once
 def perform_system_checks(current=False):
     path = env.code_current if current else env.code_root
-    venv = env.py3_virtualenv_current if current else env.py3_virtualenv_root
+    venv = env.virtualenv_current if current else env.virtualenv_root
     with cd(path):
         sudo('%s/bin/python manage.py check --deploy' % venv)
         sudo('%s/bin/python manage.py check --deploy -t database' % venv)

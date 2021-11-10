@@ -24,7 +24,7 @@ DNS level, without requiring a change on each device.
      - commcare.example.com
    ```
 - Update the list of valid hosts in nginx and Django, then restart services for
-   it to take effect.  After this, CommCareHQ should be accessible at the new
+   it to take effect.  After this, CommCare HQ should be accessible at the new
    domain name.
    ```
    $ cchq <env> ansible-playbook deploy_proxy.yml
