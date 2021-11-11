@@ -46,6 +46,7 @@ rds_pgformplayer0
 {{ __pgucr_nlb__ }}
 {{ __pgsynclogs_nlb__ }}
 {{ __pgshard_nlb__ }}
+{{ __pgproxy_nlb__ }}
 {{ __couch_alb__ }}
 
 [postgresql:children]
@@ -57,6 +58,7 @@ pgmain_nlb
 pgucr_nlb
 pgsynclogs_nlb
 pgshard_nlb
+pgproxy_nlb
 
 [pgbouncer:children]
 pgbouncer0
@@ -185,6 +187,7 @@ pgmain_nlb
 pgucr_nlb
 pgsynclogs_nlb
 pgshard_nlb
+pgproxy_nlb
 couch_alb
 
 

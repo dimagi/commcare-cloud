@@ -47,7 +47,7 @@ dbs:
     pgbouncer_host: pgproxy2
   form_processing:
     proxy:
-      host: pgproxy2
+      host: pgproxy3
     partitions:
       p1:
         pgbouncer_endpoint: pgshard_nlb
