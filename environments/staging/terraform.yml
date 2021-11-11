@@ -395,6 +395,7 @@ pgbouncer_nlbs:
   - name: "pgproxy_nlb-staging"
     targets:
       - pgproxy2-staging
+      - pgproxy3-staging
 
 internal_albs:
   - name: "couch_alb-staging"
