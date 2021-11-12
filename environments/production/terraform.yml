@@ -128,7 +128,7 @@ servers:
     server_instance_type: c5a.24xlarge
     network_tier: "db-private"
     az: "c"
-    volume_size: 60
+    volume_size: 90
     volume_encrypted: yes
     block_device:
       volume_size: 8000
@@ -140,7 +140,7 @@ servers:
     server_instance_type: c5a.24xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 60
+    volume_size: 90
     volume_encrypted: yes
     block_device:
       volume_size: 8000
@@ -151,7 +151,7 @@ servers:
     server_instance_type: c5a.24xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 60
+    volume_size: 90
     volume_encrypted: yes
     block_device:
       volume_size: 8000

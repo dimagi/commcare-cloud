@@ -55,6 +55,7 @@ nginx_sites:
    - "X-Forwarded-Protocol  $scheme"
    access_log: "{{ log_home }}/{{ deploy_env }}-timing.log timing"
    add_header:
+    - 'Strict-Transport-Security "max-age={{ nginx_hsts_max_age|default(0) }}"'
     - 'X-XSS-Protection "1; mode=block"'
     - 'X-Content-Type-Options nosniff'
    locations:
