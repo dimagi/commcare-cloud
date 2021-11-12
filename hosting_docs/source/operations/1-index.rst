@@ -4,11 +4,11 @@ Operations and maintenance
 About various operations involved in running CommCareHQ. Overview here
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   /operations/2-deploys.rst
-   /operations/3-monitoring.rst
-   /operations/4-maintenance.rst
-   /operations/5-infrastructure.rst
-   /operations/6-troubleshooting.rst
-   /operations/7-backups.rst
+   /operations/2-deploys
+   /operations/3-monitoring
+   /operations/set-up-sentry
+   /operations/4-maintenance
+   /operations/5-infrastructure
+   /operations/6-troubleshooting

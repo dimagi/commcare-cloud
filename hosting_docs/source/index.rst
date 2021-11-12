@@ -22,6 +22,7 @@ This documentation contains guides and reference material on how to self host Co
    Deploy CommCareHQ <installation/index>
    Operations and Maintenance <operations/1-index>
    How to Scale <scaling/1-index>
+   Service Guides <services/0-index>
    Backups and Disaster Recovery <backups_dr/1-index>
    Security <security/1-security>
    Reference Material <reference/0-index>
