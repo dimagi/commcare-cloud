@@ -53,5 +53,4 @@ def perform_system_checks(current=False):
     venv = env.virtualenv_current if current else env.virtualenv_root
     with cd(path):
         sudo('%s/bin/python manage.py check --deploy' % venv)
-        # temporarily disabled due to hanging queries
-        # sudo('%s/bin/python manage.py check --deploy -t database' % venv)
+        sudo('%s/bin/python manage.py check --deploy -t database' % venv)
