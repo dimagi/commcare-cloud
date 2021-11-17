@@ -95,7 +95,7 @@ servers:
     count: 11
 
   - server_name: "escoordinator1-production"
-    server_instance_type: r5.4xlarge
+    server_instance_type: r5.2xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -105,7 +105,7 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "escoordinator2-production"
-    server_instance_type: r5.4xlarge
+    server_instance_type: r5.2xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -115,7 +115,7 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "escoordinator3-production"
-    server_instance_type: r5.4xlarge
+    server_instance_type: r5.2xlarge
     network_tier: "db-private"
     az: "c"
     volume_size: 30
