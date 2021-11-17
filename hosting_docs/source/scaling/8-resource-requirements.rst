@@ -96,7 +96,7 @@ This configuration is appropriate for projects with fewer than 1500
 users, each user with an active case load of fewer that 10,000 cases,
 and the project has no intention of growing.
 
-Specific hardware guidelines can become outdated dated quickly. The
+Specific hardware guidelines can become outdated quickly. The
 following specifications might be a reasonable suggestion:
 
 * A mid-range server CPU
