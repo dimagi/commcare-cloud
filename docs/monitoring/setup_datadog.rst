@@ -17,9 +17,18 @@ and add your account API keys to your vault file.
 The default configuration sets up all Datadog integrations and there
 might be a lot of data being generated in your Datadog account by your
 CommCare instance. Individual integrations may be turned on/off by
-setting relvant vars like ``datadog_integration_postgres`` or
+setting relevant variables like ``datadog_integration_postgres`` or
 ``datadog_integration_redis`` etc. in your environment's public.yml
 file.
+
+After editing the vault file and the public.yml file, you will need to
+update the config and restart services::
+
+    $ commcare-cloud <env> update-config
+    $ commcare-cloud <env> fab restart_services
+
+There is more information about those files under
+`Configuring your CommCare Cloud Environments Directory <../commcare-cloud/env/>`_
 
 
 Recommended dashboards
