@@ -3,19 +3,19 @@
 Datadog for monitoring
 ======================
 
-Datadog is a monotoring tool that has support for variety of applications and is easily extendable which is why in our case it is used for monitoring various system, application metrics and also custom CommCareHQ metrics. You can read more about datadog in their `docs <https://docs.datadoghq.com>`_.
+Datadog is a monitoring tool that has support for variety of applications and is easily extendable which is why in our case it is used for monitoring various system, application metrics and also custom CommCareHQ metrics. You can read more about Datadog in their `docs <https://docs.datadoghq.com>`_.
 
-commcare-cloud can setup the requisite datadog integration automatically when you do full stack deploy. You will need to set ``DATADOG_ENABLED`` to ``True`` in your environment's public.yml file and add your account api keys to your vault file.
+commcare-cloud can set up the requisite Datadog integration automatically when you do a full stack deploy. You will need to set ``DATADOG_ENABLED`` to ``True`` in your environment's public.yml file and add your account API keys to your vault file.
 
-The default configuration sets up all datadog integrations and there might be a lot of data being generated in your datadog account by your CommCare instance. Individual integrations may be turned on/off by setting relvant vars like ``datadog_integration_postgres`` or ``datadog_integration_redis`` etc in public.yml file.
+The default configuration sets up all Datadog integrations and there might be a lot of data being generated in your Datadog account by your CommCare instance. Individual integrations may be turned on/off by setting relvant vars like ``datadog_integration_postgres`` or ``datadog_integration_redis`` etc. in your environment's public.yml file.
 
 
 Recommended dashboards
 ======================
 
-It is recommended to create relevant dashboards and monitoring alerts to get insights into health of your CommCare instance.
+It is recommended to create relevant dashboards and monitoring alerts to get insights into the health of your CommCare instance.
 
-Datadog provides API to import dashboards from one account to another account using JSON files. Below are json files for some of the dashboards we use internally.
+This is a minimal set of dashboards that we use internally that you can import into your own account.
 
 - `hq-vitals.json <datadog_dashboards/hq-vitals.json>`_ gives a glance of all components of CommCare
 - `mobile-success.json <datadog_dashboards/mobile-success.json>`_ for monitoring success rate of mobile requests to the server
@@ -23,7 +23,7 @@ Datadog provides API to import dashboards from one account to another account us
 - `celery.json <datadog_dashboards/celery.json>`_ for monitoring bakcground application tasks of celery
 - `couchdb.json <datadog_dashboards/couchdb.json>`_ for CouchDB monitoring
 
-You may import them to your own account by running relevant datadog API requests. For example, to import hq-vitals ::
+You may import them to your own account by running relevant Datadog API requests. For example, to import hq-vitals.json ::
 
     api_key=<YOUR_DATADOG_API_KEY>
     application_key=<YOUR_DATADOG_APPLICATION_KEY>
