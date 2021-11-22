@@ -25,12 +25,6 @@ file.
 Recommended dashboards
 ======================
 
-
-You may import them to your own account by running relevant Datadog API requests. For example, to import hq-vitals.json ::
-
-    api_key=<YOUR_DATADOG_API_KEY>
-    application_key=<YOUR_DATADOG_APPLICATION_KEY>
-    curl -X POST -H "Content-type: application/json" -d @<hq-vitals.json> "https://app.datadoghq.com/api/v1/dashboard?api_key=${api_key}&application_key=${application_key}"
 It is recommended to create relevant dashboards and monitoring alerts to
 get insights into the health of your CommCare instance.
 
@@ -47,3 +41,12 @@ import into your own account.
   background application tasks of celery
 - `couchdb.json <datadog_dashboards/couchdb.json>`_ for CouchDB
   monitoring
+
+You may import them to your own account by running relevant Datadog API requests. For example, to import ``hq-vitals.json`` ::
+
+    $ export api_key=<YOUR_DATADOG_API_KEY>
+    $ export application_key=<YOUR_DATADOG_APPLICATION_KEY>
+    $ curl -X POST \
+        -H "Content-type: application/json" \
+        -d @hq-vitals.json \
+        "https://app.datadoghq.com/api/v1/dashboard?api_key=${api_key}&application_key=${application_key}"
