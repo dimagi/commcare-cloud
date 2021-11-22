@@ -12,6 +12,8 @@ celery_a005-production: 10.202.12.213
 celery_a005-production.instance_id: i-0cdd79c56bd5c006d
 celery_a006-production: 10.202.12.222
 celery_a006-production.instance_id: i-0f1272b602a757a91
+celery_a007-production: 10.202.12.58
+celery_a007-production.instance_id: i-0574d2ef792ee2be9
 control2-production: 10.202.10.212
 control2-production.instance_id: i-0e290f7ceefb5e096
 couch11-production: 10.202.42.190
@@ -194,6 +196,7 @@ pgshard4-production: pgshard4-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.co
 pgshard5-production: pgshard5-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard_nlb-production: pgshard-nlb-production-46239ca59f830bfc.elb.us-east-1.amazonaws.com
 pgsynclog0-production: pgsynclog0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgsynclog1-production: pgsynclog1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgsynclogs_nlb-production: pgsynclogs-nlb-production-a0590d45cd55994b.elb.us-east-1.amazonaws.com
 pgucr0-production: pgucr0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgucr_nlb-production: pgucr-nlb-production-3790c322477cf782.elb.us-east-1.amazonaws.com
@@ -212,9 +215,6 @@ rabbit2-production: 10.202.42.100
 rabbit2-production.instance_id: i-0afd113aa270a774d
 rabbit5-production: 10.202.41.96
 rabbit5-production.instance_id: i-0902ef79eeda236f3
-vpn-production: 10.202.20.194
-vpn-production.instance_id: i-0f1b5684281df2e97
-vpn-production.public_ip: 18.235.223.2
 web_a000-production: 10.202.10.222
 web_a000-production.instance_id: i-0bbe9921aa4714bac
 web_a001-production: 10.202.10.112

@@ -185,7 +185,7 @@ servers:
     volume_encrypted: yes
     group: "celery"
     os: ubuntu_pro_bionic
-    count: 7
+    count: 8
  
   - server_name: "pillow_a{i}-production"
     server_instance_type: r5a.8xlarge

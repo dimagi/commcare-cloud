@@ -14,7 +14,7 @@ management_commands:
   pillow_a000:
     run_pillow_retry_queue:
 celery_processes:
-  celery_a000,celery_a001,celery_a002,celery_a003,celery_a004,celery_a005:
+  celery_a000,celery_a001,celery_a002,celery_a003,celery_a004,celery_a005,celery_a007:
     analytics_queue:
       pooling: gevent
       concurrency: 4
