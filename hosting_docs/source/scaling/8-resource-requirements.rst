@@ -9,10 +9,12 @@ software suite.
 When determining what configuration to use, it is important to keep the
 expected growth of the project in mind, in order to optimize costs and
 limit possible service interruptions due to server management
-operations. For example, if requisitioning more resources takes a while,
-it is better to have some buffer -- more drive space, RAM, or cores than
-necessary at first -- based on the expectation that by the time more
-resources come available, they will have become necessary.
+operations. For example, if there is a delay of days, weeks or months
+between the time when more resources are requested, and the time when
+they becoming available, then it is better to have some buffer. Make
+sure there is more drive space, RAM, or cores than you need, so that by
+the time the resources you are going to need have arrived, it is not too
+late.
 
 Alternatively, if you are hosting on a platform where requisitioning
 resources is fast, or instant, buffer is less important, and it would
