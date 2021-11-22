@@ -11,7 +11,8 @@ from commcare_cloud.commands.deploy.utils import (
     announce_deploy_success,
     create_release_tag,
     within_maintenance_window,
-    DeployContext
+    DeployContext,
+    record_deploy_failed,
 )
 from commcare_cloud.commands.utils import run_fab_task
 from commcare_cloud.events import publish_deploy_event
@@ -44,6 +45,7 @@ def deploy_commcare(environment, args, unknown_args):
         '--set', ','.join(fab_settings), branch=args.branch, *unknown_args
     )
     if rc != 0:
+        record_deploy_failed(environment, context.service_name)
         return rc
 
     if not args.skip_record:
