@@ -11,6 +11,6 @@ In this section, we list down various prerequisites for hosting CommCareHQ succe
    /installation/prereqs/1-considerations
    /installation/prereqs/2-architecture
    /installation/prereqs/3-deployment-options
-   /installation/prereqs/4-requirements
-   /installation/prereqs/5-software-and-tools
-   /installation/prereqs/6-commcare-cloud
+   /installation/prereqs/5-requirements
+   /installation/prereqs/6-software-and-tools
+   /installation/prereqs/7-commcare-cloud
