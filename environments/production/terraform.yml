@@ -81,7 +81,7 @@ servers:
       volume_size: 1260
     group: "elasticsearch"
     os: ubuntu_pro_bionic
-    count: 11
+    count: 10
 
   - server_name: "es_b{i}-production"
     server_instance_type: r5.4xlarge
@@ -92,7 +92,7 @@ servers:
       volume_size: 1260
     group: "elasticsearch"
     os: ubuntu_pro_bionic
-    count: 11
+    count: 10
 
   - server_name: "escoordinator1-production"
     server_instance_type: r5.2xlarge
