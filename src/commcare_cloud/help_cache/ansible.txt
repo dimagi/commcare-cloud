@@ -8,9 +8,9 @@ usage: ansible [-h] [--version] [-v] [-b] [--become-method BECOME_METHOD]
                [--scp-extra-args SCP_EXTRA_ARGS]
                [--ssh-extra-args SSH_EXTRA_ARGS] [-C] [--syntax-check] [-D]
                [-e EXTRA_VARS] [--vault-id VAULT_IDS]
-               [--ask-vault-pass | --vault-password-file VAULT_PASSWORD_FILES]
+               [--ask-vault-password | --vault-password-file VAULT_PASSWORD_FILES]
                [-f FORKS] [-M MODULE_PATH] [--playbook-dir BASEDIR]
-               [-a MODULE_ARGS] [-m MODULE_NAME]
+               [--task-timeout TASK_TIMEOUT] [-a MODULE_ARGS] [-m MODULE_NAME]
                pattern
 
 Define and run a single task 'playbook' against a set of hosts
@@ -19,7 +19,8 @@ positional arguments:
   pattern               host pattern
 
 optional arguments:
-  --ask-vault-pass      ask for vault password
+  --ask-vault-password, --ask-vault-pass
+                        ask for vault password
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   --playbook-dir BASEDIR
@@ -29,8 +30,11 @@ optional arguments:
                         etc.
   --syntax-check        perform a syntax check on the playbook, but do not
                         execute it
+  --task-timeout TASK_TIMEOUT
+                        set task timeout limit in seconds, must be positive
+                        integer.
   --vault-id VAULT_IDS  the vault identity to use
-  --vault-password-file VAULT_PASSWORD_FILES
+  --vault-password-file VAULT_PASSWORD_FILES, --vault-pass-file VAULT_PASSWORD_FILES
                         vault password file
   --version             show program's version number, config file location,
                         configured module search path, module location,
@@ -49,7 +53,8 @@ optional arguments:
   -P POLL_INTERVAL, --poll POLL_INTERVAL
                         set the poll interval if using -B (default=15)
   -a MODULE_ARGS, --args MODULE_ARGS
-                        module arguments
+                        The action's options in space separated k=v format: -a
+                        'opt1=val1 opt2=val2'
   -e EXTRA_VARS, --extra-vars EXTRA_VARS
                         set additional variables as key=value or YAML/JSON, if
                         filename prepend with @
@@ -63,7 +68,7 @@ optional arguments:
   -l SUBSET, --limit SUBSET
                         further limit selected hosts to an additional pattern
   -m MODULE_NAME, --module-name MODULE_NAME
-                        module name to execute (default=command)
+                        Name of the action to execute (default=command)
   -o, --one-line        condense output
   -t TREE, --tree TREE  log output to this directory
   -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
@@ -106,4 +111,4 @@ Connection Options:
   -u REMOTE_USER, --user REMOTE_USER
                         connect as this user (default=None)
 
-Some modules do not make sense in Ad-Hoc (include, meta, etc)
+Some actions do not make sense in Ad-Hoc (include, meta, etc)
