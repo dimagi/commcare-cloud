@@ -13,4 +13,3 @@ Overview on scaling CommCareHQ
    /scaling/5-elasticsearch
    /scaling/6-sizing-buckets
    /scaling/7-sizing
-   /scaling/8-resource-requirements
