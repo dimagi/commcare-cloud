@@ -1,3 +1,5 @@
+.. _label_datadog-for-monitoring:
+
 Datadog for monitoring
 ======================
 
