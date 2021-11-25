@@ -24,6 +24,9 @@ Prometheus
 ----------
 <Todo if required>
 
+
+.. _label_commcare-infrastructure-metrics:
+
 -------------------------------
 CommCare Infrastructure Metrics
 -------------------------------

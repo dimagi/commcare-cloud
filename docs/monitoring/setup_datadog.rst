@@ -59,3 +59,6 @@ You may import them to your own account by running relevant Datadog API requests
         -H "Content-type: application/json" \
         -d @hq-vitals.json \
         "https://app.datadoghq.com/api/v1/dashboard?api_key=${api_key}&application_key=${application_key}"
+
+You can find more information about dashboards and monitoring at
+:ref:`_label_commcare-infrastructure-metrics`.
