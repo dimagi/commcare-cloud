@@ -19,10 +19,13 @@ The default configuration sets up all datadog integrations and there might be a 
 
 Below we list down important metrics that you should consider as a minimum monitoring setup. Using these metrics you can create various dashboard views and alerts inside your Datadog project.
 
-----------
-Prometheus
-----------
-<Todo if required>
+.. todo if required
+   ----------
+   Prometheus
+   ----------
+
+
+.. _label_commcare-infrastructure-metrics:
 
 -------------------------------
 CommCare Infrastructure Metrics
