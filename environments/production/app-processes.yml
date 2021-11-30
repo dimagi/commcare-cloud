@@ -34,7 +34,7 @@ celery_processes:
       pooling: gevent
       concurrency: 134
     export_download_queue:
-      concurrency: 5
+      concurrency: 4
     linked_domain_queue:
       concurrency: 3
     reminder_case_update_queue:
