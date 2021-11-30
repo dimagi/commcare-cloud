@@ -24,6 +24,7 @@ celery_processes:
       concurrency: 3
     case_import_queue:
       concurrency: 3
+      prefetch_multiplier: 1
     case_rule_queue:
       concurrency: 3
     celery:
@@ -35,6 +36,7 @@ celery_processes:
       concurrency: 134
     export_download_queue:
       concurrency: 4
+      prefetch_multiplier: 1
     linked_domain_queue:
       concurrency: 3
     reminder_case_update_queue:
@@ -53,6 +55,7 @@ celery_processes:
       concurrency: 3
     saved_exports_queue:
       concurrency: 3
+      prefetch_multiplier: 1
     sms_queue:
       pooling: gevent
       concurrency: 20
@@ -60,8 +63,10 @@ celery_processes:
       concurrency: 1
     ucr_queue:
       concurrency: 9
+      prefetch_multiplier: 1
     user_import_queue:
       concurrency: 5
+      prefetch_multiplier: 1
     ush_background_tasks:
       concurrency: 8
   celery_a006:
