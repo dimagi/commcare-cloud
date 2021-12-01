@@ -15,7 +15,7 @@ from ..const import ROLES_FORMPLAYER, FORMPLAYER_BUILD_DIR, DATE_FMT
 
 @roles(ROLES_FORMPLAYER)
 def rollback_formplayer():
-    build_dir = os.path.join(env.code_current, FORMPLAYER_BUILD_DIR)
+    build_dir = os.path.join(env.root, FORMPLAYER_BUILD_DIR)
 
     builds = _get_old_formplayer_builds(build_dir)
     if not builds:
