@@ -26,7 +26,7 @@ def rollback_formplayer():
         utils.abort('Action aborted.')
 
     with cd(build_dir):
-        sudo('ln -sfn {build_dir}/{rollback} {build_dir}/current'.format(
+        sudo('ln -sfn {build_dir}/releases/{rollback} {build_dir}/current'.format(
             build_dir=build_dir,
             rollback=rollback_build
         ))
