@@ -87,6 +87,11 @@ celery_processes:
       concurrency: 50
     ush_background_tasks:
       concurrency: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 40
+      num_workers: 2
+
 
 pillows:
   pillow_a000:
