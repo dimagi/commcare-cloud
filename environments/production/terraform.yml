@@ -414,6 +414,7 @@ rds_instances:
       # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
       # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
       maintenance_work_mem: 4172000kB
+      vacuum_cost_limit: 1000
 
   - identifier: "pgauditcare0-production"
     instance_type: "db.m5.xlarge"
