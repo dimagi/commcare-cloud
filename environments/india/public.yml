@@ -246,6 +246,3 @@ shared_dir_gid: 1500
 # for better time syncronization on aws servers
 # replace ntp with chrony.
 use_chrony: True
-
-python_version: '3.9'
-use_deadsnakes: '{{ ansible_distribution_version <= "18.04" }}'
