@@ -35,6 +35,7 @@ kafka3-staging.instance_id: i-01c92759e9092290e
 kafka4-staging: 10.201.40.156
 kafka4-staging.instance_id: i-0abe473ba4045472a
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
+pg1-staging: pg1-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgbouncer0-staging: 10.201.40.72
 pgbouncer0-staging.instance_id: i-0315ba6f2f8ba45f5
 pgformplayer0-staging: pgformplayer0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
@@ -42,6 +43,9 @@ pgformplayer_nlb-staging: pgformplayer-nlb-staging-98b68467f6f5717b.elb.us-east-
 pgmain_nlb-staging: pgmain-nlb-staging-fe77ab2d143eedbb.elb.us-east-1.amazonaws.com
 pgproxy2-staging: 10.201.40.16
 pgproxy2-staging.instance_id: i-0638ff6218ed9f753
+pgproxy3-staging: 10.201.40.79
+pgproxy3-staging.instance_id: i-0ceb5822e286daf7e
+pgproxy_nlb-staging: pgproxy-nlb-staging-c421403bce4ecc4b.elb.us-east-1.amazonaws.com
 pgshard_nlb-staging: pgshard-nlb-staging-e8ef6b4c55f3618d.elb.us-east-1.amazonaws.com
 pgsynclogs_nlb-staging: pgsynclogs-nlb-staging-1102365451f68242.elb.us-east-1.amazonaws.com
 pgucr_nlb-staging: pgucr-nlb-staging-b32586fcc9999b2d.elb.us-east-1.amazonaws.com
@@ -51,19 +55,10 @@ proxy2-staging: 10.201.10.72
 proxy2-staging.instance_id: i-01e26fa1de2365635
 proxy3-staging: 10.201.10.97
 proxy3-staging.instance_id: i-015d3723f1019a4f7
-proxy4-staging: 10.201.10.179
-proxy4-staging.instance_id: i-042d6563129d60152
-proxy5-staging: 10.201.10.65
-proxy5-staging.instance_id: i-05e9a4ff140b3fb36
-proxy6-staging: 10.201.10.71
-proxy6-staging.instance_id: i-0644a5a4454bc8d25
 rabbit2-staging: 10.201.10.239
 rabbit2-staging.instance_id: i-01bfeae5f4febaddf
 rabbit4-staging: 10.201.11.17
 rabbit4-staging.instance_id: i-0eae4b3b4acdacbf0
-vpn-staging: 10.201.20.112
-vpn-staging.instance_id: i-0e43738c0151d44b7
-vpn-staging.public_ip: 54.227.170.89
 web7-staging: 10.201.11.170
 web7-staging.instance_id: i-00c29bc6df3a1f47b
 web8-staging: 10.201.11.222
