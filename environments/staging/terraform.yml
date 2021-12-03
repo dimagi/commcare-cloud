@@ -45,6 +45,17 @@ servers:
     os: ubuntu_pro_bionic
     server_auto_recovery: true
 
+  - server_name: "test-staging"
+    server_instance_type: "t3.xlarge"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_type: "gp3"
+    volume_encrypted: yes
+    group: webworkers
+    os: ubuntu_pro_bionic
+    server_auto_recovery: true
+
   - server_name: "es6-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
