@@ -7,9 +7,15 @@ locals {
     us-west-1 = "027434742980"
     ap-south-1 = "718504428378"
   }
+
+  hive_prefix = "year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}"
+  hive_error_prefix = "!{firehose:random:string}/!{firehose:error-output-type}/!{timestamp:yyyy/MM/dd}"
+
+  log_bucket_name             = "dimagi-commcare-${var.environment}-logs"
   log_bucket_alb_prefix       = "frontend-alb-${var.environment}"
-  log_bucket_waf_prefix       = "frontend-waf-${var.environment}"
-  log_bucket_waf_error_prefix = "frontend-waf-${var.environment}-error"
+  log_bucket_waf_prefix       = "frontend-waf-partitioned-${var.environment}/${local.hive_prefix}"
+  log_bucket_waf_error_prefix = "frontend-waf-partitioned-${var.environment}-error/${local.hive_error_prefix}"
+
 }
 
 data "aws_region" "current" {
@@ -672,4 +678,3 @@ resource "aws_globalaccelerator_endpoint_group" "front_end" {
       ]
   }
 }
-
