@@ -134,6 +134,9 @@ def provision_machines(spec, env_name=None, create_machines=True):
         hosts_by_name[host_name].vars['kafka_broker_id'] = i
         hosts_by_name[host_name].vars['swap_size'] = '2G'
 
+    for i, host_name in enumerate(inventory.all_groups['zookeeper'].host_names):
+        hosts_by_name[host_name].vars['zookeeper_server_id'] = i
+
     for host_name in inventory.all_groups['elasticsearch'].host_names:
         hosts_by_name[host_name].vars['elasticsearch_node_name'] = host_name
 
