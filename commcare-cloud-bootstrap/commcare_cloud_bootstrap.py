@@ -5,11 +5,11 @@ import json
 import os
 import random
 import re
+import secrets  # New in 3.6
 import shutil
 import string
 import subprocess
 import sys
-import uuid
 from io import open
 
 import jinja2
@@ -387,9 +387,12 @@ def save_inventory(environment, inventory):
 
 
 def save_vault_yml(environment):
-    def generate_uuid():
-        return str(uuid.uuid4())
-    j2.globals.update(generate_uuid=generate_uuid)
+
+    def generate_password():
+        alphabet = string.ascii_letters + string.digits
+        return ''.join(secrets.choice(alphabet) for __ in range(32))
+
+    j2.globals.update(generate_password=generate_password)
     template = j2.get_template('private.yml.j2')
     vault_file_contents = template.render(deploy_env=environment.name)
     vault_file = environment.paths.vault_yml
