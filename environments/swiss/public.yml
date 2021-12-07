@@ -141,5 +141,3 @@ localsettings:
 #  STATIC_ROOT:
 
 commcare_cloud_root_user: ubuntu
-python_version: '3.9'
-use_deadsnakes: '{{ ansible_distribution_version <= "18.04" }}'

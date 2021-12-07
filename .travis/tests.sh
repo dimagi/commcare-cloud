@@ -2,6 +2,13 @@
 
 set -ve
 
+GROUP_VARS=src/commcare_cloud/ansible/group_vars/all.yml
+eval PYVER=$(grep python_version: $GROUP_VARS | head -n1 | cut -d' ' -f2)
+# Link Travis-installed python where ansible virtualenv will find it
+[ -z $(which python${PYVER}) ] && sudo ln -s /opt/python/${PYVER}/bin/*${PYVER}* /usr/local/bin/
+which python${PYVER}
+python${PYVER} --version
+
 # pull branch from git status the exact same way that commcare-cloud does
 # so that --branch=${BRANCH} will always match
 BRANCH=$(git status | head -n1 | xargs -n1 echo | tail -n1)

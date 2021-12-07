@@ -7,6 +7,9 @@ newest first.
 
 ## Changelog
 
+### **2021-11-02** [Upgrade CommCare HQ to Python 3.9](0045-upgrade-to-python-39.md)
+Install Python 3.9 and build a new virtualenv for CommCare HQ.
+
 ### **2021-06-09** [Migrate forms & cases from Couch to SQL](0044-migrate-forms-to-sql.md)
 A series of management commands must be run to check for and migrate domains'
 forms & cases from Couch to SQL.
