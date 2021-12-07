@@ -219,10 +219,10 @@ Even though we will be running all commands locally, we still need to add the us
     Would you like to use environments at that location? [y/N]y
     ```
 
-1. As prompted, add the commcare-cloud config to your bash profile to set the correct paths:
+1. As prompted, add the commcare-cloud config to your profile to set the correct paths:
 
     ``` bash
-    $ echo "source ~/.commcare-cloud/load_config.sh" >> ~/.bash_profile
+    $ echo "source ~/.commcare-cloud/load_config.sh" >> ~/.profile
     ```
 
 1. Load the commcare-cloud config so it takes effect immediately:
