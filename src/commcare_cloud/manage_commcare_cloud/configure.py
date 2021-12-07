@@ -94,7 +94,7 @@ class Configure(CommandBase):
                     virtualenv_path=get_virtualenv_bin_path(),
                     PACKAGE_BASE=PACKAGE_BASE,
                 )).strip())
-        puts(color_notice("Add the following to your ~/.bash_profile:"))
+        puts(color_notice("Append the following to your ~/.profile:"))
         puts(color_code("source ~/.commcare-cloud/load_config.sh"))
         puts(color_notice(
             "and then open a new shell. "
