@@ -3,7 +3,7 @@ import json
 import os
 import random
 import re
-import secrets  # New in 3.6
+import secrets  # New in Python 3.6
 import shutil
 import string
 import subprocess
