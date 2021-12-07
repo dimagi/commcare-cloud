@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import itertools
 import os
 
-from mock import patch
+from unittest.mock import patch
 from nose.tools import assert_equal
 
 from commcare_cloud.environment.main import get_environment
