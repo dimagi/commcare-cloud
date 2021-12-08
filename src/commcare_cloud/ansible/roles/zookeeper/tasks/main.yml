@@ -20,7 +20,7 @@
   get_url: url="http://{{ apache_mirror }}/zookeeper/zookeeper-{{ zookeeper_version }}/apache-zookeeper-{{ zookeeper_version }}-bin.tar.gz" dest="/opt/zookeeper_{{ zookeeper_version }}-bin.tar.gz"
 
 - name: Extract Zookeeper
-  unarchive: src="/opt/zookeeper_{{ zookeeper_version }}-bin.tar.gz" dest=/opt/ copy=no creates="/opt/zookeeper_{{ zookeeper_version }}-bin"
+  unarchive: src="/opt/zookeeper_{{ zookeeper_version }}-bin.tar.gz" dest=/opt/ copy=no creates="/opt/apache-zookeeper-{{ zookeeper_version }}-bin"
 
 - name: Symlink install directory
   file: src="/opt/zookeeper_{{ zookeeper_version }}-bin" path=/opt/zookeeper state=link
@@ -37,6 +37,17 @@
   template: src=zoo.cfg.j2 dest="{{ zookeeper_data_dir }}/zoo.cfg"
   when: zookeeper_cluster
   tags: zookeeper_cluster_conf
+
+- name: Install Zookeeper init script
+  template: src=zookeeper-server.service.j2 dest=/etc/init.d/zookeeper-server mode=0755
+  when: ansible_distribution_version == '14.04'
+
+- name: Reload Systemd Daemon
+  become: yes
+  systemd:
+    daemon_reload: yes
+  when: ansible_distribution_version == '18.04'
+
 
 # Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
 - shell: /bin/true
