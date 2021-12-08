@@ -1,5 +1,9 @@
 ---
-zookeeper_data_dir: "/var/lib/zookeeper"
-zookeeper_conf_dir: /etc/zookeeper/conf
-zookeeper_log_dir: /var/log/zookeeper
+apache_mirror: apache.osuosl.org
+zookeeper_version: 3.7.0
+zookeeper_user: zookeeper
+zookeeper_group: zookeeper
+zookeeper_data_dir: "{{ encrypted_root }}/zookeeper"
+zookeeper_conf_dir: "{{ encrypted_root }}/zookeeper/conf"
+zookeeper_log_dir: "{{ encrypted_root }}/zookeeper/logs"
 zookeeper_cluster: False

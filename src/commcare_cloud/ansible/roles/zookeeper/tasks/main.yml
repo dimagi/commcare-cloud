@@ -7,15 +7,53 @@
     name:
       - zookeeper
       - zookeeperd
+    state: absent
+  #when: zookeeper_cluster
+
+- name: Remove zookeeper.service (cleanup)
+  file:
+    name: /etc/init.d/zookeeper.service
+    state: absent
+  when: zookeeper_cluster
+
+- name: Download Zookeeper
+  get_url: url="http://{{ apache_mirror }}/zookeeper/zookeeper-{{ zookeeper_version }}/apache-zookeeper-{{ zookeeper_version }}-bin.tar.gz" dest="/opt/zookeeper_{{ zookeeper_version }}-bin.tar.gz"
+
+- name: Extract Zookeeper
+  unarchive: src="/opt/zookeeper_{{ zookeeper_version }}-bin.tar.gz" dest=/opt/ copy=no creates="/opt/zookeeper_{{ zookeeper_version }}-bin"
+
+- name: Symlink install directory
+  file: src="/opt/zookeeper_{{ zookeeper_version }}-bin" path=/opt/zookeeper state=link
+
+- name: Set permissions to Zookeeper folder
+  file: path=/opt/zookeeper/ owner=root group=root recurse=yes follow=no
 
 - name: configure server id
-  template: src=myid.j2 dest="{{zookeeper_conf_dir}}/myid"
-  tags: zoo_conf
+  template: src=myid.j2 dest="{{ zookeeper_data_dir }}/myid"
+  when: zookeeper_cluster
+  tags: zookeeper_cluster_conf
 
 - name: configure Zookeeper properties
-  template: src=zoo.cfg.j2 dest="{{zookeeper_conf_dir}}/zoo.cfg"
-  tags: zoo_conf
+  template: src=zoo.cfg.j2 dest="{{ zookeeper_data_dir }}/zoo.cfg"
+  when: zookeeper_cluster
+  tags: zookeeper_cluster_conf
 
-- name: restart zookeeper service
-  service: name=zookeeper state=restarted
-  tags: zoo_conf
+# Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
+- shell: /bin/true
+  changed_when: false
+  register: no_tags
+
+- name: start Zookeeper service
+  service: name=zookeeper-server enabled=yes state=started
+  when: no_tags is not defined
+  register: zookeeper_service_started
+  tags: after-reboot
+
+# Restarting a service right after it's been started will cause an unnecessary/non-idempotent restart
+- name: Enable and start Zookeeper service
+  service: name=zookeeper-server enabled=yes state=restarted
+  when: zookeeper_service_started.changed == False
+  tags: zookeeper_cluster_conf
+
+- name: Add Zookeeper binaries to PATH
+  copy: src=zookeeper.sh dest=/etc/profile.d/ owner=root group=root mode=0644

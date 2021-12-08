@@ -12,6 +12,9 @@ kafka_scala_version: 2.13
 kafka_inter_broker_protocol_version: 2.6
 kafka_log_message_format_version: 2.6
 
+zookeeper_version: 3.7.0
+zookeeper_cluster: False
+
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 rabbitmq_version: 3.8.5-1

@@ -1,0 +1,18 @@
+[Unit]
+Description=Apache Zookeeper server 
+Documentation=https://zookeeper.apache.org/doc/
+Requires=network.target remote-fs.target
+After=network.target remote-fs.target zookeeper.service
+
+[Service]
+Type=simple
+User=zookeeper
+Group=zookeeper
+LimitNOFILE=32000
+Restart=always
+RestartSec=1
+ExecStart=/opt/zookeeper/bin/zkServer.sh start
+ExecStop=/opt/zookeeper/bin/zkServer.sh stop
+
+[Install]
+WantedBy=multi-user.target
