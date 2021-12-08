@@ -21,7 +21,9 @@ A good support system should have the following components:
 Below we give details on each component.
 
 ### Training and Documentation
-A major portion of support issues end up being simply queries from users who may not know how to perform an action. The best way to avoid these is by providing training at the time of onboarding the users and documentation on how to use the system. <Todo; link to example collateral docs>
+A major portion of support issues end up being simply queries from users who may not know how to perform an action. The best way to avoid these is by providing training at the time of onboarding the users and documentation on how to use the system. 
+
+[//]: # (<Todo; link to example collateral docs on how to use the system>)
 
 The documentation should also contain common queries that users might have. The support process should allow for these docs to be continuously updated as new repeating support queries are raised. 
 
@@ -74,7 +76,7 @@ A priority level such as P1, P2, P3, P4 etc that describes the urgentness of the
 The priority level helps the entire support team and developers to understand how they should prioritize the particular ticket. A support team member triaging the ticket can setup the priority.
 
 ##### Ticket Workflow
-Once the support system is set up below is a general process that can be followed. Note that for P1/P2 we recommend a separate on-call like process stated here P1/P2 process recommendations <todo;link to P1/P2 process>.
+Once the support system is set up below is a general process that can be followed. Note that for P1/P2 we recommend a separate on-call like process stated in the [P1/P2 process](#p1-p2-process) recommendations.
 
 <p align="center">
     <img src="local_hosting_support_workflow.png" alt="Local Hosting Support" style="width:90%" />
@@ -94,7 +96,9 @@ Once the support system is set up below is a general process that can be followe
 
 Apart from this a regular periodical (weekly or biweekly) team calls could also be used to coordinate the overall support activities. 
 
-##### P1/P2 Process
+<h5 id="p1-p2-process">
+    P1/P2 Process
+</h5>
 The standard support process stated above works well for tickets with priority lower than P2. As defined above tickets with priority P1 indicate a very urgent ticket that affects all users, which may be causing a downtime or irreversible data loss/corruption or other critical issues. P2 priority indicates a critical function being available that might soon result in a P1 issue if neglected. Given that there is a lot of urgency tied to P1 and P2, we recommend a separate process to resolve these issues.
 
 The intention of a separate P1/P2 process is to address below unique expectations associated with  P1 or P2 incidents.
@@ -144,7 +148,9 @@ Programs that are very large scale could produce a very high volume of support t
 - Program level support team at the top
 - View into SLAs
 
-There is no general setup that can be recommended to all the projects as each program has different needs at scale. Dimagi offers <todo; link to support system setup addon package> for this reason. If you require help setting up such system, please contact our delivery team to setup a support system for your project. 
+There is no general setup that can be recommended to all the projects as each program has different needs at scale. Dimagi offers a support system setup addon package for this reason. If you require help setting up such system, please contact our delivery team to setup a support system for your project. 
+
+[//]: # (<todo; link to support system setup addon package>)
 
 ## Support System Implementation checklist
 As discussed above to implement a good support system all of the above components need to be in place. You can use the below checklist to make sure you have a robust support system in place.
