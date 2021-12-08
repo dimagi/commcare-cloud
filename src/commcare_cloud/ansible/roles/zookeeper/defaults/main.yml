@@ -6,4 +6,5 @@ zookeeper_group: zookeeper
 zookeeper_data_dir: "/opt/zookeeper"
 zookeeper_conf_dir: "/opt/zookeeper/conf"
 zookeeper_log_dir: "/opt/zookeeper/logs"
+zookeeper_server_id: "{{ kafka_server_id }}"
 zookeeper_cluster: False

@@ -20,7 +20,7 @@ clientPort=2181
 # The second one is used for leader election
 
 # The Current node IP should be replaced with 0.0.0.0 in each node.
-{% if {{ zookeeper_cluster }} %} then
+{% if zookeeper_cluster %}
 {% for host in groups['kafka'] %}
  server.{{ hostvars[host]['zookeeper_server_id'] }}= {{ host }}:2888:3888
 {% endfor %}

@@ -8,7 +8,6 @@
       - zookeeper
       - zookeeperd
     state: absent
-  #when: zookeeper_cluster
 
 - name: create zookeeper group
   group: name="{{ zookeeper_group }}" system=yes state=present
@@ -20,7 +19,6 @@
   file:
     name: /etc/init.d/zookeeper
     state: absent
-  #when: zookeeper_cluster
 
 - name: Download Zookeeper
   get_url: url="http://{{ apache_mirror }}/zookeeper/zookeeper-{{ zookeeper_version }}/apache-zookeeper-{{ zookeeper_version }}-bin.tar.gz" dest="/opt/zookeeper_{{ zookeeper_version }}-bin.tar.gz"
@@ -35,19 +33,15 @@
   file: path=/opt/zookeeper/ owner=root group=root recurse=yes follow=no
 
 - name: Create Zookeeper log directory
-  file: path="{{ zookeeper_log_dir }}" state=directory owner="{{ Zookeeper_user }}" group="{{ zookeeper_group }}" recurse=yes
+  file: path="{{ zookeeper_log_dir }}" state=directory owner=root group=root recurse=yes
 
-- name: Link the log directory
-  file: src="{{ kafka_log_dir }}" path=/opt/zookeeper/logs state=link
 
 - name: configure server id
   template: src=myid.j2 dest="{{ zookeeper_data_dir }}/myid"
-  when: zookeeper_cluster
   tags: zookeeper_cluster_conf
 
 - name: configure Zookeeper properties
   template: src=zoo.cfg.j2 dest="{{ zookeeper_data_dir }}/zoo.cfg"
-  when: zookeeper_cluster
   tags: zookeeper_cluster_conf
 
 - name: Install Zookeeper systemd script
