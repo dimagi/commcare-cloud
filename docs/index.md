@@ -25,7 +25,7 @@ that machine is also the control machine.
 
 ## System installation
 
-- [Installation](setup/installation.md)
+- [Installing CommCare Cloud for an existing environment](setup/installation.md)
 - [Setting up a new monolith environment](setup/new_environment.md)
 - [Setting up a new cluster environment](setup/new_cluster.md)
 - [Troubleshooting first time setup](setup/troubleshooting.md)
