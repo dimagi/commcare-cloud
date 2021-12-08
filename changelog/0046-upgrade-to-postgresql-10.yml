@@ -1,0 +1,39 @@
+title: Upgrade to PostgreSQL 10
+key: upgrade-to-postgresql-10
+date: 2021-12-08
+optional_per_env: no
+min_commcare_version: None
+context: |
+  Install PostgreSQL 10 and migrate existing data into it.
+
+details: |
+  CommCare is switching its supported version of PostgreSQL from 9.6 to 10.
+  Unlike some upgrades, PostgreSQL requires both installing new version of the software,
+  as well as dumping data from the old database version and loading it into the new database version.
+  This is because the underlying data is not backwards compatible.
+
+update_steps: |
+  1. Update to the latest commcare-cloud
+  2. Change your configuration to use `postgresql_version: 10` inside postgresql.yml
+    ```bash
+    postgres_override:
+      ...
+      postgresql_version: '10'
+    ```
+  3. Take your site down so that no new writes can go to the database
+    ```bash
+    cchq <env> downtime start
+    ```
+  4. Install the new version (in parallel with the old version) of PostgreSQL
+    ```bash
+    cchq <env> deploy-stack --tags=postgres --limit=postgres
+    ```
+  5. For EACH database machine you have, log in and run the following:
+    ```bash
+    /usr/pgsql-12/bin/pg_upgrade --old-bindir /usr/pgsql-11/bin --new-bindir /usr/pgsql-12/bin --old-datadir /var/lib/pgsql/11/data --new-datadir /var/lib/pgsql/12/data --link --check
+    /usr/pgsql-12/bin/pg_upgrade --old-bindir /usr/pgsql-11/bin --new-bindir /usr/pgsql-12/bin --old-datadir /var/lib/pgsql/11/data --new-datadir /var/lib/pgsql/12/data --link
+    ```
+  6. Bring your site back up
+    ```bash
+    cchq <env> downtime end
+    ```
