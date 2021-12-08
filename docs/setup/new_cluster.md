@@ -193,7 +193,7 @@ Do the following for each VM:
 
 2. Install Required Packages
 
-        $ sudo apt update && sudo apt install python3-pip sshpass
+        $ sudo apt update && sudo apt install python3-pip sshpass net-tools
 
    Now update your pip3 version; you might encounter installation issues
    otherwise.
