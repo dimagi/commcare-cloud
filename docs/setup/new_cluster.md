@@ -81,7 +81,9 @@ so using libvirt with KVM.
 
    1. Set the hostname to "control1".
 
-   2. Create a user named "ansible".
+   2. Create a user named "ansible". (Your user can be named something
+      else. Deploying CommCare HQ will create an "ansible" user if one
+      does not exist.)
 
    3. When choosing software, select only "SSH Server".
 
