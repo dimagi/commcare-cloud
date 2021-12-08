@@ -54,7 +54,7 @@
 
 # Restarting a service right after it's been started will cause an unnecessary/non-idempotent restart
 - name: Restart Zookeeper service
-  service: name=zookeeper-server enabled=yes state=restarted
+  service: name=zookeeper-server state=restarted
   when: zookeeper_service_started.changed == False
   tags: zookeeper_cluster_conf
 
