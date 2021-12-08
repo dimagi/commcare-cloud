@@ -12,7 +12,7 @@
 
 - name: Remove zookeeper.service (cleanup)
   file:
-    name: /etc/init.d/zookeeper.service
+    name: /etc/init.d/zookeeper
     state: absent
   when: zookeeper_cluster
 
@@ -40,7 +40,6 @@
 
 - name: Install Zookeeper init script
   template: src=zookeeper-server.service.j2 dest=/etc/init.d/zookeeper-server mode=0755
-  when: ansible_distribution_version == '14.04'
 
 - name: Reload Systemd Daemon
   become: yes
