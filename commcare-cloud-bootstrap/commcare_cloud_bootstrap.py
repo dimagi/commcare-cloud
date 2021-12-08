@@ -1,22 +1,18 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 import argparse
 import json
 import os
 import random
 import re
+import secrets  # New in Python 3.6
 import shutil
 import string
 import subprocess
 import sys
-import uuid
 from io import open
 
 import jinja2
 import jsonobject
-import six
 import yaml
-from six.moves import input, range, zip
 
 from commcare_cloud.environment.main import get_environment
 
@@ -101,7 +97,7 @@ class Host(StrictJsonObject):
 
 class Group(StrictJsonObject):
     name = jsonobject.StringProperty()
-    host_names = jsonobject.ListProperty(six.text_type)
+    host_names = jsonobject.ListProperty(str)
     vars = jsonobject.DictProperty()
 
 
@@ -231,7 +227,7 @@ def ask_aws_for_instances(env_name, aws_config, count):
         cmd_parts = [
             'aws', 'ec2', 'run-instances',
             '--image-id', aws_config.ami,
-            '--count', six.text_type(int(count)),
+            '--count', str(int(count)),
             '--instance-type', aws_config.type,
             '--key-name', aws_config.key_name,
             '--security-group-ids', aws_config.security_group_id,
@@ -387,9 +383,12 @@ def save_inventory(environment, inventory):
 
 
 def save_vault_yml(environment):
-    def generate_uuid():
-        return str(uuid.uuid4())
-    j2.globals.update(generate_uuid=generate_uuid)
+
+    def generate_password():
+        alphabet = string.ascii_letters + string.digits
+        return ''.join(secrets.choice(alphabet) for __ in range(32))
+
+    j2.globals.update(generate_password=generate_password)
     template = j2.get_template('private.yml.j2')
     vault_file_contents = template.render(deploy_env=environment.name)
     vault_file = environment.paths.vault_yml
