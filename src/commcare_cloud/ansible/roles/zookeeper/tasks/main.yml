@@ -14,7 +14,7 @@
   file:
     name: /etc/init.d/zookeeper
     state: absent
-  when: zookeeper_cluster
+  #when: zookeeper_cluster
 
 - name: Download Zookeeper
   get_url: url="http://{{ apache_mirror }}/zookeeper/zookeeper-{{ zookeeper_version }}/apache-zookeeper-{{ zookeeper_version }}-bin.tar.gz" dest="/opt/zookeeper_{{ zookeeper_version }}-bin.tar.gz"
@@ -40,13 +40,6 @@
 
 - name: Install Zookeeper init script
   template: src=zookeeper-server.service.j2 dest=/etc/init.d/zookeeper-server mode=0755
-
-- name: Reload Systemd Daemon
-  become: yes
-  systemd:
-    daemon_reload: yes
-  when: ansible_distribution_version == '18.04'
-
 
 # Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
 - shell: /bin/true
