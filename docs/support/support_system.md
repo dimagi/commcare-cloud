@@ -34,9 +34,7 @@ Support channels are required to enable communication between the end users faci
 - Support Email: Higher level program staff should have access to a Direct support email address that auto creates tickets in a helpdesk app.
 - An issue tracker CommCare application that has ‘Raise an Issue’ module which tracks the issues for all FLWs for supervisor’s reference
 
-<p align="center">
-    <img src="support_team.jpg" alt="Support team" style="width:75%" />
-</p>
+![](./images/support_team.jpg)
 
 These channels are suitable for different stakeholders of the program depending on the level of their expertise in being able to communicate online. For example, a frontline worker may not be able to communicate via email with support in which case a direct phone support with a supervisor can be more easy. On the other hand if there are too many FLWs under a supervisor where a phone support is not possible, an Issue Tracker application could be useful.
 
@@ -76,9 +74,7 @@ The priority level helps the entire support team and developers to understand ho
 ##### Ticket Workflow
 Once the support system is set up below is a general process that can be followed. Note that for P1/P2 we recommend a separate on-call like process stated in the [P1/P2 process](#p1-p2-process) recommendations.
 
-<p align="center">
-    <img src="local_hosting_support_workflow.png" alt="Local Hosting Support" style="width:90%" />
-</p>
+![](./images/local_hosting_support_workflow.png)
 
 - An issue is reported view UI or directly
 - A ticket is created in helpdesk app automatically or support creates it if the issue is reported via email/chat.
