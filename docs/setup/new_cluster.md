@@ -18,10 +18,10 @@ our project:
 | ---------- | -----:| --------:|:----------------------- |
 | control1   |     2 | 4096 MiB | 30 GiB                  |
 | proxy1     |     2 | 4096 MiB | 30 GiB                  |
-| webworker1 |     2 | 4096 MiB | 30 GiB                  |
-| webworker2 |     2 | 4096 MiB | 30 GiB                  |
-| db1        |     2 | 4096 MiB | 30 GiB + 60 GiB         |
-| db2        |     2 | 4096 MiB | 30 GiB + 60 GiB + 20 GiB|
+| webworker1 |     2 | 8192 MiB | 30 GiB                  |
+| webworker2 |     2 | 8192 MiB | 30 GiB                  |
+| db1        |     2 | 8192 MiB | 30 GiB + 60 GiB         |
+| db2        |     2 | 8192 MiB | 30 GiB + 60 GiB + 20 GiB|
 
 db1 has additional storage for databases, and db2 has one extra volume
 for databases, and another for a shared NFS volume.
@@ -227,8 +227,33 @@ so using libvirt with KVM.
            Of course, for /dev/vdc on db2, the mount point will be
            /opt/shared_cluster instead of /opt/data.
 
-Adapt the instructions above for your requirements and your
-virtualization stack.
+6. Increase the memory for webworker1, webworker2, db1, and db2. Do the
+   following for each VM:
+
+   1. Shut the VM down. e.g. For webworker1:
+
+            $ virsh shutdown webworker1
+
+   2. Edit the VM definition, and increase the memory.
+
+            $ virsh edit webworker1
+
+      Find the lines ...
+
+              <memory unit='KiB'>4194304</memory>
+              <currentMemory unit='KiB'>4194304</currentMemory>
+
+      ... and change them to:
+
+              <memory unit='KiB'>8388608</memory>
+              <currentMemory unit='KiB'>8388608</currentMemory>
+
+   3. Save the definition, and restart the VM.
+
+            $ virsh start webworker1
+
+Configuration of your virtual machines is complete. Adapt the
+instructions above for your requirements and your virtualization stack.
 
 
 Prepare all VMs for automated deploy
