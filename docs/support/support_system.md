@@ -21,9 +21,7 @@ A good support system should have the following components:
 Below we give details on each component.
 
 ### Training and Documentation
-A major portion of support issues end up being simply queries from users who may not know how to perform an action. The best way to avoid these is by providing training at the time of onboarding the users and documentation on how to use the system. 
-
-[//]: # (<Todo; link to example collateral docs on how to use the system>)
+A major portion of support issues end up being simply queries from users who may not know how to perform an action. The best way to avoid these is by providing training at the time of onboarding the users and [documentation on how to use the system](https://confluence.dimagi.com/display/commcarepublic/Home).
 
 The documentation should also contain common queries that users might have. The support process should allow for these docs to be continuously updated as new repeating support queries are raised. 
 
@@ -90,8 +88,10 @@ Once the support system is set up below is a general process that can be followe
     * If the ticket fits P1/P2 criteria, follow P1/P2 process
     * Support team member updates the fields of the ticket such as priority, status and assignee.
     * Depending on the ticket, the support team member might resolve and respond back to the user or escalate it to a different team member from the program or developer team.
-    * If the team is not able to get resolve, the ticket can be reported to Dimagi support directly if the team has a support plan or else to the public CommCare developers forum
     * If the ticket priority is low, the team might put it into a backlog that can be reviewed later.
+
+[//]: # (    * If the team is not able to get resolve, the ticket can be reported to Dimagi support directly if the team has a support plan or else to the public CommCare developers forum)
+    
 - Once the resolution is found the support team member sends the resolution to the user and closes the ticket after updating relevant ticket fields.
 
 Apart from this a regular periodical (weekly or biweekly) team calls could also be used to coordinate the overall support activities. 
@@ -148,9 +148,9 @@ Programs that are very large scale could produce a very high volume of support t
 - Program level support team at the top
 - View into SLAs
 
-There is no general setup that can be recommended to all the projects as each program has different needs at scale. Dimagi offers a support system setup addon package for this reason. If you require help setting up such system, please contact our delivery team to setup a support system for your project. 
+There is no general setup that can be recommended to all the projects as each program has different needs at scale. 
 
-[//]: # (<todo; link to support system setup addon package>)
+[//]: # (To add: Dimagi offers <todo; link to support system setup addon package> for this reason. If you require help setting up such system, please contact our delivery team to setup a support system for your project.)
 
 ## Support System Implementation checklist
 As discussed above to implement a good support system all of the above components need to be in place. You can use the below checklist to make sure you have a robust support system in place.
