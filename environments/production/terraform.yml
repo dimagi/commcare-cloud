@@ -18,6 +18,8 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 40
+    block_device:
+      volume_size: 1200
     group: "control"
     os: ubuntu_pro_bionic
 
