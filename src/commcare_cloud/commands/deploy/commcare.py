@@ -45,7 +45,7 @@ def deploy_commcare(environment, args, unknown_args):
         '--set', ','.join(fab_settings), branch=args.branch, *unknown_args
     )
     if rc != 0:
-        record_deploy_failed(environment, context.service_name)
+        record_deploy_failed(environment, context)
         return rc
 
     if not args.skip_record:

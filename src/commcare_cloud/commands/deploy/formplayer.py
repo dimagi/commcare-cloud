@@ -70,7 +70,7 @@ def deploy_formplayer(environment, args):
 
     rc = run_ansible_playbook_command(environment, args)
     if rc != 0:
-        record_deploy_failed(environment, context.service_name)
+        record_deploy_failed(environment, context)
         return rc
 
     rc = commcare_cloud(
@@ -83,7 +83,7 @@ def deploy_formplayer(environment, args):
         ), '-b',
     )
     if rc != 0:
-        record_deploy_failed(environment, context.service_name)
+        record_deploy_failed(environment, context)
         return rc
 
     record_deploy_success(environment, context)
