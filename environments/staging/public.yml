@@ -13,7 +13,7 @@ kafka_inter_broker_protocol_version: 2.6
 kafka_log_message_format_version: 2.6
 
 zookeeper_version: 3.7.0
-zookeeper_cluster: False
+zookeeper_cluster: True
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
