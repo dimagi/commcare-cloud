@@ -10,24 +10,21 @@ Planning
 
 Start by estimating the resources that the cluster will need.
 
-The following **example** uses a cluster of identically resourced VMs.
-Each one has:
-
-| Resource | Quantity |
-| -------- | --------:|
-| vCPUs    |        2 |
-| RAM      | 4096 MiB |
-| Storage  |   30 GiB |
-
-We have estimated that the following VMs will meet the requirements of
+The following **example** uses a cluster of almost identically resourced
+VMs. We have estimated that the following will meet the requirements of
 our project:
 
-* control1
-* proxy1
-* webworker1
-* webworker2
-* db1
-* db2
+| Name       | vCPUs | RAM      | Storage                 |
+| ---------- | -----:| --------:|:----------------------- |
+| control1   |     2 | 4096 MiB | 30 GiB                  |
+| proxy1     |     2 | 4096 MiB | 30 GiB                  |
+| webworker1 |     2 | 4096 MiB | 30 GiB                  |
+| webworker2 |     2 | 4096 MiB | 30 GiB                  |
+| db1        |     2 | 4096 MiB | 30 GiB + 60 GiB         |
+| db2        |     2 | 4096 MiB | 30 GiB + 60 GiB + 20 GiB|
+
+db1 has additional storage for databases, and db2 has one extra volume
+for databases, and another for a shared NFS volume.
 
 
 (Example) Creating a small cluster using libvirt with KVM
@@ -61,7 +58,7 @@ so using libvirt with KVM.
             --name $1 \
             --vcpus 2 \
             --ram 4096 \
-            --disk path=$IMAGES/$1.img,size=30 \
+            --disk path=$IMAGES/$1.qcow2,size=30 \
             --os-type linux \
             --os-variant ubuntu18.04 \
             --location 'http://archive.ubuntu.com/ubuntu/dists/bionic/main/installer-amd64/' \
@@ -153,7 +150,85 @@ so using libvirt with KVM.
             for> done
 
    5. (Optional) For convenience, consider adding the hostnames and IP
-      addresses of the VMs to /etc/hosts.
+      addresses of the VMs to /etc/hosts on the host machine. (The rest
+      of these instructions will assume that you have done this.)
+
+5. Add the extra volumes for db1 and db2:
+
+   1. Create the volume images:
+
+            $ qemu-img create -f qcow2 images/db1_data.qcow2 60G
+            $ qemu-img create -f qcow2 images/db2_data.qcow2 60G
+            $ qemu-img create -f qcow2 images/db2_shared_cluster.qcow2 20G
+
+      The images are named for the machine they will be attached to, and
+      their mount point. db1_data.qcow2 and db2_data.qcow2 will be
+      mounted at /opt/data. db2_shared_cluster.qcow2 will be mounted at
+      /opt/shared_cluster. And the directory name is based on "shared_" +
+      the name of the CommCare HQ environment. CommCare HQ environments
+      are usually named after their organization or project. For this
+      example we will name it "cluster".
+
+   2. Attach the volumes to the VMs:
+
+            $ virsh attach-disk --domain db1 \
+                --source /srv/virt/cchq-cluster/images/db1_data.qcow2 \
+                --target vdb \
+                --config --live
+            $ virsh attach-disk --domain db2 \
+                --source /srv/virt/cchq-cluster/images/db2_data.qcow2 \
+                --target vdb \
+                --config --live
+            $ virsh attach-disk --domain db2 \
+                --source /srv/virt/cchq-cluster/images/db2_shared_cluster.qcow2 \
+                --target vdc \
+                --config --live
+
+   3. Ensure the VMs can use their full size:
+
+            $ virsh blockresize --domain db1 \
+                --path /srv/virt/cchq-cluster/images/db1_data.qcow2 \
+                --size 60G
+            $ virsh blockresize --domain db2 \
+                --path /srv/virt/cchq-cluster/images/db2_data.qcow2 \
+                --size 60G
+            $ virsh blockresize --domain db1 \
+                --path /srv/virt/cchq-cluster/images/db2_shared_cluster.qcow2 \
+                --size 20G
+
+   4. Prepare the disks on the VMs.
+
+      Repeat the following steps for /dev/vdb (/opt/data) on db1, and
+      /dev/vdb (/opt/data) and /dev/vdc (/opt/shared_cluster) on db2:
+
+      1. Log into the VM as "ansible". e.g.:
+
+                $ ssh ansible@db1
+
+       2. Partition and format the disk. e.g.:
+
+                $ sudo fdisk /dev/vdb
+                ...
+                $ sudo mkfs.ext4 /dev/vdb1
+
+        3. Add the disk to /etc/fstab. Find its UUID using `blkid`, and
+           then append an entry for its mount point to /etc/fstab. e.g.:
+
+                $ sudo blkid
+                ...
+                /dev/vdb1: UUID="11111111-2222-3333-4444-555555555555" ...
+
+                $ echo 'UUID=11111111-2222-3333-4444-555555555555  /opt/data  ext4  defaults  0 0' | sudo tee -a /etc/fstab
+
+                $ sudo mkdir /opt/data
+
+                $ sudo mount -a /opt/data
+
+           Of course, for /dev/vdc on db2, the mount point will be
+           /opt/shared_cluster instead of /opt/data.
+
+Adapt the instructions above for your requirements and your
+virtualization stack.
 
 
 Prepare all VMs for automated deploy
