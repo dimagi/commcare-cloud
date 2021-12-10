@@ -234,21 +234,12 @@ so using libvirt with KVM.
 
             $ virsh shutdown webworker1
 
-   2. Edit the VM definition, and increase the memory.
+   2. Increase the memory.
 
-            $ virsh edit webworker1
+            $ virsh setmaxmem webworker1 8G --config
+            $ virsh setmem webworker1 8G --config
 
-      Find the lines ...
-
-              <memory unit='KiB'>4194304</memory>
-              <currentMemory unit='KiB'>4194304</currentMemory>
-
-      ... and change them to:
-
-              <memory unit='KiB'>8388608</memory>
-              <currentMemory unit='KiB'>8388608</currentMemory>
-
-   3. Save the definition, and restart the VM.
+   3. Restart the VM.
 
             $ virsh start webworker1
 
