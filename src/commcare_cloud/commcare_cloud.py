@@ -257,6 +257,7 @@ def _get_cleaned_args_for_control(args, input_argv):
             del argv[i:i + 2]
     return argv
 
+
 def main():
     exit_code = call_commcare_cloud()
     if exit_code != 0:
