@@ -250,41 +250,46 @@ instructions above for your requirements and your virtualization stack.
 Prepare all VMs for automated deploy
 ------------------------------------
 
-Do the following for each VM:
+1. Do the following for each VM:
 
-1. Enable root login via SSH.
+   1. Enable root login via SSH.
 
-   On a standard Ubuntu install, the `root` user is not enabled or
-   allowed to ssh. The root user will only be used initially, and will
-   then be disabled automatically by the install scripts.
+      On a standard Ubuntu install, the `root` user is not enabled or
+      allowed to ssh. The root user will only be used initially, and
+      will then be disabled automatically by the install scripts.
 
-   Make a root password and store it somewhere safe for later reference.
+      Make a root password and store it somewhere safe for later
+      reference.
 
-   Set the root password:
+      Set the root password:
 
-        $ sudo passwd root
+           $ sudo passwd root
 
-   Enable the root user:
+      Enable the root user:
 
-        $ sudo passwd -u root
+           $ sudo passwd -u root
 
-   Edit `/etc/ssh/sshd_config`:
+      Edit `/etc/ssh/sshd_config`:
 
-        $ sudo nano /etc/ssh/sshd_config
+           $ sudo nano /etc/ssh/sshd_config
 
-   To allow logging in as root, set
+      To allow logging in as root, set
 
-        PermitRootLogin yes
+           PermitRootLogin yes
 
-   To allow password authentication, ensure
+      To allow password authentication, ensure
 
-        PasswordAuthentication yes
+           PasswordAuthentication yes
 
-   Then restart SSH:
+      Then restart SSH:
 
-        $ sudo service ssh reload
+           $ sudo service ssh reload
 
-2. Install Required Packages
+   3. Initialize a log file to be used in the installation process.
+
+           $ sudo touch /var/log/ansible.log && sudo chmod 666 /var/log/ansible.log
+
+2. On the "control" machine, install required packages:
 
         $ sudo apt update && sudo apt install python3-pip sshpass net-tools
 
@@ -307,21 +312,17 @@ Do the following for each VM:
 
         $ sudo -H pip install ansible virtualenv virtualenvwrapper --ignore-installed six
 
-3. Initialize a log file to be used in the installation process.
-
-        $ sudo touch /var/log/ansible.log && sudo chmod 666 /var/log/ansible.log
-
 
 Create your user and configure CommCare Cloud
 ---------------------------------------------
 
 The "control" machine is used for managing the cluster.
 
-1. SSH into the control1 as the "ansible" user, and create a user
-   for yourself. (These instructions assume that the machines' names
-   resolve to their IP addresses. Replace them with their IP addresses,
-   if necessary. And, of course, if your username is not "jbloggs",
-   adjust accordingly.)
+1. SSH into control1 as the "ansible" user, and create a user for
+   yourself. (These instructions assume that the machines' names resolve
+   to their IP addresses. Replace them with their IP addresses, if
+   necessary. And, of course, if your username is not "jbloggs", adjust
+   accordingly.)
 
         (jbloggs@host) $ ssh ansible@control1
         (ansible@control1) $ sudo adduser jbloggs
@@ -365,17 +366,17 @@ The "control" machine is used for managing the cluster.
         $ git mv monolith cluster
         $ git commit -m "Renamed environment"
 
-6. Remove the "origin" git remote.
+7. Remove the "origin" git remote.
 
         $ git remote remove origin
 
-7. (Optional) You are encouraged to add a remote for your own git
+8. (Optional) You are encouraged to add a remote for your own git
    repository, so that you can share and track changes to your
    environment's configuration.
 
         $ git remote add origin git@github.com:your-organization/commcare-environment.git
 
-8. Configure your CommCare environment.
+9. Configure your CommCare environment.
 
    See
    [Configuring your CommCare Cloud Environments Directory](../commcare-cloud/env/index.md)
@@ -469,36 +470,34 @@ The "control" machine is used for managing the cluster.
 
         [riakcs]
 
-
-9. Configure `commcare-cloud`
+10. Configure `commcare-cloud`
 
         $ export COMMCARE_CLOUD_ENVIRONMENTS=$HOME/environments
         $ manage-commcare-cloud configure
 
-   You will see a few prompts that will guide you through the
-   installation. Answer the questions as follows for a standard
-   installation:
+    You will see a few prompts that will guide you through the
+    installation. Answer the questions as follows for a standard
+    installation:
 
         Do you work or contract for Dimagi? [y/N]n
 
         I see you have COMMCARE_CLOUD_ENVIRONMENTS set to /home/jbloggs/environments in your environment
         Would you like to use environments at that location? [y/N]y
 
-   As prompted, add the commcare-cloud config to your profile to set the
-   correct paths:
+    As prompted, add the commcare-cloud config to your profile to set
+    the correct paths:
 
         $ echo "source ~/.commcare-cloud/load_config.sh" >> ~/.profile
 
-   Load the commcare-cloud config so it takes effect immediately:
+    Load the commcare-cloud config so it takes effect immediately:
 
         $ source ~/.commcare-cloud/load_config.sh
 
-   Update the known hosts file
+    Update the known hosts file
 
         $ commcare-cloud cluster update-local-known-hosts
 
-
-10. Generate secured passwords for the vault
+11. Generate secured passwords for the vault
 
     In this step, we'll generate passwords in the `vault.yml` file. This
     file will store all the passwords used in this CommCare environment.
@@ -512,7 +511,7 @@ The "control" machine is used for managing the cluster.
     Find the value of "ansible_sudo_pass" and record it in your password
     manager. We will need this to deploy CommCare HQ.
 
-11. Next, we're going to set up an encrypted Ansible vault file. You'll
+12. Next, we're going to set up an encrypted Ansible vault file. You'll
     need to create a strong password and save it somewhere safe. This is
     the master password that grants access to the vault. You'll need it
     for any future changes to this file, as well as when you deploy or
