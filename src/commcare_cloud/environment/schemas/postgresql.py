@@ -184,14 +184,14 @@ class PostgresqlConfig(jsonobject.JsonObject):
 
         all_dbs = self.generate_postgresql_dbs()
         for db in all_dbs:
-            if db.host is None:
-                db.host = self.DEFAULT_POSTGRESQL_HOST
-            elif db.host != '127.0.0.1':
-                db.host = environment.translate_host(db.host, environment.paths.postgresql_yml)
+            if db.hosts is None:
+                db.hosts = self.DEFAULT_POSTGRESQL_HOST
+            elif db.hosts != '127.0.0.1':
+                db.hosts = environment.translate_host(db.hosts, environment.paths.postgresql_yml)
 
             if not db.pgbouncer_hosts:
-                db.pgbouncer_hosts = [db.host]
-                db.pgbouncer_endpoint = db.host
+                db.pgbouncer_hosts = [db.hosts]
+                db.pgbouncer_endpoint = db.hosts
             else:
                 db.pgbouncer_hosts = [
                     environment.translate_host(pgbouncer_host, environment.paths.postgresql_yml)
@@ -200,8 +200,8 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 db.pgbouncer_endpoint = environment.translate_host(
                     db.pgbouncer_endpoint, environment.paths.postgresql_yml)
             if db.port is None:
-                if db.host in host_settings:
-                    db.port = host_settings[db.host].port
+                if db.hosts in host_settings:
+                    db.port = host_settings[db.hosts].port
                 else:
                     db.port = DEFAULT_PORT
 
@@ -383,7 +383,7 @@ class FormProcessingConfig(jsonobject.JsonObject):
 
     def get_db_list(self):
         return (
-            [self.proxy]
+            ([self.proxy] if self.proxy.host else [])
             + ([self.proxy_standby] if self.proxy_standby.host else [])
             + sorted(self.partitions.values(), key=lambda db: alphanum_key(db.django_alias))
         )
@@ -392,7 +392,15 @@ class FormProcessingConfig(jsonobject.JsonObject):
 class FormProcessingProxyDBOptions(DBOptions):
     name = constants.form_processing_proxy_db_name
     django_alias = 'proxy'
+    hosts = jsonobject.ListProperty(str)
 
+    @classmethod
+    def wrap(cls, data):
+        if 'host' in data:
+            assert 'hosts' not in data
+            host = data.pop('host')
+            data['hosts'] = [host]
+        return super(DBOptions, cls).wrap(data)
 
 class FormProcessingStandbyProxyDBOptions(DBOptions):
     name = constants.form_processing_proxy_standby_db_name
