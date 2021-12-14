@@ -209,6 +209,47 @@ resource "aws_wafv2_rule_group" "dimagi_block_rules" {
   }
 }
 
+resource "aws_wafv2_rule_group" "dimagi_allow_rules" {
+  name     = "DimagiAllowRules"
+  capacity = "25"
+  scope    = "REGIONAL"
+  visibility_config {
+    cloudwatch_metrics_enabled = true
+    metric_name                = "DimagiAllowRules"
+    sampled_requests_enabled   = true
+  }
+  rule {
+    name     = "StaticContent"
+    priority = 0
+
+    action {
+      allow {
+      }
+    }
+
+    statement {
+      byte_match_statement {
+        field_to_match {
+          uri_path {
+          }
+        }
+        positional_constraint = "STARTS_WITH"
+        search_string         = "/static/hqwebapp/js/requirejs_config.js"
+        text_transformation {
+          priority = 0
+          type     = "NONE"
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "StaticContent"
+      sampled_requests_enabled   = true
+    }
+  }
+}
+
 resource "aws_wafv2_web_acl" "front_end" {
   default_action {
     allow {
@@ -237,6 +278,24 @@ resource "aws_wafv2_web_acl" "front_end" {
   }
   rule {
     priority = "1"
+    name     = "DimagiAllowRules"
+    override_action {
+      none {
+      }
+    }
+    statement {
+      rule_group_reference_statement {
+        arn = aws_wafv2_rule_group.dimagi_allow_rules.arn
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "DimagiAllowRules"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    priority = "2"
     name     = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
     override_action {
       none {
@@ -255,7 +314,7 @@ resource "aws_wafv2_web_acl" "front_end" {
     }
   }
   rule {
-    priority = "2"
+    priority = "3"
     name     = "AWS-AWSManagedRulesLinuxRuleSet"
     override_action {
       none {
@@ -274,7 +333,7 @@ resource "aws_wafv2_web_acl" "front_end" {
     }
   }
   rule {
-    priority = "3"
+    priority = "4"
     name     = "AWS-AWSManagedRulesSQLiRuleSet"
     override_action {
       none {
@@ -299,7 +358,7 @@ resource "aws_wafv2_web_acl" "front_end" {
     }
   }
   rule {
-    priority = "4"
+    priority = "5"
     name     = "AWS-AWSManagedRulesAmazonIpReputationList"
     override_action {
       none {
@@ -319,7 +378,7 @@ resource "aws_wafv2_web_acl" "front_end" {
   }
 
   rule {
-    priority = "5"
+    priority = "6"
     name     = "CommCareWhitelistRules"
     override_action {
       none {
@@ -337,7 +396,7 @@ resource "aws_wafv2_web_acl" "front_end" {
     }
   }
   rule {
-    priority = "6"
+    priority = "7"
     name     = "AWS-AWSManagedRulesCommonRuleSet"
     override_action {
       none {
