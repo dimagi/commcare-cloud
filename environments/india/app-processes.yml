@@ -30,6 +30,8 @@ celery_processes:
       concurrency: 2
     linked_domain_queue:
       concurrency: 10
+    malt_generation_queue:
+      concurrency: 10
     saved_exports_queue:
       concurrency: 1
       optimize: True

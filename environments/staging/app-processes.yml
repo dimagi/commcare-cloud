@@ -33,6 +33,8 @@ celery_processes:
       concurrency: 1
     user_import_queue:
       concurrency: 3
+    malt_generation_queue:
+      concurrency: 1
     flower: {}
     beat: {}
 pillows:

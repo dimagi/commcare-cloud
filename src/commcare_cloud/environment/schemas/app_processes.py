@@ -123,6 +123,7 @@ CELERY_PROCESSES = [
     CeleryProcess("linked_domain_queue", required=False),
     CeleryProcess("logistics_background_queue", required=False),
     CeleryProcess("logistics_reminder_queue", required=False),
+    CeleryProcess("malt_generation_queue", required=False),
     CeleryProcess("reminder_case_update_queue", blockage_threshold=15 * 60),
     CeleryProcess("reminder_case_update_bulk_queue", required=False, blockage_threshold=15 * 60),
     CeleryProcess("reminder_queue", required=False, blockage_threshold=15 * 60),
