@@ -15,6 +15,16 @@
     line: "PS1={{ bash_PS1 }}"
     state: present
 
+- name: Add ansible group
+  become: yes
+  group:
+    name: ansible
+    state: present
+    gid: "{{ ansible_gid }}"
+  tags:
+    - new_ansible_sudo_pass
+  when: "ansible_gid is not none"
+
 - name: Add cchq group
   become: yes
   group:
@@ -30,6 +40,19 @@
     name: "{{ dev_group }}"
     state: present
   tags: commcarehq
+
+- name: Add ansible user
+  user:
+    name: ansible
+    state: present
+    shell: /bin/bash
+    group: "{{ 'ansible' if ansible_gid else omit }}"
+    groups: "sudo"
+    password: "{{ new_ansible_sudo_pass|default(ansible_sudo_pass)|password_hash('sha512') }}"
+    uid: "{{ ansible_uid if ansible_uid else omit }}"
+    append: yes
+  tags:
+    - new_ansible_sudo_pass
 
 - name: Add cchq user
   become: yes
@@ -73,16 +96,6 @@
     state: present
     exclusive: yes
   tags: commcarehq
-
-- name: Add ansible user
-  user:
-    name: ansible
-    state: present
-    shell: /bin/bash
-    groups: "sudo"
-    password: "{{ new_ansible_sudo_pass|default(ansible_sudo_pass)|password_hash('sha512') }}"
-  tags:
-    - new_ansible_sudo_pass
 
 - name: lookup ssh pubkeys from authorized_keys_dir and create ssh_pubkeys_list
   set_fact:
