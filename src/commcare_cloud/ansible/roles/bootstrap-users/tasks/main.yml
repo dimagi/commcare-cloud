@@ -15,6 +15,16 @@
     line: "PS1={{ bash_PS1 }}"
     state: present
 
+- name: Add ansible group
+  become: yes
+  group:
+    name: ansible
+    state: present
+    gid: "{{ ansible_gid }}"
+  tags:
+    - new_ansible_sudo_pass
+  when: "ansible_gid is not none"
+
 - name: Add cchq group
   become: yes
   group:
@@ -26,8 +36,23 @@
 
 - name: Add dev group
   become: yes
-  group: name="{{ dev_group }}" state=present
+  group:
+    name: "{{ dev_group }}"
+    state: present
   tags: commcarehq
+
+- name: Add ansible user
+  user:
+    name: ansible
+    state: present
+    shell: /bin/bash
+    group: "{{ 'ansible' if ansible_gid else omit }}"
+    groups: "sudo"
+    password: "{{ new_ansible_sudo_pass|default(ansible_sudo_pass)|password_hash('sha512') }}"
+    uid: "{{ ansible_uid if ansible_uid else omit }}"
+    append: yes
+  tags:
+    - new_ansible_sudo_pass
 
 - name: Add cchq user
   become: yes
@@ -43,26 +68,34 @@
 
 - name: Add users for current devs
   become: yes
-  user: name="{{ item }}" state=present shell=/bin/bash groups={{ dev_group }}
+  user:
+    name: "{{ item }}"
+    state: present
+    shell: /bin/bash
+    groups: "{{ dev_group }}"
   with_items: '{{ dev_users.present }}'
 
 - name: Add public keys for current devs
   become: yes
-  authorized_key: user="{{ item }}" state=present key="{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}" exclusive=yes
+  authorized_key:
+    user: "{{ item }}"
+    state: present
+    key: "{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
+    exclusive: yes
   with_items: '{{ dev_users.present }}'
   ignore_errors: "{{ ansible_check_mode }}"
   tags:
     - pubkey
 
-- name: Remove public key for cchq user  # todo: remove after applied to all envs
+- name: Remove public key for cchq user
+  # todo: remove after applied to all envs
   become: yes
-  authorized_key: user="{{ cchq_user }}" key='' state=present exclusive=yes
+  authorized_key:
+    user: "{{ cchq_user }}"
+    key: ''
+    state: present
+    exclusive: yes
   tags: commcarehq
-
-- name: Add ansible user
-  user: name=ansible state=present shell=/bin/bash groups="sudo" password="{{ new_ansible_sudo_pass|default(ansible_sudo_pass)|password_hash('sha512') }}"
-  tags:
-    - new_ansible_sudo_pass
 
 - name: lookup ssh pubkeys from authorized_keys_dir and create ssh_pubkeys_list
   set_fact:
@@ -90,7 +123,11 @@
 
 - name: Authorize current devs to login as ansible
   become: yes
-  authorized_key: user=ansible state=present key="{{ ssh_pubkeys_string }}" exclusive=yes
+  authorized_key:
+    user: ansible
+    state: present
+    key: "{{ ssh_pubkeys_string }}"
+    exclusive: yes
   tags:
     - pubkey
 
@@ -116,6 +153,12 @@
 # and this role has to be able to finish entirely using factory auth (to bootstrap the users)
 - name: Copy sudoers file
   become: yes
-  template: src=sudoers.j2 dest=/etc/sudoers.d/cchq validate='visudo -cf %s' owner=root group=root mode=0440
+  template:
+    src: sudoers.j2
+    dest: /etc/sudoers.d/cchq
+    validate: 'visudo -cf %s'
+    owner: root
+    group: root
+    mode: 0440
   tags:
     - sudoers
