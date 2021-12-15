@@ -38,6 +38,7 @@ then
         COMMCARE_CLOUD_ENVIRONMENTS=commcare-environments ./tests/test_autogen_environments.sh
     }
 
+    cat /etc/group
     test_syntax
     test_localsettings
     test_dimagi_environments
