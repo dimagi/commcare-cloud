@@ -80,6 +80,7 @@ CommCare HQ DevOps engineer.
 +---------------------------------------------------------+---------+
 
 
+.. _CommCare HQ Services Overview: https://docs.google.com/presentation/d/1wR13WMgVXpT_tzXJLSgIL8l3sxELfAyQeAikX7IT39Q/edit#slide=id.p
 .. _on a single machine: https://dimagi.github.io/commcare-cloud/setup/new_environment.html
 .. _on a small cluster: https://dimagi.github.io/commcare-cloud/setup/new_cluster.html
 .. _Server management basics: https://dimagi.github.io/commcare-cloud/commcare-cloud/basics
