@@ -41,7 +41,7 @@
   tags: zookeeper_cluster_conf
 
 - name: configure Zookeeper properties
-  template: src=zoo.cfg.j2 dest="{{ zookeeper_data_dir }}/zoo.cfg"
+  template: src=zoo.cfg.j2 dest="{{ zookeeper_data_dir }}/conf/zoo.cfg"
   tags: zookeeper_cluster_conf
 
 - name: Install Zookeeper systemd script
