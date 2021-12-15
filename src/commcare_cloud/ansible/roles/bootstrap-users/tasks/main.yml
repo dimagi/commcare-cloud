@@ -88,7 +88,7 @@
     - pubkey
 
 - name: Remove public key for cchq user
-# todo: remove after applied to all envs
+  # todo: remove after applied to all envs
   become: yes
   authorized_key:
     user: "{{ cchq_user }}"
