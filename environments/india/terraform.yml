@@ -30,7 +30,8 @@ servers:
     volume_type: "gp3"
     group: control
     os: bionic
-  - server_name: "djangomanage0-india"
+
+  - server_name: "djangomanage1-india"
     server_instance_type: "t3.small"
     network_tier: "app-private"
     az: "a"
@@ -39,7 +40,8 @@ servers:
     volume_type: "gp3"
     group: control
     os: bionic
-  - server_name: "web0-india"
+
+  - server_name: "web2-india"
     server_instance_type: "r5a.xlarge"
     network_tier: "app-private"
     az: "a"
@@ -49,7 +51,8 @@ servers:
     group: control
     os: bionic
     server_auto_recovery: true
-  - server_name: "web1-india"
+
+  - server_name: "web3-india"
     server_instance_type: "r5a.xlarge"
     network_tier: "app-private"
     az: "a"
@@ -60,7 +63,7 @@ servers:
     os: bionic
     server_auto_recovery: true
 
-  - server_name: "celery1-india"
+  - server_name: "celery4-india"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
@@ -69,7 +72,8 @@ servers:
     volume_type: "gp3"
     group: celery
     os: bionic
-  - server_name: "celery2-india"
+
+  - server_name: "celery5-india"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
     az: "a"
@@ -78,7 +82,8 @@ servers:
     volume_type: "gp3"
     group: celery
     os: bionic
-  - server_name: "celery3-india"
+
+  - server_name: "celery6-india"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
     az: "a"
@@ -115,6 +120,7 @@ servers:
       volume_type: "gp3"
     group: couchdb2
     os: bionic
+
   - server_name: "couch9-india"
     server_instance_type: "r5.xlarge"
     network_tier: "db-private"
@@ -128,7 +134,6 @@ servers:
       volume_type: "gp3"
     group: couchdb2
     os: bionic
-
    
   - server_name: "esmaster2-india"
     server_instance_type: t3.medium
@@ -169,6 +174,7 @@ servers:
     volume_type: "gp3"
     group: elasticsearch
     os: bionic
+
   - server_name: "es2-india"
     server_instance_type: "t3.large"
     network_tier: "db-private"
@@ -220,7 +226,7 @@ servers:
     os: bionic
     server_auto_recovery: true
 
-  - server_name: "pillow2-india"
+  - server_name: "pillow3-india"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
     az: "a"
@@ -249,6 +255,7 @@ servers:
     volume_type: "gp3"
     group: "postgresql"
     os: bionic
+
   - server_name: "pgbouncer1-india"
     server_instance_type: t3.small
     network_tier: "db-private"
@@ -280,7 +287,7 @@ servers:
     os: ubuntu_pro_bionic
 
 proxy_servers:
-  - server_name: "proxy1-india"
+  - server_name: "proxy2-india"
     server_instance_type: "t3.medium"
     network_tier: "public"
     az: "a"

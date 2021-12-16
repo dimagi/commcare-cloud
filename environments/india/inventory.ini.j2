@@ -1,10 +1,10 @@
 {{ __control0__ }}
-{{ __djangomanage0__ }}
-{{ __web0__ }}
-{{ __web1__ }}
-{{ __celery1__ }} swap_size=4G
-{{ __celery2__ }} swap_size=4G
-{{ __celery3__ }} swap_size=4G
+{{ __djangomanage1__ }}
+{{ __web2__ }}
+{{ __web3__ }}
+{{ __celery4__ }} swap_size=4G
+{{ __celery5__ }} swap_size=4G
+{{ __celery6__ }} swap_size=4G
 {{ __couch5__ }} swap_size=8G
 {{ __couch8__ }} swap_size=8G
 {{ __couch9__ }} swap_size=8G
@@ -45,13 +45,13 @@ elasticsearch_master=false
 elasticsearch_data=false
 
 {{ __formplayer1__ }}
-{{ __pillow2__ }}
+{{ __pillow3__ }}
 {{ __kafka1__ }} kafka_broker_id=0
 {{ __rabbit2__ }}
 {{ __pgbouncer0__ }}
 {{ __pgbouncer1__ }} pgbouncer_processes=2
 {{ __pgbouncer2__ }} pgbouncer_processes=2
-{{ __proxy1__ }}
+{{ __proxy2__ }}
 {{ __rds_pgmain0__ }}
 {{ __pgformplayer_nlb__ }}
 {{ __pgmain_nlb__ }}
@@ -65,14 +65,14 @@ elasticsearch_data=false
 # empty
 
 [proxy:children]
-proxy1
+proxy2
 
 [logproxy:children]
-proxy1
+proxy2
 
 [webworkers:children]
-web0
-web1
+web2
+web3
 
 [postgresql:children]
 remote_postgresql
@@ -98,12 +98,12 @@ kafka1
 kafka1
 
 [celery:children]
-celery1
-celery2
-celery3
+celery4
+celery5
+celery6
 
 [pillowtop:children]
-pillow2
+pillow3
 
 [formplayer:children]
 formplayer1
@@ -135,7 +135,7 @@ couch_alb
 control0
 
 [django_manage:children]
-djangomanage0
+djangomanage1
 
 [remote_postgresql:children]
 rds_pgmain0
