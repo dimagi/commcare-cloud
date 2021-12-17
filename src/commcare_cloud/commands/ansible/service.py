@@ -11,7 +11,7 @@ import attr
 import six
 from clint.textui import puts, indent
 
-from commcare_cloud.colors import color_error
+from commcare_cloud.colors import color_error, color_warning, color_code, color_notice
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, get_django_webworker_name,
     get_formplayer_spring_instance_name,
@@ -456,6 +456,18 @@ class CommCare(SingleSupervisorService):
     @property
     def supervisor_process_name(self):
         return 'all'
+
+    def run(self, action, host_pattern=None, process_pattern=None):
+        if action == 'restart':
+            puts(color_warning("The 'commcare' service command rejects the 'restart' action"))
+            puts(color_warning("in order to protect against accidental downtime."))
+            puts(color_notice("For a no-downtime restart of commcare-hq services, please use one of the following"))
+            puts(color_code(f"  cchq {self.environment.name} fab restart_services  # for all processes that run commcare-hq code."))
+            puts(color_code(f"  cchq {self.environment.name} fab restart_webworkers  # for webworkers only"))
+            puts(color_notice("To restart formplayer, which always causes downtime, use the 'formplayer' service command."))
+            puts(color_error("Refusing to run commcare service command with action 'restart'."))
+            return 1
+        super().run(action, host_pattern=host_pattern, process_pattern=process_pattern)
 
 
 class Webworker(SingleSupervisorService):
