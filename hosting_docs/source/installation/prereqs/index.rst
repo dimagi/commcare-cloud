@@ -15,3 +15,4 @@ In this section, we list down various prerequisites for hosting CommCareHQ succe
    /installation/prereqs/5-requirements
    /installation/prereqs/6-software-and-tools
    /installation/prereqs/7-commcare-cloud
+   /installation/prereqs/8-pre-deployment-checklist
