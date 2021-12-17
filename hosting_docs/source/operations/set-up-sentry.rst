@@ -1,3 +1,4 @@
+.. _hosting-operations-set-up-sentry:
 
 Set up Sentry for error logs
 ============================

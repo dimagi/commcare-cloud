@@ -1,3 +1,5 @@
+.. _hosting-prereqs-pre-deployment-checklist:
+
 Pre-Deployment Checklist
 ========================
 

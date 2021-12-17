@@ -1,3 +1,5 @@
+.. _hosting-operations-monitoring-alerting:
+
 Monitoring and Alerting
 =======================
 

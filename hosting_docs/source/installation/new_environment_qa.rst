@@ -1,3 +1,4 @@
+.. _hosting-new-environment-qa:
 
 Testing your new CommCare Environment
 =====================================

@@ -1,3 +1,5 @@
+.. _hosting-backup-guide:
+
 Backup and Restore
 ==================
 
