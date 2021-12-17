@@ -480,6 +480,16 @@ class Webworker(SingleSupervisorService):
     def supervisor_process_name(self):
         return get_django_webworker_name(self.environment)
 
+    def run(self, action, host_pattern=None, process_pattern=None):
+        if action == 'restart':
+            puts(color_warning("The 'webworker' service command rejects the 'restart' action"))
+            puts(color_warning("in order to protect against accidental downtime."))
+            puts(color_notice("For a no-downtime restart of webworkers, please use"))
+            puts(color_code(f"  cchq {self.environment.name} fab restart_webworkers"))
+            puts(color_error("Refusing to run webworkers service command with action 'restart'."))
+            return 1
+        super().run(action, host_pattern=host_pattern, process_pattern=process_pattern)
+
 
 class Formplayer(SingleSupervisorService):
     name = 'formplayer'
