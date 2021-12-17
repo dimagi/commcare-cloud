@@ -22,7 +22,7 @@ you have configured the correct access to allow connections from the IPs where C
     ```
 4. Restart CommCare services
    ```bash
-   commcare-cloud <env> service commcare resetart
+   commcare-cloud <env> fab restart_services
    ```
 
 {% include_relative _blobdb_backfill.md %}
@@ -37,5 +37,5 @@ you have configured the correct access to allow connections from the IPs where C
    ```
 4. Restart CommCare services
    ```bash
-   commcare-cloud <env> service commcare resetart
+   commcare-cloud <env> fab restart_services
    ```

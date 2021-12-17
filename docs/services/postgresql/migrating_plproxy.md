@@ -14,14 +14,14 @@ This Migration doesn't require downtime since the databases do not contain any d
         *   ` python manage.py check_services`
         *   ` python manage.py check --deploy -t database`
 5.  Run `cchq <env> update-config` (no limit)
-6.  Restart mobile webworkers
-    *   `cchq <env> service commcare restart --limit=mobile_webworkers`
+6.  Restart webworkers
+    *   `cchq <env> fab restart_webworkers`
 7.  Check for errors
     *   Load the site in a browser
     *   Watch monitoring dashboards for errors
     *   Watch Sentry for errors
-8.  Restart remaining services
-    *   `cchq <env> service commcare restart --limit= 'all:!mobile_webworkers'`
+8.  Restart remaining services (this also redundantly restarts webworkers again)
+    *   `cchq <env> fab restart_services`
 9.  Check for errors again (see step 7)
 10. Cleanup:
     *   Remove old plproxy nodes from env config (inventory etc)
