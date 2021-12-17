@@ -93,7 +93,7 @@ celery_processes:
       num_workers: 2
     malt_generation_queue:
       pooling: gevent
-      concurrency: 40
+      concurrency: 20
       num_workers: 2
 
 
