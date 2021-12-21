@@ -1,6 +1,7 @@
 dev_users:
   present:
     - adunn
+    - akjain
     - aphulera
     - biyeun
     - cellowitz
