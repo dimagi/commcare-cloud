@@ -9,7 +9,7 @@ postgres_override:
   postgresql_max_wal_size: 2GB
 
 pgbouncer_override:
-  pgbouncer_default_pool: 490
+  pgbouncer_default_pool: 980
   pgbouncer_max_connections: 10000
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
