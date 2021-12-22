@@ -42,7 +42,7 @@ servers:
   - server_name: "web_b{i}-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
-    az: "b"
+    az: "a"
     volume_size: 40
     group: "mobile_webworkers"
     os: ubuntu_pro_bionic
