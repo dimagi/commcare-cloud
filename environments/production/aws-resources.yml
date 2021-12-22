@@ -14,6 +14,10 @@ celery_a006-production: 10.202.12.222
 celery_a006-production.instance_id: i-0f1272b602a757a91
 celery_a007-production: 10.202.12.58
 celery_a007-production.instance_id: i-0574d2ef792ee2be9
+celery_b000-production: 10.202.10.34
+celery_b000-production.instance_id: i-03d4cea83ef70f067
+celery_b001-production: 10.202.10.138
+celery_b001-production.instance_id: i-05a548ab5f4d8686b
 control2-production: 10.202.10.212
 control2-production.instance_id: i-0e290f7ceefb5e096
 couch11-production: 10.202.42.190
@@ -268,7 +272,7 @@ web_b002-production: 10.202.10.224
 web_b002-production.instance_id: i-051eb04008d1b2244
 web_b003-production: 10.202.10.147
 web_b003-production.instance_id: i-031466ee82a88ba7f
-web_b004-production: 10.202.11.67
-web_b004-production.instance_id: i-04517fbbc7c33df2f
+web_b004-production: 10.202.10.117
+web_b004-production.instance_id: i-0d5e11d0ed263e8ad
 web_b005-production: 10.202.10.191
 web_b005-production.instance_id: i-0c986938a33638f7d
