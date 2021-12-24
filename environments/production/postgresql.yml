@@ -42,6 +42,7 @@ dbs:
     host: rds_pgmain0
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_hosts:
+      - pgbouncer5
       - pgbouncer6
       - pgbouncer7
       - pgbouncer8
@@ -54,6 +55,7 @@ dbs:
     host: rds_pgucr0
     pgbouncer_endpoint: pgucr_nlb
     pgbouncer_hosts:
+      - pgbouncer5
       - pgbouncer6
       - pgbouncer7
       - pgbouncer8
@@ -63,6 +65,7 @@ dbs:
     host: rds_pgsynclog0
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
+      - pgbouncer5
       - pgbouncer6
       - pgbouncer7
       - pgbouncer8
@@ -71,6 +74,7 @@ dbs:
     host: rds_pgauditcare0
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_hosts:
+      - pgbouncer5
       - pgbouncer6
       - pgbouncer7
       - pgbouncer8
@@ -87,6 +91,7 @@ dbs:
         host: rds_pgshard1
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
+          - pgbouncer5
           - pgbouncer6
           - pgbouncer7
           - pgbouncer8
@@ -96,6 +101,7 @@ dbs:
         host: rds_pgshard2
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
+          - pgbouncer5
           - pgbouncer6
           - pgbouncer7
           - pgbouncer8
@@ -105,6 +111,7 @@ dbs:
         host: rds_pgshard3
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
+          - pgbouncer5
           - pgbouncer6
           - pgbouncer7
           - pgbouncer8
@@ -114,6 +121,7 @@ dbs:
         host: rds_pgshard4
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
+          - pgbouncer5
           - pgbouncer6
           - pgbouncer7
           - pgbouncer8
@@ -123,6 +131,7 @@ dbs:
         host: rds_pgshard5
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
+          - pgbouncer5
           - pgbouncer6
           - pgbouncer7
           - pgbouncer8
