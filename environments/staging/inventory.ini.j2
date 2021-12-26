@@ -5,17 +5,11 @@
 
 {{ __proxy2__ }}
 {{ __proxy3__ }}
-{{ __proxy4__ }}
-{{ __proxy5__ }}
-{{ __proxy6__ }}
 
 [proxy:children]
 # Amazon EC2
 proxy2
 proxy3
-proxy4
-proxy5
-proxy6
 
 [logproxy:children]
 proxy
@@ -122,8 +116,6 @@ formplayer5
 
 [formplayer:vars]
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
-cchq_uid=1026
-cchq_gid=1027
 
 {{ __es6__ }} elasticsearch_node_name=es6-staging elasticsearch_node_zone=us-east-1a
 

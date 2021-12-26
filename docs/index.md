@@ -62,6 +62,7 @@ that machine is also the control machine.
 - [Backup and Restore](./commcare-cloud/backup.md)
 - [Deploying code changes to CommCare HQ](./commcare-cloud/deploy.md)
 - [BitLy for App shortcodes](services/bitly.md)
+- [SMTP for email](services/email.md)
 
 ### Optional
 - [Slack for notifications](monitoring/slack.md)

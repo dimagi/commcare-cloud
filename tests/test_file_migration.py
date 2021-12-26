@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import os
 import shutil
 
-from mock import patch
+from unittest.mock import patch
 from nose.tools import assert_multi_line_equal, assert_equal
 
 from commcare_cloud.commands.migrations.copy_files import prepare_file_copy_scripts, SourceFiles, \

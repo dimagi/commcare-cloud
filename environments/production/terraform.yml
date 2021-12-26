@@ -42,7 +42,7 @@ servers:
   - server_name: "web_b{i}-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
-    az: "b"
+    az: "a"
     volume_size: 40
     group: "mobile_webworkers"
     os: ubuntu_pro_bionic
@@ -81,7 +81,7 @@ servers:
       volume_size: 1260
     group: "elasticsearch"
     os: ubuntu_pro_bionic
-    count: 11
+    count: 10
 
   - server_name: "es_b{i}-production"
     server_instance_type: r5.4xlarge
@@ -92,10 +92,10 @@ servers:
       volume_size: 1260
     group: "elasticsearch"
     os: ubuntu_pro_bionic
-    count: 11
+    count: 10
 
   - server_name: "escoordinator1-production"
-    server_instance_type: r5.4xlarge
+    server_instance_type: r5.2xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -105,7 +105,7 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "escoordinator2-production"
-    server_instance_type: r5.4xlarge
+    server_instance_type: r5.2xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -115,7 +115,7 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "escoordinator3-production"
-    server_instance_type: r5.4xlarge
+    server_instance_type: r5.2xlarge
     network_tier: "db-private"
     az: "c"
     volume_size: 30
@@ -185,7 +185,17 @@ servers:
     volume_encrypted: yes
     group: "celery"
     os: ubuntu_pro_bionic
-    count: 7
+    count: 4
+
+  - server_name: "celery_b{i}-production"
+    server_instance_type: r5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 200
+    volume_encrypted: yes
+    group: "celery"
+    os: ubuntu_pro_bionic
+    count: 4
  
   - server_name: "pillow_a{i}-production"
     server_instance_type: r5a.8xlarge
@@ -203,7 +213,7 @@ servers:
     volume_size: 400
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 37
+    count: 54
     server_auto_recovery: true
 
   - server_name: "kafka1-production"
@@ -414,6 +424,7 @@ rds_instances:
       # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
       # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
       maintenance_work_mem: 4172000kB
+      vacuum_cost_limit: 1000
 
   - identifier: "pgauditcare0-production"
     instance_type: "db.m5.xlarge"

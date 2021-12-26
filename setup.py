@@ -31,7 +31,6 @@ install_deps = [
     'tabulate'
 ]
 test_deps = [
-    'mock>=2.0.0',
     'modernize',
     'nose>=1.3.7',
     'parameterized>=0.6.1',
