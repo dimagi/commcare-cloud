@@ -2,7 +2,7 @@ DEFAULT_POSTGRESQL_HOST: rds_pg0
 
 postgres_override:
   postgresql_max_connections: 300
-  postgresql_version: '10'
+  postgresql_version: '10.17'
   postgresql_hba_entries:  # required for backup
     - contype: host
       databases: replication
