@@ -289,6 +289,20 @@ servers:
     group: postgresql
     os: ubuntu_pro_bionic
 
+  - server_name: "pgproxy4-staging"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      encrypted: true
+      volume_type: "gp3"
+    group: postgresql
+    os: ubuntu_pro_bionic
+
   - server_name: "pgbouncer0-staging"
     server_instance_type: t3.small
     network_tier: "db-private"
