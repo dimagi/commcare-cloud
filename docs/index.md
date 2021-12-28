@@ -57,7 +57,7 @@ that machine is also the control machine.
 
 ## Optional but recommended
 - [Set up Sentry for error messages](monitoring/set-up-sentry.md)
-- [Set up Datadog for monitoring your infrastructure and CommCare](monitoring/setup_datadog.md)
+- [Set up Datadog for monitoring your infrastructure and CommCare](monitoring/setup_datadog.rst)
 - [Firefighting](firefighting/index.md)
 - [Backup and Restore](./commcare-cloud/backup.md)
 - [Deploying code changes to CommCare HQ](./commcare-cloud/deploy.md)
