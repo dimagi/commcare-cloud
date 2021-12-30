@@ -1,4 +1,4 @@
-: _operations-maintenance:
+.. _operations-maintenance:
 
 Operations and maintenance
 ==========================

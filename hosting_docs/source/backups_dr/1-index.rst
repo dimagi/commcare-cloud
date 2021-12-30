@@ -1,4 +1,4 @@
-: _backups-dr:
+.. _backups-dr:
 
 Backups and Disaster Recovery
 =============================

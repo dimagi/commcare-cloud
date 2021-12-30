@@ -1,4 +1,4 @@
-: _how-to-scale:
+.. _how-to-scale:
 
 How to Scale
 ============

@@ -1,3 +1,5 @@
+.. _hq-architecture:
+
 Architecture Overview
 =====================
 

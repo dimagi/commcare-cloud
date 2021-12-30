@@ -1,3 +1,5 @@
+.. _roles-responsibilities:
+
 Roles And Responsibilities for Hosting CommCare
 ===============================================
 

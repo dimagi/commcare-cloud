@@ -1,4 +1,4 @@
-: _service-guides:
+.. _service-guides:
 
 Reference Annexure
 ==================

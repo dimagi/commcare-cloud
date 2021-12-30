@@ -14,9 +14,9 @@ CommCareHQ is offered through Dimagi managed cloud with free and tiered subscrip
 About this Guide
 ----------------
 
-This documentation contains tutorials, guides, and reference material on how to self host CommCareHQ. It covers various deployment types, infrastructure and team requirements to host CommCareHQ, installation instructions for single and multi server deployment and how to manage CommCareHQ deployment through the entire hosting life-cycle.
+This documentation contains tutorials, guides, and reference material on how to self host CommCareHQ, infrastructure and team requirements, installation instructions for single and multi server deployment, and how to manage CommCareHQ deployment through the entire hosting life-cycle. This documentation is relevant for those who want to host CommCareHQ locally on their infrastructure.
 
-This documentation is relevant for those who want to host CommCareHQ locally on their infrastructure. If you are looking for something else please see below. 
+If you are looking for something else please see below. 
 
 - If you are interested in using CommCareHQ without having to host yourself, please check out our cloud offering at https://www.commcarehq.org.
 - Docs on how to use CommCareHQ https://wiki.commcarehq.org/display/commcarepublic/Home

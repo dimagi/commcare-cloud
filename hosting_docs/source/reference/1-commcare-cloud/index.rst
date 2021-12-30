@@ -1,3 +1,5 @@
+.. _commcare-cloud:
+
 CommCare Cloud Reference
 ========================
 
