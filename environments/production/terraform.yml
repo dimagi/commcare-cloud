@@ -327,7 +327,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgucr0-production"
-    instance_type: "db.t3.xlarge"  # increased from db.t3.large due to unused db.t3 RIs
+    instance_type: "db.m5.xlarge"
     storage: 500
     max_storage: 5000
     multi_az: true
@@ -400,7 +400,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgsynclog0-production"
-    instance_type: "db.t3.xlarge"
+    instance_type: "db.m5.xlarge"
     storage: 1000
     max_storage: 60500
     multi_az: true
