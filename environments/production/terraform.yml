@@ -327,7 +327,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgucr0-production"
-    instance_type: "db.m5.xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 500
     max_storage: 5000
     multi_az: true
