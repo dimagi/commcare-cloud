@@ -59,6 +59,8 @@ module "postgresql" {
   major_engine_version = local.major_engine_version == "" ? local.computed_major_engine_version : var.major_engine_version
   monitoring_interval = var.rds_instance["monitoring_interval"]
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+  performance_insights_enabled = true
+  performance_insights_retention_period = 7
 
   # Snapshot name upon DB deletion
   skip_final_snapshot = true
