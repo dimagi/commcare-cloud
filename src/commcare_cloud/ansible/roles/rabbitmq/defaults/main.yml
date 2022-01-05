@@ -1,5 +1,5 @@
 rabbitmq_version: 3.6.15
-erlang: 23.2
+erlang:  23.3.4.10-1
 rabbitmq_create_cluster: false
 rabbitmq_cluster_master: "{{ groups['rabbitmq'][0] }}"
 rabbitmq_erlang_cookie_file: '/var/lib/rabbitmq/.erlang.cookie'

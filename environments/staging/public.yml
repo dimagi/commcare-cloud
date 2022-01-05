@@ -14,7 +14,7 @@ kafka_log_message_format_version: 2.6
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
-rabbitmq_version: 3.9.11
+rabbitmq_version: 3.9.11-1
 
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
