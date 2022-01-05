@@ -76,6 +76,7 @@ module "postgresql" {
     Name = var.rds_instance["identifier"]
     Environment = var.environment
     Group = "postgresql"
+    BackupPlan = var.rds_instance["enable_cross_region_backup"] ? "BusinessContinuity" : null
   }
   timeouts = {}
 }
