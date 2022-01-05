@@ -15,7 +15,7 @@ pgbouncer_override:
   pgbouncer_default_pool: 290
 
 pg_repack:
-  pgproxy2:
+  pgproxy4:
     - database: commcarehq_synclogs
       host: "{{ DEFAULT_POSTGRESQL_HOST }}"
       username: "{{ postgres_users.root.username }}"
@@ -27,28 +27,28 @@ dbs:
   main:
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_hosts:
-      - pgproxy2
+      - pgproxy4
     query_stats: True
   ucr:
     pgbouncer_endpoint: pgucr_nlb
     pgbouncer_hosts:
-      - pgproxy2
+      - pgproxy4
     query_stats: True
   synclogs:
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
-      - pgproxy2
+      - pgproxy4
   formplayer:
     host: rds_pgformplayer0
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_hosts:
-      - pgproxy2
+      - pgproxy4
       - pgbouncer0
   auditcare:
-    pgbouncer_host: pgproxy2
+    pgbouncer_host: pgproxy4
   form_processing:
     proxy:
-      host: pgproxy2
+      host: pgproxy4
     partitions:
       p1:
         pgbouncer_endpoint: pgshard_nlb
