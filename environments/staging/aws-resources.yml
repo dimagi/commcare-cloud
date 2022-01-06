@@ -35,7 +35,6 @@ kafka3-staging.instance_id: i-01c92759e9092290e
 kafka4-staging: 10.201.40.156
 kafka4-staging.instance_id: i-0abe473ba4045472a
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
-pg1-staging: pg1-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgbouncer0-staging: 10.201.40.72
 pgbouncer0-staging.instance_id: i-0315ba6f2f8ba45f5
 pgformplayer0-staging: pgformplayer0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
