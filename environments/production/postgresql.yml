@@ -78,7 +78,7 @@ dbs:
   auditcare:
     host: rds_pgauditcare0
     pgbouncer_endpoint: pgmain_nlb
-    pgbouncer_pool_size: 25
+    pgbouncer_pool_size: 50
     pgbouncer_hosts:
       - pgbouncer5
       - pgbouncer6
