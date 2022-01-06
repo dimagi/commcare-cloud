@@ -12,6 +12,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.26
     pgbouncer_hosts:
     - 10.247.164.26
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -27,6 +28,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.25
     pgbouncer_hosts:
     - 10.247.164.25
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
@@ -43,6 +45,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.24
     pgbouncer_hosts:
     - 10.247.164.24
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -58,6 +61,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.66
     pgbouncer_hosts:
     - 10.247.164.66
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -76,6 +80,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.64
     pgbouncer_hosts:
     - 10.247.164.64
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -94,6 +99,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.66
     pgbouncer_hosts:
     - 10.247.164.66
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -112,6 +118,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.21
     pgbouncer_hosts:
     - 10.247.164.21
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -130,6 +137,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.21
     pgbouncer_hosts:
     - 10.247.164.21
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -148,6 +156,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.21
     pgbouncer_hosts:
     - 10.247.164.21
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -166,6 +175,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.20
     pgbouncer_hosts:
     - 10.247.164.20
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -184,6 +194,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.20
     pgbouncer_hosts:
     - 10.247.164.20
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -202,6 +213,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.20
     pgbouncer_hosts:
     - 10.247.164.20
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -220,6 +232,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.64
     pgbouncer_hosts:
     - 10.247.164.64
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -238,6 +251,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.56
     pgbouncer_hosts:
     - 10.247.164.56
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -253,6 +267,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.70
     pgbouncer_hosts:
     - 10.247.164.70
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -268,6 +283,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.25
     pgbouncer_hosts:
     - 10.247.164.25
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -283,6 +299,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.25
     pgbouncer_hosts:
     - 10.247.164.25
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -333,6 +350,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.25
     pgbouncer_hosts:
     - 10.247.164.25
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
@@ -350,6 +368,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.247.164.66
         pgbouncer_hosts:
         - 10.247.164.66
+        pgbouncer_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -368,6 +387,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.247.164.64
         pgbouncer_hosts:
         - 10.247.164.64
+        pgbouncer_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -386,6 +406,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.247.164.66
         pgbouncer_hosts:
         - 10.247.164.66
+        pgbouncer_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -404,6 +425,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.247.164.21
         pgbouncer_hosts:
         - 10.247.164.21
+        pgbouncer_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -422,6 +444,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.247.164.21
         pgbouncer_hosts:
         - 10.247.164.21
+        pgbouncer_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -440,6 +463,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.247.164.21
         pgbouncer_hosts:
         - 10.247.164.21
+        pgbouncer_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -458,6 +482,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.247.164.20
         pgbouncer_hosts:
         - 10.247.164.20
+        pgbouncer_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -476,6 +501,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.247.164.20
         pgbouncer_hosts:
         - 10.247.164.20
+        pgbouncer_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -494,6 +520,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.247.164.20
         pgbouncer_hosts:
         - 10.247.164.20
+        pgbouncer_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -512,6 +539,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.247.164.64
         pgbouncer_hosts:
         - 10.247.164.64
+        pgbouncer_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -530,6 +558,7 @@ postgresql_dbs:
       pgbouncer_endpoint: 10.247.164.56
       pgbouncer_hosts:
       - 10.247.164.56
+      pgbouncer_pool_size: null
       port: 6432
       query_stats: false
       user: '{{ postgres_users.commcare.username }}'
@@ -544,6 +573,7 @@ postgresql_dbs:
       pg_config: []
       pgbouncer_endpoint: null
       pgbouncer_hosts: []
+      pgbouncer_pool_size: null
       port: null
       query_stats: false
       user: null
@@ -559,6 +589,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.25
     pgbouncer_hosts:
     - 10.247.164.25
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -574,6 +605,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.26
     pgbouncer_hosts:
     - 10.247.164.26
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -591,6 +623,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.24
     pgbouncer_hosts:
     - 10.247.164.24
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -606,6 +639,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.70
     pgbouncer_hosts:
     - 10.247.164.70
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -621,6 +655,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.247.164.25
     pgbouncer_hosts:
     - 10.247.164.25
+    pgbouncer_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
