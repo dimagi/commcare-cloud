@@ -472,7 +472,6 @@ rds_instances:
     monitoring_interval: 0
     enable_cross_region_backup: true
     params:
-      shared_buffers: 6554MB
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
 
