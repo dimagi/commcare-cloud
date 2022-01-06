@@ -407,7 +407,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgsynclog0-production"
-    instance_type: "db.m5.xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 1000
     max_storage: 60500
     multi_az: true
