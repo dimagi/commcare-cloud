@@ -40,9 +40,9 @@ servers:
     count: 17
 
   - server_name: "web_b{i}-production"
-    server_instance_type: m5.2xlarge
+    server_instance_type: c5.4xlarge
     network_tier: "app-private"
-    az: "b"
+    az: "a"
     volume_size: 40
     group: "mobile_webworkers"
     os: ubuntu_pro_bionic
@@ -185,7 +185,17 @@ servers:
     volume_encrypted: yes
     group: "celery"
     os: ubuntu_pro_bionic
-    count: 8
+    count: 4
+
+  - server_name: "celery_b{i}-production"
+    server_instance_type: r5.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 200
+    volume_encrypted: yes
+    group: "celery"
+    os: ubuntu_pro_bionic
+    count: 4
  
   - server_name: "pillow_a{i}-production"
     server_instance_type: r5a.8xlarge
@@ -203,7 +213,7 @@ servers:
     volume_size: 400
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 49
+    count: 60
     server_auto_recovery: true
 
   - server_name: "kafka1-production"
@@ -299,6 +309,29 @@ proxy_servers:
     group: "proxy"
     os: ubuntu_pro_bionic
 
+  - server_name: "proxy_a1-production"
+    server_instance_type: "t3.large"
+    network_tier: "public"
+    az: "a"
+    volume_size: 40
+    group: "proxy"
+    os: ubuntu_pro_bionic
+
+  - server_name: "proxy_b1-production"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+    group: "proxy"
+    os: ubuntu_pro_bionic
+
+  - server_name: "proxy_c1-production"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 40
+    group: "proxy"
+    os: ubuntu_pro_bionic
 
 rds_instances:
   - identifier: "pgmain0-production"
@@ -308,6 +341,7 @@ rds_instances:
     engine_version: "10.17"
     backup_window: "23:00-01:00"
     backup_retention: 7
+    enable_cross_region_backup: true
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
@@ -317,13 +351,14 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgucr0-production"
-    instance_type: "db.t3.xlarge"  # increased from db.t3.large due to unused db.t3 RIs
+    instance_type: "db.m5.2xlarge"
     storage: 500
     max_storage: 5000
     multi_az: true
     engine_version: "10.17"
     backup_window: "23:00-01:00"
     backup_retention: 7
+    enable_cross_region_backup: true
     params:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
@@ -335,6 +370,7 @@ rds_instances:
     engine_version: "10.17"
     backup_window: "23:00-01:00"
     backup_retention: 7
+    enable_cross_region_backup: true
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: -1
@@ -348,6 +384,7 @@ rds_instances:
     engine_version: "10.17"
     backup_window: "23:00-01:00"
     backup_retention: 7
+    enable_cross_region_backup: true
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: -1
@@ -360,6 +397,7 @@ rds_instances:
     engine_version: "10.17"
     backup_window: "23:00-01:00"
     backup_retention: 7
+    enable_cross_region_backup: true
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: -1
@@ -372,6 +410,7 @@ rds_instances:
     engine_version: "10.17"
     backup_window: "23:00-01:00"
     backup_retention: 7
+    enable_cross_region_backup: true
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: -1
@@ -384,18 +423,25 @@ rds_instances:
     engine_version: "10.17"
     backup_window: "23:00-01:00"
     backup_retention: 7
+    enable_cross_region_backup: true
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: -1
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgsynclog0-production"
-    instance_type: "db.t3.xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 1000
     max_storage: 60500
     multi_az: true
     engine_version: "10.17"
     params:
+      shared_preload_libraries: pg_stat_statements,pg_transport
+      pg_transport.work_mem: 131072
+      pg_transport.timing: 1
+      max_worker_processes: 40
+      pg_transport.num_workers: 8
+      track_io_timing: 1
       work_mem: 2457kB
       shared_buffers: 3840MB
       effective_cache_size: 11520MB
@@ -424,6 +470,7 @@ rds_instances:
     backup_window: "23:00-01:00"
     backup_retention: 7
     monitoring_interval: 0
+    enable_cross_region_backup: true
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
