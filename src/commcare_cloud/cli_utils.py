@@ -54,6 +54,11 @@ def has_arg(unknown_args, short_form, long_form):
     return False
 
 
+def has_local_connection_arg(args):
+    return ("--connection=local" in args or ('-c' in args
+            and 'local' in args and args.index('-c') + 1 == args.index('local')))
+
+
 def git_branch():
     # https://stackoverflow.com/a/19585361/10840
     status = git("status")
