@@ -152,6 +152,7 @@ localsettings:
   RATE_LIMIT_SUBMISSIONS: yes
   SES_CONFIGURATION_SET: staging-email-events
   SNS_EMAIL_EVENT_SECRET: "{{ SNS_EMAIL_EVENT_SECRET }}"
+  RECAPTCHA_PUBLIC_KEY: '6LeaE-sdAAAAAJm75fPLW9j0TBuX5dMUEJ14rQzw'
   REDIS_DB: '0'
   REDIS_HOST: "redis.staging.commcare.local"
   REDIS_PORT: '6379'
