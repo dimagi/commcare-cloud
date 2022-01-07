@@ -4,6 +4,7 @@ import os
 import sys
 from distutils.sysconfig import get_python_lib
 from io import open
+from pathlib import Path
 
 import yaml
 from memoized import memoized, memoized_property
@@ -41,6 +42,7 @@ class DefaultPaths(object):
     def __init__(self, env_name, environments_dir=None):
         self.env_name = env_name
         self.environments_dir = environments_dir or ENVIRONMENTS_DIR
+        self.ansible_path = Path(__file__).parent.parent / 'ansible'
 
     def get_env_file_path(self, filename):
         return os.path.join(self.environments_dir, self.env_name, filename)
@@ -48,6 +50,10 @@ class DefaultPaths(object):
     @lazy_immutable_property
     def public_yml(self):
         return self.get_env_file_path('public.yml')
+
+    @lazy_immutable_property
+    def group_vars_all_yml(self):
+        return self.ansible_path / "group_vars/all.yml"
 
     @lazy_immutable_property
     def vault_yml(self):

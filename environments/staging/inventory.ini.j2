@@ -5,17 +5,11 @@
 
 {{ __proxy2__ }}
 {{ __proxy3__ }}
-{{ __proxy4__ }}
-{{ __proxy5__ }}
-{{ __proxy6__ }}
 
 [proxy:children]
 # Amazon EC2
 proxy2
 proxy3
-proxy4
-proxy5
-proxy6
 
 [logproxy:children]
 proxy
@@ -124,8 +118,6 @@ formplayer5
 
 [formplayer:vars]
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
-cchq_uid=1026
-cchq_gid=1027
 
 {{ __es6__ }} elasticsearch_node_name=es6-staging elasticsearch_node_zone=us-east-1a
 
@@ -137,10 +129,13 @@ cchq_gid=1027
 
 {{ __es10__ }} elasticsearch_node_name=es10-staging elasticsearch_node_zone=us-east-1b
 
+{{ __es11__ }} elasticsearch_node_name=es11-staging elasticsearch_node_zone=us-east-1b
+
 [elasticsearch:children]
 # Amazon EC2
 es_master
 es_data
+es_coordinator
 
 [es_master:children]
 es6
@@ -154,6 +149,13 @@ elasticsearch_data=true
 [es_data:children]
 es8
 es10
+
+[es_coordinator:children]
+es11
+
+[es_coordinator:vars]
+elasticsearch_master=false
+elasticsearch_data=false
 
 [shared_efs_client_host:children]
 celery

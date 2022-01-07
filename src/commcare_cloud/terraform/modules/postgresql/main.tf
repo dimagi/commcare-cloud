@@ -59,6 +59,8 @@ module "postgresql" {
   major_engine_version = local.major_engine_version == "" ? local.computed_major_engine_version : var.major_engine_version
   monitoring_interval = var.rds_instance["monitoring_interval"]
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+  performance_insights_enabled = true
+  performance_insights_retention_period = 7
 
   # Snapshot name upon DB deletion
   skip_final_snapshot = true
@@ -74,6 +76,7 @@ module "postgresql" {
     Name = var.rds_instance["identifier"]
     Environment = var.environment
     Group = "postgresql"
+    BackupPlan = var.rds_instance["enable_cross_region_backup"] ? "BusinessContinuity" : null
   }
   timeouts = {}
 }

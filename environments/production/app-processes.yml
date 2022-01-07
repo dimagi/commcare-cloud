@@ -6,7 +6,7 @@ gunicorn_workers_factor: 2
 formplayer_memory: "31g"
 formplayer_g1heapregionsize: "16m"
 management_commands:
-  celery_a006:
+  celery_a000:
     run_submission_reprocessing_queue:
     queue_schedule_instances:
     handle_survey_actions:
@@ -14,7 +14,7 @@ management_commands:
   pillow_a000:
     run_pillow_retry_queue:
 celery_processes:
-  celery_a000,celery_a001,celery_a002,celery_a003,celery_a004,celery_a005:
+  celery_a001,celery_a002,celery_a003,celery_b000,celery_b001,celery_b002,celery_b003:
     analytics_queue:
       pooling: gevent
       concurrency: 4
@@ -24,8 +24,9 @@ celery_processes:
       concurrency: 3
     case_import_queue:
       concurrency: 3
+      prefetch_multiplier: 1
     case_rule_queue:
-      concurrency: 4
+      concurrency: 3
     celery:
       concurrency: 4
     celery_periodic:
@@ -34,7 +35,8 @@ celery_processes:
       pooling: gevent
       concurrency: 134
     export_download_queue:
-      concurrency: 5
+      concurrency: 4
+      prefetch_multiplier: 1
     linked_domain_queue:
       concurrency: 3
     reminder_case_update_queue:
@@ -45,14 +47,15 @@ celery_processes:
       concurrency: 1
     reminder_queue:
       pooling: gevent
-      concurrency: 20
+      concurrency: 40
     reminder_rule_queue:
       concurrency: 1
     repeat_record_queue:
       pooling: gevent
       concurrency: 3
     saved_exports_queue:
-      concurrency: 4
+      concurrency: 3
+      prefetch_multiplier: 1
     sms_queue:
       pooling: gevent
       concurrency: 20
@@ -60,11 +63,13 @@ celery_processes:
       concurrency: 1
     ucr_queue:
       concurrency: 9
+      prefetch_multiplier: 1
     user_import_queue:
       concurrency: 5
+      prefetch_multiplier: 1
     ush_background_tasks:
       concurrency: 8
-  celery_a006:
+  celery_a000:
     # not really queues
     flower: {}
     beat: {}
@@ -82,6 +87,10 @@ celery_processes:
       concurrency: 50
     ush_background_tasks:
       concurrency: 8
+    reminder_queue:
+      pooling: gevent
+      concurrency: 40
+      num_workers: 2
 
 pillows:
   pillow_a000:
@@ -105,8 +114,6 @@ pillows:
     KafkaDomainPillow:
       num_processes: 1
     LedgerToElasticsearchPillow:
-      num_processes: 1
-    M4ChangeFormFluffPillow:
       num_processes: 1
     SqlSMSPillow:
       num_processes: 1
