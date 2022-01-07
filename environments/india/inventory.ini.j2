@@ -1,10 +1,10 @@
 {{ __control0__ }}
-{{ __djangomanage0__ }}
-{{ __web0__ }}
-{{ __web1__ }}
-{{ __celery1__ }} swap_size=4G
-{{ __celery2__ }} swap_size=4G
-{{ __celery3__ }} swap_size=4G
+{{ __djangomanage1__ }}
+{{ __web2__ }}
+{{ __web3__ }}
+{{ __celery4__ }} swap_size=4G
+{{ __celery5__ }} swap_size=4G
+{{ __celery6__ }} swap_size=4G
 {{ __couch5__ }} swap_size=8G
 {{ __couch8__ }} swap_size=8G
 {{ __couch9__ }} swap_size=8G
@@ -13,6 +13,9 @@
 {{ __esmaster4__ }} elasticsearch_node_name=esmaster4 elasticsearch_node_zone=ap-south-1a
 {{ __es0__ }} elasticsearch_node_name=es0 elasticsearch_node_zone=ap-south-1a
 {{ __es2__ }} elasticsearch_node_name=es2 elasticsearch_node_zone=ap-south-1b
+{{ __escoordinator1__ }} elasticsearch_node_name=escoordinator1 elasticsearch_node_zone=ap-south-1a
+{{ __escoordinator2__ }} elasticsearch_node_name=escoordinator2 elasticsearch_node_zone=ap-south-1b
+{{ __escoordinator3__ }} elasticsearch_node_name=escoordinator3 elasticsearch_node_zone=ap-south-1c
 
 [es_master:children]
 esmaster2
@@ -30,9 +33,19 @@ es2
 [elasticsearch:children]
 es_master
 es_data
+es_coordinator
+
+[es_coordinator:children]
+escoordinator1
+escoordinator2
+escoordinator3
+
+[es_coordinator:vars]
+elasticsearch_master=false
+elasticsearch_data=false
 
 {{ __formplayer1__ }}
-{{ __pillow2__ }}
+{{ __pillow3__ }}
 {{ __kafka1__ }} kafka_broker_id=1 zookeeper_server_id=1
 {{ __kafka2__ }} kafka_broker_id=2 zookeeper_server_id=2
 {{ __kafka3__ }} kafka_broker_id=3 zookeeper_server_id=3
@@ -40,7 +53,7 @@ es_data
 {{ __pgbouncer0__ }}
 {{ __pgbouncer1__ }} pgbouncer_processes=2
 {{ __pgbouncer2__ }} pgbouncer_processes=2
-{{ __proxy1__ }}
+{{ __proxy2__ }}
 {{ __rds_pgmain0__ }}
 {{ __pgformplayer_nlb__ }}
 {{ __pgmain_nlb__ }}
@@ -54,14 +67,14 @@ es_data
 # empty
 
 [proxy:children]
-proxy1
+proxy2
 
 [logproxy:children]
-proxy1
+proxy2
 
 [webworkers:children]
-web0
-web1
+web2
+web3
 
 [postgresql:children]
 remote_postgresql
@@ -91,12 +104,12 @@ kafka2
 kafka3
 
 [celery:children]
-celery1
-celery2
-celery3
+celery4
+celery5
+celery6
 
 [pillowtop:children]
-pillow2
+pillow3
 
 [formplayer:children]
 formplayer1
@@ -128,7 +141,7 @@ couch_alb
 control0
 
 [django_manage:children]
-djangomanage0
+djangomanage1
 
 [remote_postgresql:children]
 rds_pgmain0

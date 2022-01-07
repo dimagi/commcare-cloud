@@ -15,7 +15,7 @@ from ..const import ROLES_FORMPLAYER, FORMPLAYER_BUILD_DIR, DATE_FMT
 
 @roles(ROLES_FORMPLAYER)
 def rollback_formplayer():
-    build_dir = os.path.join(env.code_current, FORMPLAYER_BUILD_DIR)
+    build_dir = os.path.join(env.root, FORMPLAYER_BUILD_DIR)
 
     builds = _get_old_formplayer_builds(build_dir)
     if not builds:
@@ -26,7 +26,7 @@ def rollback_formplayer():
         utils.abort('Action aborted.')
 
     with cd(build_dir):
-        sudo('ln -sfn {build_dir}/{rollback} {build_dir}/current'.format(
+        sudo('ln -sfn {build_dir}/releases/{rollback} {build_dir}/current'.format(
             build_dir=build_dir,
             rollback=rollback_build
         ))

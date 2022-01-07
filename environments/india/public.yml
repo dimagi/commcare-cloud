@@ -75,7 +75,6 @@ couchdb_cluster_settings:
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-india-blobdb'
-s3_signature_version: 's3v4'
 
 root_email: commcarehq-ops+root@dimagi.com
 server_email: commcarehq-noreply@dimagi.com
@@ -148,9 +147,6 @@ localsettings:
     auditcare: auditcare
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
-  SECURE_HSTS_SECONDS: "{{ nginx_hsts_max_age }}"
-  SILENCED_SYSTEM_CHECKS:
-    - 'security.W008' # the ALB and nginx already redirect HTTP to HTTPS so safe to silence this warning
   PILLOWTOP_MACHINE_ID: indiacloud
   RATE_LIMIT_SUBMISSIONS: yes
   SES_CONFIGURATION_SET: india-email-events
