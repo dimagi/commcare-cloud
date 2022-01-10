@@ -474,7 +474,8 @@ rds_instances:
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
-      max_wal_size: 4GB
+      max_wal_size: 8GB
+      wal_buffers: 32MB
 
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-production
