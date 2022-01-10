@@ -49,7 +49,7 @@ servers:
     count: 6
     server_auto_recovery: true
 
-  - server_name: "web-m_a{i}-production"
+  - server_name: "web_m_a{i}-production"
     server_instance_type: c5.2xlarge
     network_tier: "app-private"
     az: "a"
@@ -59,7 +59,7 @@ servers:
     count: 3
     server_auto_recovery: true
 
-  - server_name: "web-m_b{i}-production"
+  - server_name: "web_m_b{i}-production"
     server_instance_type: c5.2xlarge
     network_tier: "app-private"
     az: "b"
@@ -69,7 +69,7 @@ servers:
     count: 3
     server_auto_recovery: true
 
-  - server_name: "web-m_c{i}-production"
+  - server_name: "web_m_c{i}-production"
     server_instance_type: c5.2xlarge
     network_tier: "app-private"
     az: "c"
