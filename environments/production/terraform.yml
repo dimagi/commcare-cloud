@@ -417,7 +417,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
   - identifier: "pgshard5-production"
     instance_type: "db.m5.4xlarge"
-    storage: 500
+    storage: 750
     max_storage: 2500
     multi_az: true
     engine_version: "10.17"
