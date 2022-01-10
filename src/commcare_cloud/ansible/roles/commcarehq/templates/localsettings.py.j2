@@ -1097,3 +1097,7 @@ IGNORE_ALL_DEMO_USER_SUBMISSIONS = {{ localsettings.IGNORE_ALL_DEMO_USER_SUBMISS
 {% if localsettings.USE_PHONE_ENTRIES is defined %}
 USE_PHONE_ENTRIES = {{ localsettings.USE_PHONE_ENTRIES }}
 {% endif %}
+
+{% if localsettings.CHECK_REPEATERS_PARTITION_COUNT is defined %}
+CHECK_REPEATERS_PARTITION_COUNT = {{ localsettings.CHECK_REPEATERS_PARTITION_COUNT }}
+{% endif %}
