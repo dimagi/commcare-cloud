@@ -711,8 +711,8 @@ ENABLE_DRACONIAN_SECURITY_FEATURES = True
 ADD_CAPTCHA_FIELD_TO_FORMS = True
 {% endif %}
 
-{% if localsettings.RECAPTCHA_PUBLIC_KEY is defined %}
-RECAPTCHA_PUBLIC_KEY = {{ localsettings.RECAPTCHA_PUBLIC_KEY }}
+{% if RECAPTCHA_PUBLIC_KEY is defined %}
+RECAPTCHA_PUBLIC_KEY = {{ RECAPTCHA_PUBLIC_KEY }}
 {% endif %}
 
 {% if RECAPTCHA_PRIVATE_KEY is defined %}
