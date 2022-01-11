@@ -130,12 +130,12 @@ kafka1
 kafka2
 kafka3
 
-{{ __celery_a__ }}
 {{ __celery_b__ }}
+{{ __celery_c__ }}
 
 [celery:children]
-celery_a
 celery_b
+celery_c
 
 [celery:vars]
 swap_size=8G
