@@ -20,7 +20,6 @@ MB = Bytes(1024 * KB)
 GB = Bytes(1024 * MB)
 # Postgres measures some things in terms of number of 8-kB blocks
 BLOCK_8KB = Bytes(8 * KB)
-BLOCK_16MB = Bytes(16 * MB)
 
 MS = TimeInMilliseconds(1)
 SECOND = TimeInMilliseconds(1000 * MS)
@@ -77,7 +76,8 @@ UNITS_BY_PARAM = {
     'tcp_keepalives_interval': SECOND,
     'wal_receiver_status_interval': SECOND,
 
-    # Surmised from parameter description in aws console
+    # In PostgreSQL 9.6, the unit for these was 16MB blocks
+    # In PostgreSQL 10 (and presumably later) it's MB, which we use here
     'min_wal_size': MB,
     'max_wal_size': MB,
 }
