@@ -78,8 +78,8 @@ UNITS_BY_PARAM = {
     'wal_receiver_status_interval': SECOND,
 
     # Surmised from parameter description in aws console
-    'min_wal_size': BLOCK_16MB,
-    'max_wal_size': BLOCK_16MB,
+    'min_wal_size': MB,
+    'max_wal_size': MB,
 }
 
 
