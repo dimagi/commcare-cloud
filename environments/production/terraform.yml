@@ -30,24 +30,31 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "web_a{i}-production"
-    server_instance_type: r5.xlarge
+    server_instance_type: c5.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
-    volume_encrypted: yes
     group: "hq_webworkers"
     os: ubuntu_pro_bionic
-    count: 17
+    count: 4
 
   - server_name: "web_b{i}-production"
-    server_instance_type: c5.4xlarge
+    server_instance_type: c5.2xlarge
     network_tier: "app-private"
-    az: "a"
+    az: "b"
     volume_size: 40
-    group: "mobile_webworkers"
+    group: "hq_webworkers"
     os: ubuntu_pro_bionic
-    count: 6
-    server_auto_recovery: true
+    count: 4
+
+  - server_name: "web_c{i}-production"
+    server_instance_type: c5.2xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 40
+    group: "hq_webworkers"
+    os: ubuntu_pro_bionic
+    count: 4
 
   - server_name: "web_m_a{i}-production"
     server_instance_type: c5.2xlarge
