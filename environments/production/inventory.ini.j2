@@ -17,6 +17,10 @@ proxy_c1
 
 {{ __web_b__ }}
 
+{{ __web_m_a__ }}
+{{ __web_m_b__ }}
+{{ __web_m_c__ }}
+
 [logproxy:children]
 proxy
 
@@ -25,6 +29,9 @@ web_a
 
 [mobile_webworkers:children]
 web_b
+web_m_a
+web_m_b
+web_m_c
 
 [webworkers:children]
 hq_webworkers
