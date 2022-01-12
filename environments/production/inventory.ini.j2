@@ -11,8 +11,12 @@ proxy_c1
 
 {{ __web_b__ }}
 
+{{ __web_c__ }}
+
 {{ __web_m_a__ }}
+
 {{ __web_m_b__ }}
+
 {{ __web_m_c__ }}
 
 [logproxy:children]
@@ -20,9 +24,10 @@ proxy
 
 [hq_webworkers:children]
 web_a
+web_b
+web_c
 
 [mobile_webworkers:children]
-web_b
 web_m_a
 web_m_b
 web_m_c
@@ -130,12 +135,12 @@ kafka1
 kafka2
 kafka3
 
-{{ __celery_a__ }}
 {{ __celery_b__ }}
+{{ __celery_c__ }}
 
 [celery:children]
-celery_a
 celery_b
+celery_c
 
 [celery:vars]
 swap_size=8G
