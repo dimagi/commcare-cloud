@@ -34,6 +34,9 @@ Support channels are required to enable communication between the end users faci
 - Support Email: Higher level program staff should have access to a Direct support email address that auto creates tickets in a helpdesk app.
 - An issue tracker CommCare application that has ‘Raise an Issue’ module which tracks the issues for all FLWs for supervisor’s reference
 
+![](./images/support_team.jpg)
+
+
 These channels are suitable for different stakeholders of the program depending on the level of their expertise in being able to communicate online. For example, a frontline worker may not be able to communicate via email with support in which case a direct phone support with a supervisor can be more easy. On the other hand if there are too many FLWs under a supervisor where a phone support is not possible, an Issue Tracker application could be useful.
 
 ### Support team
