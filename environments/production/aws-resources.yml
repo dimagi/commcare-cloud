@@ -237,9 +237,8 @@ pillow_a000-production: 10.202.12.40
 pillow_a000-production.instance_id: i-0602e9c17c2720084
 pillow_a001-production: 10.202.12.224
 pillow_a001-production.instance_id: i-0008c3994698bc6ea
-proxy_a1-production: 10.202.20.233
-proxy_a1-production.instance_id: i-043bde4e891148503
-proxy_a1-production.public_ip: 34.201.94.22
+proxy_a1-production: 10.202.10.203
+proxy_a1-production.instance_id: i-0cffd81596c433bc0
 proxy_b1-production: 10.202.11.142
 proxy_b1-production.instance_id: i-0e7c90d0b77fcbd85
 proxy_c1-production: 10.202.12.229
