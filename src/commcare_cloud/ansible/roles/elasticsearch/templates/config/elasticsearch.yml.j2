@@ -78,8 +78,6 @@ indices.fielddata.cache.size:  {{ elasticsearch_fielddata_cache_size }}
 
 {% if elasticsearch_enable_inline_groovy_scripts %}
 {% if elasticsearch_version == '2.4.6'%}
-# somewhat of a security risk but required by pact custom reports
-script.engine.groovy.inline.aggs: true
 script.engine.groovy.inline.search: true
 {% endif %}
 {% endif %}
