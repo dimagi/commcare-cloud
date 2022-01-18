@@ -15,6 +15,9 @@ Prerequisites
 Installation Steps
 ------------------
 
+SSH into the server with a root or a user with root privileges and do below.
+
+
 1. Download the commcare-cloud repository.
 
 .. code-block:: bash
