@@ -12,9 +12,9 @@ Group=root
 LimitNOFILE=32000
 Restart=on-failure
 
-ExecStart=/opt/zookeeper/bin/zkServer.sh start /opt/zookeeper/conf/zoo.cfg
-ExecStop=/opt/zookeeper/bin/zkServer.sh stop /opt/zookeeper/conf/zoo.cfg:
-ExecReload=/opt/zookeeper/bin/zkServer.sh restart /opt/zookeeper/conf/zoo.cfg
+ExecStart=/opt/zookeeper/bin/zkServer.sh start /var/lib/zookeeper/conf/zoo.cfg
+ExecStop=/opt/zookeeper/bin/zkServer.sh stop /var/lib/zookeeper/conf/zoo.cfg:
+ExecReload=/opt/zookeeper/bin/zkServer.sh restart /var/lib/zookeeper/conf/zoo.cfg
 TimeoutSec=30
 
 [Install]

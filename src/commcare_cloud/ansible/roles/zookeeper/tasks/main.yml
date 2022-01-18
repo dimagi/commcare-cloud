@@ -35,6 +35,8 @@
 - name: Create Zookeeper log directory
   file: path="{{ zookeeper_log_dir }}" state=directory owner=root group=root recurse=yes
 
+- name: Create Conf log directory
+  file: path="{{ zookeeper_data_dir}}/conf" state=directory owner=root group=root recurse=yes
 
 - name: configure server id
   template: src=myid.j2 dest="{{ zookeeper_data_dir }}/myid"
