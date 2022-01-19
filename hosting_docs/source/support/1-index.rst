@@ -1,4 +1,4 @@
-Supporting Users
+Supporting Your Users
 ================
 
 The following guide explains how to set up processes/systems in order to provide support to various platforms users, such as mobile users, application building teams, etc.
