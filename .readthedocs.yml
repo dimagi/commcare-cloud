@@ -2,7 +2,7 @@
 
 version: 2
 sphinx:
-  configuration: hosting_docs/conf.py
+  configuration: hosting_docs/source/conf.py
 formats: all
 python:
   install:
