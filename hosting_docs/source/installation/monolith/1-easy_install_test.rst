@@ -42,5 +42,6 @@ SSH into the server with a root or a user with root privileges and do below.
 
   You do not need to track install-config.yml under git as it's relevant for this installation only
 
-<Todo/add next steps such as track the env config, code deploy etc>
-<Todo/Redirect to next relevent section>
+If you have any issues while deploying please refer to :ref:`troubleshoot-first-time-install`.
+
+Once you have installed CommCareHQ successfully you can refer to the Go Live checklist and :ref:`new-env-qa` before making your CommCareHQ live.

@@ -1,3 +1,4 @@
+.. _troubleshoot-first-time-install:
 
 Troubleshooting first time setup
 ================================
