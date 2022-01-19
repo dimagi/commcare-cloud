@@ -28,7 +28,7 @@ SSH into the server with a root or a user with root privileges and do below.
 
 .. code-block:: bash
 
-	cd commcare-cloud/oneclick_monolith_install
+	cd commcare-cloud/quick_monolith_install
 	# fill the config and save
 	vim install-config.yml
 
