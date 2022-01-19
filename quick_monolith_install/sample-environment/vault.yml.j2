@@ -41,8 +41,6 @@ localsettings_private:
   GOOGLE_ANALYTICS_API_ID: ''
   HUBSPOT_API_ID: ''
   HUBSPOT_API_KEY: ''
-  JAR_KEY_PASS: ''
-  JAR_STORE_PASS: ''
   SECRET_KEY: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
 
 ansible_sudo_pass: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
