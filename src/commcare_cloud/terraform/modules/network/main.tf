@@ -560,6 +560,7 @@ resource "aws_security_group" "elasticache" {
   }
 }
 
+region = "$(var.region_name)"
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = aws_vpc.main.id
   service_name = "com.amazonaws.${var.region_name}.s3"
