@@ -28,5 +28,5 @@ variable "vpn_connection_routes" {
 }
 
 variable "region" {
-  description = "This is region value"
+ type = string 
 }
