@@ -169,7 +169,7 @@ If you do not have an SSH key pair already, you will need to create one.
 
 **Cluster only:** Copy an SSH key pair for your user to the control
 machine.  For example, if the key pair you want to copy is
-"~/.ssh/id_rsa" and "~/.ssh/id_rsa.pub", then the commands to copy the
+`~/.ssh/id_rsa` and `~/.ssh/id_rsa.pub`, then the commands to copy the
 SSH key pair would be
 
     $ ssh-copy-id -i ~/.ssh/id_rsa.pub jbloggs@control1
