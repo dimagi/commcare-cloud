@@ -51,9 +51,7 @@ CommCare HQ DevOps engineer.
 |                                                         |         |
 +---------------------------------------------------------+---------+
 | A detailed understanding of the installation process:   | 1 hour  |
-| See "Setting up a new CommCare HQ environment           |         |
-| `on a single machine`_" and "Setting up a new CommCare  |         |
-| HQ environment `on a small cluster`_".                  |         |
+| See `Setting up a new CommCare HQ environment`_.        |         |
 |                                                         |         |
 +---------------------------------------------------------+---------+
 | `Server management basics`_                             | 15 mins |
@@ -81,8 +79,7 @@ CommCare HQ DevOps engineer.
 
 
 .. _CommCare HQ Services Overview: https://docs.google.com/presentation/d/1wR13WMgVXpT_tzXJLSgIL8l3sxELfAyQeAikX7IT39Q/edit#slide=id.p
-.. _on a single machine: https://dimagi.github.io/commcare-cloud/setup/new_environment.html
-.. _on a small cluster: https://dimagi.github.io/commcare-cloud/setup/new_cluster.html
+.. _Setting up a new CommCare HQ environment: https://dimagi.github.io/commcare-cloud/setup/new_environment.html
 .. _Server management basics: https://dimagi.github.io/commcare-cloud/commcare-cloud/basics
 .. _Firefighting: https://dimagi.github.io/commcare-cloud/firefighting/
 .. _backup and restore: https://dimagi.github.io/commcare-cloud/commcare-cloud/backup.html
