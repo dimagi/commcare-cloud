@@ -26,3 +26,7 @@ variable "vpn_connections" {
 variable "vpn_connection_routes" {
   type = list
 }
+
+variable "region" {
+  description = "us-east-1"
+}
