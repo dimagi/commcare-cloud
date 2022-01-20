@@ -1,0 +1,24 @@
+title: Upgrade CommCare HQ to Python 3.9
+key: upgrade-to-python-39
+date: 2021-11-02
+optional_per_env: no
+min_commcare_version: 8de1f15447be119538f2bbbcd355c3b421e33e0e
+context: |
+  Install Python 3.9 and build a new virtualenv for CommCare HQ.
+
+details: |
+  Python 3.6 reaches end of life on December 1, 2021. Performing these steps
+  will ensure that your environment will use a supported version of Python.
+
+update_steps: |
+  1. Update to the latest commcare-cloud
+  2. Install Python 3.9, update supervisor configs and sudoers file, and create
+     virtualenv for CommCare HQ:
+     ```bash
+     cchq <env> deploy-stack --tags=python,services,sudoers
+     ```
+     It will do a dry run, after which you can review the changes and enter 'y' to apply.
+  3. Restart services:
+     ```bash
+     cchq <env> fab restart_services
+     ```

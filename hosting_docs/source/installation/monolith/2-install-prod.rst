@@ -1,3 +1,5 @@
+.. _cchq-monolith-install:
+
 Single Server Production Install
 ================================
 

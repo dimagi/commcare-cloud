@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from nose.tools import assert_equal, assert_raises
-from parameterized.test import assert_contains
 
 from commcare_cloud.commands.terraform.postgresql_units import convert_to_unit, SECOND, \
     BLOCK_8KB, MS, convert_to_standard_unit
@@ -51,3 +50,7 @@ def test_convert_to_standard_unit__mixed_units():
     assert_contains(context.exception.args[0], '1kB')
     assert_contains(context.exception.args[0], 'TimeInMilliseconds')
     assert_contains(context.exception.args[0], ' (authentication_timeout)')
+
+
+def assert_contains(haystack, needle):
+    assert needle in haystack, f"{needle!r} not in {haystack!r}"

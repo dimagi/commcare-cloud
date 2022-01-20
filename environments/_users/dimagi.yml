@@ -1,6 +1,7 @@
 dev_users:
   present:
     - adunn
+    - akjain
     - aphulera
     - biyeun
     - cellowitz
@@ -8,6 +9,7 @@ dev_users:
     - ctsims
     - czue
     - dmiller
+    - dochoa
     - droberts
     - esoergel
     - frener

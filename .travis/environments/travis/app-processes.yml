@@ -9,6 +9,7 @@ celery_processes:
     submission_reprocessing_queue:
     sms_queue:
     reminder_queue:
+    malt_generation_queue:
 
   celery:
 pillows:

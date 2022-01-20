@@ -6,7 +6,7 @@ from io import open
 
 import yaml
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
-from mock.mock import patch
+from unittest.mock import patch
 from nose.tools import assert_equal
 from parameterized import parameterized
 

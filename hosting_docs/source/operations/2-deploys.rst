@@ -1,3 +1,4 @@
+.. _manage-deployment:
 
 Managing The Deployment
 =======================

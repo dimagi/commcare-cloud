@@ -1,3 +1,5 @@
+.. _how-to-scale:
+
 How to Scale
 ============
 

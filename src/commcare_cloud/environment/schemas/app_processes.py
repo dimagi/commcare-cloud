@@ -24,6 +24,7 @@ class CeleryOptions(jsonobject.JsonObject):
     max_tasks_per_child = jsonobject.IntegerProperty(default=None)
     num_workers = jsonobject.IntegerProperty(default=1)
     optimize = jsonobject.BooleanProperty(default=False)
+    prefetch_multiplier = jsonobject.IntegerProperty(default=4)
 
 
 class PillowOptions(jsonobject.JsonObject):
@@ -122,9 +123,10 @@ CELERY_PROCESSES = [
     CeleryProcess("linked_domain_queue", required=False),
     CeleryProcess("logistics_background_queue", required=False),
     CeleryProcess("logistics_reminder_queue", required=False),
+    CeleryProcess("malt_generation_queue", required=False),
     CeleryProcess("reminder_case_update_queue", blockage_threshold=15 * 60),
     CeleryProcess("reminder_case_update_bulk_queue", required=False, blockage_threshold=15 * 60),
-    CeleryProcess("reminder_queue", required=False, blockage_threshold=15 * 60),
+    CeleryProcess("reminder_queue", required=False, blockage_threshold=30 * 60),
     CeleryProcess("reminder_rule_queue", blockage_threshold=15 * 60),
     CeleryProcess("repeat_record_queue", blockage_threshold=60 * 60),
     CeleryProcess("saved_exports_queue", blockage_threshold=6 * 60 * 60),

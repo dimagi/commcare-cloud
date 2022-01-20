@@ -1,7 +1,9 @@
+.. _backups-dr:
+
 Backups and Disaster Recovery
 =============================
 
-Overview about HA, backups, restores and DR
+This section describes how to configure backups and restore method for each database service used by CommCareHQ instance.
 
 .. toctree::
    :maxdepth: 2

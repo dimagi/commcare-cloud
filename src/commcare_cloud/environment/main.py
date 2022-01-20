@@ -108,16 +108,26 @@ class Environment(object):
 
     @memoized_property
     def public_vars(self):
+        """contents of public.yml, as a dict"""
         try:
-            """contents of public.yml, as a dict"""
-            with open(self.paths.public_yml, encoding='utf-8') as f:
-                return from_yaml(f)
+            return self._read_yaml(self.paths.public_yml)
         except FileNotFoundError:
             return {}
 
+    @memoized_property
+    def group_vars(self):
+        return self._read_yaml(self.paths.group_vars_all_yml)
+
+    def _read_yaml(self, path):
+        with open(path, encoding='utf-8') as f:
+            return from_yaml(f)
+
     @property
     def python_version(self):
-        return self.public_vars.get('python_version', '3.6')
+        value = self.public_vars.get('python_version')
+        if value is None:
+            value = self.group_vars['python_version']
+        return value
 
     @memoized_property
     def _disallowed_public_variables(self):

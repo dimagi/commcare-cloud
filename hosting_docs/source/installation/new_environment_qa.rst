@@ -1,3 +1,4 @@
+.. _new-env-qa:
 
 Testing your new CommCare Environment
 =====================================

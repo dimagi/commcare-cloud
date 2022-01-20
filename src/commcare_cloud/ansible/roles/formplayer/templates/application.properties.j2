@@ -25,7 +25,7 @@ spring.datasource.password={{ postgres_users.commcare.password }}
 # separate DS for flyway which bypasses pgbouncer to avoid session locking issues
 spring.flyway.driver-class-name=org.postgresql.Driver
 spring.flyway.url=jdbc:postgresql://{{ postgresql_dbs.formplayer.host }}:5432/{{ formplayer_db_name }}?prepareThreshold=0
-spring.flyway.username={{ postgres_users.commcare.username }}
+spring.flyway.user={{ postgres_users.commcare.username }}
 spring.flyway.password={{ postgres_users.commcare.password }}
 
 spring.jpa.hibernate.ddl-auto
