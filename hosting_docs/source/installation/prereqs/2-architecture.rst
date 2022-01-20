@@ -75,23 +75,20 @@ document. e.g.
 BlobDB
 ------
 
-Riak is a key-value store. BlobDB is the wrapper we've written around
-it. It is used for:
+A "blob" is a "binary large object". BlobDB is the wrapper we've written
+around storage services like S3 and Minio. It is used for
 
 * Images
 * Form Submissions (in XML)
 * Form Definitions (in XML)
-* Exports
-* Restore
+* Daily saved exports
+* Cached restores
 * Various generated files and assets
 
-BlobDB supports AWS S3 and Minio for file storage (where an ID in Riak
-points to an object in S3 or Minio). It is used for storing "big" things
-where we don't want to do complex, dynamic queries. e.g. images, daily
-saved exports (Celery would generate this and store it in Riak, from
-where it gets downloaded; this is true for most things that a user would
-download within some period of time), cached restores. Items are stored
-in triplicate.
+BlobDB stores "big" things as single units, where the data inside them
+does not need to be queried. (The data that we do want to query is
+copied out and stored elsewhere, e.g. form data.) Items are stored in
+triplicate for redundancy.
 
 
 Pillows
