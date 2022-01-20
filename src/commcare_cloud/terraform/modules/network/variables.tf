@@ -27,6 +27,6 @@ variable "vpn_connection_routes" {
   type = list
 }
 
-variable "region" {
-  description = "us-east-1"
+variable "region_name" {
+  description = "This is region value"
 }
