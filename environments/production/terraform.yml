@@ -497,7 +497,7 @@ rds_instances:
       vacuum_cost_limit: 1000
 
   - identifier: "pgauditcare0-production"
-    instance_type: "db.m5.xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 10000
     multi_az: true
     engine_version: "10.17"
