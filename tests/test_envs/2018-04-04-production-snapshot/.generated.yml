@@ -13,6 +13,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb0.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -29,6 +30,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb0.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -45,6 +47,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb1.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -64,6 +67,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb1.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -83,6 +87,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb2.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -102,6 +107,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb2.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -121,6 +127,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb2.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -140,6 +147,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb1.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -156,6 +164,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - pgsynclog.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -172,6 +181,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb0.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
@@ -188,6 +198,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb0.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -204,6 +215,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb0.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -239,6 +251,7 @@ postgresql_dbs:
         pgbouncer_hosts:
         - hqdb1.internal-va.commcarehq.org
         pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -258,6 +271,7 @@ postgresql_dbs:
         pgbouncer_hosts:
         - hqdb1.internal-va.commcarehq.org
         pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -277,6 +291,7 @@ postgresql_dbs:
         pgbouncer_hosts:
         - hqdb2.internal-va.commcarehq.org
         pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -296,6 +311,7 @@ postgresql_dbs:
         pgbouncer_hosts:
         - hqdb2.internal-va.commcarehq.org
         pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -315,6 +331,7 @@ postgresql_dbs:
         pgbouncer_hosts:
         - hqdb2.internal-va.commcarehq.org
         pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -334,6 +351,7 @@ postgresql_dbs:
       pgbouncer_hosts:
       - hqdb1.internal-va.commcarehq.org
       pgbouncer_pool_size: null
+      pgbouncer_reserve_pool_size: null
       port: 6432
       query_stats: false
       user: '{{ postgres_users.commcare.username }}'
@@ -349,6 +367,7 @@ postgresql_dbs:
       pgbouncer_endpoint: null
       pgbouncer_hosts: []
       pgbouncer_pool_size: null
+      pgbouncer_reserve_pool_size: null
       port: null
       query_stats: false
       user: null
@@ -365,6 +384,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb0.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -381,6 +401,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb0.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -398,6 +419,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - pgsynclog.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -414,6 +436,7 @@ postgresql_dbs:
     pgbouncer_hosts:
     - hqdb0.internal-va.commcarehq.org
     pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
