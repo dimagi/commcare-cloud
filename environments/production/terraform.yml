@@ -477,7 +477,7 @@ rds_instances:
       vacuum_cost_limit: 1000
 
   - identifier: "pgauditcare0-production"
-    instance_type: "db.m5.xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 10000
     multi_az: true
     engine_version: "10.17"
@@ -490,6 +490,7 @@ rds_instances:
       log_min_duration_statement: 1000
       max_wal_size: 8GB
       wal_buffers: 32MB
+      shared_buffers: 12GB
 
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-production

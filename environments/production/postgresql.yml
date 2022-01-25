@@ -80,6 +80,7 @@ dbs:
     host: rds_pgauditcare0
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_pool_size: 8
+    pgbouncer_reserve_pool_size: 2
     pgbouncer_hosts:
       - pgbouncer5
       - pgbouncer6
