@@ -1,7 +1,9 @@
-# # Run as sudo cchq-install.sh
+# # Run as bash cchq-install.sh install-config.yml
 
 # #!/bin/sh
 set -e
+
+printf "Please note that you may be prompted for sudo permission for some of the scommands.\n"
 
 function parse_yaml {
    local prefix=$2
@@ -29,32 +31,51 @@ config_file_path=$(get_abs_filename $1)
 eval $(parse_yaml $config_file_path)
 
 # update and install requirements
+printf "\n"
+printf "#################################################"
 printf "\nStep 1: Installing Requirements \n"
-sudo apt -qq update
-sudo apt -qq install python3-pip sshpass
+printf "#################################################"
+printf "\n"
+sudo apt --assume-yes -qq update
+sudo apt --assume-yes -qq install python3-pip sshpass
 sudo -H pip3 -q install --upgrade pip
-update-alternatives --install /usr/bin/python python /usr/bin/python3 10
-pip -q install ansible virtualenv virtualenvwrapper --ignore-installed six
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+sudo -H pip -q install ansible virtualenv virtualenvwrapper --ignore-installed six
 
+printf "\n"
+printf "#################################################"
 printf "\nStep 2: Installing commcare-cloud \n"
+printf "#################################################"
+printf "\n"
 # install comcare-cloud
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 source "$DIR/../control/init.sh"
-touch /var/log/ansible.log && chmod 666 /var/log/ansible.log
+sudo touch /var/log/ansible.log && sudo chmod 666 /var/log/ansible.log
 
-
-printf "\nStep 3: Initializing environments directory for storing your CommCareHQ instance's configuration \n"
-ansible-playbook --connection=local --extra-vars "@$config_file_path" "$DIR/bootstrap-env-playbook.yml"
-printf "\n Encrypting your environment's passwords file using ansible-vault. Please store this password safely as it will be required later \n"
+printf "\n"
+printf "#################################################"
+printf "\nStep 3: Initializing environments directory for "
+printf "storing your CommCareHQ instance's configuration \n"
+printf "#################################################"
+printf "\n"
+# VENV should have been set by init.sh
+echo "asdasdasdasd$VENV"
+ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/bootstrap-env-playbook.yml"
+printf "\n Encrypting your environment's passwords file using ansible-vault.\n"
+printf "Please store this password safely as it will be asked multiple times during the install.\n"
 ansible-vault encrypt ~/environments/$env_name/vault.yml
 
-printf "\bStep 4: Setting up users and SSH auth \n"
+printf "\n"
+printf "#################################################"
+printf "\nStep 4: Setting up users and SSH auth \n"
+printf "#################################################"
+printf "\n"
 source ~/.commcare-cloud/load_config.sh
 commcare-cloud $env_name update-local-known-hosts
-commcare-cloud $env_name bootstrap-users -c local
+commcare-cloud $env_name bootstrap-users -c local --quiet
 
-printf "\nEverything is setup to install CommCareHQ now!\n"
+printf "\nEverything is setup to install CommCareHQ now! Would you like to instal CommCareHQ now?\n"
 printf "Please see below a summary of what this script has setup so far!\n"
 printf "1. Installed commcare-cloud, the tool to deploy and manage your CommCareHQ instance.\n"
 printf "2. Users ansible and $ssh_username are created with SSH and sudo access.\n"
@@ -62,14 +83,15 @@ printf "3. A configuration directory created for your CommCareHQ environment at:
 printf "  This directory has all the configuration and the encrypted vault file containing passwords.\n"
 printf "  The vault file also has the sudo password for the ansible user under the key ansible_sudo_pass\n\n"
 
-printf "You can now install CommCareHQ using below command\n\n"
+printf "You can now install CommCareHQ using below two commands.\n\n"
+printf "source ~/.commcare-cloud/load_config.sh\n"
 printf "commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local \n\n"
 printf "Would you like the above command to be run now?\n"
-read -p "(Please note that if this command fails midway, you can run this command directly instead of rerunning the cchq-install command) Proceed (Y/n)?\n" -n 1 -r
+read -p "(Please note that if this command fails midway, you can run this command directly instead of rerunning the cchq-install command) Proceed (Y/n)?" -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-    commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local
+    commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local --quiet
 else
     exit
 fi
