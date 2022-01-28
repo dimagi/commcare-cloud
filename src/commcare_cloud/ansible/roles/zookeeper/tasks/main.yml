@@ -7,3 +7,28 @@
     name:
       - zookeeper
       - zookeeperd
+
+- name: configure server id
+  template: src=myid.j2 dest="{{ zookeeper_data_dir }}/myid"
+  tags: zookeeper_cluster_conf
+
+- name: configure Zookeeper properties
+  template: src=zoo.cfg.j2 dest="{{ zookeeper_data_dir }}/conf/zoo.cfg"
+  tags: zookeeper_cluster_conf
+
+# Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
+- shell: /bin/true
+  changed_when: false
+  register: no_tags
+
+- name: start Zookeeper service
+  service: name=zookeeper enabled=yes state=started
+  when: no_tags is not defined
+  register: zookeeper_service_started
+  tags: after-reboot
+
+# Restarting a service right after it's been started will cause an unnecessary/non-idempotent restart
+- name: Restart Zookeeper service
+  service: name=zookeeper enabled=yes state=restarted
+  when: zookeeper_service_started.changed == False
+  tags: zookeeper_cluster_conf
