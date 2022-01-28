@@ -32,6 +32,3 @@
   service: name=zookeeper enabled=yes state=restarted
   when: zookeeper_service_started.changed == False
   tags: zookeeper_cluster_conf
-
-- name: Add Zookeeper binaries to PATH
-  copy: src=zookeeper.sh dest=/etc/profile.d/ owner=root group=root mode=0644
