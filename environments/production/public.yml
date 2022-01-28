@@ -25,6 +25,7 @@ soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
 ALTERNATE_HOSTS:
   - rec-mobile.sante.gov.bf
+  - commcare.health.gov.mw
 
 DATADOG_ENABLED: True
 
