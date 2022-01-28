@@ -1,10 +1,7 @@
 ---
 apache_mirror: apache.osuosl.org
-zookeeper_version: 3.7.0
-zookeeper_user: zookeeper
-zookeeper_group: zookeeper
 zookeeper_data_dir: "/var/lib/zookeeper"
-zookeeper_conf_dir: "/opt/zookeeper/conf"
-zookeeper_log_dir: "/opt/zookeeper/logs"
+zookeeper_conf_dir: "/etc/zookeeper/conf"
+zookeeper_log_dir: "/var/log/zookeeper"
 zookeeper_server_id: "{{ kafka_server_id }}"
 zookeeper_cluster: False
