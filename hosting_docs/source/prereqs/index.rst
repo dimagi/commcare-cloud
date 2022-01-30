@@ -18,5 +18,6 @@ In this section, we list down various prerequisites for self hosting CommCareHQ 
    /prereqs/2-architecture
    /prereqs/4-roles
    /prereqs/5-requirements
+   /prereqs/5b-hardware-mgmt
    /prereqs/6-software-and-tools
    /prereqs/7-commcare-cloud
