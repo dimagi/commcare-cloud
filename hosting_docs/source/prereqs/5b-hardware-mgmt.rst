@@ -194,9 +194,6 @@ Due to the more complex pricing these costs do not include
 All of which are important considerations for individual programs
 
 
-
-.. _bicsi-002: https://www.bicsi.org/standards/available-standards-store/single-purchase/ansi-bicsi-002-2019-data-center-design
-.. _a presentation: https://www.bicsi.org/docs/default-source/conference-presentations/2017-fall/using-the-ansi-bicsi-002.pdf
 .. [#a] The recommendation for a monolith is 1TB of storage per year of
    project. On flexible block storage, this cost could be calculated
    with storage as needed (i.e. 1TB year 1, 2TB year 2, 3TB year 3,
@@ -204,4 +201,7 @@ All of which are important considerations for individual programs
    requires new disks, which is complex. A minimum cost would be 3TB for
    years 1, 2, and 3, then 5TB years 4 and 5, which would require a
    complex migration requiring subject matter expertise.
+
+.. _bicsi-002: https://www.bicsi.org/standards/available-standards-store/single-purchase/ansi-bicsi-002-2019-data-center-design
+.. _a presentation: https://www.bicsi.org/docs/default-source/conference-presentations/2017-fall/using-the-ansi-bicsi-002.pdf
 .. _os-lic: https://ubuntu.com/legal/ubuntu-advantage-service-description
