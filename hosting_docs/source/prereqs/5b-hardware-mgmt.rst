@@ -23,10 +23,6 @@ Samples, and `a presentation`_ based on the content are available free
 online. The presentation will give a good impression of the detailed
 thinking required to maintain a secure and reliable hosting environment.
 
-Another useful resource is the
-`Checklist for designing a new server room <checklist>`_
-from the Intel Business Social Hub.
-
 
 Costs for maintaining a self-hosted production environment
 ----------------------------------------------------------
@@ -201,7 +197,6 @@ All of which are important considerations for individual programs
 
 .. _bicsi-002: https://www.bicsi.org/standards/available-standards-store/single-purchase/ansi-bicsi-002-2019-data-center-design
 .. _a presentation: https://www.bicsi.org/docs/default-source/conference-presentations/2017-fall/using-the-ansi-bicsi-002.pdf
-.. _checklist: https://itpeernetwork.intel.com/checklist-for-designing-a-new-server-room/#gs.m2cett
 .. [#a] The recommendation for a monolith is 1TB of storage per year of
    project. On flexible block storage, this cost could be calculated
    with storage as needed (i.e. 1TB year 1, 2TB year 2, 3TB year 3,
