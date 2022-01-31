@@ -38,6 +38,19 @@ SSH into the server with a root or a user with root privileges and do below.
 
 	sudo bash cchq-install.sh install-config.yml
 
+Troubleshooting
+---------------
+
+The :code:`cchq-install.sh` is an automation of the manual steps listed in :ref:`cchq-monolith-install`. If this script fails before it executes :code:`commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local --quiet`, you may rerun the script itself. If the script fails at this or latter commands, you can run those commands one after another instead of re-running the enitre `cchq-install.sh` script to save time. Below are the rest of the commands.
+
+.. code-block:: bash
+
+	# $env_name is the name of your environment
+	commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local --quiet
+	commcare-cloud $env_name django-manage create_kafka_topics
+	commcare-cloud $env_name django-manage preindex_everything
+	commcare-cloud $env_name deploy
+
 .. note::
 
   You do not need to track install-config.yml under git as it's relevant for this installation only
