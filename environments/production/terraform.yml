@@ -36,7 +36,7 @@ servers:
     volume_size: 40
     group: "hq_webworkers"
     os: ubuntu_pro_bionic
-    count: 4
+    count: 6
 
   - server_name: "web_b{i}-production"
     server_instance_type: c5.2xlarge
@@ -45,7 +45,7 @@ servers:
     volume_size: 40
     group: "hq_webworkers"
     os: ubuntu_pro_bionic
-    count: 4
+    count: 6
 
   - server_name: "web_c{i}-production"
     server_instance_type: c5.2xlarge
@@ -54,7 +54,7 @@ servers:
     volume_size: 40
     group: "hq_webworkers"
     os: ubuntu_pro_bionic
-    count: 4
+    count: 6
 
   - server_name: "web_m_a{i}-production"
     server_instance_type: c5.2xlarge
