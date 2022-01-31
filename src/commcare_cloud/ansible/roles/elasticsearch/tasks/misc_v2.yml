@@ -16,6 +16,12 @@
     regexp: '^JAVA_OPTS="\$JAVA_OPTS -XX:\+HeapDumpOnOutOfMemoryError"'
     replace: '#JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"'
 
+- name: Enable Explicit GC
+  replace:
+    path: "{{ elasticsearch_home }}/bin/elasticsearch.in.sh"
+    regexp: '^JAVA_OPTS="\$JAVA_OPTS -XX:\+DisableExplicitGC"'
+    replace: '#JAVA_OPTS="$JAVA_OPTS -XX:+DisableExplicitGC"'
+
 - name: Install elasticsearch python client
   become: yes
   pip:

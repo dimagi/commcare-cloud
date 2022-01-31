@@ -25,8 +25,8 @@ that machine is also the control machine.
 
 ## System installation
 
-- [Installation](setup/installation.md)
-- [Setting up fresh environment](setup/new_environment.md)
+- [Installing CommCare Cloud for an existing environment](setup/installation.md)
+- [Setting up a new environment](setup/new_environment.md)
 - [Troubleshooting first time setup](setup/troubleshooting.md)
 - [Changelog](changelog)
 

@@ -25,6 +25,7 @@ soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
 ALTERNATE_HOSTS:
   - rec-mobile.sante.gov.bf
+  - commcare.health.gov.mw
 
 DATADOG_ENABLED: True
 
@@ -135,6 +136,7 @@ localsettings:
   BIGCOUCH: True
   BIGCOUCH_QUORUM_COUNT: 2
   CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE: "reminder_case_update_bulk_queue"
+  CHECK_REPEATERS_PARTITION_COUNT: 4
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_REINDEX_SCHEDULE: {'timedelta': {'minutes': 5}}

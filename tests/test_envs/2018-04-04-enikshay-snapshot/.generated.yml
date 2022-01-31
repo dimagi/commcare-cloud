@@ -12,6 +12,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -27,6 +29,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -45,6 +49,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -63,6 +69,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -81,6 +89,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -99,6 +109,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -117,6 +129,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -135,6 +149,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -153,6 +169,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -171,6 +189,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -189,6 +209,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     shards:
@@ -207,6 +229,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -222,6 +246,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -237,6 +263,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
@@ -252,6 +280,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -288,6 +318,8 @@ postgresql_dbs:
         pgbouncer_endpoint: 172.25.3.5
         pgbouncer_hosts:
         - 172.25.3.5
+        pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -306,6 +338,8 @@ postgresql_dbs:
         pgbouncer_endpoint: 172.25.3.5
         pgbouncer_hosts:
         - 172.25.3.5
+        pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -324,6 +358,8 @@ postgresql_dbs:
         pgbouncer_endpoint: 172.25.3.5
         pgbouncer_hosts:
         - 172.25.3.5
+        pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -342,6 +378,8 @@ postgresql_dbs:
         pgbouncer_endpoint: 172.25.3.5
         pgbouncer_hosts:
         - 172.25.3.5
+        pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -360,6 +398,8 @@ postgresql_dbs:
         pgbouncer_endpoint: 172.25.3.5
         pgbouncer_hosts:
         - 172.25.3.5
+        pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -378,6 +418,8 @@ postgresql_dbs:
         pgbouncer_endpoint: 172.25.3.5
         pgbouncer_hosts:
         - 172.25.3.5
+        pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -396,6 +438,8 @@ postgresql_dbs:
         pgbouncer_endpoint: 172.25.3.5
         pgbouncer_hosts:
         - 172.25.3.5
+        pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -414,6 +458,8 @@ postgresql_dbs:
         pgbouncer_endpoint: 172.25.3.5
         pgbouncer_hosts:
         - 172.25.3.5
+        pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -432,6 +478,8 @@ postgresql_dbs:
         pgbouncer_endpoint: 172.25.3.5
         pgbouncer_hosts:
         - 172.25.3.5
+        pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -450,6 +498,8 @@ postgresql_dbs:
         pgbouncer_endpoint: 172.25.3.5
         pgbouncer_hosts:
         - 172.25.3.5
+        pgbouncer_pool_size: null
+        pgbouncer_reserve_pool_size: null
         port: 6432
         query_stats: false
         shards:
@@ -468,6 +518,8 @@ postgresql_dbs:
       pgbouncer_endpoint: 172.25.3.5
       pgbouncer_hosts:
       - 172.25.3.5
+      pgbouncer_pool_size: null
+      pgbouncer_reserve_pool_size: null
       port: 6432
       query_stats: false
       user: '{{ postgres_users.commcare.username }}'
@@ -482,6 +534,8 @@ postgresql_dbs:
       pg_config: []
       pgbouncer_endpoint: null
       pgbouncer_hosts: []
+      pgbouncer_pool_size: null
+      pgbouncer_reserve_pool_size: null
       port: null
       query_stats: false
       user: null
@@ -497,6 +551,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -512,6 +568,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -528,6 +586,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -543,6 +603,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 172.25.3.5
     pgbouncer_hosts:
     - 172.25.3.5
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'

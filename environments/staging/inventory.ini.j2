@@ -23,7 +23,8 @@ proxy
 web7
 web8
 
-{{ __pgproxy2__ }} pgbouncer_processes=2 swap_size=2G
+{{ __pgproxy4__ }} pgbouncer_processes=2 swap_size=2G
+
 {{ __pgbouncer0__ }}
 
 {{ __rds_pg0__ }}
@@ -42,7 +43,7 @@ rds_pgformplayer0
 {{ __couch_alb__ }}
 
 [postgresql:children]
-pgproxy2
+pgproxy4
 remote_postgresql
 pgformplayer_nlb
 pgmain_nlb
@@ -79,13 +80,15 @@ couch_alb
 rabbit2
 rabbit4
 
-{{ __kafka2__ }} kafka_broker_id=1
-{{ __kafka3__ }} kafka_broker_id=2
-{{ __kafka4__ }} kafka_broker_id=3
+{{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=1
+{{ __kafka3__ }} kafka_broker_id=2 zookeeper_server_id=2
+{{ __kafka4__ }} kafka_broker_id=3 zookeeper_server_id=3
 
 [zookeeper:children]
 # Amazon EC2
 kafka2
+kafka3
+kafka4
 
 [kafka:children]
 # Amazon EC2

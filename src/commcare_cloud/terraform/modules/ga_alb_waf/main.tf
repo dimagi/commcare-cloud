@@ -349,6 +349,9 @@ resource "aws_wafv2_web_acl" "front_end" {
         excluded_rule {
           name = "SQLi_QUERYARGUMENTS"
         }
+        excluded_rule {
+          name = "SQLiExtendedPatterns_BODY"
+        }
       }
     }
     visibility_config {
