@@ -3,4 +3,11 @@
 Architecture Overview
 =====================
 
-Intro About HQ Architecture and link to HQ-docs.
+It is useful to have some context on what it is that you are hosting,
+when you are hosting CommCare HQ.
+
+A good place to find that context is the `Architecture Overview <arch>`_
+in the CommCare HQ documentation.
+
+
+.. _arch: https://commcare-hq.readthedocs.io/overview/architecture.html
