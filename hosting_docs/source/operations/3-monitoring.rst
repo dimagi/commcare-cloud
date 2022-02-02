@@ -3,11 +3,11 @@
 Monitoring and Alerting
 =======================
 
-Guide on how to setup monitoring, what to monitor, how to monitor.
+This is a guide on how to setup monitoring for your CommCareHQ instance for realtime visibility into what's happening in your instance and how to setup alerts.
 
 Real time monitoring is essential to get insights into how the system is performing at a given moment and troubleshoot issues as they arise. Monitoring could also be helpful to forecast resources requirements for future scaling. Alerts can be setup on various monitoring metrics to detect resource limits, anamolies that might cause an issue on your server.
 
-commcare-cloud has support for Datadog and Prometheus.
+CommCareHQ instance can send metrics to Datadog or Prometheus. This can be configured via commcare-cloud.
 
 -------
 Datadog
@@ -15,16 +15,14 @@ Datadog
 
 Datadog is a monotoring and alerting tool that has support for variety of applications and is easily extendable which is why in our case it is used for monitoring various system, application metrics and also custom CommCareHQ metrics. You can read more about datadog in their docs
 
-commcare-cloud can setup the requisite datadog integration automatically when you do full stack deploy. You will need to set DATADOG_ENABLED to True in your environment’s public.yml file and add your account api keys to your vault file.
+commcare-cloud can setup the requisite datadog integration automatically when you do full stack deploy. You will need to set :code:`DATADOG_ENABLED` to True in your environment’s public.yml file and add your account api keys to your vault file.
 
 The default configuration sets up all datadog integrations and there might be a lot of data metrics being generated in your datadog account by your CommCare instance. Individual integrations may be turned on/off by setting relvant vars like datadog_integration_postgres or datadog_integration_redis etc in public.yml file.
 
-Below we list down important metrics that you should consider as a minimum monitoring setup. Using these metrics you can create various dashboard views and alerts inside your Datadog project.
-
-.. todo if required
-   ----------
-   Prometheus
-   ----------
+----------
+Prometheus
+----------
+Prometheus is an open source tool which you can self host on one of your machines. To setup a Prometheus server using commcare-cloud you can add a server under :code:`promethus` and do :code:`cchq <env> aps deploy_prometheus.yml`. This also gets executed automatically while doing :code:`cchq deploy-stack`. To setup service integrations with the Prometheus server you will need to set :code:`prometheus_monitoring_enabled` to True in your environment’s public.yml file.
 
 
 .. _label_commcare-infrastructure-metrics:
@@ -32,6 +30,8 @@ Below we list down important metrics that you should consider as a minimum monit
 -------------------------------
 CommCare Infrastructure Metrics
 -------------------------------
+
+Below we list down important metrics that you should consider as a minimum monitoring setup. Using these metrics you can create various dashboard views and alerts inside your Datadog project. Even though, this is specific to Datadog, you can adapt the same to Prometheus.
 
 Recommended Dashboards
 ----------------------

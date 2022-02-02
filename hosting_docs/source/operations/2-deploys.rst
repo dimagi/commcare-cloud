@@ -3,6 +3,8 @@
 Managing The Deployment
 =======================
 
+This section describes how to restart services, how to deploy CommCareHQ code changes and other advanced topics.
+
 .. contents:: Table of Contents
     :depth: 2
     :local:
