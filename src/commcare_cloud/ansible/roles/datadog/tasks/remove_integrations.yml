@@ -30,7 +30,7 @@
     - {"name": "redisdb", "enabled": "{{ datadog_integration_redisdb }}"}
     - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
     - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
-    - {"name": "celery", "enabled": "{{ inventory_hostname == groups.celery[0] }}"}
+    - {"name": "celery", "enabled": "{{ app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"}
     - {"name": "couch", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
     - {"name": "couch_custom", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
     - {"name": "http_check", "enabled": "{{ datadog_integration_http and inventory_hostname == groups.proxy[0] }}"}
