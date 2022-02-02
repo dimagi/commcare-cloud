@@ -134,3 +134,8 @@ pillows:
       total_processes: 83
       start_process: 42
       dedicated_migration_process: True
+    case-pillow-emergency:
+      num_processes: 32
+      total_processes: 83
+      start_process: 1
+      dedicated_migration_process: True
