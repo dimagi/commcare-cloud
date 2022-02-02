@@ -173,7 +173,7 @@ localsettings:
     - 'django.middleware.security.SecurityMiddleware'
   LOCAL_PILLOWS:
     emergency:
-      name: case-pillow
+      name: case-pillow-emergency
       class: pillowtop.pillow.interface.ConstructedPillow
       instance: corehq.pillows.case.get_case_pillow
       params:
