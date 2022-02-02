@@ -3,7 +3,7 @@
 # #!/bin/sh
 set -e
 
-printf "Please note that you may be prompted for sudo permission for some of the scommands.\n"
+printf "Please note that you may be prompted for sudo permission for some of the commands.\n"
 
 function parse_yaml {
    local prefix=$2
@@ -60,7 +60,6 @@ printf "storing your CommCareHQ instance's configuration \n"
 printf "#################################################"
 printf "\n"
 # VENV should have been set by init.sh
-echo "asdasdasdasd$VENV"
 ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/bootstrap-env-playbook.yml"
 printf "\n Encrypting your environment's passwords file using ansible-vault.\n"
 printf "Please store this password safely as it will be asked multiple times during the install.\n"
@@ -75,7 +74,7 @@ source ~/.commcare-cloud/load_config.sh
 commcare-cloud $env_name update-local-known-hosts
 commcare-cloud $env_name bootstrap-users -c local --quiet
 
-printf "\nEverything is setup to install CommCareHQ now! Would you like to instal CommCareHQ now?\n"
+printf "\nEverything is setup to install CommCareHQ now! Would you like to install CommCareHQ now?\n"
 printf "Please see below a summary of what this script has setup so far!\n"
 printf "1. Installed commcare-cloud, the tool to deploy and manage your CommCareHQ instance.\n"
 printf "2. Users ansible and $ssh_username are created with SSH and sudo access.\n"
