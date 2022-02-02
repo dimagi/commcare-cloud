@@ -1,5 +1,5 @@
-Transfer a Project From a Multi-tenant to Standalone Environment
-================================================================
+Migrate a Project from one instance to a new instance
+=====================================================
 
 This document describes the process of migrating an individual project from Dimagi's cloud
 environment (or any other environment) to a new environment. If you are looking to migrate
@@ -193,7 +193,7 @@ will be unable to submit forms or sync with the server.
    administrator delete the project space on the old environment.
 
 Troubleshooting
-===============
+---------------
 
 When transferring data for very large projects, you may run into infrastructural
 issues with the dump and load process. This is somewhat unsurprising when you
