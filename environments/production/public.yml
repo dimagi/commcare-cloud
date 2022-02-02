@@ -171,6 +171,14 @@ localsettings:
     auditcare: auditcare
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
+  LOCAL_PILLOWS:
+    emergency:
+      name: case-pillow
+      class: pillowtop.pillow.interface.ConstructedPillow
+      instance: corehq.pillows.case.get_case_pillow
+      params:
+        ucr_division: 0f
+        pillow_id: case-pillow-emergency
   PILLOWTOP_MACHINE_ID: hqdb0
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes
