@@ -134,8 +134,27 @@ pillows:
       total_processes: 83
       start_process: 42
       dedicated_migration_process: True
+  celery_a000:
     case-pillow-emergency:
-      num_processes: 32
+      num_processes: 8
       total_processes: 83
       start_process: 1
+      dedicated_migration_process: True
+  celery_b000:
+    case-pillow-emergency:
+      num_processes: 8
+      total_processes: 83
+      start_process: 9
+      dedicated_migration_process: True
+  celery_c000:
+    case-pillow-emergency:
+      num_processes: 8
+      total_processes: 83
+      start_process: 17
+      dedicated_migration_process: True
+  celery_a001:
+    case-pillow-emergency:
+      num_processes: 8
+      total_processes: 83
+      start_process: 25
       dedicated_migration_process: True
