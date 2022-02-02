@@ -4,7 +4,7 @@ datadog_custom_integrations:
   - name: celery
     url: https://raw.githubusercontent.com/dimagi/datadog-checks/90abf6a347348c78bcca8d908ee2e3d31b77bd26/celery/celery.py
     sha256sum: 492362bde07d16d1f4664ef84a0bba971b75fa46156e90501fedf8310b651661
-    enabled: "{{ inventory_hostname == groups.celery[0] }}"
+    enabled: "{{ app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"
   - name: shell
     url: https://raw.githubusercontent.com/dimagi/datadog-checks/a468595913fa30abeea0bb3bba16448157871481/shell/shell.py
     sha256sum: ff6933fedded6c169a7dbfc4d962595250ec9b6586752648f8df848c7183ad10
