@@ -62,8 +62,8 @@ dbs:
   ucr:
     host: rds_pgucr0
     pgbouncer_endpoint: pgucr_nlb
-    pgbouncer_pool_size: 9
-    pgbouncer_reserve_pool_size: 3
+    pgbouncer_pool_size: 10
+    pgbouncer_reserve_pool_size: 2
     pgbouncer_hosts:
       - pgbouncer5
       - pgbouncer6
