@@ -26,5 +26,5 @@ Once you have understood what deployment option is most suitable for you using :
    /installation/multi-server/index
    /installation/troubleshooting
    /installation/new_environment_qa
-   /installation/data-import/index
+   /installation/migration/index
    /installation/multi-server/6-go-live-checklist.rst
