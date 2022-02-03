@@ -134,3 +134,4 @@ pillows:
       total_processes: 42
       start_process: 21
       dedicated_migration_process: True
+  pillow_b000:
