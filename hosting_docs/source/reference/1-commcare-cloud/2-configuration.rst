@@ -1,3 +1,4 @@
+.. _configure-env:
 
 Configuring your CommCare Cloud Environments Directory
 ======================================================

@@ -1,3 +1,4 @@
+.. _configure-vbox:
 
 Configuring VirtualBox for testing CommCare HQ
 ==============================================

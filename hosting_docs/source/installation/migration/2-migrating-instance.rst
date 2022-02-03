@@ -1,9 +1,11 @@
+.. _migrate-instance:
+
 Migrating an entire CommCareHQ instance
 =======================================
 
 This document describes high level steps to migrate an entire CommCareHQ instance from one set of servers
 to another set of servers.  If you are looking to migrate just a single project to a new environment
-please see :doc:`/installation/migration/1-migrating-project`. You can also use that method if you care about
+please see :ref:`migrate-instance`. You can also use that method if you care about
 only a single project in your environment and don't need other projects.
 
 There are database and application services in a CommCareHQ instance. Only the data for database services need to be

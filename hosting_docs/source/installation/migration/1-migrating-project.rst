@@ -1,9 +1,11 @@
+.. _migrate-project:
+
 Migrate a Project from one instance to a new instance
 =====================================================
 
 This document describes the process of migrating an individual project from Dimagi's cloud
 environment (or any other environment) to a new environment. If you are looking to migrate
-the entire environment to the new environment please see :doc:`/installation/migration/2-migrating-instance`.
+the entire environment to the new environment please see :ref:`migrate-instance`.
 
 This process requires assistance from Dimagi if migrating from www.commcarehq.org, 
 as some steps require administrative access to the old environment. To do that, 
