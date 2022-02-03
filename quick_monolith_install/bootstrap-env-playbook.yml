@@ -1,0 +1,98 @@
+# Sets up a fresh environments directory
+# Run using `ansible-playbook --connection=local bootstrap-env-config.yml --extra-vars "env_name=$env_name"`
+
+- hosts: 127.0.0.1
+  connection: local
+
+  vars:
+    install_config:
+      - '{{env_name}}'
+      - '{{site_host}}'
+      - '{{server_inventory_name}}'
+      - '{{server_host_name}}'
+      - '{{ssh_public_key}}'
+      - '{{ssh_username}}'
+      - '{{cchq_venv}}'
+    config_is_not_valid: '{{"" in install_config}}'
+    envs_path: "{{ ansible_env.HOME }}/environments"
+    env_path: "{{envs_path}}/{{ env_name }}"
+  tasks:
+    - name: 'External IP Address'
+      pause:
+        prompt: |
+          Found multiple network interfaces.
+
+          {% for interface in ansible_interfaces %}
+          IP Address: {{hostvars[inventory_hostname]['ansible_%s' | format(interface)]['ipv4']['address'] }}, Interface Name: {{ interface}}
+          {% endfor%}
+
+          Please select the IP address of the server to use in the ansible inventory.
+          This is the IP address that you usually use to SSH into this server.
+          [Enter the corresponding Interface Name, not the IP address]
+      register: result_external_interface
+      until: "'ansible_{{result_external_interface.user_input}}' in hostvars[inventory_hostname]"
+      retries: 3
+      delay: 0
+    - name: 'Private inerface'
+      pause:
+        prompt: |
+          Found multiple network interfaces.
+
+          {% for interface in ansible_interfaces %}
+            IP Address: {{hostvars[inventory_hostname]['ansible_%s' | format(interface)]['ipv4']['address'] }}, Interface Name: {{ interface}}
+          {% endfor%}
+
+          Please enter the private interface name to be used from above three.
+          This will be used to set firewall rules
+      register: result_internal_interface
+      until: "result_internal_interface.user_input in ansible_interfaces"
+      retries: 3
+      delay: 0
+    - debug:
+        msg: "Invalid installation configuration: {{install_config}}. Please define all the variables in your install-config.yml file."
+      when: config_is_not_valid
+    - assert: { that: "not config_is_not_valid" }
+    - name: Create environments directory
+      file: path={{env_path}} state=directory
+    - name: Create env's users directory
+      file: path={{envs_path}}/_users state=directory
+    - name: Create ssh-public-keys directory
+      file: path={{envs_path}}/_authorized_keys state=directory
+    - name: Copy templated env files
+      template:
+        src: "./sample-environment/{{item}}.j2"
+        dest: "{{env_path}}/{{item}}"
+      with_items:
+        - "app-processes.yml"
+        - "inventory.ini"
+        - "meta.yml"
+        - "proxy.yml"
+        - "public.yml"
+        - "vault.yml"
+    - name: Copy non-templated env files
+      ansible.builtin.copy:
+        src: "./sample-environment/{{item}}"
+        dest: "{{env_path}}/{{item}}"
+      with_items:
+        - "fab-settings.yml"
+        - "known_hosts"
+        - "postgresql.yml"
+    - name: Create SSH public key file for the given user
+      lineinfile:
+        dest: "{{envs_path}}/_authorized_keys/{{ssh_username}}.pub"
+        line: "{{ssh_public_key}}"
+        create: yes
+    - name: Copy _users dir
+      template:
+        src: "./sample-environment/_users/admins.yml.j2"
+        dest: "{{envs_path}}/_users/admins.yml"
+    - name: Configure commcare-cloud with  "manage-commcare-cloud configure --quiet"
+      command: "{{cchq_venv}}/bin/manage-commcare-cloud configure --quiet"
+      environment:
+        COMMCARE_CLOUD_ENVIRONMENTS: "{{envs_path}}"
+    - name: Add ~/.commcare-cloud/load_config.sh to ~/.profile
+      lineinfile:
+        dest: "{{ ansible_env.HOME }}/.profile"
+        line: "source ~/.commcare-cloud/load_config.sh"
+        create: yes
+

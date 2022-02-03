@@ -1,0 +1,46 @@
+secrets:
+  ECRYPTFS_PASSWORD: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+  KSPLICE_ACTIVATION_KEY:
+  DATADOG_API_KEY: null
+  DATADOG_APP_KEY: null
+  HAPROXY_STATS_PASSWORD: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+  SUPERVISOR_HTTP_USERNAME: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+  SUPERVISOR_HTTP_PASSWORD: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+  POSTGRES_USERS:
+    commcare:
+      username: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+      password: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+    devreadonly:
+      username: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+      password: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+      role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
+      privs:
+        -
+          privs: SELECT
+          objs: ALL_IN_SCHEMA
+    replication:
+        username: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+        password: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+        role_attr_flags: 'LOGIN,REPLICATION'
+
+localsettings_private:
+  BANK_ACCOUNT_NUMBER:
+  BANK_ROUTING_NUMBER_ACH: ''
+  BANK_ROUTING_NUMBER_WIRE: ''
+  BOOKKEEPER_CONTACT_EMAILS: []
+  BITLY_APIKEY: ''
+  BITLY_LOGIN: ''
+  COUCH_PASSWORD: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+  COUCH_USERNAME: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+  DROPBOX_KEY: ''
+  DROPBOX_SECRET: ''
+  EMAIL_LOGIN: ''
+  EMAIL_PASSWORD: ''
+  FORMPLAYER_INTERNAL_AUTH_KEY: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+  GMAPS_API_KEY: ''
+  GOOGLE_ANALYTICS_API_ID: ''
+  HUBSPOT_API_ID: ''
+  HUBSPOT_API_KEY: ''
+  SECRET_KEY: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
+
+ansible_sudo_pass: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'

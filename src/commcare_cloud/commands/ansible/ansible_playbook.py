@@ -11,7 +11,7 @@ from clint.textui import puts
 from six.moves import shlex_quote
 
 from commcare_cloud.alias import commcare_cloud
-from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command
+from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command, has_local_connection_arg
 from commcare_cloud.user_utils import get_dev_username
 from commcare_cloud.colors import color_error, color_notice
 from commcare_cloud.commands import shared_args
@@ -313,11 +313,11 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
         args.playbook = 'deploy_stack.yml'
-        args.use_factory_auth = True
+        args.use_factory_auth = not has_local_connection_arg(unknown_args)
         public_vars = environment.public_vars
         unknown_args += ('--tags=bootstrap-users', '--skip-tags=validate_key') + get_user_arg(public_vars, unknown_args, use_factory_auth=True)
 
-        if not public_vars.get('commcare_cloud_pem'):
+        if not public_vars.get('commcare_cloud_pem') and not has_local_connection_arg(unknown_args):
             unknown_args += ('--ask-pass',)
         return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
 

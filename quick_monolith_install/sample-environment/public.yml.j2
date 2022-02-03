@@ -1,0 +1,114 @@
+{% raw %}elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
+{% endraw %}
+elasticsearch_memory: '2048m'
+elasticsearch_cluster_name: '{{env_name}}-es'
+elasticsearch_version: 2.4.6
+elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
+
+backup_blobdb: True
+backup_postgres: 'plain'
+backup_es_s3: False
+backup_couch: True
+postgres_s3: False
+blobdb_s3: False
+couch_s3: False
+
+
+couchdb2:
+  username: {% raw %}"{{ localsettings_private.COUCH_USERNAME }}"
+{% endraw %}
+  password: {% raw %}"{{ localsettings_private.COUCH_PASSWORD }}"
+{% endraw %}
+
+couchdb_cluster_settings:
+  q: 8
+  r: 1
+  w: 1
+  n: 1
+
+couchdb_use_haproxy: True
+couch_dbs:
+  default:
+    host: 127.0.0.1
+    port: 35984
+    name: commcarehq
+    username: {% raw %}"{{ localsettings_private.COUCH_USERNAME }}"
+{% endraw %}
+    password: {% raw %}"{{ localsettings_private.COUCH_PASSWORD }}"
+{% endraw %}
+    is_https: False
+
+server_email: commcare@{{ server_host_name }}
+default_from_email: commcare@{{ server_host_name }}
+root_email: /dev/null
+
+BROKER_URL: 'redis://localhost:6379/0'
+
+KSPLICE_ACTIVE: no
+
+DATADOG_ENABLED: False
+
+nameservers: []
+internal_domain_name: 'commcarehq.test'
+
+filebeat_inputs:
+  - path: {% raw %}"{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+{% endraw %}
+    tags:  nginx-error
+  - path: {% raw %}"{{ log_home }}/{{ deploy_env }}-timing.log"
+{% endraw %}
+    tags: nginx-timing
+
+TWO_FACTOR_GATEWAY_ENABLED: False
+
+localsettings:
+  ALLOWED_HOSTS:
+    - "{{ server_host_name }}"
+  BANK_ADDRESS: ~
+  BANK_NAME: ~
+  BANK_SWIFT_CODE: ~
+  CLOUDCARE_BASE_URL: http://localhost:9010
+  COUCH_CACHE_DOCS: True
+  COUCH_CACHE_VIEWS: True
+  COUCH_HTTPS: False
+  COUCH_PASSWORD: {% raw %}"{{ localsettings_private.COUCH_PASSWORD }}"
+{% endraw %}
+  COUCH_SERVER_ROOT: "127.0.0.1"
+  COUCH_USERNAME: {% raw %}"{{ localsettings_private.COUCH_USERNAME }}"
+{% endraw %}
+  COUCH_STALE_QUERY: 'update_after'
+  DEPLOY_MACHINE_NAME: {% raw %}"{{ ansible_hostname }}"
+{% endraw %}
+  ELASTICSEARCH_MAJOR_VERSION: 2
+  EMAIL_SMTP_HOST: 'localhost'
+  EMAIL_SMTP_PORT: 25
+  EMAIL_USE_TLS: no
+  ENABLE_SOFT_ASSERT_EMAILS: False
+  IS_DIMAGI_ENVIRONMENT: False
+  HQ_INSTANCE: {{env_name}}
+  HUBSPOT_API_ID:
+  HUBSPOT_API_KEY:
+  INVOICE_FROM_ADDRESS:
+    'name': "Dimagi, Inc."
+    'first_line': "585 Massachusetts Ave"
+    'city': "Cambridge"
+    'region': "MA"
+    'postal_code': "02139"
+    'country': "US"
+    'phone_number': "(617) 649-2214"
+    'email': "accounts@dimagi.com"
+    'website': "http://www.dimagi.com"
+  INVOICE_PREFIX: INC-
+  INVOICE_STARTING_NUMBER: 5000
+  J2ME_ADDRESS: ''
+  PILLOW_RETRY_QUEUE_ENABLED: True
+  REDIS_DB: '0'
+  REDIS_HOST: "localhost"
+  REDIS_PORT: '6379'
+  REMINDERS_QUEUE_ENABLED: False
+  SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
+  SMS_QUEUE_ENABLED: False
+#  STATIC_ROOT:
+  ENABLE_PRELOGIN_SITE: False
+  ENTERPRISE_MODE: True
+  RESTRICT_DOMAIN_CREATION: True
