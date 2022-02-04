@@ -94,9 +94,10 @@ celery_processes:
 
 pillows:
   pillow_a000:
+    # case-sql partitions: 96
     case-pillow:
-      num_processes: 21
-      total_processes: 42
+      num_processes: 33
+      total_processes: 97
       start_process: 0
       dedicated_migration_process: True
     user-pillow:
@@ -130,8 +131,13 @@ pillows:
       num_processes: 33
       dedicated_migration_process: True
     case-pillow:
-      num_processes: 21
-      total_processes: 42
-      start_process: 21
+      num_processes: 32
+      total_processes: 97
+      start_process: 33
       dedicated_migration_process: True
   pillow_b000:
+    case-pillow:
+      num_processes: 32
+      total_processes: 97
+      start_process: 65
+      dedicated_migration_process: True
