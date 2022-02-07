@@ -12,6 +12,9 @@
   template: src=myid.j2 dest="{{ zookeeper_data_dir }}/myid"
   tags: zookeeper_cluster_conf
 
+- name: Create Kafka conf directory
+  file: path="{{ zookeeper_data_dir }}/conf" state=directory owner=root group=root mode=755
+
 - name: configure Zookeeper properties
   template: src=zoo.cfg.j2 dest="{{ zookeeper_data_dir }}/conf/zoo.cfg"
   tags: zookeeper_cluster_conf
