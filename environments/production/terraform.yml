@@ -37,6 +37,7 @@ servers:
     group: "hq_webworkers"
     os: ubuntu_pro_bionic
     count: 6
+    server_auto_recovery: true
 
   - server_name: "web_b{i}-production"
     server_instance_type: c5.2xlarge
@@ -46,6 +47,7 @@ servers:
     group: "hq_webworkers"
     os: ubuntu_pro_bionic
     count: 6
+    server_auto_recovery: true
 
   - server_name: "web_c{i}-production"
     server_instance_type: c5.2xlarge
@@ -55,6 +57,7 @@ servers:
     group: "hq_webworkers"
     os: ubuntu_pro_bionic
     count: 6
+    server_auto_recovery: true
 
   - server_name: "web_m_a{i}-production"
     server_instance_type: c5.2xlarge
