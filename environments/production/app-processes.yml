@@ -93,9 +93,7 @@ celery_processes:
       num_workers: 2
     malt_generation_queue:
       pooling: gevent
-      concurrency: 1
-      num_workers: 1
-
+      concurrency: 2
 
 pillows:
   pillow_a000:
