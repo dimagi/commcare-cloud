@@ -223,8 +223,6 @@ pgucr0-production: pgucr0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgucr_nlb-production: pgucr-nlb-production-3790c322477cf782.elb.us-east-1.amazonaws.com
 pillow_a000-production: 10.202.12.40
 pillow_a000-production.instance_id: i-0602e9c17c2720084
-pillow_a001-production: 10.202.12.224
-pillow_a001-production.instance_id: i-0008c3994698bc6ea
 pillow_b000-production: 10.202.11.221
 pillow_b000-production.instance_id: i-06bca093c3f5590cb
 proxy_a1-production: 10.202.10.203

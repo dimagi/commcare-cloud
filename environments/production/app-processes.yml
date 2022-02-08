@@ -97,7 +97,7 @@ pillows:
     # case-sql partitions: 96
     case-pillow:
       num_processes: 25
-      total_processes: 97
+      total_processes: 49
       start_process: 0
       dedicated_migration_process: True
     user-pillow:
@@ -126,18 +126,12 @@ pillows:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
-  pillow_a001:
+  pillow_b000:
     xform-pillow:
       num_processes: 33
       dedicated_migration_process: True
     case-pillow:
-      num_processes: 32
-      total_processes: 97
+      num_processes: 24
+      total_processes: 49
       start_process: 25
-      dedicated_migration_process: True
-  pillow_b000:
-    case-pillow:
-      num_processes: 40
-      total_processes: 97
-      start_process: 57
       dedicated_migration_process: True
