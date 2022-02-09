@@ -29,10 +29,15 @@ celery_processes:
     sms_queue:
       pooling: gevent
       concurrency: 4
+    sumologic_logs_queue:
+      pooling: gevent
+      concurrency: 1
     ucr_queue:
       concurrency: 1
     user_import_queue:
       concurrency: 3
+    ush_background_tasks:
+      concurrency: 1
     malt_generation_queue:
       concurrency: 1
     flower: {}
