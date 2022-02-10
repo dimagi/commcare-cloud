@@ -38,6 +38,10 @@ formplayer1-india.instance_id: i-06d49a9454098e895
 frontend_alb-india: internal-frontend-alb-india-500199263.ap-south-1.elb.amazonaws.com
 kafka1-india: 10.203.40.207
 kafka1-india.instance_id: i-030605a66f963c250
+kafka2-india: 10.203.42.242
+kafka2-india.instance_id: i-0d2c2b6f9bee98fea
+kafka3-india: 10.203.41.123
+kafka3-india.instance_id: i-0fe5fd2b7f41a0d75
 pgbouncer0-india: 10.203.40.199
 pgbouncer0-india.instance_id: i-05aabe9136e92475c
 pgbouncer1-india: 10.203.40.200

@@ -12,6 +12,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
     - 127.0.0.1
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -27,6 +29,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
     - 127.0.0.1
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -42,6 +46,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
     - 127.0.0.1
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'
@@ -57,6 +63,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
     - 127.0.0.1
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -81,6 +89,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
     - 127.0.0.1
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -96,6 +106,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
     - 127.0.0.1
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -112,6 +124,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
     - 127.0.0.1
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
@@ -127,6 +141,8 @@ postgresql_dbs:
     pgbouncer_endpoint: 127.0.0.1
     pgbouncer_hosts:
     - 127.0.0.1
+    pgbouncer_pool_size: null
+    pgbouncer_reserve_pool_size: null
     port: 6432
     query_stats: true
     user: '{{ postgres_users.commcare.username }}'

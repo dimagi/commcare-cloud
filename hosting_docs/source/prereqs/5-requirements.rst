@@ -1,5 +1,7 @@
-Hardware resource requirements for CommCare HQ
-==============================================
+.. _deployment-options:
+
+Hardware requirements and Deployment Options
+============================================
 
 CommCare HQ is a complex software platform, composed of several parts
 (application builder, report builder, databases, etc.). There is a range

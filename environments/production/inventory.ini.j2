@@ -1,24 +1,36 @@
-{{ __proxy2__ }}
-{{ __proxy3__ }}
-{{ __proxy4__ }}
+{{ __proxy_a1__ }}
+{{ __proxy_b1__ }}
+{{ __proxy_c1__ }}
 
 [proxy:children]
-proxy2
-proxy3
-proxy4
+proxy_a1
+proxy_b1
+proxy_c1
 
 {{ __web_a__ }}
 
 {{ __web_b__ }}
+
+{{ __web_c__ }}
+
+{{ __web_m_a__ }}
+
+{{ __web_m_b__ }}
+
+{{ __web_m_c__ }}
 
 [logproxy:children]
 proxy
 
 [hq_webworkers:children]
 web_a
+web_b
+web_c
 
 [mobile_webworkers:children]
-web_b
+web_m_a
+web_m_b
+web_m_c
 
 [webworkers:children]
 hq_webworkers
@@ -47,7 +59,7 @@ mobile_webworkers
 
 {{ __rds_pgshard5__ }}
 
-{{ __rds_pgsynclog0__ }}
+{{ __rds_pgsynclog1__ }}
 
 {{ __rds_pgauditcare0__ }}
 
@@ -72,7 +84,7 @@ rds_pgshard2
 rds_pgshard3
 rds_pgshard4
 rds_pgshard5
-rds_pgsynclog0
+rds_pgsynclog1
 rds_pgauditcare0
 
 [postgresql:children]
@@ -123,12 +135,13 @@ kafka1
 kafka2
 kafka3
 
-{{ __celery_a__ }}
 {{ __celery_b__ }}
 
+{{ __celery_c__ }}
+
 [celery:children]
-celery_a
 celery_b
+celery_c
 
 [celery:vars]
 swap_size=8G

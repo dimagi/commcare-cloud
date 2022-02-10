@@ -2,6 +2,7 @@ DEFAULT_POSTGRESQL_HOST: rds_pg0
 
 postgres_override:
   postgresql_max_connections: 300
+  postgresql_version: '10'
   postgresql_hba_entries:  # required for backup
     - contype: host
       databases: replication
@@ -14,7 +15,7 @@ pgbouncer_override:
   pgbouncer_default_pool: 290
 
 pg_repack:
-  pgproxy2:
+  pgproxy4:
     - database: commcarehq_synclogs
       host: "{{ DEFAULT_POSTGRESQL_HOST }}"
       username: "{{ postgres_users.root.username }}"
@@ -26,28 +27,29 @@ dbs:
   main:
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_hosts:
-      - pgproxy2
+      - pgproxy4
     query_stats: True
   ucr:
     pgbouncer_endpoint: pgucr_nlb
     pgbouncer_hosts:
-      - pgproxy2
+      - pgproxy4
     query_stats: True
   synclogs:
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
-      - pgproxy2
+      - pgproxy4
   formplayer:
     host: rds_pgformplayer0
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_hosts:
-      - pgproxy2
+      - pgproxy4
       - pgbouncer0
   auditcare:
-    pgbouncer_host: pgproxy2
+    pgbouncer_host: pgproxy4
+    pgbouncer_reserve_pool_size: 2
   form_processing:
     proxy:
-      host: pgproxy2
+      host: pgproxy4
     partitions:
       p1:
         pgbouncer_endpoint: pgshard_nlb

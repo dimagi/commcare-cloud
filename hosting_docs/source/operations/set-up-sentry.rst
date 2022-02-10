@@ -1,3 +1,4 @@
+.. _sentry:
 
 Set up Sentry for error logs
 ============================

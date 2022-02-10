@@ -1,0 +1,7 @@
+---
+apache_mirror: apache.osuosl.org
+zookeeper_data_dir: "/var/lib/zookeeper"
+zookeeper_conf_dir: "/etc/zookeeper/conf"
+zookeeper_log_dir: "/var/log/zookeeper"
+zookeeper_server_id: "{{ kafka_server_id }}"
+zookeeper_cluster: False

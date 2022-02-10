@@ -6,8 +6,7 @@
 from __future__ import unicode_literals
 COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/api/v([\d\.]+)/form/$
-^/a/([\w\.:-]+)/api/v0.6/case/$
-^/a/([\w\.:-]+)/api/v0.6/case/([\w-]+)/$
+^/a/([\w\.:-]+)/api/v0\.6/case(?:/([\w-]+))?/?$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/app_logo/([\w\-]+)/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/image/$
 ^/a/([\w\.:-]+)/apps/edit_form_attr/([\w-]+)/([\w-]+)/([\w-]+)/$
@@ -26,9 +25,11 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/importer/excel/config/$
 ^/a/([\w\.:-]+)/receiver/$
 ^/a/([\w\.:-]+)/receiver/([\w-]+)/$
+^/a/([\w\.:-]+)/receiver/api/$
 ^/a/([\w\.:-]+)/receiver/secure/$
 ^/a/([\w\.:-]+)/receiver/secure/([\w-]+)/$
 ^/a/([\w\.:-]+)/receiver/submission/?$
+^/a/([\w\.:-]+)/reports/export/(case_list_explorer|duplicate_cases)/$
 ^/a/([\w\.:-]+)/settings/users/commcare/fields/$
 ^/a/([\w\.:-]+)/settings/users/commcare/upload/$
 ^/a/([\w\.:-]+)/settings/users/web/upload/$
@@ -38,6 +39,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/jserror/$
 ^/log_email_event/([\w]+)/?$
 ^/telerivet/in/?$
+^/telerivet/status/([\w\-]+)/$
 """.strip().split()
 
 COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX = """

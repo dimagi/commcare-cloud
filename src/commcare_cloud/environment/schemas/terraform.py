@@ -140,6 +140,7 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     backup_window = jsonobject.StringProperty(default="06:27-06:57")
     backup_retention = jsonobject.IntegerProperty(default=30)
     monitoring_interval = jsonobject.IntegerProperty(default=60)
+    enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
     maintenance_window = "sat:08:27-sat:08:57"
     port = 5432
     params = jsonobject.DictProperty()
@@ -241,4 +242,3 @@ class Ec2AutoRecovery(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     targets = jsonobject.ListProperty(str)
     name_prefix = jsonobject.StringProperty(required=True)
-        

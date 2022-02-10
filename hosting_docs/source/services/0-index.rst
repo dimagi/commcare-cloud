@@ -1,10 +1,12 @@
-Reference Annexure
-==================
+.. _service-guides:
 
-References for various topics
+CommCareHQ Services Guides
+==========================
+
+CommCareHQ uses many services such as Django, PostgreSQL, BlobDB, Kafka and many more. This section has a page for each service describing how a service is used and how to perform various operations related to the service.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    /services/postgresql/postgresql
    /services/blobdb/blobdb

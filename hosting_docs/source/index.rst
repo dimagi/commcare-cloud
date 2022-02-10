@@ -16,13 +16,15 @@ This documentation contains guides and reference material on how to self host Co
 
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    Getting Started <about/index>
+   Prerequisites <prereqs/index>
    Deploy CommCareHQ <installation/index>
    Operations and Maintenance <operations/1-index>
    How to Scale <scaling/1-index>
    Service Guides <services/0-index>
    Backups and Disaster Recovery <backups_dr/1-index>
    Security <security/1-security>
+   Supporting Your Users <support/1-index>
    Reference Material <reference/0-index>

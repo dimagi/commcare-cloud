@@ -1,7 +1,7 @@
 .. _hosting-considerations:
 
-Hosting Considerations
-======================
+Things to consider when Self Hosting
+====================================
 
 If you are interested in running a CommCare server environment there are
 a number of serious obstacles to consider before taking the plunge. If

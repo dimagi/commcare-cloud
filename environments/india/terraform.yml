@@ -246,6 +246,26 @@ servers:
     group: kafka
     os: bionic
 
+  - server_name: "kafka2-india"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 50
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: kafka
+    os: bionic
+
+  - server_name: "kafka3-india"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 50
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: kafka
+    os: bionic
+
   - server_name: "pgbouncer0-india"
     server_instance_type: t3.small
     network_tier: "db-private"
