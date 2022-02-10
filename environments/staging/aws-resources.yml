@@ -60,6 +60,8 @@ rabbit2-staging: 10.201.10.239
 rabbit2-staging.instance_id: i-01bfeae5f4febaddf
 rabbit4-staging: 10.201.11.17
 rabbit4-staging.instance_id: i-0eae4b3b4acdacbf0
+rabbittest-staging: 10.201.11.124
+rabbittest-staging.instance_id: i-0062a8f0b612d3516
 web7-staging: 10.201.11.170
 web7-staging.instance_id: i-00c29bc6df3a1f47b
 web8-staging: 10.201.11.222
