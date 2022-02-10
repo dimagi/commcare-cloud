@@ -12,5 +12,4 @@ For our setup in production, the virtual host is always “commcarehq”. Locall
 Guides
 ------
 
-
-* `RabbitMQ upgrade <rabbitmq/upgrade.md>`_
+* :ref:`services/rabbitmq/upgrade:Upgrading RabbitMQ`

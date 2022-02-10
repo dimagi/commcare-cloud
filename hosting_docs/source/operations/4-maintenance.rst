@@ -20,7 +20,7 @@ extended period.
 Monitor the developers forum
 ----------------------------
 
-Subscribe to the `developers forum`_ to keep in contact with Dimagi and
+Subscribe to the `developers forum <https://forum.dimagi.com/c/developers/5>`_ to keep in contact with Dimagi and
 other parties hosting CommCare. Dimagi will announce important changes
 there, such as upcoming upgrades.
 
@@ -42,7 +42,7 @@ Update commcare-cloud before every deploy and check the changelog
 
 ``commcare-cloud`` is developed in conjunction with CommCare HQ. To be
 on the safe side, it's best to update just before deploying CommCare HQ.
-When you do so, check for new entries in the `changelog`_, which should
+When you do so, check for new entries in the `changelog <https://github.com/dimagi/commcare-cloud/blob/master/docs/changelog/index.md>`_, which should
 alert you of any new changes which might require you to take action. We
 recommend you take a look through the current entries to get an idea of
 what these changes might look like.
@@ -56,6 +56,3 @@ window, please reach out on the forum.
 After the window expires, Dimagi will drop support for the old version.
 You may then face additional difficulty in deploying the change, as well
 as incompatibility problems on your server.
-
-.. _developers forum: https://forum.dimagi.com/c/developers/5
-.. _changelog: https://dimagi.github.io/commcare-cloud/changelog/

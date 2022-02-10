@@ -113,9 +113,9 @@ This document will walk you through the process of updating the CommCare HQ code
 Prerequisites
 -------------
 
-Ensure that you have a working version of ``commcare-cloud`` which is configured to act on your monolith or fleet of servers. You can find more information on setting up ``commcare-cloud`` in the `installing ``commcare-cloud`` <../setup/installation.md>`_ documentation. 
+Ensure that you have a working version of ``commcare-cloud`` which is configured to act on your monolith or fleet of servers. You can find more information on setting up ``commcare-cloud`` in :ref:`reference/1-commcare-cloud/index:CommCare Cloud Reference`.
 
-If you don't yet have a server with CommCare HQ, you can try `setting up a monolith <../setup/new_environment.md>`_.
+If you have followed :ref:`installation/quick-monolith-install:` ``commcare-cloud`` will be installed on the CommCareHQ server itself.
 
 All commands listed here will be run from your control machine which has ``commcare-cloud`` installed.
 
@@ -262,7 +262,7 @@ Local Settings deploy
 
 Settings generally only need to be deployed when static files are updated against your specific environment. 
 
-Sometimes changes are made to the system which require new settings to be deployed before code can be rolled out. In these cases, the detailed steps are provided in the `changelog <../changelog/index.md>`_. Announcements are made to the `Developer Forum <https://forum.dimagi.com/>`_ in a `dedicated category <https://forum.dimagi.com/c/developers/maintainer-announcements/>`_ when these actions are needed. We strongly recommend that anyone maintaining a CommCare Cloud instance subscribe to that feed.
+Sometimes changes are made to the system which require new settings to be deployed before code can be rolled out. In these cases, the detailed steps are provided in the `changelog <https://github.com/dimagi/commcare-cloud/blob/master/docs/changelog/index.md>`_. Announcements are made to the `Developer Forum <https://forum.dimagi.com/>`_ in a `dedicated category <https://forum.dimagi.com/c/developers/maintainer-announcements/>`_ when these actions are needed. We strongly recommend that anyone maintaining a CommCare Cloud instance subscribe to that feed.
 
 -------------------------------
 Resolving problems with deploys
@@ -270,7 +270,7 @@ Resolving problems with deploys
 
 This document outlines how to recover from issues which are enountered when performing deploys from ``commcare-cloud``.
 
-Make sure you are up to date with the documented process for `deploying to servers <deploy.md>`_. 
+Make sure you are up to date with the above documented process for deploying code changes.
 
 All commands listed here will be run from your control machine which has ``commcare-cloud`` installed.
 

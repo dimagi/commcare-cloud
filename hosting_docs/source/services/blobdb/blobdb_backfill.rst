@@ -29,23 +29,22 @@ about their status (the last arg is the log file that was printed out above):
 
    cchq <env> django-manage --tmux check_blob_logs /opt/data/blobdb-migration-logs/migrate_backend-blob-migration-<timestamp>.txt
 
+
+The output will look something like this:
+
 .. code-block::
+  
+  tempfile: checked 2342 records
+    Found in new db: 0
+    Found in old db: 0
+    Not referenced: 0
+    Not found: 2342
+  XFormInstance: checked 42 records
+    Found in new db: 0
+    Found in old db: 0
+    Not referenced: 21
+    Not found: 21
 
-
-   The output will look something like this:
-
-tempfile: checked 2342 records
-  Found in new db: 0
-  Found in old db: 0
-  Not referenced: 0
-  Not found: 2342
-XFormInstance: checked 42 records
-  Found in new db: 0
-  Found in old db: 0
-  Not referenced: 21
-  Not found: 21
-...
-```
 
 Legend:
 

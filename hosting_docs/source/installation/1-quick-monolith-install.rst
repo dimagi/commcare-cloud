@@ -57,4 +57,4 @@ The :code:`cchq-install.sh` is an automation of the manual steps listed in :ref:
 
 If you have any issues while deploying please refer to :ref:`troubleshoot-first-time-install`.
 
-Once you have installed CommCareHQ successfully you can refer to the 'First Steps with CommCareHQ` in :ref:`cchq-manual-install` and :ref:`go-live-checklist` before making your CommCareHQ live.
+Once you have installed CommCareHQ successfully you can refer to :ref:`installation/2-manual-install:First Steps with CommCare HQ` before making your CommCareHQ live.

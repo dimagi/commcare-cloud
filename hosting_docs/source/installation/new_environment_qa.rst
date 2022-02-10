@@ -12,8 +12,7 @@ execute.
 
 If any of these steps fail, we advise troubleshooting by first
 evaluating the related processes detailed at the end of each step.
-You'll find some specifics on the `firefighting
-page <../firefighting/index.md>`_.
+You'll find some specifics on the :ref:`reference/firefighting/index:Firefighting Production Issues`.
 
 Step 1: Logging in
 ------------------
@@ -23,9 +22,8 @@ Simply logging into CommCare HQ tests multiple processes.
 Begin by logging into your application with your username and password.
 
 
-.. image:: ./new_environment_qa_img/log-in.png
-   :target: ./new_environment_qa_img/log-in.png
-   :alt: 
+.. image:: ./images/log-in.png
+   :target: ./images/log-in.png
 
 
 **This step tests:** that Django, Postgres, Couch, and Redis are
@@ -49,9 +47,8 @@ that uses Case Management. We'll use case management to create cases
 later on.
 
 
-.. image:: ./new_environment_qa_img/add-module.png
-   :target: ./new_environment_qa_img/add-module.png
-   :alt: 
+.. image:: ./images/add-module.png
+   :target: ./images/add-module.png
 
 
 Step 2b: Populating the Registration Form
@@ -66,9 +63,8 @@ your own questions. If using your own questions, do use one text
 question to capture names so we can easily refer to our cases later.
 
 
-.. image:: ./new_environment_qa_img/registration-form.png
-   :target: ./new_environment_qa_img/registration-form.png
-   :alt: 
+.. image:: ./images/registration-form.png
+   :target: ./images/registration-form.png
 
 
 Once questions have been added, save and then click the 'Manage Case'
@@ -85,9 +81,8 @@ associated with the case. We'll follow up on these case properties later
 once we begin using our app.
 
 
-.. image:: ./new_environment_qa_img/case-properties.png
-   :target: ./new_environment_qa_img/case-properties.png
-   :alt: 
+.. image:: ./images/case-properties.png
+   :target: ./images/case-properties.png
 
 
 Step 2d: Populating and creating properties for the Followup Form
@@ -100,9 +95,8 @@ use my template below. Once complete, save and select 'Manage Case.'
 Then, add those questions as Case Properties and save again.
 
 
-.. image:: ./new_environment_qa_img/followup-form.png
-   :target: ./new_environment_qa_img/followup-form.png
-   :alt: 
+.. image:: ./images/followup-form.png
+   :target: ./images/followup-form.png
 
 
 **These steps test:** that Applications can be created. Applications are
@@ -126,9 +120,8 @@ Mobile Worker,' click this and the popup below will appear. Enter
 whatever username and password combo you'd like.
 
 
-.. image:: ./new_environment_qa_img/mobile-worker.png
-   :target: ./new_environment_qa_img/mobile-worker.png
-   :alt: 
+.. image:: ./images/mobile-worker.png
+   :target: ./images/mobile-worker.png
 
 
 Your mobile worker should now appear as a link under the 'New Mobile
@@ -157,9 +150,8 @@ version. This will launch a modal similar to the one in the image below.
 Your version number may differ from mine:
 
 
-.. image:: ./new_environment_qa_img/download-app.png
-   :target: ./new_environment_qa_img/download-app.png
-   :alt: 
+.. image:: ./images/download-app.png
+   :target: ./images/download-app.png
 
 
 While there are multiple ways to deploy your application to a mobile
@@ -194,9 +186,8 @@ save. Upon completing this step, a purple banner will appear under your
 application's name.
 
 
-.. image:: ./new_environment_qa_img/advanced-settings.png
-   :target: ./new_environment_qa_img/advanced-settings.png
-   :alt: 
+.. image:: ./images/advanced-settings.png
+   :target: ./images/advanced-settings.png
 
 
 We will need to make a new version of your application on the release page. To
@@ -216,9 +207,8 @@ the forms have been submitted, click the Home icon in Web Apps and then click
 the blue Sync button.
 
 
-.. image:: ./new_environment_qa_img/web-apps.png
-   :target: ./new_environment_qa_img/web-apps.png
-   :alt: 
+.. image:: ./images/web-apps.png
+   :target: ./images/web-apps.png
 
 
 **This step tests:** Using Web Apps tests that Formplayer is working correctly.
@@ -244,15 +234,13 @@ under Submit History on the left of the screen). Again, accept the
 default filters and click apply.
 
 
-.. image:: ./new_environment_qa_img/submit-history.png
-   :target: ./new_environment_qa_img/submit-history.png
-   :alt: 
+.. image:: ./images/submit-history.png
+   :target: ./images/submit-history.png
 
 
 
-.. image:: ./new_environment_qa_img/case-list.png
-   :target: ./new_environment_qa_img/case-list.png
-   :alt: 
+.. image:: ./images/case-list.png
+   :target: ./images/case-list.png
 
 
 Your results will be unique to your submissions and cases. Feel free to
@@ -278,9 +266,8 @@ modal that appears. Though the application name may differ, your screen
 will look like:
 
 
-.. image:: ./new_environment_qa_img/export-cases.png
-   :target: ./new_environment_qa_img/export-cases.png
-   :alt: 
+.. image:: ./images/export-cases.png
+   :target: ./images/export-cases.png
 
 
 Select 'Add Export,' which will navigate you to the Create Case Data
@@ -317,9 +304,8 @@ your application and the case type (likely, this will have defaulted to
 Case Feed page. Accept the defaults and click save.
 
 
-.. image:: ./new_environment_qa_img/odata-feed.png
-   :target: ./new_environment_qa_img/odata-feed.png
-   :alt: 
+.. image:: ./images/odata-feed.png
+   :target: ./images/odata-feed.png
 
 
 This will return you back to the PowerBi/Tableau Integration page with a
@@ -347,9 +333,8 @@ Once complete, click 'Return to manage mobile workers' and then the
 mobile workers.'
 
 
-.. image:: ./new_environment_qa_img/upload-users.png
-   :target: ./new_environment_qa_img/upload-users.png
-   :alt: 
+.. image:: ./images/upload-users.png
+   :target: ./images/upload-users.png
 
 
 After a moment, you will see 'Mobile Worker upload has finished -
@@ -368,9 +353,8 @@ need to set up a new gateway by following the instructions in `this
 article <https://confluence.dimagi.com/display/commcarepublic/Setup+an+Android+SMS+Gateway>`_.
 
 
-.. image:: ./new_environment_qa_img/sms-gateway.png
-   :target: ./new_environment_qa_img/sms-gateway.png
-   :alt: 
+.. image:: ./images/sms-gateway.png
+   :target: ./images/sms-gateway.png
 
 
 To test, return to Users and Mobile Workers. Then, select your mobile

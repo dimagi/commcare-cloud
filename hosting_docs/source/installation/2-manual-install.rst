@@ -1,7 +1,7 @@
 .. _cchq-manual-install:
 
-Setting up a new CommCare HQ environment
-========================================
+Install Using Commcare-Cloud on one or more machines
+====================================================
 
 This tutorial will walk you through the process of setting up a new environment to run CommCare HQ using :ref:`commcare-cloud <commcare-cloud>`. It covers both a single-server (“monolith”) environment and a small cluster of virtual machines. If you want to quickly test or preview the environment setup on a single machine you can follow :ref:`quick-install` which uses a script to automate all of the below.
 

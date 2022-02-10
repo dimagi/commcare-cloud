@@ -95,7 +95,7 @@ One of the setup commands is showing...
 This means that CouchDB is unreachable.
 
 Breakdown of a request to CouchDB
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Note: if you are running on a recommended single-machine setup,
 then you can ignore the host groups (denoted ``[in brackets]``\ ):
@@ -138,6 +138,7 @@ and includes variables that may be overriding the default port values:
    * - 
      - ⇩
      - 
+     -
      - 
    * - CouchDB Load Balancer
      - ``[couchdb2_proxy]``
@@ -146,7 +147,8 @@ and includes variables that may be overriding the default port values:
      - ``couchdb2_proxy_port``
    * - 
      - ⇩
-     - 
+     -
+     -
      - 
    * - CouchDB Node
      - ``[couchdb2]``
@@ -156,7 +158,7 @@ and includes variables that may be overriding the default port values:
 
 
 How to confirm the issue
-~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 To confirm the issue, that django processes cannot reach CouchDB, run
 
@@ -167,7 +169,7 @@ To confirm the issue, that django processes cannot reach CouchDB, run
 It should tell you that CouchDB is unreachable.
 
 How to solve
-~~~~~~~~~~~~
+^^^^^^^^^^^^
 
 The first thing to check is whether couchdb2 and couchdb2_proxy
 services are up, which you can do with the single command:
@@ -239,8 +241,8 @@ or grep through for errors.
 One of the setup commands is showing...
 ---------------------------------------
 
-Notes:
-Error requesting archive. Problem with NPM phantomjs package downloading and path not found issue
+```Error requesting archive. Problem with NPM phantomjs package downloading and path not found```
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block::
 
@@ -255,16 +257,14 @@ Error requesting archive. Problem with NPM phantomjs package downloading and pat
    }
 
 steps to resolve
-""""""""""""""""
+^^^^^^^^^^^^^^^^
 
-```bash 
-cd /usr/local/share
-sudo wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2
-sudo tar xjf phantomjs-1.9.8-linux-x86_64.tar.bz2
-sudo ln -s /usr/local/share/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/local/share/phantomjs
-sudo ln -s /usr/local/share/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs
-sudo ln -s /usr/local/share/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
+.. code-block:: bash
 
-----
+    cd /usr/local/share
+    sudo wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2
+    sudo tar xjf phantomjs-1.9.8-linux-x86_64.tar.bz2
+    sudo ln -s /usr/local/share/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/local/share/phantomjs
+    sudo ln -s /usr/local/share/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs
+    sudo ln -s /usr/local/share/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
 
-`︎⬅︎ Overview <..>`_

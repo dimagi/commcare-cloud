@@ -3,7 +3,7 @@
 CommCareHQ Services Guides
 ==========================
 
-CommCareHQ uses many services such as Django, PostgreSQL, BlobDB, Kafka and many more. This section has a page for each service describing how a service is used and how to perform various operations related to the service.
+CommCareHQ uses many services such as Django, PostgreSQL, BlobDB, Kafka and many more. This section has information how a service is used and how to perform various operations related to the service.
 
 .. toctree::
    :maxdepth: 2
@@ -13,6 +13,8 @@ CommCareHQ uses many services such as Django, PostgreSQL, BlobDB, Kafka and many
    /services/nginx/nginx
    /services/kafka
    /services/pillowtop
+   /services/rabbitmq/rabbitmq
+   /services/redis/redis
    /services/airflow
    /services/bitly.rst
    /services/keepalived.rst

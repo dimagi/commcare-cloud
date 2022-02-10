@@ -3,10 +3,15 @@
 Hardware requirements and Deployment Options
 ============================================
 
+Introduction
+------------
+
 CommCare HQ is a complex software platform, composed of several parts
-(application builder, report builder, databases, etc.). There is a range
-of server configurations that can host all the parts of the CommCare HQ
-software suite.
+(application builder, report builder, databases, etc.). The architecture
+of CommCareHQ allows hosting for wide variety of usage loads. In this guide
+we list down various server configurations suitable for various user loads
+to start with.
+
 
 When determining what configuration to use, it is important to keep the
 expected growth of the project in mind, in order to optimize costs and
@@ -25,6 +30,9 @@ make more sense to optimise on resource costs.
 Importantly, optimum resource management requires accurate resource
 monitoring. For more details on this topic, see the CommCare Cloud
 documentation on :ref:`label_datadog-for-monitoring`.
+
+Recommended Server Sizings for different loads
+----------------------------------------------
 
 The following table summarizes common server configurations. This should
 provide a basic understanding of the implications of scaling a project
@@ -75,8 +83,8 @@ see the CommCare Cloud documentation on
 :ref:`label_datadog-for-monitoring`.
 
 
-Virtualization
---------------
+**Virtualization**
+
 
 Where possible, virtual servers hosted by a Cloud Service Provider (CSP)
 should always be preferred over physical servers. The reason for this is

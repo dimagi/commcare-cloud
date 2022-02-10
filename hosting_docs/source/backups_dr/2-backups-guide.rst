@@ -13,7 +13,7 @@ You should read this section carefully and understand what each of these setting
 
 ----
 
-Each primary data-store that CommCare HQ uses can have backups turned on or off based settings in `\ ``public.yml`` <./env/index.md#publicyml>`_ or the vault file. All settings mentioned below are to be placed in ``public.yml`` unless otherwise specified.
+Each primary data-store that CommCare HQ uses can have backups turned on or off based settings in :ref:`reference/1-commcare-cloud/2-configuration:``public.yml``` or the vault file. All settings mentioned below are to be placed in ``public.yml`` unless otherwise specified.
 
 After making changes to these settings you will need to run:
 
@@ -292,7 +292,7 @@ The files in the resulting directory should all be owned by the user ``cchq`` (i
 Elasticsearch Snapshots
 -----------------------
 
-While it is possible to backup Elasticsearch data, it isn't always necessary as this is not a primary data store and can be rebuilt from primary sources. If Elasticsearch data is lost or deleted in entirety, it will be recreated when a `deploy is made <./deploy.md>`_ to the cluster.
+While it is possible to backup Elasticsearch data, it isn't always necessary as this is not a primary data store and can be rebuilt from primary sources. If Elasticsearch data is lost or deleted in entirety, it will be recreated when :ref:`operations/2-deploys:Deploying CommCare HQ code changes`.
 
 However, you may still back-up Elasticsearch using `Elasticsearch Snapshots <https://www.elastic.co/guide/en/elasticsearch/reference/1.7/modules-snapshots.html#_snapshot>`_ directly to S3 or locally. The rest of this section assumes an understanding of that documentation page.
 

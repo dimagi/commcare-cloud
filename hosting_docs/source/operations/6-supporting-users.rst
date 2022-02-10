@@ -1,7 +1,7 @@
 Supporting Your Users
 ================
 
-The following guide explains how to set up processes/systems in order to provide support to various platforms users, such as mobile users, application building teams, etc.
+The following guide explains how to set up processes/systems in order to provide support to various users who may interact with your CommCareHQ instance such as mobile users, application building teams and reporting teams etc.
 
 ---------------------------
 Why set up a Support System

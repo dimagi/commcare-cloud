@@ -268,6 +268,3 @@ Other useful commands
 
    commcare-cloud <env> run-shell-command postgresql -b --become-user postgres "psql -c 'select * from pg_replication_slots;'"
 
-----
-
-`︎⬅︎ PostgreSQL <../postgresql.md>`_ | `︎⬅︎ Overview <../..>`_

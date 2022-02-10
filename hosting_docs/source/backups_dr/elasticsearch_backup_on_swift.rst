@@ -96,6 +96,3 @@ What Does Ansible do.
 * Copy script to take snapshot
 * Create a Cronjob
 
-----
-
-`︎⬅︎ ElastiSearch <../elasticsearh.md>`_ | `︎⬅︎ Overview <../..>`_

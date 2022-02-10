@@ -2,28 +2,21 @@
 
 This is a firefighting guide to help troubleshoot various issues that might come up while running a CommCareHQ Server.
 
+.. note::
+
+  All Datadog links will be specific and private to Dimagi employees.
+  If datadog releases a feature to share dashboard configurations, we will happily share configurations in this repository.
+
+==================
 Firefighting Guide
 ==================
 
 .. contents:: Table of Contents
-    :depth: 1
+    :depth: 2
 
-Notes
-~~~~~
-
-All Datadog links will be specific and private to Dimagi employees.
-If datadog releases a feature to share dashboard configurations, we will happily share configurations in this repository.
 
 For a more user-friendly guide check out `Cory's brown bag on the topic <http://prezi.com/wedwm-dgqto7/firefighting-hq/>`_.
 
-Contents
---------
-
-{:.no_toc}
-
-
-* TOC
-  {:toc}
 
 HQ Architecture and Machines
 ============================
@@ -807,7 +800,7 @@ If it's absolutely necessary to delete the logs from this folder. Use following 
 Celery
 ======
 
-Check out this `child page <celery.md>`_
+Check out :ref:`reference/firefighting/celery:Celery Firefighting Guide`.
 
 Monitoring
 ----------

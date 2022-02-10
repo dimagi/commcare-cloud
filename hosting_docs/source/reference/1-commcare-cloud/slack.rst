@@ -1,6 +1,6 @@
 
-Slack for notifications
-=======================
+Slack Notifications from CommCare Cloud
+=======================================
 
 commcare-cloud can be configured to send event notifications to Slack such as
 pre and post deploy messages.

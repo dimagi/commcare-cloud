@@ -15,11 +15,11 @@ Third-party documents
 Perhaps the canonical document on managing hardware, within the
 wholistic context of managing a data center, is the BICSI International
 Standard,
-`ANSI/BICSI 002, Data Center Design and Implementation Best Practices <bicsi-002>`_.
+`ANSI/BICSI 002, Data Center Design and Implementation Best Practices <https://www.bicsi.org/standards/available-standards-store/single-purchase/ansi-bicsi-002-2019-data-center-design>`_.
 At the time of writing, the latest revision is BICSI 002-2019. At 500
 pages long, it is comprehensive. A digital copy costs $525.
 
-Samples, and `a presentation`_ based on the content are available free
+Samples, and `a presentation <https://www.bicsi.org/docs/default-source/conference-presentations/2017-fall/using-the-ansi-bicsi-002.pdf>`_ based on the content are available free
 online. The presentation will give a good impression of the detailed
 thinking required to maintain a secure and reliable hosting environment.
 
@@ -160,7 +160,7 @@ Support Licenses
 ^^^^^^^^^^^^^^^^
 
 Cloud hosting data centers which are managing servers at the OS level
-will generally have `licensed support for Operating Systems <os-lic>`_.
+will generally have `licensed support for Operating Systems <https://ubuntu.com/legal/ubuntu-advantage-service-description>`_.
 This support ensures that IT Admins are able to provide seamless uptime
 for servers and resolve critical issues at the OS level if they occur.
 
@@ -201,7 +201,3 @@ All of which are important considerations for individual programs
    requires new disks, which is complex. A minimum cost would be 3TB for
    years 1, 2, and 3, then 5TB years 4 and 5, which would require a
    complex migration requiring subject matter expertise.
-
-.. _bicsi-002: https://www.bicsi.org/standards/available-standards-store/single-purchase/ansi-bicsi-002-2019-data-center-design
-.. _a presentation: https://www.bicsi.org/docs/default-source/conference-presentations/2017-fall/using-the-ansi-bicsi-002.pdf
-.. _os-lic: https://ubuntu.com/legal/ubuntu-advantage-service-description
