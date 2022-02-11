@@ -17,7 +17,7 @@ celery_processes:
     email_queue,reminder_rule_queue:
       concurrency: 1
     malt_generation_queue:
-      concurrency: 1
+      concurrency: 2
     beat: {}
     saved_exports_queue:
       concurrency: 1
