@@ -12,7 +12,6 @@ pgbouncer_override:
 
 postgres_override:
   postgresql_version: "10"
-  postgresql_port: 5433
   postgresql_max_connections: 300
   postgresql_hba_entries:
     # required for backup
