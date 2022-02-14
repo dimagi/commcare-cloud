@@ -74,13 +74,11 @@ couch_alb
 
 {{ __rabbit2__ }}
 {{ __rabbit4__ }}
-{{ __rabbit5__ }}
 
 [rabbitmq:children]
 # Amazon EC2
 rabbit2
 rabbit4
-rabbit5
 
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=1
 {{ __kafka3__ }} kafka_broker_id=2 zookeeper_server_id=2
