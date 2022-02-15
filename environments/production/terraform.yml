@@ -37,6 +37,7 @@ servers:
     group: "hq_webworkers"
     os: ubuntu_pro_bionic
     count: 6
+    server_auto_recovery: true
 
   - server_name: "web_b{i}-production"
     server_instance_type: c5.2xlarge
@@ -46,6 +47,7 @@ servers:
     group: "hq_webworkers"
     os: ubuntu_pro_bionic
     count: 6
+    server_auto_recovery: true
 
   - server_name: "web_c{i}-production"
     server_instance_type: c5.2xlarge
@@ -55,6 +57,7 @@ servers:
     group: "hq_webworkers"
     os: ubuntu_pro_bionic
     count: 6
+    server_auto_recovery: true
 
   - server_name: "web_m_a{i}-production"
     server_instance_type: c5.2xlarge
@@ -240,7 +243,16 @@ servers:
     volume_size: 150
     group: "pillowtop"
     os: ubuntu_pro_bionic
-    count: 2
+    count: 1
+
+  - server_name: "pillow_b{i}-production"
+    server_instance_type: r5a.8xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 60
+    group: "pillowtop"
+    os: ubuntu_pro_bionic
+    count: 1
 
   - server_name: "formplayer_c{i}-production"
     server_instance_type: m5a.4xlarge
@@ -249,7 +261,7 @@ servers:
     volume_size: 400
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 54
+    count: 48
     server_auto_recovery: true
 
   - server_name: "kafka1-production"
@@ -365,7 +377,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgucr0-production"
-    instance_type: "db.m5.4xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 500
     max_storage: 5000
     multi_az: true

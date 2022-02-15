@@ -14,9 +14,11 @@
 
 - name: Create Kafka conf directory
   file: path="{{ zookeeper_data_dir }}/conf" state=directory owner=root group=root mode=755
+  when: zookeeper_cluster
 
 - name: configure Zookeeper properties
   template: src=zoo.cfg.j2 dest="{{ zookeeper_data_dir }}/conf/zoo.cfg"
+  when: zookeeper_cluster
   tags: zookeeper_cluster_conf
 
 # Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864

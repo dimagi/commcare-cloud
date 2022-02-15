@@ -91,12 +91,16 @@ celery_processes:
       pooling: gevent
       concurrency: 40
       num_workers: 2
+    malt_generation_queue:
+      pooling: gevent
+      concurrency: 2
 
 pillows:
   pillow_a000:
+    # case-sql partitions: 96
     case-pillow:
-      num_processes: 21
-      total_processes: 42
+      num_processes: 25
+      total_processes: 49
       start_process: 0
       dedicated_migration_process: True
     user-pillow:
@@ -125,12 +129,12 @@ pillows:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
-  pillow_a001:
+  pillow_b000:
     xform-pillow:
       num_processes: 33
       dedicated_migration_process: True
     case-pillow:
-      num_processes: 21
-      total_processes: 42
-      start_process: 21
+      num_processes: 24
+      total_processes: 49
+      start_process: 25
       dedicated_migration_process: True
