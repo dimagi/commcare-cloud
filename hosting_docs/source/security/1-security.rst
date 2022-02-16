@@ -48,7 +48,7 @@ Application refers to all the services that are accessible for users mostly thro
 Host and Disk Security
 ----------------------
 
-#. **Access management** Make sure that access to virtual machines is done using SSH keys and not passwords. Refer to :ref:`reference/3-user-access-security:User Access Management` to know how this is done using commcare-cloud. Implement any other best practices such as enabling access through VPN and logging SSH access etc as necessary.
+#. **Access management** Make sure that access to virtual machines is done using SSH keys and not passwords. Refer to :ref:`reference/3-user-management:User Access Management` to know how this is done using commcare-cloud. Implement any other best practices such as enabling access through VPN and logging SSH access etc as necessary.
 
 #. **Data Encrypttion** When CommCareHQ is deployed with commcare-cloud all the drives that store user data are automatically encrypted. If the data is stored anywhere else, it must be made sure that the data is stored only in encrypted drives.
 

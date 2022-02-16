@@ -7,10 +7,9 @@ This section contains reference sections for various topics related to hosting a
    :maxdepth: 4
 
    /reference/1-commcare-cloud/index
+   /reference/3-user-management
    /reference/firefighting/index
    /reference/howto/index
-   ..
-      Todo - release once written /reference/3-user-access-security.rst
    ..
       Todo - release once written /reference/4-ansible-resources.rst
    ..

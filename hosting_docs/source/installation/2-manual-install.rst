@@ -735,3 +735,4 @@ Operations
 
 Once you have your CommCareHQ live, please refer to :ref:`operations-maintenance` for maintaining your environment.
 
+To add new server administrators please refer to :ref:`reference/3-user-management:Setting up CommCareHQ Server Administrators`.

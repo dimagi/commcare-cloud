@@ -41,7 +41,7 @@ SSH into the server with a root or a user with root privileges and do below.
 Troubleshooting
 ---------------
 
-The :code:`cchq-install.sh` is an automation of the manual steps listed in :ref:`cchq-monolith-install`. If this script fails before it executes :code:`commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local --quiet`, you may rerun the script itself. If the script fails at this or latter commands, you can run those commands one after another instead of re-running the enitre `cchq-install.sh` script to save time. Below are the rest of the commands.
+The :code:`cchq-install.sh` is an automation of the manual steps listed in :ref:`cchq-manual-install`. If this script fails before it executes :code:`commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local --quiet`, you may rerun the script itself. If the script fails at this or latter commands, you can run those commands one after another instead of re-running the enitre `cchq-install.sh` script to save time. Below are the rest of the commands.
 
 .. code-block:: bash
 
@@ -54,6 +54,8 @@ The :code:`cchq-install.sh` is an automation of the manual steps listed in :ref:
 .. note::
 
   You do not need to track install-config.yml under git as it's relevant for this installation only
+
+The script would have created an :ref:`environments config directory<reference/1-commcare-cloud/2-configuration:Creating environments directory>` that stores all of the configuration.  we recommend you to to manage this via a version control system such as git, so that you can keep track of the changes and share the directory with other team members so that they can perform server administration using commcare-cloud.
 
 If you have any issues while deploying please refer to :ref:`troubleshoot-first-time-install`.
 
