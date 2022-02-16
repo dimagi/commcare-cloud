@@ -730,6 +730,11 @@ the command below - it will fetch the latest version from GitHub.
 
    $ commcare-cloud cluster django-manage add_commcare_build --latest
 
+Link to a project on other CommCareHQ instance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you intend to use `Linked Projects <https://confluence.dimagi.com/display/commcarepublic/Linked+Project+Spaces>`_ feature to link projects on between two different instances of CommCareHQ, you may refer to `Remote Linked Projects <https://commcare-hq.readthedocs.io/linked_projects.html>`_ to set this up.
+
 Operations
 ----------
 
