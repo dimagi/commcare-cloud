@@ -1,13 +1,26 @@
+.. _migrate-project:
 
-Transfer a Project From a Multi-tenant to Standalone Environment
-================================================================
+Migrate a Project from one instance to a new instance
+=====================================================
 
-This document describes the process of migrating a project from Dimagi's cloud
-environment to a new, single-project environment.
+This document describes the process of migrating an individual project from Dimagi's cloud
+environment (or any other environment) to a new environment. If you are looking to migrate
+the entire environment to the new environment please see :ref:`migrate-instance`.
 
-This process requires assistance from Dimagi, as some steps require
-administrative access to the old environment. To initiate, reach out to Dimagi
-or file a support request.
+This process requires assistance from Dimagi if migrating from www.commcarehq.org, 
+as some steps require administrative access to the old environment. To do that, 
+reach out to Dimagi or file a support request.
+
+There are two components to migrate an individual project.
+
+1. Migrating the project specific data to the new environment. This is done using export and import data functionalities
+   in CommCareHQ.
+2. Switching the mobile devices with CommCare apps to use the new environment. This is done using a interim proxy URL
+   for mobile devices.
+
+Note that during the export/import data phase the access to the project has to be disabled for mobile and web users, 
+which might take considerable amount of time. This should be planned and communicated in advance for a smooth
+switchover to the new environment.
 
 1. Switch mobile devices to a proxy URL
 ---------------------------------------
@@ -22,7 +35,8 @@ DNS level, without requiring a change on each device.
 
 * Set up a domain name to be used for the migration. Have it point to the old
    environment.
-* Add that domain name to the old environment's public.yml:
+* Add that domain name to the old environment's public.yml
+
   .. code-block::
 
       ALTERNATE_HOSTS:
@@ -181,7 +195,7 @@ will be unable to submit forms or sync with the server.
    administrator delete the project space on the old environment.
 
 Troubleshooting
-===============
+---------------
 
 When transferring data for very large projects, you may run into infrastructural
 issues with the dump and load process. This is somewhat unsurprising when you

@@ -1,7 +1,7 @@
 
-
-Common Celery Firefighting Scenarios
-====================================
+=========================
+Celery Firefighting Guide
+=========================
 
 Queue is blocked
 ----------------
@@ -263,7 +263,7 @@ You see errors mentioning a celery worker cannot connect to amqp broker in the c
 Resolution
 ^^^^^^^^^^
 
-See Restarting Services on this `page <firefighting/index.md>`_.
+See Restarting Services on this :ref:`reference/firefighting/general:Firefighting Guide`.
 
 Disk filling up
 ---------------

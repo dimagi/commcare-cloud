@@ -1,10 +1,10 @@
 .. _cchq-commands:
 
-commcare-cloud Commands
-=======================
+commcare-cloud Commands Reference
+=================================
 
 .. contents::
-    :depth: 3
+    :depth: 2
 
 Running Commands with ``commcare-cloud``
 --------------------------------------------

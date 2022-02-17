@@ -1,6 +1,9 @@
+.. _configure-env:
 
+******************************************************
 Configuring your CommCare Cloud Environments Directory
-======================================================
+******************************************************
+
 
 .. contents:: Table of Contents
     :depth: 2
@@ -11,14 +14,10 @@ This directory contains everything that is different about your
 organization (authorized users) and cluster environments
 (IP addresses, machine roles, passwords, optional settings, etc.).
 
-You can change your environments directory by running
+Creating environments directory
+===============================
 
-.. code-block::
-
-   manage-commcare-cloud configure
-
-or by setting the env variable ``COMMCARE_CLOUD_ENVIRONMENTS``
-to point to the directory.
+This directory is to be created manually when following :ref:`cchq-manual-install`. When following :ref:`quick-install` the script automatically creates this directory. Once created, we recommend you to to manage this via a version control system such as git, so that you can keep track of the changes and share the directory with other team members so that they can perform server administration using commcare-cloud.
 
 Going off the Dimagi example
 ----------------------------

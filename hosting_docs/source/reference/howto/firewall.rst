@@ -11,6 +11,7 @@ some of the services directly (replace <commcare.mysite.com> with the address of
 CommCare instance):
 
 **Celery Flower**\ : https://<commcare.mysite.com>:5555
+
 **Elasticsearch**\ : https://<commcare.mysite.com>:9200
 
 If either of those URLs work then you need a firewall.

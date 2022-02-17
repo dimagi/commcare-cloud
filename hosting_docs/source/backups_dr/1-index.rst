@@ -10,5 +10,4 @@ This section describes how to configure backups and restore method for each data
 
    /backups_dr/2-backups-guide
    /backups_dr/elasticsearch_backup_on_swift.rst
-   /backups_dr/3-restore-guide
    /backups_dr/4-dr-setup

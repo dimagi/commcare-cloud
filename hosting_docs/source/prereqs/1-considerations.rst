@@ -123,7 +123,3 @@ are often specifically chosen for environmental features such as cold
 outdoor temperature or proximity to a vast water source for cooling.
 Overheating is a very real issue and when it happens it will lead to
 unpredictable hardware failure.
-
---------------
-
-`︎⬅︎ Overview <..>`__

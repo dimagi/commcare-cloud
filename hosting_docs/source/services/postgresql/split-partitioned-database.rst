@@ -291,6 +291,3 @@ To remove the logical replication run the following on all subscriber databases:
 
    commcare-cloud <env> downtime end
 
-----
-
-`︎⬅︎ PostgreSQL <../postgresql.md>`_ | `︎⬅︎ Overview <../..>`_

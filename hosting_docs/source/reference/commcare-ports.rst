@@ -1,3 +1,5 @@
+.. _hq-ports:
+
 Ports Required for CommCareHQ
 =============================
 

@@ -12,7 +12,7 @@ Guides
 ------
 
 
-* `Setting up a Redis cluster <redis/redis_cluster.md>`_
+* :ref:`services/redis/redis_cluster:Redis Cluster`
 
 Tools
 -----

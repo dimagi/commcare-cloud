@@ -2,8 +2,12 @@
 BlobDB
 ======
 
-.. contents:: Table of Contents
-    :depth: 2
+.. toctree::
+   :maxdepth: 4
+
+   /services/blobdb/migrate-fs-to-s3.rst
+   /services/blobdb/migrate-s3-to-s3.rst
+   /services/blobdb/blobdb_backfill.rst
 
 Usage in CommCare
 -----------------
@@ -47,12 +51,5 @@ Migrating from one BlobDB backend to another
 It is possible to migrate from one backend to another. The process is described in the following documents:
 
 
-* `Migrate from one S3 backend to another <blobdb/migrate-s3-to-s3.md>`_
-* `Migrate from File System backend to S3 backend <blobdb/migrate-fs-to-s3.md>`_
-
-.. toctree::
-   :maxdepth: 4
-
-   /services/blobdb/migrate-fs-to-s3.rst
-   /services/blobdb/migrate-s3-to-s3.rst
-   /services/blobdb/blobdb_backfill.rst
+* :ref:`services/blobdb/migrate-s3-to-s3:Migrate from one S3 backend to another`
+* :ref:`services/blobdb/migrate-fs-to-s3:Migrate from File System backend to an S3 compatible backend`
