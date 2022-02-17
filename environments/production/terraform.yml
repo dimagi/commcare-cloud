@@ -21,6 +21,14 @@ servers:
     group: "control"
     os: ubuntu_pro_bionic
 
+  - server_name: "djangomanage_a1-production"
+    server_instance_type: m6a.xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 60
+    group: "django_manage"
+    os: ubuntu_pro_bionic
+
   - server_name: "djangomanage2-production"
     server_instance_type: m5.2xlarge
     network_tier: "app-private"
