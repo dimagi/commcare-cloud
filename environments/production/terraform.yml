@@ -21,7 +21,7 @@ servers:
     group: "control"
     os: ubuntu_pro_bionic
 
-  - server_name: "djangomanage_a1-production"
+  - server_name: "djangomanage_a0-production"
     server_instance_type: m6a.xlarge
     network_tier: "app-private"
     az: "a"
