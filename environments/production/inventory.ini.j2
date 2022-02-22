@@ -123,17 +123,17 @@ rabbit5
 [rabbitmq:vars]
 swap_size=2G
 
-{{ __kafka1__ }} kafka_broker_id=2 zookeeper_server_id=1
-{{ __kafka4__ }} kafka_broker_id=5 zookeeper_server_id=2
-{{ __kafka5__ }} kafka_broker_id=6 zookeeper_server_id=3
+{{ __kafka1__ }} kafka_broker_id=2
+{{ __kafka2__ }} kafka_broker_id=3
+{{ __kafka3__ }} kafka_broker_id=4
 
 [zookeeper:children]
 kafka1
 
 [kafka:children]
 kafka1
-kafka4
-kafka5
+kafka2
+kafka3
 
 {{ __celery_b__ }}
 
