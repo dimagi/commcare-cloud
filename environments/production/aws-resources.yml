@@ -168,10 +168,6 @@ formplayer_c042-production.instance_id: i-0d37beb158828740e
 frontend_alb-production: internal-frontend-alb-production-457692877.us-east-1.elb.amazonaws.com
 kafka1-production: 10.202.40.200
 kafka1-production.instance_id: i-0c8af5576e2c8e7a2
-kafka2-production: 10.202.40.165
-kafka2-production.instance_id: i-00a87f7d2547316b0
-kafka3-production: 10.202.40.207
-kafka3-production.instance_id: i-0cf31deea1447c30c
 kafka4-production: 10.202.41.38
 kafka4-production.instance_id: i-0a5ae3f956499e2da
 kafka5-production: 10.202.42.218
