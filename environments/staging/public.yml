@@ -165,7 +165,7 @@ localsettings:
   WS4REDIS_CONNECTION_HOST: "redis.staging.commcare.local"
   ENABLE_NEW_TRIAL_EXPERIENCE: True
   STATIC_ROOT:
-  STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
+  STATIC_CDN: ''
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
