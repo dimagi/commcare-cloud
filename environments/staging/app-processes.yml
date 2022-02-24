@@ -34,7 +34,9 @@ celery_processes:
       concurrency: 1
     ucr_queue:
       concurrency: 1
-    user_import_queue, ush_background_tasks:
+    user_import_queue:
+      concurrency: 3
+    ush_background_tasks:
       concurrency: 3
     malt_generation_queue:
       concurrency: 1
