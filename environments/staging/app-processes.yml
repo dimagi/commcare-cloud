@@ -37,7 +37,7 @@ celery_processes:
     user_import_queue:
       concurrency: 3
     ush_background_tasks:
-      concurrency: 1
+      concurrency: 3
     malt_generation_queue:
       concurrency: 1
     flower: {}
