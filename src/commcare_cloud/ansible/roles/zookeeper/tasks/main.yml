@@ -16,7 +16,11 @@
   when: zookeeper_cluster
 
 - name: Download Zookeeper
-  get_url: url="https://archive.apache.org/dist/zookeeper/zookeeper-{{ zookeeper_version }}/zookeeper-{{ zookeeper_version }}.tar.gz" dest="/opt/zookeeper-{{ zookeeper_version }}.tar.gz"
+  get_url:
+    url: "https://archive.apache.org/dist/zookeeper/zookeeper-{{ zookeeper_version }}/zookeeper-{{ zookeeper_version }}.tar.gz"
+    dest: /opt/zookeeper-{{ zookeeper_version }}.tar.gz"
+    checksum: "{{ zookeeper_download_sha1 }}"
+  when: zookeeper_version == "3.4.9"
 
 - name: Extract Zookeeper
   unarchive: src="/opt/zookeeper-{{ zookeeper_version }}.tar.gz" dest=/opt/ copy=no creates="/opt/zookeeper-{{ zookeeper_version }}"
