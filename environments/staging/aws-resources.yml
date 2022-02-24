@@ -30,10 +30,10 @@ formplayer5-staging.instance_id: i-09e0754049b4ea4aa
 frontend_alb-staging: internal-frontend-alb-staging-383875913.us-east-1.elb.amazonaws.com
 kafka2-staging: 10.201.40.170
 kafka2-staging.instance_id: i-08a404d6bad630a35
-kafka3-staging: 10.201.40.224
-kafka3-staging.instance_id: i-01c92759e9092290e
-kafka4-staging: 10.201.40.156
-kafka4-staging.instance_id: i-0abe473ba4045472a
+kafka5-staging: 10.201.41.121
+kafka5-staging.instance_id: i-09b929afcd5f3185e
+kafka6-staging: 10.201.42.177
+kafka6-staging.instance_id: i-048eab1516c5561a1
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgbouncer0-staging: 10.201.40.72
 pgbouncer0-staging.instance_id: i-0315ba6f2f8ba45f5
