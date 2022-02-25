@@ -467,7 +467,7 @@ class CommCare(SingleSupervisorService):
             puts(color_notice("To restart formplayer, which always causes downtime, use the 'formplayer' service command."))
             puts(color_error("Refusing to run commcare service command with action 'restart'."))
             return 1
-        super().run(action, host_pattern=host_pattern, process_pattern=process_pattern)
+        return super().run(action, host_pattern=host_pattern, process_pattern=process_pattern)
 
 
 class Webworker(SingleSupervisorService):
@@ -488,7 +488,7 @@ class Webworker(SingleSupervisorService):
             puts(color_code(f"  cchq {self.environment.name} fab restart_webworkers"))
             puts(color_error("Refusing to run webworkers service command with action 'restart'."))
             return 1
-        super().run(action, host_pattern=host_pattern, process_pattern=process_pattern)
+        return super().run(action, host_pattern=host_pattern, process_pattern=process_pattern)
 
 
 class Formplayer(SingleSupervisorService):
