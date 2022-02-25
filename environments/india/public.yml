@@ -45,7 +45,8 @@ kafka_log_retention: 1344 # 56 days
 
 zookeeper_cluster: True
 
-rabbitmq_version: 3.8.5-1
+erlang: 1:24.2.1-1
+rabbitmq_version: 3.9.13-1
 
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
