@@ -478,7 +478,7 @@ rds_instances:
 
   - identifier: "pgformplayer1-production"
     instance_type: "db.m5.2xlarge"
-    storage: 3000
+    storage: 2000
     multi_az: true
     engine_version: "10.17"
     params:
