@@ -222,6 +222,7 @@ pgbouncer9-production.instance_id: i-00f2c8e5755593a07
 pgformplayer0-production: pgformplayer0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgformplayer_nlb-production: pgformplayer-nlb-production-ec7390b942368541.elb.us-east-1.amazonaws.com
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgmain1-production: pgmain1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgmain_nlb-production: pgmain-nlb-production-5816580de5d475ff.elb.us-east-1.amazonaws.com
 pgshard1-production: pgshard1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgshard2-production: pgshard2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
