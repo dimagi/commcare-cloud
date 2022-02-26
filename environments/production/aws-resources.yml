@@ -42,10 +42,6 @@ es_a006-production: 10.202.40.69
 es_a006-production.instance_id: i-0e405685d7de16f54
 es_a007-production: 10.202.40.77
 es_a007-production.instance_id: i-0fb7fea72a6fa26f5
-es_a008-production: 10.202.40.242
-es_a008-production.instance_id: i-09a7530437ea2b2d8
-es_a009-production: 10.202.40.232
-es_a009-production.instance_id: i-0bf4777f060d7b5f7
 es_b000-production: 10.202.41.163
 es_b000-production.instance_id: i-06307035753a3d5b7
 es_b001-production: 10.202.41.214
@@ -62,10 +58,6 @@ es_b006-production: 10.202.41.114
 es_b006-production.instance_id: i-031e10e25823696e8
 es_b007-production: 10.202.41.115
 es_b007-production.instance_id: i-022be7f1f36971ae0
-es_b008-production: 10.202.41.31
-es_b008-production.instance_id: i-0328aeeaf6a557add
-es_b009-production: 10.202.41.61
-es_b009-production.instance_id: i-057b35080b008655a
 escoordinator1-production: 10.202.40.229
 escoordinator1-production.instance_id: i-03d91db6fcb8e1c78
 escoordinator2-production: 10.202.41.254
