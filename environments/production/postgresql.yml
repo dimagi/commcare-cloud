@@ -39,7 +39,7 @@ pg_repack:
 
 dbs:
   main:
-    host: rds_pgmain0
+    host: rds_pgmain1
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_pool_size: 36
     pgbouncer_reserve_pool_size: 0

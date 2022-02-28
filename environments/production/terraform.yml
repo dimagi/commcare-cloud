@@ -369,8 +369,34 @@ rds_instances:
     backup_retention: 7
     enable_cross_region_backup: true
     params:
-      shared_preload_libraries: pg_stat_statements
+      shared_preload_libraries: pg_stat_statements,pg_transport
       log_min_duration_statement: 1000
+      pg_transport.work_mem: 131072
+      pg_transport.timing: 1
+      pg_transport.num_workers: 8
+      track_io_timing: 1
+      max_worker_processes: 40
+      # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
+      # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
+      maintenance_work_mem: 4172000kB
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
+
+  - identifier: "pgmain1-production"
+    instance_type: "db.m5.8xlarge"
+    storage: 2000
+    multi_az: true
+    engine_version: "10.17"
+    backup_window: "23:00-01:00"
+    backup_retention: 7
+    enable_cross_region_backup: true
+    params:
+      shared_preload_libraries: pg_stat_statements,pg_transport
+      log_min_duration_statement: 1000
+      pg_transport.work_mem: 131072
+      pg_transport.timing: 1
+      pg_transport.num_workers: 8
+      track_io_timing: 1
+      max_worker_processes: 40
       # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
       # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
       maintenance_work_mem: 4172000kB
