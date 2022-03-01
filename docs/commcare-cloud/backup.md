@@ -66,7 +66,7 @@ PostgreSQL backups are made daily and weekly. Old backups are deleted from the l
 After [adding your credentials](#amazon-s3-credentials) to the vault file, set:
 
 - `postgres_s3: True`
-- `postgres_snapshot_bucket`: The name of the S3 bucket to save postgres backups to (Default: `dimagi-<env>-posgres-backups`).
+- `postgres_snapshot_bucket`: The name of the S3 bucket to save postgres backups to (Default: `dimagi-<env>-postgres-backups`).
 
 ### Restoring PostgreSQL Backups
 
@@ -90,8 +90,8 @@ For example, you can follow a process similar to this one:
     ``` bash
     $ su - ansible
     # enter ansible user password from vault file
-    $ sudo -u posgres bash
-    # enter ansible user password again. You will now be acting as the posgres user
+    $ sudo -u postgres bash
+    # enter ansible user password again. You will now be acting as the postgres user
     ```
 
 - Find the list of current backups and choose the one you want to restore from, for e.g.:
@@ -106,19 +106,19 @@ For example, you can follow a process similar to this one:
     ```
 - Uncompress the one you want:
     ``` bash
-    $ tar -xjf /opt/data/backups/posgresql/postgres_<env>_daily_2019_07_06.gz -C /opt/data/backups/postgresql
+    $ tar -xjf /opt/data/backups/postgresql/postgres_<env>_daily_2019_07_06.gz -C /opt/data/backups/postgresql
     ```
     
 - [Optional] Make a copy of the current data directory, for eg:
 
     ```bash
-    $ tar -czvf /opt/data/backups/postgresql/postgres_data_before_restore.tar.gz /opt/data/posgresql/9.6/main
+    $ tar -czvf /opt/data/backups/postgresql/postgres_data_before_restore.tar.gz /opt/data/postgresql/9.6/main
     ```
 
 -  Copy backup data to the postgres data directory. This will overwrite all the data in this directory.
 
     ``` bash
-    $ rsync -avz --delete /opt/data/backups/posgresql/postgres_<env>_daily_2019_07_06 /opt/data/posgresql/9.6/main
+    $ rsync -avz --delete /opt/data/backups/postgresql/postgres_<env>_daily_2019_07_06 /opt/data/postgresql/9.6/main
     ```
 
 - Restart Postgres and services, from the control machine, e.g.:
