@@ -229,10 +229,25 @@ The `blobdb` is our binary data store.
 BlobDB backups create a compressed version of the blobdb data directory.
 
 ### Restoring BlobDB Backups
+The BlobDB restore process is the same as the couchdb restore process in that it involves extracting the backed up data
+to the data directory.
 
-You can follow the same instructions as for [restoring couchdb](#restoring-couchdb-backups) (extract the backup file into the blobdb data directory: `/opt/data/blobdb/`). 
+- Become the `cchq` user
+  ``` bash
+  $ sudo -iu cchq
+  ```
 
-The files in the resulting directory should all be owned by the user `cchq` (i.e. you should be the `cchq` user when extracting the files)
+- Now we need to extract the backup data. The BlobDB backups live in the `/opt/data/backups/blobdb` directory by default (if you have specified a different path
+in the `public.yml` file, it will be there instead).
+  ``` bash
+  $ tar -xf /opt/data/backups/blobdb/blobdb_<version>.gz -C /opt/data/backups/blobdb
+  ```
+
+- Move the data to the `/opt/data/blobdb/` directory. 
+  ``` bash
+  $ rsync -avz --delete /opt/data/backups/blobdb/blobdb_<version> /opt/data/blobdb/
+  ```
+
 
 ## Elasticsearch Snapshots
 
