@@ -21,7 +21,6 @@ celery_processes:
     beat: {}
     saved_exports_queue:
       concurrency: 1
-      optimize: True
     flower: {}
 pillows:
   swiss0:
