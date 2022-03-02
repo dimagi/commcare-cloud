@@ -11,8 +11,6 @@ celery_processes:
       concurrency: 2
     background_queue,export_download_queue,saved_exports_queue,analytics_queue:
       concurrency: 4
-# wait until background_queue,export_download_queue have been verified to work with optimize
-#      optimize: True
     linked_domain_queue,ucr_queue,async_restore_queue,email_queue,case_rule_queue:
       concurrency: 1
     beat: {}

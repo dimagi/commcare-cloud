@@ -34,7 +34,6 @@ celery_processes:
       concurrency: 10
     saved_exports_queue:
       concurrency: 1
-      optimize: True
     background_queue,dashboard_comparison_queue:
       concurrency: 2
 pillows:

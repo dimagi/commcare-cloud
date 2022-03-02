@@ -23,7 +23,6 @@ class CeleryOptions(jsonobject.JsonObject):
     pooling = jsonobject.StringProperty(choices=['gevent', 'prefork'], default='prefork')
     max_tasks_per_child = jsonobject.IntegerProperty(default=None)
     num_workers = jsonobject.IntegerProperty(default=1)
-    optimize = jsonobject.BooleanProperty(default=False)
     prefetch_multiplier = jsonobject.IntegerProperty(default=4)
 
 
