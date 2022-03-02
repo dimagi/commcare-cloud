@@ -1,5 +1,7 @@
 celery3-staging: 10.201.10.216
 celery3-staging.instance_id: i-0c544ab25e0364153
+celery_a0-staging: 10.201.10.232
+celery_a0-staging.instance_id: i-0b026baa6469e2354
 control1-staging: 10.201.10.170
 control1-staging.instance_id: i-04ed8ae39462cca8f
 couch13-staging: 10.201.41.223
@@ -40,10 +42,6 @@ pgbouncer0-staging.instance_id: i-0315ba6f2f8ba45f5
 pgformplayer0-staging: pgformplayer0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgformplayer_nlb-staging: pgformplayer-nlb-staging-98b68467f6f5717b.elb.us-east-1.amazonaws.com
 pgmain_nlb-staging: pgmain-nlb-staging-fe77ab2d143eedbb.elb.us-east-1.amazonaws.com
-pgproxy2-staging: 10.201.40.16
-pgproxy2-staging.instance_id: i-0638ff6218ed9f753
-pgproxy3-staging: 10.201.40.79
-pgproxy3-staging.instance_id: i-0ceb5822e286daf7e
 pgproxy4-staging: 10.201.41.230
 pgproxy4-staging.instance_id: i-0614fa7d1da724249
 pgproxy_nlb-staging: pgproxy-nlb-staging-c421403bce4ecc4b.elb.us-east-1.amazonaws.com

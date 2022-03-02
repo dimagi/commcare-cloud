@@ -96,11 +96,13 @@ kafka2
 kafka5
 kafka6
 
-{{ __celery3__ }} swap_size=8G
+{{ __celery_a0__ }}
 
 [celery:children]
-# Amazon EC2
-celery3
+celery_a0
+
+[celery:vars]
+swap_size=2G
 
 {{ __pillow3__ }}
 
