@@ -191,6 +191,10 @@ rabbit2-production: 10.202.42.100
 rabbit2-production.instance_id: i-0afd113aa270a774d
 rabbit5-production: 10.202.41.96
 rabbit5-production.instance_id: i-0902ef79eeda236f3
+rabbit6-production: 10.202.41.30
+rabbit6-production.instance_id: i-0569bddf5623378f1
+rabbit7-production: 10.202.40.119
+rabbit7-production.instance_id: i-0871b69becd08856f
 web_a000-production: 10.202.10.27
 web_a000-production.instance_id: i-05e933b8a161a7802
 web_a001-production: 10.202.10.109
