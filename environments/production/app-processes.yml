@@ -69,11 +69,6 @@ celery_processes:
       prefetch_multiplier: 1
     ush_background_tasks:
       concurrency: 8
-    submission_reprocessing_queue:
-      concurrency: 1
-    sumologic_logs_queue:
-      pooling: gevent
-      concurrency: 50
 
   celery_c000:
     # not really queues
@@ -95,6 +90,11 @@ celery_processes:
     malt_generation_queue:
       pooling: gevent
       concurrency: 2
+    submission_reprocessing_queue:
+        concurrency: 1
+    sumologic_logs_queue:
+      pooling: gevent
+      concurrency: 50
 
 pillows:
   pillow_a000:
