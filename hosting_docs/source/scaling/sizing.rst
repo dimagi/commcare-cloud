@@ -33,10 +33,43 @@ The general process for using commcare_resource_model is below.
 The configuration file has three main sections that specifies the baseline usage and load of the system. Below are the three sections.
 
 
-- **Usage section** Under this section all usage parameters such as number of users by date ranges and its correlation to load parameters (form submissions, case creations, case updates, multimedia submissions and syncs etc) can be listed. These numbers and ratios can be obtained by `project_stats_report <https://github.com/dimagi/commcare-hq/blob/master/corehq/apps/reports/management/commands/project_stats_report.py>`__ management command and also by examining the individual services, processes running one each VM.
-- **Services section** for resource calculations for each service. This section can refer to one or more usage parameters from usage section which specifies the amount of usage that resource can handle.
+- **Usage section** Under this section all usage parameters such as number of users by date ranges and its correlation to load parameters (form submissions, case creations, case updates, multimedia submissions, syncs etc.) can be listed. See the `Usage parameters`_ below on how to obtain some of these numbers.
+- **Services section** for resource calculations for each service. This section can refer to one or more usage parameters from usage section which specifies the amount of usage that resource can handle. See the `Services parameters`_ below on how to obtain the relevant input numbers for this section.
 - **Summary dates** The dates for which the resources need to be estimated.
 - Additional parameters such as estimation_buffer, storage_display_unit etc are available.
 
 
 Please refer to the `docs <https://github.com/dimagi/commcare_resource_model/blob/master/README.md>`__ for this tool to get an understanding of how to use this tool.
+
+Usage parameters
+````````````````
+The `project_stats_report <https://github.com/dimagi/commcare-hq/blob/master/corehq/apps/reports/management/commands/project_stats_report.py>`__ management command
+reports on the parameters that will most likely have the most significant impact when scaling your system. These include
+
+- *Forms*
+    - Total forms
+    - Forms per user per month
+- *Cases*
+    - Total cases
+    - Cases per user per month
+- *Case index ratio*
+- *Case Transactions*
+    - Total case transactions
+    - Average cases updated per form per month
+- *Sync logs per user per month*
+- *Form attachment sizes*
+- *UCR*
+    - Static data source sizes
+    - Dynamic data source sizes
+
+See `Usage Config <https://github.com/dimagi/commcare_resource_model/blob/master/README.md#usage-config>`_ on how these parameters can be
+used to configure your model.
+
+Services parameters
+```````````````````
+The process to determine the services section's parameters can be quite involved. The `Service config <https://github.com/dimagi/commcare_resource_model/blob/master/README.md#service-config>`_
+outlines two "types" of service configurations, namely *Storage* and *Process*. See the following links on how to determine
+the relevant services' parameters:
+
+- `Storage <https://github.com/dimagi/commcare_resource_model/blob/master/README.md#storage-1>`_
+- `Process <https://github.com/dimagi/commcare_resource_model/blob/master/README.md#process-1>`_
