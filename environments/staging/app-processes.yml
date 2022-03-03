@@ -8,46 +8,61 @@ management_commands:
     run_pillow_retry_queue:
 celery_processes:
   celery_a0:
-    background_queue,case_rule_queue,analytics_queue,linked_domain_queue:
+    analytics_queue:
+      pooling: gevent
       concurrency: 2
-    repeat_record_queue,reminder_case_update_queue,reminder_rule_queue:
-      concurrency: 4
     async_restore_queue:
-      concurrency: 1
+      concurrency: 2
+    background_queue:
+      concurrency: 4
     case_import_queue:
-      concurrency: 4
+      concurrency: 2
       prefetch_multiplier: 1
+    case_rule_queue:
+      concurrency: 2
     celery:
-      concurrency: 4
+      concurrency: 2
     celery_periodic:
-      concurrency: 1
+      concurrency: 2
     email_queue:
-      concurrency: 1
+      pooling: gevent
+      concurrency: 2
     export_download_queue:
-      concurrency: 4
+      concurrency: 2
       prefetch_multiplier: 1
+    linked_domain_queue:
+      concurrency: 2
     malt_generation_queue:
-      concurrency: 1
+      pooling: gevent
+      concurrency: 2
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 2
     reminder_queue:
       pooling: gevent
-      concurrency: 4
+      concurrency: 2
+    reminder_rule_queue:
+      concurrency: 2
+    repeat_record_queue:
+      pooling: gevent
+      concurrency: 2
     saved_exports_queue:
-      concurrency: 3
+      concurrency: 2
       prefetch_multiplier: 1
     sms_queue:
       pooling: gevent
-      concurrency: 4
+      concurrency: 2
     sumologic_logs_queue:
       pooling: gevent
-      concurrency: 1
+      concurrency: 2
     ucr_queue:
-      concurrency: 1
+      concurrency: 4
       prefetch_multiplier: 1
     user_import_queue:
-      concurrency: 3
+      concurrency: 2
       prefetch_multiplier: 1
     ush_background_tasks:
-      concurrency: 3
+      concurrency: 2
     flower: {}
     beat: {}
 pillows:
