@@ -229,8 +229,12 @@ The `blobdb` is our binary data store.
 BlobDB backups create a compressed version of the blobdb data directory.
 
 ### Restoring BlobDB Backups
-The BlobDB restore process is the same as the couchdb restore process in that it involves extracting the backed up data
-to the data directory.
+The BlobDB restore process depends on what BlobDB system you're using.
+- If you're using the default file system BlobDB, the restore process is the same as the couchdb restore process in that it involves extracting the backed up data 
+to the data directory. 
+- If you're using some other (distributed) system you should follow that service's provided instructions on restoration.
+
+The file system BlobDB restore process will be explained below.
 
 - Become the `cchq` user
   ``` bash
