@@ -113,16 +113,13 @@ erlang: 1:23.0.2-2
 rabbitmq_version: 3.8.5-1
 
 #RabbitMQ Broker URL
-BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.3 }}:5672/{{ AMQP_NAME }}'
-OLD_BROKER_URL: "{{ ('amqp://' + AMQP_USER + ':' + AMQP_PASSWORD + '@' + OLD_AMQP_HOST + ':5672/' + AMQP_NAME) if OLD_AMQP_HOST else None }}"
+BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
 
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-production-blobdb'
 
-#AMQP_HOST: "{{ groups.rabbitmq.0 }}"
-AMQP_HOST: "{{ groups.rabbitmq.2 }}"
-OLD_AMQP_HOST: "{{ groups.rabbitmq.0 }}"
+AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 
 localsettings:
   ALLOWED_HOSTS:
