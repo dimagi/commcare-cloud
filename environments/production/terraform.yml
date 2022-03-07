@@ -316,6 +316,14 @@ servers:
     volume_size: 200
     group: "postgresql"
     os: bionic
+  - server_name: "pgbouncer_a1-production" # host and pgbouncer_host for pl/proxy, pgbouncer host for shard dbs
+    server_instance_type: r5a.xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 200
+    volume_encrypted: yes
+    group: "postgresql"
+    os: bionic
   - server_name: "pgbouncer5-production"  # former pgbouncer_host formplayer
     server_instance_type: m5n.large
     network_tier: "db-private"
