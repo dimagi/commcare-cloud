@@ -68,6 +68,8 @@ select only “SSH Server”.
 You will need a domain name which directs to the monolith or the
 cluster’s proxy server.
 
+.. _prepare-machines-deploy:
+
 Prepare all machines for automated deploy
 -----------------------------------------
 

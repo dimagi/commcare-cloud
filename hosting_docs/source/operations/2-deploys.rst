@@ -303,3 +303,41 @@ Resolution
 ^^^^^^^^^^
 
 After updating ``commcare-cloud`` and ensuring everything is up to date, running a `static settings deploy <deploy.md#deploy-static-settings-files>`_ on the relevant machines should fix this problem, and allow the next deploy to proceed as normal.
+
+----------------
+Adding a machine
+----------------
+
+1. Install Ubuntu 18.04 LTS.
+
+2. Prepare the new machine for automated deploy. See
+   :ref:`prepare-machines-deploy` for details:
+
+   1. Set root password and enable root user.
+
+   2. Configure SSH for password authentication by root.
+
+3. Configure the shared directory for the new machine::
+
+       $ commcare-cloud <env> ap deploy_shared_dir.yml --tags=nfs \
+           --limit=<shared_dir_host>
+
+4. Run first-time ``deploy-stack`` with ``--limit=<new vm>``. The
+   ``--first-time`` option tells commcare-cloud to authenticate as root,
+   and allows it to set up users and authentication correctly. e.g. ::
+
+       $ commcare-cloud <env> deploy-stack --limit=<new vm> \
+           --first-time \
+           -e 'CCHQ_IS_FRESH_INSTALL=1'
+
+   To continue, if necessary, use ::
+
+       $ commcare-cloud <env> deploy-stack \
+           --limit=<new vm> \
+           --skip-check -e 'CCHQ_IS_FRESH_INSTALL=1'
+
+5. Other machines may need their configuration updated for the new
+   machine. Use a normal ``deploy-stack`` to do that::
+
+       $ commcare-cloud <env> deploy-stack
+
