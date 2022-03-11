@@ -30,7 +30,7 @@ commcare-cloud <env> ap deploy_shared_dir.yml --tags=nfs --limit=shared_dir_host
 2. Deploy new node
 
 ```
-commcare-cloud <env> deploy_stack.yml --limit=celeryN
+commcare-cloud <env> deploy-stack --limit=celeryN
 ```
 
 ## Update Configs
