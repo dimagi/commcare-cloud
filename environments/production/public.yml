@@ -107,6 +107,10 @@ kafka_scala_version: 2.13
 kafka_inter_broker_protocol_version: 2.6
 kafka_log_message_format_version: 2.6
 
+zookeeper_version: 3.4.9
+zookeeper_download_sha1: sha1:0285717bf5ea87a7a36936bf37851d214a32bb99
+zookeeper_cluster: True
+
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 erlang: 1:23.0.2-2
