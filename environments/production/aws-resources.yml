@@ -179,10 +179,6 @@ proxy_b1-production: 10.202.11.142
 proxy_b1-production.instance_id: i-0e7c90d0b77fcbd85
 proxy_c1-production: 10.202.12.229
 proxy_c1-production.instance_id: i-042e20186296c2497
-rabbit2-production: 10.202.42.100
-rabbit2-production.instance_id: i-0afd113aa270a774d
-rabbit5-production: 10.202.41.96
-rabbit5-production.instance_id: i-0902ef79eeda236f3
 rabbit6-production: 10.202.41.30
 rabbit6-production.instance_id: i-0569bddf5623378f1
 rabbit7-production: 10.202.40.119
