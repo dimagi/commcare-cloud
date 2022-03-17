@@ -16,7 +16,7 @@ pgbouncer_override:
   pgbouncer_reserve_pool: 5
 
 pg_repack:
-  pgbouncer3:
+  pgbouncer_a1:
     - database: commcarehq_synclogs
       host: "{{ DEFAULT_POSTGRESQL_HOST }}"
       username: "{{ postgres_users.root.username }}"
@@ -93,10 +93,10 @@ dbs:
       - pgbouncer9
   form_processing:
     proxy:
-      host: pgbouncer3
-      pgbouncer_endpoint: pgbouncer3
+      host: pgbouncer_a1
+      pgbouncer_endpoint: pgbouncer_a1
       pgbouncer_hosts:
-        - pgbouncer3
+        - pgbouncer_a1
     partitions:
       p1:
         shards: [0, 204]
