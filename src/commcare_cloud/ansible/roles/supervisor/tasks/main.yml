@@ -4,6 +4,13 @@
   apt: name=supervisor state=absent
   become: yes
 
+- name: Install python3-pip
+  # HQ will use deadsnakes python{{ python_version }}, and the
+  # platform will use stock python3 from universe.
+  become: yes
+  apt:
+    name: python3-pip
+
 - name: install supervisor 4.0.4
   pip:
     name: supervisor

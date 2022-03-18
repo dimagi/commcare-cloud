@@ -37,13 +37,6 @@
     name:
       - python{{ python_version }}
       - python{{ python_version }}-dev
-
-      # python{{ python_version }}-pip does not exist for deadsnakes
-      # packages, but we will need pip to install Supervisor in
-      # supervisor/tasks/main.yml. HQ will use deadsnakes
-      # python{{ python_version }}, and the platform will use stock
-      # python3 from universe.
-      - python3-pip
   tags:
     - python
 
