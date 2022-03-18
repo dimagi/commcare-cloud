@@ -4,18 +4,11 @@
   apt: name=supervisor state=absent
   become: yes
 
-- name: Ensure pip is available
-  apt:
-    name: python3-pip
-    state: present
-  become: yes
-
 - name: install supervisor 4.0.4
   pip:
     name: supervisor
-    state: present
     version: 4.0.4
-    executable: python3 -m pip
+    executable: pip3
     umask: "0022"
   become: yes
 

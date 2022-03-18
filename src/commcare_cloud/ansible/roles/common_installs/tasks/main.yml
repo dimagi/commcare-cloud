@@ -37,6 +37,7 @@
     name:
       - python{{ python_version }}
       - python{{ python_version }}-dev
+      - python{{ python_version }}-pip
   tags:
     - python
 
