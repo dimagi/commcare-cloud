@@ -127,12 +127,6 @@ formplayer_c026-production: 10.202.11.62
 formplayer_c026-production.instance_id: i-0466be683e06a6275
 formplayer_c027-production: 10.202.11.113
 formplayer_c027-production.instance_id: i-0a908fcdeeb77278e
-formplayer_c028-production: 10.202.11.50
-formplayer_c028-production.instance_id: i-0457085e00deadaf0
-formplayer_c029-production: 10.202.11.126
-formplayer_c029-production.instance_id: i-03bb7c1d4f2135495
-formplayer_c030-production: 10.202.11.8
-formplayer_c030-production.instance_id: i-0e0a65f287d4a5fd5
 frontend_alb-production: internal-frontend-alb-production-457692877.us-east-1.elb.amazonaws.com
 kafka1-production: 10.202.40.200
 kafka1-production.instance_id: i-0c8af5576e2c8e7a2
@@ -154,6 +148,8 @@ pgbouncer8-production.instance_id: i-08e49cdf329ab51ab
 pgbouncer9-production: 10.202.40.241
 pgbouncer9-production.instance_id: i-00f2c8e5755593a07
 pgformplayer0-production: pgformplayer0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgbouncer_a1-production: 10.202.40.25
+pgbouncer_a1-production.instance_id: i-0aa5010ad7af8c5e0
 pgformplayer1-production: pgformplayer1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgformplayer_nlb-production: pgformplayer-nlb-production-ec7390b942368541.elb.us-east-1.amazonaws.com
 pgmain0-production: pgmain0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com

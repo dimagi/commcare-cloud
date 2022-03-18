@@ -279,7 +279,7 @@ servers:
     volume_size: 400
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 31
+    count: 28
     server_auto_recovery: true
 
   - server_name: "kafka1-production"
@@ -314,6 +314,14 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 200
+    group: "postgresql"
+    os: bionic
+  - server_name: "pgbouncer_a1-production" # host and pgbouncer_host for pl/proxy, pgbouncer host for shard dbs
+    server_instance_type: r5a.xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 200
+    volume_encrypted: yes
     group: "postgresql"
     os: bionic
   - server_name: "pgbouncer5-production"  # former pgbouncer_host formplayer
@@ -571,7 +579,7 @@ elasticache:
 
 elasticache_cluster:
   create: yes
-  cache_node_type: "cache.r5.4xlarge"
+  cache_node_type: "cache.r5.2xlarge"
   cache_engine_version: "4.0.10"
   cache_prameter_group: "default.redis4.0"
   automatic_failover: true
