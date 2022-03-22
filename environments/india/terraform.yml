@@ -316,7 +316,7 @@ servers:
     group: "rabbitmq"
     os: ubuntu_pro_bionic
 
-- server_name: "rabbit_c4-india"
+  - server_name: "rabbit_c4-india"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "c"
