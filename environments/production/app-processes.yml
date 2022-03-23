@@ -69,6 +69,7 @@ celery_processes:
       prefetch_multiplier: 1
     ush_background_tasks:
       concurrency: 8
+
   celery_c000:
     # not really queues
     flower: {}
@@ -80,11 +81,6 @@ celery_processes:
     # other queues we're okay running without redundancy
     send_report_throttled:
       concurrency: 2
-    submission_reprocessing_queue:
-      concurrency: 1
-    sumologic_logs_queue:
-      pooling: gevent
-      concurrency: 50
     ush_background_tasks:
       concurrency: 8
     reminder_queue:
@@ -94,6 +90,11 @@ celery_processes:
     malt_generation_queue:
       pooling: gevent
       concurrency: 2
+    submission_reprocessing_queue:
+        concurrency: 1
+    sumologic_logs_queue:
+      pooling: gevent
+      concurrency: 50
 
 pillows:
   pillow_a000:

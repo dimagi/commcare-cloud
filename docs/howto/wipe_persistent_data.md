@@ -54,7 +54,7 @@ Rebuilding environment
 
 2. Run Ansible playbook to recreate databases
 
-       $ cchq monolith ap deploy_db.yml
+       $ cchq monolith ap deploy_db.yml --skip-check
 
 3. Run management commands to create Kafka topics, create Postgres
    tables, and Elasticsearch indices.

@@ -82,5 +82,13 @@
           - file_path: "/var/log/ansible.log*"
             log_group_name_suffix: "control"
             should_include: "{{ 'control' in group_names }}"
+          # rabbitmq
+          - file_path: "/var/log/rabbitmq/*.log*"
+            log_group_name_suffix: "rabbitmq"
+            should_include: "{{ 'rabbitmq' in group_names }}"
+          # rabbitmq crash logs
+          - file_path: "/var/log/rabbitmq/log/*.log"
+            log_group_name_suffix: "rabbitmq_crash"
+            should_include: "{{ 'rabbitmq' in group_names }}"
       tags:
         - cloudwatch_logs
