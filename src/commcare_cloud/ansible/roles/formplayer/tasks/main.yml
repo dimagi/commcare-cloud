@@ -1,3 +1,6 @@
+- name: Make sure the log directory exists
+  import_tasks: roles/commcarehq/tasks/www_log_dir.yml
+
 - name: Install formplayer packages
   become: yes
   apt:
