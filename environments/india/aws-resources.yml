@@ -61,6 +61,10 @@ proxy2-india.instance_id: i-04879e98c452a6915
 proxy2-india.public_ip: 13.233.109.45
 rabbit2-india: 10.203.41.5
 rabbit2-india.instance_id: i-07497784641ede41d
+rabbit_a3-india: 10.203.40.201
+rabbit_a3-india.instance_id: i-026e49db58b16bddc
+rabbit_c4-india: 10.203.42.241
+rabbit_c4-india.instance_id: i-010be0d6f35087f95
 web2-india: 10.203.10.230
 web2-india.instance_id: i-010fe486bb67176c9
 web3-india: 10.203.10.108
