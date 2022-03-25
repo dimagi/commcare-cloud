@@ -57,7 +57,7 @@ host    all             all             127.0.0.1/32            md5
 # IPv6 local connections:
 host    all             all             ::1/128                 md5
 
-
+# Allow connections from PgBouncer hosts
 {% for db in postgresql_dbs.all %}
 {% if db.host == inventory_hostname %}
 {% for host in db.pgbouncer_hosts %}
@@ -67,5 +67,15 @@ host   all	all	{{ host }}/32   trust
 host   all	all	{{ lookup('dig', host, wantlist=True)[0] }}/32	trust
 {% endif %}
 {% endfor %}
+{% if db.name == 'formplayer' %}
+# Allow connections from Formplayer hosts
+{% for host in groups.formplayer %}
+{% if host | ipaddr %}
+host   all	all	{{ host }}/32   trust
+{% else %}
+host   all	all	{{ lookup('dig', host, wantlist=True)[0] }}/32	trust
+{% endif %}
+{% endfor %}
+{% endif %}
 {% endif %}
 {% endfor %}
