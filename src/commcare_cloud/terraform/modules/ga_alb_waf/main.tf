@@ -61,6 +61,16 @@ resource "aws_wafv2_regex_pattern_set" "allow_xml_querystring_urls" {
   tags = {}
 }
 
+resource "aws_wafv2_regex_pattern_set" "ignore_log4j" {
+  name        = "IgnoreLog4J"
+  description = "URLs that have log4j false positives"
+  scope       = "REGIONAL"
+
+  regular_expression {
+    regex_string = "^/a/[\\w\\.:-]+/receiver/secure/[\\w-]+"
+  }
+}
+
 resource "aws_wafv2_ip_set" "temp_block" {
   name               = "TempBlock"
   scope              = "REGIONAL"
@@ -87,7 +97,7 @@ resource "aws_wafv2_ip_set" "permanent_block" {
 
 resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
   name     = "CommCareWhitelistRules"
-  capacity = "100"
+  capacity = "50"
   scope    = "REGIONAL"
   visibility_config {
     cloudwatch_metrics_enabled = true
@@ -305,6 +315,10 @@ resource "aws_wafv2_web_acl" "front_end" {
       managed_rule_group_statement {
         name        = "AWSManagedRulesKnownBadInputsRuleSet"
         vendor_name = "AWS"
+
+        excluded_rule {
+          name = "Log4JRCE"
+        }
       }
     }
     visibility_config {
@@ -315,6 +329,49 @@ resource "aws_wafv2_web_acl" "front_end" {
   }
   rule {
     priority = "3"
+    name      = "block_log4j"
+
+    action {
+      block {}
+    }
+
+    statement {
+      and_statement {
+        statement {
+          label_match_statement {
+            scope = "LABEL"
+            key = "awswaf:managed:aws:known-bad-inputs:Log4JRCE"
+          }
+        }
+        statement {
+          not_statement {
+            statement {
+              regex_pattern_set_reference_statement {
+                arn = aws_wafv2_regex_pattern_set.ignore_log4j.arn
+
+                field_to_match {
+                  uri_path {}
+                }
+
+                text_transformation {
+                  priority = 0
+                  type     = "NONE"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name = "block_log4j"
+      sampled_requests_enabled = true
+    }
+  }
+  rule {
+    priority = "4"
     name     = "AWS-AWSManagedRulesLinuxRuleSet"
     override_action {
       none {
@@ -333,7 +390,7 @@ resource "aws_wafv2_web_acl" "front_end" {
     }
   }
   rule {
-    priority = "4"
+    priority = "5"
     name     = "AWS-AWSManagedRulesSQLiRuleSet"
     override_action {
       none {
@@ -361,7 +418,7 @@ resource "aws_wafv2_web_acl" "front_end" {
     }
   }
   rule {
-    priority = "5"
+    priority = "6"
     name     = "AWS-AWSManagedRulesAmazonIpReputationList"
     override_action {
       none {
@@ -381,7 +438,7 @@ resource "aws_wafv2_web_acl" "front_end" {
   }
 
   rule {
-    priority = "6"
+    priority = "7"
     name     = "CommCareWhitelistRules"
     override_action {
       none {
@@ -399,7 +456,7 @@ resource "aws_wafv2_web_acl" "front_end" {
     }
   }
   rule {
-    priority = "7"
+    priority = "8"
     name     = "AWS-AWSManagedRulesCommonRuleSet"
     override_action {
       none {
