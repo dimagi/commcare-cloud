@@ -15,6 +15,12 @@
     state: absent
   when: zookeeper_cluster
 
+- name: create zookeeper group
+  group: name="{{ zookeeper_group }}" system=yes state=present
+
+- name: add user "zookeeper"
+  user: name="{{ zookeeper_group }}" group="{{ zookeeper_group }}" shell=/sbin/nologin system=yes state=present
+
 - name: Download Zookeeper
   get_url:
     url: "https://archive.apache.org/dist/zookeeper/zookeeper-{{ zookeeper_version }}/zookeeper-{{ zookeeper_version }}.tar.gz"
