@@ -269,7 +269,7 @@ servers:
     volume_size: 400
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 28
+    count: 25
     server_auto_recovery: true
 
   - server_name: "kafka1-production"

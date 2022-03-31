@@ -123,12 +123,6 @@ formplayer_c023-production: 10.202.11.89
 formplayer_c023-production.instance_id: i-01bcad271ea4974e4
 formplayer_c024-production: 10.202.11.64
 formplayer_c024-production.instance_id: i-02482afbfa2bc42f1
-formplayer_c025-production: 10.202.11.88
-formplayer_c025-production.instance_id: i-06e581533f497ee16
-formplayer_c026-production: 10.202.11.62
-formplayer_c026-production.instance_id: i-0466be683e06a6275
-formplayer_c027-production: 10.202.11.113
-formplayer_c027-production.instance_id: i-0a908fcdeeb77278e
 frontend_alb-production: internal-frontend-alb-production-457692877.us-east-1.elb.amazonaws.com
 kafka1-production: 10.202.40.200
 kafka1-production.instance_id: i-0c8af5576e2c8e7a2
