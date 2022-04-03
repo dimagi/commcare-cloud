@@ -11,11 +11,6 @@
     path: "{{ snuba_virtualenv_path }}"
     state: directory
 
-- name: Install virtualenv via pip
-  pip:
-    name: virtualenv
-    executable: pip3
-
 - name: Create virtual env for Snuba
   pip:
     name: pyuwsgi
