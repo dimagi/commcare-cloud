@@ -9,6 +9,9 @@ eval PYVER=$(grep python_version: $GROUP_VARS | head -n1 | cut -d' ' -f2)
 which python${PYVER}
 python${PYVER} --version
 
+# Create Ansible log file to avoid warning
+sudo touch /var/log/ansible.log && sudo chmod 666 /var/log/ansible.log
+
 # pull branch from git status the exact same way that commcare-cloud does
 # so that --branch=${BRANCH} will always match
 BRANCH=$(git status | head -n1 | xargs -n1 echo | tail -n1)
