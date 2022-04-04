@@ -180,14 +180,14 @@ def call_record_deploy_success(environment, context, end_time):
 
 
 def _get_deployed_version(environment):
-    from fabric.api import cd, sudo
+    from fabric.api import cd, run
 
     def _task():
         with cd(environment.remote_conf.code_current):
-            return sudo('git rev-parse HEAD')
+            return run('git rev-parse HEAD')
 
     host = environment.sshable_hostnames_by_group["django_manage"][0]
-    res = run_fab_task(_task, host, 'ansible', environment.get_ansible_user_password())
+    res = run_fab_task(_task, host, 'ansible')
     return res[host]
 
 
