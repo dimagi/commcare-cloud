@@ -36,7 +36,7 @@ class PrivilegedCommand():
         return run_fab_task(_task, hosts, self.user_name, self.password, parallel_pool_size=parallel_pool_size)
 
 
-def run_fab_task(task_fn, hosts, username, password, parallel_pool_size=1):
+def run_fab_task(task_fn, hosts, username, password=None, parallel_pool_size=1):
     from fabric.api import execute, env, parallel
     if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
         env.use_ssh_config = True
