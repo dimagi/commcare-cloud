@@ -563,6 +563,10 @@ run in a new tmux window under the `cchq` user. You may then exit using
 the customary tmux command `^b` `d`, and resume the session later.
 This is especially useful for long-running commands.
 
+The tmux session will be unique to your user. If you want to be able to share
+your session with other users, create the tmux session manually on the machine
+under a shared user account.
+
 ###### `--server SERVER`
 
 Server to run management command on.

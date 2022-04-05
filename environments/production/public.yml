@@ -107,8 +107,13 @@ kafka_scala_version: 2.13
 kafka_inter_broker_protocol_version: 2.6
 kafka_log_message_format_version: 2.6
 
+zookeeper_version: 3.4.9
+zookeeper_download_sha1: sha1:0285717bf5ea87a7a36936bf37851d214a32bb99
+zookeeper_cluster: True
+
 TWO_FACTOR_GATEWAY_ENABLED: True
 
+erlang: 1:23.0.2-2
 rabbitmq_version: 3.8.5-1
 
 #RabbitMQ Broker URL
@@ -210,9 +215,9 @@ kinesis_flows:
 
 enable_cloudwatch_logs: true
 
-# celery variables to soft/hard kill tasks running for long hours.
-# hard_kill: 46, soft_kill: 36, False will remove the cron.
-celery_hours_before_hard_kill: 46
+# celery variables to soft/hard kill workers running for long hours.
+# hard_kill: 72, soft_kill: 36, False will remove the cron.
+celery_hours_before_hard_kill: 72
 celery_hours_before_soft_kill: 36
 
 efs_shared_mount_dir: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"

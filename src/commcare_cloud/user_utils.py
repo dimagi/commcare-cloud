@@ -48,7 +48,7 @@ in your profile to never have to type that in again! 🌈
 
 
 def print_help_message_about_the_commcare_cloud_default_username_env_var(username):
-    puts(color_notice(COMMCARE_CLOUD_DEFAULT_USERNAME_ENV_VAR_MESSAGE.format(username)))
+    puts(color_notice(COMMCARE_CLOUD_DEFAULT_USERNAME_ENV_VAR_MESSAGE.format(username=username)))
 
 
 @memoized

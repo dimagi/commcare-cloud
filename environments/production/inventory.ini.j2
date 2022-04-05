@@ -36,16 +36,16 @@ web_m_c
 hq_webworkers
 mobile_webworkers
 
-{{ __pgbouncer3__ }} pgbouncer_processes=2
+{{ __pgbouncer_a1__ }} pgbouncer_processes=2
 {{ __pgbouncer5__ }} pgbouncer_processes=2
 {{ __pgbouncer6__ }} pgbouncer_processes=2
 {{ __pgbouncer7__ }} pgbouncer_processes=2
 {{ __pgbouncer8__ }} pgbouncer_processes=2
 {{ __pgbouncer9__ }} pgbouncer_processes=2
 
-{{ __rds_pgmain0__ }}
+{{ __rds_pgmain1__ }}
 
-{{ __rds_pgformplayer0__ }}
+{{ __rds_pgformplayer1__ }}
 
 {{ __rds_pgucr0__ }}
 
@@ -76,8 +76,8 @@ mobile_webworkers
 {{ __couch_alb__ }}
 
 [remote_postgresql:children]
-rds_pgmain0
-rds_pgformplayer0
+rds_pgmain1
+rds_pgformplayer1
 rds_pgucr0
 rds_pgshard1
 rds_pgshard2
@@ -88,11 +88,11 @@ rds_pgsynclog1
 rds_pgauditcare0
 
 [postgresql:children]
-pgbouncer3
+pgbouncer_a1
 remote_postgresql
 
 [pgbouncer:children]
-pgbouncer3
+pgbouncer_a1
 pgbouncer5
 pgbouncer6
 pgbouncer7
@@ -113,27 +113,29 @@ pgsynclogs_nlb
 pgshard_nlb
 couch_alb
 
-{{ __rabbit2__ }}
-{{ __rabbit5__ }}
+{{ __rabbit6__ }}
+{{ __rabbit7__ }}
 
 [rabbitmq:children]
-rabbit2
-rabbit5
+rabbit6
+rabbit7
 
 [rabbitmq:vars]
 swap_size=2G
 
-{{ __kafka1__ }} kafka_broker_id=2
-{{ __kafka2__ }} kafka_broker_id=3
-{{ __kafka3__ }} kafka_broker_id=4
+{{ __kafka1__ }} kafka_broker_id=2 zookeeper_server_id=1
+{{ __kafka4__ }} kafka_broker_id=5 zookeeper_server_id=2
+{{ __kafka5__ }} kafka_broker_id=6 zookeeper_server_id=3
 
 [zookeeper:children]
 kafka1
+kafka4
+kafka5
 
 [kafka:children]
 kafka1
-kafka2
-kafka3
+kafka4
+kafka5
 
 {{ __celery_b__ }}
 
@@ -260,6 +262,7 @@ couch_alb
 control2
 
 {{ __djangomanage2__ }}
+{{ __djangomanage_a0__ }}
 
 [django_manage:children]
-djangomanage2
+djangomanage_a0

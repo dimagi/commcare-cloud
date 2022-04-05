@@ -12,11 +12,14 @@ kafka_scala_version: 2.13
 kafka_inter_broker_protocol_version: 2.6
 kafka_log_message_format_version: 2.6
 
+zookeeper_version: 3.4.9
+zookeeper_download_sha1: sha1:0285717bf5ea87a7a36936bf37851d214a32bb99
 zookeeper_cluster: True
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
-rabbitmq_version: 3.8.5-1
+erlang: 1:24.2.1-1
+rabbitmq_version: 3.9.13-1
 
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
@@ -160,6 +163,7 @@ localsettings:
   REMINDERS_QUEUE_ENABLED: False
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: True
+  SUMOLOGIC_URL: "{{ SUMOLOGIC_URL }}"
   USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER: True
   WS4REDIS_CONNECTION_HOST: "redis.staging.commcare.local"
   ENABLE_NEW_TRIAL_EXPERIENCE: True

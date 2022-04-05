@@ -1,4 +1,5 @@
 account_alias: commcare-production
+terraform_version: '0.12'
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-1"
@@ -20,6 +21,14 @@ servers:
     volume_size: 40
     group: "control"
     os: ubuntu_pro_bionic
+
+  - server_name: "djangomanage_a0-production"
+    server_instance_type: m6a.xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 60
+    group: "django_manage"
+    os: bionic
 
   - server_name: "djangomanage2-production"
     server_instance_type: m5.2xlarge
@@ -120,7 +129,7 @@ servers:
       volume_size: 1260
     group: "elasticsearch"
     os: ubuntu_pro_bionic
-    count: 10
+    count: 7
 
   - server_name: "es_b{i}-production"
     server_instance_type: r5.4xlarge
@@ -131,7 +140,7 @@ servers:
       volume_size: 1260
     group: "elasticsearch"
     os: ubuntu_pro_bionic
-    count: 10
+    count: 7
 
   - server_name: "escoordinator1-production"
     server_instance_type: r5.2xlarge
@@ -164,7 +173,7 @@ servers:
     os: ubuntu_pro_bionic
 
   - server_name: "couch11-production"
-    server_instance_type: c6i.24xlarge
+    server_instance_type: c6i.12xlarge
     network_tier: "db-private"
     az: "c"
     volume_size: 90
@@ -176,7 +185,7 @@ servers:
     os: bionic
 
   - server_name: "couch12-production"
-    server_instance_type: c6i.24xlarge
+    server_instance_type: c6i.12xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 90
@@ -188,7 +197,7 @@ servers:
     os: bionic
 
   - server_name: "couch13-production"
-    server_instance_type: c6i.24xlarge
+    server_instance_type: c6i.12xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 90
@@ -199,19 +208,19 @@ servers:
     group: "couchdb2"
     os: bionic
 
-  - server_name: "rabbit2-production"
+  - server_name: "rabbit6-production"
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
-    az: "c"
+    az: "b"
     volume_size: 80
     volume_encrypted: yes
     group: "rabbitmq"
     os: ubuntu_pro_bionic
 
-  - server_name: "rabbit5-production"
+  - server_name: "rabbit7-production"
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
-    az: "b"
+    az: "a"
     volume_size: 80
     volume_encrypted: yes
     group: "rabbitmq"
@@ -231,7 +240,7 @@ servers:
     server_instance_type: r5.2xlarge
     network_tier: "app-private"
     az: "c"
-    volume_size: 80
+    volume_size: 120
     group: "celery"
     os: ubuntu_pro_bionic
     count: 4
@@ -261,7 +270,7 @@ servers:
     volume_size: 400
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 54
+    count: 25
     server_auto_recovery: true
 
   - server_name: "kafka1-production"
@@ -273,29 +282,30 @@ servers:
     group: "kafka"
     os: bionic
 
-  - server_name: "kafka2-production"
+  - server_name: "kafka4-production"
     server_instance_type: t3.medium
     network_tier: "db-private"
-    az: "a"
+    az: "b"
     volume_size: 300
     volume_encrypted: no
     group: "kafka"
     os: ubuntu_pro_bionic
 
-  - server_name: "kafka3-production"
+  - server_name: "kafka5-production"
     server_instance_type: t3.medium
     network_tier: "db-private"
-    az: "a"
+    az: "c"
     volume_size: 300
     volume_encrypted: no
     group: "kafka"
     os: ubuntu_pro_bionic
 
-  - server_name: "pgbouncer3-production" # host and pgbouncer_host for pl/proxy, pgbouncer host for shard dbs
-    server_instance_type: r5.2xlarge
+  - server_name: "pgbouncer_a1-production" # host and pgbouncer_host for pl/proxy, pgbouncer host for shard dbs
+    server_instance_type: r5a.xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 80
+    volume_size: 200
+    volume_encrypted: yes
     group: "postgresql"
     os: bionic
   - server_name: "pgbouncer5-production"  # former pgbouncer_host formplayer
@@ -360,17 +370,22 @@ proxy_servers:
     os: ubuntu_pro_bionic
 
 rds_instances:
-  - identifier: "pgmain0-production"
+  - identifier: "pgmain1-production"
     instance_type: "db.m5.8xlarge"
-    storage: 10000
+    storage: 2000
     multi_az: true
     engine_version: "10.17"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
     params:
-      shared_preload_libraries: pg_stat_statements
+      shared_preload_libraries: pg_stat_statements,pg_transport
       log_min_duration_statement: 1000
+      pg_transport.work_mem: 131072
+      pg_transport.timing: 1
+      pg_transport.num_workers: 8
+      track_io_timing: 1
+      max_worker_processes: 40
       # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
       # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
       maintenance_work_mem: 4172000kB
@@ -390,7 +405,7 @@ rds_instances:
 
   - identifier: "pgshard1-production"
     instance_type: "db.m5.4xlarge"
-    storage: 500
+    storage: 750
     max_storage: 2500
     multi_az: true
     engine_version: "10.17"
@@ -404,7 +419,7 @@ rds_instances:
 
   - identifier: "pgshard2-production"
     instance_type: "db.m5.4xlarge"
-    storage: 500
+    storage: 750
     max_storage: 2500
     multi_az: true
     engine_version: "10.17"
@@ -417,7 +432,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
   - identifier: "pgshard3-production"
     instance_type: "db.m5.4xlarge"
-    storage: 500
+    storage: 750
     max_storage: 2500
     multi_az: true
     engine_version: "10.17"
@@ -430,7 +445,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
   - identifier: "pgshard4-production"
     instance_type: "db.m5.4xlarge"
-    storage: 500
+    storage: 750
     max_storage: 2500
     multi_az: true
     engine_version: "10.17"
@@ -474,19 +489,24 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
       vacuum_cost_limit: 2000
 
-  - identifier: "pgformplayer0-production"
+  - identifier: "pgformplayer1-production"
     instance_type: "db.m5.2xlarge"
-    storage: 24000
+    storage: 1500
     multi_az: true
     engine_version: "10.17"
     params:
-      shared_preload_libraries: pg_stat_statements
+      shared_preload_libraries: pg_stat_statements,pg_transport
       log_min_duration_statement: 1000
       # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
       # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
       maintenance_work_mem: 4172000kB
       max_wal_size: 4GB
       vacuum_cost_limit: 1000
+      pg_transport.work_mem: 131072
+      pg_transport.timing: 1
+      max_worker_processes: 40
+      pg_transport.num_workers: 8
+      track_io_timing: 1
 
   - identifier: "pgauditcare0-production"
     instance_type: "db.m5.2xlarge"
@@ -543,7 +563,7 @@ elasticache:
 
 elasticache_cluster:
   create: yes
-  cache_node_type: "cache.r5.4xlarge"
+  cache_node_type: "cache.r5.2xlarge"
   cache_engine_version: "4.0.10"
   cache_prameter_group: "default.redis4.0"
   automatic_failover: true

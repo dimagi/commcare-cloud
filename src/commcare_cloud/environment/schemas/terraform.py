@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+import json
 import re
 
 import jsonobject
@@ -13,6 +14,7 @@ class TerraformConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     aws_profile = jsonobject.StringProperty(required=True)
     account_alias = jsonobject.StringProperty()
+    terraform_version = jsonobject.StringProperty(choices=['0.12', '0.13'])
     manage_users = jsonobject.BooleanProperty(default=True)
     state_bucket = jsonobject.StringProperty()
     state_bucket_region = jsonobject.StringProperty()
@@ -48,7 +50,20 @@ class TerraformConfig(jsonobject.JsonObject):
         obj = self.to_json()
         obj['servers'] = [server.to_generated_json() for server in self.servers]
         obj['proxy_servers'] = [server.to_generated_json() for server in self.proxy_servers]
+        obj['terraform_version_range_string'] = self.terraform_version_range_string
         return obj
+
+    @property
+    def terraform_version_range_string(self):
+        result = {
+            '0.12': "~> 0.12.0, < 0.13",
+            '0.13': "~> 0.13.0, < 0.14",
+        }[self.terraform_version]
+        # Using the |tojson jinja2 filter replaces < and > with their \u-style escape code.
+        # As a workaround, we use `"{{ terraform_version_range_string }}"`,
+        # so here we assert that the results in a valid string equivalent to serilizing json.
+        assert json.dumps(result) == f'"{result}"'
+        return result
 
 
 class VpnConnectionConfig(jsonobject.JsonObject):

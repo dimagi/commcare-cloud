@@ -50,6 +50,8 @@ elasticsearch_data=false
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=2
 {{ __kafka3__ }} kafka_broker_id=2 zookeeper_server_id=3
 {{ __rabbit2__ }}
+{{ __rabbit_a3__ }}
+{{ __rabbit_c4__ }}
 {{ __pgbouncer0__ }}
 {{ __pgbouncer1__ }} pgbouncer_processes=2
 {{ __pgbouncer2__ }} pgbouncer_processes=2
@@ -90,8 +92,8 @@ pgsynclogs_nlb
 pgshard_nlb
 
 [rabbitmq:children]
-kafka1
-rabbit2
+rabbit_a3
+rabbit_c4
 
 [zookeeper:children]
 kafka1
@@ -100,6 +102,8 @@ kafka3
 
 [kafka:children]
 kafka1
+kafka2
+kafka3
 
 [celery:children]
 celery4

@@ -13,9 +13,6 @@
   debug:
     var: couchdb_version_current
 
-- name: Update setuptools
-  pip: name=setuptools state=latest
-
 - name: Install ndg-httpsclient so we can download couch
   pip:
     name:

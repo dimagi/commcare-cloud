@@ -75,7 +75,10 @@ You can use this graph on [datadog](https://app.datadoghq.com/dashboard/ewu-jyr-
 
 # Service Information
 
-Restarting services: `cchq <env> service <service_name> restart`
+Restarting services:
+- Webworkers: `cchq <env> fab restart_webworkers`
+- All services running commcare-hq code (webworkers, celery, pillowtop, etc): `cchq <env> fab restart_services`
+- Other (db, formplayer, etc): `cchq <env> service <service_name> restart`
 
 Stopping services: `cchq <env> service <service_name> stop`
 

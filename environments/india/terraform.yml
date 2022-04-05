@@ -1,4 +1,5 @@
 account_alias: commcare-india
+terraform_version: '0.12'
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "ap-south-1"
@@ -300,6 +301,26 @@ servers:
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "rabbitmq"
+    os: ubuntu_pro_bionic
+
+  - server_name: "rabbit_a3-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "rabbitmq"
+    os: ubuntu_pro_bionic
+
+  - server_name: "rabbit_c4-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "c"
     volume_size: 80
     volume_encrypted: yes
     volume_type: "gp3"

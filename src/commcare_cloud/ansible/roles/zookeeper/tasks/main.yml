@@ -1,20 +1,64 @@
 # note: if we want a non-apt install we could change to use something like one of these:
 # https://github.com/glynnbird/ansible-install-kafka/blob/master/tasks/install-zookeeper.yml
 # https://github.com/rackerlabs/ansible-kafka/blob/master/playbooks/roles/zookeeper/tasks/main.yml
-- name: install zookeeper
+- name: uninstall zookeeper if already installed
   become: yes
   apt:
     name:
       - zookeeper
       - zookeeperd
+    state: absent
+
+- name: Remove zookeeper.service (cleanup)
+  file:
+    name: /etc/init.d/zookeeper.service
+    state: absent
+  when: zookeeper_cluster
+
+- name: create zookeeper group
+  group: name="{{ zookeeper_group }}" system=yes state=present
+
+- name: add user "zookeeper"
+  user: name="{{ zookeeper_group }}" group="{{ zookeeper_group }}" shell=/sbin/nologin system=yes state=present
+
+- name: Download Zookeeper
+  get_url:
+    url: "https://archive.apache.org/dist/zookeeper/zookeeper-{{ zookeeper_version }}/zookeeper-{{ zookeeper_version }}.tar.gz"
+    dest: "/opt/zookeeper-{{ zookeeper_version }}.tar.gz"
+    checksum: "{{ zookeeper_download_sha1 }}"
+  when: zookeeper_version == "3.4.9"
+
+- name: Extract Zookeeper
+  unarchive: src="/opt/zookeeper-{{ zookeeper_version }}.tar.gz" dest=/opt/ copy=no creates="/opt/zookeeper-{{ zookeeper_version }}"
+
+- name: Symlink install directory
+  file: src="/opt/zookeeper-{{ zookeeper_version }}" path=/opt/zookeeper state=link
+
+- name: Set permissions to Zookeeper folder
+  file: path=/opt/zookeeper/ owner=root group=root recurse=yes follow=no
+
+- name: Create Zookeeper log directory
+  file: path="{{ zookeeper_log_dir }}" state=directory owner="{{ zookeeper_user }}" group="{{ zookeeper_group }}" recurse=yes
 
 - name: configure server id
   template: src=myid.j2 dest="{{ zookeeper_data_dir }}/myid"
+  when: zookeeper_cluster
   tags: zookeeper_cluster_conf
 
 - name: configure Zookeeper properties
-  template: src=zoo.cfg.j2 dest="{{ zookeeper_data_dir }}/conf/zoo.cfg"
+  template: src=zoo.cfg.j2 dest="{{ zookeeper_conf_dir }}/zoo.cfg"
+  when: zookeeper_cluster
   tags: zookeeper_cluster_conf
+
+- name: Install Zookeeper systemd script
+  template: src=zookeeper-server.service.j2 dest=/etc/systemd/system/zookeeper-server.service mode=0755
+  when: ansible_distribution_version == '18.04'
+
+- name: Reload Systemd Daemon
+  become: yes
+  systemd:
+    daemon_reload: yes
+  when: ansible_distribution_version == '18.04'
 
 # Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
 - shell: /bin/true
@@ -22,13 +66,16 @@
   register: no_tags
 
 - name: start Zookeeper service
-  service: name=zookeeper enabled=yes state=started
+  service: name=zookeeper-server enabled=yes state=started
   when: no_tags is not defined
   register: zookeeper_service_started
   tags: after-reboot
 
 # Restarting a service right after it's been started will cause an unnecessary/non-idempotent restart
 - name: Restart Zookeeper service
-  service: name=zookeeper enabled=yes state=restarted
+  service: name=zookeeper-server enabled=yes state=restarted
   when: zookeeper_service_started.changed == False
   tags: zookeeper_cluster_conf
+
+- name: Add Zookeeper binaries to PATH
+  copy: src=zookeeper.sh dest=/etc/profile.d/ owner=root group=root mode=0644

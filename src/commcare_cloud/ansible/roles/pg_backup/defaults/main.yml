@@ -1,4 +1,4 @@
-postgresql_version: '10'
+postgresql_version: '9.6'
 postgresql_port: 5432
 postgresql_backup_dir: "{{ encrypted_root }}/backups/postgresql"
 postgresql_user_home: /var/lib/postgresql

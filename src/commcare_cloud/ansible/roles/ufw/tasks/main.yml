@@ -1,6 +1,6 @@
 - name: "make sure the specified private interface actually exists"
   # a bit of a hack, but just hopefully prevents turning off access on all interfaces!
-  shell: "ifconfig | grep {{ ufw_private_interface }}"
+  shell: "ip addr show dev {{ ufw_private_interface }}"
   changed_when: no
 
 - name: allow incoming traffic on private interface
