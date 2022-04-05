@@ -40,12 +40,12 @@ Even though these settings have the word ``AMAZON`` in them, you should use use 
 Endpoints
 ^^^^^^^^^
 
-We use `\ ``boto3`` <https://boto3.amazonaws.com/v1/documentation/api/latest/index.html?id=docs_gateway>`_ to upload data to Amazon S3 or a compatible service.
+We use `boto3 <https://boto3.amazonaws.com/v1/documentation/api/latest/index.html?id=docs_gateway>`_ to upload data to Amazon S3 or a compatible service.
 
 
 * ``aws_endpoint``\ : The endpoint to use. Add this setting if you are using an S3-compatible service that isn't AWS.
 * ``aws_region``\ : The Amazon AWS region to send data to. (Amazon S3 only - this changes the default aws-endpoint to the region-specific endpoint).
-* `aws_versioning_enabled`: (`true` or `false`) Set this to `true` if the AWS endpoint you are using automatically stores old versions of the same file (Amazon S3 does this). If this is set to `false`, files will be uploaded to your S3-compatible bucket with a date and timestamp in the filename, creating a new file each time. (Default: ``true``\ )
+* ``aws_versioning_enabled``\ : (`true` or `false`) Set this to `true` if the AWS endpoint you are using automatically stores old versions of the same file (Amazon S3 does this). If this is set to `false`, files will be uploaded to your S3-compatible bucket with a date and timestamp in the filename, creating a new file each time. (Default: ``true``\ )
 
 Receiving email alerts if check fails
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -72,8 +72,8 @@ PostgreSQL backups are made daily and weekly. Old backups are deleted from the l
 * `postgresql_backup_dir`: The directory to write the PostgreSQL backups to. (Default: ``/opt/data/backups/postgresql``\ )
 * The ``backup_postgres`` setting has a few options. You should understand the tradeoffs of each of these settings and know how to restore from the resulting backup files. 
 
-  * ``plain`` - uses the `\ ``pg_basebackup`` <https://www.postgresql.org/docs/9.6/app-pgbasebackup.html>`_ command to write a backup to the ``postgresql_backup_dir``. 
-  * ``dump`` - uses the `\ ``pg_dumpall`` <https://www.postgresql.org/docs/9.6/app-pg-dumpall.html>`_ command to write a dump of the database to the ``postgresql_backup_dir``.
+  * ``plain`` - uses the `pg_basebackup <https://www.postgresql.org/docs/9.6/app-pgbasebackup.html>`_ command to write a backup to the ``postgresql_backup_dir``. 
+  * ``dump`` - uses the `pg_dumpall <https://www.postgresql.org/docs/9.6/app-pg-dumpall.html>`_ command to write a dump of the database to the ``postgresql_backup_dir``.
 
 * `postgres_backup_days`: The number of days to keep daily backups (Default: 1)
 * `postgres_backup_weeks`: The number of weeks to keep weekly backups (Default: 1)
