@@ -36,7 +36,6 @@ web_m_c
 hq_webworkers
 mobile_webworkers
 
-{{ __pgbouncer3__ }} pgbouncer_processes=2
 {{ __pgbouncer_a1__ }} pgbouncer_processes=2
 {{ __pgbouncer5__ }} pgbouncer_processes=2
 {{ __pgbouncer6__ }} pgbouncer_processes=2
@@ -89,12 +88,10 @@ rds_pgsynclog1
 rds_pgauditcare0
 
 [postgresql:children]
-pgbouncer3
 pgbouncer_a1
 remote_postgresql
 
 [pgbouncer:children]
-pgbouncer3
 pgbouncer_a1
 pgbouncer5
 pgbouncer6

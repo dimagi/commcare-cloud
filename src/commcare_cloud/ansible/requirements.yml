@@ -16,7 +16,8 @@ roles:
     version: 1.2.7
   - src: sansible.logstash
     version: v2.4.0-latest
-  - src: cloudalchemy.prometheus
+  - name: cloudalchemy.prometheus
+    src: https://github.com/cloudalchemy/ansible-prometheus
     version: 2.15.5
   - src: cloudalchemy.alertmanager
     version: 0.19.0
