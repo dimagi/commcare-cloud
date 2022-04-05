@@ -75,8 +75,8 @@ PostgreSQL backups are made daily and weekly. Old backups are deleted from the l
   * ``plain`` - uses the `pg_basebackup <https://www.postgresql.org/docs/9.6/app-pgbasebackup.html>`_ command to write a backup to the ``postgresql_backup_dir``. 
   * ``dump`` - uses the `pg_dumpall <https://www.postgresql.org/docs/9.6/app-pg-dumpall.html>`_ command to write a dump of the database to the ``postgresql_backup_dir``.
 
-* `postgres_backup_days`: The number of days to keep daily backups (Default: 1)
-* `postgres_backup_weeks`: The number of weeks to keep weekly backups (Default: 1)
+* `postgresql_backup_days`: The number of days to keep daily backups (Default: 1)
+* `postgresql_backup_weeks`: The number of weeks to keep weekly backups (Default: 1)
 
 Enabling S3 backups for PostgreSQL
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
