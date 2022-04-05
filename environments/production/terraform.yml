@@ -126,7 +126,7 @@ servers:
     az: "a"
     volume_size: 30
     block_device:
-      volume_size: 1260
+      volume_size: 1890
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     count: 7
@@ -137,7 +137,7 @@ servers:
     az: "b"
     volume_size: 30
     block_device:
-      volume_size: 1260
+      volume_size: 1890
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     count: 7
