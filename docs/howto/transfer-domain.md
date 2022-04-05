@@ -94,6 +94,7 @@ will be unable to submit forms or sync with the server.
   `./manage.py flush_caches`
 - Clear kafka
 
+You can also follow [this](https://commcare-cloud.readthedocs.io/en/latest/reference/howto/wipe_persistent_data.html) page's steps to wipe the environment's persisted data.
 
 ## 4. Import the data to the new environment
 
