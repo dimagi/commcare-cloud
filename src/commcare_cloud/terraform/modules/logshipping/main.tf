@@ -8,15 +8,27 @@ locals {
 
 resource "aws_s3_bucket" "log_bucket" {
   bucket = local.log_bucket_name
-  acl = "private"
+  #https://github.com/hashicorp/terraform-provider-aws/issues/23888
+  lifecycle {
+    ignore_changes = [
+    acl,
+    server_side_encryption_configuration
+  ]
+}
+}
+#https://registry.terraform.io/providers/hashicorp/aws/3.75.1/docs/resources/s3_bucket_server_side_encryption_configuration#usage-notes
+resource "aws_s3_bucket_server_side_encryption_configuration" "log_bucket" {
+  bucket = aws_s3_bucket.log_bucket.id
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
+}
+resource "aws_s3_bucket_acl" "log_bucket" {
+  bucket = aws_s3_bucket.log_bucket.id
+  acl    = "private"
 }
 
 module "formplayer_request_response_logs_firehose_stream" {
