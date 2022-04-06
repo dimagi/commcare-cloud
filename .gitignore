@@ -25,3 +25,6 @@ couchdb@*_files
  
  # pyenv
 .python-version
+
+ # vault rotation temporary database
+.vault_rotation_db.kdbx
