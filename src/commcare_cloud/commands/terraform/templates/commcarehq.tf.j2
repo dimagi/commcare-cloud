@@ -105,6 +105,7 @@ module "server__{{ server_name }}" {
   secondary_volume_encrypted = {{ server_spec.block_device.encrypted|default(False)|tojson }}
   server_auto_recovery = {{ server_spec.server_auto_recovery|default(False)|tojson }}
   iam_instance_profile = "${module.server_iam_role.commcare_server_instance_profile}"
+  metadata_tokens = "{{ 'required' if ec2_metadata_tokens_required else 'optional' }}"
 
 {% if server_spec.os == 'ubuntu_pro_bionic' %}
   server_image = "${data.aws_ami.ubuntu_pro_bionic.id}"
