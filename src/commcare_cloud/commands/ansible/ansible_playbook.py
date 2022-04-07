@@ -335,7 +335,7 @@ class UpdateUsers(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         username = get_dev_username(args.env_name)
         args.playbook = 'deploy_stack.yml'
-        unknown_args += ('--tags=users', '-e ssh_user=' + shlex_quote(username))
+        unknown_args += ('--tags=users,update_users', '-e ssh_user=' + shlex_quote(username))
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
