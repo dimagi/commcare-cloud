@@ -15,7 +15,7 @@ init_keepass () {
 }
 
 prompt_for_password () {
-    echo "Enter password to unlock $1:"
+    echo "Enter password to unlock $KEE_PASS_DB:"
     read -s KEE_PASS_DB_PASS
 }
 
