@@ -7,10 +7,6 @@
 Welcome to CommCareHQ Deployment's documentation!
 =================================================
 
-
-.. warning::
-    This is work in progress. Please visit http://dimagi.github.io/commcare-cloud/ for docs
-
 This documentation contains guides and reference material on how to self host CommCareHQ locally. It covers requirements to self host CommCareHQ, various deployment types, infrastrucutre and team requirements to host CommCareHQ, installation instructions for single and multi server deployment and how to manage CommCareHQ deployment through the entire hosting lifecycle.
 
 
