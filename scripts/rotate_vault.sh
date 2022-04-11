@@ -8,7 +8,7 @@ init_keepass () {
         KEE_PASS=`which keepassxc-cli`
     fi
 
-    if [ ! -x $KEE_PASS ]; then
+    if [ ! -x "$KEE_PASS" ]; then
         echo "KeePassXC was not found. Please go to https://keepassxc.org to install it"
         exit 1
     fi
@@ -20,14 +20,14 @@ prompt_for_password () {
 }
 
 store_password () {
-    local password=$1
+    local password="$1"
 
-    printf "$KEE_PASS_DB_PASS\n$KEE_PASS_DB_PASS" | $KEE_PASS db-create "$TEMP_DATABASE" -p > /dev/null 2>&1
-    printf "$KEE_PASS_DB_PASS\n$password" | $KEE_PASS add "$TEMP_DATABASE" $TEMP_KEY -p -q 
+    printf "$KEE_PASS_DB_PASS\n$KEE_PASS_DB_PASS" | "$KEE_PASS" db-create "$TEMP_DATABASE" -p > /dev/null 2>&1
+    printf "$KEE_PASS_DB_PASS\n$password" | "$KEE_PASS" add "$TEMP_DATABASE" "$TEMP_KEY" -p -q 
 }
 
 retrieve_password () {
-    echo "$KEE_PASS_DB_PASS"|$KEE_PASS show "$TEMP_DATABASE" "$TEMP_KEY" -a password -q
+    echo "$KEE_PASS_DB_PASS" | "$KEE_PASS" show "$TEMP_DATABASE" "$TEMP_KEY" -a password -q
 }
 
 update_keepass () {
@@ -36,7 +36,7 @@ update_keepass () {
     fi
 
     CURRENT_TIME=`date -u`
-    printf "$KEE_PASS_DB_PASS\n$GENERATED_PASS" | $KEE_PASS edit "$KEE_PASS_DB" "$KEY_PATH" -p \
+    printf "$KEE_PASS_DB_PASS\n$GENERATED_PASS" | "$KEE_PASS" edit "$KEE_PASS_DB" "$KEY_PATH" -p \
         --notes "Rotated on $CURRENT_TIME by `whoami`" -q
 
     if [ $? -ne 0 ]; then
@@ -64,7 +64,7 @@ check_for_previous_run () {
         echo "Type 'y' to continue"
         read -n1 CONTINUE
         echo
-        if [ $CONTINUE == "y" ]; then
+        if [ "$CONTINUE" == "y" ]; then
             rm "$TEMP_DATABASE"
         else
             exit 1
@@ -78,15 +78,15 @@ rotate_vault_key () {
     prompt_for_password
 
     # Read the current vault password from the keepass file
-    CURRENT_PASS=`echo "$KEE_PASS_DB_PASS"|$KEE_PASS show "$KEE_PASS_DB" "$KEY_PATH" -a password -q`
+    CURRENT_PASS=`echo "$KEE_PASS_DB_PASS" | "$KEE_PASS" show "$KEE_PASS_DB" "$KEY_PATH" -a password -q`
 
-    if [ -z $CURRENT_PASS ]; then
+    if [ -z "$CURRENT_PASS" ]; then
         echo "Invalid password"
         exit 1
     fi
 
     # Generate a new password
-    GENERATED_PASS=`$KEE_PASS generate`  # Can add specific complexity requirements as args
+    GENERATED_PASS=`"$KEE_PASS" generate`  # Can add specific complexity requirements as args
 
     # Update the ansible vault
     printf "$CURRENT_PASS\n$GENERATED_PASS\n" | ansible-vault rekey \
@@ -100,7 +100,7 @@ rotate_vault_key () {
     fi
 
     # Store the generated password in a temporary database for retrieval later
-    store_password $GENERATED_PASS
+    store_password "$GENERATED_PASS"
 
     printf "Swiss vault has been updated. Please stage and commit the changes and create a PR.
     When the PR is approved, you can re-run this script with the --resume flag to update KeePass\n"
@@ -130,7 +130,7 @@ if [ $# -lt 1 ] || [ $# -gt 2 ]; then
     exit 1
 fi
 
-KEE_PASS_DB=$1
+KEE_PASS_DB="$1"
 KEY_PATH="swiss/Swiss ansible vault"
 TEMP_DATABASE='.vault_rotation_db.kdbx'
 TEMP_KEY="new_pass"

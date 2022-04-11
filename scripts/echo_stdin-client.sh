@@ -5,4 +5,4 @@
 # need to provide a password file or a password script. This functions as the latter,
 # reading passwords piped in
 read -r line
-echo $line
+echo "$line"
