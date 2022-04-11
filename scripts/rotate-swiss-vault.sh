@@ -2,7 +2,9 @@
 
 init_keepass () {
     # Locate keepassxc-cli or fail with error
-    if [[ "$OSTYPE" == "darwin"* ]]; then
+    if [[ -x "$KEE_PASS" ]]; then
+        echo "Running with explicit KeePass binary at: $KEE_PASS"
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
         KEE_PASS=/Applications/KeePassXC.app/Contents/MacOS/keepassxc-cli
     elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
         KEE_PASS=`which keepassxc-cli`
@@ -123,9 +125,11 @@ display_help () {
     echo "Usage: $0 <keepass file> [--resume]"
     echo "  <keepass file> should be the full path to the keepass database containing the swiss vault password"
     echo "  --resume should be specified after the rotation PR has been merged"
+    echo "If you have installed KeypassXC in a custom location, you can override the default search paths"
+    echo "  by setting the KEE_PASS enviroment variable to the custom location of keepassxc-cli"
 }
 
-if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+if [ $# -lt 1 ] || [ $# -gt 2 ] || [ "$1" == "--help" ]; then
     display_help
     exit 1
 fi
