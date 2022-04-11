@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e  # Exit on errors
+
 init_keepass () {
     # Locate keepassxc-cli or fail with error
     if [[ -x "$KEE_PASS" ]]; then
@@ -40,11 +42,6 @@ update_keepass () {
     CURRENT_TIME=`date -u`
     printf "$KEE_PASS_DB_PASS\n$GENERATED_PASS" | "$KEE_PASS" edit "$KEE_PASS_DB" "$KEY_PATH" -p \
         --notes "Rotated on $CURRENT_TIME by `whoami`" -q
-
-    if [ $? -ne 0 ]; then
-        exit 1
-    fi
-    
 
     # Remove the temporary database -- there is no need for it anymore
     rm "$TEMP_DATABASE"
@@ -91,12 +88,10 @@ rotate_vault_key () {
     GENERATED_PASS=`"$KEE_PASS" generate`  # Can add specific complexity requirements as args
 
     # Update the ansible vault
-    printf "$CURRENT_PASS\n$GENERATED_PASS\n" | ansible-vault rekey \
-        --vault-id scripts/echo-stdin-client.sh \
-        --new-vault-id scripts/echo-stdin-client.sh \
-        environments/swiss/vault.yml > /dev/null 2>&1
-
-    if [ $? -ne 0 ]; then
+    if ! printf "$CURRENT_PASS\n$GENERATED_PASS\n" | ansible-vault rekey \
+            --vault-id scripts/echo-stdin-client.sh \
+            --new-vault-id scripts/echo-stdin-client.sh \
+            environments/swiss/vault.yml > /dev/null 2>&1; then
         echo "KeePass password does not match existing vault password"
         exit 1
     fi
