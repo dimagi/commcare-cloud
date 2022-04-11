@@ -45,6 +45,8 @@ update_keepass () {
 
     # Remove the temporary database -- there is no need for it anymore
     rm "$TEMP_DATABASE"
+
+    printf "Swiss Vault KeePass information updated successfully!\n"
 }
 
 resume () {
