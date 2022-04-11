@@ -90,8 +90,8 @@ rotate_vault_key () {
 
     # Update the ansible vault
     printf "$CURRENT_PASS\n$GENERATED_PASS\n" | ansible-vault rekey \
-        --vault-id scripts/echo_stdin-client.sh \
-        --new-vault-id scripts/echo_stdin-client.sh \
+        --vault-id scripts/echo-stdin-client.sh \
+        --new-vault-id scripts/echo-stdin-client.sh \
         environments/swiss/vault.yml > /dev/null 2>&1
 
     if [ $? -ne 0 ]; then
