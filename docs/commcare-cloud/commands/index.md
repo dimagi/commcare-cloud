@@ -303,13 +303,13 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         etc.
   --syntax-check        perform a syntax check on the playbook, but do not
                         execute it
+  --task-timeout TASK_TIMEOUT
+                        set task timeout limit in seconds, must be positive
+                        integer.
   --vault-id VAULT_IDS  the vault identity to use
   --version             show program's version number, config file location,
                         configured module search path, module location,
                         executable location and exit
-  --task-timeout TASK_TIMEOUT
-                        set task timeout limit in seconds, must be positive
-                        integer.
   -B SECONDS, --background SECONDS
                         run asynchronously, failing after X seconds
                         (default=N/A)
