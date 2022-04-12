@@ -26,8 +26,10 @@ prompt_for_password () {
 store_password () {
     local password="$1"
 
-    printf "$KEE_PASS_DB_PASS\n$KEE_PASS_DB_PASS" | "$KEE_PASS" db-create "$TEMP_DATABASE" -p > /dev/null 2>&1
-    printf "$KEE_PASS_DB_PASS\n$password" | "$KEE_PASS" add "$TEMP_DATABASE" "$TEMP_KEY" -p -q 
+    { echo "$KEE_PASS_DB_PASS"; echo "$KEE_PASS_DB_PASS"; } | \
+        "$KEE_PASS" db-create "$TEMP_DATABASE" -p > /dev/null 2>&1
+    { echo "$KEE_PASS_DB_PASS"; echo "$password"; } | \
+        "$KEE_PASS" add "$TEMP_DATABASE" "$TEMP_KEY" -p -q 
 }
 
 retrieve_password () {
@@ -40,13 +42,13 @@ update_keepass () {
     fi
 
     CURRENT_TIME=`date -u`
-    printf "$KEE_PASS_DB_PASS\n$GENERATED_PASS" | "$KEE_PASS" edit "$KEE_PASS_DB" "$KEY_PATH" -p \
+    { echo "$KEE_PASS_DB_PASS"; echo "$GENERATED_PASS"; } | "$KEE_PASS" edit "$KEE_PASS_DB" "$KEY_PATH" -p \
         --notes "Rotated on $CURRENT_TIME by `whoami`" -q
 
     # Remove the temporary database -- there is no need for it anymore
     rm "$TEMP_DATABASE"
 
-    printf "Swiss Vault KeePass information updated successfully!\n"
+    echo "Swiss Vault KeePass information updated successfully!"
 }
 
 resume () {
@@ -90,9 +92,9 @@ rotate_vault_key () {
     GENERATED_PASS=`"$KEE_PASS" generate`  # Can add specific complexity requirements as args
 
     # Update the ansible vault
-    if ! printf "$CURRENT_PASS\n$GENERATED_PASS\n" | ansible-vault rekey \
-            --vault-id scripts/echo-stdin-client.sh \
-            --new-vault-id scripts/echo-stdin-client.sh \
+    if ! ansible-vault rekey \
+            --vault-password-file <( echo "$CURRENT_PASS" ) \
+            --new-vault-password-file <( echo "$GENERATED_PASS" ) \
             environments/swiss/vault.yml > /dev/null 2>&1; then
         echo "KeePass password does not match existing vault password"
         exit 1
@@ -101,8 +103,8 @@ rotate_vault_key () {
     # Store the generated password in a temporary database for retrieval later
     store_password "$GENERATED_PASS"
 
-    printf "Swiss vault has been updated. Please stage and commit the changes and create a PR.
-    When the PR is approved, you can re-run this script with the --resume flag to update KeePass\n"
+    echo "Swiss vault has been updated. Please stage and commit the changes and create a PR.
+    When the PR is approved, you can re-run this script with the --resume flag to update KeePass"
 
     # Could attempt to automate the PR at this point.
     # Ensure that only the vault is being changed and that master is up-to-date, however.
