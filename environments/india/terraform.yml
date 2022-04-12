@@ -168,7 +168,7 @@ servers:
     os: bionic
 
   - server_name: "es0-india"
-    server_instance_type: "t3.large"
+    server_instance_type: "m5a.xlarge"
     network_tier: "db-private"
     az: "a"
     volume_size: 150
@@ -178,7 +178,7 @@ servers:
     os: bionic
 
   - server_name: "es2-india"
-    server_instance_type: "t3.large"
+    server_instance_type: "m5a.xlarge"
     network_tier: "db-private"
     az: "b"
     volume_size: 150
