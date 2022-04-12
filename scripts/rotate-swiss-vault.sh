@@ -14,6 +14,7 @@ init_keepass () {
 
     if [ ! -x "$KEE_PASS" ]; then
         echo "KeePassXC was not found. Please go to https://keepassxc.org to install it"
+        echo "or set the KEE_PASS environment variable to the path of keepassxc-cli"
         exit 1
     fi
 }
