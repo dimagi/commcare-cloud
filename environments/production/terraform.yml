@@ -36,6 +36,8 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 80
+    block_device:
+      volume_size: 120
     group: "django_manage"
     os: ubuntu_pro_bionic
 
