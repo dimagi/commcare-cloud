@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from setuptools import setup, find_packages
 
 install_deps = [
-    'ansible-vault==1.1.1',
+    'ansible-vault==2.1.0',
     'ansible>=2.9.7,<4.3.0',
     'argparse>=1.4',
     'attrs>=18.1.0',
