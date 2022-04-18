@@ -1,0 +1,19 @@
+title: Upgrade Node.js to 14.19.1 and npm to 7.24.2
+key: upgrade_node_14x_npm_7x
+date: 2022-04-11
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Node.js 12.x LTS is reaching its end of life 30th April 2022, so node and npm must be upgraded on all machines.
+
+details: |
+  Because the current LTS version we are using of Node.js (12.x) is reaching its end of life on the 30th of April,
+  we are upgrading Node.js to the next LTS version 14.19.1. As npm is tightly-coupled with node, we are also upgrading npm to 7.24.2
+
+update_steps: |
+  To upgrade node.js and npm on your machines please run:
+
+  ```bash
+  cchq <env> deploy-stack --tags=npm
+  ```

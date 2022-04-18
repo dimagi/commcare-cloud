@@ -10,4 +10,4 @@ START=1
 
 #OPTS="-d /etc/pgbouncer/pgbouncer.ini"
 
-ULIMIT="-n 65536"
+ULIMIT="-n {{ pgbouncer_ulimit_fd }}"

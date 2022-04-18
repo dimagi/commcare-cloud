@@ -23,7 +23,7 @@
     gid: "{{ ansible_gid }}"
   tags:
     - new_ansible_sudo_pass
-  when: "ansible_gid is not none"
+  when: "ansible_gid is not none and 'update_users' not in ansible_run_tags"
 
 - name: Add cchq group
   become: yes
@@ -32,7 +32,7 @@
     state: present
     gid: "{{ cchq_gid }}"
   tags: commcarehq
-  when: "cchq_gid is not none"
+  when: "cchq_gid is not none and 'update_users' not in ansible_run_tags"
 
 - name: Add dev group
   become: yes
@@ -46,10 +46,10 @@
     name: ansible
     state: present
     shell: /bin/bash
-    group: "{{ 'ansible' if ansible_gid else omit }}"
+    group: "{{ 'ansible' if ansible_gid and 'update_users' not in ansible_run_tags else omit }}"
     groups: "sudo"
     password: "{{ new_ansible_sudo_pass|default(ansible_sudo_pass)|password_hash('sha512') }}"
-    uid: "{{ ansible_uid if ansible_uid else omit }}"
+    uid: "{{ ansible_uid if ansible_uid and 'update_users' not in ansible_run_tags else omit }}"
     append: yes
   tags:
     - new_ansible_sudo_pass
@@ -60,9 +60,9 @@
     name: "{{ cchq_user }}"
     state: present
     shell: /bin/bash
-    group: "{{ cchq_group if cchq_gid else omit }}"
+    group: "{{ cchq_group if cchq_gid and 'update_users' not in ansible_run_tags else omit }}"
     groups: "{{ dev_group }}"
-    uid: "{{ cchq_uid if cchq_uid else omit }}"
+    uid: "{{ cchq_uid if cchq_uid and 'update_users' not in ansible_run_tags else omit }}"
     append: yes
   tags: commcarehq
 

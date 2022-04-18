@@ -7,6 +7,9 @@ newest first.
 
 ## Changelog
 
+### **2022-04-11** [Upgrade Node.js to 14.19.1 and npm to 7.24.2](0046-upgrade_node_14x_npm_7x.md)
+Node.js 12.x LTS is reaching its end of life 30th April 2022, so node and npm must be upgraded on all machines.
+
 ### **2021-11-02** [Upgrade CommCare HQ to Python 3.9](0045-upgrade-to-python-39.md)
 Install Python 3.9 and build a new virtualenv for CommCare HQ.
 

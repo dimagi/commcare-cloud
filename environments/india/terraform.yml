@@ -21,6 +21,7 @@ vpn_connections: []
 
 external_routes: []
 
+ec2_metadata_tokens_required: no
 servers:
   - server_name: "control0-india"
     server_instance_type: "t3.medium"
@@ -167,7 +168,7 @@ servers:
     os: bionic
 
   - server_name: "es0-india"
-    server_instance_type: "t3.large"
+    server_instance_type: "m5a.xlarge"
     network_tier: "db-private"
     az: "a"
     volume_size: 150
@@ -177,7 +178,7 @@ servers:
     os: bionic
 
   - server_name: "es2-india"
-    server_instance_type: "t3.large"
+    server_instance_type: "m5a.xlarge"
     network_tier: "db-private"
     az: "b"
     volume_size: 150
