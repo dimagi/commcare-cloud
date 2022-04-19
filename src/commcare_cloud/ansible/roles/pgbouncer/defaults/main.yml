@@ -21,5 +21,4 @@ postgresql_port: 5432
 
 pgbouncer_processes: 1
 pgbouncer_current_processes: [0]
-pgbouncer_version: "1.17.0-1.pgdg18.04+1"
 pgbouncer_min_version: "1.13"
