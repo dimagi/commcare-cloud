@@ -1,9 +1,10 @@
 ---
 
 - name: pgbouncer install
-  package:
-    name: "pgbouncer={{ pgbouncer_version }}"
-    state: present
+  apt:
+    name: pgbouncer
+    update_cache: yes
+    state: latest
 
 - name: pgbouncer gather package facts
   package_facts:
