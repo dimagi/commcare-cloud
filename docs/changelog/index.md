@@ -7,6 +7,11 @@ newest first.
 
 ## Changelog
 
+### **2022-04-19** [Update PgBouncer configuration to support multiple processes](0047-pgbouncer-multiprocess.md)
+This change updates the PgBouncer role to support multiple processes
+on a single machine, so that more CPU cores can be used (PgBouncer
+is single-threaded and uses only one CPU core by default).
+
 ### **2022-04-11** [Upgrade Node.js to 14.19.1 and npm to 7.24.2](0046-upgrade_node_14x_npm_7x.md)
 Node.js 12.x LTS is reaching its end of life 30th April 2022, so node and npm must be upgraded on all machines.
 
