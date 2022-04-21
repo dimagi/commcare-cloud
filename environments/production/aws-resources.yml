@@ -23,8 +23,6 @@ couch12-production.instance_id: i-0e9aaeea3a117206e
 couch13-production: 10.202.40.154
 couch13-production.instance_id: i-00a287226e9555670
 couch_alb-production: internal-couch-alb-production-4251727.us-east-1.elb.amazonaws.com
-djangomanage2-production: 10.202.10.167
-djangomanage2-production.instance_id: i-03b1636303cb209d4
 djangomanage_a0-production: 10.202.10.140
 djangomanage_a0-production.instance_id: i-00447f0d296ffa239
 efs_production-efs: fs-99495a6e.efs.us-east-1.amazonaws.com
