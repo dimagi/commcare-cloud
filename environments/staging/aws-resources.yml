@@ -1,5 +1,3 @@
-celery3-staging: 10.201.10.216
-celery3-staging.instance_id: i-0c544ab25e0364153
 celery_a0-staging: 10.201.10.232
 celery_a0-staging.instance_id: i-0b026baa6469e2354
 control1-staging: 10.201.10.170
@@ -36,8 +34,8 @@ kafka5-staging: 10.201.41.121
 kafka5-staging.instance_id: i-09b929afcd5f3185e
 kafka6-staging: 10.201.42.177
 kafka6-staging.instance_id: i-048eab1516c5561a1
-kafka7-staging: 10.201.42.135
-kafka7-staging.instance_id: i-05bae3113560a00fd
+kafka7-staging: 10.201.42.254
+kafka7-staging.instance_id: i-0ff9f7aa58bf16cd9
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgbouncer0-staging: 10.201.40.72
 pgbouncer0-staging.instance_id: i-0315ba6f2f8ba45f5
@@ -46,7 +44,6 @@ pgformplayer_nlb-staging: pgformplayer-nlb-staging-98b68467f6f5717b.elb.us-east-
 pgmain_nlb-staging: pgmain-nlb-staging-fe77ab2d143eedbb.elb.us-east-1.amazonaws.com
 pgproxy4-staging: 10.201.41.230
 pgproxy4-staging.instance_id: i-0614fa7d1da724249
-pgproxy_nlb-staging: pgproxy-nlb-staging-c421403bce4ecc4b.elb.us-east-1.amazonaws.com
 pgshard_nlb-staging: pgshard-nlb-staging-e8ef6b4c55f3618d.elb.us-east-1.amazonaws.com
 pgsynclogs_nlb-staging: pgsynclogs-nlb-staging-1102365451f68242.elb.us-east-1.amazonaws.com
 pgucr_nlb-staging: pgucr-nlb-staging-b32586fcc9999b2d.elb.us-east-1.amazonaws.com
