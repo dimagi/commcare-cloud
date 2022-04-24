@@ -74,21 +74,29 @@ class _Ssh(Lookup):
     def run(self, args, ssh_args, env_vars=None):
         if args.server == '-':
             args.server = 'django_manage[0]'
-        address = self.lookup_server_address(args)
-        if ':' in address:
-            address, port = address.split(':')
+        user, host, port = self.get_address_tuple(args)
+        address = f"{user}@{host}"
+        if port:
             ssh_args = ['-p', port] + ssh_args
-        if '@' in address:
-            username, address = address.split('@', 1)
-            username = get_ssh_username(address, args.env_name, requested_username=username)
-        elif '@' not in address:
-            username = get_ssh_username(address, args.env_name)
-        address = f"{username}@{address}"
         cmd_parts = [self.command, address, '-t'] + ssh_args
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         if not args.quiet:
             print_command(cmd)
         return subprocess.call(cmd_parts, **({'env': env_vars} if env_vars else {}))
+
+    def get_address_tuple(self, args):
+        address = self.lookup_server_address(args)
+        if ':' in address:
+            address, port = address.split(':')
+        else:
+            port = None
+        if '@' in address:
+            username, host = address.split('@', 1)
+        else:
+            username = None
+            host = address
+        user = get_ssh_username(host, args.env_name, requested_username=username)
+        return user, host, port
 
 
 class Ssh(_Ssh):
@@ -118,24 +126,21 @@ class Ssh(_Ssh):
             # Always include ssh agent forwarding on control machine
             ssh_args = ['-A'] + ssh_args
 
-            if os.environ.get('COMMCARE_CLOUD_USE_AWS_SSM') != '0' and \
-                    is_aws_env(environment) and \
-                    not is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id):
-                if not is_session_manager_plugin_installed():
-                    puts(color_error(
-                        "Before you can use AWS SSM to connect, you "
-                        "must install the AWS session-manager-plugin"
-                    ))
-                    puts(
-                        f"{color_notice('See ')}{color_link(self.INSTALL_SSM)}"
-                        f"{color_notice(' for instructions.')}"
-                    )
-                    return -1
-                use_aws_ssm_with_instance_id = environment.get_host_vars(
-                    environment.groups['control'][0]
-                )['ec2_instance_id']
-                env_vars = os.environ.copy()
-                env_vars.update({'AWS_PROFILE': aws_sign_in(environment)})
+        if self.should_use_ssm(environment):
+            if not is_session_manager_plugin_installed():
+                puts(color_error(
+                    "Before you can use AWS SSM to connect, you "
+                    "must install the AWS session-manager-plugin"
+                ))
+                puts(
+                    f"{color_notice('See ')}{color_link(self.INSTALL_SSM)}"
+                    f"{color_notice(' for instructions.')}"
+                )
+                return -1
+            _, host, _ = self.get_address_tuple(args)
+            use_aws_ssm_with_instance_id = environment.get_host_vars(host)['ec2_instance_id']
+            env_vars = os.environ.copy()
+            env_vars.update({'AWS_PROFILE': aws_sign_in(environment)})
 
         ssh_args = get_default_ssh_options_as_cmd_parts(
             environment,
@@ -143,6 +148,13 @@ class Ssh(_Ssh):
             use_aws_ssm_with_instance_id=use_aws_ssm_with_instance_id
         ) + ssh_args
         return super(Ssh, self).run(args, ssh_args, env_vars=env_vars)
+
+    def should_use_ssm(self, environment):
+        return (
+            os.environ.get('COMMCARE_CLOUD_USE_AWS_SSM') != '0'
+            and is_aws_env(environment)
+            and not is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id)
+        )
 
 
 class Mosh(_Ssh):
