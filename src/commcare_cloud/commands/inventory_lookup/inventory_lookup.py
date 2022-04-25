@@ -102,6 +102,11 @@ class Ssh(_Ssh):
     All trailing arguments are passed directly to `ssh`.
     """
 
+    INSTALL_SSM = (
+        'https://docs.aws.amazon.com/systems-manager/latest/'
+        'userguide/session-manager-working-with-install-plugin.html'
+    )
+
     run_setup_on_control_by_default = False
 
     def run(self, args, ssh_args):
@@ -117,14 +122,26 @@ class Ssh(_Ssh):
                     is_aws_env(environment) and \
                     not is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id):
                 if not is_session_manager_plugin_installed():
-                    puts(color_error("Before you can use AWS SSM to connect, you must install the AWS session-manager-plugin"))
-                    puts(f"{color_notice('See ')}{color_link('https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html')}{color_notice(' for instructions.')}")
+                    puts(color_error(
+                        "Before you can use AWS SSM to connect, you "
+                        "must install the AWS session-manager-plugin"
+                    ))
+                    puts(
+                        f"{color_notice('See ')}{color_link(self.INSTALL_SSM)}"
+                        f"{color_notice(' for instructions.')}"
+                    )
                     return -1
-                use_aws_ssm_with_instance_id = environment.get_host_vars(environment.groups['control'][0])['ec2_instance_id']
+                use_aws_ssm_with_instance_id = environment.get_host_vars(
+                    environment.groups['control'][0]
+                )['ec2_instance_id']
                 env_vars = os.environ.copy()
                 env_vars.update({'AWS_PROFILE': aws_sign_in(environment)})
 
-        ssh_args = get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=ssh_args, use_aws_ssm_with_instance_id=use_aws_ssm_with_instance_id) + ssh_args
+        ssh_args = get_default_ssh_options_as_cmd_parts(
+            environment,
+            original_ssh_args=ssh_args,
+            use_aws_ssm_with_instance_id=use_aws_ssm_with_instance_id
+        ) + ssh_args
         return super(Ssh, self).run(args, ssh_args, env_vars=env_vars)
 
 

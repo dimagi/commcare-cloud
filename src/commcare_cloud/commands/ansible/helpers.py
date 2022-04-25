@@ -76,7 +76,16 @@ def get_default_ssh_options(environment, use_aws_ssm_with_instance_id=None):
         default_ssh_options.append(('UserKnownHostsFile', known_hosts_filepath))
 
     if use_aws_ssm_with_instance_id:
-        default_ssh_options.append(('ProxyCommand', 'sh -c "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters portNumber=%p"'))
+        sso_command = (
+            'aws ssm start-session --target %h '
+            '--document-name AWS-StartSSHSession '
+            '--parameters portNumber=%p'
+        )
+        assert '"' not in sso_command, """
+            Use {shlex_quote(sso_command)} and remove quotes (") in the
+            ProxyCommand below if it becomes necessary to put quotation
+            marks in sso_command. Otherwise it is more readable as is."""
+        default_ssh_options.append(('ProxyCommand', f'sh -c "{sso_command}"'))
         default_ssh_options.append(('HostName', use_aws_ssm_with_instance_id))
 
     return default_ssh_options
@@ -84,8 +93,10 @@ def get_default_ssh_options(environment, use_aws_ssm_with_instance_id=None):
 
 def get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=(), use_aws_ssm_with_instance_id=None):
     ssh_args = []
-    for option_name, default_option_value in get_default_ssh_options(environment, use_aws_ssm_with_instance_id=use_aws_ssm_with_instance_id):
-        if not any(a.startswith(('{}='.format(option_name), "-o{}=".format(option_name))) for a in original_ssh_args):
+    options = get_default_ssh_options(environment, use_aws_ssm_with_instance_id)
+    for option_name, default_option_value in options:
+        arg_names = ('{}='.format(option_name), "-o{}=".format(option_name))
+        if not any(a.startswith(arg_names) for a in original_ssh_args):
             ssh_args.extend(["-o", '{}={}'.format(option_name, default_option_value)])
     return ssh_args
 
