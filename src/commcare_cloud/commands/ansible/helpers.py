@@ -67,17 +67,20 @@ def get_common_ssh_args(environment, use_factory_auth=False):
 def get_default_ssh_options(environment, aws_ssm_target=None):
     default_ssh_options = []
 
-    strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
-    if not strict_host_key_checking or aws_ssm_target:
-        default_ssh_options.append(('StrictHostKeyChecking', 'no'))
-
     known_hosts_filepath = environment.paths.known_hosts
-    if os.path.exists(known_hosts_filepath) and not aws_ssm_target:
+    if os.path.exists(known_hosts_filepath):
         default_ssh_options.append(('UserKnownHostsFile', known_hosts_filepath))
+    else:
+        strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
+        if not strict_host_key_checking:
+            assert not aws_ssm_target, 'strict host key checking is required in AWS SSM environments'
+            default_ssh_options.append(('StrictHostKeyChecking', 'no'))
 
     if aws_ssm_target:
         sso_command = (
-            'aws ssm start-session --target %h '
+            # NOTE {aws_ssm_target} can be changed to %h if the ssh
+            # hostname is aws_ssm_target (rather than an IP address)
+            f'aws ssm start-session --target {aws_ssm_target} '
             '--document-name AWS-StartSSHSession '
             '--parameters portNumber=%p'
         )
@@ -86,7 +89,6 @@ def get_default_ssh_options(environment, aws_ssm_target=None):
             ProxyCommand below if it becomes necessary to put quotation
             marks in sso_command. Otherwise it is more readable as is."""
         default_ssh_options.append(('ProxyCommand', f'sh -c "{sso_command}"'))
-        default_ssh_options.append(('HostName', aws_ssm_target))
 
     return default_ssh_options
 

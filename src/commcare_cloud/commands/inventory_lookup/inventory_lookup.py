@@ -75,6 +75,14 @@ class _Ssh(Lookup):
         if args.server == '-':
             args.server = 'django_manage[0]'
         user, host, port = self.get_address_tuple(args)
+        # NOTE in the case of AWS SSM the `host` value (which is an IP
+        # address at time of writing) has no meaning other than to
+        # link the host key with the correct entry in the known_hosts
+        # file. This could be simplified if lookup_server_address()
+        # returned an EC2 instance id rather than an IP address and AWS
+        # known_hosts files had instance ids. The --target option of the
+        # SSM proxy command could also use `%h` rather than hard-coding
+        # the EC2 instance id there.
         address = f"{user}@{host}"
         if port:
             ssh_args = ['-p', port] + ssh_args
