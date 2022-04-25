@@ -119,7 +119,7 @@ class Ssh(_Ssh):
 
     def run(self, args, ssh_args):
         environment = get_environment(args.env_name)
-        use_aws_ssm_with_instance_id = None
+        aws_ssm_target = None
         env_vars = None
 
         if 'control' in split_host_group(args.server).group and '-A' not in ssh_args:
@@ -138,14 +138,14 @@ class Ssh(_Ssh):
                 )
                 return -1
             _, host, _ = self.get_address_tuple(args)
-            use_aws_ssm_with_instance_id = environment.get_host_vars(host)['ec2_instance_id']
+            aws_ssm_target = environment.get_host_vars(host)['ec2_instance_id']
             env_vars = os.environ.copy()
             env_vars.update({'AWS_PROFILE': aws_sign_in(environment)})
 
         ssh_args = get_default_ssh_options_as_cmd_parts(
             environment,
             original_ssh_args=ssh_args,
-            use_aws_ssm_with_instance_id=use_aws_ssm_with_instance_id
+            aws_ssm_target=aws_ssm_target,
         ) + ssh_args
         return super(Ssh, self).run(args, ssh_args, env_vars=env_vars)
 
