@@ -84,11 +84,7 @@ def get_default_ssh_options(environment, aws_ssm_target=None):
             '--document-name AWS-StartSSHSession '
             '--parameters portNumber=%p'
         )
-        assert '"' not in sso_command, """
-            Use {shlex_quote(sso_command)} and remove quotes (") in the
-            ProxyCommand below if it becomes necessary to put quotation
-            marks in sso_command. Otherwise it is more readable as is."""
-        default_ssh_options.append(('ProxyCommand', f'sh -c "{sso_command}"'))
+        default_ssh_options.append(('ProxyCommand', sso_command))
 
     return default_ssh_options
 
