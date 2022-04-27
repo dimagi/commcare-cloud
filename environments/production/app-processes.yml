@@ -132,7 +132,7 @@ pillows:
       num_processes: 1
   pillow_b000:
     xform-pillow:
-      num_processes: 2
+      num_processes: 33
       dedicated_migration_process: True
     case-pillow:
       num_processes: 24
