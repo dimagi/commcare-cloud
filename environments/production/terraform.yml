@@ -13,7 +13,7 @@ vpc_begin_range: "10.202"
 
 openvpn_image: ami-5e73b923
 
-ec2_metadata_tokens_required: no
+ec2_metadata_tokens_required: yes
 servers:
   - server_name: "control2-production"
     server_instance_type: "t3a.large"
