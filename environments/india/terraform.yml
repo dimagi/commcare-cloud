@@ -21,7 +21,7 @@ vpn_connections: []
 
 external_routes: []
 
-ec2_metadata_tokens_required: no
+ec2_metadata_tokens_required: yes
 servers:
   - server_name: "control0-india"
     server_instance_type: "t3.medium"
