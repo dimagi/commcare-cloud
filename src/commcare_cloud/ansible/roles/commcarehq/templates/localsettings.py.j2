@@ -419,15 +419,24 @@ REPORT_CACHE = 'redis'
 
 redis_cache = {
     'BACKEND': 'django_redis.cache.RedisCache',
-{% set redis_url = 'redis://' ~ localsettings.REDIS_HOST ~ ':' ~ localsettings.REDIS_PORT %}
-{% if localsettings.get('REDIS_PASSWORD') %}
-{% set redis_url = 'redis://:' ~ localsettings.REDIS_PASSWORD ~ '@' ~ localsettings.REDIS_HOST ~ ':' ~ localsettings.REDIS_PORT %}
-{% endif %}
-{% if 'REDIS_DB' in localsettings %}
-    'LOCATION': '{{ redis_url }}/{{ localsettings.REDIS_DB }}',
+{% if not 'REDIS_ENDPOINTS' in localsettings %}
+   {% set redis_endpoints = [{"host": localsettings.REDIS_HOST, "port": localsettings.REDIS_PORT}] %}
 {% else %}
-    'LOCATION': '{{ redis_url }}',
+   {% set redis_endpoints = localsettings.REDIS_ENDPOINTS %}
 {% endif %}
+    'LOCATION' : [
+{% for endpoint in redis_endpoints -%}
+   {% set redis_url = 'redis://' ~ endpoint.host ~ ':' ~ endpoint.port %}
+   {% if localsettings.get('REDIS_PASSWORD') %}
+   {% set redis_url = 'redis://:' ~ localsettings.REDIS_PASSWORD ~ '@' ~ endpoint.host ~ ':' ~ endpoint.port %}
+   {% endif %}
+{% if 'REDIS_DB' in localsettings %}
+        '{{ redis_url }}/{{ localsettings.REDIS_DB }}',
+{% else %}
+        '{{ redis_url }}',
+{% endif %}
+{% endfor -%}
+    ],
     'OPTIONS': {
         'PARSER_CLASS': 'redis.connection.HiredisParser',
         'REDIS_CLIENT_KWARGS': {
