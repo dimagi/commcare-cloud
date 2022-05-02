@@ -157,9 +157,12 @@ localsettings:
   RATE_LIMIT_SUBMISSIONS: yes
   SES_CONFIGURATION_SET: staging-email-events
   SNS_EMAIL_EVENT_SECRET: "{{ SNS_EMAIL_EVENT_SECRET }}"
+  REDIS_ENDPOINTS:
+    - host: "redis.production.commcare.local"
+      port: '6379'
+    - host: "staging-elasticache-cluster-ro.ormqor.ng.0001.use1.cache.amazonaws.com"
+      port: '6379'
   REDIS_DB: '0'
-  REDIS_HOST: "redis.staging.commcare.local"
-  REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: True
