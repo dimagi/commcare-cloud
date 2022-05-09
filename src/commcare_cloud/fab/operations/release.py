@@ -47,11 +47,11 @@ def update_code(full_cluster=True):
             sudo('git remote prune origin')
             # this can get into a state where running it once fails
             # but primes it to succeed the next time it runs
-            sudo('git fetch origin --tags -q || git fetch origin --tags -q')
+            sudo(f'git fetch origin {env.code_branch} --tags -q || git fetch origin {env.code_branch} --tags -q')
             sudo('git checkout {}'.format(git_tag))
             sudo('git reset --hard {}'.format(git_tag))
             sudo('git submodule sync')
-            sudo('git submodule update --init --recursive -q')
+            sudo('git submodule update --init --recursive --single-branch -q')
             # remove all untracked files, including submodules
             sudo("git clean -ffd")
             # remove all .pyc files in the project
@@ -75,7 +75,7 @@ def _update_code_from_previous_release(code_repo, subdir, git_env):
             sudo('git remote set-url origin {}'.format(code_repo))
     else:
         with shell_env(**git_env):
-            sudo('git clone {} {}'.format(code_repo, code_root))
+            sudo('git clone {} {} --single-branch'.format(code_repo, code_root))
 
 
 def _get_submodule_list(path):
