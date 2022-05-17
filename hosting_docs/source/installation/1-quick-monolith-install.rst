@@ -29,6 +29,8 @@ SSH into the server with a root or a user with root privileges and do below.
 .. code-block:: bash
 
 	cd commcare-cloud/quick_monolith_install
+	# copy the sample config file
+	cp install-config.yml.sample install-config.yml
 	# fill the config and save
 	vim install-config.yml
 
