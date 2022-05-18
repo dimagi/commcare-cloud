@@ -37,6 +37,9 @@
 - name: Set permissions to Zookeeper folder
   file: path=/opt/zookeeper/ owner=root group=root recurse=yes follow=no
 
+- name: Create Zookeeper data directory
+  file: path="{{ zookeeper_data_dir }}" state=directory owner="{{ zookeeper_user }}" group="{{ zookeeper_group }}" recurse=yes
+
 - name: Create Zookeeper log directory
   file: path="{{ zookeeper_log_dir }}" state=directory owner="{{ zookeeper_user }}" group="{{ zookeeper_group }}" recurse=yes
 
