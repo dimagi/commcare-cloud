@@ -32,7 +32,7 @@ SSH into the server with a root or a user with root privileges and do below.
 	# fill the config and save
 	vim install-config.yml
 
-3. Run the installation script.
+3. Run the installation script. (You may be prompted for sudo password for some of the commands)
 
 .. code-block:: bash
 
