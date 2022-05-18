@@ -36,7 +36,7 @@ SSH into the server with a root or a user with root privileges and do below.
 
 .. code-block:: bash
 
-	sudo bash cchq-install.sh install-config.yml
+	bash cchq-install.sh install-config.yml
 
 Troubleshooting
 ---------------
