@@ -7,3 +7,4 @@ users:
   - fissionlabs
 slack_alerts_channel: alerts-production
 secrets_backend: aws-secrets
+slack_notifications_channel: C0B44C0Q2 # gtd-dev-support
