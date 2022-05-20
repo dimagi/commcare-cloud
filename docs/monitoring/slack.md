@@ -14,6 +14,8 @@ access token.
    2. chat:write
    3. reactions:write
 
+   For an already installed app the app token can be found in the app settings under "Install App".
+
 2. Set the access token as a commcare-cloud secret:
 
     Run the following command and paste in the token when prompted:

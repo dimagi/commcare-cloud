@@ -29,14 +29,16 @@ SSH into the server with a root or a user with root privileges and do below.
 .. code-block:: bash
 
 	cd commcare-cloud/quick_monolith_install
+	# copy the sample config file
+	cp install-config.yml.sample install-config.yml
 	# fill the config and save
 	vim install-config.yml
 
-3. Run the installation script.
+3. Run the installation script. (You may be prompted for sudo password for some of the commands)
 
 .. code-block:: bash
 
-	sudo bash cchq-install.sh install-config.yml
+	bash cchq-install.sh install-config.yml
 
 Troubleshooting
 ---------------
