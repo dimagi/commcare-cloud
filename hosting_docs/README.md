@@ -1,0 +1,66 @@
+# CommCareHQ Deployment Documentation
+
+This is the documentation on deploying and managing a CommCareHQ instance available at https://commcare-cloud.readthedocs.io/. This uses Sphinx tool and restructuredText markup language and follows the below style guide.
+
+## Table of contents
+
+- [About Sphinx and restructuredText](#about-sphinx-and-restructuredtext)
+- [Contributing](#contributing)
+  * [Setting up locally](#setting-up-locally)
+  * [Updating https://commcare-cloud.readthedocs.io/](#updating-https---commcare-cloudreadthedocsio-)
+- [Style Guide](#style-guide)
+  * [Principles](#principles)
+  * [Terminology](#terminology)
+
+## About Sphinx and restructuredText
+
+To learn more about Sphinx or restructuredText, check out below links.
+
+1. [Sphinx Docs](https://www.sphinx-doc.org/en/master/tutorial/first-steps.html) is useful to understand Sphinx, the tool.
+2. [restructuredText Docs](https://docutils.sourceforge.io/rst.html) is useful to understand restructuredText, the markup language.
+3. [Cheat Sheets](https://sphinx-tutorial.readthedocs.io/cheatsheet/) are useful as quick reference on the formatting options.
+
+
+## Contributing
+
+### Setting up locally
+
+To edit or create content and preview it locally follow the below steps.
+
+1. Download this repository and `cd` into this `hosting_docs` directory.
+2. Create a python virtualenv and install the requirements located at [requirements.txt](./requirements.txt) into the virtualenv.
+3. Edit the content as necessary after familiarizing yourself with the below style guide.
+4. Run `make html` command to build locally. View the generated `build/html/index.html`  on your local system in a browser to validate everything looks as intended.
+
+### Updating https://commcare-cloud.readthedocs.io/
+
+Once you are satisfied with your changes push them to the Github repo and open a pull request (PR) for the feedback. When the PR is merged, https://commcare-cloud.readthedocs.io/ gets automatically updated with your edits. This process is managed at https://readthedocs.org/projects/commcare-cloud/builds/.
+
+
+## Style Guide
+
+This documentation contained is intended to be exhaustive, covering information relevant to every step in the life-cycle of hosting a CommCare instance such as info on planning a CommCareHQ installation, installing, managing an instance, scaling, troubleshooting and various reference material. Before creating a new document or editing an existing one, please familiarize yourself with the below principles that the docs must adhere to.
+
+### Principles
+
+
+1. **State the purpose of the page**: Think of the purpose of the page you are editing and write a short overview/intro stating that at the beginning of that page.
+2. **Keep a consistent structure**: Each page should have an intro/overview, subsections if the page is long, content of the each section and where applicable a pointer to next potential page the reader might be interested. Page level table of contents is not necessary because if the headings are correctly used they automatically get added to the fixed table of contents section on the left side of all pages.
+3. **Format for scanning**: The readers of these docs might refer to pages to just find a command or possible values to a configuration option to solve an issue at hand. So format the text in a way for the reader to easily scan the page by using code highlighters as appropriate.
+4. **Place the page in most relevant location**: The docs have a clear separate sections for each phase of the hosting life-cycle. Think of the the context in which the reader will read the page, whether it's while installing, monitoring or troubleshooting an issue. Accordingly, place that page in the most relevant location so that the docs follow a logical order. Also add a link to the page in the top level index.rst for the respective section. This improves the discoverability of the content.
+5. **Don't mix content types**: A page could be a step by step tutorial or an explanation or a reference. Unless necessary, avoid mixing the content types. For example, if a tutorial should let the user know the options for a command, link to a page in the reference sections instead of putting the reference material in the tutorial. This might be exempt if the reference is only relevant in the tutorial.
+6. **Use consistent language**: Refer to the below [terminology](#terminology) section and use terms consistently.
+7. **Keep in mind the audience**: The readers for these docs could be an external IT team hosting CommCareHQ locally or a Dimagi engineer or a third-party Dimagi contractor. Do not assume any roles such as a system administrator or an HQ/mobile dev or an MSP etc.
+8. **Use relative links**: For referring to internal pages refer to them via relative links rather than links based on the host https://commcare-cloud.readthedocs.io/ which could change.
+
+### Terminology
+
+Below are the terms used in these docs and their meanings.
+
+| Term                 | Description        |
+| -------------        | ------------------ |
+| CommCare             | The mobile technology |
+| CommCareHQ           | The server-side technology to deploy and manage CommCare |
+| CommCareHQ Instance  | Refers to the whole hardware powering the CommCareHQ at a specific web address |
+| Monolith             | A CommCare instance powered by a single server |
+| Deploy 			   | Installing CommCareHQ or updating the application code depending on the context |
