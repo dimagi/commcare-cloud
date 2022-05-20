@@ -11,5 +11,5 @@ commcare-cloud is a python based tool used to automate deployment of CommCareHQ 
    /reference/1-commcare-cloud/1-installation
    /reference/1-commcare-cloud/2-configuration
    /reference/1-commcare-cloud/2.1-postgresql-config
-   /reference/1-commcare-cloud/3-commands
+   /reference/1-commcare-cloud/commands
    /reference/1-commcare-cloud/slack
