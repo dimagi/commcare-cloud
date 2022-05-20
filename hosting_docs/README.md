@@ -27,10 +27,10 @@ To learn more about Sphinx or restructuredText, check out below links.
 
 To edit or create content and preview it locally follow the below steps.
 
-1. Download this repository and `cd` into this `hosting_docs` directory.
-2. Create a python virtualenv and install the requirements located at [requirements.txt](./requirements.txt) into the virtualenv.
-3. Edit the content as necessary after familiarizing yourself with the below style guide.
-4. Run `make html` command to build locally. View the generated `build/html/index.html`  on your local system in a browser to validate everything looks as intended.
+#. Install the requirements located at [requirements.txt](./requirements.txt) into the commcare-cloud virtualenv.
+#. Edit the content in source directory as necessary after familiarizing yourself with the style guide below.
+#. Run `make` from the root directory to auto-generate docs for changelog and commcare-cloud commands.
+#. Run `make html` from `hosting_docs` dir to build locally. View the generated `build/html/index.html`  on your local system in a browser to validate everything looks as intended.
 
 ### Updating https://commcare-cloud.readthedocs.io/
 
