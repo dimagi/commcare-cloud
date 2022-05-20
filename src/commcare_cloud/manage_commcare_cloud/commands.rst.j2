@@ -1,28 +1,16 @@
-<!---
-This file should not be manually edited.
+Commands
+========
 
-This file is auto-generated via `manage-commcare-cloud make-docs > hosting_docs/source/reference/1-commcare-cloud/commands.md`
-
-The above command and the command that generates the changelog files are included in the commcare-cloud root Makefile. So if you
-run make, this file should automatically get updated.
--->
-
-# Commands
-
-This page explains how to run commcare-cloud commands to perform various
-actions on your environment and list of all commcare-cloud commands and their
-usage.
-
-## Running Commands with `commcare-cloud`
-
-To run any commcare-cloud you need to install commcare-cloud first
-(Refer to the installation docs) and activate its virtual environment.
+--------------------------------------
+Running Commands with `commcare-cloud`
+--------------------------------------
 
 All `commcare-cloud` commands take the following form:
 
 {{ parser|print_help }}
 
-### `cchq` alias
+`cchq` alias
+------------
 
 Additionally, `commcare-cloud` is aliased to the easier-to-type `cchq`
 (short for "CommCare HQ"), so any command you see here can also be run
@@ -32,7 +20,8 @@ as
 cchq <env> <command> <args...>
 ```
 
-### Underlying tools and common arguments
+Underlying tools and common arguments
+-------------------------------------
 
 The `commcare-cloud` command line tool is by and large a relatively
 thin wrapper around the other tools it uses: `ansible`, `ansible-playbook`,
@@ -55,7 +44,8 @@ these common arguments and when they can be used.
 To verify availability on any given command, you can always run the
 command with `-h`.
 
-### Ansible-backed commands
+Ansible-backed commands
+~~~~~~~~~~~~~~~~~~~~~~~
 
 For most ansible-backed commands `commcare-cloud`
 will run in check mode first, and then ask you to confirm
@@ -63,18 +53,21 @@ before applying the changes. Since check mode does not make sense
 for all commands, there are some that do not follow this pattern
 and apply the changes directly.
 
-### `--skip-check`
+`--skip-check`
+~~~~~~~~~~~~~~
 
 When this argument is included,
 the "check, ask, apply" behavior described above is circumvented,
 and the command is instead applied directly
 
-### `--quiet`
+`--quiet`
+~~~~~~~~~
 
 Run the command without every prompting for permission to continue.
 At each point, the affirmative response is assumed.
 
-### `--branch <branch>`
+`--branch <branch>`
+~~~~~~~~~~~~~~~~~~~
 
 In the specific case that `commcare-cloud` has been installed from
 git source in egg mode (i.e. using `pip install -e .`), it will always
@@ -83,27 +76,35 @@ that is thus passed in. If this arg is not specified,
 it defaults to `master`. As a consequence, when running from git branch
 `master`, there is no need to use the `--branch` arg explicitly.
 
-### `--output [actionable|minimal]`
+`--output [actionable|minimal]`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The callback plugin to use for generating output. See
 ansible-doc -t callback -l and ansible-doc -t callback.
 
-## List of Commands
+Available Commands
+==================
+
 {% for group, subparsers in subparsers_by_group -%}
 {% if group == 'housekeeping' %}
-### Internal Housekeeping for your `commcare-cloud` environments
+Internal Housekeeping for your `commcare-cloud` environments
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 {% elif group == 'ad-hoc' %}
-### Ad-hoc
+Ad-hoc
+~~~~~~
 {% elif group == 'operational' %}
-### Operational
+Operational
+~~~~~~~~~~~
 {% else %}
-### {{ group }}
+{{ group }}
+~~~~~~~~~~~
 {% endif -%}
 {% for command, subparser in subparsers %}
 {% if loop.index0 == 0 %}---{% endif %}
-#### ``{{ command.command }}`` Command 
+#`{{ command.command }}`
+~~~~~~~~~~~~~~~~~~~~~~~~
 {%- if command.aliases %}
-(Alias ``{{ '`, `'.join(command.aliases) }}``)
+(Alias `{{ '`, `'.join(command.aliases) }}`)
 {%- endif %}
 
 {{ subparser|print_help }}
