@@ -48,5 +48,7 @@ HOSTNAME=${HOSTNAME_PARTS[1]}
 PID=$!
 BASH_PID=$$
 echo "Started ${HOSTNAME} on PID: ${PID}"
-wait $PID
+wait -n $PID
+rcode=$?
 echo "Exiting Bash Process: ${BASH_PID}"
+exit $rcode
