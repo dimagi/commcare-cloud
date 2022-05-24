@@ -76,11 +76,11 @@ Rebuilding environment
 
 #. Remove the "wipe_environment_enabled: True" line in your `public.yml` file.
 
-#. Run Ansible playbook to recreate databases
+#. Run Ansible playbook to recreate databases.
 
    .. code-block::
 
-      $ cchq <env_name> ap deploy_db.yml
+      $ cchq <env_name> ap deploy_db.yml --skip-check
 
 #. Run a code deploy to create Kafka topics, create Postgres
    tables, and Elasticsearch indices.
@@ -91,7 +91,8 @@ Rebuilding environment
 
 
 #. Recreate a superuser (where you substitute your address in place of
-   "you@your.domain"). (Optional)
+   "you@your.domain"). This is optional and should not be performed if
+   you are planning to migrate domain from other environment.
 
    .. code-block::
 

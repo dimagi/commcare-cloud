@@ -119,7 +119,7 @@ will be unable to submit forms or sync with the server.
 
 * Setup a new environment by following :ref:`deploy-commcarehq`
 * Do a commcare-hq deploy using :ref:`operations/2-deploys:Deploying CommCare HQ code changes`
-* And now proceed to step 4.
+* Proceed to step 4.
 
 If you have performed any tests on your new environment that has created test data, to delete 
 the data you can rebuild your environment using 
