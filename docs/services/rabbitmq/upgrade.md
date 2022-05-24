@@ -70,7 +70,19 @@ with the target version and gracefully drain the old one while directing traffic
     ```
     rabbitmq_migration_bridge=true
     ```
-4. Edit public.yml to have
+4. Edit public.yml to have 
+    
+    If you are using rabbitmq in cluster mode and using `RabbitMQ Broker URL` which joins multiple rabbitmq servers as a cluster, then update the host
+    with new_servers.
+    
+    #RabbitMQ Broker URL
+    ```
+    BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ <new rabbitmq ip1> }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ <new rabbitmq ip2> }}:5672/{{ AMQP_NAME }}'
+    ```
+    #OLD_BROKER_URL variable.
+    ```
+    OLD_BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ OLD_AMQP_HOST }}:5672/{{ AMQP_NAME }};
+    ```
     ```
     AMQP_HOST: "{{ <new rabbitmq ip> }}"  # Maybe "{{ groups.rabbitmq.0 }}"
     OLD_AMQP_HOST: "{{ <old rabbitmq ip> }}"  # Maybe "{{ groups.rabbitmq.1 }}"
