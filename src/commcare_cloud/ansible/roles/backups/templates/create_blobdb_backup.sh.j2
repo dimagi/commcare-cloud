@@ -3,11 +3,13 @@ BACKUP_TYPE=$1
 MINUTES_TO_RETAIN_BACKUPS=$2
 DAYS_TO_RETAIN_BACKUPS=$2
 HOSTNAME=$(hostname)
+ENV="{{ env_name }}"
 TODAY=$(date +"%Y_%m_%d")
 HOUR=$(date +"%Y_%m_%d_%H")
 BACKUP_FILE="blobdb_${BACKUP_TYPE}_${TODAY}.tar.gz"
 HOURLY_BACKUP_FILE="blobdb_${BACKUP_TYPE}_${HOUR}.tar.gz"
 BLOBDB_BACKUP_HOURLY={{ blobdb_backup_hourly }}
+PYTHON_ENV="/home/cchq/www/${ENV}/current/python_env/bin/python"
 
 {% if not aws_versioning_enabled %}
 UPLOAD_NAME="${BACKUP_FILE}"
@@ -31,5 +33,5 @@ else
 fi
 
 {% if blobdb_s3 %}
-( cd {{ blobdb_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "${UPLOAD_NAME}" {{ blobdb_snapshot_bucket }} {{aws_endpoint}} )
+( cd {{ blobdb_backup_dir }} && "${PYTHON_ENV}" /usr/local/sbin/backup_snapshots.py "${BACKUP_FILE}" "${UPLOAD_NAME}" {{ blobdb_snapshot_bucket }} {{aws_endpoint}} )
 {% endif %}
