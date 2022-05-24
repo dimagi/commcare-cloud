@@ -25,5 +25,7 @@ trap 'echo "Cleaning Prometheus metrics from ${prometheus_multiproc_dir} for PID
 PID=$!
 BASH_PID=$$
 echo "Started Django process with PID: ${PID}"
-wait $PID
+wait -n $PID
+rcode=$?
 echo "Exiting Bash Process: ${BASH_PID}"
+exit $rcode
