@@ -141,7 +141,7 @@ Prepare all machines for automated deploy
 
    6. Lastly, install the following:
 
-          $ sudo -H pip install ansible virtualenv virtualenvwrapper --ignore-installed six
+          $ sudo -H pip install ansible virtualenv virtualenvwrapper testresources --ignore-installed six
 
 
 Create a user for yourself
