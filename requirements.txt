@@ -94,7 +94,7 @@ pycryptodome==3.10.4
     # via commcare-cloud (setup.py)
 pygithub==1.55
     # via commcare-cloud (setup.py)
-pyjwt==2.2.0
+pyjwt==2.4.0
     # via pygithub
 pynacl==1.4.0
     # via
