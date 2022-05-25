@@ -167,7 +167,7 @@ Prepare all machines for automated deploy
 
       ::
 
-         $ sudo -H pip install --upgrade pip
+         $ sudo python3 -m pip install --upgrade pip
 
    6. Lastly, install the following:
 
