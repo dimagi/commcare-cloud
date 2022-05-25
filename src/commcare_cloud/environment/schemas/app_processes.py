@@ -148,9 +148,6 @@ OPTIONAL_CELERY_PROCESSES = [process.name for process in CELERY_PROCESSES
 SOLO_QUEUES = [
     # because these don't actually run normal celery processes
     'flower', 'beat',
-    # because these run management commands in addition to normal celery processes
-    # (see commcare_cloud/ansible/roles/commcarehq/tasks/celery.yml)
-    'reminder_queue', 'submission_reprocessing_queue', 'sms_queue',
 ]
 
 
