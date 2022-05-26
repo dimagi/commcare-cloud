@@ -4,7 +4,7 @@ set -ve
 
 GROUP_VARS=src/commcare_cloud/ansible/group_vars/all.yml
 eval PYVER=$(grep python_version: $GROUP_VARS | head -n1 | cut -d' ' -f2)
-# Link Travis-installed python where ansible virtualenv will find it
+# Link GitHub Actions-installed python where ansible virtualenv will find it
 [ -z $(which python${PYVER}) ] && sudo ln -s /opt/python/${PYVER}/bin/*${PYVER}* /usr/local/bin/
 which python${PYVER}
 python${PYVER} --version
@@ -20,17 +20,17 @@ BRANCH=$(git status | head -n1 | xargs -n1 echo | tail -n1)
 if [[ ${TEST} = 'main' ]]
 then
 
-    cp .tests/environments/travis/private.yml .tests/environments/travis/vault.yml
+    cp .tests/environments/testenv/private.yml .tests/environments/testenv/vault.yml
 
     test_syntax() {
         COMMCARE_CLOUD_ENVIRONMENTS=.tests/environments \
-        commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --syntax-check
+        commcare-cloud testenv deploy-stack --branch=${BRANCH}  --skip-check --quiet --syntax-check
     }
 
     test_localsettings() {
         COMMCARE_CLOUD_ENVIRONMENTS=.tests/environments \
-        commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --tags=py3,commcarehq
-        sudo python -m py_compile /home/cchq/www/travis/current/localsettings.py
+        commcare-cloud testenv deploy-stack --branch=${BRANCH}  --skip-check --quiet --tags=py3,commcarehq
+        sudo python -m py_compile /home/cchq/www/testenv/current/localsettings.py
     }
 
     test_dimagi_environments() {

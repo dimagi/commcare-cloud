@@ -7,7 +7,7 @@ ENVS_DIR = Path(__file__).parent.parent / '.tests/environments'
 
 
 def test_python_version():
-    env = Environment(DefaultPaths('travis', environments_dir=ENVS_DIR))
+    env = Environment(DefaultPaths('testenv', environments_dir=ENVS_DIR))
     assert 'python_version' not in env.public_vars, env.public_vars['python_version']
     assert env.python_version == env.group_vars["python_version"], \
         (env.python_version, env.group_vars["python_version"])
