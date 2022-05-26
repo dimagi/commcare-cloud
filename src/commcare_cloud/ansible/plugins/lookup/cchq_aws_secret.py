@@ -7,7 +7,7 @@ import time
 from io import open
 
 import six.moves.cPickle as pickle
-from ansible.plugins.lookup import aws_secret
+from ansible_collections.amazon.aws.plugins.lookup import aws_secret
 from cryptography.fernet import Fernet, InvalidToken
 
 __metaclass__ = type
@@ -38,6 +38,7 @@ class LookupModule(aws_secret.LookupModule):
             if value is Ellipsis:
                 logging.debug('Fetching secret {}'.format(terms))
                 try:
+                    # ----- Here we need to get the environment variable ----- #
                     value = super(LookupModule, self).run(terms, variables, **kwargs)
                 except Exception as e:
                     logging.debug('Caching error fetching secret: {}'.format(e))
