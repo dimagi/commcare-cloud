@@ -8,6 +8,10 @@ eval PYVER=$(grep python_version: $GROUP_VARS | head -n1 | cut -d' ' -f2)
 [ -z $(which python${PYVER}) ] && sudo ln -s /opt/python/${PYVER}/bin/*${PYVER}* /usr/local/bin/
 which python${PYVER}
 python${PYVER} --version
+# link virtualenv to a place where it will be found in ansible
+which /opt/pipx_bin/virtualenv && sudo ln -s /opt/pipx_bin/virtualenv /usr/local/bin/
+which virtualenv
+virtualenv --version
 
 # pull branch from git status the exact same way that commcare-cloud does
 # so that --branch=${BRANCH} will always match
