@@ -19,7 +19,7 @@ jobs:
 
     env:
       ANSIBLE_ROLES_PATH: "~/.ansible/roles"
-      TRAVIS_TEST: 1
+      CI_TEST: 1
       TEST: main
 
     steps:
