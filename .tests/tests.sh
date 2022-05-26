@@ -20,15 +20,15 @@ BRANCH=$(git status | head -n1 | xargs -n1 echo | tail -n1)
 if [[ ${TEST} = 'main' ]]
 then
 
-    cp .travis/environments/travis/private.yml .travis/environments/travis/vault.yml
+    cp .tests/environments/travis/private.yml .tests/environments/travis/vault.yml
 
     test_syntax() {
-        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments \
+        COMMCARE_CLOUD_ENVIRONMENTS=.tests/environments \
         commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --syntax-check
     }
 
     test_localsettings() {
-        COMMCARE_CLOUD_ENVIRONMENTS=.travis/environments \
+        COMMCARE_CLOUD_ENVIRONMENTS=.tests/environments \
         commcare-cloud travis deploy-stack --branch=${BRANCH}  --skip-check --quiet --tags=py3,commcarehq
         sudo python -m py_compile /home/cchq/www/travis/current/localsettings.py
     }

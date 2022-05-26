@@ -3,7 +3,7 @@ from pathlib import Path
 from commcare_cloud.environment.main import Environment
 from commcare_cloud.environment.paths import DefaultPaths
 
-ENVS_DIR = Path(__file__).parent.parent / '.travis/environments'
+ENVS_DIR = Path(__file__).parent.parent / '.tests/environments'
 
 
 def test_python_version():
