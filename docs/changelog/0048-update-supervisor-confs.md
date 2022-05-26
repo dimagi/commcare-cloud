@@ -13,7 +13,7 @@ The following version of CommCare must be deployed before rolling out this chang
 
 
 ## Change Context
-Run management command to update shell runner scripts for django and celery.
+Run command to update shell runner scripts for django and celery.
 
 ## Details
 The runner scripts used by `supervisord` to run celery and django have been
@@ -22,7 +22,7 @@ provides visibility of the django/celery exit status by viewing the
 `supervisord` logs.
 
 ## Steps to update
-Run the following management command to update supervisor configs:
+Run the following command to update supervisor configs:
 
 ```bash
 cchq <env> update-supervisor-confs
