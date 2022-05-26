@@ -45,7 +45,6 @@ jobs:
 
         # Install virtualenv as an isolated global executable for deploy-stack in .travis/tests.sh
         python3 -m pip install --user pipx
-        python3 -m pipx ensurepath
         pipx install virtualenv
 
     - name: Run tests
