@@ -2,8 +2,8 @@
 <!--See https://github.com/dimagi/commcare-cloud/blob/master/changelog/README.md for instructions-->
 # About this changelog
 
-The following changes to `commcare-cloud` that require your attention,
-newest first.
+Below are the list of changes (the newest first) to `commcare-cloud` and CommCareHQ that
+need to be applied on your environemtn to keep it upto date.
 
 ### Changelog
 
