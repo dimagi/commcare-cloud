@@ -1,10 +1,22 @@
-# Commands
-{:.no_toc}
+<!---
+This file should not be manually edited.
 
-* TOC
-{:toc}
+This file is auto-generated via `manage-commcare-cloud make-docs > hosting_docs/source/reference/1-commcare-cloud/commands.md`
+
+The above command and the command that generates the changelog files are included in the commcare-cloud root Makefile. So if you
+run make, this file should automatically get updated.
+-->
+
+# Commands
+
+This page explains how to run commcare-cloud commands to perform various
+actions on your environment and list of all commcare-cloud commands and their
+usage.
 
 ## Running Commands with `commcare-cloud`
+
+To run any commcare-cloud command you need to install commcare-cloud first
+(Refer to the installation docs) and activate its virtual environment.
 
 All `commcare-cloud` commands take the following form:
 
@@ -50,7 +62,7 @@ is already on the control machine.
 This defaults to 'yes' if command.run_setup_on_control_by_default is True, otherwise to 'no'.
 
 
-## `cchq` alias
+### `cchq` alias
 
 Additionally, `commcare-cloud` is aliased to the easier-to-type `cchq`
 (short for "CommCare HQ"), so any command you see here can also be run
@@ -60,7 +72,7 @@ as
 cchq <env> <command> <args...>
 ```
 
-## Underlying tools and common arguments
+### Underlying tools and common arguments
 
 The `commcare-cloud` command line tool is by and large a relatively
 thin wrapper around the other tools it uses: `ansible`, `ansible-playbook`,
@@ -116,12 +128,12 @@ it defaults to `master`. As a consequence, when running from git branch
 The callback plugin to use for generating output. See
 ansible-doc -t callback -l and ansible-doc -t callback.
 
-## Available Commands
+## List of Commands
 
 ### Internal Housekeeping for your `commcare-cloud` environments
 
 ---
-#### `validate-environment-settings`
+#### ``validate-environment-settings`` Command
 
 Validate your environment's configuration files
 
@@ -134,7 +146,7 @@ command to check for validation errors or incompatibilities.
 
 ---
 
-#### `update-local-known-hosts`
+#### ``update-local-known-hosts`` Command
 
 Update the local known_hosts file of the environment configuration.
 
@@ -152,7 +164,7 @@ is meant to mitigate against in the first place.
 ### Ad-hoc
 
 ---
-#### `lookup`
+#### ``lookup`` Command
 
 Lookup remote hostname or IP address
 
@@ -175,7 +187,7 @@ Use '-' for default (django_manage[0])
 
 ---
 
-#### `ssh`
+#### ``ssh`` Command
 
 Connect to a remote host with ssh.
 
@@ -212,7 +224,7 @@ Don't output the command to be run.
 
 ---
 
-#### `mosh`
+#### ``mosh`` Command
 
 Connect to a remote host with mosh.
 
@@ -247,7 +259,7 @@ Don't output the command to be run.
 
 ---
 
-#### `run-module`
+#### ``run-module`` Command
 
 Run an arbitrary Ansible module.
 
@@ -369,7 +381,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
-#### `run-shell-command`
+#### ``run-shell-command`` Command
 
 Run an arbitrary command via the Ansible shell module.
 
@@ -493,7 +505,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
-#### `send-datadog-event`
+#### ``send-datadog-event`` Command
 
 Track an infrastructure maintainance event in Datadog
 
@@ -524,7 +536,7 @@ Alert type.
 
 ---
 
-#### `django-manage`
+#### ``django-manage`` Command
 
 Run a django management command.
 
@@ -588,7 +600,7 @@ Don't output the command to be run.
 
 ---
 
-#### `tmux`
+#### ``tmux`` Command
 
 Connect to a remote host with ssh and open a tmux session.
 
@@ -636,7 +648,7 @@ Don't output the command to be run.
 
 ---
 
-#### `export-sentry-events`
+#### ``export-sentry-events`` Command
 
 Export Sentry events. One line per event JSON.
 
@@ -664,7 +676,7 @@ Starting position for the cursor
 
 ---
 
-#### `pillow-topic-assignments`
+#### ``pillow-topic-assignments`` Command
 
 Print out the list of Kafka partitions assigned to each pillow process.
 
@@ -691,7 +703,7 @@ Output as CSV
 ### Operational
 
 ---
-#### `secrets`
+#### ``secrets`` Command
 
 View and edit secrets through the CLI
 
@@ -707,7 +719,7 @@ commcare-cloud <env> secrets {view,edit,list-append,list-remove} secret_name
 
 ---
 
-#### `migrate-secrets`
+#### ``migrate-secrets`` Command
 
 Migrate secrets from one backend to another
 
@@ -725,7 +737,7 @@ commcare-cloud <env> migrate-secrets [--to-backend TO_BACKEND] from_backend
 
 ---
 
-#### `ping`
+#### ``ping`` Command
 
 Ping specified or all machines to see if they have been provisioned yet.
 
@@ -753,8 +765,8 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
-#### `ansible-playbook`
-(Alias `ap`)
+#### ``ansible-playbook`` Command
+(Alias ``ap``)
 
 Run a playbook as you would with ansible-playbook
 
@@ -863,8 +875,8 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
-#### `deploy-stack`
-(Alias `aps`)
+#### ``deploy-stack`` Command
+(Alias ``aps``)
 
 Run the ansible playbook for deploying the entire stack.
 
@@ -906,7 +918,7 @@ you won't be able to run bootstrap-users again.
 
 ---
 
-#### `update-config`
+#### ``update-config`` Command
 
 Run the ansible playbook for updating app config.
 
@@ -918,7 +930,7 @@ This includes django `localsettings.py` and formplayer `application.properties`.
 
 ---
 
-#### `after-reboot`
+#### ``after-reboot`` Command
 
 Bring a just-rebooted machine back into operation.
 
@@ -949,7 +961,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
-#### `bootstrap-users`
+#### ``bootstrap-users`` Command
 
 Add users to a set of new machines as root.
 
@@ -973,7 +985,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
-#### `update-users`
+#### ``update-users`` Command
 
 Bring users up to date with the current CommCare Cloud settings.
 
@@ -993,7 +1005,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
-#### `update-user-key`
+#### ``update-user-key`` Command
 
 Update a single user's public key (because update-users takes forever).
 
@@ -1015,7 +1027,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
-#### `update-supervisor-confs`
+#### ``update-supervisor-confs`` Command
 
 Updates the supervisor configuration files for services required by CommCare.
 
@@ -1033,7 +1045,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
-#### `fab`
+#### ``fab`` Command
 
 Run a fab command as you would with fab
 
@@ -1088,7 +1100,7 @@ Use `-l` instead of a command to see the full list of commands.
 
 ---
 
-#### `deploy`
+#### ``deploy`` Command
 
 Deploy CommCare
 
@@ -1124,7 +1136,7 @@ fab settings in k1=v1,k2=v2 format to be passed down to fab
 
 ---
 
-#### `service`
+#### ``service`` Command
 
 Manage services.
 
@@ -1175,8 +1187,8 @@ Use 'help' action to list all options.
 
 ---
 
-#### `migrate-couchdb`
-(Alias `migrate_couchdb`)
+#### ``migrate-couchdb`` Command
+(Alias ``migrate_couchdb``)
 
 Perform a CouchDB migration
 
@@ -1219,7 +1231,7 @@ then it's acceptable to do live.
 
 ---
 
-#### `downtime`
+#### ``downtime`` Command
 
 Manage downtime for the selected environment.
 
@@ -1249,7 +1261,7 @@ Default: 24 hours
 
 ---
 
-#### `copy-files`
+#### ``copy-files`` Command
 
 Copy files from multiple sources to targets.
 
@@ -1310,7 +1322,7 @@ Action to perform
 
 ---
 
-#### `list-postgresql-dbs`
+#### ``list-postgresql-dbs`` Command
 
 Example:
 
@@ -1332,7 +1344,7 @@ Gives additional databases on the server.
 
 ---
 
-#### `celery-resource-report`
+#### ``celery-resource-report`` Command
 
 Report of celery resources by queue.
 
@@ -1352,7 +1364,7 @@ Output table as CSV
 
 ---
 
-#### `pillow-resource-report`
+#### ``pillow-resource-report`` Command
 
 Report of pillow resources.
 
@@ -1368,7 +1380,7 @@ Output table as CSV
 
 ---
 
-#### `couchdb-cluster-info`
+#### ``couchdb-cluster-info`` Command
 
 Output information about the CouchDB cluster.
 
@@ -1412,7 +1424,7 @@ CouchDB version. Assumes '2.3.1' or couchdb_version if set in public.yml
 
 ---
 
-#### `terraform`
+#### ``terraform`` Command
 
 Run terraform for this env with the given arguments
 
@@ -1445,7 +1457,7 @@ or else the username of the user running the command.
 
 ---
 
-#### `terraform-migrate-state`
+#### ``terraform-migrate-state`` Command
 
 Apply unapplied state migrations in commcare_cloud/commands/terraform/migrations
 
@@ -1472,7 +1484,7 @@ Set the last applied migration value to this number before running. Will begin r
 
 ---
 
-#### `aws-sign-in`
+#### ``aws-sign-in`` Command
 
 Use your MFA device to "sign in" to AWS for &lt;duration&gt; minutes (default 30)
 
@@ -1493,7 +1505,7 @@ Stay signed in for this many minutes
 
 ---
 
-#### `aws-list`
+#### ``aws-list`` Command
 
 List endpoints (ec2, rds, etc.) on AWS
 
@@ -1503,7 +1515,7 @@ commcare-cloud <env> aws-list
 
 ---
 
-#### `aws-fill-inventory`
+#### ``aws-fill-inventory`` Command
 
 Fill inventory.ini.j2 using AWS resource values cached in aws-resources.yml
 
@@ -1525,7 +1537,7 @@ have been made to our actual resources in AWS.
 
 ---
 
-#### `openvpn-activate-user`
+#### ``openvpn-activate-user`` Command
 
 Give a OpenVPN user a temporary password (the ansible user password)
 
@@ -1555,7 +1567,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
-#### `openvpn-claim-user`
+#### ``openvpn-claim-user`` Command
 
 Claim an OpenVPN user as your own, setting its password
 
@@ -1579,7 +1591,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
-#### `forward-port`
+#### ``forward-port`` Command
 
 Port forward to access a remote admin console
 

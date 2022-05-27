@@ -15,7 +15,7 @@ usage.
 
 ## Running Commands with `commcare-cloud`
 
-To run any commcare-cloud you need to install commcare-cloud first
+To run any commcare-cloud command you need to install commcare-cloud first
 (Refer to the installation docs) and activate its virtual environment.
 
 All `commcare-cloud` commands take the following form:
