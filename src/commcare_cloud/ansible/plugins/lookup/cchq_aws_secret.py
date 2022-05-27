@@ -38,7 +38,9 @@ class LookupModule(aws_secret.LookupModule):
             if value is Ellipsis:
                 logging.debug('Fetching secret {}'.format(terms))
                 try:
-                    # ----- Here we need to get the environment variable ----- #
+                    # default value for region is None.
+                    if 'region' not in kwargs:
+                        kwargs['region'] = os.environ['AWS_REGION']
                     value = super(LookupModule, self).run(terms, variables, **kwargs)
                 except Exception as e:
                     logging.debug('Caching error fetching secret: {}'.format(e))
