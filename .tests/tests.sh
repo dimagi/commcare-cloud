@@ -9,7 +9,7 @@ eval PYVER=$(grep python_version: $GROUP_VARS | head -n1 | cut -d' ' -f2)
 which python${PYVER}
 python${PYVER} --version
 # link virtualenv to a place where it will be found in ansible
-which /opt/pipx_bin/virtualenv && sudo ln -s /opt/pipx_bin/virtualenv /usr/local/bin/
+[ -e /opt/pipx_bin/virtualenv ] && sudo ln -s /opt/pipx_bin/virtualenv /usr/local/bin/
 which virtualenv
 virtualenv --version
 
