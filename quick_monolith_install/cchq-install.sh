@@ -50,7 +50,7 @@ printf "\n"
 # install comcare-cloud
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
-source "$DIR/../control/init.sh"
+echo y | source "$DIR/../control/init.sh"
 sudo touch /var/log/ansible.log && sudo chmod 666 /var/log/ansible.log
 
 printf "\n"

@@ -1,70 +1,45 @@
 formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.java.org.javarosa.enableOpenTracing=true'
 management_commands:
   celery_a0:
-    run_sms_queue:
-    queue_schedule_instances:
     handle_survey_actions:
+    queue_schedule_instances:
+    run_sms_queue:
+    run_submission_reprocessing_queue:
   pillow3:
     run_pillow_retry_queue:
 celery_processes:
   celery_a0:
-    analytics_queue:
+    analytics_queue,email_queue,sms_queue,sumologic_logs_queue:
       pooling: gevent
-      concurrency: 2
+      concurrency: 4
     async_restore_queue:
       concurrency: 2
-    background_queue:
-      concurrency: 4
-    case_import_queue:
+    background_queue,ush_background_tasks:
+      concurrency: 2
+    case_import_queue,user_import_queue,export_download_queue:
       concurrency: 2
       prefetch_multiplier: 1
-    case_rule_queue:
-      concurrency: 2
-    celery:
-      concurrency: 2
-    celery_periodic:
-      concurrency: 2
-    email_queue:
-      pooling: gevent
-      concurrency: 2
-    export_download_queue:
+    case_rule_queue,ucr_queue,saved_exports_queue,ucr_indicator_queue:
       concurrency: 2
       prefetch_multiplier: 1
-    linked_domain_queue:
+    celery,celery_periodic:
       concurrency: 2
+    linked_domain_queue,logistics_background_queue,logistics_reminder_queue:
+      concurrency: 1
     malt_generation_queue:
       pooling: gevent
-      concurrency: 2
-    reminder_case_update_queue:
+      concurrency: 1
+    reminder_case_update_queue,reminder_queue,repeat_record_queue:
       pooling: gevent
-      concurrency: 2
-    reminder_queue:
-      pooling: gevent
-      concurrency: 2
-    reminder_rule_queue:
-      concurrency: 2
-    repeat_record_queue:
-      pooling: gevent
-      concurrency: 2
-    saved_exports_queue:
-      concurrency: 2
-      prefetch_multiplier: 1
-    sms_queue:
-      pooling: gevent
-      concurrency: 2
-    sumologic_logs_queue:
-      pooling: gevent
-      concurrency: 2
-    ucr_queue:
       concurrency: 4
-      prefetch_multiplier: 1
-    user_import_queue:
-      concurrency: 2
-      prefetch_multiplier: 1
-    ush_background_tasks:
-      concurrency: 2
-    flower: {}
+    reminder_case_update_bulk_queue,reminder_rule_queue:
+      concurrency: 1
+    send_report_throttled:
+      concurrency: 1
+    submission_reprocessing_queue:
+      concurrency: 1
     beat: {}
+    flower: {}
 pillows:
   'pillow3':
     AppDbChangeFeedPillow:

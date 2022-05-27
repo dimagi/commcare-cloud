@@ -7,6 +7,9 @@ newest first.
 
 ## Changelog
 
+### **2022-05-25** [update-supervisor-confs](0048-update-supervisor-confs.md)
+Run command to update shell runner scripts for django and celery.
+
 ### **2022-04-19** [Update PgBouncer configuration to support multiple processes](0047-pgbouncer-multiprocess.md)
 This change updates the PgBouncer role to support multiple processes
 on a single machine, so that more CPU cores can be used (PgBouncer
