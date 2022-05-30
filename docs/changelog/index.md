@@ -3,7 +3,7 @@
 # About this changelog
 
 Below are the list of changes (the newest first) to `commcare-cloud` and CommCareHQ that
-need to be applied on your environemtn to keep it upto date.
+need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
