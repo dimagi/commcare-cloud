@@ -10,7 +10,7 @@ usage: ansible [-h] [--version] [-v] [-b] [--become-method BECOME_METHOD]
                [-e EXTRA_VARS] [--vault-id VAULT_IDS]
                [--ask-vault-password | --vault-password-file VAULT_PASSWORD_FILES]
                [-f FORKS] [-M MODULE_PATH] [--playbook-dir BASEDIR]
-               [-a MODULE_ARGS] [-m MODULE_NAME]
+               [--task-timeout TASK_TIMEOUT] [-a MODULE_ARGS] [-m MODULE_NAME]
                pattern
 
 Define and run a single task 'playbook' against a set of hosts
