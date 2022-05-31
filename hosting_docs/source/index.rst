@@ -28,3 +28,4 @@ This documentation contains guides and reference material on how to self host Co
    Security <security/1-security>
    Supporting Your Users <support/1-index>
    Reference Material <reference/0-index>
+   Changelog <changelog/index>
