@@ -68,7 +68,7 @@ optional arguments:
   -l SUBSET, --limit SUBSET
                         further limit selected hosts to an additional pattern
   -m MODULE_NAME, --module-name MODULE_NAME
-                      Name of the action to execute (default=command)
+                        Name of the action to execute (default=command)
   -o, --one-line        condense output
   -t TREE, --tree TREE  log output to this directory
   -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
