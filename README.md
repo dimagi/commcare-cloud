@@ -1,7 +1,6 @@
 # CommCare-Cloud
 
-[![Build
-Status](https://travis-ci.com/dimagi/commcare-cloud.svg?branch=master)](https://travis-ci.com/dimagi/commcare-cloud)
+[![commcare-cloud tests](https://github.com/dimagi/commcare-cloud/actions/workflows/tests.yml/badge.svg)](https://github.com/dimagi/commcare-cloud/actions/workflows/tests.yml)
 
 CommCare-Cloud is a suite of tools for standing up and managing a production
 [CommCare HQ](https://github.com/dimagi/commcare-hq/) server environment.
