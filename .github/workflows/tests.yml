@@ -33,6 +33,11 @@ jobs:
       with:
         python-version: "3.9"
 
+    - name: Unset Python Env Variables
+      run: |
+        unset pythonLocation
+        unset LD_LIBRARY_PATH
+
     - name: Set up Cloud Python Version
       uses: actions/setup-python@v3
       with:
