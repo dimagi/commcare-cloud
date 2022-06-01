@@ -49,6 +49,7 @@ elasticsearch_data=false
 {{ __kafka1__ }} kafka_broker_id=0 zookeeper_server_id=1
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=2
 {{ __kafka3__ }} kafka_broker_id=2 zookeeper_server_id=3
+{{ __kafka_a0__ }} kafka_broker_id=3 zookeeper_server_id=4
 {{ __rabbit_a3__ }}
 {{ __rabbit_c4__ }}
 {{ __pgbouncer0__ }}
@@ -100,9 +101,9 @@ kafka2
 kafka3
 
 [kafka:children]
-kafka1
 kafka2
 kafka3
+kafka_a0
 
 [celery:children]
 celery4
