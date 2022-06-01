@@ -1,0 +1,21 @@
+title: Upgrade Ansible
+key: upgrade_ansible
+date: 2022-05-31
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Run command to uninstall older ansible version which 2.9.26 and install 4.2.0
+
+details: |
+  As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
+  libraries we have updated the Ansible version to use the ansible==4.2.0. During that
+  process we have test this approach on new servers and we have to uninstall the existing version 
+  and install the 4.2.0 
+
+update_steps: |
+  Run the following command to remove existing ansible:
+
+  ```bash
+  cchq <env> run-shell-command "pip uninstall ansible"
+  ```
