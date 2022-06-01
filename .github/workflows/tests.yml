@@ -28,15 +28,17 @@ jobs:
     steps:
     # setup 3.9 for deploy-stack
     # may be removed when this file is updated to match global_vars/all.yml:python_version
-    - uses: actions/setup-python@v3
-      with:
-        python-version: "3.9"
+      - name: Setup HQ Python Version
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
 
-    - uses: actions/checkout@v3
-    - name: Set up Python 3.x
+    - name: Set up Cloud Python Version
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.versions.python }}
+
+    - uses: actions/checkout@v3
 
     - name: Install dependencies
       run: |
