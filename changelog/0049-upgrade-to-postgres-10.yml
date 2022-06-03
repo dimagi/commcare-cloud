@@ -1,0 +1,24 @@
+---
+title: Postgres upgrade from 9.6 to 10
+key: upgrade-to-Postgres-10
+date: 2022-03-06
+optional_per_env: no
+min_commcare_version: 064bb6dfc2b333cc8e6e3955b0c5d30513c5f4be
+context: |
+  This change upgrade PostgreSQL from 9.6 to 10 version.
+  so we strongly recommend applying this change before then.
+
+details: |
+  As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
+  libraries we have updated Postgres from 9.6 to 10 version.
+
+update_steps: |
+
+  Before you start, make sure that you have taken backup of the existing postgresql server/databases and 
+  place the backup to on another disk or remotely.
+
+  0. For developers running postgres in local machine:
+      instructions: https://gist.github.com/prem-fissionhq/20e34fa85b9eeae7df280078b3918ba7
+
+  1. For users running postgresql on Linux machines:
+      instructions: http://dimagi.github.io/commcare-cloud/services/postgresql/upgrade.html
