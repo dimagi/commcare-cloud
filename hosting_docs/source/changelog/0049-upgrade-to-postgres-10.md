@@ -16,13 +16,13 @@ This change upgrade PostgreSQL from 9.6 to 10 version.
 so we strongly recommend applying this change.
 
 ## Details
-As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
-libraries we have updated Postgres from 9.6 to 10 version.
+PostgreSQL is strongly backwards compatible, so no coordination with the CommCare HQ codebase is required before this upgrade.
+However, after six weeks, from this announcement, new changes to CommCare HQ will no longer be guaranteed
+to be compatible with PostgreSQL 9.6, so we strongly recommend applying this upgrade as soon as possible.
 
 ## Steps to update
-
-Before you start, make sure that you have taken backup of the existing postgresql server/databases and 
-place the backup to on another disk or remotely.
+Before you start, make sure that you have backed up the existing PostgreSQL database servers
+to a remote location.
 
 0. For developers running postgresql in local machine:
     instructions: [Postgres_upgrade_local](https://gist.github.com/prem-fissionhq/20e34fa85b9eeae7df280078b3918ba7)
