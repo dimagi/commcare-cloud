@@ -7,6 +7,12 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-03-06** [Postgres upgrade from 9.6 to 10](0049-upgrade-to-postgres-10.md)
+This change upgrade PostgreSQL from 9.6 to 10 version.
+so we strongly recommend applying this change
+
+
+---
 #### **2022-05-25** [update-supervisor-confs](0048-update-supervisor-confs.md)
 Run command to update shell runner scripts for django and celery.
 
