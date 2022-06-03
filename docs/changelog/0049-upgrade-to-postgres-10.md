@@ -25,7 +25,7 @@ Before you start, make sure that you have taken backup of the existing postgresq
 place the backup to on another disk or remotely.
 
 0. For developers running postgresql in local machine:
-    instructions: https://gist.github.com/prem-fissionhq/20e34fa85b9eeae7df280078b3918ba7
+    instructions: [Postgres_upgrade_local](https://gist.github.com/prem-fissionhq/20e34fa85b9eeae7df280078b3918ba7)
 
 1. For users running postgresql on Linux machines:
-    instructions: http://dimagi.github.io/commcare-cloud/services/postgresql/upgrade.html
+    instructions: [Postgres_upgrade](http://dimagi.github.io/commcare-cloud/services/postgresql/upgrade.html)
