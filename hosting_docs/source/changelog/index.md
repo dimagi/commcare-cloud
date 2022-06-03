@@ -7,9 +7,9 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2022-03-06** [Postgres upgrade from 9.6 to 10](0049-upgrade-to-postgres-10.md)
+#### **2022-06-03** [Postgres upgrade from 9.6 to 10](0049-upgrade-to-postgres-10.md)
 This change upgrade PostgreSQL from 9.6 to 10 version.
-so we strongly recommend applying this change
+so we strongly recommend applying this change.
 
 
 ---

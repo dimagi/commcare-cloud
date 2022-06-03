@@ -1,11 +1,11 @@
 ---
 title: Postgres upgrade from 9.6 to 10
 key: upgrade-to-Postgres-10
-date: 2022-03-06
+date: 2022-06-03
 optional_per_env: no
 context: |
   This change upgrade PostgreSQL from 9.6 to 10 version.
-  so we strongly recommend applying this change
+  so we strongly recommend applying this change.
 
 details: |
   As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and

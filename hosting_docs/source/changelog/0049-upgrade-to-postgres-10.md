@@ -2,7 +2,7 @@
 <!--See https://github.com/dimagi/commcare-cloud/blob/master/changelog/README.md for instructions-->
 # 49. Postgres upgrade from 9.6 to 10
 
-**Date:** 2022-03-06
+**Date:** 2022-06-03
 
 **Optional per env:** _required on all environments_
 
@@ -13,7 +13,7 @@ This change is not known to be dependent on any particular version of CommCare.
 
 ## Change Context
 This change upgrade PostgreSQL from 9.6 to 10 version.
-so we strongly recommend applying this change
+so we strongly recommend applying this change.
 
 ## Details
 As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
