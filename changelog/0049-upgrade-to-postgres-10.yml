@@ -17,7 +17,7 @@ update_steps: |
   to a remote location.
 
   0. For developers running postgresql in local machine:
-      instructions: [Postgres_upgrade_local](https://gist.github.com/prem-fissionhq/20e34fa85b9eeae7df280078b3918ba7)
+      instructions: [Postgres_upgrade_local](https://gist.github.com/millerdev/547bac773483402554797e578fbd238f)
 
   1. For users running postgresql on Linux machines:
       instructions: [Postgres_upgrade](http://dimagi.github.io/commcare-cloud/services/postgresql/upgrade.html)
