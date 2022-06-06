@@ -17,5 +17,5 @@ update_steps: |
   Run the following command to remove existing ansible:
 
   ```bash
-  cchq <env> run-shell-command "pip uninstall ansible"
+  cchq <env> run-shell-command control "pip uninstall ansible"
   ```
