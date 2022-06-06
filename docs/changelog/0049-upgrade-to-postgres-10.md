@@ -13,7 +13,8 @@ This change is not known to be dependent on any particular version of CommCare.
 
 ## Change Context
 This change upgrade PostgreSQL from 9.6 to 10 version.
-so we strongly recommend applying this change.
+As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
+libraries we have updated PostgreSQL from version 9.6 to version 10.
 
 ## Details
 PostgreSQL is strongly backwards compatible, so no coordination with the CommCare HQ codebase is required before this upgrade.

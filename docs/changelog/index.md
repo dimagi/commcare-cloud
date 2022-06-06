@@ -9,7 +9,8 @@ need to be applied on your environment to keep it up to date.
 
 #### **2022-06-03** [Postgres upgrade from 9.6 to 10](0049-upgrade-to-postgres-10.md)
 This change upgrade PostgreSQL from 9.6 to 10 version.
-so we strongly recommend applying this change.
+As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
+libraries we have updated PostgreSQL from version 9.6 to version 10.
 
 
 ---
