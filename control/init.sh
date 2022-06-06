@@ -65,6 +65,13 @@ if [ -z "$(which manage-commcare-cloud)" ]; then
     # installs strictly what's in requirements.txt, so versions are pre-pinned
     cd ${COMMCARE_CLOUD_REPO}
     pip install --upgrade pip-tools
+    # uninstall if ansible version is less than 4.0
+    ANSIBLE_VERSION=`pip show ansible | grep Version | awk '{print $2}'`
+    echo "installed version of ansible is: ${ANSIBLE_VERSION:0:3}"
+    if [[ ${ANSIBLE_VERSION:0:3} < "4.0" ]]; then
+        echo "ansible version ${ANSIBLE_VERSION} is uninstalling"
+        pip uninstall ansible --yes
+    fi
     pip-sync requirements.txt
     pip install --editable .
     cd -
@@ -73,6 +80,13 @@ else
         COMMCARE=
         cd ${COMMCARE_CLOUD_REPO}
         pip install --quiet --upgrade pip-tools
+        # uninstall if ansible version is less than 4.0
+        ANSIBLE_VERSION=`pip show ansible | grep Version | awk '{print $2}'`
+        echo "installed version of ansible is: ${ANSIBLE_VERSION:0:3}"
+        if [[ ${ANSIBLE_VERSION:0:3} < "4.0" ]]; then
+            echo "ansible version ${ANSIBLE_VERSION} is uninstalling"
+            pip uninstall ansible --yes
+        fi
         pip-sync --quiet requirements.txt
         pip install --quiet --editable .
         cd -
