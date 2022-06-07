@@ -239,7 +239,7 @@ servers:
     count: 4
  
   - server_name: "pillow_a{i}-production"
-    server_instance_type: r5a.8xlarge
+    server_instance_type: r5.12xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 150
@@ -248,7 +248,7 @@ servers:
     count: 1
 
   - server_name: "pillow_b{i}-production"
-    server_instance_type: r5a.8xlarge
+    server_instance_type: r5a.12xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 60
