@@ -159,8 +159,7 @@ class Ssh(_Ssh):
 
     def should_use_ssm(self, environment):
         return (
-            os.environ.get('COMMCARE_CLOUD_USE_AWS_SSM') != '0'
-            and is_aws_env(environment)
+            is_aws_env(environment)
             and not is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id)
         )
 
