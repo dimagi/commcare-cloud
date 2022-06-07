@@ -60,18 +60,23 @@ if [ -d ${COMMCARE_CLOUD_REPO}/commcare-cloud ]; then
     rm -rf ${COMMCARE_CLOUD_REPO}/commcare-cloud
 fi
 
+# uninstall if ansible version is less than 4.0
+function uninstall-lowerversion-ansible() {
+    ANSIBLE_VERSION=`pip show ansible | grep Version | awk '{print $2}'`
+    if [[ ${ANSIBLE_VERSION:0:3} < "4.0" ]] && [[ ! -z ${ANSIBLE_VERSION} ]]; then
+        echo "installed version of ansible is: ${ANSIBLE_VERSION:0:3}"
+        echo "ansible version ${ANSIBLE_VERSION} is uninstalling"
+        pip uninstall ansible --yes
+    fi
+}
+
 if [ -z "$(which manage-commcare-cloud)" ]; then
     # first time install need requirements installed in serial
     # installs strictly what's in requirements.txt, so versions are pre-pinned
     cd ${COMMCARE_CLOUD_REPO}
     pip install --upgrade pip-tools
-    # uninstall if ansible version is less than 4.0
-    ANSIBLE_VERSION=`pip show ansible | grep Version | awk '{print $2}'`
-    echo "installed version of ansible is: ${ANSIBLE_VERSION:0:3}"
-    if [[ ${ANSIBLE_VERSION:0:3} < "4.0" ]]; then
-        echo "ansible version ${ANSIBLE_VERSION} is uninstalling"
-        pip uninstall ansible --yes
-    fi
+    # calling function to check and uninstall if ansible version < 4.0
+    uninstall-lowerversion-ansible
     pip-sync requirements.txt
     pip install --editable .
     cd -
@@ -80,13 +85,8 @@ else
         COMMCARE=
         cd ${COMMCARE_CLOUD_REPO}
         pip install --quiet --upgrade pip-tools
-        # uninstall if ansible version is less than 4.0
-        ANSIBLE_VERSION=`pip show ansible | grep Version | awk '{print $2}'`
-        echo "installed version of ansible is: ${ANSIBLE_VERSION:0:3}"
-        if [[ ${ANSIBLE_VERSION:0:3} < "4.0" ]]; then
-            echo "ansible version ${ANSIBLE_VERSION} is uninstalling"
-            pip uninstall ansible --yes
-        fi
+        # calling function to check and uninstall if ansible version < 4.0
+        uninstall-lowerversion-ansible
         pip-sync --quiet requirements.txt
         pip install --quiet --editable .
         cd -
