@@ -30,3 +30,4 @@ couchdb@*_files
 .vault_rotation_db.kdbx
 
 /quick_monolith_install/install-config.yml
+/hosting_docs/build

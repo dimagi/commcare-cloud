@@ -198,7 +198,7 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
 
 def call_commcare_cloud(input_argv=sys.argv):
     # throw error if user is attempting to use python 2
-    if not os.environ.get("TRAVIS_TEST") and sys.version_info[0] == 2:
+    if not os.environ.get("CI_TEST") and sys.version_info[0] == 2:
         exit(dedent("""
             Error: you must upgrade to Python 3. Python 2 is no longer supported.
 

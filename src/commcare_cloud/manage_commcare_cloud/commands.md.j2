@@ -1,16 +1,28 @@
-# Commands
-{:.no_toc}
+<!---
+This file should not be manually edited.
 
-* TOC
-{:toc}
+This file is auto-generated via `manage-commcare-cloud make-docs > hosting_docs/source/reference/1-commcare-cloud/commands.md`
+
+The above command and the command that generates the changelog files are included in the commcare-cloud root Makefile. So if you
+run make, this file should automatically get updated.
+-->
+
+# Commands
+
+This page explains how to run commcare-cloud commands to perform various
+actions on your environment and list of all commcare-cloud commands and their
+usage.
 
 ## Running Commands with `commcare-cloud`
+
+To run any commcare-cloud command you need to install commcare-cloud first
+(Refer to the installation docs) and activate its virtual environment.
 
 All `commcare-cloud` commands take the following form:
 
 {{ parser|print_help }}
 
-## `cchq` alias
+### `cchq` alias
 
 Additionally, `commcare-cloud` is aliased to the easier-to-type `cchq`
 (short for "CommCare HQ"), so any command you see here can also be run
@@ -20,7 +32,7 @@ as
 cchq <env> <command> <args...>
 ```
 
-## Underlying tools and common arguments
+### Underlying tools and common arguments
 
 The `commcare-cloud` command line tool is by and large a relatively
 thin wrapper around the other tools it uses: `ansible`, `ansible-playbook`,
@@ -76,7 +88,7 @@ it defaults to `master`. As a consequence, when running from git branch
 The callback plugin to use for generating output. See
 ansible-doc -t callback -l and ansible-doc -t callback.
 
-## Available Commands
+## List of Commands
 {% for group, subparsers in subparsers_by_group -%}
 {% if group == 'housekeeping' %}
 ### Internal Housekeeping for your `commcare-cloud` environments
@@ -89,9 +101,9 @@ ansible-doc -t callback -l and ansible-doc -t callback.
 {% endif -%}
 {% for command, subparser in subparsers %}
 {% if loop.index0 == 0 %}---{% endif %}
-#### `{{ command.command }}`
+#### ``{{ command.command }}`` Command 
 {%- if command.aliases %}
-(Alias `{{ '`, `'.join(command.aliases) }}`)
+(Alias ``{{ '`, `'.join(command.aliases) }}``)
 {%- endif %}
 
 {{ subparser|print_help }}
