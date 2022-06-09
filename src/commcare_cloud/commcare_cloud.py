@@ -203,7 +203,7 @@ def call_commcare_cloud(input_argv=sys.argv):
             Error: you must upgrade to Python 3. Python 2 is no longer supported.
 
             To setup Python 3.6, see
-            https://dimagi.github.io/commcare-cloud/setup/installation.html
+            https://commcare-cloud.readthedocs.io/en/latest/reference/1-commcare-cloud/1-installation.html#manual-installation
             """))
 
     put_virtualenv_bin_on_the_path()

@@ -37,7 +37,7 @@ existing environments.
 
 `commcare-cloud` is developed in conjunction with CommCare HQ. To be on the safe
 side, it's best to update just before deploying CommCare HQ. When you do so,
-check for new entries in the [changelog](https://dimagi.github.io/commcare-cloud/changelog/),
+check for new entries in the [changelog](https://commcare-cloud.readthedocs.io/en/latest/changelog/index.html),
 which should alert you of any new changes which might require you to take
 action. We recommend you take a look through the current entries to get an idea
 of what these changes might look like.

@@ -2,7 +2,7 @@
 
 We maintain a changelog in this directory with one YAML file per change.
 These files are then compiled into documentation that is made available at
-https://dimagi.github.io/commcare-cloud/changelog/.
+https://commcare-cloud.readthedocs.io/en/latest/changelog/index.html.
 
 ## Determining whether a change is announce-worthy
 
