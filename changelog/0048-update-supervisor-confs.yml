@@ -1,0 +1,21 @@
+title: update-supervisor-confs
+key: update-supervisor-confs
+date: 2022-05-25
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Run command to update shell runner scripts for django and celery.
+
+details: |
+  The runner scripts used by `supervisord` to run celery and django have been
+  updated so that they reflect the "wrapped exit code" when they exit. This
+  provides visibility of the django/celery exit status by viewing the
+  `supervisord` logs.
+
+update_steps: |
+  Run the following command to update supervisor configs:
+
+  ```bash
+  cchq <env> update-supervisor-confs
+  ```

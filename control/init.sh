@@ -15,7 +15,7 @@ function realpath() {
 }
 
 
-if [ -z ${TRAVIS_TEST} ]; then
+if [ -z ${CI_TEST} ]; then
     if [ ! -f $VENV/bin/activate ]; then
         # use virtualenv because `python3 -m venv` is broken on Ubuntu 18.04
         python3 -m pip install --user --upgrade virtualenv
@@ -124,7 +124,7 @@ SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
 
 if ! grep -q init-ansible ~/.profile 2>/dev/null; then
     printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
-    if [ -z ${TRAVIS_TEST} ]; then
+    if [ -z ${CI_TEST} ]; then
         read -t 30 -p "(y/n): " yn
     fi
     case $yn in

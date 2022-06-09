@@ -64,28 +64,37 @@ def get_common_ssh_args(environment, use_factory_auth=False):
     return cmd_parts_with_common_ssh_args
 
 
-def get_default_ssh_options(environment, use_aws_ssm_with_instance_id=None):
+def get_default_ssh_options(environment, aws_ssm_target=None):
     default_ssh_options = []
 
-    strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
-    if not strict_host_key_checking or use_aws_ssm_with_instance_id:
-        default_ssh_options.append(('StrictHostKeyChecking', 'no'))
-
     known_hosts_filepath = environment.paths.known_hosts
-    if os.path.exists(known_hosts_filepath) and not use_aws_ssm_with_instance_id:
+    if os.path.exists(known_hosts_filepath):
         default_ssh_options.append(('UserKnownHostsFile', known_hosts_filepath))
+    else:
+        strict_host_key_checking = environment.public_vars.get('commcare_cloud_strict_host_key_checking', True)
+        if not strict_host_key_checking:
+            assert not aws_ssm_target, 'strict host key checking is required in AWS SSM environments'
+            default_ssh_options.append(('StrictHostKeyChecking', 'no'))
 
-    if use_aws_ssm_with_instance_id:
-        default_ssh_options.append(('ProxyCommand', 'sh -c "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters portNumber=%p"'))
-        default_ssh_options.append(('HostName', use_aws_ssm_with_instance_id))
+    if aws_ssm_target:
+        sso_command = (
+            # NOTE {aws_ssm_target} can be changed to %h if the ssh
+            # hostname is aws_ssm_target (rather than an IP address)
+            f'aws ssm start-session --target {aws_ssm_target} '
+            '--document-name AWS-StartSSHSession '
+            '--parameters portNumber=%p'
+        )
+        default_ssh_options.append(('ProxyCommand', sso_command))
 
     return default_ssh_options
 
 
-def get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=(), use_aws_ssm_with_instance_id=None):
+def get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=(), aws_ssm_target=None):
     ssh_args = []
-    for option_name, default_option_value in get_default_ssh_options(environment, use_aws_ssm_with_instance_id=use_aws_ssm_with_instance_id):
-        if not any(a.startswith(('{}='.format(option_name), "-o{}=".format(option_name))) for a in original_ssh_args):
+    options = get_default_ssh_options(environment, aws_ssm_target)
+    for option_name, default_option_value in options:
+        arg_names = ('{}='.format(option_name), "-o{}=".format(option_name))
+        if not any(a.startswith(arg_names) for a in original_ssh_args):
             ssh_args.extend(["-o", '{}={}'.format(option_name, default_option_value)])
     return ssh_args
 

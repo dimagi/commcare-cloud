@@ -3,11 +3,13 @@
 <!--See https://github.com/dimagi/commcare-cloud/blob/master/changelog/README.md for instructions-->
 # About this changelog
 
-The following changes to `commcare-cloud` that require your attention,
-newest first.
+Below are the list of changes (the newest first) to `commcare-cloud` and CommCareHQ that
+need to be applied on your environment to keep it up to date.
 
-## Changelog
+### Changelog
 {% for changelog_entry in changelog_contents %}
-### **{{ changelog_entry.date }}** [{{ changelog_entry.title }}]({{ changelog_entry.filename }})
+#### **{{ changelog_entry.date }}** [{{ changelog_entry.title }}]({{ changelog_entry.filename }})
 {{ changelog_entry.context }}
+
+---
 {%- endfor -%}
