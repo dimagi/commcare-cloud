@@ -37,7 +37,7 @@ charset-normalizer==2.0.6
     # via requests
 clint==0.5.1
     # via commcare-cloud (setup.py)
-couchdb-cluster-admin==0.7.0.post1
+couchdb-cluster-admin==0.7.2
     # via commcare-cloud (setup.py)
 cryptography==35.0.0
     # via
