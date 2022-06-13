@@ -68,8 +68,6 @@ def _update_code_from_previous_release(code_repo, subdir, git_env):
         code_root = os.path.join(code_root, subdir)
 
     if files.exists(code_current, use_sudo=True):
-        with cd(code_current), shell_env(**git_env):
-            sudo('git submodule foreach "git fetch origin"')
         _clone_code_from_local_path(code_current, code_root)
         with cd(code_root):
             sudo('git remote set-url origin {}'.format(code_repo))
