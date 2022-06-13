@@ -78,7 +78,7 @@ jmespath==0.10.0
     # via
     #   boto3
     #   botocore
-jsonobject==0.9.10
+jsonobject==2.0.0
     # via
     #   commcare-cloud (setup.py)
     #   couchdb-cluster-admin
