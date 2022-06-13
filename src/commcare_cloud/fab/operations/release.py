@@ -75,7 +75,7 @@ def _update_code_from_previous_release(code_repo, subdir, git_env):
             sudo('git remote set-url origin {}'.format(code_repo))
     else:
         with shell_env(**git_env):
-            sudo('git clone {} {} --single-branch'.format(code_repo, code_root))
+            sudo('git clone --single-branch {} {}'.format(code_repo, code_root))
 
 
 def _get_submodule_list(path):
@@ -125,7 +125,7 @@ def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
     ]
 
     with cd(from_path):
-        cmd_fn('git clone {}/.git {}'.format(
+        cmd_fn('git clone --single-branch {}/.git {}'.format(
             from_path,
             to_path
         ))
@@ -134,7 +134,7 @@ def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
         cmd_fn('git config receive.denyCurrentBranch updateInstead')
         if git_local_submodule_config:
             cmd_fn(' && '.join(git_local_submodule_config))
-        cmd_fn('git submodule update --init --recursive')
+        cmd_fn('git submodule update --init --recursive --single-branch')
         if git_remote_submodule_config:
             cmd_fn(' && '.join(git_remote_submodule_config))
 
