@@ -10,7 +10,7 @@ usage: ansible-playbook [-h] [--version] [-v] [-k]
                         [--skip-tags SKIP_TAGS] [-C] [--syntax-check] [-D]
                         [-i INVENTORY] [--list-hosts] [-l SUBSET]
                         [-e EXTRA_VARS] [--vault-id VAULT_IDS]
-                        [--ask-vault-pass | --vault-password-file VAULT_PASSWORD_FILES]
+                        [--ask-vault-password | --vault-password-file VAULT_PASSWORD_FILES]
                         [-f FORKS] [-M MODULE_PATH] [--list-tasks]
                         [--list-tags] [--step] [--start-at-task START_AT_TASK]
                         playbook [playbook ...]
@@ -21,7 +21,8 @@ positional arguments:
   playbook              Playbook(s)
 
 optional arguments:
-  --ask-vault-pass      ask for vault password
+  --ask-vault-password, --ask-vault-pass
+                        ask for vault password
   --flush-cache         clear the fact cache for every host in inventory
   --force-handlers      run handlers even if a task fails
   --list-hosts          outputs a list of matching hosts; does not execute
@@ -37,7 +38,7 @@ optional arguments:
   --syntax-check        perform a syntax check on the playbook, but do not
                         execute it
   --vault-id VAULT_IDS  the vault identity to use
-  --vault-password-file VAULT_PASSWORD_FILES
+  --vault-password-file VAULT_PASSWORD_FILES, --vault-pass-file VAULT_PASSWORD_FILES
                         vault password file
   --version             show program's version number, config file location,
                         configured module search path, module location,
