@@ -23,17 +23,6 @@ jobs:
       TEST: main
 
     steps:
-    # setup 3.9 for deploy-stack
-    # may be removed when this file is updated to match global_vars/all.yml:python_version
-    - name: Setup HQ Python Version
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.9"
-
-    - name: Unset Python Env Variables
-      run: |
-        unset pythonLocation
-        unset LD_LIBRARY_PATH
 
     - name: Set up Cloud Python Version
       uses: actions/setup-python@v3
