@@ -4,11 +4,12 @@
 #
 #    pip-compile --output-file=requirements.txt setup.py
 #
-ansible==2.9.26
+ansible==4.2.0
     # via
     #   ansible-vault
     #   commcare-cloud (setup.py)
-ansible-vault==1.1.1
+ansible-vault==2.1.0
+ansible-inventory==0.6.4
     # via commcare-cloud (setup.py)
 argparse==1.4.0
     # via

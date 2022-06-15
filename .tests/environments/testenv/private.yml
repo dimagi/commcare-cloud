@@ -30,3 +30,5 @@ localsettings_private:
   COUCH_PASSWORD: p9RzGNx7wZr3BqLhNc7UtjQv
   COUCH_USERNAME: commcarehq
   SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D5"
+
+ansible_sudo_pass: 'W3HJAmmi2RJRY7bYLaQMraN7'
