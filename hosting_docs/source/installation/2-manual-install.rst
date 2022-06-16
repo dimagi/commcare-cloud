@@ -610,13 +610,20 @@ initially.
    When prompted for the ``sudo`` password, enter the
    “ansible_sudo_pass” value.
 
-See the Deploying CommCareHQ code changes section in :ref:`manage-deployment` for more information.
+   See the Deploying CommCareHQ code changes section in
+   :ref:`manage-deployment` for more information.
 
    If deploy fails, you can restart where it left off:
 
    ::
 
        $ commcare-cloud cluster deploy --resume
+
+4. Deploy Formplayer:
+
+   ::
+
+       $ commcare-cloud cluster deploy formplayer
 
 Set up valid SSL certificates
 -----------------------------
