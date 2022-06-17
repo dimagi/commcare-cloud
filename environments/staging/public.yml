@@ -13,8 +13,6 @@ kafka_download_sha512: sha512:09ec7a39d0e11494ede7d92cf7dfec5b95c6b0218e3b096b73
 kafka_inter_broker_protocol_version: 2.6
 kafka_log_message_format_version: 2.6
 
-#zookeeper_version: 3.4.9
-#zookeeper_download_sha1: sha1:0285717bf5ea87a7a36936bf37851d214a32bb99
 zookeeper_version: 3.7.1
 zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
 zookeeper_cluster: True
