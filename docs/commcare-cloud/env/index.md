@@ -155,17 +155,19 @@ Under each `<queue-name>` goes the following params
 The special queue names `flower`, `beat` can appear _only_
 once. These queues take no parameters (can leave as simply `{}`).
 
-Each `<ETL-processor-name>` must be one of the following values:
-`kafka-ucr-main`, `kafka-ucr-static`, `AppDbChangeFeedPillow`,
-`ApplicationToElasticsearchPillow`, `CacheInvalidatePillow`,
+Each `<ETL-processor-name>` must be correspond to the `name` fields specified in
+`settings.PILLOWTOPS`:
+`AppDbChangeFeedPillow`, `ApplicationToElasticsearchPillow`,
+`CacheInvalidatePillow`, `case-pillow`, `case_messaging_sync_pillow`,
 `CaseSearchToElasticsearchPillow`, `CaseToElasticsearchPillow`,
 `DefaultChangeFeedPillow`, `DomainDbKafkaPillow`,
-`FormSubmissionMetadataTrackerPillow`, `GroupPillow`,
-`GroupToUserPillow`, `KafkaDomainPillow`, `LedgerToElasticsearchPillow`,
-`ReportCaseToElasticsearchPillow`, `ReportXFormToElasticsearchPillow`,
-`SqlSMSPillow`, `UnknownUsersPillow`, `UpdateUserSyncHistoryPillow`,
+`FormSubmissionMetadataTrackerPillow`, `group-pillow`, `GroupPillow`,
+`GroupToUserPillow`, `kafka-ucr-main`, `kafka-ucr-static`, `KafkaDomainPillow`,
+`LedgerToElasticsearchPillow`, `location-ucr-pillow`, `SqlSMSPillow`,
+`UnknownUsersPillow`, `UpdateUserSyncHistoryPillow`, `user-pillow`,
 `UserCacheInvalidatePillow`, `UserGroupsDbKafkaPillow`, `UserPillow`,
-`XFormToElasticsearchPillow`.
+`xform-pillow`, `XFormToElasticsearchPillow`,
+
 For all features to work, each of these ETL processors
 (called "pillows" internally to the CommCare HQ code base,
 for no good reason beyond historical accident) just listed must appear
