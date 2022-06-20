@@ -23,12 +23,14 @@ jobs:
       TEST: main
 
     steps:
-    - uses: actions/checkout@v3
 
     - name: Set up Cloud Python Version
       uses: actions/setup-python@v3
       with:
         python-version: "3.6"
+
+    - uses: actions/checkout@v3
+
 
 
     - name: Install dependencies
