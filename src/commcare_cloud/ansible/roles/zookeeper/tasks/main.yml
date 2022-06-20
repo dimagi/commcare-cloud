@@ -21,35 +21,35 @@
 - name: add user "zookeeper"
   user: name="{{ zookeeper_group }}" group="{{ zookeeper_group }}" shell=/sbin/nologin system=yes state=present
 
-- name: Download Zookeeper
+- name: Download Zookeeper 3.4.x version
   get_url:
     url: "https://archive.apache.org/dist/zookeeper/zookeeper-{{ zookeeper_version }}/zookeeper-{{ zookeeper_version }}.tar.gz"
     dest: "/opt/zookeeper-{{ zookeeper_version }}.tar.gz"
     checksum: "{{ zookeeper_download_sha1 }}"
   when: zookeeper_version == "3.4.9"
 
-- name: Download Zookeeper
+- name: Download Zookeeper 3.7.x version
   get_url:
     url: "https://archive.apache.org/dist/zookeeper/zookeeper-{{ zookeeper_version }}/apache-zookeeper-{{ zookeeper_version }}-bin.tar.gz"
     dest: "/opt/zookeeper-{{ zookeeper_version }}-bin.tar.gz"
     checksum: "{{ zookeeper_download_sha1 }}"
-  when: zookeeper_version == "3.7.1"
+  when: zookeeper_version >= "3.7.1"
 
-- name: Extract Zookeeper
+- name: Extract Zookeeper 3.4.x version
   unarchive: src="/opt/zookeeper-{{ zookeeper_version }}.tar.gz" dest=/opt/ copy=no creates="/opt/zookeeper-{{ zookeeper_version }}"
   when: zookeeper_version == "3.4.9"
 
-- name: Extract Zookeeper
+- name: Extract Zookeeper 3.7.x version
   unarchive: src="/opt/zookeeper-{{ zookeeper_version }}-bin.tar.gz" dest=/opt/ copy=no creates="/opt/apache-zookeeper-{{ zookeeper_version }}-bin"
-  when: zookeeper_version == "3.7.1"
+  when: zookeeper_version >= "3.7.1"
 
-- name: Symlink install directory
+- name: Symlink install directory for 3.4.x version
   file: src="/opt/zookeeper-{{ zookeeper_version }}" path=/opt/zookeeper state=link
   when: zookeeper_version == "3.4.9"
 
-- name: Symlink install directory
+- name: Symlink install directory for 3.7.x version
   file: src="/opt/apache-zookeeper-{{ zookeeper_version }}-bin" path=/opt/zookeeper-{{ zookeeper_version }} state=link force=yes
-  when: zookeeper_version == "3.7.1"
+  when: zookeeper_version >= "3.7.1"
 
 #- name: Set permissions to Zookeeper folder
 #  file: path=/opt/zookeeper-{{ zookeeper_version }} owner=root group=root recurse=yes follow=no
