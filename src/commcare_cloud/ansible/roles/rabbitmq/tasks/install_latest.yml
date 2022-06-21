@@ -8,14 +8,20 @@
   apt_repository:
     repo: 'deb http://packages.erlang-solutions.com/ubuntu {{ ansible_distribution_release|lower }} contrib'
     state: present
-    update_cache: yes
 
 - name: Install Erlang packages
   apt:
     name: "esl-erlang={{ erlang }}"
-    state: present
     update_cache: yes
-  ignore_errors: '{{ ansible_check_mode }}'
+    force: yes
+  register: rabbitmq_erlang_apt_install_result
+  ignore_errors: true
+
+- name: Install Erlang dependencies (alternate method)
+  apt:
+    deb: "https://packages.erlang-solutions.com/ubuntu/pool/esl-erlang_{{ erlang | regex_replace('^[0-9]+:(.*)$', '\\1') }}~ubuntu~bionic_amd64.deb"
+    force: yes
+  when: rabbitmq_erlang_apt_install_result is failed
 
 - name: Add trusted key
   apt_key:
