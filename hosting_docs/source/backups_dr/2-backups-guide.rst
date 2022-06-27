@@ -284,28 +284,35 @@ BlobDB backups create a compressed version of the blobdb data directory.
 
 Restoring BlobDB Backups
 ^^^^^^^^^^^^^^^^^^^^^^^^
+
 The BlobDB restore process depends on what BlobDB system you're using.
-- If you're using the default file system BlobDB, the restore process is the same as the couchdb restore process in that it involves extracting the backed up data 
-to the data directory. 
+
+- If you're using the default file system BlobDB, the restore process is the same as the couchdb restore process in that it involves extracting the backed up data to the data directory. 
+
 - If you're using some other (distributed) system you should follow that service's provided instructions on restoration.
 
 The file system BlobDB restore process will be explained below.
 
-# Become the `cchq` user
-  ``` bash
-  $ sudo -iu cchq
-  ```
+- Become the `cchq` user
 
-# Now we need to extract the backup data. The BlobDB backups live in the `/opt/data/backups/blobdb` directory by default (if you have specified a different path
-in the `public.yml` file, it will be there instead).
-  ``` bash
-  $ tar -xf /opt/data/backups/blobdb/blobdb_<version>.gz -C /opt/data/backups/blobdb
-  ```
+  .. code-block:: bash
 
-# Move the data to the `/opt/data/blobdb/` directory.
-  ``` bash
-  $ rsync -avz --delete /opt/data/backups/blobdb/blobdb_<version> /opt/data/blobdb/
-  ```
+    $ sudo -iu cchq
+
+
+- Now we need to extract the backup data. The BlobDB backups live in the `/opt/data/backups/blobdb` directory by default (if you have specified a different path in the `public.yml` file, it will be there instead).
+
+  .. code-block:: bash
+
+    $ tar -xf /opt/data/backups/blobdb/blobdb_<version>.gz -C /opt/data/backups/blobdb
+
+
+- Move the data to the `/opt/data/blobdb/` directory.
+
+  .. code-block:: bash
+
+    $ rsync -avz --delete /opt/data/backups/blobdb/blobdb_<version> /opt/data/blobdb/
+
 
 Elasticsearch Snapshots
 -----------------------
@@ -318,7 +325,6 @@ However, you may still back-up Elasticsearch using `Elasticsearch Snapshots <htt
 * ``backup_es_s3: True``\ :  to create snapshots and send them directly to S3 (not stored locally)
 * ``es_local_repo: True``\ : to save snapshots locally (not sent to S3)
 * ``es_repository_name``\ : the name to give to the snapshot respository
-* 
 
 Both of those settings are **mutually exclusive**. There is currently no way to create snapshots to be saved locally and sent to S3 at the same time.
 
