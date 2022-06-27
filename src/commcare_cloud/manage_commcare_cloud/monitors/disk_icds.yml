@@ -3,7 +3,7 @@ id: 11986021
 message: |-
   {{#is_alert}}ALERT: Disk usage {{comparator}} {{threshold}} ({{value}}) {{/is_alert}}
   {{#is_warning}}WARNING: Disk usage {{comparator}} {{warn_threshold}} ({{value}}) {{/is_warning}}
-  https://dimagi.github.io/commcare-cloud/firefighting/#full-drives--out-of-disk-space
+  https://commcare-cloud.readthedocs.io/en/latest/reference/firefighting/general.html#full-drives-out-of-disk-space
   @slack-alerts-icds
 name: '[ICDS] Disk space running low on {{host.name}} ({{device.name}})'
 options:

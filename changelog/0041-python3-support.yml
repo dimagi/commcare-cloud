@@ -21,7 +21,7 @@ details: |
 
 update_steps: |
   To setup Python 3.6, see
-  https://dimagi.github.io/commcare-cloud/setup/installation.html
+  https://commcare-cloud.readthedocs.io/en/latest/reference/1-commcare-cloud/1-installation.html#manual-installation
 
   If you encounter a problem using Python 3, you can temporarily revert back to
   Python 2 by activating a Python 2 virtualenv and appending this option to your

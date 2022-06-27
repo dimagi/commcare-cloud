@@ -28,4 +28,4 @@ place the backup to on another disk or remotely.
     instructions: [Postgres_upgrade_local](https://gist.github.com/prem-fissionhq/20e34fa85b9eeae7df280078b3918ba7)
 
 1. For users running postgresql on Linux machines:
-    instructions: [Postgres_upgrade](http://dimagi.github.io/commcare-cloud/services/postgresql/upgrade.html)
+    instructions: [Postgres_upgrade](https://commcare-cloud.readthedocs.io/en/latest/services/postgresql/upgrade.html)
