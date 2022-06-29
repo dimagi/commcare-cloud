@@ -65,7 +65,7 @@ class Configure(CommandBase):
                         os.makedirs(dir_path)
                 print("Okay, I've got the env started for you, "
                       "but you're going to have to fill out the rest before you can do much. "
-                      "For more information, see https://dimagi.github.io/commcare-cloud/commcare-cloud/env/ "
+                      "For more information, see https://commcare-cloud.readthedocs.io/en/latest/reference/1-commcare-cloud/2-configuration.html "
                       "and refer to the examples at "
                       "https://github.com/dimagi/commcare-cloud/tree/master/environments.")
 
