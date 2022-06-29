@@ -56,9 +56,6 @@ pgsynclogs_nlb-india: pgsynclogs-nlb-india-8facd1c4825bca96.elb.ap-south-1.amazo
 pgucr_nlb-india: pgucr-nlb-india-7cab226e7a1d3928.elb.ap-south-1.amazonaws.com
 pillow3-india: 10.203.10.137
 pillow3-india.instance_id: i-0c33fdd6196a2c63f
-proxy2-india: 10.203.20.197
-proxy2-india.instance_id: i-04879e98c452a6915
-proxy2-india.public_ip: 13.233.109.45
 proxy_a0-india: 10.203.10.133
 proxy_a0-india.instance_id: i-0a0c55ded3b461e81
 rabbit_a3-india: 10.203.40.201
