@@ -85,7 +85,7 @@ After `adding your credentials <#amazon-s3-credentials>`_ to the vault file, set
 
 
 * ``postgres_s3: True``
-* `postgres_snapshot_bucket`: The name of the S3 bucket to save postgres backups to (Default: ``dimagi-<env>-posgres-backups``\ ).
+* `postgres_snapshot_bucket`: The name of the S3 bucket to save postgres backups to (Default: ``dimagi-<env>-postgres-backups``\ ).
 
 Restoring PostgreSQL Backups
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -114,8 +114,8 @@ For example, you can follow a process similar to this one:
 
        $ su - ansible
        # enter ansible user password from vault file
-       $ sudo -u posgres bash
-       # enter ansible user password again. You will now be acting as the posgres user
+       $ sudo -u postgres bash
+       # enter ansible user password again. You will now be acting as the postgres user
 
 * 
   Find the list of current backups and choose the one you want to restore from, for e.g.:
@@ -134,21 +134,21 @@ For example, you can follow a process similar to this one:
 
   .. code-block:: bash
 
-       $ tar -xjf /opt/data/backups/posgresql/postgres_<env>_daily_2019_07_06.gz -C /opt/data/backups/postgresql
+       $ tar -xjf /opt/data/backups/postgresql/postgres_<env>_daily_2019_07_06.gz -C /opt/data/backups/postgresql
 
 * 
   [Optional] Make a copy of the current data directory, for eg:
 
   .. code-block:: bash
 
-       $ tar -czvf /opt/data/backups/postgresql/postgres_data_before_restore.tar.gz /opt/data/posgresql/9.6/main
+       $ tar -czvf /opt/data/backups/postgresql/postgres_data_before_restore.tar.gz /opt/data/postgresql/9.6/main
 
 * 
   Copy backup data to the postgres data directory. This will overwrite all the data in this directory.
 
   .. code-block:: bash
 
-      $ rsync -avz --delete /opt/data/backups/posgresql/postgres_<env>_daily_2019_07_06 /opt/data/posgresql/9.6/main
+      $ rsync -avz --delete /opt/data/backups/postgresql/postgres_<env>_daily_2019_07_06 /opt/data/postgresql/9.6/main
 
 * 
   Restart Postgres and services, from the control machine, e.g.:
@@ -285,9 +285,34 @@ BlobDB backups create a compressed version of the blobdb data directory.
 Restoring BlobDB Backups
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can follow the same instructions as for `restoring couchdb <#restoring-couchdb-backups>`_ (extract the backup file into the blobdb data directory: ``/opt/data/blobdb/``\ ). 
+The BlobDB restore process depends on what BlobDB system you're using.
 
-The files in the resulting directory should all be owned by the user ``cchq`` (i.e. you should be the ``cchq`` user when extracting the files)
+- If you're using the default file system BlobDB, the restore process is the same as the couchdb restore process in that it involves extracting the backed up data to the data directory. 
+
+- If you're using some other (distributed) system you should follow that service's provided instructions on restoration.
+
+The file system BlobDB restore process will be explained below.
+
+- Become the `cchq` user
+
+  .. code-block:: bash
+
+    $ sudo -iu cchq
+
+
+- Now we need to extract the backup data. The BlobDB backups live in the `/opt/data/backups/blobdb` directory by default (if you have specified a different path in the `public.yml` file, it will be there instead).
+
+  .. code-block:: bash
+
+    $ tar -xf /opt/data/backups/blobdb/blobdb_<version>.gz -C /opt/data/backups/blobdb
+
+
+- Move the data to the `/opt/data/blobdb/` directory.
+
+  .. code-block:: bash
+
+    $ rsync -avz --delete /opt/data/backups/blobdb/blobdb_<version> /opt/data/blobdb/
+
 
 Elasticsearch Snapshots
 -----------------------
@@ -300,7 +325,6 @@ However, you may still back-up Elasticsearch using `Elasticsearch Snapshots <htt
 * ``backup_es_s3: True``\ :  to create snapshots and send them directly to S3 (not stored locally)
 * ``es_local_repo: True``\ : to save snapshots locally (not sent to S3)
 * ``es_repository_name``\ : the name to give to the snapshot respository
-* 
 
 Both of those settings are **mutually exclusive**. There is currently no way to create snapshots to be saved locally and sent to S3 at the same time.
 
