@@ -98,7 +98,7 @@ During the downtime, mobile users will still be able to collect data, but they
 will be unable to submit forms or sync with the server.
 
 
-* Block data access by turning on the ``DATA_MIGRATION`` feature flag.
+* Block data access by turning on the ``DATA_MIGRATION`` feature flag (via HQ Web UI).
 * Print information about the numbers in the database for later reference.
   This will take a while (15 mins) even on small domains. Tip: add ``--csv`` to
   the command to save the output in a csv file.
@@ -117,25 +117,15 @@ will be unable to submit forms or sync with the server.
 3. Prepare the new environment to be populated
 ----------------------------------------------
 
+* Setup a new environment by following :ref:`deploy-commcarehq`
+* Do a commcare-hq deploy using :ref:`operations/2-deploys:Deploying CommCare HQ code changes`
+* Proceed to step 4.
 
-* Stop all services
-  ``$ commcare-cloud <env> downtime start``
-* Delete any blob data
-* Delete the PostgreSQL database
-* Delete the CouchDB database
-* Delete all elasticsearch indices
+If you have performed any tests on your new environment that has created test data, to delete 
+the data you can rebuild your environment using 
+:ref:`reference/howto/wipe_persistent_data:How To Rebuild a CommCareHQ environment` 
+before importing data from the old environment.
 
-  * Figure out what the elasticearch IP is:
-    ``ES_IP=$(commcare-cloud ${ENV} lookup elasticsearch:0)``
-  * Go ahead and check the size of the forms index to make sure this is the
-    correct cluster.  Be VERY sure this is correct.
-    ``curl -XGET "${ES_IP}:9200/xforms/_stats/docs?pretty``
-  * Delete all elasticsearch data in that cluster
-    ``curl -X DELETE ${ES_IP}:9200/_all?pretty``
-
-* Clear the redis cache data
-  ``./manage.py flush_caches``
-* Clear kafka
 
 4. Import the data to the new environment
 -----------------------------------------
@@ -156,12 +146,15 @@ will be unable to submit forms or sync with the server.
 
   * ``./manage.py print_domain_stats <domain_name>``
 
-* Rebuild case ownership cleanliness flags
+* Rebuild user configrable reports by running.
 
-  * ``./manage.py set_cleanliness_flags --force <domain_name>``
+  * ``./manage.py rebuild_tables_by_domain <domain_name> --initiated-by=<your-name>``
 
 * Bring the site back up
   ``$ commcare-cloud <env> downtime end``
+
+* Enable domain access by turning off the ``DATA_MIGRATION`` feature flag on the new environment (via HQ Web UI).
+
 
 5. Ensure the new environment is fully functional. Test all critical workflows at this stage.
 ---------------------------------------------------------------------------------------------

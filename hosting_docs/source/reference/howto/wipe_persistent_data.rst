@@ -1,35 +1,36 @@
+How To Rebuild a CommCareHQ environment
+=======================================
+
+This step deletes all of the CommCare data from your environment and resets to as if it's a new environment.
+In practice, you will likely need this only to delete test environments and not production data. Please understand fully
+before you proceed to perform this as it will permenantly delete all of your data.
+
 
 How To Wipe Persistent Data
-===========================
+---------------------------
+
+This step deletes all of the persistent data in BlobDB, Postgres, Couch and Elasticsearch. Note that this works only 
+in the sequence given below, so you shouldn't proceed to next steps until the prior steps are successful.
 
 
-#. 
-   Wipe BlobDB, ES, Couch using management commands.
-
-   .. code-block::
-
-      $ cchq monolith django-manage wipe_blobdb --commit
-      $ cchq monolith django-manage wipe_es --commit
-      $ cchq monolith django-manage delete_couch_dbs --commit
-
-#. 
-   Prepend "wipe_environment_enabled: True" to public.yml (because it
-   is easier to spot if it's prepended than appended).
+#. Wipe BlobDB, ES, Couch using management commands.
 
    .. code-block::
 
-      $ printf '%s\n%s\n' "wipe_environment_enabled: True" \
-        "$(cat ~/environments/monolith/public.yml)" \
-        > ~/environments/monolith/public.yml
+      $ cchq <env_name> django-manage wipe_blobdb --commit
+      $ cchq <env_name> django-manage wipe_es --commit
+      $ cchq <env_name> django-manage delete_couch_dbs --commit
 
-#. 
-   Stop CommCare and close Postgres sessions.
+#. Add "wipe_environment_enabled: True" to `public.yml` file.
+
+
+#. Stop CommCare and close Postgres sessions.
 
    .. code-block::
 
-      $ cchq monolith service commcare stop
-      $ cchq monolith service postgresql stop
-      $ cchq monolith service postgresql status
+      $ cchq <env_name> service commcare stop
+      $ cchq <env_name> service postgresql stop
+      $ cchq <env_name> service postgresql status
 
 
    If that doesn't stop Postgres and PgBouncer, and if Postgres is
@@ -43,19 +44,23 @@ How To Wipe Persistent Data
       $ sudo service postgresql start
       $ sudo service pgbouncer start
 
-#. 
-   Wipe PostgreSQL databases
+#. Wipe PostgreSQL databases
 
    .. code-block::
 
-      $ cchq monolith ap wipe_postgres.yml
+      $ cchq <env_name> ap wipe_postgres.yml
 
-#. 
-   Wipe Kafka topics
+#. Clear the redis cache data
 
    .. code-block::
 
-      $ cchq monolith ap wipe_kafka.yml
+      $ cchq <env_name> django-manage flush_caches
+
+#. Wipe Kafka topics
+
+   .. code-block::
+
+      $ cchq <env_name> ap wipe_kafka.yml
 
 
    You can check they have been removed by confirming that the following shows
@@ -69,42 +74,26 @@ Rebuilding environment
 ----------------------
 
 
-#. 
-   Drop the first line public.yml. This step assumes the first line is
-   "wipe_environment_enabled: True", prepended in the steps above.
+#. Remove the "wipe_environment_enabled: True" line in your `public.yml` file.
+
+#. Run Ansible playbook to recreate databases.
 
    .. code-block::
 
-      $ tail -n +2 ~/environments/monolith/public.yml > public.yml.tmp
-      $ mv public.yml.tmp ~/environments/monolith/public.yml
+      $ cchq <env_name> ap deploy_db.yml --skip-check
 
-#. 
-   Run Ansible playbook to recreate databases
-
-   .. code-block::
-
-      $ cchq monolith ap deploy_db.yml
-
-#. 
-   Run management commands to create Kafka topics, create Postgres
+#. Run a code deploy to create Kafka topics, create Postgres
    tables, and Elasticsearch indices.
 
    .. code-block::
 
-      $ cchq monolith django-manage create_kafka_topics
-      $ cchq monolith django-manage preindex_everything
-      $ cchq monolith django-manage ptop_es_manage --flip_all_aliases
-      $ cchq monolith django-manage check_services
-      $ sudo -iu cchq  # Required to set CCHQ_IS_FRESH_INSTALL=1
-      (cchq) $ cd www/monolith/current
-      (cchq) $ source python_env/bin/activate
-      (cchq) $ env CCHQ_IS_FRESH_INSTALL=1 ./manage.py migrate_multi
-      (cchq) $ exit
+      $ cchq <env_name> deploy
 
-#. 
-   Recreate a superuser (where you substitute your address in place of
-   "you@your.domain").
+
+#. Recreate a superuser (where you substitute your address in place of
+   "you@your.domain"). This is optional and should not be performed if
+   you are planning to migrate domain from other environment.
 
    .. code-block::
 
-      $ cchq monolith django-manage make_superuser you@your.domain
+      $ cchq <env_name> django-manage make_superuser you@your.domain

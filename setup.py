@@ -9,7 +9,7 @@ install_deps = [
     'attrs>=18.1.0',
     'boto3>=1.9.131',
     'clint',
-    'couchdb-cluster-admin>=0.7.0',
+    'couchdb-cluster-admin',
     'cryptography>=3.2',
     'datadog>=0.2.0',
     'dimagi-memoized>=1.1.0',
@@ -20,12 +20,12 @@ install_deps = [
     'idna==2.6',
     'importlib-metadata==3.1.0',
     'jinja2-cli',
-    'jsonobject>=0.9.0',
+    'jsonobject',
     'netaddr',
     'passlib',
     'pycryptodome>=3.6.6',  # security update
     'PyGithub>=1.43.3',
-    'pytz==2017.2',
+    'pytz',
     'simplejson',
     'six',
     'tabulate'

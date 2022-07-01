@@ -395,7 +395,7 @@ class Kafka(MultiAnsibleService):
         'kafka': ('kafka-server', 'kafka'),
         'zookeeper': ('zookeeper', 'zookeeper')
     }
-    log_location = '/opt/data/kafka/controller.log'
+    log_location = '/opt/kafka/logs/'
 
 
 class Postgresql(MultiAnsibleService):
