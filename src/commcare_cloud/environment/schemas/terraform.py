@@ -39,6 +39,7 @@ class TerraformConfig(jsonobject.JsonObject):
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
     r53_private_zone = jsonobject.ObjectProperty(lambda: RoutePrivateZoneConfig, default=None)
     efs_file_systems = jsonobject.ListProperty(lambda: EfsFileSystem, default=None)
+    fsx_file_systems = jsonobject.ListProperty(lambda: FsxFileSystem, default=None)
     ec2_auto_recovery = jsonobject.ListProperty(lambda: Ec2AutoRecovery, default=None)
 
     @classmethod
@@ -259,3 +260,10 @@ class Ec2AutoRecovery(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     targets = jsonobject.ListProperty(str)
     name_prefix = jsonobject.StringProperty(required=True)
+
+class FsxFileSystem(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    create = jsonobject.BooleanProperty(default=True)
+    fsx_name = jsonobject.StringProperty(required=True)
+    storage_capacity = jsonobject.IntegerProperty(required=True)
+    throughput_capacity = jsonobject.IntegerProperty(required=True)

@@ -348,3 +348,18 @@ module "efs_mount__{{ efs_file_system_mount.efs_name }}__{{ az }}" {
 {% endfor %}
 
 {% endif %}
+
+{% if fsx_file_systems %}
+{% for fsx_file_system in fsx_file_systems %}
+module "fsx_file_system__{{ fsx_file_system.efs_name }}" {
+  source = "./modules/fsx_file_system"
+  create               = {{ fsx_file_system.create|tojson }}
+  fsx_name             = {{ fsx_file_system.fsx_name|tojson }}
+  namespace            = "${var.environment}"
+  storage_capacity     = {{ fsx_file_system.storage_capacity|tojson }}
+  throughput_capacity  = {{ fsx_file_system.throughput_capacity|tojson }}
+  fsx_subnet_ids       = ["${lookup(module.network.subnets-app-private, "a", "")}"]
+}
+{% endfor %}
+
+{% endif %}
