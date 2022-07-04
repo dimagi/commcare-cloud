@@ -33,8 +33,7 @@ server, then after the migration, to the new server. This switch happens at the
 DNS level, without requiring a change on each device.
 
 
-* Set up a domain name to be used for the migration. Have it point to the old
-   environment.
+* Set up a domain name to be used for the migration. Have it point to the old environment.
 * Add that domain name to the old environment's public.yml
 
   .. code-block::
@@ -43,8 +42,9 @@ DNS level, without requiring a change on each device.
         - commcare.example.com
 
 * Update the list of valid hosts in nginx and Django, then restart services for
-   it to take effect.  After this, CommCare HQ should be accessible at the new
-   domain name.
+  it to take effect.  After this, CommCare HQ should be accessible at the new
+  domain name.
+
   .. code-block::
 
       $ cchq <env> ansible-playbook deploy_proxy.yml
@@ -52,11 +52,11 @@ DNS level, without requiring a change on each device.
       $ cchq <env> fab restart_services
 
 * Enable the feature flag ``CUSTOM_APP_BASE_URL`` for the project. This will need
-   to be done by a site administrator.
+  to be done by a site administrator.
 * For each app in the project, navigate to Settings > Advanced Settings, and
-   enter in the domain name you created above.
+  enter in the domain name you created above.
 * Make a new build and test it out to ensure form submissions and syncs still
-   work as usual.
+  work as usual.
 * Release the build and roll it out to all users.
 
 That is, there are three registered domain names, which I'll call "old", "new",
@@ -183,9 +183,9 @@ before importing data from the old environment.
 
 
 * Switch mobile devices to the new environment's URL. Reverse the steps taken
-   previously, since the custom URL is no longer necessary.
+  previously, since the custom URL is no longer necessary.
 * Once the success of the migration is assured, request that a site
-   administrator delete the project space on the old environment.
+  administrator delete the project space on the old environment.
 
 Troubleshooting
 ---------------
