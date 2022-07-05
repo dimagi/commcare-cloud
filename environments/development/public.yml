@@ -91,7 +91,6 @@ localsettings:
 #  SMS_QUEUE_ENABLED: ''
 #  STAGING_DOMAINS:
 #  STATIC_ROOT:
-#  ENABLE_DRACONIAN_SECURITY_FEATURES: yes
 
 root_email: /dev/null
 
