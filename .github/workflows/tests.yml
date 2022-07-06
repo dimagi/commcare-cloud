@@ -55,8 +55,6 @@ jobs:
     runs-on: ubuntu-18.04
 
     env:
-      ANSIBLE_ROLES_PATH: "~/.ansible/roles"
-      CI_TEST: 1
       TEST: quick-install
 
     steps:
