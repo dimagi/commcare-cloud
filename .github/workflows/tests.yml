@@ -65,4 +65,4 @@ jobs:
         python-version: "3.6"
     - name: Run tests
       run: |
-        .tests/tests.sh
+        ./tests/quick-install/test-quick-install.sh
