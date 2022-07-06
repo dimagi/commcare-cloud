@@ -39,6 +39,7 @@ printf "\n"
 sudo apt --assume-yes -qq update
 sudo apt --assume-yes -qq install python3-pip sshpass
 sudo -H pip3 -q install --upgrade pip
+sudo -H pip3 -q install setuptools
 sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 sudo -H pip -q install ansible virtualenv virtualenvwrapper --ignore-installed six
 
