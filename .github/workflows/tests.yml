@@ -50,3 +50,17 @@ jobs:
     - name: Run tests
       run: |
         .tests/tests.sh
+  build:
+
+    runs-on: ubuntu-18.04
+
+    env:
+      ANSIBLE_ROLES_PATH: "~/.ansible/roles"
+      CI_TEST: 1
+      TEST: quick-install
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run tests
+      run: |
+        .tests/tests.sh

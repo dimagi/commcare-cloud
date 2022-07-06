@@ -49,3 +49,8 @@ then
     ./tests/test_autogen_docs.sh
     ./tests/test_modernize.sh
 fi
+
+if [[ ${TEST} = 'quick-install' ]]
+then
+    ./tests/quick-install/test-quick-install.sh
+fi
