@@ -50,7 +50,7 @@ jobs:
     - name: Run tests
       run: |
         .tests/tests.sh
-  build:
+  quick-install:
 
     runs-on: ubuntu-18.04
 
