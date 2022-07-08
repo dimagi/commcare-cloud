@@ -32,7 +32,9 @@ settings configured for those indices, those references will need to be
 removed.
 
 ## Steps to update
-1. Search your environment's app_processes.yml for `ReportCaseToElasticsearchPillow` and `ReportXFormToElasticsearchPillow`.  If in there, it should look something like this:
+1. Search your environment's app_processes.yml for
+`ReportCaseToElasticsearchPillow` and `ReportXFormToElasticsearchPillow`. If
+in there, it should look something like this:
 
 ```
 ReportCaseToElasticsearchPillow:
@@ -48,11 +50,17 @@ up. If not, you can skip this step. This file defines index-specific settings
 to tune your elasticsearch cluster. Search for `report_cases` and
 `report_xforms` in this file, and if present, delete those sections.
 
-3. Next time you run update-config, you should see these two indices removed from the `ES_SETTINGS` setting in localsettings.py:
+3. Next time you run update-config, you should see these two indices removed
+from the `ES_SETTINGS` setting in localsettings.py:
 ```
 'report_cases': {}
 'report_xforms': {}
 ```
 You do not need to make this update manually at this time.
 
-4. Lastly, when https://github.com/dimagi/commcare-hq/pull/31804 is deployed, it will automatically remove the report_cases and report_xforms indices from your elasticsearch cluster if they exist.  No manual action is needed here.
+4. Lastly, if you do have those two indices in your elasticsearch cluster, you
+can remove them and any other unused indices with the following command (it
+will prompt for confirmation first)
+```
+$ cchq <env> django-manage prune_elastic_indices --delete
+```
