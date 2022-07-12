@@ -25,41 +25,50 @@ switchover to the new environment.
 1. Switch mobile devices to a proxy URL
 ---------------------------------------
 
-Each application maintains a series of URLs used for the various requests made
-by the mobile devices. Since rolling out an app update to all mobile devices
-takes time, it's best to not rely on that when switching server environments.
-Instead, we direct apps to a custom URL which directs requests to the original
-server, then after the migration, to the new server. This switch happens at the
-DNS level, without requiring a change on each device.
+Each application maintains a series of URLs pointing to CommCare HQ environment used for
+various requests made by the mobile devices. Migrating to a new web address requires updating these
+URLs in all the mobile devices at the time of switching the environments after the data is migrated. Since rolling out an app update to every mobile device of the project
+takes time during which the site needs to be offline, it will result in a long downtime for the project. Hence, if your project has any more than a couple of devices, it's best not to do it this way.
 
+Instead, before the migration itself, a new/proxy URL can be set up and configured to direct requests
+to the original environment and the mobile devices can be gradually updated to use the new URL while
+the project is still online. Then after the migration, the URL can be switched to the new environment.
+The URL switch happens at the DNS level, so an app update is not needed. Note that, an all device
+update is still required in this method, but the advantage is that it can be done before the migration.
 
-* Set up a domain name to be used for the migration. Have it point to the old environment.
-* Add that domain name to the old environment's public.yml
+To do this, follow the below steps.
 
-  .. code-block::
+#. Set up a domain name to be used for the migration. Have it point to the old environment.
+#. Add that domain name to the old environment's public.yml
+
+   .. code-block::
 
       ALTERNATE_HOSTS:
         - commcare.example.com
 
-* Update the list of valid hosts in nginx and Django, then restart services for
-  it to take effect.  After this, CommCare HQ should be accessible at the new
-  domain name.
+#. Update the list of valid hosts in nginx and Django, then restart services for
+   it to take effect.  After this, CommCare HQ should be accessible at the new
+   domain name.
 
-  .. code-block::
+   .. code-block::
 
       $ cchq <env> ansible-playbook deploy_proxy.yml
       $ cchq <env> update-config
       $ cchq <env> fab restart_services
 
-* Enable the feature flag ``CUSTOM_APP_BASE_URL`` for the project. This will need
-  to be done by a site administrator.
-* For each app in the project, navigate to Settings > Advanced Settings, and
-  enter in the domain name you created above.
-* Make a new build and test it out to ensure form submissions and syncs still
-  work as usual.
-* Release the build and roll it out to all users.
+#. Set up SSL certificate for the domain name.
+#. Enable the feature flag ``CUSTOM_APP_BASE_URL`` for the project. This will need
+   to be done by a site administrator.
+#. For each app in the project, navigate to Settings > Advanced Settings, and
+   enter in the domain name you created above.
+#. Make a new build and test it out to ensure form submissions and syncs still
+   work as usual.
+#. Release the build and roll it out to all devices. You can refer to Application Status Report
+   to make sure that all the mobile devices are using this build.
 
-That is, there are three registered domain names, which I'll call "old", "new",
+If you don't want to use the final domain to point to old environment, a different
+domain can also be used during migration.
+That is, there are three registered domain names, which can be called "old", "new",
 and "mobile". This table describes which domain name each type of user will
 access at each stage of the migration:
 
@@ -85,6 +94,7 @@ access at each stage of the migration:
      - access new domain
      - access new domain directly
 
+Only after all the devices are updated to use a new/mobile URL, you can proceed to the next step.
 
 2. Pull the domain data from the old environment
 ------------------------------------------------
