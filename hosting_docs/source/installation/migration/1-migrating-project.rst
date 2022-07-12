@@ -25,16 +25,16 @@ switchover to the new environment.
 1. Switch mobile devices to a proxy URL
 ---------------------------------------
 
-Each application maintains a series of URLs pointing to CommCareHQ environment used for
+Each application maintains a series of URLs pointing to CommCare HQ environment used for
 various requests made by the mobile devices. Migrating to a new web address requires updating these
-URLs in all the mobilie devices at the time of switching the environments after the data is migrated. Since rolling out an app update to every mobile device of the project
-takes time during which the site needs to be offline, it will result in a long downtime for the project. Hence, if your project have any more than a couple of devices, it's best not to do it this way.
+URLs in all the mobile devices at the time of switching the environments after the data is migrated. Since rolling out an app update to every mobile device of the project
+takes time during which the site needs to be offline, it will result in a long downtime for the project. Hence, if your project has any more than a couple of devices, it's best not to do it this way.
 
-Instead, before the migration itself, a new/proxy URL can be setup and configured to direct requests
+Instead, before the migration itself, a new/proxy URL can be set up and configured to direct requests
 to the original environment and the mobile devices can be gradually updated to use the new URL while
 the project is still online. Then after the migration, the URL can be switched to the new environment.
 The URL switch happens at the DNS level, so an app update is not needed. Note that, an all device
-update is still required in this method, but the advatage is that it can be done before the migration.
+update is still required in this method, but the advantage is that it can be done before the migration.
 
 To do this, follow the below steps.
 
@@ -56,7 +56,7 @@ To do this, follow the below steps.
       $ cchq <env> update-config
       $ cchq <env> fab restart_services
 
-#. Setup SSL certificate for the domain name.
+#. Set up SSL certificate for the domain name.
 #. Enable the feature flag ``CUSTOM_APP_BASE_URL`` for the project. This will need
    to be done by a site administrator.
 #. For each app in the project, navigate to Settings > Advanced Settings, and

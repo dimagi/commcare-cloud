@@ -47,7 +47,7 @@ Post Installation and Server Administration
 Tracking environements directory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-On succesful installation, the script creates an :ref:`environments config directory<reference/1-commcare-cloud/2-configuration:Creating environments directory>` under `~/environments` that stores all of the configuration. We recommend you to to track this via a version control system such as git, so that you can keep track of the changes and share the directory with other team members so that they can perform server administration using commcare-cloud if required.
+On successful installation, the script creates an :ref:`environments config directory<reference/1-commcare-cloud/2-configuration:Creating environments directory>` under `~/environments` that stores all of the configuration. We recommend you to track this via a version control system such as git, so that you can keep track of the changes and share the directory with other team members so that they can perform server administration using commcare-cloud if required.
 
 .. note::
 
@@ -60,7 +60,7 @@ Note that, to run any commcare-cloud commands after quick-install you need to lo
 
 If you wish to let other team memebers run commcare-cloud commands, you can refer to :ref:`reference/3-user-management:User Access Management`.
 
-Once you have installed CommCareHQ successfully you can refer to :ref:`installation/2-manual-install:First Steps with CommCare HQ` before making your CommCareHQ live.
+Once you have installed CommCare HQ successfully you can refer to :ref:`installation/2-manual-install:First Steps with CommCare HQ` before making your CommCare HQ live.
 
 
 Troubleshooting
