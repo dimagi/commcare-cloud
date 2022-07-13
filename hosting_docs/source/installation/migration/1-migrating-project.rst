@@ -36,6 +36,9 @@ the project is still online. Then after the migration, the URL can be switched t
 The URL switch happens at the DNS level, so an app update is not needed. Note that, an all device
 update is still required in this method, but the advantage is that it can be done before the migration.
 
+.. note::
+  Mobile devices should be switched to the proxy URL well in advance of doing the data migration so as to make sure all mobile users updated their applications!
+
 To do this, follow the below steps.
 
 #. Set up a domain name to be used for the migration. Have it point to the old environment.
