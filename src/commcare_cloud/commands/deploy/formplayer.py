@@ -16,7 +16,6 @@ from commcare_cloud.commands.deploy.utils import record_deploy_start, record_dep
     announce_deploy_success, create_release_tag, DeployContext
 from commcare_cloud.user_utils import get_default_username
 from commcare_cloud.commands.utils import timeago
-from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff
 from commcare_cloud.github import github_repo
 
@@ -98,7 +97,6 @@ def record_deploy_success(environment, context):
     record_deploy_in_datadog(environment, diff, end - context.start_time)
     update_sentry_post_deploy(environment, "formplayer", repo, diff, context.start_time, end)
     announce_deploy_success(environment, context)
-    publish_deploy_event("deploy_success", "formplayer", environment)
 
 
 def get_deploy_diff(environment, repo):

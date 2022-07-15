@@ -15,7 +15,6 @@ from commcare_cloud.commands.deploy.utils import (
     record_deploy_failed,
 )
 from commcare_cloud.commands.utils import run_fab_task
-from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff
 from commcare_cloud.github import github_repo
 
@@ -167,7 +166,6 @@ def record_successful_deploy(environment, context):
     update_sentry_post_deploy(environment, "commcarehq", diff.repo, diff, context.start_time, end_time)
     announce_deploy_success(environment, context)
     call_record_deploy_success(environment, context, end_time)
-    publish_deploy_event("deploy_success", "commcare", environment)
 
 
 def call_record_deploy_success(environment, context, end_time):

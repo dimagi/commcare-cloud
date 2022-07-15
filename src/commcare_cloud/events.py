@@ -4,7 +4,7 @@ import requests
 from fabric.colors import red
 
 
-def publish_deploy_event(name, component, environment):
+def publish_deploy_event(name, components, environment):
     url = environment.fab_settings_config.deploy_event_url
     if not url:
         return
@@ -19,7 +19,7 @@ def publish_deploy_event(name, component, environment):
     data = json.dumps({
         "event_type": name,
         "client_payload": {
-            "component": component,
+            "components": components,
             "environment": environment.meta_config.deploy_env,
         },
     })

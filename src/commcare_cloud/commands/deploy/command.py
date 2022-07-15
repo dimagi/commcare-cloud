@@ -13,6 +13,7 @@ from commcare_cloud.commands.deploy.commcare import deploy_commcare
 from commcare_cloud.commands.deploy.formplayer import deploy_formplayer
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
+from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.utils import retrieve_cached_deploy_env
 
 
@@ -100,6 +101,9 @@ class Deploy(CommandBase):
                 print(color_error("Skipping formplayer because commcare failed"))
             else:
                 rc = deploy_formplayer(environment, args)
+
+        if rc == 0:
+            publish_deploy_event("deploy_success", deploy_component, environment)
         return rc
 
 
