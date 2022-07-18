@@ -35,7 +35,7 @@ Configure
 
 .. code-block::
 
-   commcare-cloud <env> deploy_stack.yml --limit=celeryN
+   commcare-cloud <env> deploy-stack --limit=celeryN
 
 Update Configs
 --------------

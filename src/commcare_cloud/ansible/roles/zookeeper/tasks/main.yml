@@ -46,12 +46,9 @@
 - name: configure server id
   template: src=myid.j2 dest="{{ zookeeper_data_dir }}/myid"
   when: zookeeper_cluster
-  tags: zookeeper_cluster_conf
 
 - name: configure Zookeeper properties
   template: src=zoo.cfg.j2 dest="{{ zookeeper_conf_dir }}/zoo.cfg"
-  when: zookeeper_cluster
-  tags: zookeeper_cluster_conf
 
 - name: Install Zookeeper systemd script
   template: src=zookeeper-server.service.j2 dest=/etc/systemd/system/zookeeper-server.service mode=0755

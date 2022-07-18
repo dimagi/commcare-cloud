@@ -714,10 +714,6 @@ BANK_ROUTING_NUMBER_WIRE = '{{ BANK_ROUTING_NUMBER_WIRE }}'
 
 ENABLE_PRELOGIN_SITE = {{ localsettings.get('ENABLE_PRELOGIN_SITE', True) }}
 
-{% if localsettings.get('ENABLE_DRACONIAN_SECURITY_FEATURES') %}
-ENABLE_DRACONIAN_SECURITY_FEATURES = True
-{% endif %}
-
 {% if localsettings.get('ADD_CAPTCHA_FIELD_TO_FORMS') %}
 ADD_CAPTCHA_FIELD_TO_FORMS = True
 {% endif %}

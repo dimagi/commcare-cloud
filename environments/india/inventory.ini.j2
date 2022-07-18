@@ -46,7 +46,6 @@ elasticsearch_data=false
 
 {{ __formplayer1__ }}
 {{ __pillow3__ }}
-{{ __kafka1__ }} kafka_broker_id=0 zookeeper_server_id=1
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=2
 {{ __kafka3__ }} kafka_broker_id=2 zookeeper_server_id=3
 {{ __kafka_a0__ }} kafka_broker_id=3 zookeeper_server_id=4
@@ -56,6 +55,7 @@ elasticsearch_data=false
 {{ __pgbouncer1__ }} pgbouncer_processes=2
 {{ __pgbouncer2__ }} pgbouncer_processes=2
 {{ __proxy2__ }}
+{{ __proxy_a0__ }}
 {{ __rds_pgmain0__ }}
 {{ __pgformplayer_nlb__ }}
 {{ __pgmain_nlb__ }}
@@ -70,9 +70,11 @@ elasticsearch_data=false
 
 [proxy:children]
 proxy2
+proxy_a0
 
 [logproxy:children]
 proxy2
+proxy_a0
 
 [webworkers:children]
 web2

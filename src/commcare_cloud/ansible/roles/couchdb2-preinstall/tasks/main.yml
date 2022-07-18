@@ -45,7 +45,14 @@
 
 - name: Install Erlang dependencies
   apt:
-    name:
-      - esl-erlang={{ couchdb_erlang_version }}
+    name: esl-erlang={{ couchdb_erlang_version }}
+    update_cache: yes
     force: yes
+  register: couchdb_erlang_apt_install_result
+  ignore_errors: true
 
+- name: Install Erlang dependencies (alternate method)
+  apt:
+    deb: "https://packages.erlang-solutions.com/ubuntu/pool/esl-erlang_{{ couchdb_erlang_version | regex_replace('^[0-9]+:(.*)$', '\\1') }}~ubuntu~bionic_amd64.deb"
+    force: yes
+  when: couchdb_erlang_apt_install_result is failed

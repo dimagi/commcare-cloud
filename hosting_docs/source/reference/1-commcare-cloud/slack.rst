@@ -19,6 +19,8 @@ To configure commcare-cloud to send messages to Slack:
    #. chat:write
    #. reactions:write
 
+   For an already installed app the app token can be found in the app settings under "Install App".
+
 #. 
    Set the access token as a commcare-cloud secret:
 
