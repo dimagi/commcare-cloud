@@ -7,6 +7,15 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-06-17** [Remove report_cases and report_xforms indices](0050-remove-report-indices.md)
+CommCareHQ has two elasticsearch indices "report_cases" and "report_xforms"
+that were created many years ago for some custom reports, but which haven't
+been used in some time. This change deletes those indices and the change
+processors used to populate them. We do not expect this to impact any
+self-hosted environments, but it's prudent to confirm.
+
+
+---
 #### **2022-06-03** [Postgres upgrade from 9.6 to 10](0049-upgrade-to-postgres-10.md)
 This change upgrade PostgreSQL from 9.6 to 10 version.
 As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
