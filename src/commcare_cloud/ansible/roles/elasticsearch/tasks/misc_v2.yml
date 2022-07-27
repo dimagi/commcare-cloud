@@ -44,4 +44,4 @@
 - name: Install elasticsearch phonetic plugin
   become: yes
   shell: "{{ elasticsearch_home }}/bin/plugin install analysis-phonetic"
-  when: (backup_es_s3) and (installed_plugins.stdout is defined) and ('analysis-phonetic' not in installed_plugins.stdout) and elasticsearch_version == '2.4.6'
+  when: (installed_plugins.stdout is defined) and ('analysis-phonetic' not in installed_plugins.stdout) and is_staging
