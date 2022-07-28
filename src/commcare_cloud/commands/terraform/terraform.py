@@ -180,6 +180,7 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
             ('postgresql.tf.j2', 'postgresql.tf'),
             ('variables.tf.j2', 'variables.tf'),
             ('terraform.tfvars.j2', 'terraform.tfvars'),
+            ('terraform.lock.hcl.j2', '.terraform.lock.hcl'),
     ):
         with open(os.path.join(run_dir, output_file), 'w', encoding='utf-8') as f:
             f.write(render_template(template_file, context, template_root))
