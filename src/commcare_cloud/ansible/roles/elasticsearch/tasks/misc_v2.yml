@@ -40,3 +40,8 @@
   become: yes
   shell: "{{ elasticsearch_home }}/bin/plugin install https://github.com/dimagi/elasticsearch-repository-swift/releases/download/swift-repository-plugin-{{ swift_plugin_version }}/repository-swift-3.0.0-es{{ swift_plugin_version }}.zip"
   when: (backup_es_swift) and (installed_plugins.stdout is defined) and ('repository-swift' not in installed_plugins.stdout) and elasticsearch_version == '2.4.6'
+
+- name: Install elasticsearch phonetic plugin
+  become: yes
+  shell: "{{ elasticsearch_home }}/bin/plugin install analysis-phonetic"
+  when: (installed_plugins.stdout is defined) and ('analysis-phonetic' not in installed_plugins.stdout) and es_plugins_phonetic_enabled

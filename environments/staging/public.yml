@@ -197,3 +197,6 @@ use_chrony: True
 
 python_version: '3.9'
 use_deadsnakes: '{{ ansible_distribution_version <= "18.04" }}'
+
+# to test plugin on staging only
+es_plugins_phonetic_enabled: True
