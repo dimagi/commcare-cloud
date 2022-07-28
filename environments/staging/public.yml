@@ -199,4 +199,4 @@ python_version: '3.9'
 use_deadsnakes: '{{ ansible_distribution_version <= "18.04" }}'
 
 # to test plugin on staging only
-is_staging: True
+es_plugins_phonetic_enabled: True
