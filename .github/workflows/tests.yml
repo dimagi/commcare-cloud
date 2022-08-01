@@ -14,11 +14,11 @@ permissions:
 
 jobs:
   build:
-    runs-on: ${{ matrix.versions.os }}
+    runs-on: ubuntu-18.04
 
     strategy:
       matrix:
-        versions: [ {os: ubuntu-18.04, python: "3.6"}, {os: ubuntu-22.04, python: "3.10"} ]
+        python-version: ["3.6", "3.10"]
 
     env:
       ANSIBLE_ROLES_PATH: "~/.ansible/roles"
@@ -31,7 +31,7 @@ jobs:
     - name: Set up Cloud Python Version
       uses: actions/setup-python@v3
       with:
-        python-version: ${{ matrix.versions.python }}
+        python-version: ${{ matrix.python-version }}
 
     - name: Install dependencies
       run: |
