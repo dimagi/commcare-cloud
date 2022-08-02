@@ -1,0 +1,19 @@
+title: upgrade-ansible
+key: upgrade-ansible
+date: 2022-08-02
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Run command to uninstall older ansible version which 2.9.26 and install 4.2.0
+details: |
+  As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
+  libraries we have updated the Ansible version to use the ansible==4.2.0. During that
+  process we have test this approach on new servers and we have to uninstall the existing version 
+  and install the 4.2.0
+update_steps: |
+  1. Clone the latest Commcare-cloud master branch into the control (respective) machine
+  2. Run following command to reset the cchq env
+    ```bash
+      source <pathToDir>/commcare-cloud/source/init.sh
+    ```

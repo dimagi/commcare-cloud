@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-08-02** [upgrade-ansible](0051-upgrade-ansible.md)
+Run command to uninstall older ansible version which 2.9.26 and install 4.2.0
+
+
+---
 #### **2022-06-17** [Remove report_cases and report_xforms indices](0050-remove-report-indices.md)
 CommCareHQ has two elasticsearch indices "report_cases" and "report_xforms"
 that were created many years ago for some custom reports, but which haven't
