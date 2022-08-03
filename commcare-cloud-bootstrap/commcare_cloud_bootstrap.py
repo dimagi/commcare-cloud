@@ -108,6 +108,7 @@ def provision_machines(spec, env_name=None, create_machines=True):
         )
     environment = get_environment(env_name)
     inventory = bootstrap_inventory(spec, env_name)
+
     if create_machines:
         instance_ids = ask_aws_for_instances(env_name, spec.aws_config, len(inventory.all_hosts))
     else:
@@ -166,8 +167,9 @@ def bootstrap_inventory(spec, env_name):
     incomplete = dict(spec.allocations.items())
 
     inventory = Inventory()
+    counter = 0
 
-    while incomplete:
+    while counter < len(incomplete):
         for role, allocation in incomplete.items():
             if allocation.from_:
                 if allocation.from_ not in spec.allocations:
@@ -188,7 +190,7 @@ def bootstrap_inventory(spec, env_name):
                 new_host_names = set()
                 for i in range(allocation.count):
                     host_name = '{env}-{group}-{i}'.format(env=env_name, group=role, i=i)
-                    host_name = string.replace(host_name, '_', '-')
+                    host_name = host_name.replace('_', '-')
                     new_host_names.add(host_name)
                     inventory.all_hosts.append(
                         Host(name=host_name, public_ip=None, private_ip=None, vars={}))
@@ -198,7 +200,8 @@ def bootstrap_inventory(spec, env_name):
                     vars={},
                 )
 
-            del incomplete[role]
+            # del incomplete[role]
+            counter += 1
     return inventory
 
 
@@ -240,7 +243,16 @@ def ask_aws_for_instances(env_name, aws_config, count):
         if aws_config.data_volume:
             block_device_mappings.append(aws_config.data_volume)
         cmd_parts.extend(['--block-device-mappings', json.dumps(block_device_mappings)])
-        aws_response = subprocess.check_output(cmd_parts)
+
+        cmd_parts_cleaned = cmd_parts[:3]
+        for part in cmd_parts[3:]:
+            if part is None:
+                # Remove key from args
+                cmd_parts_cleaned.pop()
+            else:
+                cmd_parts_cleaned.append(part)
+
+        aws_response = subprocess.run(cmd_parts_cleaned, capture_output=True)
         with open(cache_file, 'wb') as f:
             # PY2: check_output returns a byte string
             # PY3: would need to specify universal_newlines=True in check_output to pass in str and receive str
@@ -250,6 +262,7 @@ def ask_aws_for_instances(env_name, aws_config, count):
         # Use the existing instances
         with open(cache_file, 'r', encoding='utf-8') as f:
             aws_response = f.read()
+
     aws_response = json.loads(aws_response)
     return {instance['InstanceId'] for instance in aws_response["Instances"]}
 
@@ -557,3 +570,6 @@ def main():
     for standard_arg in STANDARD_ARGS:
         if args.command == standard_arg.command:
             standard_arg.run(args)
+
+
+main()

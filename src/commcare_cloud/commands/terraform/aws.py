@@ -328,6 +328,7 @@ def aws_sign_in(environment, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES, 
         return None
 
     _ensure_all_dirs(AWS_DOT_DIR)
+
     if environment.aws_config.credential_style == 'sso':
         for path in (AWS_SSO_CACHE_DIR, AWS_CLI_CACHE_DIR):
             _ensure_all_dirs(path)

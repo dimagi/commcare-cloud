@@ -1,0 +1,4 @@
+account_alias: commcare-cluster-test
+terraform_version: '0.14'
+region: "us-west-2"
+environment: "cluster"

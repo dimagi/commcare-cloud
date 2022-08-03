@@ -1,0 +1,38 @@
+aws_config:
+  pem: ~/.ssh/commcarehq_cluster_testing.pem
+  ami: ami-0d70546e43a941d70
+  type: t3.micro
+  key_name: commcarehq_cluster_testing
+  security_group_id: sg-0f454b13d335c7ba8
+  # subnet: subnet-ea62acc5
+
+#settings:
+#  users: cluster
+
+allocations:
+  proxy: 1
+  couchdb2_proxy:
+    count: 1
+    from: proxy
+  webworkers: 1
+  django_manage:
+    count: 1
+    from: webworkers
+  postgresql: 1
+  rabbitmq: 1
+  kafka: 1
+  zookeeper:
+    from: kafka
+  celery: 1
+  pillowtop: 1
+  formplayer: 1
+  touchforms: 0
+  redis: 1
+  elasticsearch: 1
+  shared_dir_host: 1
+  riakcs: 1
+  stanchion:
+    count: 1
+    from: riakcs
+  couchdb2: 1
+  pg_standby: 0
