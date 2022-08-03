@@ -2,15 +2,15 @@
 - name: Delete all Kafka topics
   become: true
   hosts: zookeeper  # Doesn't need to run on all Kafka hosts
-  vars_prompt:
-    - name: confirm_wipe
-      prompt: "Are you sure you want to delete all Kafka topics? [yN]"
-      private: no
-
+  tags: delete_topics
   tasks:
+    - pause:
+        prompt: "Are you sure you want to delete all Kafka topics? [y/N]"
+      register: confirm_wipe
+
     - name: Check confirm_wipe
       assert:
-        that: confirm_wipe == 'y'
+        that: confirm_wipe.user_input == 'y'
 
     - name: Check wipe_environment_enabled has been set to True
       assert:
@@ -47,3 +47,72 @@
         --delete
         --zookeeper localhost:{{ zookeeper_client_port }}
         --topic {{ item }}"
+
+- name: Reinstall Kafka
+  hosts: zookeeper
+  become: yes
+  tags:
+    - never
+    - reinstall
+  tasks:
+    - pause:
+        prompt: "Are you sure you want to reinstall Kafka? [y/N]"
+      register: confirm_reinstall
+
+    - name: Check confirm_reinstall
+      assert:
+        that: confirm_reinstall.user_input == 'y'
+
+    - name: Get default vars
+      include_vars: roles/kafka/defaults/main.yml
+
+    - name: Stop kafka-server
+      service: name=kafka-server state=stopped
+      register: kafka_service_stopped
+
+    - debug:
+        var: kafka_service_stopped
+
+    - name: Ensure kafka-server is stopped
+      assert:
+        that: kafka_service_stopped.state == "stopped"
+
+    - name: Remove kafka-server.service
+      file:
+        state: absent
+        path: /etc/systemd/system/kafka-server.service
+
+    - name: Remove Kafka data directory
+      file:
+        state: absent
+        path: "{{ item }}"
+      with_items:
+        - "{{ kafka_data_dir }}"
+
+    - name: Remove Kafka log symlink
+      file:
+        state: absent
+        path: /opt/kafka/logs
+
+    - name: Remove Kafka log
+      file:
+        state: absent
+        path: "{{ kafka_log_dir }}"
+
+    - name: Remove Kafka server directory
+      file:
+        state: absent
+        path: /etc/kafka
+
+    - name: Remove Kafka symlink
+      file:
+        state: absent
+        path: /opt/kafka
+
+    - name: Remove Kafka
+      file:
+        state: absent
+        path: "/opt/kafka_{{ kafka_scala_version }}-{{ kafka_version }}"
+
+    - include_role:
+        name: kafka
