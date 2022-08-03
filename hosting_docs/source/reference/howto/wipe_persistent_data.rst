@@ -62,6 +62,9 @@ in the sequence given below, so you shouldn't proceed to next steps until the pr
 
       $ cchq <env_name> ap wipe_kafka.yml
 
+   .. note::
+
+      If you encounter any issues executing the wipe_kafka.yml playbook, you can optionally append `--tags reinstall` to the command, which will reinstall Kafka rather than just clearing its topics.
 
    You can check they have been removed by confirming that the following shows
    no output:
