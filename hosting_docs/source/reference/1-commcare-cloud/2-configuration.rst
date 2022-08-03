@@ -125,6 +125,12 @@ in detail in the following sections.
 
 .. code-block::
 
+   management_commands:
+     <host>:
+       <command-name>:
+     <host>:
+       ...
+     ...
    celery_processes:
      <host>:
        <queue-name>:
@@ -143,6 +149,14 @@ in detail in the following sections.
      ...
 
 Each ``<host>`` must be a `host string <glossary#host-string>`_.
+
+Each ``<command-name>`` must be one of the following:
+
+* ``run_submission_reprocessing_queue``: Reprocess failed form submissions
+* ``queue_schedule_instances``: Populates the SMS queue with scheduled messages
+* ``handle_survey_actions``: Handles SMS survey actions
+* ``run_sms_queue``: Processes queued SMS messages
+* ``run_pillow_retry_queue``: Retry queue for change feed errors
 
 Each ``<queue-name>`` must be one of the following values:
 ``async_restore_queue``\ , ``background_queue``\ , ``case_rule_queue``\ , ``celery``\ ,
