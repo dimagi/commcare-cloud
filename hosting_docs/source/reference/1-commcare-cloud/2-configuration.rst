@@ -141,6 +141,11 @@ The three sections are as follows:
 
 Each ``<host>`` must be a `host string <glossary#host-string>`_.
 
+See `app_processes.py`_ for complete list of top-level properties for this file.
+These are subject to the defaults provided in `environmental-defaults/app-processes.yml`_.
+
+.. _app_processes.py: https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/environment/schemas/app_processes.py
+.. _environmental-defaults/app-processes.yml: https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/environmental-defaults/app-processes.yml
 
 Management Commands
 """""""""""""""""""
@@ -235,13 +240,6 @@ For all features to work, each of these ETL processors
 for no good reason beyond historical accident) just listed must appear
 at least once, and up to once per host. An ETL processor not mentioned
 will not be run at all.
-
-See `commcare_cloud/environment/schemas/app_processes.py <https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/environment/schemas/app_processes.py#L25-L40>`_
-for complete list of top-level properties for this file.
-These are subject to the defaults provided in
-`commcare_cloud/environmental-defaults/app-processes.yml <https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/environmental-defaults/app-processes.yml>`_.
-..
-  todo: clean up this code and then better document
 
 ``fab-settings.yml``
 ^^^^^^^^^^^^^^^^^^^^^^^^
