@@ -240,7 +240,8 @@ See `commcare_cloud/environment/schemas/app_processes.py <https://github.com/dim
 for complete list of top-level properties for this file.
 These are subject to the defaults provided in
 `commcare_cloud/environmental-defaults/app-processes.yml <https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/environmental-defaults/app-processes.yml>`_.
-:raw-html-m2r:`<!--  todo: clean up this code and then better document -->`
+..
+  todo: clean up this code and then better document
 
 ``fab-settings.yml``
 ^^^^^^^^^^^^^^^^^^^^^^^^
