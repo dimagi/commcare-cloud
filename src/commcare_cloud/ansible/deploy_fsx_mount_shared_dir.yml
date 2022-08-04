@@ -1,0 +1,19 @@
+---
+
+- name: FSx Mount Target
+  hosts: shared_fsx_client_host
+  become: yes
+  vars:
+      shared_dir_user: nobody
+      shared_dir_group: "{{ shared_dir_gid }}"
+      shared_dir_groupname: nfs
+      shared_dir_name: "{{ fsx_shared_mount_dir }}"
+      shared_mount_dir: "/mnt/{{ fsx_shared_mount_dir }}"
+      shared_mount_address: "{{ fsx_shared_mount_endpoint }}"
+      shared_mount_opts: "{{ fsx_shared_mount_options }}"
+  tasks:
+    - import_tasks: roles/shared_dir/tasks/install.yml
+    - import_tasks: roles/shared_dir/tasks/setup_client.yml
+  tags:
+    - fsx_mount_shared_dir
+    - nfs
