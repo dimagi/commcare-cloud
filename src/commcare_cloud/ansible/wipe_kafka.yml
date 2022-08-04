@@ -23,10 +23,25 @@
     - name: Get PostgreSQL defaults
       include_vars: roles/kafka/defaults/main.yml
 
-    - name: Get Kafka topics
+    - name: Get Kafka topics (version > 0.9)
+      command: "/opt/kafka/bin/kafka-topics.sh --list --exclude-internal --zookeeper localhost:{{ zookeeper_client_port }}"
+      register: topics_result
+      check_mode: no
+      when: kafka_version is version('0.9', '>')
+
+    - name: Get Kafka topics (version <= 0.9)
       command: "/opt/kafka/bin/kafka-topics.sh --list --zookeeper localhost:{{ zookeeper_client_port }}"
       register: topics_result
       check_mode: no
+      when: kafka_version is version('0.9', '<=')
+
+    - set_fact:
+        topics_for_delete: "{{ topics_result.stdout_lines }}"
+      when: kafka_version is version('0.9', '>')
+
+    - set_fact:
+        topics_for_delete: "{{ topics_result.stdout_lines | difference(kafka_internal_topics) }}"
+      when: kafka_version is version('0.9', '<=')
 
     - name: Allow Kafka server to delete topics
       lineinfile:
@@ -42,7 +57,7 @@
         state: restarted
 
     - name: Delete topics
-      loop: "{{ topics_result.stdout_lines }}"
+      loop: "{{ topics_for_delete }}"
       command: "/opt/kafka/bin/kafka-topics.sh
         --delete
         --zookeeper localhost:{{ zookeeper_client_port }}
