@@ -28,6 +28,9 @@
       register: topics_result
       check_mode: no
 
+    - set_fact:
+        topics_for_delete: "{{ topics_result.stdout_lines | difference(kafka_internal_topics) }}"
+
     - name: Allow Kafka server to delete topics
       lineinfile:
         line: 'delete.topic.enable=true'
@@ -42,7 +45,7 @@
         state: restarted
 
     - name: Delete topics
-      loop: "{{ topics_result.stdout_lines }}"
+      loop: "{{ topics_for_delete }}"
       command: "/opt/kafka/bin/kafka-topics.sh
         --delete
         --zookeeper localhost:{{ zookeeper_client_port }}
