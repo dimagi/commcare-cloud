@@ -42,14 +42,26 @@ Follow the steps outlined [below](#move-partitions).
 All of the command below assume they are being run from the `/opt/kafka/bin/` path.
 
 ### Show topic configuration
+ #  from kafka version 3.x --zookeeper is removed and use --bootstrap-server instead
+ #  use below command for kafka version < 3.x
 ```
 $ ./kafka-topics.sh --describe --zookeeper=<zookeeper host>:2181 --topic <topic>
+```
+ #  use below command for kafka version >= 3.x
+```
+$ ./kafka-topics.sh --describe --bootstrap-server=<kafka host>:9092 --topic <topic>
 ```
 
 ### Add new partitions to topic
 **N** is the total number of partitions the topic should have
+#  from kafka version 3.x --zookeeper is removed and use --bootstrap-server instead
+#  use below command for kafka version < 3.x
 ```
 $ ./kafka-topics.sh --alter --zookeeper=<zookeeper host>:2181 --topic <topci> --partitions N
+```
+#  use below command for kafka version >= 3.x
+```
+$ ./kafka-topics.sh --alter --bootstrap-server==<kafka host>:9092 --topic <topci> --partitions N
 ```
 
 **Note**: Adding partitions to a topic should be done in conjunction with updating the CommCare
@@ -69,11 +81,18 @@ Pillowtop process configurations as described in the [CommCare docs](https://com
     ```
 
 2. Generate the reassignments
-
+  #  from kafka version 3.x --zookeeper is removed and use --bootstrap-server instead
+  #  use below command for kafka version < 3.x
     ```
     $ /opt/kafka/bin/kafka-reassign-partitions.sh --zookeeper=localhost:2181 --broker-list "0,1,2" --topics-to-move-json-file topics.json --generate 
     Current partition replica assignment
-
+    ```
+  #  use below command for kafka version >= 3.x
+    ```
+    $ /opt/kafka/bin/kafka-reassign-partitions.sh --bootstrap-server=localhost:9092 --broker-list "0,1,2" --topics-to-move-json-file topics.json --generate 
+    Current partition replica assignment
+    ```
+    ```
     {"version":1,"partitions":[{"topic":"case-sql","partition":96,"replicas":[0]}, ... ]}
     Proposed partition reassignment configuration
 
@@ -98,10 +117,19 @@ Pillowtop process configurations as described in the [CommCare docs](https://com
     ```
 
 4. Reassign the partitions and verify the change:
+  #  from kafka version 3.x --zookeeper is removed and use --bootstrap-server instead
+  #  use below command for kafka version < 3.x
     ```
     $ ./kafka-reassign-partitions.sh --zookeeper=localhost:2181 --reassignment-json-file partitions-to-move.json --execute
     
     $ ./kafka-reassign-partitions.sh --zookeeper=localhost:2181 --reassignment-json-file partitions-to-move.json --verify
+    ```
+
+  #  use below command for kafka version >= 3.x
+    ```
+    $ ./kafka-reassign-partitions.sh --bootstrap-server=localhost:9092 --reassignment-json-file partitions-to-move.json --execute
+
+    $ ./kafka-reassign-partitions.sh --bootstrap-server=localhost:9092 --reassignment-json-file partitions-to-move.json --verify
     ```
 
 See https://kafka.apache.org/documentation.html#basic_ops_cluster_expansion for more details.

@@ -39,9 +39,13 @@ How To Wipe Persistent Data
 
    You can check they have been removed by confirming that the following shows
    no output:
+       # from kafka version 3.x --zookeeper is removed and use --bootstrap-server instead
 
+       # use below command for kafka version < 3.x
        $ kafka-topics.sh --zookeeper localhost:2181 --list
 
+       # use below command for kafka version >= 3.x
+       $ kafka-topics.sh --bootstrap-server localhost:9092 --list
 
 Rebuilding environment
 ----------------------

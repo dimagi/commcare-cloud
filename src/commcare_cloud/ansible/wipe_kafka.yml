@@ -27,6 +27,13 @@
       command: "/opt/kafka/bin/kafka-topics.sh --list --zookeeper localhost:{{ zookeeper_client_port }}"
       register: topics_result
       check_mode: no
+      when: kafka_version <= '3.0.0'
+
+    - name: Get Kafka topics
+      command: "/opt/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092"
+      register: topics_result
+      check_mode: no
+      when: kafka_version >= '3.0.0'
 
     - name: Allow Kafka server to delete topics
       lineinfile:
@@ -47,3 +54,12 @@
         --delete
         --zookeeper localhost:{{ zookeeper_client_port }}
         --topic {{ item }}"
+      when: kafka_version <= '3.0.0'
+
+    - name: Delete topics
+      loop: "{{ topics_result.stdout_lines }}"
+      command: "/opt/kafka/bin/kafka-topics.sh
+        --delete
+        --bootstrap-server localhost:9092
+        --topic {{ item }}"
+      when: kafka_version >= '3.0.0'
