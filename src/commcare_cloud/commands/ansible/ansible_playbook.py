@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import os
 import re
 import subprocess
+from packaging import version
 from copy import deepcopy
 
 from clint.textui import puts
@@ -106,6 +107,16 @@ def run_ansible_playbook(
             return ()
 
     def ansible_playbook(environment, playbook, *cmd_args):
+        # verifying cchq env ansible version before execution
+        required_ansible_version = environment.public_vars['ansible_version']
+        venv_ansible_version = subprocess.run(["ansible", "--version", "|", "head", "-n1", "|", "awk", "'{print $2}'"], stdout=subprocess.PIPE, text=True)
+        ansible_version = str(venv_ansible_version.stdout).split()[1]
+
+        if (version.parse(ansible_version) < version.parse(str(required_ansible_version))):
+            puts(color_error("Please uninstall current Version "+ansible_version+" and install ansible version "+required_ansible_version+"\n"
+                              "in Cchq env. Else the you ran into issues in fetching credentials from secret manager"))
+            return 2
+
         if os.path.isabs(playbook):
             playbook_path = playbook
         else:
