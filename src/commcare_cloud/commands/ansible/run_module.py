@@ -63,7 +63,7 @@ class RunAnsibleModule(CommandBase):
             "The ansible options below are available as well:",
             filtered_help_message(
                 "ansible -h",
-                below_line=get_ansible_help_options_prefix,
+                below_line=get_ansible_help_options_prefix(),
                 above_line='Some modules do not make sense in Ad-Hoc (include, meta, etc)',
                 exclude_args=DEPRECATED_ANSIBLE_ARGS + [
                     '--help',
