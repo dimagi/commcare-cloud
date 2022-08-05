@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 install_deps = [
     'ansible-vault==2.1.0',
-    'ansible>=2.9.7,<4.3.0',
+    'ansible~=4.3',
     'argparse>=1.4',
     'attrs>=18.1.0',
     'boto3>=1.9.131',
