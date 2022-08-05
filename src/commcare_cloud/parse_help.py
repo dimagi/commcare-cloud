@@ -24,11 +24,15 @@ def get_ansible_help_options_prefix():
 
 
 def _get_help_text(command):
-    if command in _AVAILABLE_HELP_CACHES:
-        with open(_AVAILABLE_HELP_CACHES[command], 'r', encoding='utf-8') as f:
-            return f.read()
-    else:
-        return subprocess.check_output(command, shell=True)
+    # TODO: one of the following
+    # - remove this caching mechanism
+    # - create a way to prime the cache when running commcare-cloud commands
+    # - create a python version specific cached file
+    # if command in _AVAILABLE_HELP_CACHES:
+    #     with open(_AVAILABLE_HELP_CACHES[command], 'r', encoding='utf-8') as f:
+    #         return f.read()
+    # else:
+    return subprocess.check_output(command, shell=True).decode('utf-8')
 
 
 _LARGE_INDENT = '                        '
