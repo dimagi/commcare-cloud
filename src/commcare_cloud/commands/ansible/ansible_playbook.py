@@ -14,7 +14,7 @@ from six.moves import shlex_quote
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command, has_local_connection_arg
 from commcare_cloud.user_utils import get_dev_username
-from commcare_cloud.colors import color_error, color_notice
+from commcare_cloud.colors import color_error, color_notice, color_code
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
@@ -108,13 +108,15 @@ def run_ansible_playbook(
 
     def ansible_playbook(environment, playbook, *cmd_args):
         # verifying cchq env ansible version before execution
-        required_ansible_version = environment.public_vars['ansible_version']
+        required_ansible_version = "4.2.0"
         venv_ansible_version = subprocess.run(["ansible", "--version", "|", "head", "-n1", "|", "awk", "'{print $2}'"], stdout=subprocess.PIPE, text=True)
         ansible_version = str(venv_ansible_version.stdout).split()[1]
 
         if (version.parse(ansible_version) < version.parse(str(required_ansible_version))):
-            puts(color_error("Please uninstall current Version "+ansible_version+" and install ansible version "+required_ansible_version+"\n"
-                              "in Cchq env. Else the you ran into issues in fetching credentials from secret manager"))
+            puts(color_error(f"The version of ansible you have installed ({ansible_version}) is no longer supported."))
+            puts(color_notice(f"To upgrade from ansible {ansible_version} to {required_ansible_version} or above you will first have to uninstall the current version (due to an idiosyncratic issue)"))
+            puts(color_code("  pip uninstall ansible"))
+            puts(color_notice("before re-installing the supported version using your standard method."))
             return 2
 
         if os.path.isabs(playbook):
