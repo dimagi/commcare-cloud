@@ -404,4 +404,4 @@ fsx_file_systems:
   - fsx_name: "fsx_staging"
     create: yes
     storage_capacity: 64
-    throughput_capacity: 6
+    throughput_capacity: 128
