@@ -42,8 +42,6 @@ then
         COMMCARE_CLOUD_ENVIRONMENTS=commcare-environments ./tests/test_autogen_environments.sh
     }
 
-    # runs make clean and make
-    ./tests/test_autogen_docs.sh
     test_syntax
     test_localsettings
     test_dimagi_environments
