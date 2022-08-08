@@ -55,7 +55,7 @@ optional arguments:
                         filename prepend with @
   -f FORKS, --forks FORKS
                         specify number of parallel processes to use
-                        (default=50)
+                        (default=5)
   -h, --help            show this help message and exit
   -i INVENTORY, --inventory INVENTORY, --inventory-file INVENTORY
                         specify inventory host path or comma separated host
@@ -83,7 +83,7 @@ Connection Options:
                         specify extra arguments to pass to ssh only (e.g. -R)
   -T TIMEOUT, --timeout TIMEOUT
                         override the connection timeout in seconds
-                        (default=30)
+                        (default=10)
   -c CONNECTION, --connection CONNECTION
                         connection type to use (default=smart)
   -k, --ask-pass        ask for connection password
