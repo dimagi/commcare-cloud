@@ -109,7 +109,7 @@ def run_ansible_playbook(
     def ansible_playbook(environment, playbook, *cmd_args):
         # verifying cchq env ansible version before execution
         required_ansible_version = "4.2.0"
-        venv_ansible_version = subprocess.run(["ansible", "--version", "|", "head", "-n1", "|", "awk", "'{print $2}'"], stdout=subprocess.PIPE, text=True)
+        venv_ansible_version = subprocess.run(["ansible", "--version", "|", "head", "-n1", "|", "awk", "'{print $2}'"], stdout=subprocess.PIPE, universal_newlines=True)
         ansible_version = str(venv_ansible_version.stdout).split()[1]
 
         if (version.parse(ansible_version) < version.parse(str(required_ansible_version))):
