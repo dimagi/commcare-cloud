@@ -16,11 +16,12 @@ _AVAILABLE_HELP_CACHES = {
 
 
 def get_ansible_help_options_prefix():
-    return 'optional arguments:'
-    # if sys.version_info.minor >= 10:
-    #     return 'options:'
-    # else:
-    #     return 'optional arguments:'
+    assert sys.version_info.major == 3, sys.version_info
+
+    if sys.version_info.minor >= 10:
+        return 'options:'
+    else:
+        return 'optional arguments:'
 
 
 def _get_help_text(command):
