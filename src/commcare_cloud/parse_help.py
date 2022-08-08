@@ -2,26 +2,17 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import os
 import subprocess
-import sys
 from collections import namedtuple
 from io import open
 
 from six.moves import range
 
+ANSIBLE_HELP_OPTIONS_PREFIX = 'optional arguments:'
 _HELP_CACHE = os.path.join(os.path.dirname(__file__), 'help_cache')
 _AVAILABLE_HELP_CACHES = {
     'ansible -h': os.path.join(_HELP_CACHE, 'ansible.txt'),
     'ansible-playbook -h': os.path.join(_HELP_CACHE, 'ansible-playbook.txt'),
 }
-
-
-def get_ansible_help_options_prefix():
-    assert sys.version_info.major == 3, sys.version_info
-
-    if sys.version_info.minor >= 10:
-        return 'options:'
-    else:
-        return 'optional arguments:'
 
 
 def _get_help_text(command):
