@@ -1,0 +1,26 @@
+---
+- hosts: all
+  gather_facts: no
+  tasks:
+
+    - name: Check for Python 3.10
+      raw: test -e /usr/bin/python3.10
+      register: check_python
+      check_mode: no
+      failed_when: false
+      changed_when: false
+
+    - name: Install Python 3.10
+      raw: add-apt-repository -y ppa:deadsnakes/ppa && apt update && apt-get -y install python3.10
+      when: check_python.rc != 0
+
+    - name: Check symlink is setup
+      raw: python3 -c "import platform; print(platform.python_version())"
+      register: check_symlink
+      check_mode: no
+      failed_when: false
+      changed_when: false
+
+    - name: Create symlink for 3.10
+      raw: ln -sf /usr/bin/python3.10 /usr/bin/python3
+      when: (check_symlink.stdout | regex_replace('[\\r\\n]+','')) is version('3.10', '<', strict=True)
