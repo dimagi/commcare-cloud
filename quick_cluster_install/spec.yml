@@ -5,6 +5,7 @@ aws_config:
   key_name: commcarehq_cluster_testing
   security_group_id: sg-0f454b13d335c7ba8
   # subnet: subnet-ea62acc5
+  profile: commcare-cluster-test
 
 #settings:
 #  users: cluster
@@ -20,19 +21,28 @@ allocations:
     from: webworkers
   postgresql: 1
   rabbitmq: 1
-  kafka: 1
+  kafka:
+    count: 1
+    from: rabbitmq
   zookeeper:
-    from: kafka
+    count: 1
+    from: rabbitmq
   celery: 1
-  pillowtop: 1
+  pillowtop:
+    count: 1
+    from: rabbitmq
   formplayer: 1
-  touchforms: 0
-  redis: 1
-  elasticsearch: 1
+  redis:
+    count: 1
+    from: postgresql
+  elasticsearch:
+    count: 1
+    from: postgresql
   shared_dir_host: 1
-  riakcs: 1
   stanchion:
     count: 1
-    from: riakcs
-  couchdb2: 1
+    from: postgresql
+  couchdb2:
+    count: 1
+    from: postgresql
   pg_standby: 0

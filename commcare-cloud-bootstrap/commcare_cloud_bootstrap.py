@@ -1,4 +1,5 @@
 import argparse
+import copy
 import json
 import os
 import random
@@ -55,6 +56,7 @@ class AwsConfig(StrictJsonObject):
     subnet = jsonobject.StringProperty()
     data_volume = jsonobject.DictProperty(exclude_if_none=True)
     boot_volume = jsonobject.DictProperty(exclude_if_none=True)
+    profile = jsonobject.StringProperty()
 
     @classmethod
     def wrap(cls, data):
@@ -110,12 +112,13 @@ def provision_machines(spec, env_name=None, create_machines=True):
     inventory = bootstrap_inventory(spec, env_name)
 
     if create_machines:
-        instance_ids = ask_aws_for_instances(env_name, spec.aws_config, len(inventory.all_hosts))
+        num_hosts = len(set([h.name for h in inventory.all_hosts]))
+        instance_ids = ask_aws_for_instances(env_name, spec.aws_config, num_hosts)
     else:
         instance_ids = None
 
     while True:
-        instance_ip_addresses = poll_for_aws_state(env_name, instance_ids)
+        instance_ip_addresses = poll_for_aws_state(env_name, instance_ids, spec.aws_config.profile)
         if instance_ip_addresses:
             break
 
@@ -165,12 +168,13 @@ def alphanumeric_sort_key(key):
 
 def bootstrap_inventory(spec, env_name):
     incomplete = dict(spec.allocations.items())
+    incomplete_allocations = copy.deepcopy(incomplete)
 
     inventory = Inventory()
     counter = 0
 
-    while counter < len(incomplete):
-        for role, allocation in incomplete.items():
+    while counter < len(incomplete_allocations):
+        for role, allocation in incomplete_allocations.items():
             if allocation.from_:
                 if allocation.from_ not in spec.allocations:
                     raise KeyError('You specified an unknown group in the from field of {}: {}'
@@ -200,7 +204,7 @@ def bootstrap_inventory(spec, env_name):
                     vars={},
                 )
 
-            # del incomplete[role]
+            del incomplete[role]
             counter += 1
     return inventory
 
@@ -236,6 +240,7 @@ def ask_aws_for_instances(env_name, aws_config, count):
             '--security-group-ids', aws_config.security_group_id,
             '--subnet-id', aws_config.subnet,
             '--tag-specifications', 'ResourceType=instance,Tags=[{Key=env,Value=' + env_name + '}]',
+            '--profile', aws_config.profile,
         ]
         block_device_mappings = []
         if aws_config.boot_volume:
@@ -252,7 +257,8 @@ def ask_aws_for_instances(env_name, aws_config, count):
             else:
                 cmd_parts_cleaned.append(part)
 
-        aws_response = subprocess.run(cmd_parts_cleaned, capture_output=True)
+        aws_response = subprocess.run(cmd_parts_cleaned, capture_output=True).stdout
+
         with open(cache_file, 'wb') as f:
             # PY2: check_output returns a byte string
             # PY3: would need to specify universal_newlines=True in check_output to pass in str and receive str
@@ -279,12 +285,16 @@ def get_instances(describe_instances):
             yield instance
 
 
-def raw_describe_instances(env_name):
+def raw_describe_instances(env_name, profile=None):
     cmd_parts = [
         'aws', 'ec2', 'describe-instances', '--filters',
         'Name=instance-state-code,Values=16',
-        'Name=tag:env,Values=' + env_name
+        f'Name=tag:env,Values={env_name}'
     ]
+
+    if profile:
+        cmd_parts.extend(['--profile', profile])
+
     return json.loads(subprocess.check_output(cmd_parts))
 
 
@@ -359,8 +369,8 @@ def update_inventory_public_ips(inventory, new_hosts):
         host.public_ip = new_host_by_private_ip[host.private_ip].public_ip
 
 
-def poll_for_aws_state(env_name, instance_ids=None):
-    describe_instances = raw_describe_instances(env_name)
+def poll_for_aws_state(env_name, instance_ids=None, profile=None):
+    describe_instances = raw_describe_instances(env_name, profile)
     print_describe_instances(describe_instances)
 
     instances = [instance
@@ -416,9 +426,10 @@ def save_app_processes_yml(environment, inventory):
     template = j2.get_template('app-processes.yml.j2')
     celery_host_name = inventory.all_groups['celery'].host_names[0]
     pillowtop_host_name = inventory.all_groups['pillowtop'].host_names[0]
-    celery_host, = [host for host in inventory.all_hosts if host.name == celery_host_name]
-    pillowtop_host, = [host for host in inventory.all_hosts if host.name == pillowtop_host_name]
-    contents = template.render(celery_host=celery_host, pillowtop_host=pillowtop_host)
+    celery_host = [host for host in inventory.all_hosts if host.name == celery_host_name]
+    pillowtop_host = [host for host in inventory.all_hosts if host.name == pillowtop_host_name]
+
+    contents = template.render(celery_host=celery_host[0], pillowtop_host=pillowtop_host[0])
     with open(environment.paths.app_processes_yml, 'w', encoding='utf-8') as f:
         # PY2: contents is unicode
         f.write(contents)
@@ -473,6 +484,7 @@ class Provision(object):
             spec = yaml.safe_load(f)
 
         spec = Spec.wrap(spec)
+
         provision_machines(spec, args.env, create_machines=args.create_machines)
 
 

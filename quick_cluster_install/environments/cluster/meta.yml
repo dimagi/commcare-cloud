@@ -1,2 +1,4 @@
 deploy_env: cluster
 env_monitoring_id: cluster
+users:
+  - dimagi

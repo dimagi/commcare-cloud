@@ -189,8 +189,8 @@ class Environment(object):
         for user_group_from_yml in user_groups_from_yml:
             with open(self.paths.get_users_yml(user_group_from_yml), encoding='utf-8') as f:
                 user_group_json = from_yaml(f)
-            present_users += user_group_json['dev_users']['present']
-            absent_users += user_group_json['dev_users']['absent']
+            present_users += user_group_json['dev_users']['present'] or []
+            absent_users += user_group_json['dev_users']['absent'] or []
         self.check_user_group_absent_present_overlaps(absent_users, present_users)
         all_users_json = {'dev_users': {'absent': absent_users, 'present': present_users}}
         return UsersConfig.wrap(all_users_json)
