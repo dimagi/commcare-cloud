@@ -38,8 +38,14 @@
     - name: Reload ssh
       command: "passwd -u root"
 
-    - name: Clone commcare-cloud repo
-      command: "git clone https://github.com/dimagi/commcare-cloud"
+    - name: Setup commcare-cloud
+      become: yes
+      become_user: ubuntu
+      block:
+      - name: Clone commcare-cloud
+        command: "git clone https://github.com/dimagi/commcare-cloud"
 
-    - name: Checkout branch
-      command: "git checkout {{ git_branch }}"
+      - name: Checkout branch
+        command:
+          cmd: "git checkout {{ git_branch }}"
+          chdir: ~/commcare-cloud
