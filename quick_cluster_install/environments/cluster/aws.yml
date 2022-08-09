@@ -1,6 +1,0 @@
-credential_style: sso
-sso_config:
-  sso_start_url: https://dimagi.awsapps.com/start/
-  sso_region: us-west-2
-  sso_account_id: '825838806448'
-  region: us-west-2

@@ -191,6 +191,7 @@ class Environment(object):
                 user_group_json = from_yaml(f)
             present_users += user_group_json['dev_users']['present'] or []
             absent_users += user_group_json['dev_users']['absent'] or []
+
         self.check_user_group_absent_present_overlaps(absent_users, present_users)
         all_users_json = {'dev_users': {'absent': absent_users, 'present': present_users}}
         return UsersConfig.wrap(all_users_json)

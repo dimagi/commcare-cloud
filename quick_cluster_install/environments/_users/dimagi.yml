@@ -1,5 +1,4 @@
 dev_users:
   present:
-    - cluster
-
-  absent:
+    - dimagi
+  absent: []

@@ -16,48 +16,44 @@ while getopts "e:b:s:" options; do
 done
 
 DEFAULT_ENV="cluster"
-DEFAULT_BRANCH="master"
-DEFAULT_SPEC="quick_cluster_install/spec.yml"
+DEFAULT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+DEFAULT_SPEC="quick_cluster_install/${DEFAULT_ENV}spec.yml"
 
 ENV=${ENV:-$DEFAULT_ENV}
-BRANCH=${BRANCH:-$DEFAULT_BRANCH}
+BRANCH=${BRANCH:-DEFAULT_BRANCH}
 SPEC=${SPEC:-$DEFAULT_SPEC}
-
-echo "Environment: $ENV"
-echo "Branch: $BRANCH"
-echo "Spec: $SPEC"
-
-echo ""
-echo "Continue? [y/n]"
-read continue
-
-if [ "$continue" != "y" ] ; then
-  echo "Cheers!"
-  exit 0
-fi
 
 COMMCARE_CLOUD_ROOT=$(dirname $(dirname $(readlink -f $0)))
 CLUSTER_ENVIRONMENTS=$COMMCARE_CLOUD_ROOT/quick_cluster_install/environments
+ENVIRONMENT_DIR=$CLUSTER_ENVIRONMENTS/$ENV
 
-# Set commcare-cloud environments to point to test cluster environments
 export COMMCARE_CLOUD_ENVIRONMENTS=$CLUSTER_ENVIRONMENTS
 
-python $COMMCARE_CLOUD_ROOT/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py provision $SPEC --env $ENV
+push_to_git() {
+  git add .
+  git commit -m "Create environment files"
+  git push origin $BRANCH
 
-while
-    commcare-cloud $ENV ping all --use-factory-auth
-    [ $? = 4 ]
-do :
-done
+  if [ $? -ne 0 ] ; then
+    echo "Push to git failed"
+    exit 1
+  fi
+}
 
-commcare-cloud $ENV deploy-stack --first-time --quiet -e 'CCHQ_IS_FRESH_INSTALL=1' --branch=$BRANCH
+# Provision and create environment files
+#python $COMMCARE_CLOUD_ROOT/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py provision $SPEC --env $ENV
 
-#commcare-cloud $ENV deploy commcare --quiet --skip_record --show=debug --set ignore_kafka_checkpoint_warning=true --branch=$BRANCH
-#
-## Make the test superuser test_superuser@test.com, so the postgres service check passes
-#echo -e "123\n123" | cchq $ENV django-manage make_superuser test_superuser@test.com
-#proxy=$(grep -A1 "\[$ENV-proxy-0\]" environments/$ENV/inventory.ini | tail -n 1| awk '{print $2}' | awk -F'=' '{print $2}')
-#
-#commcare-cloud $ENV django-manage check_services
-#
-#curl https://${proxy}/serverup.txt --insecure
+ansible-vault encrypt $ENVIRONMENT_DIR/vault.yml
+
+push_to_git $1
+
+printf "\n"
+printf "#################################################"
+printf "\n Configure control machine \n"
+printf "#################################################"
+printf "\n"
+
+INVENTORY_FILE=$ENVIRONMENT_DIR/inventory.ini
+SSH_KEY=~/.ssh/commcarehq_cluster_testing.pem
+
+ansible-playbook $COMMCARE_CLOUD_ROOT/quick_cluster_install/install_cluster.yml -i $INVENTORY_FILE --extra-vars "control_host=${ENV}-control-0,git_branch=${BRANCH}" --private-key $SSH_KEY
