@@ -7,7 +7,7 @@ from io import open
 
 from six.moves import range
 
-ANSIBLE_HELP_OPTIONS_PREFIX = 'optional arguments:'
+ANSIBLE_HELP_OPTIONS_PREFIX = 'options:'
 _HELP_CACHE = os.path.join(os.path.dirname(__file__), 'help_cache')
 _AVAILABLE_HELP_CACHES = {
     'ansible -h': os.path.join(_HELP_CACHE, 'ansible.txt'),

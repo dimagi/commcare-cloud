@@ -18,7 +18,7 @@ Define and run a single task 'playbook' against a set of hosts
 positional arguments:
   pattern               host pattern
 
-optional arguments:
+options:
   --ask-vault-pass      ask for vault password
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
