@@ -4,13 +4,10 @@ aws_config:
   type: t3.micro
   key_name: commcarehq_cluster_testing
   security_group_id: sg-0f454b13d335c7ba8
-  # subnet: subnet-ea62acc5
   profile: commcare-cluster-test
 
-#settings:
-#  users: cluster
-
 allocations:
+  control: 1
   proxy: 1
   couchdb2_proxy:
     count: 1
