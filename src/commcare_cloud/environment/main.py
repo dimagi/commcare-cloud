@@ -320,6 +320,7 @@ class Environment(object):
         # use the port specified by ansible_port to ssh in if it's given
         port_map = {host.name: var_manager.get_vars(host=host).get('ansible_port')
                     for host in inventory.get_hosts(ignore_limits=True)}
+
         return {group: [
             self.format_sshable_host(ssh_addr_map[host], port_map[host])
             for host in hosts

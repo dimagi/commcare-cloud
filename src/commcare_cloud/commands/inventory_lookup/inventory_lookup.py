@@ -146,6 +146,7 @@ class Ssh(_Ssh):
                 )
                 return -1
             _, host, _ = self.get_address_tuple(args)
+
             aws_ssm_target = environment.get_host_vars(host)['ec2_instance_id']
             env_vars = os.environ.copy()
             env_vars.update({'AWS_PROFILE': aws_sign_in(environment)})

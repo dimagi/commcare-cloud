@@ -206,6 +206,7 @@ def bootstrap_inventory(spec, env_name):
 
             del incomplete[role]
             counter += 1
+
     return inventory
 
 
