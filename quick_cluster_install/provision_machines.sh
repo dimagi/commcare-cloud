@@ -124,7 +124,7 @@ sync_to_git $1
 INVENTORY_FILE=$ENVIRONMENT_DIR/inventory.ini
 AWS_PEM_FILE=$(grep "pem" "${SPEC}" | grep -o -P '(?<=pem: ).*')
 
-ansible-playbook $COMMCARE_CLOUD_ROOT/quick_cluster_install/prepare_control_machine.yml -i $INVENTORY_FILE --extra-vars "control_host=${CONTROL_HOST} git_branch=${BRANCH} pem_file_path=${AWS_PEM_FILE}" --private-key $AWS_PEM_FILE
+ansible-playbook $COMMCARE_CLOUD_ROOT/quick_cluster_install/ansible-playbooks/prepare-control-machine.yml -i $INVENTORY_FILE --extra-vars "control_host=${CONTROL_HOST} git_branch=${BRANCH} pem_file_path=${AWS_PEM_FILE}" --private-key $AWS_PEM_FILE
 
 echo ""
 echo ""

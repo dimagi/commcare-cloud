@@ -35,10 +35,10 @@ For the purposes of this process, let's suppose you want to create a new cluster
 Change directory 
 > cd quick_cluster_install/
 
-Run the following command:
+(Optional) Run the following command:
 > cp sample_environment.yml.sample cluster.yml 
 
-Fill out the new environment's details.
+Fill out the new environment's details. If this step is left out, the script will prompt you for the ncessary fields and create the file for you.
 
 #### Step 2: Provision machines
 
