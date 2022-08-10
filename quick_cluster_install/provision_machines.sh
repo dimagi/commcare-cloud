@@ -36,11 +36,10 @@ check_environment() {
       exit 0
     fi
 
-    echo ""
-    echo "Creating environment '${ENV}' at ${ENVIRONMENT_DIR}"
-    echo ""
-
     cp -r $COMMCARE_CLOUD_ENVIRONMENTS/$SAMPLE_ENV $ENVIRONMENT_DIR
+
+    echo "Created environment '${ENV}' at ${ENVIRONMENT_DIR}"
+    echo ""
   fi
 
   if [ ! -f $SPEC ] ; then
@@ -60,8 +59,27 @@ copy_install_config() {
   INSTALL_CONFIG_FILE_DESTINATION=$ENVIRONMENT_DIR/install-config.yml
 
   if [ ! -f $INSTALL_CONFIG_FILE_ORIGIN ] ; then
-    echo "${INSTALL_CONFIG_FILE_ORIGIN} not found"
-    exit 1
+    echo "${INSTALL_CONFIG_FILE_ORIGIN} not found!"
+    echo "Site host (e.g. example.com):"
+    read SITE_HOST
+
+    echo "Server host name (used to set server's email address):"
+    read SERVER_HOST_NAME
+
+    echo "Your username to use on the server:"
+    read SSH_USERNAME
+
+    echo "Your SSH public key's path (leave blank for default ~/.ssh/id_rsa.pub):"
+    read SSH_PUBLIC_KEY
+
+    if [ -z $SSH_PUBLIC_KEY ] ; then
+      SSH_PUBLIC_KEY=~/.ssh/id_rsa.pub
+    fi
+
+    echo "site_host: ${SITE_HOST}" >> $INSTALL_CONFIG_FILE_ORIGIN
+    echo "server_host_name: ${SERVER_HOST_NAME}" >> $INSTALL_CONFIG_FILE_ORIGIN
+    echo "ssh_public_key: ${SSH_PUBLIC_KEY}" >> $INSTALL_CONFIG_FILE_ORIGIN
+    echo "ssh_username: ${SSH_USERNAME}" >> $INSTALL_CONFIG_FILE_ORIGIN
   fi
 
   cp $INSTALL_CONFIG_FILE_ORIGIN $INSTALL_CONFIG_FILE_DESTINATION
