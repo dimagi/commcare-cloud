@@ -20,9 +20,8 @@ Runs Ansible playbooks, executing the defined tasks on the targeted hosts.
 positional arguments:
   playbook              Playbook(s)
 
-optional arguments:
-  --ask-vault-password, --ask-vault-pass
-                        ask for vault password
+options:
+  --ask-vault-pass      ask for vault password
   --flush-cache         clear the fact cache for every host in inventory
   --force-handlers      run handlers even if a task fails
   --list-hosts          outputs a list of matching hosts; does not execute
