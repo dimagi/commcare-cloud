@@ -5,8 +5,6 @@ while getopts "e:b:s:" options; do
   case $options in
     e) ENV="${OPTARG}"
     ;;
-    b) BRANCH="${OPTARG}"
-    ;;
     s) SPEC="${OPTARG}"
     ;;
     \?) echo "Invalid option -$OPTARG" >&2
@@ -19,23 +17,55 @@ COMMCARE_CLOUD_ROOT=$(dirname $(dirname $(readlink -f $0)))
 CLUSTER_ENVIRONMENTS=$COMMCARE_CLOUD_ROOT/quick_cluster_install/environments
 
 DEFAULT_ENV="cluster"
-DEFAULT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-DEFAULT_SPEC="quick_cluster_install/environments/${DEFAULT_ENV}/spec.yml"
+DEFAULT_SPEC="spec.yml"
+
+RESERVED_GIT_BRANCH="automated-cluster-setup"
+GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
 
 ENV=${ENV:-$DEFAULT_ENV}
-BRANCH=${BRANCH:-$DEFAULT_BRANCH}
-SPEC=$COMMCARE_CLOUD_ROOT/${SPEC:-$DEFAULT_SPEC}
-
 ENVIRONMENT_DIR=$CLUSTER_ENVIRONMENTS/$ENV
+BRANCH=${GIT_BRANCH}
+SPEC=$ENVIRONMENT_DIR/${SPEC:-$DEFAULT_SPEC}
+
 
 export COMMCARE_CLOUD_ENVIRONMENTS=$CLUSTER_ENVIRONMENTS
+
+check_environment() {
+
+  if [[ $BRANCH == $RESERVED_GIT_BRANCH && $ENV == $DEFAULT_ENV ]] ; then
+    echo "Cluster environment cannot be the default '${ENV}' environment"
+    echo "Please specify another environment or use a different git branch"
+    exit 1
+  fi
+
+  if [ ! -d $ENVIRONMENT_DIR ] ; then
+    echo "Should I create environment '${ENV}' at ${ENVIRONMENT_DIR}? [y/n]"
+    read create_env
+
+    if [ "${create_env}" != "y" ] ; then
+      echo "No action"
+      exit 0
+    fi
+
+    echo ""
+    echo "Creating environment '${ENV}' at ${ENVIRONMENT_DIR}"
+    echo ""
+
+    cp -r $COMMCARE_CLOUD_ENVIRONMENTS/$DEFAULT_ENV $ENVIRONMENT_DIR
+  fi
+
+  if [ ! -f $SPEC ] ; then
+    echo "No specifications file found!"
+    exit 1
+  fi
+}
 
 confirm_cluster_details() {
   echo ""
   echo "You are about to provision a commcare cluster environment with the following details:"
   echo ""
-  echo "Environments directory: ${COMMCARE_CLOUD_ENVIRONMENTS}"
-  echo "Environment: ${ENV}"
+  echo "Environment: ${ENVIRONMENT_DIR}"
   echo "Spec file: ${SPEC}"
   echo "Branch: ${BRANCH}"
   echo ""
@@ -43,7 +73,6 @@ confirm_cluster_details() {
   read continue
 
   if [ "$continue" != "y" ] ; then
-    echo "We're done here!"
     exit 0
   fi
 }
@@ -66,13 +95,18 @@ sync_to_git() {
   fi
 }
 
+# Verify that environment exits, otherwise prompt to create it
+check_environment $1
+
 # Provision and create environment files
 confirm_cluster_details $1
+
 python $COMMCARE_CLOUD_ROOT/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py provision $SPEC --env $ENV
 
 encrypt_vault $1
 sync_to_git $1
 
+echo ""
 echo "Set up commcare-cloud on control machine? [y/n]"
 read setup_cc_cloud
 

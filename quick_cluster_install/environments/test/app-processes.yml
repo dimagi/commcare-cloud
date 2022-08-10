@@ -1,5 +1,5 @@
 celery_processes:
-  cluster-celery-0:
+  test-celery-0:
     beat: {}
     sms_queue: {}
     flower: {}
@@ -16,7 +16,7 @@ celery_processes:
 #	ucr_indicator_queue,ucr_queue,celery_periodic:
 #	  concurrency: 1
 pillows:
-  cluster-rabbitmq-0:
+  test-rabbitmq-0:
     kafka-ucr-main:
       num_processes: 1
 #    kafka-ucr-static:
