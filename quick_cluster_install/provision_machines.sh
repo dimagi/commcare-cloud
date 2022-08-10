@@ -15,13 +15,14 @@ SAMPLE_ENV="sample_environment"
 # Set commcare-cloud's environments directory
 export COMMCARE_CLOUD_ENVIRONMENTS=$CLUSTER_ENVIRONMENTS_DIR
 
+check_git_branch() {
+  if [ "${BRANCH}" == "${RESERVED_GIT_BRANCH}" ] ; then
+    echo "Please use another branch"
+    exit 1
+  fi
+}
+
 check_environment() {
-
-#  if [ "${BRANCH}" == "${RESERVED_GIT_BRANCH}" ] ; then
-#    echo "Please use another branch"
-#    exit 1
-#  fi
-
   if [ "${ENV}" == "${SAMPLE_ENV}" ] ; then
     echo "Please specify a different environment"
     exit 1
@@ -108,9 +109,9 @@ sync_to_git() {
   fi
 }
 
-# Verify that environment exits, otherwise prompt to create it
-check_environment $1
-copy_install_config $1
+check_git_branch
+check_environment
+copy_install_config
 
 ## Provision and create environment files
 python $COMMCARE_CLOUD_ROOT/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py provision $SPEC --env $ENV
@@ -118,8 +119,8 @@ python $COMMCARE_CLOUD_ROOT/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py
 CONTROL_HOST="${ENV}-control-0"
 CONTROL_IP=$(cchq $ENV lookup control)
 
-encrypt_vault $1
-sync_to_git $1
+encrypt_vault
+sync_to_git
 
 INVENTORY_FILE=$ENVIRONMENT_DIR/inventory.ini
 AWS_PEM_FILE=$(grep "pem" "${SPEC}" | grep -o -P '(?<=pem: ).*')
