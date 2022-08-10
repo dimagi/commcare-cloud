@@ -111,7 +111,7 @@ def run_ansible_playbook(
         # verifying cchq env ansible version before execution
         required_ansible_version = "4.2.0"
         #venv_ansible_version = subprocess.run(["ansible", "--version", "|", "head", "-n1", "|", "awk", "'{print $2}'"], stdout=subprocess.PIPE, universal_newlines=True)
-        if os.getenv['VIRTUAL_ENV']:
+        if os.environ['VIRTUAL_ENV']:
             ansible_version = ansible.__version__
             if (version.parse(ansible_version) < version.parse(str(required_ansible_version))):
                 puts(color_error(f"The version of ansible you have installed ({ansible_version}) is no longer supported."))
