@@ -40,7 +40,7 @@ check_environment() {
     echo "Creating environment '${ENV}' at ${ENVIRONMENT_DIR}"
     echo ""
 
-    cp -r $COMMCARE_CLOUD_ENVIRONMENTS/$DEFAULT_ENV $ENVIRONMENT_DIR
+    cp -r $COMMCARE_CLOUD_ENVIRONMENTS/$SAMPLE_ENV $ENVIRONMENT_DIR
   fi
 
   if [ ! -f $SPEC ] ; then
