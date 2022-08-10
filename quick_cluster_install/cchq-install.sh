@@ -61,9 +61,6 @@ printf "#################################################"
 printf "\n"
 # VENV should have been set by init.sh
 ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/bootstrap-env-playbook.yml"
-printf "\n Encrypting your environment's passwords file using ansible-vault.\n"
-printf "Please store this password safely as it will be asked multiple times during the install.\n"
-ansible-vault encrypt ~/environments/$env_name/vault.yml
 
 printf "\n"
 printf "#################################################"
@@ -72,7 +69,7 @@ printf "#################################################"
 printf "\n"
 source ~/.commcare-cloud/load_config.sh
 commcare-cloud $env_name update-local-known-hosts
-commcare-cloud $env_name bootstrap-users -c local --quiet
+commcare-cloud $env_name bootstrap-users --branch $deploy_branch -c local --quiet
 
 printf "\nEverything is setup to install CommCareHQ now! Would you like to install CommCareHQ now?\n"
 printf "Please see below a summary of what this script has setup so far!\n"
@@ -84,21 +81,21 @@ printf "  The vault file also has the sudo password for the ansible user under t
 
 printf "You can now install CommCareHQ using below two commands.\n\n"
 printf "source ~/.commcare-cloud/load_config.sh\n"
-printf "commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local \n\n"
+printf "commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' --branch $deploy_branch -c local \n\n"
 printf "Would you like the above command to be run now?\n"
 read -p "(Please note that if this command fails midway, you can run this command directly instead of rerunning the cchq-install command) Proceed (Y/n)?" -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-    commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local --quiet
+    commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' --branch $deploy_branch -c local --quiet
 else
     exit
 fi
 
 printf "\nSuccessfully installed all the required services for CommCareHQ instance!\n"
 printf "Prepareing the system for first time application (code) deploy\n"
-commcare-cloud $env_name django-manage create_kafka_topics
-commcare-cloud $env_name django-manage preindex_everything
+commcare-cloud $env_name django-manage create_kafka_topics --branch $deploy_branch
+commcare-cloud $env_name django-manage preindex_everything --branch $deploy_branch
 printf "\nDeploying latest CommCareHQ Application code\n"
-printf "If this fails you can run 'commcare-cloud $env_name deploy --resume' to try again"
-commcare-cloud $env_name deploy
+printf "If this fails you can run 'commcare-cloud $env_name deploy --branch $deploy_branch --resume' to try again"
+commcare-cloud $env_name deploy --branch $deploy_branch

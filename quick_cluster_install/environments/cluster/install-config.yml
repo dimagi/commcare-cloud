@@ -14,3 +14,4 @@ ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDpDc9jdR2BS+GZy7iikNbWhW8
 # The username to use for your user to be created on the server. This will be tied to above public key
 ssh_username: "charl"
 env_name: cluster
+deploy_branch: automated-cluster-setup

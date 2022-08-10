@@ -60,3 +60,8 @@ The script will do the following:
 #### Step 3: Deploy commcarehq from control machine
 When the script is done, follow the output command to ssh into the remote control machine. If you want to do this later you can find the control machine’s IP in the newly created environment’s inventory.ini file (remember, you will need to specify the `.pem` identity file).
 
+On the control machine, change directory:
+> cd ~/commcare-cloud/quick_cluster_install/
+
+and run the following:
+> bash cchq-install.sh ./environments/cluster/install-config.yml

@@ -66,9 +66,13 @@ copy_install_config() {
 
   cp $INSTALL_CONFIG_FILE_ORIGIN $INSTALL_CONFIG_FILE_DESTINATION
   echo "env_name: ${ENV}" >> $INSTALL_CONFIG_FILE_DESTINATION
+  echo "deploy_branch: ${BRANCH}" >> $INSTALL_CONFIG_FILE_DESTINATION
 }
 
 encrypt_vault() {
+  echo ""
+  echo "Encrypting your environment's passwords file using ansible-vault."
+  echo "Please store this password safely as it will be asked multiple times during the install.\n"
   ansible-vault encrypt $ENVIRONMENT_DIR/vault.yml
 }
 
@@ -94,7 +98,7 @@ copy_install_config $1
 python $COMMCARE_CLOUD_ROOT/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py provision $SPEC --env $ENV
 
 CONTROL_HOST="${ENV}-control-0"
-CONTROL_IP=
+CONTROL_IP=$(cchq $ENV lookup control)
 
 encrypt_vault $1
 sync_to_git $1
@@ -102,10 +106,10 @@ sync_to_git $1
 INVENTORY_FILE=$ENVIRONMENT_DIR/inventory.ini
 AWS_PEM_FILE=$(grep "pem" "${SPEC}" | grep -o -P '(?<=pem: ).*')
 
-ansible-playbook $COMMCARE_CLOUD_ROOT/quick_cluster_install/bootstrap_basic.yml -i $INVENTORY_FILE --extra-vars "control_host=${CONTROL_HOST} git_branch=${BRANCH} pem_file_path=${AWS_PEM_FILE}" --private-key $AWS_PEM_FILE
+ansible-playbook $COMMCARE_CLOUD_ROOT/quick_cluster_install/prepare_control_machine.yml -i $INVENTORY_FILE --extra-vars "control_host=${CONTROL_HOST} git_branch=${BRANCH} pem_file_path=${AWS_PEM_FILE}" --private-key $AWS_PEM_FILE
 
 echo ""
 echo ""
-echo "All done! Now SSH into the control machine"
-echo ""
+echo "All done! You can now SSH into the control machine:"
 echo "ssh -i ${AWS_PEM_FILE} ubuntu@${CONTROL_IP}"
+echo ""

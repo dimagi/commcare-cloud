@@ -1,0 +1,47 @@
+- hosts: 127.0.0.1
+  connection: local
+
+  vars:
+    install_config:
+      - '{{env_name}}'
+      - '{{site_host}}'
+      - '{{server_host_name}}'
+      - '{{ssh_public_key}}'
+      - '{{ssh_username}}'
+      - '{{cchq_venv}}'
+    config_is_not_valid: '{{"" in install_config}}'
+    envs_path: "{{ ansible_env.HOME }}/environments"
+    env_path: "{{envs_path}}/{{ env_name }}"
+  tasks:
+    - name: Create environments directory
+      file: path={{env_path}} state=directory
+
+    - name: Create env's users directory
+      file: path={{envs_path}}/_users state=directory
+
+    - name: Create ssh-public-keys directory
+      file: path={{envs_path}}/_authorized_keys state=directory
+
+    - name: Copy environment
+      command: "cp -r ./environments/{{env_name}} {{ envs_path }}"
+
+    - name: Create SSH public key file for the given user
+      lineinfile:
+        dest: "{{envs_path}}/_authorized_keys/{{ssh_username}}.pub"
+        line: "{{ssh_public_key}}"
+        create: yes
+    - name: Copy _users dir
+      template:
+        src: "./environments/_users/admins.yml.j2"
+        dest: "{{envs_path}}/_users/admins.yml"
+
+    - name: Configure commcare-cloud with  "manage-commcare-cloud configure --quiet"
+      command: "{{cchq_venv}}/bin/manage-commcare-cloud configure --quiet"
+      environment:
+        COMMCARE_CLOUD_ENVIRONMENTS: "{{envs_path}}"
+    - name: Add ~/.commcare-cloud/load_config.sh to ~/.profile
+      lineinfile:
+        dest: "{{ ansible_env.HOME }}/.profile"
+        line: "source ~/.commcare-cloud/load_config.sh"
+        create: yes
+

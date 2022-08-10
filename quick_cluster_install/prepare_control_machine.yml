@@ -1,6 +1,6 @@
 ---
 - hosts: "{{ control_host }}"
-  gather_facts: no
+  gather_facts: yes
   remote_user: ubuntu
   tasks:
     - name: (1/2) Clone commcare-cloud
