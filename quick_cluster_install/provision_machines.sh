@@ -125,7 +125,7 @@ sync_to_git
 CONTROL_HOST="${ENV}-control-0"
 CONTROL_IP=$(cchq $ENV lookup control)
 INVENTORY_FILE=$ENVIRONMENT_DIR/inventory.ini
-AWS_PEM_FILE=$(grep "pem" "${SPEC}" | grep -o -P '(?<=pem: ).*')
+AWS_PEM_FILE=$(grep "pem" "${ENVIRONMENT_DIR}/spec.yml" | grep -o -P '(?<=pem: ).*')
 
 ansible-playbook $COMMCARE_CLOUD_ROOT/quick_cluster_install/ansible-playbooks/prepare-control-machine.yml -i $INVENTORY_FILE --extra-vars "control_host=${CONTROL_HOST} git_branch=${BRANCH} pem_file_path=${AWS_PEM_FILE}" --private-key $AWS_PEM_FILE
 

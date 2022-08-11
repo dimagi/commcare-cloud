@@ -16,12 +16,11 @@ aws_access_key_id = <access_key_id_from_keypass>
 aws_secret_access_key = <secret_access_key_from_keypass>
 ```
 
-2) Copy the commcarehq_cluster_testing.pem file to your local ssh directory. 
-
+2) Copy the commcarehq_cluster_testing.pem file to your local ssh directory (~/.ssh/). 
+3) Branch from `automated-cluster-setup` and check out to that branch
+4) Remember to run `source commcare-cloud/control/init.sh`
 
 ### Set up the cluster
-
-Branch from `automated-cluster-setup` and checkout to that branch before you begin!
 
 Setting up the cluster basically involves
 1) Configuring the cluster environment file
