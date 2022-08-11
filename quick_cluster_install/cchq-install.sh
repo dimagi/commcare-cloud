@@ -60,7 +60,8 @@ printf "storing your CommCareHQ instance's configuration \n"
 printf "#################################################"
 printf "\n"
 # VENV should have been set by init.sh
-ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/ansible-playbooks/bootstrap-env-playbook.yml"
+echo $VENV
+ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=${VENV}" "$DIR/ansible-playbooks/bootstrap-env-playbook.yml"
 
 printf "\n"
 printf "#################################################"

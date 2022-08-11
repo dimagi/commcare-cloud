@@ -8,7 +8,7 @@
       - '{{server_host_name}}'
       - '{{ssh_public_key}}'
       - '{{ssh_username}}'
-      - '{{cchq_venv}}'
+#      - '{{cchq_venv}}'
     config_is_not_valid: '{{"" in install_config}}'
     envs_path: "{{ ansible_env.HOME }}/environments"
     env_path: "{{envs_path}}/{{ env_name }}"
@@ -23,7 +23,7 @@
       file: path={{envs_path}}/_authorized_keys state=directory
 
     - name: Copy environment
-      command: "cp -r ./environments/{{env_name}} {{ envs_path }}"
+      command: "cp -r ~/commcare-cloud/quick_cluster_install/environments/{{env_name}} {{ envs_path }}"
 
     - name: Create SSH public key file for the given user
       lineinfile:
@@ -32,8 +32,11 @@
         create: yes
     - name: Copy _users dir
       template:
-        src: "./environments/_users/admins.yml.j2"
+        src: "~/commcare-cloud/quick_cluster_install/environments/_users/admins.yml.j2"
         dest: "{{envs_path}}/_users/admins.yml"
+
+    - debug:
+        var: cchq_venv
 
     - name: Configure commcare-cloud with  "manage-commcare-cloud configure --quiet"
       command: "{{cchq_venv}}/bin/manage-commcare-cloud configure --quiet"
