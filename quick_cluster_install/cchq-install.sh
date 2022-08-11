@@ -59,8 +59,10 @@ printf "\nStep 3: Initializing environments directory for "
 printf "storing your CommCareHQ instance's configuration \n"
 printf "#################################################"
 printf "\n"
+
 # VENV should have been set by init.sh
-echo $VENV
+VENV=${VENV:-/home/ubuntu/.virtualenvs/cchq}
+
 ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=${VENV}" "$DIR/ansible-playbooks/bootstrap-env-playbook.yml"
 
 printf "\n"
