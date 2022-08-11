@@ -35,6 +35,11 @@
         src: "~/commcare-cloud/quick_cluster_install/environments/_users/admins.yml.j2"
         dest: "{{envs_path}}/_users/admins.yml"
 
+    - name: Copy meta templated file
+      template:
+        src: "~/commcare-cloud/quick_cluster_install/environments/{{env_name}}/meta.yml.j2"
+        dest: "{{env_path}}/{{env_name}}/meta.yml"
+
     - name: Configure commcare-cloud with  "manage-commcare-cloud configure --quiet"
       command: "{{cchq_venv}}/bin/manage-commcare-cloud configure --quiet"
       environment:
