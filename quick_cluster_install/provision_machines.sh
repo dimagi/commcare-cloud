@@ -7,7 +7,7 @@ CLUSTER_ENVIRONMENTS_DIR=$COMMCARE_CLOUD_ROOT/quick_cluster_install/environments
 ENV=$1
 ENVIRONMENT_DIR=$CLUSTER_ENVIRONMENTS_DIR/$ENV
 
-SPEC=$ENVIRONMENT_DIR/spec.yml
+SPEC=$2
 RESERVED_GIT_BRANCH="automated-cluster-setup"
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 SAMPLE_ENV="sample_environment"
@@ -43,9 +43,13 @@ check_environment() {
     echo ""
   fi
 
-  if [ ! -f $SPEC ] ; then
-    echo "No specifications file found!"
-    exit 1
+  if [ $SPEC ] ; then
+    if [ ! -f $SPEC ] ; then
+      echo "${SPEC} file does not exit!"
+      exit 1
+    else
+      mv $SPEC $ENVIRONMENT_DIR/spec.yml
+    fi
   fi
 
   KNOWN_HOSTS_FILE=$ENVIRONMENT_DIR/known_hosts
@@ -111,17 +115,15 @@ sync_to_git() {
 
 check_git_branch
 check_environment
+
+python $COMMCARE_CLOUD_ROOT/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py provision $ENVIRONMENT_DIR/spec.yml --env $ENV
+
 copy_install_config
-
-## Provision and create environment files
-python $COMMCARE_CLOUD_ROOT/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py provision $SPEC --env $ENV
-
-CONTROL_HOST="${ENV}-control-0"
-CONTROL_IP=$(cchq $ENV lookup control)
-
 encrypt_vault
 sync_to_git
 
+CONTROL_HOST="${ENV}-control-0"
+CONTROL_IP=$(cchq $ENV lookup control)
 INVENTORY_FILE=$ENVIRONMENT_DIR/inventory.ini
 AWS_PEM_FILE=$(grep "pem" "${SPEC}" | grep -o -P '(?<=pem: ).*')
 

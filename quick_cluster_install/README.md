@@ -21,13 +21,12 @@ aws_secret_access_key = <secret_access_key_from_keypass>
 
 ### Set up the cluster
 
+Branch from `automated-cluster-setup` and checkout to that branch before you begin!
+
 Setting up the cluster basically involves
 1) Configuring the cluster environment file
 2) Provision machines
 3) Deploy commcarehq from control machine
-
-> **_NOTE:_** 
-> Branch from `automated-cluster-setup` and checkout to that branch before you begin
 
 For the purposes of this process, let's suppose you want to create a new cluster environment called `cluster`.
 
@@ -44,7 +43,7 @@ Fill out the new environment's details. If this step is left out, the script wil
 
 After you've filled out the details in this new `cluster.yml` file, you simply run the following command to provision
 the cluster machines on AWS:
-> ./provision_machines.sh cluster
+> ./provision_machines.sh cluster [spec]
 
 The script will do the following:
 1) Check if the `cluster` environment exists; if not, it will simply copy the `sample_environment` environment. 
@@ -55,7 +54,7 @@ The script will do the following:
 
 > **_NOTE:_** 
 > If you wish to specify your environment’s own spec.yml and not use the default spec.yml, you can either alter the default spec in the `sample_environment` 
-> environment or create your own environment manually and specify it there. if you decide to create your own environment manually, please take notice of the file structure mentioned above.
+> environment or create your own environment manually and specify the path to the spec when running the provision command.
 
 #### Step 3: Deploy commcarehq from control machine
 When the script is done, follow the output command to ssh into the remote control machine. If you want to do this later you can find the control machine’s IP in the newly created environment’s inventory.ini file (remember, you will need to specify the `.pem` identity file).
