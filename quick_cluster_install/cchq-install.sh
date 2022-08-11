@@ -73,6 +73,10 @@ printf "#################################################"
 printf "\n"
 source ~/.commcare-cloud/load_config.sh
 commcare-cloud $env_name update-local-known-hosts
+
+# Why do I need to do this?
+ansible-vault decrypt ~/environments/$env_name/vault.yml
+
 commcare-cloud $env_name bootstrap-users --branch $deploy_branch -c local --quiet
 
 printf "\nEverything is setup to install CommCareHQ now! Would you like to install CommCareHQ now?\n"
