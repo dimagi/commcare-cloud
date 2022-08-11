@@ -19,9 +19,9 @@
   roles:
     - role: aws-fsx
       vars:
-        efs_mount_dir: /opt/formplayer_data_fsx
-        efs_mount_uid: "{{ cchq_uid|default(None) }}"
-        efs_mount_gid: "{{ cchq_gid|default(None) }}"
+        fsx_mount_dir: /opt/formplayer_data_fsx
+        fsx_mount_uid: "{{ cchq_uid|default(None) }}"
+        fsx_mount_gid: "{{ cchq_gid|default(None) }}"
       when: "formplayer_fsx_dns|default(False)"
       tags:
         - fsx
