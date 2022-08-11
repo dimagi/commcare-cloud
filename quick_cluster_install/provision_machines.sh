@@ -28,6 +28,11 @@ check_environment() {
     exit 1
   fi
 
+  if [ ! -f $COMMCARE_CLOUD_ROOT/quick_cluster_install/$ENV.yml ] ; then
+    echo "${ENV}.yml not found!"
+    exit 1
+  fi
+
   if [ ! -d $ENVIRONMENT_DIR ] ; then
     echo "Should I create environment '${ENV}' at ${ENVIRONMENT_DIR}? [y/n]"
     read create_env
