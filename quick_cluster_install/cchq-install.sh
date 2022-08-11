@@ -61,6 +61,7 @@ printf "#################################################"
 printf "\n"
 
 # VENV should have been set by init.sh
+# Not sure what the consequences are if we set the default
 VENV=${VENV:-/home/ubuntu/.virtualenvs/cchq}
 
 ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=${VENV}" "$DIR/ansible-playbooks/bootstrap-env-playbook.yml"
