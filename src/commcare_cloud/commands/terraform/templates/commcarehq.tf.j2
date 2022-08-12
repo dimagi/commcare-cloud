@@ -359,6 +359,7 @@ module "fsx_file_system__{{ fsx_file_system.efs_name }}" {
   storage_capacity     = {{ fsx_file_system.storage_capacity|tojson }}
   throughput_capacity  = {{ fsx_file_system.throughput_capacity|tojson }}
   fsx_subnet_ids       = ["${lookup(module.network.subnets-app-private, "a", "")}"]
+  security_group_ids = [module.network.app-private-sg]
 }
 {% endfor %}
 

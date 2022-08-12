@@ -24,3 +24,8 @@ variable "fsx_subnet_ids" {
   description = "The Subnet Group of the FSx"
   type =  list(string)
 }
+
+variable "security_group_ids" {
+  description = "The Security Group for FSx"
+  type =  list(string)
+}
