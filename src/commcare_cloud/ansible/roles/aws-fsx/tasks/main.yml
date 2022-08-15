@@ -13,4 +13,4 @@
     shared_dir_user: "{{ fsx_mount_uid }}"
     shared_dir_group: "{{ fsx_mount_gid }}"
     shared_mount_address: "{{ formplayer_fsx_dns }}"
-    shared_mount_opts: "_netdev,nfsvers=4.2,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport,_netdev 0 0"
+    shared_mount_opts: "{{ fsx_shared_mount_options }}"
