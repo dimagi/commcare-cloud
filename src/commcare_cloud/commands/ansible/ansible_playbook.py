@@ -111,17 +111,20 @@ def run_ansible_playbook(
         # verifying cchq env ansible version before execution
         required_ansible_version = "4.2.0"
         #venv_ansible_version = subprocess.run(["ansible", "--version", "|", "head", "-n1", "|", "awk", "'{print $2}'"], stdout=subprocess.PIPE, universal_newlines=True)
-        if os.environ['VIRTUAL_ENV']:
-            ansible_version = ansible.__version__
-            if (version.parse(ansible_version) < version.parse(str(required_ansible_version))):
-                puts(color_error(f"The version of ansible you have installed ({ansible_version}) is no longer supported."))
-                puts(color_notice(f"To upgrade from ansible {ansible_version} to {required_ansible_version} or above you will first have to uninstall the current version (due to an idiosyncratic issue)"))
-                puts(color_code("  pip uninstall ansible"))
-                puts(color_notice("before re-installing the supported version using your standard method."))
-                return 2
-        else:
+        try:
+            if os.environ['VIRTUAL_ENV']:
+                ansible_version = ansible.__version__
+                if (version.parse(ansible_version) < version.parse(str(required_ansible_version))):
+                    puts(color_error(f"The version of ansible you have installed ({ansible_version}) is no longer supported."))
+                    puts(color_notice(f"To upgrade from ansible {ansible_version} to {required_ansible_version} or above you will first have to uninstall the current version (due to an idiosyncratic issue)"))
+                    puts(color_code("  pip uninstall ansible"))
+                    puts(color_notice("before re-installing the supported version using your standard method."))
+                    return 2
+            # else:
+            #     puts(color_notice("please activate the cchq virtualenv."))
+            #     return 2
+        except KeyError:
             puts(color_notice("please activate the cchq virtualenv."))
-            return 2
 
         if os.path.isabs(playbook):
             playbook_path = playbook
