@@ -2,11 +2,50 @@
 - hosts: "{{ control_host }}"
   gather_facts: yes
   remote_user: ubuntu
-  tasks:
-    - name: (1/2) Clone commcare-cloud
-      command: "git clone https://github.com/dimagi/commcare-cloud"
+  become: yes
+  vars_prompt:
+    - name: root_password
+      prompt: control machine new root password
+      confirm: yes
+      private: yes
+      encrypt: sha512_crypt
+      salt_size: 7
 
-    - name: (2/2) Checkout branch
-      command:
-        cmd: "git checkout {{ git_branch }}"
-        chdir: ~/commcare-cloud
+  tasks:
+    - name: (1/7) Update Root user's password
+      user:
+        name: root
+        update_password: always
+        password: "{{ root_password }}"
+
+    - name: (2/7) Enable root user
+      command: "passwd -u root"
+
+    - name: (3/7) Allow root login
+      lineinfile:
+          path: /etc/ssh/sshd_config
+          line: PermitRootLogin yes
+          state: present
+          backup: yes
+
+    - name: (4/7) Allow password auth
+      lineinfile:
+          path: /etc/ssh/sshd_config
+          line: PasswordAuthentication yes
+          state: present
+          backup: yes
+
+    - name: (5/7) Reload ssh
+      command: "passwd -u root"
+
+    - name: Setup commcare-cloud
+      become: yes
+      become_user: ubuntu
+      block:
+      - name: (6/7) Clone commcare-cloud
+        command: "git clone https://github.com/dimagi/commcare-cloud"
+
+      - name: (7/7) Checkout branch
+        command:
+          cmd: "git checkout {{ git_branch }}"
+          chdir: ~/commcare-cloud
