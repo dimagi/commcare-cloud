@@ -28,7 +28,7 @@ $ sudo -iu cchq
 $ cd /home/cchq/www/<env>/current && source python_env/bin/activate
 $ python manage.py copy_events_to_sql --batch_size=10000 --workers=5
 ```
-Replace <env> with your correct environemt
+Replace <env> with your correct environment
 
 
 The migration utility creates batches and runs them parellely.
