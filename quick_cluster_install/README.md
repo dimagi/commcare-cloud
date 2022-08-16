@@ -42,7 +42,7 @@ Fill out the new environment's details. If this step is left out, the script wil
 
 After you've filled out the details in this new `cluster.yml` file, you simply run the following command to provision
 the cluster machines on AWS:
-> ./provision_machines.sh cluster [spec]
+> bash ./provision_machines.sh cluster [spec]
 
 The script will do the following:
 1) Check if the `cluster` environment exists; if not, it will simply copy the `sample_environment` environment. 
