@@ -12,4 +12,4 @@ server_host_name: ""
 ssh_public_key: ""
 
 # The username to use for your user to be created on the server. This will be tied to above public key
-ssh_username: ""
+ssh_username: "ubuntu" # default AWS user
