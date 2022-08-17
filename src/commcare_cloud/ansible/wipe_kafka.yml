@@ -23,11 +23,17 @@
     - name: Get PostgreSQL defaults
       include_vars: roles/kafka/defaults/main.yml
 
-    - name: Get Kafka topics (version > 0.9)
+    - name: Get Kafka topics (version > 0.9 and < 3.x)
       command: "/opt/kafka/bin/kafka-topics.sh --list --exclude-internal --zookeeper localhost:{{ zookeeper_client_port }}"
       register: topics_result
       check_mode: no
-      when: kafka_version is version('0.9', '>')
+      when: (kafka_version is version('0.9', '>')) and (kafka_version is version('3.0', '<'))
+
+    - name: Get Kafka topics (version >= 3.0)
+      command: "/opt/kafka/bin/kafka-topics.sh --list --exclude-internal -bootstrap-server localhost:9092"
+      register: topics_result
+      check_mode: no
+      when: kafka_version is version('3.0', '>=')
 
     - name: Get Kafka topics (version <= 0.9)
       command: "/opt/kafka/bin/kafka-topics.sh --list --zookeeper localhost:{{ zookeeper_client_port }}"
@@ -56,9 +62,18 @@
         name: kafka-server
         state: restarted
 
-    - name: Delete topics
+    - name: Delete topics (version > 0.9 and < 3.x)
       loop: "{{ topics_for_delete }}"
       command: "/opt/kafka/bin/kafka-topics.sh
         --delete
         --zookeeper localhost:{{ zookeeper_client_port }}
         --topic {{ item }}"
+      when: (kafka_version is version('0.9', '>')) and (kafka_version is version('3.0', '<'))
+
+    - name: Delete topics (version >= 3.0)
+      loop: "{{ topics_for_delete }}"
+      command: "/opt/kafka/bin/kafka-topics.sh
+        --delete
+        --bootstrap-server localhost:9092
+        --topic {{ item }}"
+      when: kafka_version is version('3.0', '>=')
