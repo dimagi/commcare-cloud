@@ -8,3 +8,4 @@ zookeeper_log_dir: "/opt/zookeeper-{{ zookeeper_version }}/logs"
 zookeeper_server_id: "{{ kafka_broker_id }}"
 zookeeper_cluster: False
 zookeeper_download_sha1: sha1:0285717bf5ea87a7a36936bf37851d214a32bb99
+zookeeper3_4_download_sha1: sha1:0285717bf5ea87a7a36936bf37851d214a32bb99
