@@ -6,16 +6,16 @@ After=network.target
 
 [Service]
 Type=forking
-WorkingDirectory=/opt/zookeeper
+WorkingDirectory=/opt/zookeeper-{{ zookeeper_version }}
 User=root
 Group=root
 LimitNOFILE=32000
 Restart=on-failure
 Environment="ZOO_LOG_DIR={{ zookeeper_log_dir }}"
 
-ExecStart=/opt/zookeeper/bin/zkServer.sh start /opt/zookeeper/conf/zoo.cfg
-ExecStop=/opt/zookeeper/bin/zkServer.sh stop /opt/zookeeper/conf/zoo.cfg
-ExecReload=/opt/zookeeper/bin/zkServer.sh restart /opt/zookeeper/conf/zoo.cfg
+ExecStart=/opt/zookeeper-{{ zookeeper_version }}/bin/zkServer.sh start /opt/zookeeper-{{ zookeeper_version }}/conf/zoo.cfg
+ExecStop=/opt/zookeeper-{{ zookeeper_version }}/bin/zkServer.sh stop /opt/zookeeper-{{ zookeeper_version }}/conf/zoo.cfg
+ExecReload=/opt/zookeeper-{{ zookeeper_version }}/bin/zkServer.sh restart /opt/zookeeper-{{ zookeeper_version }}/conf/zoo.cfg
 TimeoutSec=30
 
 [Install]
