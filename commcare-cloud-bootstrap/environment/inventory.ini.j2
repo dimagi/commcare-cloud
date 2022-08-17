@@ -1,6 +1,6 @@
 {% for machine in inventory.all_hosts -%}
 [{{ machine.name }}]
-{{ machine.private_ip }} ansible_host={{ machine.public_ip }}
+{{ machine.private_ip }} ansible_host={{ machine.public_ip }} ansible_python_interpreter=/usr/bin/python3
 {%- for key, value in machine.vars.items()|sort %} {{ key }}={{ value }}{% endfor %}
 
 {% endfor -%}

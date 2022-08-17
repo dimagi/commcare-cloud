@@ -20,6 +20,9 @@ from commcare_cloud.environment.main import get_environment
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'environment')
 j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
 
+AMI_OS_VERSION_MAP = {
+    "ami-0b152cfd354c4c7a4": "ens5"
+}
 
 class StrictJsonObject(jsonobject.JsonObject):
     _allow_dynamic_properties = False
@@ -123,11 +126,14 @@ def provision_machines(spec, env_name=None, create_machines=True):
             break
 
     hosts_by_name = {}
+    network_interface = get_network_interface(spec)
 
-    for host, (public_ip, private_ip) in zip(inventory.all_hosts, instance_ip_addresses.values()):
+    for host, (instance_id, (public_ip, private_ip)) in zip(inventory.all_hosts, (instance_ip_addresses.items())):
         host.public_ip = public_ip
         host.private_ip = private_ip
         host.vars['hostname'] = host.name
+        host.vars['ufw_private_interface'] = network_interface
+        host.vars['ec2_instance_id'] = instance_id
         hosts_by_name[host.name] = host
 
     for i, host_name in enumerate(inventory.all_groups['kafka'].host_names):
@@ -466,6 +472,10 @@ def copy_default_vars(environment, aws_config):
                 print("The pem file {} specified in {} does not exist. Exiting.".format(
                     aws_config.pem, os.path.join(TEMPLATE_DIR, 'public.yml')))
                 sys.exit(1)
+
+
+def get_network_interface(spec):
+    return AMI_OS_VERSION_MAP.get(spec.aws_config.ami, "eth0")
 
 
 class Provision(object):
