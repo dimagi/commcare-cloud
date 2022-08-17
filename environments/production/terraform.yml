@@ -294,7 +294,7 @@ servers:
     os: bionic
 
   - server_name: "pgbouncer_a1-production" # host and pgbouncer_host for pl/proxy, pgbouncer host for shard dbs
-    server_instance_type: r5a.xlarge
+    server_instance_type: r5a.2xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 200
