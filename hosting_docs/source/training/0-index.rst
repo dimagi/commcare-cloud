@@ -79,11 +79,11 @@ CommCare HQ DevOps engineer.
 
 
 .. _CommCare HQ Services Overview: https://docs.google.com/presentation/d/1wR13WMgVXpT_tzXJLSgIL8l3sxELfAyQeAikX7IT39Q/edit#slide=id.p
-.. _Setting up a new CommCare HQ environment: https://dimagi.github.io/commcare-cloud/setup/new_environment.html
-.. _Server management basics: https://dimagi.github.io/commcare-cloud/commcare-cloud/basics
-.. _Firefighting: https://dimagi.github.io/commcare-cloud/firefighting/
-.. _backup and restore: https://dimagi.github.io/commcare-cloud/commcare-cloud/backup.html
-.. _using Datadog: https://dimagi.github.io/commcare-cloud/monitoring/setup_datadog.html
+.. _Setting up a new CommCare HQ environment: https://commcare-cloud.readthedocs.io/en/latest/installation/index.html
+.. _Server management basics: https://commcare-cloud.readthedocs.io/en/latest/operations/2-deploys.html
+.. _Firefighting: https://commcare-cloud.readthedocs.io/en/latest/reference/firefighting/index.html
+.. _backup and restore: https://commcare-cloud.readthedocs.io/en/latest/reference/firefighting/index.html
+.. _using Datadog: https://commcare-cloud.readthedocs.io/en/latest/operations/3-monitoring.html
 .. _CommCare Forum: https://forum.dimagi.com/
 .. _announcements to the community: https://forum.dimagi.com/c/platform-announce/8
 

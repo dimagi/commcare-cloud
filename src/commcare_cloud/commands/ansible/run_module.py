@@ -15,7 +15,7 @@ from commcare_cloud.commands.ansible.helpers import (
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.parse_help import add_to_help_text, filtered_help_message, ANSIBLE_HELP_OPTIONS_PREFIX
+from commcare_cloud.parse_help import ANSIBLE_HELP_OPTIONS_PREFIX, add_to_help_text, filtered_help_message
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 
 NON_POSITIONAL_ARGUMENTS = (

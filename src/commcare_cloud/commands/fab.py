@@ -41,7 +41,7 @@ class Fab(CommandBase):
             @memoized
             def epilog(self):
                 lines = subprocess.check_output(
-                    ['fab', '-f', FABFILE, '-l'],
+                    ['patched-fab', '-f', FABFILE, '-l'],
                     universal_newlines=True,
                 ).splitlines()
                 return '\n'.join(
@@ -84,13 +84,13 @@ class Fab(CommandBase):
         print(color_highlight('  commcare-cloud <env> deploy'))
         print()
         print("For info on how you can use the new command, please see")
-        print(color_link("https://dimagi.github.io/commcare-cloud/commcare-cloud/commands/#deploy"))
+        print(color_link("https://commcare-cloud.readthedocs.io/en/latest/reference/1-commcare-cloud/commands.html#deploy-command"))
         print("or run")
         print()
         print(color_highlight('  commcare-cloud <env> deploy -h'))
         print()
         print("For more information on this change, please see")
-        print(color_link("https://dimagi.github.io/commcare-cloud/changelog/0029-add-deploy-command.html"))
+        print(color_link("https://commcare-cloud.readthedocs.io/en/latest/changelog/0029-add-deploy-command.html"))
         print()
         print(color_summary('Thank you for using commcare-cloud.'))
         print()
@@ -98,7 +98,7 @@ class Fab(CommandBase):
 
 def exec_fab_command(env_name, *extra_args):
     cmd_parts = (
-        'fab', '-f', FABFILE,
+        'patched-fab', '-f', FABFILE,
         env_name,
     ) + tuple(extra_args)
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)

@@ -17,6 +17,8 @@ _formplayer_target_dir: "{{
   else formplayer_release_dir
 }}"
 formplayer_sensitive_data_logging: false
+# used by sentry - should match the sentry release created during deploy
+formplayer_release_name: '{{ new_release_name }}-{{ env_monitoring_id }}'
 
 # Instructs Spring Boot to process X-FORWARDED-FOR headers. Should be set if behind a 
 # trusted load balancer which forwards the original IP in headers.

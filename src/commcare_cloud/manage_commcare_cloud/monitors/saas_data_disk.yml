@@ -3,14 +3,14 @@ id: 16004813
 message: |-
   {{#is_alert}}ALERT: Disk usage {{comparator}} {{threshold}} ({{value}}) {{/is_alert}}
   {{#is_warning}}WARNING: Disk usage {{comparator}} {{warn_threshold}} ({{value}}) {{/is_warning}}
-  https://dimagi.github.io/commcare-cloud/firefighting/#full-drives--out-of-disk-space
+  https://commcare-cloud.readthedocs.io/en/latest/reference/firefighting/general.html#full-drives-out-of-disk-space
   << notification_block >>
 name: Disk space running low on data disk {{host.name}} ({{device.name}})
 options:
   escalation_message: |-
     {{#is_alert}}ALERT: Disk usage still {{comparator}} {{threshold}} ({{value}}) {{/is_alert}}
     {{#is_warning}}WARNING: Disk usage still {{comparator}} {{warn_threshold}} ({{value}}) {{/is_warning}}
-    https://dimagi.github.io/commcare-cloud/firefighting/#full-drives--out-of-disk-space
+    https://commcare-cloud.readthedocs.io/en/latest/reference/firefighting/general.html#full-drives-out-of-disk-space
     << notification_block >>
   include_tags: false
   locked: false

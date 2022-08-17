@@ -25,41 +25,53 @@ switchover to the new environment.
 1. Switch mobile devices to a proxy URL
 ---------------------------------------
 
-Each application maintains a series of URLs used for the various requests made
-by the mobile devices. Since rolling out an app update to all mobile devices
-takes time, it's best to not rely on that when switching server environments.
-Instead, we direct apps to a custom URL which directs requests to the original
-server, then after the migration, to the new server. This switch happens at the
-DNS level, without requiring a change on each device.
+Each application maintains a series of URLs pointing to CommCare HQ environment used for
+various requests made by the mobile devices. Migrating to a new web address requires updating these
+URLs in all the mobile devices at the time of switching the environments after the data is migrated. Since rolling out an app update to every mobile device of the project
+takes time during which the site needs to be offline, it will result in a long downtime for the project. Hence, if your project has any more than a couple of devices, it's best not to do it this way.
 
+Instead, before the migration itself, a new/proxy URL can be set up and configured to direct requests
+to the original environment and the mobile devices can be gradually updated to use the new URL while
+the project is still online. Then after the migration, the URL can be switched to the new environment.
+The URL switch happens at the DNS level, so an app update is not needed. Note that, an all device
+update is still required in this method, but the advantage is that it can be done before the migration.
 
-* Set up a domain name to be used for the migration. Have it point to the old
-   environment.
-* Add that domain name to the old environment's public.yml
+.. note::
+  Mobile devices should be switched to the proxy URL well in advance of doing the data migration so as to make sure all mobile users updated their applications!
 
-  .. code-block::
+To do this, follow the below steps.
+
+#. Set up a domain name to be used for the migration. Have it point to the old environment.
+#. Add that domain name to the old environment's public.yml
+
+   .. code-block::
 
       ALTERNATE_HOSTS:
         - commcare.example.com
 
-* Update the list of valid hosts in nginx and Django, then restart services for
+#. Update the list of valid hosts in nginx and Django, then restart services for
    it to take effect.  After this, CommCare HQ should be accessible at the new
    domain name.
-  .. code-block::
+
+   .. code-block::
 
       $ cchq <env> ansible-playbook deploy_proxy.yml
       $ cchq <env> update-config
       $ cchq <env> fab restart_services
 
-* Enable the feature flag ``CUSTOM_APP_BASE_URL`` for the project. This will need
+#. Set up SSL certificate for the domain name.
+#. Enable the feature flag ``CUSTOM_APP_BASE_URL`` for the project. This will need
    to be done by a site administrator.
-* For each app in the project, navigate to Settings > Advanced Settings, and
+#. For each app in the project, navigate to Settings > Advanced Settings, and
    enter in the domain name you created above.
-* Make a new build and test it out to ensure form submissions and syncs still
+#. Make a new build and test it out to ensure form submissions and syncs still
    work as usual.
-* Release the build and roll it out to all users.
+#. Release the build and roll it out to all devices. You can refer to Application Status Report
+   to make sure that all the mobile devices are using this build.
 
-That is, there are three registered domain names, which I'll call "old", "new",
+If you don't want to use the final domain to point to old environment, a different
+domain can also be used during migration.
+That is, there are three registered domain names, which can be called "old", "new",
 and "mobile". This table describes which domain name each type of user will
 access at each stage of the migration:
 
@@ -85,6 +97,7 @@ access at each stage of the migration:
      - access new domain
      - access new domain directly
 
+Only after all the devices are updated to use a new/mobile URL, you can proceed to the next step.
 
 2. Pull the domain data from the old environment
 ------------------------------------------------
@@ -98,7 +111,7 @@ During the downtime, mobile users will still be able to collect data, but they
 will be unable to submit forms or sync with the server.
 
 
-* Block data access by turning on the ``DATA_MIGRATION`` feature flag.
+* Block data access by turning on the ``DATA_MIGRATION`` feature flag (via HQ Web UI).
 * Print information about the numbers in the database for later reference.
   This will take a while (15 mins) even on small domains. Tip: add ``--csv`` to
   the command to save the output in a csv file.
@@ -117,25 +130,15 @@ will be unable to submit forms or sync with the server.
 3. Prepare the new environment to be populated
 ----------------------------------------------
 
+* Setup a new environment by following :ref:`deploy-commcarehq`
+* Do a commcare-hq deploy using :ref:`operations/2-deploys:Deploying CommCare HQ code changes`
+* Proceed to step 4.
 
-* Stop all services
-  ``$ commcare-cloud <env> downtime start``
-* Delete any blob data
-* Delete the PostgreSQL database
-* Delete the CouchDB database
-* Delete all elasticsearch indices
+If you have performed any tests on your new environment that has created test data, to delete 
+the data you can rebuild your environment using 
+:ref:`reference/howto/wipe_persistent_data:How To Rebuild a CommCareHQ environment` 
+before importing data from the old environment.
 
-  * Figure out what the elasticearch IP is:
-    ``ES_IP=$(commcare-cloud ${ENV} lookup elasticsearch:0)``
-  * Go ahead and check the size of the forms index to make sure this is the
-    correct cluster.  Be VERY sure this is correct.
-    ``curl -XGET "${ES_IP}:9200/xforms/_stats/docs?pretty``
-  * Delete all elasticsearch data in that cluster
-    ``curl -X DELETE ${ES_IP}:9200/_all?pretty``
-
-* Clear the redis cache data
-  ``./manage.py flush_caches``
-* Clear kafka
 
 4. Import the data to the new environment
 -----------------------------------------
@@ -156,12 +159,15 @@ will be unable to submit forms or sync with the server.
 
   * ``./manage.py print_domain_stats <domain_name>``
 
-* Rebuild case ownership cleanliness flags
+* Rebuild user configrable reports by running.
 
-  * ``./manage.py set_cleanliness_flags --force <domain_name>``
+  * ``./manage.py rebuild_tables_by_domain <domain_name> --initiated-by=<your-name>``
 
 * Bring the site back up
   ``$ commcare-cloud <env> downtime end``
+
+* Enable domain access by turning off the ``DATA_MIGRATION`` feature flag on the new environment (via HQ Web UI).
+
 
 5. Ensure the new environment is fully functional. Test all critical workflows at this stage.
 ---------------------------------------------------------------------------------------------
@@ -190,9 +196,9 @@ will be unable to submit forms or sync with the server.
 
 
 * Switch mobile devices to the new environment's URL. Reverse the steps taken
-   previously, since the custom URL is no longer necessary.
+  previously, since the custom URL is no longer necessary.
 * Once the success of the migration is assured, request that a site
-   administrator delete the project space on the old environment.
+  administrator delete the project space on the old environment.
 
 Troubleshooting
 ---------------

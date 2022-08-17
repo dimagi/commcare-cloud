@@ -1,5 +1,5 @@
 locals {
-  create = "${(var.create && lookup(var.rds_instance, "create", true)) ? true : false}"
+  create = (var.create && lookup(var.rds_instance, "create", true)) ? true : false
 
   version_parts = regex("^(?P<major>[0-9]+)(?:\\.(?P<minor>[0-9]+))?", var.rds_instance["engine_version"])
   version_parts_number = {
