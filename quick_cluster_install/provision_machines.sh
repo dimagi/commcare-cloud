@@ -132,7 +132,13 @@ CONTROL_IP=$(cchq $ENV lookup control)
 INVENTORY_FILE=$ENVIRONMENT_DIR/inventory.ini
 AWS_PEM_FILE=$(grep "pem" "${ENVIRONMENT_DIR}/spec.yml" | grep -o -P '(?<=pem: ).*')
 
+echo ""
+echo "Preparing control machine"
 ansible-playbook $COMMCARE_CLOUD_ROOT/quick_cluster_install/ansible-playbooks/prepare-control-machine.yml -i $INVENTORY_FILE --extra-vars "control_host=${CONTROL_HOST} git_branch=${BRANCH} pem_file_path=${AWS_PEM_FILE}" --private-key $AWS_PEM_FILE
+
+echo ""
+echo "Copy .pem file to server"
+scp -i $AWS_PEM_FILE $AWS_PEM_FILE ubuntu@$CONTROL_IP:$AWS_PEM_FILE
 
 echo ""
 echo ""
