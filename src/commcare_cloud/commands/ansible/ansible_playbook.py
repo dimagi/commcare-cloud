@@ -108,9 +108,7 @@ def run_ansible_playbook(
             return ()
 
     def ansible_playbook(environment, playbook, *cmd_args):
-        # verifying cchq env ansible version before execution
         required_ansible_version = "4.2.0"
-        #venv_ansible_version = subprocess.run(["ansible", "--version", "|", "head", "-n1", "|", "awk", "'{print $2}'"], stdout=subprocess.PIPE, universal_newlines=True)
         try:
             if os.environ['VIRTUAL_ENV']:
                 ansible_version = ansible.__version__
@@ -120,9 +118,6 @@ def run_ansible_playbook(
                     puts(color_code("  pip uninstall ansible"))
                     puts(color_notice("before re-installing the supported version using your standard method."))
                     return 2
-            # else:
-            #     puts(color_notice("please activate the cchq virtualenv."))
-            #     return 2
         except KeyError:
             puts(color_notice("please activate the cchq virtualenv."))
 
