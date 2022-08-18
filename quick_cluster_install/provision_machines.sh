@@ -136,12 +136,8 @@ echo ""
 echo "Preparing control machine"
 ansible-playbook $COMMCARE_CLOUD_ROOT/quick_cluster_install/ansible-playbooks/prepare-control-machine.yml -i $INVENTORY_FILE --extra-vars "control_host=${CONTROL_HOST} git_branch=${BRANCH} pem_file_path=${AWS_PEM_FILE}" --private-key $AWS_PEM_FILE
 
+echo "Done!"
 echo ""
-echo "Copy .pem file to server"
-scp -i $AWS_PEM_FILE $AWS_PEM_FILE ubuntu@$CONTROL_IP:$AWS_PEM_FILE
-
-echo ""
-echo ""
-echo "All done! You can now SSH into the control machine:"
+echo "You can now SSH into the control machine:"
 echo "ssh -i ${AWS_PEM_FILE} ubuntu@${CONTROL_IP}"
 echo ""
