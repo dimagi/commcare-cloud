@@ -64,7 +64,7 @@ printf "\n"
 # Not sure what the consequences are if we set the default
 VENV=${VENV:-/home/ubuntu/.virtualenvs/cchq}
 
-ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=${VENV}" "$DIR/ansible-playbooks/bootstrap-env-playbook.yml"
+ansible-playbook --extra-vars "@$config_file_path" --extra-vars "cchq_venv=${VENV}" "$DIR/ansible-playbooks/bootstrap-env-playbook.yml"
 
 printf "\n"
 printf "#################################################"
@@ -77,7 +77,7 @@ commcare-cloud $env_name update-local-known-hosts
 # Why do I need to do this?
 ansible-vault decrypt ~/environments/$env_name/vault.yml
 
-commcare-cloud $env_name bootstrap-users --branch $deploy_branch -c local --quiet
+commcare-cloud $env_name bootstrap-users --branch $deploy_branch --quiet
 
 printf "\nEverything is setup to install CommCareHQ now! Would you like to install CommCareHQ now?\n"
 printf "Please see below a summary of what this script has setup so far!\n"
@@ -89,13 +89,13 @@ printf "  The vault file also has the sudo password for the ansible user under t
 
 printf "You can now install CommCareHQ using below two commands.\n\n"
 printf "source ~/.commcare-cloud/load_config.sh\n"
-printf "commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' --branch $deploy_branch -c local \n\n"
+printf "commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' --branch $deploy_branch \n\n"
 printf "Would you like the above command to be run now?\n"
 read -p "(Please note that if this command fails midway, you can run this command directly instead of rerunning the cchq-install command) Proceed (Y/n)?" -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-    commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' --branch $deploy_branch -c local --quiet
+    commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' --branch $deploy_branch --quiet
 else
     exit
 fi

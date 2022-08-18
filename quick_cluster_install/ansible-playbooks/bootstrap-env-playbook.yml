@@ -8,7 +8,7 @@
       - '{{server_host_name}}'
       - '{{ssh_public_key}}'
       - '{{ssh_username}}'
-#      - '{{cchq_venv}}'
+      - '{{cchq_venv}}'
     config_is_not_valid: '{{"" in install_config}}'
     envs_path: "{{ ansible_env.HOME }}/environments"
     env_path: "{{envs_path}}/{{ env_name }}"
