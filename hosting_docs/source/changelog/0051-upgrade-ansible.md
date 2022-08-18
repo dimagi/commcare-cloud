@@ -21,8 +21,10 @@ process we have test this approach on new servers and we have to uninstall the e
 and install the 4.2.0
 
 ## Steps to update
-1. Clone the latest Commcare-cloud master branch into the control (respective) machine
+1. Pull the latest commcare-cloud master branch into the control machine
 2. Run following command to reset the cchq env
   ```bash
     source <pathToDir>/commcare-cloud/source/init.sh
   ```
+   You can achieve both of these at once by simply running `update-code` on the control machine
+   (which is an alias that is set up by `init.sh`, which is typically configured to run upon login).

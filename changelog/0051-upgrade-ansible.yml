@@ -17,5 +17,5 @@ update_steps: |
     ```bash
       source <pathToDir>/commcare-cloud/source/init.sh
     ```
-     You can achieve both of these at once by simply running `update-code` on the control machine 
+     You can achieve both of these at once by simply running `update-code` on the control machine
      (which is an alias that is set up by `init.sh`, which is typically configured to run upon login).
