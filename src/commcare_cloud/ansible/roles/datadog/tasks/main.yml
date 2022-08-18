@@ -1,10 +1,7 @@
-- name: Remove old datadog apt keys
-  apt_key: id="{{ item }}" keyserver=keyserver.ubuntu.com state=absent
+- name: Remove old datadog apt key
+  apt_key: id=382E94DE keyserver=keyserver.ubuntu.com state=absent
   tags:
     - datadog
-  with_items:
-    - 382E94DE
-    - 33EE313BAD9589B7
 
 - name: Add datadog apt key
   apt_key: id=F14F620E keyserver=keyserver.ubuntu.com state=present
