@@ -5,7 +5,6 @@ terraform {
     region  = {{ state_bucket_region|tojson }}
     encrypt = true
   }
-  
   {#- guaranteed to be a valid string; see comment in terraform_version_range_string definition #}
   required_version = "{{ terraform_version_range_string }}"
 
