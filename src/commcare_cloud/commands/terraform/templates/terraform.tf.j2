@@ -5,22 +5,26 @@ terraform {
     region  = {{ state_bucket_region|tojson }}
     encrypt = true
   }
+  
   {#- guaranteed to be a valid string; see comment in terraform_version_range_string definition #}
   required_version = "{{ terraform_version_range_string }}"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.8.0"
+    }
+    archive = {
+      source = "hashicorp/archive"
+      version = "~> 2.2.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.1.2"
+    }
+  }
 }
 
-provider "aws" {
-  version = "~> 4.8.0"
-  region  = {{ region|tojson }}
-}
-
-provider "archive" {
-  version = "~> 2.2.0"
-}
-
-provider "random" {
-  version = "~> 3.1.2"
-}
 
 // for global accelerator which can only be configured in us-west-2
 provider "aws" {
