@@ -11,7 +11,11 @@
       changed_when: false
 
     - name: Install Python 3.10
-      raw: add-apt-repository -y ppa:deadsnakes/ppa && apt update && apt-get -y install python3.10
+      raw: add-apt-repository -y ppa:deadsnakes/ppa && apt update && apt-get -y install python3.10 python3.10-distutils python3.10-dev
+      when: check_python.rc != 0
+
+    - name: Update pip, setuptools, and wheel in 3.10 target
+      raw: pip3 install --upgrade --target=/usr/local/lib/python3.10/dist-packages pip setuptools wheel
       when: check_python.rc != 0
 
     - name: Check symlink is setup
