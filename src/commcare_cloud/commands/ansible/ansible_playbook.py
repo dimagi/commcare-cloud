@@ -109,9 +109,10 @@ def run_ansible_playbook(
 
     def ansible_playbook(environment, playbook, *cmd_args):
         required_ansible_version = "4.2.0"
+        venv_version = subprocess.run(["pip", "show", "ansible"], stdout=subprocess.PIPE, universal_newlines=True)
+        ansible_version = str(venv_version.stdout).split("\n")[1].split(" ")[1]
         try:
             if os.environ['VIRTUAL_ENV']:
-                ansible_version = ansible.__version__
                 if (version.parse(ansible_version) < version.parse(str(required_ansible_version))):
                     puts(color_error(f"The version of ansible you have installed ({ansible_version}) is no longer supported."))
                     puts(color_notice(f"To upgrade from ansible {ansible_version} to {required_ansible_version} or above you will first have to uninstall the current version (due to an idiosyncratic issue)"))
