@@ -21,7 +21,7 @@ airflow_home: "{{ cchq_home }}/airflow"
 airflow_virtualenv: "{{ airflow_home }}/env"
 
 internal_network_interface: "{{ ansible_default_ipv4.interface }}"
-internal_network_interface_fact: "ansible_{{ internal_network_interface }}"
+internal_network_interface_fact: "ansible_{{ ansible_default_ipv4.interface }}"
 internal_ipv4: "{{ hostvars[inventory_hostname][internal_network_interface_fact].ipv4 }}"
 
 shared_dir_gid: 1500  # This GID cannot already be allocated
