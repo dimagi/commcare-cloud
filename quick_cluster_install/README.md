@@ -55,8 +55,16 @@ The script will do the following:
 > If you wish to specify your environment’s own spec.yml and not use the default spec.yml, you can either alter the default spec in the `sample_environment` 
 > environment or create your own environment manually and specify the path to the spec when running the provision command.
 
+When the script is done, add the following line to your ssh config file:
+```
+Host <control_machine_ip>
+      ForwardAgent yes
+```
+
+The `control_machine_ip` will be output after the script has executed. You can also find the control machine's IP in the generated `inventory.ini` file.
+
 #### Step 3: Deploy commcarehq from control machine
-When the script is done, follow the output command to ssh into the remote control machine. If you want to do this later you can find the control machine’s IP in the newly created environment’s inventory.ini file (remember, you will need to specify the `.pem` identity file).
+SSH into the remote control machine. If you want to do this later you can find the control machine’s IP in the newly created environment’s inventory.ini file (remember, you will need to specify the `.pem` identity file).
 
 On the control machine, change directory:
 > cd ~/commcare-cloud/quick_cluster_install/
