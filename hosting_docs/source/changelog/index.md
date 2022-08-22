@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-08-19** [upgrade-ansible](0052-upgrade-ansible.md)
+Run command to uninstall older ansible version which 2.9.26 and install 4.2.0
+
+
+---
 #### **2022-08-11** [historical-auditcare-data-migration](0051-historical-auditcare-data-migration.md)
 Instructions regarding Migrating Historical Auditcare data to SQL.
 
