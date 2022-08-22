@@ -108,13 +108,10 @@ def run_ansible_playbook(
             return ()
 
     def ansible_playbook(environment, playbook, *cmd_args):
-        if 'VIRTUAL_ENV' not in os.environ:
-            puts(color_notice("please activate the cchq virtualenv."))
-            return 2
         min_ansible_version = "2.10.0"
         if version.parse(ansible.__version__) < version.parse(min_ansible_version):
-            puts(color_error(f"The version of ansible you have installed ({ansible.__version__}) is no longer supported."))
-            puts(color_notice(f"To upgrade from ansible {ansible.__version__} to {min_ansible_version} or above you will first have to uninstall the current version (due to an idiosyncratic issue)"))
+            puts(color_error(f"The version of ansible-core you have installed ({ansible.__version__}) is no longer supported."))
+            puts(color_notice(f"To upgrade from ansible-core {ansible.__version__} to {min_ansible_version} or above you will first have to uninstall the current version of ansible (due to an idiosyncratic issue)"))
             puts(color_code("  pip uninstall ansible"))
             puts(color_notice("before re-installing the supported version using your standard method."))
             return 2
