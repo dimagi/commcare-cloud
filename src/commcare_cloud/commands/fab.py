@@ -41,7 +41,7 @@ class Fab(CommandBase):
             @memoized
             def epilog(self):
                 lines = subprocess.check_output(
-                    ['fab', '-f', FABFILE, '-l'],
+                    ['patched-fab', '-f', FABFILE, '-l'],
                     universal_newlines=True,
                 ).splitlines()
                 return '\n'.join(
@@ -98,7 +98,7 @@ class Fab(CommandBase):
 
 def exec_fab_command(env_name, *extra_args):
     cmd_parts = (
-        'fab', '-f', FABFILE,
+        'patched-fab', '-f', FABFILE,
         env_name,
     ) + tuple(extra_args)
     cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)

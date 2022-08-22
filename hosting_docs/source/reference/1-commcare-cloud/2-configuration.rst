@@ -121,7 +121,56 @@ The purpose of each of these files and their formats will be discussed
 in detail in the following sections.
 
 ``app-processes.yml``
-^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
+This file determines which background CommCare processes will get run on which machines in the cluster.
+The file is split into 3 sections each with the same basic format:
+
+.. code-block::
+
+  <section>:
+    <host>:
+      <process / queue>:
+        # process configuration
+
+The three sections are as follows:
+
+* ``management_commands``: These are usually a single process per cluster and are used to manage various
+  system queues.
+* ``celery_processes``: Each of the items listed here is a Celery queue.
+* ``pillows``: Each item listed is a the name of an ETL processor (aka pillow)
+
+Each ``<host>`` must be a `host string <glossary#host-string>`_.
+
+See `app_processes.py`_ for complete list of top-level properties for this file.
+These are subject to the defaults provided in `environmental-defaults/app-processes.yml`_.
+
+.. _app_processes.py: https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/environment/schemas/app_processes.py
+.. _environmental-defaults/app-processes.yml: https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/environmental-defaults/app-processes.yml
+
+Management Commands
+"""""""""""""""""""
+
+.. code-block::
+
+   management_commands:
+     <host>:
+       <command-name>:
+     <host>:
+       ...
+     ...
+
+Each ``<command-name>`` must be one of the following:
+
+* ``run_submission_reprocessing_queue``: Reprocess failed form submissions
+* ``queue_schedule_instances``: Populates the SMS queue with scheduled messages
+* ``handle_survey_actions``: Handles SMS survey actions
+* ``run_sms_queue``: Processes queued SMS messages
+* ``run_pillow_retry_queue``: Retry queue for change feed errors
+
+There is no per-process configuration.
+
+Celery Processes
+""""""""""""""""
 
 .. code-block::
 
@@ -134,6 +183,35 @@ in detail in the following sections.
      <host>:
        ...
      ...
+
+Each ``<queue-name>`` must be one of the following values:
+``async_restore_queue``, ``background_queue``, ``case_rule_queue``, ``celery``,
+``email_queue``, ``export_download_queue``, ``icds_dashboard_reports_queue``,
+``linked_domain_queue``, ``reminder_case_update_queue``, ``reminder_queue``,
+``reminder_rule_queue``, ``repeat_record_queue``, ``saved_exports_queue``,
+``sumologic_logs_queue``, ``send_report_throttled``, ``sms_queue``,
+``submission_reprocessing_queue``, ``ucr_indicator_queue``, ``ucr_queue``.
+For all features to work, each of these queues must
+appear at least once, and up to once per host.
+
+Under each ``<queue-name>`` goes the following parameters:
+
+* ``concurrency``: Required; the concurrency configured on each worker
+* ``pooling``: default ``prefork``; specify ``prefork`` or ``gevent`` for the
+  process pool type used on each worker in this section
+* ``max_tasks_per_child``: default 50; only applicable for prefork pooling
+  (corresponds to ``maxtasksperchild`` celery worker command line arg)
+* ``num_workers``: default 1; the number of workers to create
+  consuming from this queue on this host
+
+The special queue names ``flower``, ``beat`` can appear *only*
+once. These queues take no parameters (can leave as simply ``{}``).
+
+Pillows
+"""""""
+
+.. code-block::
+
    pillows:
      <host>:
        <ETL-processor-name>:
@@ -142,34 +220,10 @@ in detail in the following sections.
        ...
      ...
 
-Each ``<host>`` must be a `host string <glossary#host-string>`_.
-
-Each ``<queue-name>`` must be one of the following values:
-``async_restore_queue``\ , ``background_queue``\ , ``case_rule_queue``\ , ``celery``\ ,
-``email_queue``\ , ``export_download_queue``\ , ``icds_dashboard_reports_queue``\ ,
-``linked_domain_queue``\ , ``reminder_case_update_queue``\ , ``reminder_queue``\ ,
-``reminder_rule_queue``\ , ``repeat_record_queue``\ , ``saved_exports_queue``\ ,
-``sumologic_logs_queue``\ , ``send_report_throttled``\ , ``sms_queue``\ ,
-``submission_reprocessing_queue``\ , ``ucr_indicator_queue``\ , ``ucr_queue``.
-For all features to work, each of these queues must
-appear at least once, and up to once per host.
-
-Under each ``<queue-name>`` goes the following params
-
-
-* ``concurrency``\ : Required; the concurrency configured on each worker
-* ``pooling``\ : default ``prefork``\ ; specify ``prefork`` or ``gevent`` for the
-  process pool type used on each worker in this section
-* ``max_tasks_per_child``\ : default 50; only applicable for prefork pooling
-  (corresponds to ``maxtasksperchild`` celery worker command line arg)
-* num_workers: default 1; the number of workers to create
-  consuming from this queue on this host
-
-The special queue names ``flower``\ , ``beat`` can appear *only*
-once. These queues take no parameters (can leave as simply ``{}``\ ).
 
 Each `<ETL-processor-name>` must be correspond to the `name` fields specified in
 `settings.PILLOWTOPS`:
+
 ``AppDbChangeFeedPillow``, ``ApplicationToElasticsearchPillow``,
 ``CacheInvalidatePillow``, ``case-pillow``, ``case_messaging_sync_pillow``,
 ``CaseSearchToElasticsearchPillow``, ``CaseToElasticsearchPillow``,
@@ -186,12 +240,6 @@ For all features to work, each of these ETL processors
 for no good reason beyond historical accident) just listed must appear
 at least once, and up to once per host. An ETL processor not mentioned
 will not be run at all.
-
-See `commcare_cloud/environment/schemas/app_processes.py <https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/environment/schemas/app_processes.py#L25-L40>`_
-for complete list of top-level properties for this file.
-These are subject to the defaults provided in
-`commcare_cloud/environmental-defaults/app-processes.yml <https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/environmental-defaults/app-processes.yml>`_.
-:raw-html-m2r:`<!--  todo: clean up this code and then better document -->`
 
 ``fab-settings.yml``
 ^^^^^^^^^^^^^^^^^^^^^^^^

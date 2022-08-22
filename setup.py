@@ -32,7 +32,7 @@ install_deps = [
 ]
 test_deps = [
     'modernize',
-    'nose>=1.3.7',
+    'nose @ git+https://github.com/dimagi/nose.git@06dff28bbe661b9d032ce839ea0ec8e9eaf6f337',
     'parameterized>=0.6.1',
     'requests-mock',
 ]
@@ -57,6 +57,7 @@ setup(
             'commcare-cloud = commcare_cloud.commcare_cloud:main',
             'cchq = commcare_cloud.commcare_cloud:main',
             'manage-commcare-cloud = commcare_cloud.manage_commcare_cloud.manage_commcare_cloud:main',
+            'patched-fab = commcare_cloud.patched_fab:main',
         ],
     },
     install_requires=install_deps,

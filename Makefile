@@ -9,11 +9,11 @@ PIP_COMPILE = pip-compile --output-file ${REQUIREMENTS} setup.py
 ANSIBLE_ENV=COLUMNS=80
 src/commcare_cloud/help_cache/ansible.txt: export ANSIBLE_CONFIG=src/commcare_cloud/ansible/ansible.cfg
 src/commcare_cloud/help_cache/ansible.txt:
-	$(ANSIBLE_ENV) ansible -h > src/commcare_cloud/help_cache/ansible.txt
+	$(ANSIBLE_ENV) ansible -h | sed 's/^optional arguments:/options:/' > src/commcare_cloud/help_cache/ansible.txt
 
 src/commcare_cloud/help_cache/ansible-playbook.txt: export ANSIBLE_CONFIG=src/commcare_cloud/ansible/ansible.cfg
 src/commcare_cloud/help_cache/ansible-playbook.txt:
-	$(ANSIBLE_ENV) ansible-playbook -h > src/commcare_cloud/help_cache/ansible-playbook.txt
+	$(ANSIBLE_ENV) ansible-playbook -h | sed 's/^optional arguments:/options:/' > src/commcare_cloud/help_cache/ansible-playbook.txt
 
 hosting_docs/source/reference/1-commcare-cloud/commands.md : src/commcare_cloud/* src/commcare_cloud/*/* src/commcare_cloud/*/*/*
 	manage-commcare-cloud make-docs > hosting_docs/source/reference/1-commcare-cloud/commands.md

@@ -1,10 +1,10 @@
-- name: Add datadog apt key
-  apt_key: id=382E94DE keyserver=keyserver.ubuntu.com state=present
+- name: Remove old datadog apt key
+  apt_key: id=382E94DE keyserver=keyserver.ubuntu.com state=absent
   tags:
     - datadog
 
 - name: Add datadog apt key
-  apt_key: id=33EE313BAD9589B7 keyserver=keyserver.ubuntu.com state=present
+  apt_key: id=F14F620E keyserver=keyserver.ubuntu.com state=present
   tags:
     - datadog
 
