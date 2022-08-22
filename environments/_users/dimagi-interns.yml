@@ -1,6 +1,6 @@
 dev_users:
   present:
-    - jcheng
   absent:
     # only for users we want to completely remove
+    - jcheng
     - mliang
