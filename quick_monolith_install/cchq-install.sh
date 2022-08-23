@@ -102,3 +102,20 @@ commcare-cloud $env_name django-manage preindex_everything
 printf "\nDeploying latest CommCareHQ Application code\n"
 printf "If this fails you can run 'commcare-cloud $env_name deploy --resume' to try again"
 commcare-cloud $env_name deploy
+
+printf "\n"
+printf "#################################################"
+printf "\nStep 5: Create CommCareHQ superuser \n"
+printf "#################################################"
+printf "\n"
+echo "Do you want to create a superuser?"
+read CREATE_SUPERUSER
+
+if [[ $CREATE_SUPERUSER =~ ^[Yy]$ ]]
+then
+  echo "Superuser email:"
+  read EMAIL
+  commcare-cloud cluster django-manage make_superuser $EMAIL
+else
+  exit
+fi
