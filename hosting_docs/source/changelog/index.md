@@ -7,6 +7,13 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-08-23** [upgrade-redis](0053-upgrade-redis.md)
+This change upgrade Redis from 4.0.8 to 6.x version.
+As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
+libraries we have updated Redis from version 4.0.8 to version 6.2.
+
+
+---
 #### **2022-08-11** [historical-auditcare-data-migration](0051-historical-auditcare-data-migration.md)
 Instructions regarding Migrating Historical Auditcare data to SQL.
 
