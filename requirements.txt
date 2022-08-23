@@ -4,11 +4,15 @@
 #
 #    pip-compile --output-file=requirements.txt setup.py
 #
-ansible==2.9.26
+ansible==4.10.0
     # via
     #   ansible-vault
     #   commcare-cloud (setup.py)
-ansible-vault==1.1.1
+ansible-core==2.11.12
+    # via ansible
+ansible-inventory==0.6.4
+    # via commcare-cloud (setup.py)
+ansible-vault==2.1.0
     # via commcare-cloud (setup.py)
 argparse==1.4.0
     # via
@@ -16,6 +20,8 @@ argparse==1.4.0
     #   couchdb-cluster-admin
 args==0.1.0
     # via clint
+async-timeout==4.0.2
+    # via redis
 attrs==21.2.0
     # via commcare-cloud (setup.py)
 bcrypt==3.2.0
@@ -41,13 +47,15 @@ couchdb-cluster-admin==0.7.2
     # via commcare-cloud (setup.py)
 cryptography==35.0.0
     # via
-    #   ansible
+    #   ansible-core
     #   commcare-cloud (setup.py)
     #   paramiko
 datadog==0.42.0
     # via commcare-cloud (setup.py)
 deprecated==1.2.13
-    # via pygithub
+    # via
+    #   pygithub
+    #   redis
 dimagi-memoized==1.1.3
     # via
     #   commcare-cloud (setup.py)
@@ -70,7 +78,7 @@ importlib-resources==5.4.0
     # via netaddr
 jinja2==3.0.2
     # via
-    #   ansible
+    #   ansible-core
     #   jinja2-cli
 jinja2-cli==0.7.0
     # via commcare-cloud (setup.py)
@@ -86,6 +94,10 @@ markupsafe==2.0.1
     # via jinja2
 netaddr==0.8.0
     # via commcare-cloud (setup.py)
+packaging==21.3
+    # via
+    #   ansible-core
+    #   redis
 paramiko==2.7.2
     # via fabric3
 passlib==1.7.4
@@ -96,25 +108,33 @@ pycryptodome==3.10.4
     # via commcare-cloud (setup.py)
 pygithub==1.55
     # via commcare-cloud (setup.py)
+pygments==2.13.0
+    # via ansible-inventory
 pyjwt==2.4.0
     # via pygithub
 pynacl==1.4.0
     # via
     #   paramiko
     #   pygithub
+pyparsing==3.0.9
+    # via packaging
 python-dateutil==2.8.2
     # via botocore
 pytz==2022.1
     # via commcare-cloud (setup.py)
 pyyaml==5.4.1
     # via
-    #   ansible
+    #   ansible-core
     #   couchdb-cluster-admin
+redis==4.3.4
+    # via ansible-inventory
 requests==2.26.0
     # via
     #   couchdb-cluster-admin
     #   datadog
     #   pygithub
+resolvelib==0.5.4
+    # via ansible-core
 s3transfer==0.5.0
     # via boto3
 simplejson==3.17.5
@@ -141,7 +161,7 @@ zipp==3.6.0
     #   importlib-resources
 zope.event==4.5.0
     # via gevent
-zope.interface==5.4.0
+zope-interface==5.4.0
     # via gevent
 
 # The following packages are considered to be unsafe in a requirements file:

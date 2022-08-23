@@ -167,3 +167,5 @@ nadir_hour_frequency: 3
 # To enable cron job to hard/soft kill celery processes set these thresholds. Use null/~ to disable cron job.
 celery_hours_before_hard_kill: ~
 celery_hours_before_soft_kill: ~
+
+ansible_become_password: "{{ ansible_sudo_pass }}"
