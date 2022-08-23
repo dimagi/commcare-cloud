@@ -1,5 +1,6 @@
 #! /bin/bash
 CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
+CCHQ_PYTHON=$([ "$CCHQ_VIRTUALENV" == cchq ] && echo 36 || echo 310)
 VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
 
 if [[ $_ == $0 ]]
@@ -16,10 +17,18 @@ function realpath() {
 
 
 if [ -z ${CI_TEST} ]; then
-    if [ ! -f $VENV/bin/activate ]; then
-        # use virtualenv because `python3 -m venv` is broken on Ubuntu 18.04
-        python3 -m pip install --user --upgrade virtualenv
-        python3 -m virtualenv $VENV
+    if [ "$CCHQ_PYTHON" == 310 ]; then
+      if [ ! -f $VENV/bin/activate ]; then
+          # use virtualenv because `python3 -m venv` is broken on Ubuntu 18.04
+          python3.10 -m pip install --user --upgrade virtualenv
+          python3.10 -m virtualenv $VENV
+      fi
+    else
+      if [ ! -f $VENV/bin/activate ]; then
+          # use virtualenv because `python3 -m venv` is broken on Ubuntu 18.04
+          python3 -m pip install --user --upgrade virtualenv
+          python3 -m virtualenv $VENV
+      fi
     fi
     source $VENV/bin/activate
 fi
