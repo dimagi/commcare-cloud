@@ -100,7 +100,7 @@ packaging==21.3
     # via
     #   ansible-core
     #   redis
-paramiko==2.7.2
+paramiko==2.10.1
     # via fabric3
 passlib==1.7.4
     # via commcare-cloud (setup.py)
