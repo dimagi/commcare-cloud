@@ -40,6 +40,7 @@ SSH into the server with a root or a user with root privileges and do below.
 
 	bash cchq-install.sh install-config.yml
 
+4. Once you have installed CommCareHQ successfully you can refer to :ref:`installation/2-manual-install:First Steps with CommCare HQ` before making your CommCareHQ live.
 
 Post Installation and Server Administration
 -------------------------------------------
