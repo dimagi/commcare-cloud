@@ -457,7 +457,7 @@ def save_fab_settings_yml(environment):
 
 def copy_default_vars(environment, aws_config):
     save_vault_yml(environment)
-
+    breakpoint()
     vars_public = environment.paths.public_yml
     vars_postgresql = environment.paths.postgresql_yml
     vars_proxy = environment.paths.proxy_yml
