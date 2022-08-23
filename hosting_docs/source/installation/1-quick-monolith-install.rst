@@ -44,6 +44,16 @@ SSH into the server with a root or a user with root privileges and do below.
 Post Installation and Server Administration
 -------------------------------------------
 
+Creating CommCareHQ superuser
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To create a superuser for your CommCareHQ instance, simply run the following command
+
+.. code-block:: bash
+
+    commcare-cloud cluster django-manage make_superuser {email}
+
+
 Tracking environements directory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
