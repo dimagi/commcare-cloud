@@ -139,5 +139,5 @@ ansible-playbook $COMMCARE_CLOUD_ROOT/quick_cluster_install/ansible-playbooks/pr
 echo "Done!"
 echo ""
 echo "You can now SSH into the control machine:"
-echo "ssh -i ${AWS_PEM_FILE} ubuntu@${CONTROL_IP}"
+echo "ssh -A -i ${AWS_PEM_FILE} ubuntu@${CONTROL_IP}"
 echo ""
