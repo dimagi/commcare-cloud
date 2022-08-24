@@ -102,8 +102,8 @@ fi
 
 printf "\nSuccessfully installed all the required services for CommCareHQ instance!\n"
 printf "Prepareing the system for first time application (code) deploy\n"
-commcare-cloud $env_name django-manage create_kafka_topics --branch $deploy_branch
-commcare-cloud $env_name django-manage preindex_everything --branch $deploy_branch
+commcare-cloud $env_name django-manage create_kafka_topics
+commcare-cloud $env_name django-manage preindex_everything
 printf "\nDeploying latest CommCareHQ Application code\n"
 printf "If this fails you can run 'commcare-cloud $env_name deploy --branch $deploy_branch --resume' to try again"
 commcare-cloud $env_name deploy --branch $deploy_branch
