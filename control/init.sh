@@ -11,7 +11,7 @@ fi
 
 
 function realpath() {
-    python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
+    python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
 }
 
 
