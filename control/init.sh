@@ -11,15 +11,19 @@ fi
 
 
 function realpath() {
-    python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
+    python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
 }
 
 
 if [ -z ${CI_TEST} ]; then
     if [ ! -f $VENV/bin/activate ]; then
+        python_version="python3"
+        if [[ "$CCHQ_VIRTUALENV" == *"3.10"* ]]; then
+          python_version="python3.10"
+        fi
         # use virtualenv because `python3 -m venv` is broken on Ubuntu 18.04
-        python3 -m pip install --user --upgrade virtualenv
-        python3 -m virtualenv $VENV
+        $python_version -m pip install --user --upgrade virtualenv
+        $python_version -m virtualenv $VENV
     fi
     source $VENV/bin/activate
 fi
