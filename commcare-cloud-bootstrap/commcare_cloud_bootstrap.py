@@ -247,7 +247,6 @@ def ask_aws_for_instances(env_name, aws_config, count):
             '--security-group-ids', aws_config.security_group_id,
             '--subnet-id', aws_config.subnet,
             '--tag-specifications', 'ResourceType=instance,Tags=[{Key=env,Value=' + env_name + '}]',
-            '--block-device-mapping', '[ { \"DeviceName\": \"/dev/sda1\", \"Ebs\": { \"VolumeSize\": 20 } } ]',
             '--profile', aws_config.profile,
         ]
         block_device_mappings = []
