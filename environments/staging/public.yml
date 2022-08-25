@@ -200,3 +200,4 @@ use_deadsnakes: '{{ ansible_distribution_version <= "18.04" }}'
 
 # to test plugin on staging only
 es_plugins_phonetic_enabled: True
+ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-08-23"
