@@ -5,13 +5,6 @@ aws_config:
   type: t3.micro
   key_name: commcarehq_cluster_testing
   security_group_id: sg-0f454b13d335c7ba8
-#  data_volume:
-#    DeviceName: /dev/xvdb
-#    Ebs:
-#      DeleteOnTermination: yes
-#      VolumeSize: 100
-#      VolumeType: standard
-#      Encrypted: false
   boot_volume:
     DeviceName: /dev/sda1
     Ebs:
