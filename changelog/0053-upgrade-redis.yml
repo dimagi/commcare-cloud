@@ -21,6 +21,6 @@ update_steps: |
   Before you start, make sure that you have backed up the existing Redis database servers
   to a remote location.
 
-  0. For users running postgresql on Linux machines:
+  0. For users running Redis on Linux machines:
       command:
         - cchq <env> ap deploy_redis.yml --branch=<branchName>
