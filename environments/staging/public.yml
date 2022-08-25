@@ -170,6 +170,7 @@ localsettings:
   ENABLE_NEW_TRIAL_EXPERIENCE: True
   STATIC_ROOT:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
+  ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-08-23"
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
@@ -200,4 +201,3 @@ use_deadsnakes: '{{ ansible_distribution_version <= "18.04" }}'
 
 # to test plugin on staging only
 es_plugins_phonetic_enabled: True
-ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-08-23"
