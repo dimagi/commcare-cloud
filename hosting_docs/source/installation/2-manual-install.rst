@@ -178,6 +178,39 @@ Prepare all machines for automated deploy
       .. note ::
         We no longer depend on virtualenvwrapper, but you are welcome to install and manage it manually.
 
+Upgrade to Python 3.10
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting on December 5th, 2022, commcare-cloud will require Python 3.10. Follow the steps below to properly install it.
+
+
+::
+
+        $ sudo add-apt-repository -y ppa:deadsnakes/ppa
+        $ sudo apt update
+        $ sudo apt-get -y install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
+
+Once Python 3.10 is installed on your control machine, run:
+
+::
+
+        $ update-code
+
+which will pull the latest version of commcare-cloud and trigger the creation and activation of a Python 3.10 virtual environment.
+
+Confirm the active virtual environment is using Python 3.10
+
+::
+
+        $ python --version
+
+Finally, run:
+
+::
+
+        $ manage-commcare-cloud configure
+
+
 Create a user for yourself
 --------------------------
 
