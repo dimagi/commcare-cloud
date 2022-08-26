@@ -175,6 +175,45 @@ our example cluster, the control machine is named “control1”.
 
         $ sudo -H pip install ansible virtualenv virtualenvwrapper --ignore-installed six
 
+Install Python 3.10 (optional)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Python 3.10 requires additional setup on Ubuntu 18.04 to work properly.
+
+1.  Install system packages
+
+    ::
+
+        $ sudo add-apt-repository -y ppa:deadsnakes/ppa
+        $ sudo apt update
+        $ sudo apt-get -y install python3.10 python3.10-dev python3.10-distutils libffi-dev
+
+2.  Install updated version of pip for use with python 3.10
+
+    ::
+
+        $ sudo python3 -m pip install --target=/usr/local/lib/python3.10/dist-packages pip setuptools
+        $ sudo python3.10 -m pip --upgrade pip
+
+    To successfully use pip with 3.10, we must use the system python/pip to install an updated pip in the 3.10 path.
+
+3.  Install necessary packages to run init.sh
+
+    ::
+
+        $ sudo python3.10 -m pip install virtualenv virtualenvwrapper
+
+4.  Update your `CCHQ_VIRTUALENV` environment variable
+
+    ::
+
+        $ export CCHQ_VIRTUALENV=cchq-3.10
+
+5.  Skip this step if you have not yet followed the Install CommCare Cloud instructions below.
+
+    ::
+
+        $ source control/init.sh
+
 Create a user for yourself
 --------------------------
 
