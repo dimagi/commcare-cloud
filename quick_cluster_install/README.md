@@ -1,5 +1,18 @@
-## Automated cluster setup
+# Automated cluster setup
 
+## Overview
+This section briefly outlines the steps of how the automated cluster setup works. If you're not interested and simply wants to make 
+it happen, skip this section.
+
+High level steps:
+1. User specifies what services should run on what machines (and how many machines)
+2. The script invokes the `commcare_cloud_bootstrap.py` command to set up the machines on AWS and generate the 
+environment files (e.g. `inventory.ini`, `app-processes.yml` etc.)
+3. The script SSH into the control machine and pulls the `commcare-cloud` repo (so you don't have to)
+4. Now you SSH into the control machine and run the `cchq-install` bash script (it's the same script used for 
+the quick monolith install, but modified slightly for a cluster)
+
+## Getting started
 ### Prerequisites
 Make sure the aws cli tool is installed on your local machine
 
@@ -65,3 +78,9 @@ On the control machine, change directory:
 
 and run the following:
 > bash cchq-install.sh ./environments/cluster/install-config.yml
+
+
+## Known issues
+1) Sometimes the following commands of `cchq-install.sh` fail and you would have to execute it manaully:
+   - commcare-cloud $env_name django-manage create_kafka_topics
+   - commcare-cloud $env_name django-manage preindex_everything
