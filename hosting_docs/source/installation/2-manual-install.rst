@@ -70,110 +70,110 @@ cluster’s proxy server.
 
 Prepare all machines for automated deploy
 -----------------------------------------
+Do the following on the monolith, or on each machine in the cluster.
 
-1. Do the following on the monolith, or on each machine in the cluster:
+Enable root login via SSH
+~~~~~~~~~~~~~~~~~~~~~~~~~
+On a standard Ubuntu install, the root user is not enabled or
+allowed to SSH. The root user will only be used initially, and
+will then be disabled automatically by the install scripts.
 
-   1. Enable root login via SSH.
+Make a root password and store it somewhere safe for later
+reference.
 
-      On a standard Ubuntu install, the root user is not enabled or
-      allowed to SSH. The root user will only be used initially, and
-      will then be disabled automatically by the install scripts.
+1.  Set the root password:
 
-      Make a root password and store it somewhere safe for later
-      reference.
+    ::
 
-      Set the root password:
+        $ sudo passwd root
 
-      ::
+2.  Enable the root user:
 
-         $ sudo passwd root
+    ::
 
-      Enable the root user:
+        $ sudo passwd -u root
 
-      ::
+3.  Edit ``/etc/ssh/sshd_config``:
 
-         $ sudo passwd -u root
+    ::
 
-      Edit ``/etc/ssh/sshd_config``:
+        $ sudo nano /etc/ssh/sshd_config
 
-      ::
+    To allow logging in as root, set
 
-         $ sudo nano /etc/ssh/sshd_config
+    ::
 
-      To allow logging in as root, set
+        PermitRootLogin yes
 
-      ::
+    To allow password authentication, ensure
 
-         PermitRootLogin yes
+    ::
 
-      To allow password authentication, ensure
+        PasswordAuthentication yes
 
-      ::
+4.  Restart SSH:
 
-         PasswordAuthentication yes
+    ::
 
-      Then restart SSH:
+        $ sudo service ssh reload
 
-      ::
+Initialize log file
+~~~~~~~~~~~~~~~~~~~
+To be used in the installation process.
 
-         $ sudo service ssh reload
+::
 
-   2. Initialize a log file to be used in the installation process.
+    $ sudo touch /var/log/ansible.log
+    $ sudo chmod 666 /var/log/ansible.log
 
-      ::
+Install system dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This only needs to be done on the control machine. In the case of a monolith,
+there is only one machine to manage so that is also the control machine. In
+our example cluster, the control machine is named “control1”.
 
-         $ sudo touch /var/log/ansible.log
-         $ sudo chmod 666 /var/log/ansible.log
 
-2. In the case of a monolith, there is only one machine to manage. The
-   “control” machine is used for managing a cluster. In our example
-   cluster, the control machine is named “control1”.
+1.  SSH into control1 as the “ansible” user, or the user you created during installation. You can skip this step if you are installing a monolith:
 
-   1. SSH into control1 as the “ansible” user, or the user you created
-      during installation. You can skip this if you are installing a
-      monolith.
+    ::
 
-      (This instruction assumes that the control machine’s name resolves
-      to its IP address. Replace the name with the IP address if
-      necessary.)
+        $ ssh ansible@control1
 
-      ::
+    This instruction assumes that the control machine’s name resolves to its IP address.
+    Replace the name with the IP address if necessary.
 
-         $ ssh ansible@control1
+2.  On the control machine, or the monolith, install required packages:
 
-   2. On the control machine, or the monolith, install required
-      packages:
+    ::
 
-      ::
+        $ sudo apt update
+        $ sudo apt install python3-pip sshpass net-tools
 
-         $ sudo apt update
-         $ sudo apt install python3-pip sshpass net-tools
+3.  Check your default Python version for Python 3.x:
 
-   3. Check your default Python version for Python 3.x
+    ::
 
-      ::
+        $ python --version
 
-         $ python --version
+    If your default version is not 3.x or if the “python” command was
+    not found, make python3 your default by running the command below,
+    otherwise skip it.
 
-   4. If your default version is not 3.x or if the “python” command was
-      not found, make python3 your default by running the command below,
-      otherwise skip it.
+    ::
 
-      ::
+        $ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 
-         $ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+5.  Now update pip; you might encounter installation issues otherwise.
 
-   5. Now update pip; you might encounter installation issues otherwise.
+    ::
 
-      ::
+        $ sudo -H pip install --upgrade pip
 
-         $ sudo -H pip install --upgrade pip
+6.  Lastly, install the following:
 
-   6. Lastly, install the following:
+    ::
 
-      ::
-
-         $ sudo -H pip install ansible virtualenv virtualenvwrapper --ignore-installed six
+        $ sudo -H pip install ansible virtualenv virtualenvwrapper --ignore-installed six
 
 Create a user for yourself
 --------------------------
