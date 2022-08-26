@@ -196,19 +196,13 @@ Python 3.10 requires additional setup on Ubuntu 18.04 to work properly.
 
     To successfully use pip with 3.10, we must use the system python/pip to install an updated pip in the 3.10 path.
 
-3.  Install necessary packages to run init.sh
-
-    ::
-
-        $ sudo python3.10 -m pip install virtualenv virtualenvwrapper
-
-4.  Update your `CCHQ_VIRTUALENV` environment variable
+3.  Update your `CCHQ_VIRTUALENV` environment variable
 
     ::
 
         $ export CCHQ_VIRTUALENV=cchq-3.10
 
-5.  Skip this step if you have not yet followed the Install CommCare Cloud instructions below.
+4.  Skip this step if you have not yet followed the Install CommCare Cloud instructions below.
 
     ::
 
