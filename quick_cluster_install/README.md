@@ -14,7 +14,8 @@ the quick monolith install, but modified slightly for a cluster)
 
 ## Getting started
 ### Prerequisites
-Make sure the aws cli tool is installed on your local machine
+Make sure the aws cli tool is installed on your local machine. The script will spin up the cluster environment on the
+SolTech AWS account.
 
 1) Add the following to `~/.aws/config`:
 
@@ -22,16 +23,19 @@ Make sure the aws cli tool is installed on your local machine
 [profile commcare-cluster-test:session]
 region = us-west-2
 output = json
+```
 
-Add the following to ~/.aws/credentials:
+
+2) Add the following to `~/.aws/credentials`:
+```
 [commcare-cluster-test]
 aws_access_key_id = <access_key_id_from_keypass>
 aws_secret_access_key = <secret_access_key_from_keypass>
 ```
 
-2) Copy the commcarehq_cluster_testing.pem file to your local ssh directory (~/.ssh/). 
-3) Branch from `automated-cluster-setup` and check out to that branch
-4) Remember to run `source commcare-cloud/control/init.sh`
+3) Copy the commcarehq_cluster_testing.pem file to your local ssh directory (~/.ssh/). 
+4) Branch from `automated-cluster-setup` and check out to that branch
+5) Remember to run `source commcare-cloud/control/init.sh`
 
 ### Set up the cluster
 
@@ -55,7 +59,8 @@ Fill out the new environment's details. If this step is left out, the script wil
 
 After you've filled out the details in this new `cluster.yml` file, you simply run the following command to provision
 the cluster machines on AWS:
-> bash ./provision_machines.sh cluster [spec]
+> bash ./manage_machines.sh provision cluster [spec]
+
 
 The script will do the following:
 1) Check if the `cluster` environment exists; if not, it will simply copy the `sample_environment` environment. 
@@ -79,6 +84,9 @@ On the control machine, change directory:
 and run the following:
 > bash cchq-install.sh ./environments/cluster/install-config.yml
 
+### Terminating machines
+To terminate the cluster machines, simply run the following:
+> bash ./manage_machines.sh terminate cluster
 
 ## Known issues
 1) Sometimes the following commands of `cchq-install.sh` fail and you would have to execute it manaully:

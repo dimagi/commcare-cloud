@@ -4,10 +4,20 @@ set -e
 COMMCARE_CLOUD_ROOT=$(dirname $(dirname $(readlink -f $0)))
 CLUSTER_ENVIRONMENTS_DIR=$COMMCARE_CLOUD_ROOT/quick_cluster_install/environments
 
-ENV=$1
+case "$1" in
+  "provision"|"terminate")
+      MANAGE_ACTION=$1
+    ;;
+  *)
+    echo "Invalid action '$1'"
+    exit 1
+    ;;
+esac
+
+ENV=$2
 ENVIRONMENT_DIR=$CLUSTER_ENVIRONMENTS_DIR/$ENV
 
-SPEC=$2
+SPEC=$3
 RESERVED_GIT_BRANCH="automated-cluster-setup"
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 SAMPLE_ENV="sample_environment"
@@ -121,7 +131,12 @@ sync_to_git() {
 check_git_branch
 check_environment
 
-python $COMMCARE_CLOUD_ROOT/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py provision $ENVIRONMENT_DIR/spec.yml --env $ENV
+if [ "$MANAGE_ACTION" == "provision" ] ; then
+  python $COMMCARE_CLOUD_ROOT/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py provision $ENVIRONMENT_DIR/spec.yml --env $ENV
+fi
+if [ "$MANAGE_ACTION" == "terminate" ] ; then
+  python $COMMCARE_CLOUD_ROOT/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py terminate $ENV --aws-profile commcare-cluster-test
+fi
 
 copy_install_config
 encrypt_vault

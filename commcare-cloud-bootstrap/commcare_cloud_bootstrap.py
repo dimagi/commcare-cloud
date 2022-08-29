@@ -238,6 +238,8 @@ def ask_aws_for_instances(env_name, aws_config, count):
     if not os.path.exists(cache_file):
         # Provision new instances for this env
         print("Provisioning new instances.")
+        user = os.getlogin()
+
         cmd_parts = [
             'aws', 'ec2', 'run-instances',
             '--image-id', aws_config.ami,
@@ -246,7 +248,7 @@ def ask_aws_for_instances(env_name, aws_config, count):
             '--key-name', aws_config.key_name,
             '--security-group-ids', aws_config.security_group_id,
             '--subnet-id', aws_config.subnet,
-            '--tag-specifications', 'ResourceType=instance,Tags=[{Key=env,Value=' + env_name + '}]',
+            '--tag-specifications', 'ResourceType=instance,Tags=[{Key=env,Value=' + env_name + '}, {Key=user,Value=' + user + '}]',
             '--profile', aws_config.profile,
         ]
         block_device_mappings = []
@@ -296,7 +298,8 @@ def raw_describe_instances(env_name, profile=None):
     cmd_parts = [
         'aws', 'ec2', 'describe-instances', '--filters',
         'Name=instance-state-code,Values=16',
-        f'Name=tag:env,Values={env_name}'
+        f'Name=tag:env,Values={env_name}',
+        f'Name=tag:user,Values={os.getlogin()}'
     ]
 
     if profile:
@@ -315,17 +318,25 @@ def get_hosts_from_describe_instances(describe_instances):
     return hosts
 
 
-def terminate_instances(instance_ids):
+def terminate_instances(instance_ids, profile=None):
     cmd_parts = [
         'aws', 'ec2', 'terminate-instances', '--instance-ids',
     ] + instance_ids
+
+    if profile:
+        cmd_parts.extend(['--profile', profile])
+
     return json.loads(subprocess.check_output(cmd_parts))
 
 
-def stop_instances(instance_ids):
+def stop_instances(instance_ids, profile=None):
     cmd_parts = [
         'aws', 'ec2', 'stop-instances', '--instance-ids',
     ] + instance_ids
+
+    if profile:
+        cmd_parts.extend(['--profile', profile])
+
     return json.loads(subprocess.check_output(cmd_parts))
 
 
@@ -505,10 +516,11 @@ class Show(object):
     @staticmethod
     def make_parser(parser):
         parser.add_argument('env')
+        parser.add_argument('--aws-profile')
 
     @staticmethod
     def run(args):
-        describe_instances = raw_describe_instances(args.env)
+        describe_instances = raw_describe_instances(args.env, profile=args.aws_profile)
         print_describe_instances(describe_instances)
 
 
@@ -519,13 +531,15 @@ class Terminate(object):
     @staticmethod
     def make_parser(parser):
         parser.add_argument('env')
+        parser.add_argument('--aws-profile')
 
     @staticmethod
     def run(args):
-        describe_instances = raw_describe_instances(args.env)
+        describe_instances = raw_describe_instances(args.env, profile=args.aws_profile)
+
         instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
         if instance_ids:
-            terminate_instances_result = terminate_instances(instance_ids)
+            terminate_instances_result = terminate_instances(instance_ids, profile=args.aws_profile)
             print(terminate_instances_result)
             print(instance_ids)
         else:
@@ -539,10 +553,11 @@ class Stop(object):
     @staticmethod
     def make_parser(parser):
         parser.add_argument('env')
+        parser.add_argument('--aws-profile')
 
     @staticmethod
     def run(args):
-        describe_instances = raw_describe_instances(args.env)
+        describe_instances = raw_describe_instances(args.env, profile=args.aws_profile)
         instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
         if instance_ids:
             stop_instances_result = stop_instances(instance_ids)
@@ -560,10 +575,11 @@ class Reip(object):
     @staticmethod
     def make_parser(parser):
         parser.add_argument('env')
+        parser.add_argument('--aws-profile')
 
     @staticmethod
     def run(args):
-        describe_instances = raw_describe_instances(args.env)
+        describe_instances = raw_describe_instances(args.env, profile=args.aws_profile)
         environment = get_environment(args.env)
         new_hosts = get_hosts_from_describe_instances(describe_instances)
         inventory = get_inventory_from_file(environment)
