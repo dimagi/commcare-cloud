@@ -34,11 +34,11 @@ SSH into the server with a root or a user with root privileges and do below.
 	# fill the config and save
 	vim install-config.yml
 
-3. Optional: setup with Python 3.10 instead of 3.6
+3. Optional: setup with Python 3.6 instead of 3.10
 
 .. code-block:: bash
 
-    export CCHQ_VIRTUALENV=cchq-3.10
+    export CCHQ_VIRTUALENV=cchq-3.6
 
 .. note::
 
