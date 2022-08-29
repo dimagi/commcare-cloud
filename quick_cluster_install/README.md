@@ -29,11 +29,11 @@ output = json
 2) Add the following to `~/.aws/credentials`:
 ```
 [commcare-cluster-test]
-aws_access_key_id = <access_key_id_from_keypass>
-aws_secret_access_key = <secret_access_key_from_keypass>
+aws_access_key_id = <access_key_id_from_1pass>
+aws_secret_access_key = <secret_access_key_from_1pass>
 ```
 
-3) Copy the commcarehq_cluster_testing.pem file to your local ssh directory (~/.ssh/). 
+3) Obtain the commcarehq_cluster_testing.pem file from 1Password and copy it to your local ssh directory (~/.ssh/). 
 4) Branch from `automated-cluster-setup` and check out to that branch
 5) Remember to run `source commcare-cloud/control/init.sh`
 
