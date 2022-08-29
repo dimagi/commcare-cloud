@@ -41,7 +41,7 @@ sudo apt --assume-yes -qq install python3-pip sshpass
 sudo -H pip3 -q install --upgrade pip
 sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 if [[ $CCHQ_VIRTUALENV == *3.10* ]]; then
-  sudo add-apt-repository --assume-yes -qq ppa:deadsnakes/ppa
+  sudo add-apt-repository -y ppa:deadsnakes/ppa
   sudo apt update
   sudo apt-get --assume-yes -q install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
 else
