@@ -34,7 +34,17 @@ SSH into the server with a root or a user with root privileges and do below.
 	# fill the config and save
 	vim install-config.yml
 
-3. Run the installation script. (You may be prompted for sudo password for some of the commands)
+3. Optional: setup with Python 3.10 instead of 3.6
+
+.. code-block:: bash
+
+    export CCHQ_VIRTUALENV=cchq-3.10
+
+.. note::
+
+  To upgrade from Python 3.6 to Python 3.10, see :ref:`cchq-manual-install`
+
+4. Run the installation script. (You may be prompted for sudo password for some of the commands)
 
 .. code-block:: bash
 
