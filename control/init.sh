@@ -17,13 +17,14 @@ function realpath() {
 
 if [ -z ${CI_TEST} ]; then
     if [ ! -f $VENV/bin/activate ]; then
-        python_version="python3"
-        if [[ "$CCHQ_VIRTUALENV" == *"3.10"* ]]; then
-          python_version="python3.10"
+        if [[ $CCHQ_VIRTUALENV == *3.10* ]]; then
+          # use venv because 3.10 setup includes installing python3.10-venv
+          python3.10 -m venv $VENV
+        else
+          # use virtualenv because `python3 -m venv` requires python3-venv
+          python3 -m pip install --user --upgrade virtualenv
+          python3 -m virtualenv $VENV
         fi
-        # use virtualenv because `python3 -m venv` is broken on Ubuntu 18.04
-        $python_version -m pip install --user --upgrade virtualenv
-        $python_version -m virtualenv $VENV
     fi
     source $VENV/bin/activate
 fi
