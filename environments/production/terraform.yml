@@ -557,7 +557,7 @@ elasticache:
 elasticache_cluster:
   create: yes
   cache_node_type: "cache.r5.2xlarge"
-  cache_engine_version: "6.2"
+  cache_engine_version: "6.x"
   cache_prameter_group: "default.redis6.x"
   automatic_failover: true
   transit_encryption: false
