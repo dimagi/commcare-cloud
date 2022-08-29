@@ -66,9 +66,17 @@ in the sequence given below, so you shouldn't proceed to next steps until the pr
    You can check they have been removed by confirming that the following shows
    no output:
 
+**Note**\ : Use below command when the ``kafka version is < 3.x``. The ``--zookeeper`` argument is removed from 3.x.
+
    .. code-block::
 
       $ kafka-topics.sh --zookeeper localhost:2181 --list
+
+**Note**\ : Use below command when the ``kafka version is >= 3.x``.
+
+   .. code-block::
+
+      $  kafka-topics.sh --bootstrap-server localhost:9092 --list
 
 Rebuilding environment
 ----------------------

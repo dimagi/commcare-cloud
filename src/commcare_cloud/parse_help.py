@@ -7,7 +7,7 @@ from io import open
 
 from six.moves import range
 
-ANSIBLE_HELP_OPTIONS_PREFIX='optional arguments:'
+ANSIBLE_HELP_OPTIONS_PREFIX = 'options:'
 _HELP_CACHE = os.path.join(os.path.dirname(__file__), 'help_cache')
 _AVAILABLE_HELP_CACHES = {
     'ansible -h': os.path.join(_HELP_CACHE, 'ansible.txt'),
@@ -20,7 +20,7 @@ def _get_help_text(command):
         with open(_AVAILABLE_HELP_CACHES[command], 'r', encoding='utf-8') as f:
             return f.read()
     else:
-        return subprocess.check_output(command, shell=True)
+        return subprocess.check_output(command, shell=True).decode('utf-8')
 
 
 _LARGE_INDENT = '                        '

@@ -372,8 +372,8 @@ elasticache:
 elasticache_cluster:
   create: yes
   cache_node_type: "cache.t3.medium"
-  cache_engine_version: "4.0.10"
-  cache_prameter_group: "default.redis4.0"
+  cache_engine_version: "6.x"
+  cache_prameter_group: "default.redis6.x"
   automatic_failover: true
   transit_encryption: false
   at_rest_encryption: true

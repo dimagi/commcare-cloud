@@ -86,7 +86,7 @@ def get_server_address(environment, group):
         if index is None:
             raise HostMatchException(
                 "There are {num} servers in the '{group}' group\n"
-                "Please specify the index of the server. Example: {group}:0\n"
+                "Please specify the index of the server. Example: {group}[0]\n"
                 .format(num=len(servers), group=group)
             )
         server = servers[index]

@@ -29,7 +29,7 @@
     dest: "{{ item.file_name }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
-    mode: 0644
+    mode: 0600
   when: item.should_apply
   with_items:
     - template: ../templates/supervisor_celery_flower.conf.j2

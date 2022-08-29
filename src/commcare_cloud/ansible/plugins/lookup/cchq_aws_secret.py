@@ -7,7 +7,7 @@ import time
 from io import open
 
 import six.moves.cPickle as pickle
-from ansible.plugins.lookup import aws_secret
+from ansible_collections.amazon.aws.plugins.lookup import aws_secret
 from cryptography.fernet import Fernet, InvalidToken
 
 __metaclass__ = type
@@ -38,6 +38,9 @@ class LookupModule(aws_secret.LookupModule):
             if value is Ellipsis:
                 logging.debug('Fetching secret {}'.format(terms))
                 try:
+                    # default value for region is None.
+                    if 'region' not in kwargs:
+                        kwargs['region'] = os.environ['AWS_REGION']
                     value = super(LookupModule, self).run(terms, variables, **kwargs)
                 except Exception as e:
                     logging.debug('Caching error fetching secret: {}'.format(e))
