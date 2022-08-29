@@ -20,7 +20,7 @@ from commcare_cloud.environment.main import get_environment
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'environment')
 j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
 
-AMI_OS_VERSION_MAP = {
+AMI_NETWORK_INTERFACE = {
     "ami-0b152cfd354c4c7a4": "ens5"
 }
 
@@ -485,7 +485,7 @@ def copy_default_vars(environment, aws_config):
 
 
 def get_network_interface(spec):
-    return AMI_OS_VERSION_MAP.get(spec.aws_config.ami, "eth0")
+    return AMI_NETWORK_INTERFACE.get(spec.aws_config.ami, "eth0")
 
 
 class Provision(object):
