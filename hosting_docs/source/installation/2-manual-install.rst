@@ -718,6 +718,9 @@ If you want to leave this setting as is, you can make a superuser with:
 where ``{email}`` is the email address you would like to use as the
 username.
 
+Note that promoting a user to superuser status using this command will also give them the
+ability to assign other users as superuser in the in-app Superuser Management page.
+
 Add a new CommCare build
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
