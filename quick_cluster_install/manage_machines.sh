@@ -136,6 +136,7 @@ if [ "$MANAGE_ACTION" == "provision" ] ; then
 fi
 if [ "$MANAGE_ACTION" == "terminate" ] ; then
   python $COMMCARE_CLOUD_ROOT/commcare-cloud-bootstrap/commcare_cloud_bootstrap.py terminate $ENV --aws-profile commcare-cluster-test
+  exit 0
 fi
 
 copy_install_config
