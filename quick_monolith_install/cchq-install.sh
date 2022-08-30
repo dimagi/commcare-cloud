@@ -60,11 +60,18 @@ printf "\nStep 3: Initializing environments directory for "
 printf "storing your CommCareHQ instance's configuration \n"
 printf "#################################################"
 printf "\n"
-# VENV should have been set by init.sh
+# VENV should have been set by init.sh, but set it to the default in case the command was skipped
+VENV=~/.virtualenvs/cchq
 ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/bootstrap-env-playbook.yml"
 printf "\n Encrypting your environment's passwords file using ansible-vault.\n"
 printf "Please store this password safely as it will be asked multiple times during the install.\n"
-ansible-vault encrypt ~/environments/$env_name/vault.yml
+
+if [ -z ${CI_TEST} ];
+then
+    ansible-vault encrypt ~/environments/$env_name/vault.yml --vault-password-file=$ANSIBLE_VAULT_PASSWORD_FILE
+else
+    ansible-vault encrypt ~/environments/$env_name/vault.yml
+fi
 
 printf "\n"
 printf "#################################################"
