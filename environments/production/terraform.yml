@@ -563,7 +563,7 @@ elasticache_cluster:
   transit_encryption: false
   at_rest_encryption: true
   auto_minor_version: false
-  cluster_size: 3
+  cluster_size: 2
   maintenance_window: "sun:08:30-sun:09:30"
   snapshot_retention: 7
   snapshot_window: "06:30-07:30"
