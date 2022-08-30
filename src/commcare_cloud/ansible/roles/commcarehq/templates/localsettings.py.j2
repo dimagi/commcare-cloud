@@ -193,8 +193,8 @@ S3_SECRET_KEY = '{{ AMAZON_S3_SECRET_KEY }}'
 {% if s3_blob_db_enabled %}
 S3_BLOB_DB_SETTINGS = {
     'url': '{{ s3_blob_db_url }}',
-    'access_key': '{{ s3_blob_db_access_key }}',
-    'secret_key': '{{ s3_blob_db_secret_key }}',
+    'access_key': {% if s3_blob_db_access_key %}'{{ s3_blob_db_access_key }}'{% else %}None{% endif %},
+    'secret_key': {% if s3_blob_db_secret_key %}'{{ s3_blob_db_secret_key }}'{% else %}None{% endif %},
     's3_bucket': '{{ s3_blob_db_s3_bucket }}',
     'bulk_delete_chunksize': {{ s3_bulk_delete_chunksize }},
     'config': {'signature_version': 's3v4'},
@@ -202,8 +202,8 @@ S3_BLOB_DB_SETTINGS = {
 {% if localsettings.get('BLOB_DB_MIGRATING_FROM_S3_TO_S3', False) %}
 OLD_S3_BLOB_DB_SETTINGS = {
     'url': '{{ old_s3_blob_db_url }}',
-    'access_key': '{{ old_s3_blob_db_access_key }}',
-    'secret_key': '{{ old_s3_blob_db_secret_key }}',
+    'access_key': {% if old_s3_blob_db_access_key %}'{{ old_s3_blob_db_access_key }}'{% else %}None{% endif %},
+    'secret_key': {% if old_s3_blob_db_secret_key %}'{{ old_s3_blob_db_secret_key }}'{% else %}None{% endif %},
     's3_bucket': '{{ old_s3_blob_db_s3_bucket }}',
     'bulk_delete_chunksize': {{ old_s3_bulk_delete_chunksize }},
     'config': {'signature_version': 's3v4'},
