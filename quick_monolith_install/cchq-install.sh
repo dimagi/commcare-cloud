@@ -45,7 +45,7 @@ if [[ $CCHQ_VIRTUALENV == *3.10* ]]; then
   sudo apt update
   sudo apt-get --assume-yes -q install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
 else
-  sudo -H pip -q install ansible virtualenv virtualenvwrapper --ignore-installed six
+  sudo -H pip -q install ansible virtualenv --ignore-installed six
 fi
 
 printf "\n"

@@ -31,7 +31,6 @@
   pip:
     name:
       - virtualenv
-      - virtualenvwrapper
     extra_args: '--ignore-installed six'
     umask: "0022"
 

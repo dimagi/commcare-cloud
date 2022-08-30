@@ -7,7 +7,7 @@ ssh-keyscan 192.168.33.17 >> /home/vagrant/.ssh/known_hosts
 sudo chown vagrant:vagrant /home/vagrant/.ssh/known_hosts
 
 ln -s /vagrant /home/vagrant/commcare-cloud
-sudo pip install virtualenv virtualenvwrapper
+sudo pip install virtualenv
 sudo -H -u vagrant /vagrant/control/init.sh
 echo '[ -t 1 ] && source ~/init-ansible' >> /home/vagrant/.profile
 
