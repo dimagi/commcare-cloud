@@ -66,7 +66,7 @@ ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-va
 printf "\n Encrypting your environment's passwords file using ansible-vault.\n"
 printf "Please store this password safely as it will be asked multiple times during the install.\n"
 
-if [ -z ${CI_TEST} ];
+if [[ ${TEST} = 'quick-install' ]]
 then
     ansible-vault encrypt ~/environments/$env_name/vault.yml --vault-password-file=$ANSIBLE_VAULT_PASSWORD_FILE
 else
