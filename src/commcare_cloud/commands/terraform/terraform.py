@@ -168,6 +168,7 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
         'postgresql_params': get_postgresql_params_by_rds_instance(environment),
         'commcarehq_xml_post_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_POST_URLS_REGEX),
         'commcarehq_xml_querystring_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX),
+        's3_blob_db_s3_bucket': environment.public_vars.get('s3_blob_db_s3_bucket'),
     })
 
     context.update({
