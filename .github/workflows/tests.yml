@@ -68,5 +68,5 @@ jobs:
         python-version: "3.6"
     - name: Run tests
       run: |
-        echo 'abc123' >> vault_pass.txt
+        echo 'abc123' >> ~/vault_pass.txt
         ./tests/quick-install/test-quick-install.sh
