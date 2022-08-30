@@ -56,6 +56,7 @@ jobs:
 
     env:
       TEST: quick-install
+      CI_TEST: 1
       TEST_EXTERNAL_INTERFACE: "docker0"
       TEST_INTERNAL_INTERFACE: "eth0"
       ANSIBLE_VAULT_PASSWORD_FILE: "~/vault_pass.txt"
