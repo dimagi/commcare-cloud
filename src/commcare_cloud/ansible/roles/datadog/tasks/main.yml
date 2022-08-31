@@ -1,21 +1,40 @@
-- name: Remove old datadog apt key
-  apt_key: id=382E94DE keyserver=keyserver.ubuntu.com state=absent
+- name: Remove old datadog apt keys
+  apt_key:
+    id: "{{ item }}"
+    state: absent
+  with_list:
+   - D75CEA17048B9ACBF186794B32637D44F14F620E
+   - A2923DFF56EDA6E76E55E492D3A80E30382E94DE
 
-- name: Add datadog apt key
-  apt_key: id=F14F620E keyserver=keyserver.ubuntu.com state=present
+- name: Remove old datadog apt repository
+  apt_repository:
+    repo: 'deb http://apt.datadoghq.com/ stable main'
+    state: absent
 
-- name: Add datadog apt repo
-  apt_repository: repo='deb http://apt.datadoghq.com/ stable main' state=present update_cache=yes
+- name: Add new datadog apt key
+  copy:
+    src: DATADOG_APT_KEY_F14F620E.gpg
+    dest: /etc/apt/keyrings/
+    owner: root
+    group: root
+
+- name: Add new datadog apt repository
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/DATADOG_APT_KEY_F14F620E.gpg] http://apt.datadoghq.com/ stable 7"
+    state: present
 
 - name: Install datadog agent
-  apt: name=datadog-agent state=latest update_cache=yes cache_valid_time=7200
+  apt:
+    name: datadog-agent
+    state: latest
+    cache_valid_time: 7200
 
 - name: Copy datadog conf
   template:
-    group: dd-agent
-    owner: dd-agent
     src: datadog.conf.j2
-    dest: /etc/dd-agent/datadog.conf
+    dest: /etc/datadog-agent/datadog.yaml
+    owner: dd-agent
+    group: dd-agent
   notify: restart datadog
 
 - name: Make sure datadog agent is started
