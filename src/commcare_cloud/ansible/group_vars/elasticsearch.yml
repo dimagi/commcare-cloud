@@ -1,1 +1,2 @@
 datadog_integration_elastic: true
+elasticsearch_master_value: '{{ elasticsearch_master|default("false") }}'
