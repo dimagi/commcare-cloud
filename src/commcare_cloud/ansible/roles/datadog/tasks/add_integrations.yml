@@ -7,8 +7,6 @@
   notify: restart datadog
   when: item.enabled
   loop: "{{ datadog_custom_integrations }}"
-  tags:
-    - datadog_integrations
 
 - name: Add datadog integration configs
   template: src="{{ item.name }}.yaml.j2" dest="/etc/datadog-agent/conf.d/{{ item.name }}.d/conf.yaml" owner="dd-agent" group="dd-agent"
@@ -33,5 +31,3 @@
     - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
     - {"name": "tcp_check", "enabled": "{{ datadog_integration_tcp_check }}"}
     - {"name": "disk", "enabled": "{{ datadog_integration_disk_check }}"}
-  tags:
-    - datadog_integrations
