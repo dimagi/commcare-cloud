@@ -1,5 +1,25 @@
 couchdb2_first_host: "{{ groups['couchdb2'][0] if 'couchdb2' in groups else 'NO HOST SHOULD MATCH THIS' }}"
 
+datadog_integrations:
+  - {"name": "elastic", "enabled": "{{ datadog_integration_elastic }}"}
+  - {"name": "gunicorn", "enabled": "{{ datadog_integration_gunicorn }}"}
+  - {"name": "kafka", "enabled": "{{ datadog_integration_kafka }}"}
+  - {"name": "kafka_consumer", "enabled": "{{ datadog_integration_kafka_consumer }}"}
+  - {"name": "nginx", "enabled": "{{ datadog_integration_nginx }}"}
+  - {"name": "pgbouncer", "enabled": "{{ datadog_integration_pgbouncer }}"}
+  - {"name": "postgres", "enabled": "{{ datadog_integration_postgres }}"}
+  - {"name": "process", "enabled": "{{ datadog_integration_postgres_receiver }}"}
+  - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}
+  - {"name": "redisdb", "enabled": "{{ datadog_integration_redisdb }}"}
+  - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
+  - {"name": "celery_custom", "enabled": "{{ app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"}
+  - {"name": "couch", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
+  - {"name": "couch_custom", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
+  - {"name": "http_check", "enabled": "{{ datadog_integration_http and inventory_hostname == groups.proxy[0] }}"}
+  - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
+  - {"name": "tcp_check", "enabled": "{{ datadog_integration_tcp_check }}"}
+  - {"name": "disk", "enabled": "{{ datadog_integration_disk_check }}"}
+
 datadog_custom_integrations:
   - name: celery_custom
     url: https://raw.githubusercontent.com/dimagi/datadog-checks/65590924f430ee185eabacd5136a5a52292ae5f7/celery_custom/celery_custom.py
