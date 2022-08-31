@@ -1,3 +1,8 @@
+- name: Remove old datadog apt key files
+  file:
+    path: /etc/apt/trusted.gpg.d/datadog-archive-keyring.gpg
+    state: absent
+
 - name: Remove old datadog apt keys
   apt_key:
     id: "{{ item }}"
