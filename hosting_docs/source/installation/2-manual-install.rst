@@ -173,7 +173,10 @@ Prepare all machines for automated deploy
 
       ::
 
-         $ sudo -H pip install ansible virtualenv virtualenvwrapper --ignore-installed six
+         $ sudo -H pip install ansible virtualenv --ignore-installed six
+
+      .. note ::
+        We no longer depend on virtualenvwrapper, but you are welcome to install and manage it manually.
 
 Create a user for yourself
 --------------------------
