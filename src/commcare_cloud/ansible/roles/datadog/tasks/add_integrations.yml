@@ -2,7 +2,7 @@
   get_url:
     url: "{{ item.url }}"
     dest: "/etc/datadog-agent/checks.d/{{ item.name }}.py"
-    sha256sum: "{{ item.sha256sum }}"
+    checksum: "{{ item.checksum }}"
     force: yes
     owner: dd-agent
     group: dd-agent
