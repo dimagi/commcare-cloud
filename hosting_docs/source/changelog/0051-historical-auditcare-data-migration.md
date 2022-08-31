@@ -25,7 +25,9 @@ It is advised to start a tmux session to run the migrations, you can use `django
 $ cchq <env> ssh django-manage:0
 $ tmux new -s auditcare
 $ sudo -iu cchq
-$ cd /home/cchq/www/<env>/current && source python_env/bin/activate
+$ cd /home/cchq/www/<env>/current
+$ git checkout f0445cf724e3e2ba3b1b149705a62f4e66ad75b4
+$ source python_env/bin/activate
 $ python manage.py copy_events_to_sql --batch_size=10000 --workers=5
 ```
 Replace <env> with your correct environment
