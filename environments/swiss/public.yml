@@ -1,5 +1,4 @@
 DATADOG_ENABLED: True
-DATADOG_INTEGRATIONS_ENABLED: True
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'

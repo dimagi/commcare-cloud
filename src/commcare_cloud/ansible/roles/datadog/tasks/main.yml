@@ -43,6 +43,6 @@
   when: "inventory_hostname in groups.formplayer"
 
 - import_tasks: add_integrations.yml
-  when: DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
+  when: DATADOG_ENABLED
 
 - import_tasks: remove_integrations.yml

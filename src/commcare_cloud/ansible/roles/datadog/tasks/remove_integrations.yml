@@ -3,7 +3,7 @@
     path: "/etc/datadog-agent/checks.d/{{ item.name }}.py"
     state: absent
   notify: restart datadog
-  when: not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED) or not item.enabled
+  when: not DATADOG_ENABLED or not item.enabled
   loop: "{{ datadog_custom_integrations }}"
   tags:
     - datadog_integrations
@@ -13,7 +13,7 @@
     path: "/etc/datadog-agent/conf.d/{{ item.name }}.d/conf.yaml"
     state: absent
   notify: restart datadog
-  when: item is defined and not item.enabled or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
+  when: item is defined and not item.enabled or not DATADOG_ENABLED
   with_items:
     - {"name": "elastic", "enabled": "{{ datadog_integration_elastic }}"}
     - {"name": "gunicorn", "enabled": "{{ datadog_integration_gunicorn }}"}
