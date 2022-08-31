@@ -34,28 +34,6 @@
     - datadog
     - after-reboot
 
-- name: Add datadog custom dir
-  file:
-    state: directory
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-    path: "{{ datadog_custom_dir }}"
-
-- name: Pull datadog parsers
-  become: true
-  become_user: "{{ cchq_user }}"
-  vars:
-    ansible_ssh_pipelining: true
-  git:
-    repo: "{{ datadog_parsers_repo }}"
-    dest: "{{ datadog_parsers_dest }}"
-    accept_hostkey: yes
-    update: yes
-    version: "{{ datedog_parsers_version }}"
-  when: "inventory_hostname in datadog_parsers|map(attribute='hosts')|join"
-  notify: restart datadog
-  tags: datadog_integrations
-
 - name: Pull java tracer
   become: true
   become_user: "{{ cchq_user }}"
