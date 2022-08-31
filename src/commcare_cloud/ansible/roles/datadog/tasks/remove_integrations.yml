@@ -21,8 +21,8 @@
     - {"name": "kafka_consumer", "enabled": "{{ datadog_integration_kafka_consumer }}"}
     - {"name": "nginx", "enabled": "{{ datadog_integration_nginx }}"}
     - {"name": "pgbouncer", "enabled": "{{ datadog_integration_pgbouncer }}"}
-    - {"name": "process", "enabled": "{{ datadog_integration_postgres_receiver }}"}
     - {"name": "postgres", "enabled": "{{ datadog_integration_postgres }}"}
+    - {"name": "process", "enabled": "{{ datadog_integration_postgres_receiver }}"}
     - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}
     - {"name": "redisdb", "enabled": "{{ datadog_integration_redisdb }}"}
     - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
@@ -31,6 +31,7 @@
     - {"name": "couch_custom", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
     - {"name": "http_check", "enabled": "{{ datadog_integration_http and inventory_hostname == groups.proxy[0] }}"}
     - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
+    - {"name": "tcp_check", "enabled": "{{ datadog_integration_tcp_check }}"}
     - {"name": "disk", "enabled": "{{ datadog_integration_disk_check }}"}
   tags:
     - datadog_integrations
