@@ -3,7 +3,7 @@
 Quick Install on Single Server
 ==============================
 
-This is a guide on how to deploy a CommCareHQ instance on a monolith server using an install script. Please refer to :ref:`deploy-commcarehq` guide to decide if this is the right deployment method for you before proceeding with this.
+This is a guide on how to deploy a CommCareHQ instance on a monolith server using an install script. Please refer to :ref:`deploy-commcarehq` guide to decide if this is the right deployment method for you before proceeding.
 
 Prerequisites
 -------------
@@ -15,7 +15,7 @@ Prerequisites
 Installation Steps
 ------------------
 
-SSH into the server with a root or a user with root privileges and do below.
+SSH into the server with a root or a user with root privileges, and follow the steps below.
 
 
 1. Download the commcare-cloud repository.
@@ -24,7 +24,7 @@ SSH into the server with a root or a user with root privileges and do below.
 
 	git clone https://github.com/dimagi/commcare-cloud
 
-2. Change into the install directory and fill the config file.
+2. Change into the install directory and populate the config file.
 
 .. code-block:: bash
 
@@ -34,7 +34,7 @@ SSH into the server with a root or a user with root privileges and do below.
 	# fill the config and save
 	vim install-config.yml
 
-3. Run the installation script. (You may be prompted for sudo password for some of the commands)
+3. Run the installation script. (You may be prompted for sudo password)
 
 .. code-block:: bash
 
@@ -44,23 +44,23 @@ SSH into the server with a root or a user with root privileges and do below.
 Post Installation and Server Administration
 -------------------------------------------
 
-Tracking environements directory
+Tracking environments directory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-On successful installation, the script creates an :ref:`environments config directory<reference/1-commcare-cloud/2-configuration:Creating environments directory>` under `~/environments` that stores all of the configuration. We recommend you to track this via a version control system such as git, so that you can keep track of the changes and share the directory with other team members so that they can perform server administration using commcare-cloud if required.
+On successful installation, the script creates an :ref:`environments config directory<reference/1-commcare-cloud/2-configuration:Creating environments directory>` under `~/environments` that stores all of the configuration. We recommend that you track this via a version control system such as git. This way you can track changes, and share the directory with other team members who may need to perform server administration using commcare-cloud.
 
 .. note::
 
-  You do not need to track install-config.yml under git as it's relevant for this installation only
+  You do not need to track install-config.yml in git as it's only relevant for this installation.
 
 Running commcare-cloud commands
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Note that, to run any commcare-cloud commands after quick-install you need to login to the VM as either the `ssh_username` configured under `install-config.yml` or as the `ansible` user.
+Note that to run any commcare-cloud commands after quick-install you need to login to the VM as either the `ssh_username` configured under `install-config.yml` or as the `ansible` user.
 
-If you wish to let other team memebers run commcare-cloud commands, you can refer to :ref:`reference/3-user-management:User Access Management`.
+If you wish to let other team members run commcare-cloud commands, you can refer to :ref:`reference/3-user-management:User Access Management`.
 
-Once you have installed CommCare HQ successfully you can refer to :ref:`installation/2-manual-install:First Steps with CommCare HQ` before making your CommCare HQ live.
+Once you have installed CommCare HQ successfully you can refer to :ref:`installation/2-manual-install:First Steps with CommCare HQ` before making your CommCare HQ instance live.
 
 
 Troubleshooting
@@ -68,7 +68,7 @@ Troubleshooting
 
 The :code:`cchq-install.sh` is an automation of the manual steps listed in :ref:`cchq-manual-install`. If this script fails before it executes :code:`commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local --quiet`, you may rerun the script itself. If the script fails at this or latter commands, you can run those commands one after another instead of re-running the enitre `cchq-install.sh` script to save time. Below are the rest of the commands.
 
-To run below commands, you need to SSH into the machine as the user added earlier or as ansible user.
+To run the commands below, you need to SSH into the machine as the user added earlier or as ansible user.
 
 .. code-block:: bash
 

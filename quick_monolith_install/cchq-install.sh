@@ -40,7 +40,13 @@ sudo apt --assume-yes -qq update
 sudo apt --assume-yes -qq install python3-pip sshpass
 sudo -H pip3 -q install --upgrade pip
 sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
-sudo -H pip -q install ansible virtualenv virtualenvwrapper --ignore-installed six
+if [[ $CCHQ_VIRTUALENV == *3.10* ]]; then
+  sudo add-apt-repository -y ppa:deadsnakes/ppa
+  sudo apt update
+  sudo apt-get --assume-yes -q install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
+else
+  sudo -H pip -q install ansible virtualenv --ignore-installed six
+fi
 
 printf "\n"
 printf "#################################################"
@@ -60,6 +66,9 @@ printf "storing your CommCareHQ instance's configuration \n"
 printf "#################################################"
 printf "\n"
 # VENV should have been set by init.sh
+DEFAULT_VENV=~/.virtualenvs/cchq
+VENV=${VENV:-$DEFAULT_VENV}
+
 ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/bootstrap-env-playbook.yml"
 printf "\n Encrypting your environment's passwords file using ansible-vault.\n"
 printf "Please store this password safely as it will be asked multiple times during the install.\n"

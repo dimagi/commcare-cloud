@@ -86,6 +86,7 @@ module "server_iam_role" {
   region_name = var.region
   formplayer_request_response_logs_firehose_stream_arn = module.logshipping.formplayer_request_response_logs_firehose_stream_arn
   account_alias =  var.account_alias
+  s3_blob_db_s3_bucket = var.s3_blob_db_s3_bucket
 }
 
 {% for server_spec in servers + proxy_servers %}

@@ -1,5 +1,5 @@
 account_alias: commcare-india
-terraform_version: '0.14'
+terraform_version: '1.2'
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "ap-south-1"
@@ -367,7 +367,7 @@ internal_albs:
 elasticache_cluster:
   create: yes
   cache_node_type: "cache.r5.large"
-  cache_engine_version: "6.2"
+  cache_engine_version: "6.x"
   cache_prameter_group: "default.redis6.x"
   automatic_failover: true
   transit_encryption: false

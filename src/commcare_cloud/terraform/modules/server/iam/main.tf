@@ -79,6 +79,38 @@ resource "aws_iam_role_policy" "commcare_secrets_access_policy" {
   POLICY
 }
 
+resource "aws_iam_role_policy" "access_s3_commcare_blobdb" {
+  name = "AccessS3CommcareBlobdb"
+  role = aws_iam_role.commcare_server_role.id
+
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "s3:DeleteObjectTagging",
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:ListBucketVersions",
+                "s3:GetObjectTagging",
+                "s3:ListBucket",
+                "s3:PutObjectTagging",
+                "s3:DeleteObject",
+                "s3:GetObjectVersion"
+            ],
+            "Resource": [
+                "arn:aws:s3:::${var.s3_blob_db_s3_bucket}/*",
+                "arn:aws:s3:::${var.s3_blob_db_s3_bucket}"
+            ]
+        }
+    ]
+}
+  POLICY
+}
+
 resource "aws_iam_instance_profile" "commcare_server_instance_profile" {
   name = "CommCareServerRole"
   role = aws_iam_role.commcare_server_role.name
