@@ -178,9 +178,9 @@ our example cluster, the control machine is named “control1”.
     .. note ::
         We no longer depend on virtualenvwrapper, but you are welcome to install and manage it manually.
 
-Install Python 3.10 (optional)
+Upgrade to Python 3.10
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Python 3.10 requires additional setup on Ubuntu 18.04 to work properly.
+Starting on October 10th, 2022, commcare-cloud will require Python 3.10. Follow the steps below to properly install it.
 
 1.  Install system packages
 
@@ -190,17 +190,6 @@ Python 3.10 requires additional setup on Ubuntu 18.04 to work properly.
         $ sudo apt update
         $ sudo apt-get -y install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
 
-2.  Update your `CCHQ_VIRTUALENV` environment variable
-
-    ::
-
-        $ export CCHQ_VIRTUALENV=cchq-3.10
-
-3.  Skip this step if you have not yet followed the Install CommCare Cloud instructions below.
-
-    ::
-
-        $ source control/init.sh
 
 Create a user for yourself
 --------------------------
