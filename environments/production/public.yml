@@ -108,8 +108,8 @@ kafka_download_sha512: 36A129823B058DC10788D0893BDE47B6F39B9E4972F9EAC2D5C9E85E5
 kafka_inter_broker_protocol_version: 3.2
 kafka_log_message_format_version: 3.2
 
-zookeeper_version: 3.4.9
-zookeeper_download_sha1: sha1:0285717bf5ea87a7a36936bf37851d214a32bb99
+zookeeper_version: 3.7.1
+zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
 zookeeper_cluster: True
 
 TWO_FACTOR_GATEWAY_ENABLED: True
