@@ -5,6 +5,8 @@ from __future__ import unicode_literals
 import os
 import re
 import subprocess
+import ansible
+from packaging import version
 from copy import deepcopy
 
 from clint.textui import puts
@@ -13,7 +15,7 @@ from six.moves import shlex_quote
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command, has_local_connection_arg
 from commcare_cloud.user_utils import get_dev_username
-from commcare_cloud.colors import color_error, color_notice
+from commcare_cloud.colors import color_error, color_notice, color_code
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, DEPRECATED_ANSIBLE_ARGS,
@@ -22,7 +24,7 @@ from commcare_cloud.commands.ansible.helpers import (
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import ANSIBLE_DIR
-from commcare_cloud.parse_help import add_to_help_text, filtered_help_message, ANSIBLE_HELP_OPTIONS_PREFIX
+from commcare_cloud.parse_help import ANSIBLE_HELP_OPTIONS_PREFIX, add_to_help_text, filtered_help_message
 
 
 class AnsiblePlaybook(CommandBase):
@@ -106,6 +108,14 @@ def run_ansible_playbook(
             return ()
 
     def ansible_playbook(environment, playbook, *cmd_args):
+        min_ansible_version = "2.10.0"
+        if version.parse(ansible.__version__) < version.parse(min_ansible_version):
+            puts(color_error(f"The version of ansible-core you have installed ({ansible.__version__}) is no longer supported."))
+            puts(color_notice(f"To upgrade from ansible-core {ansible.__version__} to {min_ansible_version} or above you will first have to uninstall the current version of ansible (due to an idiosyncratic issue)"))
+            puts(color_code("  pip uninstall ansible"))
+            puts(color_notice("before re-installing the supported version using your standard method."))
+            return 2
+
         if os.path.isabs(playbook):
             playbook_path = playbook
         else:

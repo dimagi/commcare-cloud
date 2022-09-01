@@ -17,6 +17,10 @@ jobs:
 
     runs-on: ubuntu-18.04
 
+    strategy:
+      matrix:
+        python-version: [ "3.6", "3.10" ]
+
     env:
       ANSIBLE_ROLES_PATH: "~/.ansible/roles"
       CI_TEST: 1
@@ -24,10 +28,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.6
+    - name: Set Up Commcare-Cloud Python Version
       uses: actions/setup-python@v3
       with:
-        python-version: "3.6"
+        python-version: ${{ matrix.python-version }}
 
     - name: Install dependencies
       run: |
@@ -38,10 +42,11 @@ jobs:
         # tries to install from the commcare-cloud-bootstrap.egg_info directory
         pip install -e .[test]
 
-        # Python for deploy-stack in .tests/tests.sh
-        # May be removed when this file is updated to match global_vars/all.yml:python_version
-        curl -sSf --retry 5 -o python-3.9.tar.bz2 'https://storage.googleapis.com/travis-ci-language-archives/python/binaries/ubuntu/18.04/x86_64/python-3.9.tar.bz2'
-        sudo tar xjf python-3.9.tar.bz2 --directory /
+        # setup 3.9 for deploy-stack
+        # may be removed when this file is updated to match global_vars/all.yml:python_version
+        sudo add-apt-repository ppa:deadsnakes/ppa
+        sudo apt update
+        sudo apt install python3.9 python3.9-venv
 
         # Install virtualenv as an isolated global executable for deploy-stack in .tests/tests.sh
         python3 -m pip install --user pipx

@@ -22,8 +22,6 @@ class SettingsByIndexConfig(jsonobject.JsonObject):
     hqgroups = es_settings_property()
     hqusers = es_settings_property()
     ledgers = es_settings_property()
-    report_cases = es_settings_property()
-    report_xforms = es_settings_property()
     smslogs = es_settings_property()
     xforms = es_settings_property()
 

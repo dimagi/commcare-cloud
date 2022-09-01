@@ -12,3 +12,4 @@ kafka_log_retention: 672 # 28 days
 kafka_jmx_port: 9999
 kafka_inter_broker_protocol_version: 0.8.2.2
 kafka_log_message_format_version: 0.8.2.2
+kafka_internal_topics: ["__consumer_offsets", "__transaction_state"]

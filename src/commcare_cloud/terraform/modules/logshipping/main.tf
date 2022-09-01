@@ -9,13 +9,6 @@ locals {
 resource "aws_s3_bucket" "log_bucket" {
   bucket = local.log_bucket_name
 
-  # https://github.com/hashicorp/terraform-provider-aws/issues/23888
-  lifecycle {
-    ignore_changes = [
-      acl,
-      server_side_encryption_configuration
-    ]
-  }
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/3.75.1/docs/resources/s3_bucket_server_side_encryption_configuration#usage-notes

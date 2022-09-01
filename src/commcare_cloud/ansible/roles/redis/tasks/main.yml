@@ -44,3 +44,9 @@
   until: not result.failed or 'process not presently configured with monit' not in result.msg
   retries: 5
   delay: 20
+
+- name: create symlink to redis-cli
+  file:
+    src: "{{ redis_install_dir }}/bin/redis-cli"
+    dest: /usr/bin/redis-cli
+    state: link

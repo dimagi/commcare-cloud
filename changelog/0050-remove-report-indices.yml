@@ -1,0 +1,57 @@
+title: Remove report_cases and report_xforms indices
+key: remove-report-indices
+date: 2022-06-17
+optional_per_env: no
+context: |
+  CommCareHQ has two elasticsearch indices "report_cases" and "report_xforms"
+  that were created many years ago for some custom reports, but which haven't
+  been used in some time. This change deletes those indices and the change
+  processors used to populate them. We do not expect this to impact any
+  self-hosted environments, but it's prudent to confirm.
+
+details: |
+  These indices are populated by two change processors ("pillows") -
+  `ReportXFormToElasticsearchPillow` and `ReportCaseToElasticsearchPillow`.
+  These are not referenced in [the sample
+  environment](https://github.com/dimagi/sample-environment), and were
+  officially deprecated in late 2018 in changelog 0007.
+  If enabled, these two pillows do not send data to elasticsearch except for a
+  hardcoded set of project spaces on Dimagi's production environment.
+
+  If your environment does reference these pillows or has index-specific
+  settings configured for those indices, those references will need to be
+  removed.
+
+update_steps: |
+  1. Search your environment's app_processes.yml for
+  `ReportCaseToElasticsearchPillow` and `ReportXFormToElasticsearchPillow`. If
+  in there, it should look something like this:
+
+  ```
+  ReportCaseToElasticsearchPillow:
+    num_processes: 1
+  ReportXFormToElasticsearchPillow:
+    num_processes: 1
+  ```
+
+  If you see those pillows, follow the steps described in changelog 0007 to remove them.
+
+  2. If your environment directory has an `elasticsearch.yml` file, open that
+  up. If not, you can skip this step. This file defines index-specific settings
+  to tune your elasticsearch cluster. Search for `report_cases` and
+  `report_xforms` in this file, and if present, delete those sections.
+
+  3. Next time you run update-config, you should see these two indices removed
+  from the `ES_SETTINGS` setting in localsettings.py:
+  ```
+  'report_cases': {}
+  'report_xforms': {}
+  ```
+  You do not need to make this update manually at this time.
+
+  4. Lastly, if you do have those two indices in your elasticsearch cluster, you
+  can remove them and any other unused indices with the following command (it
+  will prompt for confirmation first)
+  ```
+  $ cchq <env> django-manage prune_elastic_indices --delete
+  ```

@@ -15,6 +15,7 @@ sentry.dsn={{ formplayer_sentry_dsn }}
 {% endif %}
 sentry.environment={{ env_monitoring_id }}
 sentry.tags.HQHost={{ host }}
+sentry.release={{ formplayer_release_name }}
 
 spring.datasource.driver-class-name=org.postgresql.Driver
 spring.datasource.url=jdbc:postgresql://{{ postgresql_dbs.formplayer.pgbouncer_endpoint }}:{{ postgresql_dbs.formplayer.port

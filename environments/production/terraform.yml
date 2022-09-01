@@ -1,5 +1,5 @@
 account_alias: commcare-production
-terraform_version: '0.13'
+terraform_version: '1.2'
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-1"
@@ -130,7 +130,7 @@ servers:
     az: "b"
     volume_size: 30
     block_device:
-      volume_size: 1890
+      volume_size: 2370
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     count: 7
@@ -257,7 +257,7 @@ servers:
     count: 1
 
   - server_name: "formplayer_c{i}-production"
-    server_instance_type: m5a.4xlarge
+    server_instance_type: r6a.2xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 400
@@ -294,7 +294,7 @@ servers:
     os: bionic
 
   - server_name: "pgbouncer_a1-production" # host and pgbouncer_host for pl/proxy, pgbouncer host for shard dbs
-    server_instance_type: r5a.xlarge
+    server_instance_type: r5a.2xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 200
@@ -502,7 +502,7 @@ rds_instances:
       track_io_timing: 1
 
   - identifier: "pgauditcare0-production"
-    instance_type: "db.m5.2xlarge"
+    instance_type: "db.t3.2xlarge"
     storage: 10000
     multi_az: true
     engine_version: "10.17"
@@ -556,14 +556,14 @@ elasticache:
 
 elasticache_cluster:
   create: yes
-  cache_node_type: "cache.r5.4xlarge"
-  cache_engine_version: "4.0.10"
-  cache_prameter_group: "default.redis4.0"
+  cache_node_type: "cache.r5.2xlarge"
+  cache_engine_version: "6.x"
+  cache_prameter_group: "default.redis6.x"
   automatic_failover: true
   transit_encryption: false
   at_rest_encryption: true
   auto_minor_version: false
-  cluster_size: 3
+  cluster_size: 2
   maintenance_window: "sun:08:30-sun:09:30"
   snapshot_retention: 7
   snapshot_window: "06:30-07:30"

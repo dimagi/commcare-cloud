@@ -1,5 +1,5 @@
-formplayer_memory: "15g"
-formplayer_g1heapregionsize: "8m"
+formplayer_memory: "8g"
+formplayer_g1heapregionsize: "4m"
 management_commands:
   celery4:
     run_submission_reprocessing_queue:

@@ -48,10 +48,6 @@ pillows:
       num_processes: 1
     LedgerToElasticsearchPillow:
       num_processes: 1
-    ReportCaseToElasticsearchPillow:
-      num_processes: 1
-    ReportXFormToElasticsearchPillow:
-      num_processes: 1
     SqlSMSPillow:
       num_processes: 1
     UnknownUsersPillow:

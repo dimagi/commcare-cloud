@@ -2,7 +2,7 @@
 module "postgresql__{{ rds_instance.identifier }}" {
   source = "./modules/postgresql"
   rds_instance = {
-    password = "${var.rds_password}"
+    password = var.rds_password
     identifier = {{ rds_instance.identifier|tojson }}
     engine_version = {{ rds_instance.engine_version|tojson }}
     instance_type = {{ rds_instance.instance_type|tojson }}
@@ -27,10 +27,10 @@ module "postgresql__{{ rds_instance.identifier }}" {
     },
     {%- endfor %}
   ]
-  subnet_ids = "${values(module.network.subnets-db-private)}"
-  vpc_security_group_ids = compact(["${module.network.rds-sg}", "${module.network.vpn-connections-sg}"])
+  subnet_ids = values(module.network.subnets-db-private)
+  vpc_security_group_ids = compact([module.network.rds-sg, module.network.vpn-connections-sg])
   create = "true"
   apply_immediately = "{{ "true" if apply_immediately else "false" }}"
-  environment = "${var.environment}"
+  environment = var.environment
 }
 {%- endfor %}
