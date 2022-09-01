@@ -53,7 +53,7 @@
   get_url:
     url: "https://dtdg.co/latest-java-tracer"
     dest: "{{ cchq_home }}/dd-java-agent.jar"
-  when: "inventory_hostname in groups.formplayer"
+  when: "'formplayer' in groups and inventory_hostname in groups.formplayer"
 
 - import_tasks: add_integrations.yml
   when: DATADOG_ENABLED

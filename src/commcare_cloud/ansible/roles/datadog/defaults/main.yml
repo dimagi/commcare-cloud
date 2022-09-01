@@ -12,7 +12,7 @@ datadog_integrations:
   - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}
   - {"name": "redisdb", "enabled": "{{ datadog_integration_redisdb }}"}
   - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
-  - {"name": "celery_custom", "enabled": "{{ app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"}
+  - {"name": "celery_custom", "enabled": "{{ app_processes_config is defined and app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"}
   - {"name": "couch", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
   - {"name": "couch_custom", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
   - {"name": "http_check", "enabled": "{{ datadog_integration_http and inventory_hostname == groups.proxy[0] }}"}
@@ -24,7 +24,7 @@ datadog_custom_integrations:
   - name: celery_custom
     url: https://raw.githubusercontent.com/dimagi/datadog-checks/65590924f430ee185eabacd5136a5a52292ae5f7/celery_custom/celery_custom.py
     checksum: sha256:1541fb41ae12b6e115eb0fc151d98f2823390ad26643795a64180a4bbb82ad05
-    enabled: "{{ app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"
+    enabled: "{{ app_processes_config is defined and app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"
   - name: couch_custom
     url: https://raw.githubusercontent.com/dimagi/datadog-checks/ce1179c6a5bb621e464770b436e49ab502c0ea33/couchdb_custom/couchdb_custom.py
     checksum: sha256:a9698756d363dd20b89e2e4e15c5b0c0f6d4acc5ac812e31951fc51acd928d52
