@@ -26,7 +26,7 @@ celery_processes:
       concurrency: 3
       prefetch_multiplier: 1
     case_rule_queue:
-      concurrency: 3
+      concurrency: 4
     celery:
       concurrency: 4
     celery_periodic:
