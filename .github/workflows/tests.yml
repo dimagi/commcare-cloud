@@ -74,4 +74,5 @@ jobs:
       run: |
         echo 'abc123' >> ~/vault_pass.txt
         ANSIBLE_VAULT_PASSWORD_FILE=$(readlink -f ~/vault_pass.txt)
+        DEFAULT_VAULT_PASSWORD_FILE=$(readlink -f ~/vault_pass.txt)
         ./tests/quick-install/test-quick-install.sh
