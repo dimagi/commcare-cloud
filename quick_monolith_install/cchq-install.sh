@@ -77,7 +77,8 @@ printf "Please store this password safely as it will be asked multiple times dur
 
 if [[ ${TEST} = 'quick-install' ]]
 then
-    ansible-vault encrypt ~/environments/$env_name/vault.yml --vault-password-file=$ANSIBLE_VAULT_PASSWORD_FILE
+    echo 'abc123' >> ./vault_pass.txt
+    ansible-vault encrypt ~/environments/$env_name/vault.yml --vault-password-file=./vault_pass.txt
 else
     ansible-vault encrypt ~/environments/$env_name/vault.yml
 fi
