@@ -111,6 +111,30 @@ resource "aws_iam_role_policy" "access_s3_commcare_blobdb" {
   POLICY
 }
 
+resource "aws_iam_role_policy" "access_s3_kiss_upload" {
+  // This grants permissions only necessary on envs that define a KISSMETRICS_KEY
+  // which is only production and india
+  name = "AccessS3KissUploads"
+  role = aws_iam_role.commcare_server_role.id
+
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::kiss-uploads/*",
+                "arn:aws:s3:::kiss-uploads"
+            ]
+        }
+    ]
+}
+  POLICY
+}
+
 resource "aws_iam_instance_profile" "commcare_server_instance_profile" {
   name = "CommCareServerRole"
   role = aws_iam_role.commcare_server_role.name
