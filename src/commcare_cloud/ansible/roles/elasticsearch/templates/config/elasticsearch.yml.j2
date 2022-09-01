@@ -35,7 +35,7 @@ path.logs: {{ elasticsearch_data_dir }}/logs
 # MASTER ELIGIBLE nodes that must be reachable before a master may be elected
 # Best practice is to set it to M/2 + 1 where M is the number of master-eligible nodes,
 # but (todo) we DO NOT follow best practice.
-discovery.zen.minimum_master_nodes: {{ [2, groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list | length] | min }}
+discovery.zen.minimum_master_nodes: {{ [2, groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master_value')|select()|list | length] | min }}
 discovery.zen.ping.timeout: 90s
 discovery.zen.fd.ping_timeout: 90s
 discovery.zen.fd.ping_interval: 10s
@@ -128,7 +128,7 @@ cluster.initial_master_nodes:
 {% if elasticsearch_version == '2.4.6'%}
 # see also discovery.zen.minimum_master_nodes above for how a master gets elected
 {# only include master eligibility if it is set on at least one node in the cluster #}
-{% if groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master')|select()|list %}
+{% if groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master_value')|select()|list %}
 node.master: {{ elasticsearch_master|default('false') }}
 {% else %}
 # node.master: true
