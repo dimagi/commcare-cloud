@@ -63,7 +63,6 @@ jobs:
       TEST: quick-install
       TEST_EXTERNAL_INTERFACE: "docker0"
       TEST_INTERNAL_INTERFACE: "eth0"
-      ANSIBLE_VAULT_PASSWORD_FILE: "~/vault_pass.txt"
 
     steps:
     - uses: actions/checkout@v3
@@ -74,4 +73,5 @@ jobs:
     - name: Run tests
       run: |
         echo 'abc123' >> ~/vault_pass.txt
+        ANSIBLE_VAULT_PASSWORD_FILE=$(readlink -f ~/vault_pass.txt)
         ./tests/quick-install/test-quick-install.sh
