@@ -1,6 +1,6 @@
 #! /bin/bash
-CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
-VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
+export CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
+export VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
 
 if [[ $_ == $0 ]]
 then
