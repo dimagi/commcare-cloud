@@ -34,6 +34,12 @@ couchdb_snapshot_bucket: commcare-almanach-backup
 
 aws_versioning_enabled: false
 
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags: nginx-error
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
+
 KSPLICE_ACTIVE: yes
 
 kafka_log_retention: 1344 # 56 days
