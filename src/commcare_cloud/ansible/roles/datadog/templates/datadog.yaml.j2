@@ -33,8 +33,8 @@ apm_config:
       pattern: "https?://.+?:.+?@"
       repl: "https://"
 
-[trace.analyzed_spans]
-django|django.request: 1
+  analyzed_spans:
+    django|django.request: 1
 {% endif %}
 
 ec2_prefer_imdsv2: true
