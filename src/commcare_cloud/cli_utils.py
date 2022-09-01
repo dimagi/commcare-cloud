@@ -99,6 +99,9 @@ def git(*args):
 
 
 def check_branch(args):
+    if os.environ.get('TEST') == 'quick-install':
+        # Skip branch check during github CI quick-install test
+        return True
     branch = git_branch()
     if branch is None:
         # not in a git repo
