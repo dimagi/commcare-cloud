@@ -98,6 +98,7 @@ datadog_patch_modules:
   - gevent:true
   - psycopg:true
   - redis:true
+  - sqlalchemy:true
   - elasticsearch:true
 
 root_email: commcarehq-ops+root@example.com
