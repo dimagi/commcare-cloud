@@ -25,6 +25,7 @@
     dest: "/etc/datadog-agent/conf.d/{{ item.name }}.d/conf.yaml"
     owner: dd-agent
     group: dd-agent
+    mode: 0640
   notify: restart datadog
   when: item is defined and item.enabled
   with_items: "{{ datadog_integrations }}"
