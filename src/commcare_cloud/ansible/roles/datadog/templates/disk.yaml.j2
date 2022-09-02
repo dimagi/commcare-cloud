@@ -6,11 +6,8 @@ instances:
   - use_mount: true
     tags:
       - environment:{{ env_monitoring_id }}
-    file_system_blacklist:
-      - tmpfs$
-      - devtmpfs$
-      - squashfs$
-      - tracefs$
-    mount_point_blacklist:
-      - /boot$
+    file_system_include:
+      - ext4$
+      - xfs$
+      - nfs4$
     service_check_rw: true
