@@ -25,6 +25,38 @@ to be compatible with Redis 4.0.8, so we strongly recommend applying this upgrad
 Before you start, make sure that you have backed up the existing Redis database servers
 to a remote location.
 
-0. For users running redis on Linux machines:
+0. For developers running redis in local machine:
+   If you are using docker for local development you need to update the image for docker you can follow these steps
+
+    - Stop the current running container
+    ```bash
+    ./scripts/docker stop redis
+    ```
+
+    - Remove the previous image
+
+    ```bash
+    docker rmi --force redis
+    ```
+
+    - Start the docker container
+    ```bash
+    ./scripts/docker up redis
+    ```
+
+    If you face any errors while starting the container you can delete the data in the docker volume, ideally it is in
+
+    ```bash
+    ~/.local/share/dockerhq/redis
+    ```
+
+    Incase if you would like to backup your redis data, then save it. `dump.rdb` file will be created under `~/.local/share/dockerhq/redis` directory
+    copy it to different location.
+
+    ```bash
+    docker exec -it hqservice_redis_1 redis-cli BGSAVE
+    ```
+
+1. For users running postgresql on Linux machines:
     command:
       - cchq <env> ap deploy_redis.yml --branch=<branchName>
