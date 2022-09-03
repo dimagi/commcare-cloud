@@ -1,60 +1,64 @@
-- name: Remove old datadog apt key
-  apt_key: id=382E94DE keyserver=keyserver.ubuntu.com state=absent
-  tags:
-    - datadog
+- name: Remove old datadog apt keys
+  apt_key:
+    id: "{{ item }}"
+    state: absent
+  with_list:
+   - D75CEA17048B9ACBF186794B32637D44F14F620E
+   - A2923DFF56EDA6E76E55E492D3A80E30382E94DE
 
-- name: Add datadog apt key
-  apt_key: id=F14F620E keyserver=keyserver.ubuntu.com state=present
-  tags:
-    - datadog
+# ansible apt_key doesn't do any action on expired keys
+- name: Remove expired datadog apt key manually
+  command: apt-key del A2923DFF56EDA6E76E55E492D3A80E30382E94DE
 
-- name: Add datadog apt repo
-  apt_repository: repo='deb http://apt.datadoghq.com/ stable main' state=present update_cache=yes
-  tags:
-    - datadog
+- name: Remove old datadog apt repository
+  apt_repository:
+    repo: 'deb http://apt.datadoghq.com/ stable main'
+    state: absent
+
+- name: Add new datadog apt key
+  copy:
+    src: DATADOG_APT_KEY_F14F620E.gpg
+    dest: /etc/apt/keyrings/
+    owner: root
+    group: root
+
+- name: Add new datadog apt repository
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/DATADOG_APT_KEY_F14F620E.gpg] http://apt.datadoghq.com/ stable 7"
+    state: present
 
 - name: Install datadog agent
-  apt: name=datadog-agent state=latest update_cache=yes cache_valid_time=7200
-  tags:
-    - datadog
+  apt:
+    name: datadog-agent
+    state: latest
+    cache_valid_time: 7200
+    install_recommends: no
 
-- name: copy datadog conf
+# datadog-signing-keys is recommended by datadog-agent and gets installed
+# when not using `install_recommends: no` above
+- name: Remove datadog-signing-keys
+  apt:
+    name: datadog-signing-keys
+    state: absent
+
+# datadog-signing-keys install conflicting keys in an insecure way
+- name: Remove old datadog apt key files
+  file:
+    path: /etc/apt/trusted.gpg.d/datadog-archive-keyring.gpg
+    state: absent
+
+- name: Copy datadog conf
   template:
-    group: dd-agent
+    src: datadog.yaml.j2
+    dest: /etc/datadog-agent/datadog.yaml
     owner: dd-agent
-    src: datadog.conf.j2
-    dest: /etc/dd-agent/datadog.conf
+    group: dd-agent
   notify: restart datadog
-  tags:
-    - datadog
 
 - name: Make sure datadog agent is started
   service: name=datadog-agent state=started
   tags:
-    - datadog
     - after-reboot
-
-- name: Add datadog custom dir
-  file:
-    state: directory
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-    path: "{{ datadog_custom_dir }}"
-
-- name: Pull datadog parsers
-  become: true
-  become_user: "{{ cchq_user }}"
-  vars:
-    ansible_ssh_pipelining: true
-  git:
-    repo: "{{ datadog_parsers_repo }}"
-    dest: "{{ datadog_parsers_dest }}"
-    accept_hostkey: yes
-    update: yes
-    version: "{{ datedog_parsers_version }}"
-  when: "inventory_hostname in datadog_parsers|map(attribute='hosts')|join"
-  notify: restart datadog
-  tags: datadog_integrations
 
 - name: Pull java tracer
   become: true
@@ -62,9 +66,13 @@
   get_url:
     url: "https://dtdg.co/latest-java-tracer"
     dest: "{{ cchq_home }}/dd-java-agent.jar"
-  when: "inventory_hostname in groups.formplayer"
+  when: "'formplayer' in groups and inventory_hostname in groups.formplayer"
 
 - import_tasks: add_integrations.yml
-  when: DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
+  when: DATADOG_ENABLED
+  tags:
+    - datadog_integrations
 
 - import_tasks: remove_integrations.yml
+  tags:
+    - datadog_integrations
