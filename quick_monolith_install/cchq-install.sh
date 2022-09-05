@@ -74,9 +74,10 @@ VENV=${VENV:-$DEFAULT_VENV}
 ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/bootstrap-env-playbook.yml"
 
 echo $ansible_vault_password
+> ./vault_pass.txt
 echo $ansible_vault_password >> ./vault_pass.txt
 ansible-vault encrypt ~/environments/$env_name/vault.yml --vault-password-file=./vault_pass.txt
-
+rm ./vault_pass.txt
 
 printf "\n"
 printf "#################################################"
@@ -86,11 +87,6 @@ printf "\n"
 source ~/.commcare-cloud/load_config.sh
 ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name update-local-known-hosts
 ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name bootstrap-users -c local --quiet
-
-if [[ ${TEST} = 'quick-install' ]]
-then
-    exit
-fi
 
 printf "\nEverything is setup to install CommCareHQ now! Would you like to install CommCareHQ now?\n"
 printf "Please see below a summary of what this script has setup so far!\n"
