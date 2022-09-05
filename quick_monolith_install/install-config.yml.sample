@@ -16,3 +16,6 @@ ssh_public_key: ""
 
 # The username to use for your user to be created on the server. This will be tied to above public key
 ssh_username: ""
+
+# This is the password used for enrypting your ansible-vault based passwords file.
+ansible_vault_password: ""

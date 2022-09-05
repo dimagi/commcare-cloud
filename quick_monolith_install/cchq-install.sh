@@ -72,16 +72,11 @@ DEFAULT_VENV=~/.virtualenvs/cchq
 VENV=${VENV:-$DEFAULT_VENV}
 
 ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/bootstrap-env-playbook.yml"
-printf "\n Encrypting your environment's passwords file using ansible-vault.\n"
-printf "Please store this password safely as it will be asked multiple times during the install.\n"
 
-if [[ ${TEST} = 'quick-install' ]]
-then
-    echo 'abc123' >> ./vault_pass.txt
-    ansible-vault encrypt ~/environments/$env_name/vault.yml --vault-password-file=./vault_pass.txt
-else
-    ansible-vault encrypt ~/environments/$env_name/vault.yml
-fi
+echo $ansible_vault_password
+echo $ansible_vault_password >> ./vault_pass.txt
+ansible-vault encrypt ~/environments/$env_name/vault.yml --vault-password-file=./vault_pass.txt
+
 
 printf "\n"
 printf "#################################################"
@@ -89,8 +84,8 @@ printf "\nStep 4: Setting up users and SSH auth \n"
 printf "#################################################"
 printf "\n"
 source ~/.commcare-cloud/load_config.sh
-commcare-cloud $env_name update-local-known-hosts
-commcare-cloud $env_name bootstrap-users -c local --quiet
+ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name update-local-known-hosts
+ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name bootstrap-users -c local --quiet
 
 printf "\nEverything is setup to install CommCareHQ now! Would you like to install CommCareHQ now?\n"
 printf "Please see below a summary of what this script has setup so far!\n"
@@ -115,8 +110,8 @@ fi
 
 printf "\nSuccessfully installed all the required services for CommCareHQ instance!\n"
 printf "Prepareing the system for first time application (code) deploy\n"
-commcare-cloud $env_name django-manage create_kafka_topics
-commcare-cloud $env_name django-manage preindex_everything
+ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name django-manage create_kafka_topics
+ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name django-manage preindex_everything
 printf "\nDeploying latest CommCareHQ Application code\n"
 printf "If this fails you can run 'commcare-cloud $env_name deploy --resume' to try again"
-commcare-cloud $env_name deploy
+ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name deploy
