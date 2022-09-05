@@ -101,7 +101,7 @@ printf "commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 
 printf "Would you like the above command to be run now?\n"
 read -p "(Please note that if this command fails midway, you can run this command directly instead of rerunning the cchq-install command) Proceed (Y/n)?" -n 1 -r
 echo
-if [[ $REPLY =~ ^[Yy]$ ]]
+if [[ $REPLY =~ ^[Yy]$ ]] && [[ $TEST != "quick-install" ]]
 then
     commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local --quiet
 else
