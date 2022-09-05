@@ -1,4 +1,16 @@
-read -p "(Please note that if this command fails midway, you can run this command directly instead of rerunning the cchq-install command) Proceed (Y/n)?" -n 1 -r
-export $REPLY
-echo n | read -p "(Please note that if this command fails midway, you can run this command directly instead of rerunning the cchq-install command) Proceed (Y/n)?" -n 1 -r
-export $REPLY
+#! /bin/bash
+set -e
+
+cd ./quick_monolith_install
+# Respond with No to deploy-stack which should be the last step.
+echo n | bash cchq-install.sh ../tests/quick-install/test-install-config.yml
+
+# If cchq-install has setup everything successfully, cchq based commands such as below should succeed
+test_localsettings() {
+    COMMCARE_CLOUD_ENVIRONMENTS=~/environments \
+    commcare-cloud testhq deploy-stack  --skip-check --quiet --tags=py3,commcarehq
+    sudo python -m py_compile /home/cchq/www/testenv/current/localsettings.py
+}
+
+source ~/.virtualenvs/cchq/bin/activate
+test_localsettings
