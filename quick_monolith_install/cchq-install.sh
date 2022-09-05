@@ -87,6 +87,11 @@ source ~/.commcare-cloud/load_config.sh
 ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name update-local-known-hosts
 ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name bootstrap-users -c local --quiet
 
+if [[ $TEST != "quick-install" ]]
+then
+    exit
+fi
+
 printf "\nEverything is setup to install CommCareHQ now! Would you like to install CommCareHQ now?\n"
 printf "Please see below a summary of what this script has setup so far!\n"
 printf "1. Installed commcare-cloud, the tool to deploy and manage your CommCareHQ instance.\n"
@@ -101,7 +106,7 @@ printf "commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 
 printf "Would you like the above command to be run now?\n"
 read -p "(Please note that if this command fails midway, you can run this command directly instead of rerunning the cchq-install command) Proceed (Y/n)?" -n 1 -r
 echo
-if [[ $REPLY =~ ^[Yy]$ ]] && [[ $TEST != "quick-install" ]]
+if [[ $REPLY =~ ^[Yy]$ ]]
 then
     commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local --quiet
 else
