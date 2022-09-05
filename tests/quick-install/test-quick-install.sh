@@ -3,7 +3,7 @@ set -e
 
 cd ./quick_monolith_install
 # Respond with No to deploy-stack which should be the last step.
-echo n | bash cchq-install.sh ../tests/quick-install/test-install-config.yml
+echo n | bash -x cchq-install.sh ../tests/quick-install/test-install-config.yml
 
 # If cchq-install has setup everything successfully, cchq based commands such as below should succeed
 test_localsettings() {
