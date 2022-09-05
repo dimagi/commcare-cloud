@@ -12,4 +12,5 @@ test_localsettings() {
     sudo python -m py_compile /home/cchq/www/testenv/current/localsettings.py
 }
 
+source ~/.virtualenvs/cchq/bin/activate
 test_localsettings
