@@ -87,7 +87,7 @@ source ~/.commcare-cloud/load_config.sh
 ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name update-local-known-hosts
 ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name bootstrap-users -c local --quiet
 
-if [[ $TEST != "quick-install" ]]
+if [[ ${TEST} = 'quick-install' ]]
 then
     exit
 fi
