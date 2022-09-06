@@ -364,7 +364,7 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain1-production"
-    instance_type: "db.m5.8xlarge"
+    instance_type: "db.m5.4xlarge"
     storage: 2000
     multi_az: true
     engine_version: "10.17"
