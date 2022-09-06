@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-09-05** [upgrade-zookeeper_3.7.1](0054-upgrade-zookeeper_3.7.1.md)
+Run command to upgrade Zookeeper version which 3.2.0 to 3.7.1
+
+
+---
 #### **2022-08-19** [upgrade-ansible](0052-upgrade-ansible.md)
 Run command to uninstall older ansible version which 2.9.26 and install 4.2.0
 
