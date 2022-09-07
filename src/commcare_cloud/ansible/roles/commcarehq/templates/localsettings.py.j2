@@ -1108,3 +1108,11 @@ USE_PHONE_ENTRIES = {{ localsettings.USE_PHONE_ENTRIES }}
 {% if localsettings.CHECK_REPEATERS_PARTITION_COUNT is defined %}
 CHECK_REPEATERS_PARTITION_COUNT = {{ localsettings.CHECK_REPEATERS_PARTITION_COUNT }}
 {% endif %}
+
+{% if ABDM_CLIENT_ID %}
+ABDM_CLIENT_ID = {{ ABDM_CLIENT_ID }}
+{% endif %}
+
+{% if ABDM_CLIENT_SECRET %}
+ABDM_CLIENT_SECRET = {{ ABDM_CLIENT_SECRET }}
+{% endif %}
