@@ -1,6 +1,7 @@
 title: historical-auditcare-data-migration
 key: historical-auditcare-data-migration
 date: 2022-08-11
+min_commcare_version: f0445cf724e3e2ba3b1b149705a62f4e66ad75b4
 optional_per_env: yes
 context: |
   Instructions regarding Migrating Historical Auditcare data to SQL.
