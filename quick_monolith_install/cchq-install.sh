@@ -73,6 +73,7 @@ VENV=${VENV:-$DEFAULT_VENV}
 
 ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/bootstrap-env-playbook.yml"
 
+echo $ansible_vault_password
 > ./vault_pass.txt
 echo $ansible_vault_password >> ./vault_pass.txt
 ansible-vault encrypt ~/environments/$env_name/vault.yml --vault-password-file=./vault_pass.txt
