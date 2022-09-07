@@ -73,7 +73,6 @@ VENV=${VENV:-$DEFAULT_VENV}
 
 ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/bootstrap-env-playbook.yml"
 
-echo $ansible_vault_password
 > ./vault_pass.txt
 echo $ansible_vault_password >> ./vault_pass.txt
 ansible-vault encrypt ~/environments/$env_name/vault.yml --vault-password-file=./vault_pass.txt
@@ -100,6 +99,12 @@ printf "You can now install CommCareHQ using below two commands.\n\n"
 printf "source ~/.commcare-cloud/load_config.sh\n"
 printf "commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local \n\n"
 printf "Would you like the above command to be run now?\n"
+
+if [[ $SKIP_DEPLOY_STACK != 'yes' ]]
+then
+    exit
+fi
+
 read -p "(Please note that if this command fails midway, you can run this command directly instead of rerunning the cchq-install command) Proceed (Y/n)?" -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
