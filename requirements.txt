@@ -100,7 +100,7 @@ packaging==21.3
     # via
     #   ansible-core
     #   redis
-paramiko==2.10.1
+paramiko==2.11.0
     # via fabric3
 passlib==1.7.4
     # via commcare-cloud (setup.py)
@@ -147,6 +147,7 @@ six==1.16.0
     #   commcare-cloud (setup.py)
     #   fabric3
     #   jsonobject
+    #   paramiko
     #   pynacl
     #   python-dateutil
 tabulate==0.8.9
