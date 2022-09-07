@@ -44,4 +44,4 @@
 - name: Install elasticsearch phonetic plugin
   become: yes
   shell: "{{ elasticsearch_home }}/bin/plugin install analysis-phonetic"
-  when: (installed_plugins.stdout is defined) and ('analysis-phonetic' not in installed_plugins.stdout) and es_plugins_phonetic_enabled
+  when: (installed_plugins.stdout is defined) and ('analysis-phonetic' not in installed_plugins.stdout)
