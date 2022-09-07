@@ -1,6 +1,7 @@
 #! /bin/bash
 CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
 VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
+NO_INPUT=0
 
 if [[ $_ == $0 ]]
 then
@@ -140,10 +141,13 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
 
-if ! grep -q init-ansible ~/.profile 2>/dev/null; then
-    printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
-    if [ -z ${CI_TEST} ]; then
-        read -t 30 -p "(y/n): " yn
+if [ -z ${CI_TEST} ]; then
+  if ! grep -q init-ansible ~/.profile 2>/dev/null; then
+    if [ $NO_INPUT == 1 ]; then
+      yn='y'
+    else
+      printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
+      read -t 30 -p "(y/n): " yn
     fi
     case $yn in
         [Yy]* )
@@ -159,6 +163,7 @@ if ! grep -q init-ansible ~/.profile 2>/dev/null; then
             printf "${BLUE}echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile${NC}\n"
         ;;
     esac
+  fi
 fi
 
 # It aint pretty, but it gets the job done
