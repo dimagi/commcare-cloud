@@ -1,5 +1,12 @@
-#!/usr/bin/env bash
+#! /bin/bash
+
 set -e
+
+PYVER=$(python --version 2>&1)
+if [[ $PYVER =~ Python\ 3\.10 ]]; then
+    echo "Skipping requirements test on $PYVER"
+    exit 0
+fi
 
 echo "Check: pip-compile"
 
