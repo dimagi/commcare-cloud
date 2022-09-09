@@ -380,7 +380,7 @@ rds_instances:
 
   - identifier: "pgucr0-production"
     instance_type: "db.m5.2xlarge"
-    storage: 500
+    storage: 850
     max_storage: 5000
     multi_az: true
     engine_version: "10.17"
