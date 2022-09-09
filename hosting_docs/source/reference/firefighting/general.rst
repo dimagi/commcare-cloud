@@ -1174,8 +1174,10 @@ Clear the apt cache
 -------------------
 
 Apt stores its files in */var/cache/apt/archives*. Use `du` as describe above to determine if this cache is consuming too much space.
+If it is, these files can be cleaned via `apt-get clean``
 
 ``$ apt-get autoremove``
+This removes packages that are no longer required. Sometimes the savings can be substantial. If you run the above command, it should show you how much space it expects to free up, before you commit to running it.
 On a recent occasion, this freed up about 20% of the disk
 
 Manually rotate syslog
