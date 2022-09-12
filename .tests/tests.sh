@@ -48,4 +48,5 @@ then
     nosetests -v
     ./tests/test_autogen_docs.sh
     ./tests/test_modernize.sh
+    ./tests/test_requirements.sh
 fi

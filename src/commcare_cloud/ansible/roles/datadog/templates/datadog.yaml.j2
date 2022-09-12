@@ -1,0 +1,41 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+#
+# {{ ansible_managed }}
+#
+{% set group_tags = group_names|select('in', monitoring_groups)|sort %}
+
+dd_url: https://app.datadoghq.com
+api_key: {{ DATADOG_API_KEY }}
+tags: 
+- environment:{{ env_monitoring_id }}
+{% if group_tags %}
+{% for group in group_tags %}
+- group:{{ group }}
+{% endfor %}
+{% endif %}
+
+{% if http_proxy_address is defined and http_proxy_address %}
+proxy_host: {{ http_proxy_address }}
+proxy_port: {{ http_proxy_port }}
+# proxy_user:
+# proxy_password:
+{% endif %}
+
+{% if alt_hostname is defined %}
+hostname: {{ alt_hostname }}.{{ internal_domain_name }}
+{% endif %}
+
+{% if 'webworkers' in group_names and app_processes_config.datadog_pythonagent %}
+apm_config:
+  enabled: true
+  replace_tags:
+    - name: "http.url"
+      pattern: "https?://.+?:.+?@"
+      repl: "https://"
+
+  analyzed_spans:
+    django|django.request: 1
+{% endif %}
+
+ec2_prefer_imdsv2: true
+hostname_fqdn: true

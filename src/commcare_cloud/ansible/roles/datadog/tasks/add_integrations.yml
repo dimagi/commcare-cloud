@@ -1,48 +1,31 @@
 - name: Install custom checks
   get_url:
     url: "{{ item.url }}"
-    dest: "/etc/dd-agent/checks.d/{{ item.name }}.py"
-    sha256sum: "{{ item.sha256sum }}"
+    dest: "/etc/datadog-agent/checks.d/{{ item.name }}.py"
+    checksum: "{{ item.checksum }}"
     force: yes
+    owner: dd-agent
+    group: dd-agent
   notify: restart datadog
   when: item.enabled
   loop: "{{ datadog_custom_integrations }}"
-  tags:
-    - datadog_integrations
 
-- name: Install custom check dependencies
-  command: "/opt/datadog-agent/embedded/bin/pip install {{ }}"
-  become_user: dd-agent
-  when: item.enabled and item.dependencies|default([])
-  loop: "{{ datadog_custom_integrations }}"
-
-- name: add datadog integration configs
-  template: src="{{ item.name }}.yaml.j2" dest="/etc/dd-agent/conf.d/{{ item.name }}.yaml" owner="dd-agent" group="dd-agent"
-  notify: restart datadog
-  tags:
-    - datadog_integrations
+- name: Create datadog integration conf directories
+  file:
+    path: "/etc/datadog-agent/conf.d/{{ item.name }}.d"
+    state: directory
+    owner: dd-agent
+    group: dd-agent
   when: item is defined and item.enabled
-  with_items:
-    - {"name": "airflow", "enabled": "{{ datadog_integration_airflow }}"}
-    - {"name": "elastic", "enabled": "{{ datadog_integration_elastic }}"}
-    - {"name": "gunicorn", "enabled": "{{ datadog_integration_gunicorn }}"}
-    - {"name": "kafka", "enabled": "{{ datadog_integration_kafka }}"}
-    - {"name": "kafka_consumer", "enabled": "{{ datadog_integration_kafka_consumer }}"}
-    - {"name": "nginx", "enabled": "{{ datadog_integration_nginx }}"}
-    - {"name": "pgbouncer", "enabled": "{{ datadog_integration_pgbouncer }}"}
-    - {"name": "pgbouncer_custom", "enabled": "{{ datadog_integration_pgbouncer_custom }}"}
-    - {"name": "postgres", "enabled": "{{ datadog_integration_postgres }}"}
-    - {"name": "process", "enabled": "{{ datadog_integration_postgres_receiver }}"}
-    - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}
-    - {"name": "redisdb", "enabled": "{{ datadog_integration_redisdb }}"}
-    - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
-    - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
-    - {"name": "celery", "enabled": "{{ app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"}
-    - {"name": "couch", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
-    - {"name": "couch_custom", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
-    - {"name": "shell", "enabled": "{{ datadog_integration_vmware }}"}
-    - {"name": "http_check", "enabled": "{{ datadog_integration_http and inventory_hostname == groups.proxy[0] }}"}
-    - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
-    - {"name": "tcp_check", "enabled": "{{ datadog_integration_tcp_check }}"}
-    - {"name": "disk", "enabled": "{{ datadog_integration_disk_check }}"}
-    - {"name": "swift", "enabled": "{{ datadog_swift_instances and inventory_hostname == groups.control[0]}}"}
+  with_items: "{{ datadog_integrations }}"
+
+- name: Add datadog integration configs
+  template:
+    src: "{{ item.name }}.yaml.j2"
+    dest: "/etc/datadog-agent/conf.d/{{ item.name }}.d/conf.yaml"
+    owner: dd-agent
+    group: dd-agent
+    mode: 0640
+  notify: restart datadog
+  when: item is defined and item.enabled
+  with_items: "{{ datadog_integrations }}"

@@ -8,7 +8,8 @@
 
 
 ## CommCare Version Dependency
-This change is not known to be dependent on any particular version of CommCare.
+The following version of CommCare must be deployed before rolling out this change:
+[f0445cf7](https://github.com/dimagi/commcare-hq/commit/f0445cf724e3e2ba3b1b149705a62f4e66ad75b4)
 
 
 ## Change Context
@@ -25,11 +26,14 @@ It is advised to start a tmux session to run the migrations, you can use `django
 $ cchq <env> ssh django-manage:0
 $ tmux new -s auditcare
 $ sudo -iu cchq
-$ cd /home/cchq/www/<env>/current && source python_env/bin/activate
+$ cd /home/cchq/www/<env>/current
+$ git checkout f0445cf724e3e2ba3b1b149705a62f4e66ad75b4
+$ source python_env/bin/activate
 $ python manage.py copy_events_to_sql --batch_size=10000 --workers=5
 ```
 Replace <env> with your correct environment
 
+We are checking out `f0445cf724e3e2ba3b1b149705a62f4e66ad75b4` to ensure that we have the migration commands available to us.
 
 The migration utility creates batches and runs them parellely.
 --workers defines the parallelization level

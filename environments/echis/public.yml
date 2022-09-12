@@ -1,7 +1,6 @@
 internal_domain_name: moh.gov.et
 
 DATADOG_ENABLED: False
-DATADOG_INTEGRATIONS_ENABLED: False
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
