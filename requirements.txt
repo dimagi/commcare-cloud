@@ -73,7 +73,9 @@ idna==2.6
     #   commcare-cloud (setup.py)
     #   requests
 importlib-metadata==3.1.0
-    # via commcare-cloud (setup.py)
+    # via
+    #   commcare-cloud (setup.py)
+    #   redis
 importlib-resources==5.4.0
     # via netaddr
 jinja2==3.0.2
@@ -98,7 +100,7 @@ packaging==21.3
     # via
     #   ansible-core
     #   redis
-paramiko==2.7.2
+paramiko==2.11.0
     # via fabric3
 passlib==1.7.4
     # via commcare-cloud (setup.py)
@@ -145,10 +147,15 @@ six==1.16.0
     #   commcare-cloud (setup.py)
     #   fabric3
     #   jsonobject
+    #   paramiko
     #   pynacl
     #   python-dateutil
 tabulate==0.8.9
     # via commcare-cloud (setup.py)
+typing-extensions==4.1.1
+    # via
+    #   async-timeout
+    #   redis
 urllib3==1.26.7
     # via
     #   botocore
@@ -161,7 +168,7 @@ zipp==3.6.0
     #   importlib-resources
 zope.event==4.5.0
     # via gevent
-zope-interface==5.4.0
+zope.interface==5.4.0
     # via gevent
 
 # The following packages are considered to be unsafe in a requirements file:

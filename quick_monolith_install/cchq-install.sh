@@ -56,7 +56,7 @@ printf "\n"
 # install comcare-cloud
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
-echo y | source "$DIR/../control/init.sh"
+NO_INPUT=1 source "$DIR/../control/init.sh"
 sudo touch /var/log/ansible.log && sudo chmod 666 /var/log/ansible.log
 
 printf "\n"
@@ -65,9 +65,6 @@ printf "\nStep 3: Initializing environments directory for "
 printf "storing your CommCareHQ instance's configuration \n"
 printf "#################################################"
 printf "\n"
-# VENV should have been set by init.sh
-DEFAULT_VENV=~/.virtualenvs/cchq
-VENV=${VENV:-$DEFAULT_VENV}
 
 ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/bootstrap-env-playbook.yml"
 printf "\n Encrypting your environment's passwords file using ansible-vault.\n"
