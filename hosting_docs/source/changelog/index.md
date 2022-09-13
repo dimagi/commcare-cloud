@@ -11,7 +11,6 @@ need to be applied on your environment to keep it up to date.
 Run command to upgrade Zookeeper version which 3.2.0 to 3.7.1
 
 
-
 #### **2022-08-23** [upgrade-redis](0053-upgrade-redis.md)
 This change upgrade Redis from 4.0.8 to 6.x version.
 As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
