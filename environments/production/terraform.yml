@@ -264,7 +264,7 @@ servers:
     server_instance_type: r6a.2xlarge
     network_tier: "app-private"
     az: "a"
-    volume_size: 400
+    volume_size: 80
     volume_encrypted: yes
     group: "formplayer"
     os: bionic
