@@ -143,6 +143,7 @@ localsettings:
   BIGCOUCH_QUORUM_COUNT: 2
   CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE: "reminder_case_update_bulk_queue"
   CHECK_REPEATERS_PARTITION_COUNT: 4
+  COMMCARE_ANALYTICS_HOST: "https://commcare-analytics.dimagi.com"
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_REINDEX_SCHEDULE: {'timedelta': {'minutes': 5}}
