@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-09-06** [bootstrap-userrole-auditing](0053-bootstrap-userrole-auditing.md)
+Run command to create bootstrap audit records for existing user role records.
+
+
+---
 #### **2022-08-19** [upgrade-ansible](0052-upgrade-ansible.md)
 Run command to uninstall older ansible version which 2.9.26 and install 4.2.0
 
