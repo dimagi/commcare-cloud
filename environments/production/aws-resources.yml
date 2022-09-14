@@ -67,6 +67,16 @@ esmaster7-production.instance_id: i-027b4e84c95947214
 esmaster8-production: 10.202.40.83
 esmaster8-production.instance_id: i-0117799da26730df7
 formplayer-efs: fs-150b0596.efs.us-east-1.amazonaws.com
+formplayer_a000-production: 10.202.10.173
+formplayer_a000-production.instance_id: i-0a24cbe1649f336fc
+formplayer_a001-production: 10.202.10.38
+formplayer_a001-production.instance_id: i-0268cfd69a51d6e91
+formplayer_a002-production: 10.202.10.55
+formplayer_a002-production.instance_id: i-0a29b1cc9293ff1cb
+formplayer_a003-production: 10.202.10.221
+formplayer_a003-production.instance_id: i-0f5f13c76b062e28f
+formplayer_a004-production: 10.202.10.146
+formplayer_a004-production.instance_id: i-0b5f919235ef6fec0
 formplayer_c000-production: 10.202.11.174
 formplayer_c000-production.instance_id: i-08f23062ccfb58ae0
 formplayer_c001-production: 10.202.11.253
