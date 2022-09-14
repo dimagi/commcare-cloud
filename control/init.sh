@@ -22,7 +22,8 @@ if [ -z ${CI_TEST} ]; then
             VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
         fi
     else
-      echo "On October 10th, 2022, commcare-cloud will only support python 3.10."
+      #TODO: update date when known
+      echo "On <date_to_update>, 2022, commcare-cloud will only support python 3.10."
       echo "Follow the instructions in:"
       echo "   https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#upgrade-to-python3-10"
   fi
