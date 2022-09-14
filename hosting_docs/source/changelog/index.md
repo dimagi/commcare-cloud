@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-09-14** [Update Prometheus variable](0053-update-prometheus-variable.md)
+Run `update-config` to apply changes to prometheus environment variable.
+
+
+---
 #### **2022-08-19** [upgrade-ansible](0052-upgrade-ansible.md)
 Run command to uninstall older ansible version which 2.9.26 and install 4.2.0
 
