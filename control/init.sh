@@ -14,16 +14,29 @@ function realpath() {
     python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
 }
 
+if [ -z ${CI_TEST} ]; then
+    if [ -f /usr/bin/python3.10 ]; then
+        # update default virtualenv to 3.10 if installed and set default
+        if [ CCHQ_VIRTUALENV == cchq ]; then
+            CCHQ_VIRTUALENV=cchq-3.10
+            VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
+        fi
+    else
+      echo "On October 10th, 2022, commcare-cloud will only support python 3.10."
+      echo "Follow the instructions in:"
+      echo "   https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#upgrade-to-python3-10"
+  fi
+fi
 
 if [ -z ${CI_TEST} ]; then
     if [ ! -f $VENV/bin/activate ]; then
-        if [[ $CCHQ_VIRTUALENV == *3.10* ]]; then
-          # use venv because 3.10 setup includes installing python3.10-venv
-          python3.10 -m venv $VENV
+        if [ -f /usr/bin/python3.10 ]; then
+            # create python3.10 virtualenv
+            python3.10 -m venv $VENV
         else
-          # use virtualenv because `python3 -m venv` requires python3-venv
-          python3 -m pip install --user --upgrade virtualenv
-          python3 -m virtualenv $VENV
+            # use virtualenv because `python3 -m venv` requires python3-venv
+            python3 -m pip install --user --upgrade virtualenv
+            python3 -m virtualenv $VENV
         fi
     fi
     source $VENV/bin/activate

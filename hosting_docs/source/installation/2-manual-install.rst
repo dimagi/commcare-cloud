@@ -182,9 +182,8 @@ Upgrade to Python 3.10
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Starting on October 10th, 2022, commcare-cloud will require Python 3.10. Follow the steps below to properly install it.
 
-1.  Install system packages
 
-    ::
+::
 
         $ sudo add-apt-repository -y ppa:deadsnakes/ppa
         $ sudo apt update
