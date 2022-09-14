@@ -1,6 +1,6 @@
 title: bootstrap-userrole-auditing
 key: bootstrap-userrole-auditing
-date: 2022-09-06
+date: 2022-09-14
 optional_per_env: no
 min_commcare_version: 5ed5c54aa4880bf0010a4001aa8693b979802e13
 max_commcare_version:

@@ -7,7 +7,7 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2022-09-06** [bootstrap-userrole-auditing](0053-bootstrap-userrole-auditing.md)
+#### **2022-09-14** [bootstrap-userrole-auditing](0055-bootstrap-userrole-auditing.md)
 Run command to create bootstrap audit records for existing user role records.
 
 
