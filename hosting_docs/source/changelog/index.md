@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-09-14** [bootstrap-userrole-auditing](0055-bootstrap-userrole-auditing.md)
+Run command to create bootstrap audit records for existing user role records.
+
+
+---
 #### **2022-09-05** [upgrade-zookeeper_3.7.1](0054-upgrade-zookeeper_3.7.1.md)
 Run command to upgrade Zookeeper version which 3.2.0 to 3.7.1
 
