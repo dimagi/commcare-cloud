@@ -12,6 +12,18 @@ Run command to create bootstrap audit records for existing user role records.
 
 
 ---
+#### **2022-09-05** [upgrade-zookeeper_3.7.1](0054-upgrade-zookeeper_3.7.1.md)
+Run command to upgrade Zookeeper version which 3.2.0 to 3.7.1
+
+
+---
+#### **2022-08-23** [upgrade-redis](0053-upgrade-redis.md)
+This change upgrade Redis from 4.0.8 to 6.x version.
+As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
+libraries we have updated Redis from version 4.0.8 to version 6.2.
+
+
+---
 #### **2022-08-19** [upgrade-ansible](0052-upgrade-ansible.md)
 Run command to uninstall older ansible version which 2.9.26 and install 4.2.0
 
