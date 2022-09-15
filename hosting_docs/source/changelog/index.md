@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-09-15** [upgrade-kafka_3.2.0](0055-upgrade-kafka_3.2.0.md)
+Run command to upgrade Kafka version which 2.6.1 to 3.2.0
+
+
+---
 #### **2022-09-05** [upgrade-zookeeper_3.7.1](0054-upgrade-zookeeper_3.7.1.md)
 Run command to upgrade Zookeeper version which 3.2.0 to 3.7.1
 
