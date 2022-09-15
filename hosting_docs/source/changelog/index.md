@@ -7,8 +7,13 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2022-09-14** [Update Prometheus variable](0056-update-prometheus-variable.md)
+#### **2022-09-15** [Update Prometheus variable](0057-update-prometheus-variable.md)
 If using prometheus, run `update-config` to apply changes to prometheus environment variable.
+
+
+---
+#### **2022-09-15** [upgrade-kafka_3.2.0](0056-upgrade-kafka_3.2.0.md)
+Run command to upgrade Kafka version which 2.6.1 to 3.2.0
 
 
 ---

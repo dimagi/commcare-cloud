@@ -1,6 +1,6 @@
 title: Update Prometheus variable
 key: update-prometheus-variable
-date: 2022-09-14
+date: 2022-09-15
 optional_per_env: yes
 min_commcare_version: 1c6e67cea56bf44c7252dba76ba0c8160ab635a5
 max_commcare_version:
