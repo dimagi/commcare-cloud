@@ -17,10 +17,19 @@ function realpath() {
 
 
 if [ -z ${CI_TEST} ]; then
-    if [ ! -f $VENV/bin/activate ]; then
-        if [[ $CCHQ_VIRTUALENV == *3.10* ]]; then
-          # use venv because 3.10 setup includes installing python3.10-venv
-          python3.10 -m venv $VENV
+    if [[ ! -f $VENV/bin/activate ]]; then
+        if [[ -f /usr/bin/python3.10 ]]; then
+            # figure out which name to use for a 3.10 virtualenv, defaulting to $CCHQ_VIRTUALENV
+            if [[ -f $VENV/bin/python3.6 ]]; then
+                # if a 3.6 environment with the $CCHQ_VIRTUALENV name already exists, append '-3.10'
+                CCHQ_VIRTUALENV=$CCHQ_VIRTUALENV-3.10
+            fi
+            # check if a virtualenv at $VENV exists yet, and create if not
+            if [[ ! -f $VENV/bin/activate ]]; then
+                echo "Creating a python3.10 virtual environment named ${CCHQ_VIRTUALENV}"
+                # use venv because 3.10 setup includes installing python3.10-venv
+                python3.10 -m venv $VENV
+            fi
         else
           # use virtualenv because `python3 -m venv` requires python3-venv
           python3 -m pip install --user --upgrade virtualenv
