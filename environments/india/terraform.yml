@@ -366,7 +366,7 @@ internal_albs:
 
 elasticache_cluster:
   create: yes
-  cache_node_type: "cache.r5.large"
+  cache_node_type: "cache.t4g.medium"
   cache_engine_version: "6.x"
   cache_prameter_group: "default.redis6.x"
   automatic_failover: true

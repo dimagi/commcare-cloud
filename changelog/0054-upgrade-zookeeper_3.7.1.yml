@@ -1,0 +1,17 @@
+title: upgrade-zookeeper_3.7.1
+key: upgrade-zookeeper_3.7.1
+date: 2022-09-05
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Run command to upgrade Zookeeper version which 3.2.0 to 3.7.1
+
+details: |
+  As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
+  libraries we have updated the Zookeeper version to use the zookeeper==3.7.1. 
+
+update_steps: |
+
+  1. For users running Kafka on Linux machines:
+     instructions: [zookeeper_upgrade](https://commcare-cloud.readthedocs.io/en/latest/services/zookeeper.html?highlight=zookeeper%20upgrade#upgrading-zookeeper)
