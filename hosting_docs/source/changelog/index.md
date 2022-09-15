@@ -8,7 +8,7 @@ need to be applied on your environment to keep it up to date.
 ### Changelog
 
 #### **2022-09-14** [Update Prometheus variable](0056-update-prometheus-variable.md)
-Run `update-config` to apply changes to prometheus environment variable.
+If using prometheus, run `update-config` to apply changes to prometheus environment variable.
 
 
 ---

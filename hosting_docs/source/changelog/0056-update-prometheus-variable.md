@@ -4,7 +4,7 @@
 
 **Date:** 2022-09-14
 
-**Optional per env:** _required on all environments_
+**Optional per env:** _only required on some environments_
 
 
 ## CommCare Version Dependency
@@ -13,7 +13,7 @@ The following version of CommCare must be deployed before rolling out this chang
 
 
 ## Change Context
-Run `update-config` to apply changes to prometheus environment variable.
+If using prometheus, run `update-config` to apply changes to prometheus environment variable.
 
 ## Details
 As of v0.10.0, the prometheus-client python package has deprecated the lower case
