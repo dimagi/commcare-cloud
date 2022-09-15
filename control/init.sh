@@ -23,6 +23,7 @@ if [ -z ${CI_TEST} ]; then
             if [[ -f $VENV/bin/python3.6 ]]; then
                 # if a 3.6 environment with the $CCHQ_VIRTUALENV name already exists, append '-3.10'
                 CCHQ_VIRTUALENV=$CCHQ_VIRTUALENV-3.10
+                VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
             fi
             # check if a virtualenv at $VENV exists yet, and create if not
             if [[ ! -f $VENV/bin/activate ]]; then
