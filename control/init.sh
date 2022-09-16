@@ -17,7 +17,7 @@ function realpath() {
 
 
 if [ -z ${CI_TEST} ]; then
-    if [[ -f /usr/bin/python3.10 ]]; then
+    if hash python3.10 2>/dev/null; then
         # figure out which name to use for a 3.10 virtualenv, defaulting to $CCHQ_VIRTUALENV
         if [[ -f $VENV/bin/python3.6 ]]; then
             # if a 3.6 environment with the $CCHQ_VIRTUALENV name already exists, append '-3.10'
@@ -27,7 +27,7 @@ if [ -z ${CI_TEST} ]; then
     fi
     # check if a virtualenv at $VENV exists yet, and create if not
     if [[ ! -f $VENV/bin/activate ]]; then
-        if [[ -f /usr/bin/python3.10 ]]; then
+        if hash python3.10 2>/dev/null; then
             echo "Creating a python3.10 virtual environment named ${CCHQ_VIRTUALENV}"
             # use venv because 3.10 setup includes installing python3.10-venv
             python3.10 -m venv $VENV
