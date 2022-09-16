@@ -20,7 +20,6 @@ kafka_log_message_format_version: 3.2
 
 zookeeper_version: 3.7.1
 zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
-zookeeper_cluster: True
 
 ssh_allow_password: False
 
