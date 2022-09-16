@@ -805,7 +805,12 @@ Check out :ref:`reference/firefighting/celery:Celery Firefighting Guide`.
 Monitoring
 ----------
 
-Sometimes it's helpful to check "Flower", a UI for celery monitoring http://hqcelery1.internal-va.commcarehq.org:5555/ (you have to be VPN'd in).
+Sometimes it's helpful to check "Flower", a UI for monitoring Celery.
+
+The URL for Flower in Dimagi's production environment is
+http://hqcelery1.internal-va.commcarehq.org:5555/ . To connect, run ::
+
+    $ cchq production forward-port flower
 
 You can also check the current celery queue backlogs on datadog.  Any spikes indicate a backup, which may result in things like delays in sending scheduled reports or exports.  If there's a problem, there should also be an alert here and on #hq-ops on Slack.
 
