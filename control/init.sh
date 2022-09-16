@@ -17,24 +17,24 @@ function realpath() {
 
 
 if [ -z ${CI_TEST} ]; then
+    if [[ -f /usr/bin/python3.10 ]]; then
+        # figure out which name to use for a 3.10 virtualenv, defaulting to $CCHQ_VIRTUALENV
+        if [[ -f $VENV/bin/python3.6 ]]; then
+            # if a 3.6 environment with the $CCHQ_VIRTUALENV name already exists, append '-3.10'
+            CCHQ_VIRTUALENV=$CCHQ_VIRTUALENV-3.10
+            VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
+        fi
+    fi
+    # check if a virtualenv at $VENV exists yet, and create if not
     if [[ ! -f $VENV/bin/activate ]]; then
         if [[ -f /usr/bin/python3.10 ]]; then
-            # figure out which name to use for a 3.10 virtualenv, defaulting to $CCHQ_VIRTUALENV
-            if [[ -f $VENV/bin/python3.6 ]]; then
-                # if a 3.6 environment with the $CCHQ_VIRTUALENV name already exists, append '-3.10'
-                CCHQ_VIRTUALENV=$CCHQ_VIRTUALENV-3.10
-                VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
-            fi
-            # check if a virtualenv at $VENV exists yet, and create if not
-            if [[ ! -f $VENV/bin/activate ]]; then
-                echo "Creating a python3.10 virtual environment named ${CCHQ_VIRTUALENV}"
-                # use venv because 3.10 setup includes installing python3.10-venv
-                python3.10 -m venv $VENV
-            fi
+            echo "Creating a python3.10 virtual environment named ${CCHQ_VIRTUALENV}"
+            # use venv because 3.10 setup includes installing python3.10-venv
+            python3.10 -m venv $VENV
         else
-          # use virtualenv because `python3 -m venv` requires python3-venv
-          python3 -m pip install --user --upgrade virtualenv
-          python3 -m virtualenv $VENV
+            # use virtualenv because `python3 -m venv` requires python3-venv
+            python3 -m pip install --user --upgrade virtualenv
+            python3 -m virtualenv $VENV
         fi
     fi
     source $VENV/bin/activate
