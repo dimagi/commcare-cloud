@@ -109,16 +109,6 @@ formplayer_c014-production: 10.202.11.202
 formplayer_c014-production.instance_id: i-0dafb0f39f633e0e8
 formplayer_c015-production: 10.202.11.190
 formplayer_c015-production.instance_id: i-056cdd4b3bc683dd5
-formplayer_c016-production: 10.202.11.70
-formplayer_c016-production.instance_id: i-07bfa6b8aa381e713
-formplayer_c017-production: 10.202.11.77
-formplayer_c017-production.instance_id: i-04132c1f823a838c4
-formplayer_c018-production: 10.202.11.212
-formplayer_c018-production.instance_id: i-0e7e54265535b44c0
-formplayer_c019-production: 10.202.11.39
-formplayer_c019-production.instance_id: i-002ffca0e39c8638a
-formplayer_c020-production: 10.202.11.114
-formplayer_c020-production.instance_id: i-0566261962f038304
 frontend_alb-production: internal-frontend-alb-production-457692877.us-east-1.elb.amazonaws.com
 kafka1-production: 10.202.40.200
 kafka1-production.instance_id: i-0c8af5576e2c8e7a2
