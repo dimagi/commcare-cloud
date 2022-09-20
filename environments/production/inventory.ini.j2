@@ -173,14 +173,14 @@ use_formplayer_debug_options=true
 
 [formplayer_debug:children]
 formplayer_a005
+formplayer_a009
 formplayer_c000
-formplayer_c014
 
 [formplayer_with_monit:vars]
 use_monit_for_formplayer=true
 
 [formplayer_with_monit:children]
-formplayer_c014
+formplayer_a009
 
 [shared_efs_client_host:children]
 celery
