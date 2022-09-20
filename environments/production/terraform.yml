@@ -257,7 +257,7 @@ servers:
     volume_size: 400
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 16
+    count: 11
     server_auto_recovery: true
 
   - server_name: "formplayer_a{i}-production"
