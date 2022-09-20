@@ -19,7 +19,7 @@ zookeeper_cluster: True
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
-erlang: 1:24.2.1-1
+erlang: 1:25.0.4-1
 rabbitmq_version: 3.10.7-1
 
 #RabbitMQ Broker URL
