@@ -17,7 +17,7 @@ function realpath() {
 
 
 if [ -z ${CI_TEST} ]; then
-    if [[ $(cat /etc/os-release | grep '^VERSION=' | tr -dc '0-9.') == *18.04* && hash python3.10 2>/dev/null ]]; then
+    if [[ $(cat /etc/os-release | grep '^VERSION=' | tr -dc '0-9.') == *18.04* ]] && hash python3.10 2>/dev/null; then
         # if on 18.04 and 3.10 is installed, figure out which name to use for a 3.10 virtualenv
         if [[ -f $VENV/bin/python3.6 ]]; then
             # if a 3.6 environment with the $CCHQ_VIRTUALENV name already exists, append '-3.10'
