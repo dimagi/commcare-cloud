@@ -58,6 +58,10 @@ rabbit2-staging: 10.201.10.239
 rabbit2-staging.instance_id: i-01bfeae5f4febaddf
 rabbit4-staging: 10.201.11.17
 rabbit4-staging.instance_id: i-0eae4b3b4acdacbf0
+rabbit_a0-staging: 10.201.10.125
+rabbit_a0-staging.instance_id: i-081f711d53f8e53e9
+rabbit_b0-staging: 10.201.11.193
+rabbit_b0-staging.instance_id: i-0e709bd50a8f7b071
 web7-staging: 10.201.11.170
 web7-staging.instance_id: i-00c29bc6df3a1f47b
 web8-staging: 10.201.11.222
