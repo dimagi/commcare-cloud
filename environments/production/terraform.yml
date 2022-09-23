@@ -15,14 +15,6 @@ openvpn_image: ami-5e73b923
 
 ec2_metadata_tokens_required: yes
 servers:
-  - server_name: "control2-production"
-    server_instance_type: "t3a.large"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    group: "control"
-    os: ubuntu_pro_bionic
-
   - server_name: "control3-production"
     server_instance_type: "t3a.large"
     network_tier: "app-private"
