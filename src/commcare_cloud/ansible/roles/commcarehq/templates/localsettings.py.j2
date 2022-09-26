@@ -870,14 +870,6 @@ BYPASS_SESSIONS_FOR_MOBILE = {{localsettings.get('BYPASS_SESSIONS_FOR_MOBILE', F
 SUMOLOGIC_URL = '{{ localsettings.SUMOLOGIC_URL }}'
 {% endif %}
 
-{% if localsettings.get('OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE') %}
-OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE = True
-{% endif %}
-
-{% if localsettings.get('RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE') %}
-RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE = True
-{% endif %}
-
 {% if localsettings.get('DAYS_TO_KEEP_DEVICE_LOGS') %}
 DAYS_TO_KEEP_DEVICE_LOGS = {{ localsettings.DAYS_TO_KEEP_DEVICE_LOGS }}
 {% endif %}
@@ -1115,4 +1107,12 @@ USE_PHONE_ENTRIES = {{ localsettings.USE_PHONE_ENTRIES }}
 
 {% if localsettings.CHECK_REPEATERS_PARTITION_COUNT is defined %}
 CHECK_REPEATERS_PARTITION_COUNT = {{ localsettings.CHECK_REPEATERS_PARTITION_COUNT }}
+{% endif %}
+
+{% if ABDM_CLIENT_ID %}
+ABDM_CLIENT_ID = {{ ABDM_CLIENT_ID }}
+{% endif %}
+
+{% if ABDM_CLIENT_SECRET %}
+ABDM_CLIENT_SECRET = {{ ABDM_CLIENT_SECRET }}
 {% endif %}

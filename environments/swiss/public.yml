@@ -1,5 +1,4 @@
 DATADOG_ENABLED: True
-DATADOG_INTEGRATIONS_ENABLED: True
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
@@ -12,6 +11,12 @@ elastcsearch_backup_days: 2
 
 redis_engine_version: 6.2.4
 redis_maxmemory: 4gb
+
+kafka_version: 3.2.0
+kafka_scala_version: 2.13
+kafka_download_sha512: 36A129823B058DC10788D0893BDE47B6F39B9E4972F9EAC2D5C9E85E51E477344C6F1E1EBD126CE34D5FD430EB07E55FDD60D60CB541F1D48655C0EBC0A4778
+kafka_inter_broker_protocol_version: 3.2
+kafka_log_message_format_version: 3.2
 
 ssh_allow_password: False
 
@@ -33,6 +38,12 @@ blobdb_snapshot_bucket: commcare-almanach-backup
 couchdb_snapshot_bucket: commcare-almanach-backup
 
 aws_versioning_enabled: false
+
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags: nginx-error
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
 
 KSPLICE_ACTIVE: yes
 

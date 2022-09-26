@@ -92,21 +92,21 @@ servers:
     server_auto_recovery: true
 
   - server_name: "esmaster6-production"
-    server_instance_type: r5.xlarge
+    server_instance_type: r6a.large
     network_tier: "db-private"
     az: "b"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     volume_size: 40
   - server_name: "esmaster7-production"
-    server_instance_type: r5.xlarge
+    server_instance_type: r6a.large
     network_tier: "db-private"
     az: "b"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     volume_size: 40
   - server_name: "esmaster8-production"
-    server_instance_type: r5.xlarge
+    server_instance_type: r6a.large
     network_tier: "db-private"
     az: "a"
     group: "elasticsearch"
@@ -135,35 +135,29 @@ servers:
     os: ubuntu_pro_bionic
     count: 7
 
-  - server_name: "escoordinator1-production"
-    server_instance_type: r5.2xlarge
+  - server_name: "escoordinator_a0-production"
+    server_instance_type: r6a.2xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
-    block_device:
-      volume_size: 1260
     group: "elasticsearch"
-    os: ubuntu_pro_bionic
+    os: bionic
 
-  - server_name: "escoordinator2-production"
-    server_instance_type: r5.2xlarge
+  - server_name: "escoordinator_b0-production"
+    server_instance_type: r6a.2xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 30
-    block_device:
-      volume_size: 1260
     group: "elasticsearch"
-    os: ubuntu_pro_bionic
+    os: bionic
 
-  - server_name: "escoordinator3-production"
-    server_instance_type: r5.2xlarge
+  - server_name: "escoordinator_c0-production"
+    server_instance_type: r6a.2xlarge
     network_tier: "db-private"
     az: "c"
     volume_size: 30
-    block_device:
-      volume_size: 1260
     group: "elasticsearch"
-    os: ubuntu_pro_bionic
+    os: bionic
 
   - server_name: "couch11-production"
     server_instance_type: c6i.12xlarge
@@ -263,7 +257,18 @@ servers:
     volume_size: 400
     group: "formplayer"
     os: ubuntu_pro_bionic
-    count: 21
+    count: 11
+    server_auto_recovery: true
+
+  - server_name: "formplayer_a{i}-production"
+    server_instance_type: r6a.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "formplayer"
+    os: bionic
+    count: 10
     server_auto_recovery: true
 
   - server_name: "kafka_a0-production"
@@ -362,9 +367,36 @@ proxy_servers:
     group: "proxy"
     os: ubuntu_pro_bionic
 
+  - server_name: "proxy_a2-production"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "proxy"
+    os: bionic
+
+  - server_name: "proxy_b2-production"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "proxy"
+    os: bionic
+
+  - server_name: "proxy_c2-production"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "proxy"
+    os: bionic
+  
 rds_instances:
   - identifier: "pgmain1-production"
-    instance_type: "db.m5.8xlarge"
+    instance_type: "db.m5.4xlarge"
     storage: 2000
     multi_az: true
     engine_version: "10.17"
@@ -386,7 +418,7 @@ rds_instances:
 
   - identifier: "pgucr0-production"
     instance_type: "db.m5.2xlarge"
-    storage: 500
+    storage: 850
     max_storage: 5000
     multi_az: true
     engine_version: "10.17"
@@ -464,7 +496,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgsynclog1-production"
-    instance_type: "db.m5.2xlarge"
+    instance_type: "db.m5.xlarge"
     storage: 5000
     multi_az: true
     engine_version: "10.17"
@@ -482,8 +514,27 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
       vacuum_cost_limit: 2000
 
+  - identifier: "pgsynclog2-production"
+    instance_type: "db.m5.xlarge"
+    storage: 1000
+    multi_az: true
+    engine_version: "10.17"
+    params:
+      shared_preload_libraries: pg_stat_statements,pg_transport
+      pg_transport.work_mem: 131072
+      pg_transport.timing: 1
+      max_worker_processes: 40
+      pg_transport.num_workers: 8
+      track_io_timing: 1
+      work_mem: 2457kB
+      shared_buffers: 3840MB
+      effective_cache_size: 11520MB
+      maintenance_work_mem: 960MB
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
+      vacuum_cost_limit: 2000
+
   - identifier: "pgformplayer1-production"
-    instance_type: "db.m5.2xlarge"
+    instance_type: "db.m5.xlarge"
     storage: 1500
     multi_az: true
     engine_version: "10.17"
@@ -501,8 +552,27 @@ rds_instances:
       pg_transport.num_workers: 8
       track_io_timing: 1
 
+  - identifier: "pgformplayer2-production"
+    instance_type: "db.m5.xlarge"
+    storage: 200
+    multi_az: true
+    engine_version: "10.17"
+    params:
+      shared_preload_libraries: pg_stat_statements,pg_transport
+      log_min_duration_statement: 1000
+      # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
+      # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
+      maintenance_work_mem: 4172000kB
+      max_wal_size: 4GB
+      vacuum_cost_limit: 1000
+      pg_transport.work_mem: 131072
+      pg_transport.timing: 1
+      max_worker_processes: 40
+      pg_transport.num_workers: 8
+      track_io_timing: 1
+
   - identifier: "pgauditcare0-production"
-    instance_type: "db.t3.2xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 10000
     multi_az: true
     engine_version: "10.17"
@@ -556,7 +626,7 @@ elasticache:
 
 elasticache_cluster:
   create: yes
-  cache_node_type: "cache.r5.2xlarge"
+  cache_node_type: "cache.r6g.xlarge"
   cache_engine_version: "6.x"
   cache_prameter_group: "default.redis6.x"
   automatic_failover: true

@@ -71,10 +71,10 @@ fi
 
 {% if postgres_s3 %}
 if [ -f "${DIRECTORY}.gz" ]; then
-    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.gz" "${UPLOAD_NAME}.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
+    ( cd {{ postgresql_backup_dir }} && {{ virtualenv_home }}/bin/python3 /usr/local/sbin/backup_snapshots.py "${FILENAME}.gz" "${UPLOAD_NAME}.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
 fi
 if [ -f "${DIRECTORY}.tar.gz" ]; then
-    ( cd {{ postgresql_backup_dir }} && /usr/local/sbin/backup_snapshots.py "${FILENAME}.tar.gz" "${UPLOAD_NAME}.tar.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
+    ( cd {{ postgresql_backup_dir }} && {{ virtualenv_home }}/bin/python3 /usr/local/sbin/backup_snapshots.py "${FILENAME}.tar.gz" "${UPLOAD_NAME}.tar.gz" {{ postgres_snapshot_bucket }} {{aws_endpoint}}  )
 fi
 {% endif %}
 

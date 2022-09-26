@@ -1,0 +1,21 @@
+title: bootstrap-userrole-auditing
+key: bootstrap-userrole-auditing
+date: 2022-09-14
+optional_per_env: no
+min_commcare_version: 5ed5c54aa4880bf0010a4001aa8693b979802e13
+max_commcare_version:
+context: |
+  Run command to create bootstrap audit records for existing user role records.
+
+details: |
+  CommCare HQ uses the `django-field-audit` library to track changes on user
+  roles and related models. This command ensures that the database records for
+  these models which were created prior to adding the auditing logic get a
+  required "bootstrap" record in the audit table.
+
+update_steps: |
+  Run the following command to create the bootstrap audit records:
+
+  ```bash
+  cchq <env> django-manage bootstrap_field_audit_events top-up Permission RoleAssignableBy UserRole RolePermission
+  ```

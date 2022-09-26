@@ -1148,6 +1148,13 @@ Full Drives / Out of Disk Space
 
 If disk usage on the proxy ever hits 100%, many basic functions on the machine will stop working.  Here are some ways to buy some time.
 
+Basic Commands
+--------------
+
+You can probe statistics before taking any action. `df -h` or `dh -h /` will show total disk usage. To query specific directory/file usage, use:
+`du -hs <path>`. Note that these commands still respect permissions. If you need elevated permissions, you can ssh to the affected machine as the ansible user
+(cchq --control <env> ssh ansible@<machine>), and from there you can use sudo. The ansible password can be found within 1Pass
+
 Clean Releases
 --------------
 
@@ -1166,7 +1173,11 @@ Check the size of the log files stored at /home/cchq/www/\ :raw-html-m2r:`<envir
 Clear the apt cache
 -------------------
 
+Apt stores its files in */var/cache/apt/archives*. Use `du` as describe above to determine if this cache is consuming too much space.
+If it is, these files can be cleaned via `apt-get clean``
+
 ``$ apt-get autoremove``
+This removes packages that are no longer required. Sometimes the savings can be substantial. If you run the above command, it should show you how much space it expects to free up, before you commit to running it.
 On a recent occasion, this freed up about 20% of the disk
 
 Manually rotate syslog
@@ -1179,6 +1190,14 @@ If for some reason syslog is either not rotating logs or the latest log has grow
    mv syslog other.syslog
    kill -HUP <pid of syslog>
    gzip other.syslog
+
+Look at temp folders
+--------------------
+
+On celery machines, specifically, tasks can generate a large volume of temporary files. Use `du` against */opt/tmp* and compare these results
+to other machines to determine if this is the likely issue. If so, some of these files may still be in use. These files will likely be cleared
+once the task has completed. If not, we have an automated task that cleans up files older than 2 days. If disk space is in a dire situation,
+it may be possible to remove some of the older files (using `lsof <file>` or `lsof +D <directory>` can help find what files are in use)
 
 Network Connection Issues (please help expand)
 ==============================================
