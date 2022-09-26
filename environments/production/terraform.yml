@@ -269,7 +269,7 @@ servers:
     volume_encrypted: yes
     group: "formplayer"
     os: bionic
-    count: 10
+    count: 21
     server_auto_recovery: true
 
   - server_name: "kafka_a0-production"
