@@ -6,6 +6,7 @@ elasticsearch_cluster_name: 'staginges'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 elasticsearch_delete_old_logs: True
+es_plugins_phonetic_enabled: True
 
 kafka_version: 3.2.0
 kafka_scala_version: 2.13
