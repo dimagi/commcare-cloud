@@ -19,7 +19,7 @@ servers:
     server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
-    volume_size: 40
+    volume_size: 60
     volume_encrypted: yes
     group: "control"
     os: bionic
