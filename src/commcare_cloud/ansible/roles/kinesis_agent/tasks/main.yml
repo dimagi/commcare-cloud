@@ -14,7 +14,7 @@
       git:
         repo: "https://github.com/awslabs/amazon-kinesis-agent.git"
         dest: "{{ temp_dir.path }}"
-        version: "1.1.4.2"
+        version: "2.0.6"
         recursive: yes
         accept_hostkey: yes
         update: yes
