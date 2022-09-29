@@ -13,10 +13,12 @@ This change is not known to be dependent on any particular version of CommCare.
 
 ## Change Context
 Run command to upgrade Kafka version which 2.6.1 to 3.2.0
+Update Scala version to recommended version 2.13
 
 ## Details
 As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
-libraries we have updated the Kafka version to use the kafka==3.2.0. 
+libraries we have updated the Kafka version to use the kafka==3.2.0 and recommended Scala 2.13.
+Reference Document: https://kafka.apache.org/downloads
 
 ## Steps to update
 
