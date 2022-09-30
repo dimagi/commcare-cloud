@@ -71,13 +71,14 @@ couch_alb
 [couchdb2_alb:children]
 couch_alb
 
-{{ __rabbit2__ }}
-{{ __rabbit4__ }}
+{{ __rabbit_a0__ }}
+{{ __rabbit_b0__ }}
+
 
 [rabbitmq:children]
 # Amazon EC2
-rabbit2
-rabbit4
+rabbit_a0
+rabbit_b0
 
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=1
 {{ __kafka5__ }} kafka_broker_id=4 zookeeper_server_id=4
