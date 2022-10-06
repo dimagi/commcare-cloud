@@ -16,6 +16,8 @@ es10-staging: 10.201.41.31
 es10-staging.instance_id: i-08c2645edf582d4b6
 es11-staging: 10.201.41.188
 es11-staging.instance_id: i-0246aecdf95372900
+es12-staging: 10.201.41.120
+es12-staging.instance_id: i-0af798b05d79c2507
 es6-staging: 10.201.40.126
 es6-staging.instance_id: i-0161d2187f667e405
 es7-staging: 10.201.40.107
