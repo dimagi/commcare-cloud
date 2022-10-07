@@ -10,7 +10,6 @@ dev_users:
     - ctsims
     - czue
     - dmiller
-    - dochoa
     - droberts
     - emapson
     - esoergel
@@ -49,3 +48,4 @@ dev_users:
     - rnegi
     - spokhriyal
     - frener
+    - dochoa
