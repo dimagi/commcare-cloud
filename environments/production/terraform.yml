@@ -136,6 +136,30 @@ servers:
     os: ubuntu_pro_bionic
     count: 7
 
+  - server_name: "es_a1{i}-production"
+    server_instance_type: r5.4xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 2100
+    group: "elasticsearch"
+    os: bionic
+    count: 2
+
+  - server_name: "es_b1{i}-production"
+    server_instance_type: r5.4xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 2100
+    group: "elasticsearch"
+    os: bionic
+    count: 2
+
   - server_name: "escoordinator_a0-production"
     server_instance_type: r6a.2xlarge
     network_tier: "db-private"
