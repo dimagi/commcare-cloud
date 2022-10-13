@@ -397,5 +397,12 @@ def reverse_patch(filepath):
     sudo('git apply -R --unsafe-paths {} --directory={}'.format(destination, current_dir))
 
 
+@roles(ROLES_DEPLOY)
+def zip_release():
+    with cd(env.releases):
+        sudo(f'tar -czf current_release.tar.gz {env.ccc_environment.new_release_name()}')
+        sudo(f'aws s3 cp current_release.tar.gz s3://{env.release_bucket}/current_release.tar.gz')
+
+
 def _get_roles(full_cluster):
     return ROLES_ALL_SRC if full_cluster else ROLES_MANAGE
