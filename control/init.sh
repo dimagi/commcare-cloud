@@ -2,6 +2,7 @@
 CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
 VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
 NO_INPUT=0
+USE_SYSTEM_PYTHON=${USE_SYSTEM_PYTHON:-false}
 
 if [[ $_ == $0 ]]
 then
@@ -17,8 +18,8 @@ function realpath() {
 
 
 if [ -z ${CI_TEST} ]; then
-    if hash python3.10 2>/dev/null && [[ $( source /etc/os-release; echo $VERSION_ID ) == 18.04 ]]; then
-        # if on 18.04 with 3.10 installed, use cchq-3.10
+    if ! $USE_SYSTEM_PYTHON && hash python3.10 2>/dev/null && [[ $( source /etc/os-release; echo $VERSION_ID ) == 18.04 ]]; then
+        # if on 18.04 with 3.10 installed, use cchq-3.10 unless $USE_SYSTEM_PYTHON is true
         CCHQ_VIRTUALENV=$CCHQ_VIRTUALENV-3.10
         VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
     fi
