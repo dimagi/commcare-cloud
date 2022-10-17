@@ -38,6 +38,11 @@ if [ -z ${CI_TEST} ]; then
     source $VENV/bin/activate
 fi
 
+if [[ $BIONIC_USE_SYSTEM_PYTHON == true ]]; then
+    echo "BIONIC_USE_SYSTEM_PYTHON should only be used temporarily when it is necessary to use Python 3.6 on 18.04."
+    echo "Please remove this variable from your environment when you are able to use Python 3.10 again."
+fi
+
 if [ -n "${BASH_SOURCE[0]}" ] && [ -z "${BASH_SOURCE[0]##*init.sh*}" ]
 then
     # this script is being run from a file on disk, presumably from within commcare-cloud repo
