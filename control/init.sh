@@ -39,7 +39,8 @@ if [ -z ${CI_TEST} ]; then
 fi
 
 if [[ $BIONIC_USE_SYSTEM_PYTHON == true ]]; then
-    echo "BIONIC_USE_SYSTEM_PYTHON should only be used temporarily when it is necessary to use Python 3.6 on 18.04."
+    echo "The variable BIONIC_USE_SYSTEM_PYTHON is set in your environment."
+    echo "This variable should only be used temporarily when it is absolutely necessary to use Python 3.6 on 18.04."
     echo "Please remove this variable from your environment when you are able to use Python 3.10 again."
 fi
 
