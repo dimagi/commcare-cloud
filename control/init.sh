@@ -2,7 +2,7 @@
 CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
 VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
 NO_INPUT=0
-USE_SYSTEM_PYTHON=${USE_SYSTEM_PYTHON:-false}
+BIONIC_USE_SYSTEM_PYTHON=${BIONIC_USE_SYSTEM_PYTHON:-false}
 
 if [[ $_ == $0 ]]
 then
@@ -18,14 +18,14 @@ function realpath() {
 
 
 if [ -z ${CI_TEST} ]; then
-    if [[ $USE_SYSTEM_PYTHON == true ]] && hash python3.10 2>/dev/null && [[ $( source /etc/os-release; echo $VERSION_ID ) == 18.04 ]]; then
-        # if on 18.04 with 3.10 installed, use cchq-3.10 unless $USE_SYSTEM_PYTHON is true
+    if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null && [[ $( source /etc/os-release; echo $VERSION_ID ) == 18.04 ]]; then
+        # if on 18.04 with 3.10 installed, use cchq-3.10 unless $BIONIC_USE_SYSTEM_PYTHON is true
         CCHQ_VIRTUALENV=$CCHQ_VIRTUALENV-3.10
         VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
     fi
     # check if a virtualenv at $VENV exists yet, and create if not
     if [[ ! -f $VENV/bin/activate ]]; then
-        if hash python3.10 2>/dev/null; then
+        if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null; then
             echo "Creating a python3.10 virtual environment named ${CCHQ_VIRTUALENV}"
             # use venv because 3.10 setup includes installing python3.10-venv
             python3.10 -m venv $VENV
