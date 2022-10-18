@@ -15,8 +15,8 @@ postgresql_log_directory: "{{ postgresql_data_dir }}/pg_log"
 postgresql_recovery_conf: "{{ postgresql_data_dir }}/recovery.conf"
 postgresql_num_logs_to_keep: 20
 postgresql_wal_level: 'hot_standby'
-pgstandby_wal_keep_segments: "{% if postgresql_version is version('13', '<') %} '8'  {% endif %}"  
-postgresql_wal_keep_segments: "{% if postgresql_version is version('13', '<') %} '8'  {% endif %}" 
+pgstandby_wal_keep_segments: 8  
+postgresql_wal_keep_segments: 8 
 postgresql_wal_keep_size: "{% if postgresql_version is version('13', '>=') %} 128MB  {% endif %}"
 pgstandby_wal_keep_size: "{% if postgresql_version is version('13', '>=') %} 128MB {% endif %}"
 postgresql_archive_timeout: 300
