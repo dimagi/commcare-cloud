@@ -68,7 +68,7 @@ servers:
     az: "b"
     volume_size: 40
     group: "hq_webworkers"
-    os: ubuntu
+    os: bionic 
     count: 6
     server_auto_recovery: true
 
