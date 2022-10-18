@@ -188,7 +188,11 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
             f.write(render_template(template_file, context, template_root))
 
 
-def compact_waf_regexes(patterns, compactible_affixes=None):
+def compact_waf_regexes(patterns, compactible_affixes=None, max_length=200):
+    """
+    Compact regexes into as few as possible regexes each of which is no longer
+    than `max_length` characters
+    """
     compactible_affixes = COMPACTIBLE_AFFIXES if compactible_affixes is None else compactible_affixes
     patterns_grouped_by_affix = defaultdict(list)
     non_matching_patterns = []
@@ -204,8 +208,8 @@ def compact_waf_regexes(patterns, compactible_affixes=None):
     intermediate_compacted_regexes = [
         f'{prefix}({regex}){suffix}'
         for (prefix, suffix), patterns in patterns_grouped_by_affix.items()
-        for regex in compact_waf_regexes_simply(patterns, max_length=200-len(prefix + suffix) - 2)
-    ] + compact_waf_regexes_simply(non_matching_patterns)
+        for regex in compact_waf_regexes_simply(patterns, max_length=max_length-len(prefix + suffix) - 2)
+    ] + compact_waf_regexes_simply(non_matching_patterns, max_length=max_length)
     # sort compacted patterns shortest to longest
     intermediate_compacted_regexes.sort(key=lambda r: len(r))
     # attempt to further compact where possible
@@ -213,7 +217,7 @@ def compact_waf_regexes(patterns, compactible_affixes=None):
     while intermediate_compacted_regexes:
         shortest = intermediate_compacted_regexes[0]
         longest = intermediate_compacted_regexes[-1]
-        if len(shortest) + len(longest) + 1 > 200 or len(intermediate_compacted_regexes) == 1:
+        if len(shortest) + len(longest) + 1 > max_length or len(intermediate_compacted_regexes) == 1:
             # the longest item can't get compacted any further
             # (or there is only one left)
             # so add it to the final list
@@ -233,10 +237,6 @@ COMPACTIBLE_AFFIXES = (
 
 
 def compact_waf_regexes_simply(patterns, max_length=200):
-    """
-    Compact regexes into as few as possible regexes each of which is no longer
-    than 200 characters
-    """
     compacted_regexes = []
     regex_buffer = ''
     for pattern in patterns:
