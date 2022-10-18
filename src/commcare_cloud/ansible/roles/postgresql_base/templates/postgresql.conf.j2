@@ -69,7 +69,12 @@ wal_keep_segments = {{ pgstandby_wal_keep_segments }}
 {% else %}
 wal_keep_segments = {{ postgresql_wal_keep_segments }}
 {% endif %}
-
+#postgres upgrade v13 changes
+{% if postgresql_version is version('13', '>=') %}
+   wal_keep_size = {{ postgresql_wal_keep_segments }}
+{% elif is_pg_standby and postgresql_version is version('13', '<=') %}
+   wal_keep_size = {{ pgstandby_wal_keep_segments }}
+{% endif %} 
 # REPLICATION
 
 hot_standby = on    # ignored on masters
