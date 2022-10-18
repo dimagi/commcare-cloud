@@ -42,7 +42,7 @@ servers:
     count: 6
     server_auto_recovery: true
 
-  - server_name: "web_ai1{i}-production"
+  - server_name: "web_a1{i}-production"
     server_instance_type: c5.2xlarge
     network_tier: "app-private"
     az: "a"
