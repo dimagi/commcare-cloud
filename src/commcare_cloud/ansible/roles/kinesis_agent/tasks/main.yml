@@ -1,25 +1,24 @@
-- name: Check if Service Exists
-  stat: 'path=/etc/init.d/aws-kinesis-agent'
-  register: kinesis_status
+- name: create temporary build directory
+  tempfile:
+    state: directory
+    suffix: kinesis_repo
+  register: temp_dir
+  when: (kinesis_flows | length)
+
+- name: Pull source repo
+  git:
+    repo: "https://github.com/awslabs/amazon-kinesis-agent.git"
+    dest: "{{ temp_dir.path }}"
+    version: "2.0.6"
+    recursive: yes
+    accept_hostkey: yes
+    update: yes
+  register: git_task
+  when: (kinesis_flows | length) and temp_dir.path is defined
+
 
 - name: Install, configure kinesis-agent
   block:
-    - name: create temporary build directory
-      tempfile:
-        state: directory
-        suffix: kinesis_repo
-      register: temp_dir
-
-    - name: Pull source repo
-      git:
-        repo: "https://github.com/awslabs/amazon-kinesis-agent.git"
-        dest: "{{ temp_dir.path }}"
-        version: "1.1.4.2"
-        recursive: yes
-        accept_hostkey: yes
-        update: yes
-      register: git_task
-      when: temp_dir.path is defined
 
     - name: Install from script
       shell:
@@ -37,7 +36,7 @@
         state: absent
       when: temp_dir.path is defined
 
-  when: (kinesis_flows | length) and (not kinesis_status.stat.exists)
+  when: (kinesis_flows | length) and git_task.changed
   tags: kinesis-agent
 
 - name: Install, configure kinesis-agent

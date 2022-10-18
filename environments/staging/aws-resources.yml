@@ -2,8 +2,8 @@ celery3-staging: 10.201.10.216
 celery3-staging.instance_id: i-0c544ab25e0364153
 celery_a0-staging: 10.201.10.232
 celery_a0-staging.instance_id: i-0b026baa6469e2354
-control1-staging: 10.201.10.170
-control1-staging.instance_id: i-04ed8ae39462cca8f
+control2-staging: 10.201.10.17
+control2-staging.instance_id: i-029e59cea6b6485dc
 couch13-staging: 10.201.41.223
 couch13-staging.instance_id: i-0bb571d1765a241dc
 couch15-staging: 10.201.42.109
@@ -14,8 +14,8 @@ couch_alb-staging: internal-couch-alb-staging-546646078.us-east-1.elb.amazonaws.
 efs_staging-efs: fs-9e8f8369.efs.us-east-1.amazonaws.com
 es10-staging: 10.201.41.31
 es10-staging.instance_id: i-08c2645edf582d4b6
-es11-staging: 10.201.41.188
-es11-staging.instance_id: i-0246aecdf95372900
+es12-staging: 10.201.41.120
+es12-staging.instance_id: i-0af798b05d79c2507
 es6-staging: 10.201.40.126
 es6-staging.instance_id: i-0161d2187f667e405
 es7-staging: 10.201.40.107
@@ -54,10 +54,10 @@ proxy2-staging: 10.201.10.72
 proxy2-staging.instance_id: i-01e26fa1de2365635
 proxy3-staging: 10.201.10.97
 proxy3-staging.instance_id: i-015d3723f1019a4f7
-rabbit2-staging: 10.201.10.239
-rabbit2-staging.instance_id: i-01bfeae5f4febaddf
-rabbit4-staging: 10.201.11.17
-rabbit4-staging.instance_id: i-0eae4b3b4acdacbf0
+rabbit_a0-staging: 10.201.10.144
+rabbit_a0-staging.instance_id: i-0d7e4372b83c5fef4
+rabbit_b0-staging: 10.201.11.176
+rabbit_b0-staging.instance_id: i-03ed9f03d635c825e
 web7-staging: 10.201.11.170
 web7-staging.instance_id: i-00c29bc6df3a1f47b
 web8-staging: 10.201.11.222

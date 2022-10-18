@@ -71,13 +71,14 @@ couch_alb
 [couchdb2_alb:children]
 couch_alb
 
-{{ __rabbit2__ }}
-{{ __rabbit4__ }}
+{{ __rabbit_a0__ }}
+{{ __rabbit_b0__ }}
+
 
 [rabbitmq:children]
 # Amazon EC2
-rabbit2
-rabbit4
+rabbit_a0
+rabbit_b0
 
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=1
 {{ __kafka5__ }} kafka_broker_id=4 zookeeper_server_id=4
@@ -131,7 +132,7 @@ formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 
 {{ __es10__ }} elasticsearch_node_name=es10-staging elasticsearch_node_zone=us-east-1b
 
-{{ __es11__ }} elasticsearch_node_name=es11-staging elasticsearch_node_zone=us-east-1b
+{{ __es12__ }} elasticsearch_node_name=es12-staging elasticsearch_node_zone=us-east-1b
 
 [elasticsearch:children]
 # Amazon EC2
@@ -153,7 +154,7 @@ es8
 es10
 
 [es_coordinator:children]
-es11
+es12
 
 [es_coordinator:vars]
 elasticsearch_master=false
@@ -166,10 +167,10 @@ proxy
 pillowtop
 webworkers
 
-{{ __control1__ }}
+{{ __control2__ }}
 
 [control:children]
-control1
+control2
 
 [ansible_skip:children]
 rds_pg0

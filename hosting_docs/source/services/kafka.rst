@@ -211,7 +211,7 @@ Refer to `Kafka Upgrade documentation <https://kafka.apache.org/documentation/#u
        $ cchq <env> ap deploy_kafka.yml
 
 #. 
-   Update the Kafka version number in ``public.yml``
+   Update the Kafka version number and Scala version in ``public.yml``. For right Scala version please refer the `Kafka documentation <https://kafka.apache.org/downloads>`.
 
     **environments/\ :raw-html-m2r:`<env>`\ /public.yml**
 

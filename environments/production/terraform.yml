@@ -15,13 +15,14 @@ openvpn_image: ami-5e73b923
 
 ec2_metadata_tokens_required: yes
 servers:
-  - server_name: "control2-production"
+  - server_name: "control3-production"
     server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
-    volume_size: 40
+    volume_size: 60
+    volume_encrypted: yes
     group: "control"
-    os: ubuntu_pro_bionic
+    os: bionic
 
   - server_name: "djangomanage_a0-production"
     server_instance_type: m6a.xlarge
@@ -92,21 +93,21 @@ servers:
     server_auto_recovery: true
 
   - server_name: "esmaster6-production"
-    server_instance_type: r5.xlarge
+    server_instance_type: r6a.large
     network_tier: "db-private"
     az: "b"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     volume_size: 40
   - server_name: "esmaster7-production"
-    server_instance_type: r5.xlarge
+    server_instance_type: r6a.large
     network_tier: "db-private"
     az: "b"
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     volume_size: 40
   - server_name: "esmaster8-production"
-    server_instance_type: r5.xlarge
+    server_instance_type: r6a.large
     network_tier: "db-private"
     az: "a"
     group: "elasticsearch"
@@ -135,35 +136,53 @@ servers:
     os: ubuntu_pro_bionic
     count: 7
 
-  - server_name: "escoordinator1-production"
-    server_instance_type: r5.2xlarge
+  - server_name: "es_a1{i}-production"
+    server_instance_type: r5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
+    volume_encrypted: yes
     block_device:
-      volume_size: 1260
+      volume_size: 2100
     group: "elasticsearch"
-    os: ubuntu_pro_bionic
+    os: bionic
+    count: 2
 
-  - server_name: "escoordinator2-production"
-    server_instance_type: r5.2xlarge
+  - server_name: "es_b1{i}-production"
+    server_instance_type: r5.4xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 30
+    volume_encrypted: yes
     block_device:
-      volume_size: 1260
+      volume_size: 2100
     group: "elasticsearch"
-    os: ubuntu_pro_bionic
+    os: bionic
+    count: 2
 
-  - server_name: "escoordinator3-production"
-    server_instance_type: r5.2xlarge
+  - server_name: "escoordinator_a0-production"
+    server_instance_type: r6a.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    group: "elasticsearch"
+    os: bionic
+
+  - server_name: "escoordinator_b0-production"
+    server_instance_type: r6a.2xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    group: "elasticsearch"
+    os: bionic
+
+  - server_name: "escoordinator_c0-production"
+    server_instance_type: r6a.2xlarge
     network_tier: "db-private"
     az: "c"
     volume_size: 30
-    block_device:
-      volume_size: 1260
     group: "elasticsearch"
-    os: ubuntu_pro_bionic
+    os: bionic
 
   - server_name: "couch11-production"
     server_instance_type: c6i.12xlarge
@@ -256,13 +275,14 @@ servers:
     os: ubuntu_pro_bionic
     count: 1
 
-  - server_name: "formplayer_c{i}-production"
+  - server_name: "formplayer_a{i}-production"
     server_instance_type: r6a.2xlarge
     network_tier: "app-private"
-    az: "b"
-    volume_size: 400
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
     group: "formplayer"
-    os: ubuntu_pro_bionic
+    os: bionic
     count: 21
     server_auto_recovery: true
 
@@ -338,33 +358,36 @@ servers:
     os: ubuntu_pro_bionic
 
 proxy_servers:
-  - server_name: "proxy_a1-production"
+  - server_name: "proxy_a2-production"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
-    volume_size: 40
+    volume_size: 80
+    volume_encrypted: yes
     group: "proxy"
-    os: ubuntu_pro_bionic
+    os: bionic
 
-  - server_name: "proxy_b1-production"
+  - server_name: "proxy_b2-production"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "b"
-    volume_size: 40
+    volume_size: 80
+    volume_encrypted: yes
     group: "proxy"
-    os: ubuntu_pro_bionic
+    os: bionic
 
-  - server_name: "proxy_c1-production"
+  - server_name: "proxy_c2-production"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "c"
     volume_size: 80
+    volume_encrypted: yes
     group: "proxy"
-    os: ubuntu_pro_bionic
-
+    os: bionic
+  
 rds_instances:
   - identifier: "pgmain1-production"
-    instance_type: "db.m5.8xlarge"
+    instance_type: "db.m5.4xlarge"
     storage: 2000
     multi_az: true
     engine_version: "10.17"
@@ -386,7 +409,7 @@ rds_instances:
 
   - identifier: "pgucr0-production"
     instance_type: "db.m5.2xlarge"
-    storage: 500
+    storage: 850
     max_storage: 5000
     multi_az: true
     engine_version: "10.17"
@@ -463,9 +486,9 @@ rds_instances:
       log_min_duration_statement: -1
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
-  - identifier: "pgsynclog1-production"
-    instance_type: "db.m5.2xlarge"
-    storage: 5000
+  - identifier: "pgsynclog2-production"
+    instance_type: "db.m5.xlarge"
+    storage: 1000
     multi_az: true
     engine_version: "10.17"
     params:
@@ -482,9 +505,9 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
       vacuum_cost_limit: 2000
 
-  - identifier: "pgformplayer1-production"
-    instance_type: "db.m5.2xlarge"
-    storage: 1500
+  - identifier: "pgformplayer2-production"
+    instance_type: "db.m5.xlarge"
+    storage: 200
     multi_az: true
     engine_version: "10.17"
     params:
@@ -502,7 +525,7 @@ rds_instances:
       track_io_timing: 1
 
   - identifier: "pgauditcare0-production"
-    instance_type: "db.t3.2xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 10000
     multi_az: true
     engine_version: "10.17"
@@ -556,7 +579,7 @@ elasticache:
 
 elasticache_cluster:
   create: yes
-  cache_node_type: "cache.r5.2xlarge"
+  cache_node_type: "cache.r6g.xlarge"
   cache_engine_version: "6.x"
   cache_prameter_group: "default.redis6.x"
   automatic_failover: true

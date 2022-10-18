@@ -1,41 +1,15 @@
 - name: Remove disabled custom checks
   file:
-    path: "/etc/dd-agent/checks.d/{{ item.name }}.py"
+    path: "/etc/datadog-agent/checks.d/{{ item.name }}.py"
     state: absent
   notify: restart datadog
-  when: not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED) or not item.enabled
+  when: not DATADOG_ENABLED or not item.enabled
   loop: "{{ datadog_custom_integrations }}"
-  tags:
-    - datadog_integrations
 
-- name: remove datadog integration configs
+- name: Remove datadog integration configs
   file:
-    path: "/etc/dd-agent/conf.d/{{ item.name }}.yaml"
+    path: "/etc/datadog-agent/conf.d/{{ item.name }}.d/conf.yaml"
     state: absent
   notify: restart datadog
-  tags:
-    - datadog_integrations
-  when: item is defined and not item.enabled or not DATADOG_INTEGRATIONS_ENABLED|default(DATADOG_ENABLED)
-  with_items:
-    - {"name": "elastic", "enabled": "{{ datadog_integration_elastic }}"}
-    - {"name": "gunicorn", "enabled": "{{ datadog_integration_gunicorn }}"}
-    - {"name": "kafka", "enabled": "{{ datadog_integration_kafka }}"}
-    - {"name": "kafka_consumer", "enabled": "{{ datadog_integration_kafka_consumer }}"}
-    - {"name": "nginx", "enabled": "{{ datadog_integration_nginx }}"}
-    - {"name": "pgbouncer", "enabled": "{{ datadog_integration_pgbouncer }}"}
-    - {"name": "pgbouncer_custom", "enabled": "{{ datadog_integration_pgbouncer_custom }}"}
-    - {"name": "process", "enabled": "{{ datadog_integration_postgres_receiver }}"}
-    - {"name": "postgres", "enabled": "{{ datadog_integration_postgres }}"}
-    - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}
-    - {"name": "redisdb", "enabled": "{{ datadog_integration_redisdb }}"}
-    - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
-    - {"name": "jmx", "enabled": "{{ datadog_integration_jmx }}"}
-    - {"name": "celery", "enabled": "{{ app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"}
-    - {"name": "couch", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
-    - {"name": "couch_custom", "enabled": "{{ inventory_hostname == couchdb2_first_host }}"}
-    - {"name": "http_check", "enabled": "{{ datadog_integration_http and inventory_hostname == groups.proxy[0] }}"}
-    - {"name": "haproxy", "enabled": "{{ datadog_integration_haproxy }}"}
-    - {"name": "disk", "enabled": "{{ datadog_integration_disk_check }}"}
-    - {"name": "swift", "enabled": "{{ datadog_swift_instances }}"}
-    # "Datadog Integration Graveyard": list globally removed integrations below
-    - {"name": "couchdb2", "enabled": false}
+  when: item is defined and not item.enabled or not DATADOG_ENABLED
+  with_items: "{{ datadog_integrations }}"

@@ -27,6 +27,7 @@ celery_processes:
       prefetch_multiplier: 1
     case_rule_queue:
       concurrency: 3
+      prefetch_multiplier: 1
     celery:
       concurrency: 4
     celery_periodic:
@@ -52,7 +53,8 @@ celery_processes:
       concurrency: 1
     repeat_record_queue:
       pooling: gevent
-      concurrency: 3
+      concurrency: 6
+      prefetch_multiplier: 1
     saved_exports_queue:
       concurrency: 3
       prefetch_multiplier: 1
@@ -130,6 +132,8 @@ pillows:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
+    CaseSearchToElasticsearchPillowBackfill:
+      num_processes: 12
   pillow_b000:
     xform-pillow:
       num_processes: 33

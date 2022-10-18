@@ -1,6 +1,6 @@
 # Catch any TERM or INT signals and remove any
 # Prometheus metrics for the process.
-# Does nothing if the "prometheus_multiproc_dir" environment
+# Does nothing if the "PROMETHEUS_MULTIPROC_DIR" environment
 # variable is not set or is blank.
 #
 # Upon catching of the signal the 'wait' command below
@@ -14,8 +14,8 @@
 #
 # See Section 12.2.2 of http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_12_02.html
 #
-trap 'echo "Cleaning Prometheus metrics from ${prometheus_multiproc_dir} for PID $PID";
-    rm ${prometheus_multiproc_dir}/*${PID}*;
+trap 'echo "Cleaning Prometheus metrics from ${PROMETHEUS_MULTIPROC_DIR} for PID $PID";
+    rm ${PROMETHEUS_MULTIPROC_DIR}/*${PID}*;
     echo "Killing child process $PID";
     kill $PID;
     echo "done";' TERM INT

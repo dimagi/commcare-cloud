@@ -705,8 +705,6 @@ BASE_ADDRESS = '{{ SITE_HOST }}'
 J2ME_ADDRESS = '{{ localsettings.J2ME_ADDRESS }}'
 {% endif %}
 
-CLOUDCARE_BASE_URL = '{{ localsettings.get('CLOUDCARE_BASE_URL', '') }}'
-
 EMAIL_USE_TLS = {{ localsettings.EMAIL_USE_TLS }}
 
 BANK_ROUTING_NUMBER_ACH = '{{ BANK_ROUTING_NUMBER_ACH }}'
@@ -868,14 +866,6 @@ BYPASS_SESSIONS_FOR_MOBILE = {{localsettings.get('BYPASS_SESSIONS_FOR_MOBILE', F
 
 {% if localsettings.get('SUMOLOGIC_URL') %}
 SUMOLOGIC_URL = '{{ localsettings.SUMOLOGIC_URL }}'
-{% endif %}
-
-{% if localsettings.get('OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE') %}
-OBFUSCATE_PASSWORD_FOR_NIC_COMPLIANCE = True
-{% endif %}
-
-{% if localsettings.get('RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE') %}
-RESTRICT_USED_PASSWORDS_FOR_NIC_COMPLIANCE = True
 {% endif %}
 
 {% if localsettings.get('DAYS_TO_KEEP_DEVICE_LOGS') %}
@@ -1115,4 +1105,12 @@ USE_PHONE_ENTRIES = {{ localsettings.USE_PHONE_ENTRIES }}
 
 {% if localsettings.CHECK_REPEATERS_PARTITION_COUNT is defined %}
 CHECK_REPEATERS_PARTITION_COUNT = {{ localsettings.CHECK_REPEATERS_PARTITION_COUNT }}
+{% endif %}
+
+{% if ABDM_CLIENT_ID %}
+ABDM_CLIENT_ID = {{ ABDM_CLIENT_ID }}
+{% endif %}
+
+{% if ABDM_CLIENT_SECRET %}
+ABDM_CLIENT_SECRET = {{ ABDM_CLIENT_SECRET }}
 {% endif %}

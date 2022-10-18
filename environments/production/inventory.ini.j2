@@ -1,11 +1,11 @@
-{{ __proxy_a1__ }}
-{{ __proxy_b1__ }}
-{{ __proxy_c1__ }}
+{{ __proxy_a2__ }}
+{{ __proxy_b2__ }}
+{{ __proxy_c2__ }}
 
 [proxy:children]
-proxy_a1
-proxy_b1
-proxy_c1
+proxy_a2
+proxy_b2
+proxy_c2
 
 {{ __web_a__ }}
 
@@ -45,7 +45,7 @@ mobile_webworkers
 
 {{ __rds_pgmain1__ }}
 
-{{ __rds_pgformplayer1__ }}
+{{ __rds_pgformplayer2__ }}
 
 {{ __rds_pgucr0__ }}
 
@@ -59,7 +59,7 @@ mobile_webworkers
 
 {{ __rds_pgshard5__ }}
 
-{{ __rds_pgsynclog1__ }}
+{{ __rds_pgsynclog2__ }}
 
 {{ __rds_pgauditcare0__ }}
 
@@ -77,14 +77,14 @@ mobile_webworkers
 
 [remote_postgresql:children]
 rds_pgmain1
-rds_pgformplayer1
+rds_pgformplayer2
 rds_pgucr0
 rds_pgshard1
 rds_pgshard2
 rds_pgshard3
 rds_pgshard4
 rds_pgshard5
-rds_pgsynclog1
+rds_pgsynclog2
 rds_pgauditcare0
 
 [postgresql:children]
@@ -156,10 +156,10 @@ swap_size=8G
 pillow_a
 pillow_b
 
-{{ __formplayer_c__ }}
+{{ __formplayer_a__ }}
 
 [formplayer:children]
-formplayer_c
+formplayer_a
 
 [formplayer:vars]
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
@@ -170,14 +170,14 @@ cchq_gid=1026
 use_formplayer_debug_options=true
 
 [formplayer_debug:children]
-formplayer_c000
-formplayer_c014
+formplayer_a005
+formplayer_a009
 
 [formplayer_with_monit:vars]
 use_monit_for_formplayer=true
 
 [formplayer_with_monit:children]
-formplayer_c014
+formplayer_a009
 
 [shared_efs_client_host:children]
 celery
@@ -188,7 +188,11 @@ webworkers
 
 {{ __es_a__ }}
 
+{{ __es_a1__ }}
+
 {{ __es_b__ }}
+
+{{ __es_b1__ }}
 
 {{ __esmaster6__ }} elasticsearch_node_name=esmaster6
 
@@ -196,11 +200,11 @@ webworkers
 
 {{ __esmaster8__ }} elasticsearch_node_name=esmaster8
 
-{{ __escoordinator1__ }} elasticsearch_node_name=escoordinator1 elasticsearch_node_zone=us-east-1a
+{{ __escoordinator_a0__ }} elasticsearch_node_name=escoordinator_a0 elasticsearch_node_zone=us-east-1a
 
-{{ __escoordinator2__ }} elasticsearch_node_name=escoordinator2 elasticsearch_node_zone=us-east-1b
+{{ __escoordinator_b0__ }} elasticsearch_node_name=escoordinator_b0 elasticsearch_node_zone=us-east-1b
 
-{{ __escoordinator3__ }} elasticsearch_node_name=escoordinator3 elasticsearch_node_zone=us-east-1c
+{{ __escoordinator_c0__ }} elasticsearch_node_name=escoordinator_c0 elasticsearch_node_zone=us-east-1c
 
 [es_master:children]
 esmaster6
@@ -214,6 +218,8 @@ elasticsearch_data=false
 [es_data:children]
 es_a
 es_b
+es_a1
+es_b1
 
 [es_a:vars]
 elasticsearch_node_zone=us-east-1a
@@ -221,6 +227,11 @@ elasticsearch_node_zone=us-east-1a
 [es_b:vars]
 elasticsearch_node_zone=us-east-1b
 
+[es_a1:vars]
+elasticsearch_node_zone=us-east-1a
+
+[es_b1:vars]
+elasticsearch_node_zone=us-east-1b
 
 [elasticsearch:children]
 es_master
@@ -228,9 +239,9 @@ es_data
 es_coordinator
 
 [es_coordinator:children]
-escoordinator1
-escoordinator2
-escoordinator3
+escoordinator_a0
+escoordinator_b0
+escoordinator_c0
 
 [es_coordinator:vars]
 elasticsearch_master=false
@@ -254,10 +265,10 @@ couch_alb
 [couchdb2_alb:children]
 couch_alb
 
-{{ __control2__ }}
+{{ __control3__ }}
 
 [control:children]
-control2
+control3
 
 {{ __djangomanage_a0__ }}
 

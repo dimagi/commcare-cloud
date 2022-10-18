@@ -41,6 +41,7 @@ elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a7
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
 elasticsearch_delete_old_logs: True
+es_plugins_phonetic_enabled: True
 
 nofile_limit: 65536
 
@@ -143,6 +144,7 @@ localsettings:
   BIGCOUCH_QUORUM_COUNT: 2
   CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE: "reminder_case_update_bulk_queue"
   CHECK_REPEATERS_PARTITION_COUNT: 4
+  COMMCARE_ANALYTICS_HOST: "https://commcare-analytics.dimagi.com"
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_REINDEX_SCHEDULE: {'timedelta': {'minutes': 5}}
@@ -177,6 +179,14 @@ localsettings:
     auditcare: auditcare
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
+  LOCAL_PILLOWS:
+    reindex:
+      - name: 'CaseSearchToElasticsearchPillowBackfill'
+        class: 'pillowtop.pillow.interface.ConstructedPillow'
+        instance: 'corehq.pillows.case_search.get_case_search_to_elasticsearch_pillow'
+        params:
+          index_name: 'case_search_2022-10-04'
+          index_alias: 'case_search-1'
   PILLOWTOP_MACHINE_ID: hqdb0
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes

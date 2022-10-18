@@ -1,1 +1,5 @@
 datadog_integration_elastic: true
+# This fixes the issue described here https://forum.dimagi.com/t/elasticsearch-installation-error/9247
+# and is used in places where we cannot tolerate undefined values and "|default" them on the fly,
+# i.e. |map('extract', ...)
+elasticsearch_master_value: '{{ elasticsearch_master|default(False) }}'

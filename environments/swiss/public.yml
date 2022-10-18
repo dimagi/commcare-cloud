@@ -1,5 +1,4 @@
 DATADOG_ENABLED: True
-DATADOG_INTEGRATIONS_ENABLED: True
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
@@ -9,9 +8,13 @@ elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a7
 
 #elasticsearch_node_name: '??'
 elastcsearch_backup_days: 2
+es_plugins_phonetic_enabled: True
 
 redis_engine_version: 6.2.4
 redis_maxmemory: 4gb
+
+zookeeper_version: 3.7.1
+zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
 
 ssh_allow_password: False
 
@@ -33,6 +36,12 @@ blobdb_snapshot_bucket: commcare-almanach-backup
 couchdb_snapshot_bucket: commcare-almanach-backup
 
 aws_versioning_enabled: false
+
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags: nginx-error
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
 
 KSPLICE_ACTIVE: yes
 
@@ -95,7 +104,6 @@ localsettings:
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
-  CLOUDCARE_BASE_URL: http://localhost:9010
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"

@@ -45,7 +45,10 @@
   hosts: all_commcarehq
   become: true
   roles:
-    - {role: datadog, tags: datadog, when: DATADOG_ENABLED|bool}
+    - role: datadog
+      when: DATADOG_ENABLED|bool
+      tags: 
+        - datadog
   tags: common
 
 - name: Configure monit

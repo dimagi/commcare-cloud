@@ -1,6 +1,8 @@
 #! /bin/bash
 CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
 VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
+NO_INPUT=0
+BIONIC_USE_SYSTEM_PYTHON=${BIONIC_USE_SYSTEM_PYTHON:-false}
 
 if [[ $_ == $0 ]]
 then
@@ -30,9 +32,19 @@ if [ -z ${CI_TEST} ]; then
 fi
 
 if [ -z ${CI_TEST} ]; then
-    if [ ! -f $VENV/bin/activate ]; then
-        if [ -f /usr/bin/python3.10 ]; then
-            # create python3.10 virtualenv
+    # if on 18.04 with 3.10 installed, use cchq-3.10 unless $BIONIC_USE_SYSTEM_PYTHON is true
+    if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null && [[ $( source /etc/os-release; echo $VERSION_ID ) == 18.04 ]]; then
+        # only append 3.10 if it is not already in the name
+        if [[ $CCHQ_VIRTUALENV != *"3.10"* ]]; then
+          CCHQ_VIRTUALENV=$CCHQ_VIRTUALENV-3.10
+        fi
+        VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
+    fi
+    # check if a virtualenv at $VENV exists yet, and create if not
+    if [[ ! -f $VENV/bin/activate ]]; then
+        if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null; then
+            echo "Creating a python3.10 virtual environment named ${CCHQ_VIRTUALENV}"
+            # use venv because 3.10 setup includes installing python3.10-venv
             python3.10 -m venv $VENV
         else
             # use virtualenv because `python3 -m venv` requires python3-venv
@@ -41,6 +53,12 @@ if [ -z ${CI_TEST} ]; then
         fi
     fi
     source $VENV/bin/activate
+fi
+
+if [[ $BIONIC_USE_SYSTEM_PYTHON == true ]]; then
+    echo "The variable BIONIC_USE_SYSTEM_PYTHON is set in your environment."
+    echo "This variable should only be used temporarily when it is absolutely necessary to use Python 3.6 on 18.04."
+    echo "Please remove this variable from your environment when you are able to use Python 3.10 again."
 fi
 
 if [ -n "${BASH_SOURCE[0]}" ] && [ -z "${BASH_SOURCE[0]##*init.sh*}" ]
@@ -154,10 +172,13 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
 
-if ! grep -q init-ansible ~/.profile 2>/dev/null; then
-    printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
-    if [ -z ${CI_TEST} ]; then
-        read -t 30 -p "(y/n): " yn
+if [ -z ${CI_TEST} ]; then
+  if ! grep -q init-ansible ~/.profile 2>/dev/null; then
+    if [ $NO_INPUT == 1 ]; then
+      yn='y'
+    else
+      printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
+      read -t 30 -p "(y/n): " yn
     fi
     case $yn in
         [Yy]* )
@@ -173,6 +194,7 @@ if ! grep -q init-ansible ~/.profile 2>/dev/null; then
             printf "${BLUE}echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile${NC}\n"
         ;;
     esac
+  fi
 fi
 
 # It aint pretty, but it gets the job done
