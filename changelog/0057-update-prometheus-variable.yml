@@ -1,0 +1,15 @@
+title: Update Prometheus variable
+key: update-prometheus-variable
+date: 2022-09-15
+optional_per_env: yes
+min_commcare_version: 1c6e67cea56bf44c7252dba76ba0c8160ab635a5
+max_commcare_version:
+context: |
+  If using prometheus, run `update-config` to apply changes to prometheus environment variable.
+
+details: |
+  As of v0.10.0, the prometheus-client python package has deprecated the lower case
+  environment variable `prometheus_multiproc_dir` in favor of an upper case version
+  `PROMETHEUS_MULTIPROC_DIR`.
+update_steps: |
+  Run `cchq <env> update-config` and `cchq <env> fab restart_services` to have this change take effect.
