@@ -71,9 +71,9 @@ wal_keep_segments = {{ postgresql_wal_keep_segments }}
 {% endif %}
 #postgres upgrade v13 changes
 {% if postgresql_version is version('13', '>=') %}
-   wal_keep_size = {{ postgresql_wal_keep_size }}
+wal_keep_size = {{ postgresql_wal_keep_size }}
 {% elif is_pg_standby and postgresql_version is version('13', '>=') %}
-   wal_keep_size = {{ pgstandby_wal_keep_size }}
+wal_keep_size = {{ pgstandby_wal_keep_size }}
 {% endif %} 
 # REPLICATION
 
