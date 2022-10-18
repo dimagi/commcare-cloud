@@ -17,18 +17,12 @@ function realpath() {
 }
 
 if [ -z ${CI_TEST} ]; then
-    if [ -f /usr/bin/python3.10 ]; then
-        # update default virtualenv to 3.10 if installed and set default
-        if [ CCHQ_VIRTUALENV == cchq ]; then
-            CCHQ_VIRTUALENV=cchq-3.10
-            VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
-        fi
-    else
+    if ! hash python3.10 2>/dev/null; then
       #TODO: update date when known
-      echo "On <date_to_update>, 2022, commcare-cloud will only support python 3.10."
-      echo "Follow the instructions in:"
+      echo "On <date_to_update>, 2022, commcare-cloud will require that you use python 3.10."
+      echo "To upgrade, follow the instructions in:"
       echo "   https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#upgrade-to-python3-10"
-  fi
+    fi
 fi
 
 if [ -z ${CI_TEST} ]; then
