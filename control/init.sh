@@ -24,7 +24,7 @@ if [ -z ${CI_TEST} ]; then
         if [[ $CCHQ_VIRTUALENV != *"3.10"* ]]; then
           CCHQ_VIRTUALENV=$CCHQ_VIRTUALENV-3.10
         fi
-        VENV=~/.virtualenvs/CCHQ_VIRTUALENV
+        VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
     fi
     # check if a virtualenv at $VENV exists yet, and create if not
     if [[ ! -f $VENV/bin/activate ]]; then
