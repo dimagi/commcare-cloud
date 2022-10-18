@@ -1,0 +1,3 @@
+cd {{ code_releases }}
+aws s3 cp {{ release_bucket }}/current_release.tar.gz
+tar -xzf current_release.tar.gz
