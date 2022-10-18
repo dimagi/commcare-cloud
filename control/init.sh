@@ -16,6 +16,13 @@ function realpath() {
     python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
 }
 
+if [ -z ${CI_TEST} ]; then
+    if ! hash python3.10 2>/dev/null; then
+      echo "On December 5th, 2022, commcare-cloud will require Python 3.10."
+      echo "To upgrade, follow the instructions in:"
+      echo "   https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#upgrade-to-python-3-10"
+    fi
+fi
 
 if [ -z ${CI_TEST} ]; then
     # if on 18.04 with 3.10 installed, use cchq-3.10 unless $BIONIC_USE_SYSTEM_PYTHON is true
