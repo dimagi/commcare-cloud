@@ -17,8 +17,8 @@ postgresql_num_logs_to_keep: 20
 postgresql_wal_level: 'hot_standby'
 pgstandby_wal_keep_segments: "{% if postgresql_version is version('13', '<') %} '8'  {% endif %}"  
 postgresql_wal_keep_segments: "{% if postgresql_version is version('13', '<') %} '8'  {% endif %}" 
-postgresql_wal_keep_size: "{% if postgresql_version is version('13', '>=') %} {{ (postgresql_wal_keep_segments * 16)|int|abs }}MB {% endif %}"
-pgstandby_wal_keep_size: "{% if postgresql_version is version('13', '>=') %} {{ (pgstandby_wal_keep_segments * 16)|int|abs }}MB {% endif %}"
+postgresql_wal_keep_size: "{% if postgresql_version is version('13', '>=') %} {{ (8 * 16)|int|abs }}MB {% endif %}"
+pgstandby_wal_keep_size: "{% if postgresql_version is version('13', '>=') %} {{ (8 * 16)|int|abs }}MB {% endif %}"
 postgresql_archive_timeout: 300
 postgresql_archive_path: "{{ postgresql_dir_path }}/wal_archive"
 postgresql_archive_command: "cp %p {{ postgresql_dir_path }}/wal_archive/%f"
