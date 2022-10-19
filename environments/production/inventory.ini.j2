@@ -13,6 +13,12 @@ proxy_c2
 
 {{ __web_c__ }}
 
+{{ __web_a1__ }}
+
+{{ __web_b1__ }}
+
+{{ __web_c1__ }}
+
 {{ __web_m_a__ }}
 
 {{ __web_m_b__ }}
@@ -26,6 +32,9 @@ proxy
 web_a
 web_b
 web_c
+web_a1
+web_b1
+web_c1
 
 [mobile_webworkers:children]
 web_m_a
@@ -188,7 +197,11 @@ webworkers
 
 {{ __es_a__ }}
 
+{{ __es_a1__ }}
+
 {{ __es_b__ }}
+
+{{ __es_b1__ }}
 
 {{ __esmaster6__ }} elasticsearch_node_name=esmaster6
 
@@ -214,6 +227,8 @@ elasticsearch_data=false
 [es_data:children]
 es_a
 es_b
+es_a1
+es_b1
 
 [es_a:vars]
 elasticsearch_node_zone=us-east-1a
@@ -221,6 +236,11 @@ elasticsearch_node_zone=us-east-1a
 [es_b:vars]
 elasticsearch_node_zone=us-east-1b
 
+[es_a1:vars]
+elasticsearch_node_zone=us-east-1a
+
+[es_b1:vars]
+elasticsearch_node_zone=us-east-1b
 
 [elasticsearch:children]
 es_master

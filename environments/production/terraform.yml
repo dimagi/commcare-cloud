@@ -42,6 +42,16 @@ servers:
     count: 6
     server_auto_recovery: true
 
+  - server_name: "web_a1{i}-production"
+    server_instance_type: c6a.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    group: "hq_webworkers"
+    os: bionic
+    count: 6
+    server_auto_recovery: true
+
   - server_name: "web_b{i}-production"
     server_instance_type: c5.2xlarge
     network_tier: "app-private"
@@ -52,6 +62,16 @@ servers:
     count: 6
     server_auto_recovery: true
 
+  - server_name: "web_b1{i}-production"
+    server_instance_type: c6a.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+    group: "hq_webworkers"
+    os: bionic 
+    count: 6
+    server_auto_recovery: true
+
   - server_name: "web_c{i}-production"
     server_instance_type: c5.2xlarge
     network_tier: "app-private"
@@ -59,6 +79,16 @@ servers:
     volume_size: 40
     group: "hq_webworkers"
     os: ubuntu_pro_bionic
+    count: 6
+    server_auto_recovery: true
+
+  - server_name: "web_c1{i}-production"
+    server_instance_type: c6a.2xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 40
+    group: "hq_webworkers"
+    os: bionic
     count: 6
     server_auto_recovery: true
 
@@ -135,6 +165,30 @@ servers:
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     count: 7
+
+  - server_name: "es_a1{i}-production"
+    server_instance_type: r5.4xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 2100
+    group: "elasticsearch"
+    os: bionic
+    count: 2
+
+  - server_name: "es_b1{i}-production"
+    server_instance_type: r5.4xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    block_device:
+      volume_size: 2100
+    group: "elasticsearch"
+    os: bionic
+    count: 2
 
   - server_name: "escoordinator_a0-production"
     server_instance_type: r6a.2xlarge
