@@ -27,7 +27,7 @@ def test_compact_waf_regexes__single_pattern():
            == [r'^/a/([\w\.:-]+)/(api/v([\d\.]+)/form/)$']
 
 
-def test_compact_waf_regexes_simply__two_patterns():
+def test_compact_waf_regexes__two_patterns():
     assert compact_waf_regexes([
         r'^/a/([\w\.:-]+)/api/v([\d\.]+)/form/$',
         r'^/a/([\w\.:-]+)/api/v0\.6/case(?:/([\w\-,]+))?/?$'
