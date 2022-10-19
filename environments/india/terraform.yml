@@ -322,7 +322,7 @@ servers:
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "a"
-    volume_size: 80
+    volume_size: 30
     volume_encrypted: yes
     volume_type: "gp3"
     group: "rabbitmq"
@@ -332,7 +332,7 @@ servers:
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "c"
-    volume_size: 80
+    volume_size: 30
     volume_encrypted: yes
     volume_type: "gp3"
     group: "rabbitmq"
