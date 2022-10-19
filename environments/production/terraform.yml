@@ -43,7 +43,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_a1{i}-production"
-    server_instance_type: c5.2xlarge
+    server_instance_type: c6a.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -63,7 +63,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_b1{i}-production"
-    server_instance_type: c5.2xlarge
+    server_instance_type: c6a.2xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
@@ -83,7 +83,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_c1{i}-production"
-    server_instance_type: c5.2xlarge
+    server_instance_type: c6a.2xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 40
