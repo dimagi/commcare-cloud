@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-10-19** [Upgrade to Python 3.10](0058-upgrade-to-python-3-10.md)
+Follow these steps to install and use Python 3.10 on your control machine(s) by December 5th, 2022.
+
+
+---
 #### **2022-09-15** [Update Prometheus variable](0057-update-prometheus-variable.md)
 If using prometheus, run `update-config` to apply changes to prometheus environment variable.
 
