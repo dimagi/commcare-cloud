@@ -598,6 +598,8 @@ pgbouncer_nlbs:
     targets:
       - pgbouncer8-production
       - pgbouncer9-production
+      - pgbouncer10-production
+      - pgbouncer11-production
   - name: pgsynclogs_nlb-production
     targets:
       - pgbouncer8-production
