@@ -416,6 +416,20 @@ servers:
     volume_size: 80
     group: "postgresql"
     os: ubuntu_pro_bionic
+  - server_name: "pgbouncer10-production"
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: bionic
+  - server_name: "pgbouncer11-production"
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: bionic
 
 proxy_servers:
   - server_name: "proxy_a2-production"
@@ -612,8 +626,8 @@ pgbouncer_nlbs:
       - pgbouncer7-production
   - name: pgucr_nlb-production
     targets:
-      - pgbouncer8-production
-      - pgbouncer9-production
+      - pgbouncer10-production
+      - pgbouncer11-production
   - name: pgsynclogs_nlb-production
     targets:
       - pgbouncer8-production
