@@ -50,7 +50,9 @@ elasticsearch_data=false
 {{ __kafka3__ }} kafka_broker_id=2 zookeeper_server_id=3
 {{ __kafka_a0__ }} kafka_broker_id=3 zookeeper_server_id=4
 {{ __rabbit_a3__ }}
+{{ __rabbit_a4__ }}
 {{ __rabbit_c4__ }}
+{{ __rabbit_c5__ }}
 {{ __pgbouncer0__ }}
 {{ __pgbouncer1__ }} pgbouncer_processes=2
 {{ __pgbouncer2__ }} pgbouncer_processes=2
@@ -93,6 +95,8 @@ pgshard_nlb
 [rabbitmq:children]
 rabbit_a3
 rabbit_c4
+rabbit_a4
+rabbit_c5
 
 [zookeeper:children]
 kafka2
