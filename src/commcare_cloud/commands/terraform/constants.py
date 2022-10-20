@@ -6,8 +6,7 @@
 from __future__ import unicode_literals
 COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/api/v([\d\.]+)/form/$
-^/a/([\w\.:-]+)/api/v0\.6/case(?:/([\w\-,]+))?/?$
-^/a/([\w\.:-]+)/api/v0\.6/case/bulk-fetch/$
+^/a/([\w\.:-]+)/api/v0\.6/case(?:/([\w-]+))?/?$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/app_logo/([\w\-]+)/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/audio/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/image/$
@@ -34,7 +33,6 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/receiver/secure/([\w-]+)/$
 ^/a/([\w\.:-]+)/receiver/submission/?$
 ^/a/([\w\.:-]+)/reports/export/(case_list_explorer|duplicate_cases)/$
-^/a/([\w\.:-]+)/settings/locations/import/$
 ^/a/([\w\.:-]+)/settings/users/commcare/fields/$
 ^/a/([\w\.:-]+)/settings/users/commcare/upload/$
 ^/a/([\w\.:-]+)/settings/users/web/upload/$

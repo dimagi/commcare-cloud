@@ -13,11 +13,23 @@ proxy_c2
 
 {{ __web_c__ }}
 
+{{ __web_a1__ }}
+
+{{ __web_b1__ }}
+
+{{ __web_c1__ }}
+
 {{ __web_m_a__ }}
 
 {{ __web_m_b__ }}
 
 {{ __web_m_c__ }}
+
+{{ __web_m_a1__ }}
+
+{{ __web_m_b1__ }}
+
+{{ __web_m_c1__ }}
 
 [logproxy:children]
 proxy
@@ -26,11 +38,17 @@ proxy
 web_a
 web_b
 web_c
+web_a1
+web_b1
+web_c1
 
 [mobile_webworkers:children]
 web_m_a
 web_m_b
 web_m_c
+web_m_a1
+web_m_b1
+web_m_c1
 
 [webworkers:children]
 hq_webworkers
@@ -42,6 +60,8 @@ mobile_webworkers
 {{ __pgbouncer7__ }} pgbouncer_processes=2
 {{ __pgbouncer8__ }} pgbouncer_processes=2
 {{ __pgbouncer9__ }} pgbouncer_processes=2
+{{ __pgbouncer10__ }} pgbouncer_processes=2
+{{ __pgbouncer11__ }} pgbouncer_processes=2
 
 {{ __rds_pgmain1__ }}
 
@@ -98,6 +118,8 @@ pgbouncer6
 pgbouncer7
 pgbouncer8
 pgbouncer9
+pgbouncer10
+pgbouncer11
 pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
