@@ -76,6 +76,11 @@
   stat: path="{{ code_home }}/localsettings.py"
   register: current_localsettings
 
+- name: allow git file transport
+  command: 'git config --global protocol.file.allow always'
+  become: yes
+  become_user: "{{ cchq_user }}"
+
 - name: Clone source repositories
   when: not current_localsettings.stat.exists
   block:
