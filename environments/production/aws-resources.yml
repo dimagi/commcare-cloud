@@ -124,13 +124,7 @@ kafka_b0-production: 10.202.41.213
 kafka_b0-production.instance_id: i-0abddbb0185c5eec9
 kafka_c0-production: 10.202.42.90
 kafka_c0-production.instance_id: i-0a5f1bfb00239c313
-pgauditcare-test-snapshot: pgauditcare-test-snapshot.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgauditcare0-production: pgauditcare0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
-pgauditcare1-test-production: pgauditcare1-test-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
-pgbouncer10-production: 10.202.40.47
-pgbouncer10-production.instance_id: i-0060bcb23d7941807
-pgbouncer11-production: 10.202.40.150
-pgbouncer11-production.instance_id: i-075036a3b3bed700b
 pgbouncer5-production: 10.202.40.79
 pgbouncer5-production.instance_id: i-0fa2adcb1a4a14bd2
 pgbouncer6-production: 10.202.40.64
