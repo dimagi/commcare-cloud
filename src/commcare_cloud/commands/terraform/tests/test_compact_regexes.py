@@ -78,6 +78,7 @@ def _generate_matching_example(pattern):
     TODO: If you add a new regex that uses a "special" pattern not listed here, add it to fix this function
     """
     return pattern \
+        .replace(r'(?:/([\w-]+))?', '') \
         .replace(r'(\w+)', 'onetwothreefour') \
         .replace(r'([\w]+)', 'onetwothreefour') \
         .replace(r'([\w\.:-]+)', 'one.two:three-four') \
