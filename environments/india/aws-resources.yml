@@ -58,12 +58,8 @@ pillow3-india: 10.203.10.137
 pillow3-india.instance_id: i-0c33fdd6196a2c63f
 proxy_a0-india: 10.203.10.133
 proxy_a0-india.instance_id: i-0a0c55ded3b461e81
-rabbit_a3-india: 10.203.40.201
-rabbit_a3-india.instance_id: i-026e49db58b16bddc
 rabbit_a4-india: 10.203.40.98
 rabbit_a4-india.instance_id: i-09ead3810bb3c1430
-rabbit_c4-india: 10.203.42.241
-rabbit_c4-india.instance_id: i-010be0d6f35087f95
 rabbit_c5-india: 10.203.42.97
 rabbit_c5-india.instance_id: i-013c38bc4a9d6f7e7
 web2-india: 10.203.10.230
