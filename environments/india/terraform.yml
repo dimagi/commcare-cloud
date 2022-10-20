@@ -298,25 +298,25 @@ servers:
     group: "postgresql"
     os: ubuntu_pro_bionic
 
-  - server_name: "rabbit_a3-india"
+  - server_name: "rabbit_a4-india"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "a"
-    volume_size: 80
+    volume_size: 30
     volume_encrypted: yes
     volume_type: "gp3"
     group: "rabbitmq"
-    os: ubuntu_pro_bionic
+    os: bionic
 
-  - server_name: "rabbit_c4-india"
+  - server_name: "rabbit_c5-india"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "c"
-    volume_size: 80
+    volume_size: 30
     volume_encrypted: yes
     volume_type: "gp3"
     group: "rabbitmq"
-    os: ubuntu_pro_bionic
+    os: bionic
 
 proxy_servers:
   - server_name: "proxy_a0-india"
