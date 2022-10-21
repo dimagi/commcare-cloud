@@ -2,7 +2,7 @@ dev_users:
   present:
   - pkasha
   - pviswa
-  - mbibek
+  - bmohanty
   absent:
   - schinthala
   - rganne
