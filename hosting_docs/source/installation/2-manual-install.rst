@@ -181,7 +181,7 @@ Prepare all machines for automated deploy
 Upgrade to Python 3.10
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting on December 5th, 2022, commcare-cloud will require Python 3.10. Follow the steps below to properly install it.
+Starting on December 12th, 2022, commcare-cloud will require Python 3.10. Follow the steps below to properly install it.
 
 
 ::

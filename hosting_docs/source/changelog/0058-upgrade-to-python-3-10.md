@@ -12,12 +12,12 @@ This change is not known to be dependent on any particular version of CommCare.
 
 
 ## Change Context
-Follow these steps to install and use Python 3.10 on your control machine(s) by December 5th, 2022.
+Follow these steps to install and use Python 3.10 on your control machine(s) by December 12th, 2022.
 
 ## Details
 As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
 libraries we are requiring that commcare-cloud run on Python 3.10. Python 3.6 has reached end of life,
-and we are requiring that everyone move to Python 3.10 by December 5th, 2022.
+and we are requiring that everyone move to Python 3.10 by December 12th, 2022.
 
 ## Steps to update
 Follow the steps below to properly install Python 3.10 and its dependencies.
