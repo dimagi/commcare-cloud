@@ -46,8 +46,8 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/log_email_event/([\w]+)/?$
 ^/telerivet/in/?$
 ^/telerivet/status/([\w\-]+)/$
-""".strip().split()
+""".strip().split('\n')
 
 COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX = """
 ^/trumpia/sms/([\w-]+)/?$
-""".strip().split()
+""".strip().split('\n')

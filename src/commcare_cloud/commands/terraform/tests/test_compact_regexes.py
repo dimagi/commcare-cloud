@@ -81,6 +81,7 @@ def _generate_matching_example(pattern):
         .replace(r'(?:/([\w-]+))?', '') \
         .replace(r'(\w+)', 'onetwothreefour') \
         .replace(r'([\w]+)', 'onetwothreefour') \
+        .replace(r'([ \w-]+)', 'one two three four') \
         .replace(r'([\w\.:-]+)', 'one.two:three-four') \
         .replace(r'([\d\.]+)', '0.5') \
         .replace(r'([\w-]+)', 'one-two-three-four') \
