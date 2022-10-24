@@ -12,11 +12,31 @@ terraform {
 resource "aws_backup_plan" "business_continuity_plan" {
   name = "BusinessContinuity"
 
-    rule {
+  rule {
+    completion_window        = 10080
+    enable_continuous_backup = false
+    rule_name                = "Daily"
+    schedule                 = "cron(0 12 ? * * *)"
+    start_window             = 60
+    target_vault_name        = aws_backup_vault.business_continuity_local_vault.name
+
+    copy_action {
+      destination_vault_arn = aws_backup_vault.business_continuity_remote_vault.arn
+
+      lifecycle {
+        delete_after = var.daily_retention
+      }
+    }
+
+    lifecycle {
+      delete_after = 1
+    }
+  }
+  rule {
       completion_window        = 10080
       enable_continuous_backup = false
-      rule_name                = "Daily"
-      schedule                 = "cron(0 12 ? * * *)"
+      rule_name                = "Monthly"
+      schedule                 = "cron(40 21 24 * ? *)"
       start_window             = 60
       target_vault_name        = aws_backup_vault.business_continuity_local_vault.name
 
@@ -24,7 +44,7 @@ resource "aws_backup_plan" "business_continuity_plan" {
         destination_vault_arn = aws_backup_vault.business_continuity_remote_vault.arn
 
         lifecycle {
-          delete_after = var.daily_retention
+          delete_after = var.monthly_retention * 30
         }
       }
 

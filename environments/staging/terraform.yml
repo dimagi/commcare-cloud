@@ -19,7 +19,7 @@ backup_plan:
   remote_vault_region: us-west-1
   outside_account_id: '767699164629'
   daily_retention: 7
-  monthly_retention: 0
+  monthly_retention: 3
 
 servers:
   - server_name: "control2-staging"
