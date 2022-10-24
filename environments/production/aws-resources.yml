@@ -169,6 +169,10 @@ rabbit6-production: 10.202.41.30
 rabbit6-production.instance_id: i-0569bddf5623378f1
 rabbit7-production: 10.202.40.119
 rabbit7-production.instance_id: i-0871b69becd08856f
+rabbit8-production: 10.202.41.233
+rabbit8-production.instance_id: i-0f3bac0b68c140d4d
+rabbit9-production: 10.202.40.174
+rabbit9-production.instance_id: i-0fb543773b8c2fe2f
 web_a1000-production: 10.202.10.11
 web_a1000-production.instance_id: i-0a42a19b2055bfaf9
 web_a1001-production: 10.202.10.155
