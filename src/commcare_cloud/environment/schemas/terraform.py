@@ -101,6 +101,7 @@ class ServerConfig(jsonobject.JsonObject):
     group = jsonobject.StringProperty()
     os = jsonobject.StringProperty(required=True, choices=['trusty', 'bionic', 'ubuntu_pro_bionic'])
     server_auto_recovery = jsonobject.BooleanProperty(default=False)
+    enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
     count = jsonobject.IntegerProperty(default=None)
 
     @classmethod
@@ -146,6 +147,7 @@ class BlockDevice(jsonobject.JsonObject):
     volume_type = jsonobject.StringProperty(default='gp3', choices=['gp2', 'gp3', 'io1', 'standard'])
     volume_size = jsonobject.IntegerProperty(required=True)
     encrypted = jsonobject.BooleanProperty(default=True, required=True)
+    enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
 
 
 class RdsInstanceConfig(jsonobject.JsonObject):
