@@ -74,12 +74,6 @@
         tasks_from: formplayer
   tags: services
 
-- name: Airflow Supervisor Config
-  hosts: airflow_scheduler
-  tasks:
-    - include_tasks: roles/commcarehq/tasks/airflow.yml
-  tags: services
-
 - name: Management Command Supervisor Config
   hosts: commcarehq
   tasks:
@@ -118,7 +112,6 @@
           - "{{ pillowtop_managed_files|default([]) }}"
           - "{{ proxy_managed_files|default([]) }}"
           - "{{ webworker_managed_files|default([]) }}"
-          - "{{ airflow_managed_files|default([]) }}"
           - "{{ formplayer_managed_files|default([]) }}"
           - "{{ mgmt_cmd_managed_files|default([]) }}"
           - "{{ prometheus_managed_files|default([]) }}"

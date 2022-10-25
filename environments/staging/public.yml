@@ -34,7 +34,7 @@ backup_es_s3: False
 postgres_s3: False
 
 # pg_repack
-pg_repack_version: 1.4.3
+pg_repack_version: 1.4.7
 
 filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}-timing.log"

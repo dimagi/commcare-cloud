@@ -123,15 +123,6 @@
         name: dimagi.commcare_prometheus.pgbouncer_exporter
   tags: pgbouncer_exporter
 
-- name: Prometheus Airflow Exporter
-  hosts: airflow
-  become: true
-  tasks: 
-    - import_role:
-         name: dimagi.commcare_prometheus.airflow_exporter
-      when: inventory_hostname == groups.airflow.0
-  tags: airflow_exporter
-
 - name: Prometheus Statsd Exporter
   hosts: logproxy
   become: true

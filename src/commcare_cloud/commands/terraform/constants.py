@@ -6,7 +6,8 @@
 from __future__ import unicode_literals
 COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/api/v([\d\.]+)/form/$
-^/a/([\w\.:-]+)/api/v0\.6/case(?:/([\w-]+))?/?$
+^/a/([\w\.:-]+)/api/v0\.6/case(?:/([\w\-,]+))?/?$
+^/a/([\w\.:-]+)/api/v0\.6/case/bulk-fetch/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/app_logo/([\w\-]+)/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/audio/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/image/$
@@ -33,8 +34,10 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/receiver/secure/([\w-]+)/$
 ^/a/([\w\.:-]+)/receiver/submission/?$
 ^/a/([\w\.:-]+)/reports/export/(case_list_explorer|duplicate_cases)/$
+^/a/([\w\.:-]+)/settings/locations/import/$
 ^/a/([\w\.:-]+)/settings/users/commcare/fields/$
 ^/a/([\w\.:-]+)/settings/users/commcare/upload/$
+^/a/([\w\.:-]+)/settings/users/join/([ \w-]+)/$
 ^/a/([\w\.:-]+)/settings/users/web/upload/$
 ^/formplayer/new-form$
 ^/formplayer/validate_form$
@@ -43,8 +46,8 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/log_email_event/([\w]+)/?$
 ^/telerivet/in/?$
 ^/telerivet/status/([\w\-]+)/$
-""".strip().split()
+""".strip().split('\n')
 
 COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX = """
 ^/trumpia/sms/([\w-]+)/?$
-""".strip().split()
+""".strip().split('\n')

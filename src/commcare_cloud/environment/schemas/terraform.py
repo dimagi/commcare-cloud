@@ -30,6 +30,7 @@ class TerraformConfig(jsonobject.JsonObject):
     vpn_connections = jsonobject.ListProperty(lambda: VpnConnectionConfig)
     external_routes = jsonobject.ListProperty(lambda: ExternalRouteConfig)
     ec2_metadata_tokens_required = jsonobject.BooleanProperty(default=True)
+    backup_plan = jsonobject.ObjectProperty(lambda: BackupPlan, default=None)
     servers = jsonobject.ListProperty(lambda: ServerConfig)
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)
@@ -86,6 +87,17 @@ class ExternalRouteConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     cidr_block = jsonobject.StringProperty()
     gateway_id = jsonobject.StringProperty()
+
+
+class BackupPlan(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    local_vault_name = jsonobject.StringProperty()
+    remote_vault_name = jsonobject.StringProperty()
+    remote_vault_region = jsonobject.StringProperty()
+    outside_account_id = jsonobject.StringProperty()
+    org_id = jsonobject.StringProperty()
+    daily_retention = jsonobject.IntegerProperty()
+    monthly_retention = jsonobject.IntegerProperty()
 
 
 class ServerConfig(jsonobject.JsonObject):

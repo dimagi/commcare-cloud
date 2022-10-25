@@ -88,9 +88,3 @@ dbs:
       pgbouncer_hosts:
         - pgbouncer1
         - pgbouncer2
-    - name: airflow
-      django_migrate: False
-      pgbouncer_endpoint: pgshard_nlb
-      pgbouncer_hosts:
-        - pgbouncer1
-        - pgbouncer2
