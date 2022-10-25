@@ -24,7 +24,6 @@ resource "aws_backup_plan" "business_continuity_plan" {
       destination_vault_arn = aws_backup_vault.business_continuity_remote_vault.arn
 
       lifecycle {
-        cold_storage_after = 0
         delete_after = var.daily_retention
       }
     }
@@ -45,7 +44,6 @@ resource "aws_backup_plan" "business_continuity_plan" {
       destination_vault_arn = aws_backup_vault.business_continuity_remote_vault.arn
 
       lifecycle {
-        cold_storage_after = 1
         delete_after = var.monthly_retention
       }
     }
