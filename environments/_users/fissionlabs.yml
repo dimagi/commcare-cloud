@@ -2,6 +2,7 @@ dev_users:
   present:
   - pkasha
   - pviswa
+  - bmohanty
   absent:
   - schinthala
   - rganne

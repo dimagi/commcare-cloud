@@ -7,30 +7,30 @@ proxy_a2
 proxy_b2
 proxy_c2
 
-{{ __web_a__ }}
+{{ __web_a1__ }}
 
-{{ __web_b__ }}
+{{ __web_b1__ }}
 
-{{ __web_c__ }}
+{{ __web_c1__ }}
 
-{{ __web_m_a__ }}
+{{ __web_m_a1__ }}
 
-{{ __web_m_b__ }}
+{{ __web_m_b1__ }}
 
-{{ __web_m_c__ }}
+{{ __web_m_c1__ }}
 
 [logproxy:children]
 proxy
 
 [hq_webworkers:children]
-web_a
-web_b
-web_c
+web_a1
+web_b1
+web_c1
 
 [mobile_webworkers:children]
-web_m_a
-web_m_b
-web_m_c
+web_m_a1
+web_m_b1
+web_m_c1
 
 [webworkers:children]
 hq_webworkers
@@ -42,6 +42,8 @@ mobile_webworkers
 {{ __pgbouncer7__ }} pgbouncer_processes=2
 {{ __pgbouncer8__ }} pgbouncer_processes=2
 {{ __pgbouncer9__ }} pgbouncer_processes=2
+{{ __pgbouncer10__ }} pgbouncer_processes=2
+{{ __pgbouncer11__ }} pgbouncer_processes=2
 
 {{ __rds_pgmain1__ }}
 
@@ -98,6 +100,8 @@ pgbouncer6
 pgbouncer7
 pgbouncer8
 pgbouncer9
+pgbouncer10
+pgbouncer11
 pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
@@ -113,12 +117,12 @@ pgsynclogs_nlb
 pgshard_nlb
 couch_alb
 
-{{ __rabbit6__ }}
-{{ __rabbit7__ }}
+{{ __rabbit8__ }}
+{{ __rabbit9__ }}
 
 [rabbitmq:children]
-rabbit6
-rabbit7
+rabbit8
+rabbit9
 
 [rabbitmq:vars]
 swap_size=2G
@@ -188,7 +192,11 @@ webworkers
 
 {{ __es_a__ }}
 
+{{ __es_a1__ }}
+
 {{ __es_b__ }}
+
+{{ __es_b1__ }}
 
 {{ __esmaster6__ }} elasticsearch_node_name=esmaster6
 
@@ -214,6 +222,8 @@ elasticsearch_data=false
 [es_data:children]
 es_a
 es_b
+es_a1
+es_b1
 
 [es_a:vars]
 elasticsearch_node_zone=us-east-1a
@@ -221,6 +231,11 @@ elasticsearch_node_zone=us-east-1a
 [es_b:vars]
 elasticsearch_node_zone=us-east-1b
 
+[es_a1:vars]
+elasticsearch_node_zone=us-east-1a
+
+[es_b1:vars]
+elasticsearch_node_zone=us-east-1b
 
 [elasticsearch:children]
 es_master

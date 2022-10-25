@@ -1,4 +1,4 @@
-postgresql_version: '9.6'
+postgresql_version: '14'
 postgresql_cluster_name: 'main'
 postgresql_port: 5432
 postgresql_ssl_enabled: False
@@ -15,8 +15,10 @@ postgresql_log_directory: "{{ postgresql_data_dir }}/pg_log"
 postgresql_recovery_conf: "{{ postgresql_data_dir }}/recovery.conf"
 postgresql_num_logs_to_keep: 20
 postgresql_wal_level: 'hot_standby'
-pgstandby_wal_keep_segments: 8
-postgresql_wal_keep_segments: 8
+pgstandby_wal_keep_segments: 8  
+postgresql_wal_keep_segments: 8 
+postgresql_wal_keep_size: "{% if postgresql_version is version('13', '>=') %} 128MB  {% endif %}"
+pgstandby_wal_keep_size: "{% if postgresql_version is version('13', '>=') %} 128MB {% endif %}"
 postgresql_archive_timeout: 300
 postgresql_archive_path: "{{ postgresql_dir_path }}/wal_archive"
 postgresql_archive_command: "cp %p {{ postgresql_dir_path }}/wal_archive/%f"

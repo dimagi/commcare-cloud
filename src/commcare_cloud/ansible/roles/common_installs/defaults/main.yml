@@ -1,2 +1,2 @@
-postgresql_version: '9.6'
+postgresql_version: '14'
 use_chrony: False

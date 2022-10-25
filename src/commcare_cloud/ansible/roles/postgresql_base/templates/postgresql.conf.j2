@@ -64,12 +64,17 @@ random_page_cost = {{ postgresql_random_page_cost }}
 checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
 wal_buffers = {{ postgresql_wal_buffers }}
 checkpoint_warning = 120s
-{% if is_pg_standby %}
-wal_keep_segments = {{ pgstandby_wal_keep_segments }}
-{% else %}
+{% if postgresql_version is version('13', '<') %}
 wal_keep_segments = {{ postgresql_wal_keep_segments }}
+{% elif is_pg_standby and postgresql_version is version('13', '<') %}
+wal_keep_segments = {{ pgstandby_wal_keep_segments }}
 {% endif %}
-
+#postgres upgrade v13 changes
+{% if postgresql_version is version('13', '>=') %}
+wal_keep_size = {{ postgresql_wal_keep_size }}
+{% elif is_pg_standby and postgresql_version is version('13', '>=') %}
+wal_keep_size = {{ pgstandby_wal_keep_size }}
+{% endif %} 
 # REPLICATION
 
 hot_standby = on    # ignored on masters
