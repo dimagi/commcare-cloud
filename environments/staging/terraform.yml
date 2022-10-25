@@ -13,6 +13,14 @@ vpc_begin_range: "10.201"
 
 openvpn_image: ami-5e73b923
 
+backup_plan:
+  local_vault_name: "BusinessContinuity_Staging_East-1"
+  remote_vault_name: "BusinessContinuity_Staging_West-1"
+  remote_vault_region: us-west-1
+  outside_account_id: '767699164629'
+  daily_retention: 7
+  monthly_retention: 3
+
 servers:
   - server_name: "control2-staging"
     server_instance_type: "t3.medium"
@@ -330,6 +338,7 @@ rds_instances:
     params:
       shared_preload_libraries: pg_stat_statements
       track_io_timing: 1
+    enable_cross_region_backup: yes
 
   - identifier: "pgformplayer0-staging"
     instance_type: "db.t3.small"

@@ -79,6 +79,24 @@ resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
   }
 }
 
+{% if backup_plan %}
+module "backup_plan" {
+  source = "./modules/backup"
+  environment = var.environment
+  region = var.region
+  account_id = {{ account_id|tojson }}
+  outside_account_id = {{ backup_plan.outside_account_id|tojson }}
+  local_vault_name = {{ backup_plan.local_vault_name|tojson }}
+  remote_vault_name = {{ backup_plan.remote_vault_name|tojson }}
+  remote_vault_region = {{ backup_plan.remote_vault_region|tojson }}
+  daily_retention = {{ backup_plan.daily_retention|tojson }}
+  monthly_retention = {{ backup_plan.monthly_retention|tojson }}
+  providers = {
+    aws.remote_region = aws.{{ backup_plan.remote_vault_region }}
+  }
+}
+{% endif %}
+
 module "server_iam_role" {
   source = "./modules/server/iam"
   environment = var.environment
