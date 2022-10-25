@@ -120,8 +120,6 @@ resource "aws_backup_selection" "business_continuity_plan_selection" {
   name         = "BusinessContinuity"
   plan_id      = aws_backup_plan.business_continuity_plan.id
 
-  resources = []
-
   selection_tag {
     key   = "BackupPlan"
     type  = "STRINGEQUALS"
