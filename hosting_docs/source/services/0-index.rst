@@ -15,6 +15,5 @@ CommCareHQ uses many services such as Django, PostgreSQL, BlobDB, Kafka and many
    /services/pillowtop
    /services/rabbitmq/rabbitmq
    /services/redis/redis
-   /services/airflow
    /services/bitly.rst
    /services/keepalived.rst
