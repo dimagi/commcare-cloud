@@ -256,6 +256,25 @@ servers:
     group: "celery"
     os: ubuntu_pro_bionic
     count: 4
+
+  - server_name: "celery_b1{i}-production"
+    server_instance_type: r5.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "celery"
+    os: bionic
+    count: 4
+
+  - server_name: "celery_c1{i}-production"
+    server_instance_type: r5.2xlarge
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 80
+    group: "celery"
+    os: bionic
+    count: 4
  
   - server_name: "pillow_a{i}-production"
     server_instance_type: r5.12xlarge
