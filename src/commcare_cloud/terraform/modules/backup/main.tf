@@ -82,15 +82,13 @@ resource "aws_backup_vault_policy" "business_continuity_local_vault_policy" {
     "Version": "2012-10-17",
     "Statement": [
         {
+            "Sid": "Allow ${var.outside_account_id} to copy into ${aws_backup_vault.business_continuity_local_vault.name}",
             "Effect": "Allow",
-            "Principal": "*",
+            "Principal": {
+                "AWS": "arn:aws:iam::${var.outside_account_id}:root"
+            },
             "Action": "backup:CopyIntoBackupVault",
-            "Resource": "*",
-            "Condition": {
-                "StringEquals": {
-                    "aws:PrincipalOrgID": "${var.org_id}"
-                }
-            }
+            "Resource": "*"
         }
     ]
 }
@@ -106,28 +104,12 @@ resource "aws_backup_vault_policy" "business_continuity_remote_vault_policy" {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": "backup:CopyIntoBackupVault",
-            "Resource": "*",
-            "Condition": {
-                "StringEquals": {
-                    "aws:PrincipalOrgID": "${var.org_id}"
-                }
-            }
-        },
-        {
-            "Sid": "0cfc19f4-bec0-4a37-8bf8-6d15b3650f66",
+            "Sid": "Allow ${var.outside_account_id} to copy into ${aws_backup_vault.business_continuity_remote_vault.name}",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "AROATDKQYKLTTBKSMZN3Z"
+                "AWS": "arn:aws:iam::${var.outside_account_id}:root"
             },
-            "Action": [
-                "backup:CopyIntoBackupVault",
-                "backup:CopyFromBackupVault",
-                "backup:DeleteRecoveryPoint",
-                "backup:ListRecoveryPointsByBackupVault"
-            ],
+            "Action": "backup:CopyIntoBackupVault",
             "Resource": "*"
         }
     ]

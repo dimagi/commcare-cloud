@@ -20,7 +20,6 @@ backup_plan:
   remote_vault_name: "BusinessContinuity_Production_West-1"
   remote_vault_region: us-west-1
   outside_account_id: '213307118311'
-  org_id: o-i0368aveln
   daily_retention: 7
   monthly_retention: 365
 

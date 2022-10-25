@@ -86,7 +86,6 @@ module "backup_plan" {
   region = var.region
   account_id = {{ account_id|tojson }}
   outside_account_id = {{ backup_plan.outside_account_id|tojson }}
-  org_id = {{ backup_plan.org_id|tojson }}
   local_vault_name = {{ backup_plan.local_vault_name|tojson }}
   remote_vault_name = {{ backup_plan.remote_vault_name|tojson }}
   remote_vault_region = {{ backup_plan.remote_vault_region|tojson }}
