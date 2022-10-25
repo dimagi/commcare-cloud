@@ -36,7 +36,7 @@ STATES = {
 
 MONIT_MANAGED_SERVICES = ['postgresql', 'pgbouncer', 'redis', 'couchdb2']
 
-COMMCARE_INVENTORY_GROUPS = ['webworkers', 'celery', 'pillowtop', 'formplayer', 'proxy', 'airflow']
+COMMCARE_INVENTORY_GROUPS = ['webworkers', 'celery', 'pillowtop', 'formplayer', 'proxy']
 
 
 @attr.s

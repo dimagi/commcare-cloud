@@ -13,7 +13,6 @@ ROLES_ALL_SRC = [
     'django_celery',
     'django_pillowtop',
     'staticfiles',
-    'airflow',
     'django_manage'
 ]
 ROLES_ALL_SERVICES = [
@@ -23,7 +22,6 @@ ROLES_ALL_SERVICES = [
     'django_pillowtop',
     'formplayer',
     'staticfiles',
-    'airflow'
 ]
 ROLES_CELERY = ['django_monolith', 'django_celery']
 ROLES_PILLOWTOP = ['django_monolith', 'django_pillowtop']
@@ -36,7 +34,6 @@ ROLES_ELASTICSEARCH = ['elasticsearch', 'django_monolith']
 ROLES_DEPLOY = ['deploy', 'django_monolith']
 ROLES_MANAGE = ['django_manage']
 ROLES_CONTROL = ['control']
-ROLES_AIRFLOW = ['airflow']
 
 RELEASE_RECORD = 'RELEASES.txt'
 KEEP_UNTIL_PREFIX = 'KEEP_UNTIL__'
