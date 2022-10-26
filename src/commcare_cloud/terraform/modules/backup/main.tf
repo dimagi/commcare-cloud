@@ -24,7 +24,6 @@ resource "aws_backup_plan" "business_continuity_plan" {
       destination_vault_arn = aws_backup_vault.business_continuity_remote_vault.arn
 
       lifecycle {
-        cold_storage_after = 0
         delete_after = var.daily_retention
       }
     }
@@ -45,7 +44,6 @@ resource "aws_backup_plan" "business_continuity_plan" {
       destination_vault_arn = aws_backup_vault.business_continuity_remote_vault.arn
 
       lifecycle {
-        cold_storage_after = 1
         delete_after = var.monthly_retention
       }
     }
@@ -82,15 +80,13 @@ resource "aws_backup_vault_policy" "business_continuity_local_vault_policy" {
     "Version": "2012-10-17",
     "Statement": [
         {
+            "Sid": "Allow ${var.outside_account_id} to copy into ${aws_backup_vault.business_continuity_local_vault.name}",
             "Effect": "Allow",
-            "Principal": "*",
+            "Principal": {
+                "AWS": "arn:aws:iam::${var.outside_account_id}:root"
+            },
             "Action": "backup:CopyIntoBackupVault",
-            "Resource": "*",
-            "Condition": {
-                "StringEquals": {
-                    "aws:PrincipalOrgID": "${var.org_id}"
-                }
-            }
+            "Resource": "*"
         }
     ]
 }
@@ -106,28 +102,12 @@ resource "aws_backup_vault_policy" "business_continuity_remote_vault_policy" {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": "backup:CopyIntoBackupVault",
-            "Resource": "*",
-            "Condition": {
-                "StringEquals": {
-                    "aws:PrincipalOrgID": "${var.org_id}"
-                }
-            }
-        },
-        {
-            "Sid": "0cfc19f4-bec0-4a37-8bf8-6d15b3650f66",
+            "Sid": "Allow ${var.outside_account_id} to copy into ${aws_backup_vault.business_continuity_remote_vault.name}",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "AROATDKQYKLTTBKSMZN3Z"
+                "AWS": "arn:aws:iam::${var.outside_account_id}:root"
             },
-            "Action": [
-                "backup:CopyIntoBackupVault",
-                "backup:CopyFromBackupVault",
-                "backup:DeleteRecoveryPoint",
-                "backup:ListRecoveryPointsByBackupVault"
-            ],
+            "Action": "backup:CopyIntoBackupVault",
             "Resource": "*"
         }
     ]
@@ -139,8 +119,6 @@ resource "aws_backup_selection" "business_continuity_plan_selection" {
   iam_role_arn = "arn:aws:iam::${var.account_id}:role/service-role/AWSBackupDefaultServiceRole"
   name         = "BusinessContinuity"
   plan_id      = aws_backup_plan.business_continuity_plan.id
-
-  resources = []
 
   selection_tag {
     key   = "BackupPlan"
