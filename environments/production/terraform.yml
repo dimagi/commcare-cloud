@@ -108,6 +108,7 @@ servers:
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     volume_size: 40
+    enable_cross_region_backup: yes
   - server_name: "esmaster7-production"
     server_instance_type: r6a.large
     network_tier: "db-private"
@@ -115,6 +116,7 @@ servers:
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     volume_size: 40
+    enable_cross_region_backup: yes
   - server_name: "esmaster8-production"
     server_instance_type: r6a.large
     network_tier: "db-private"
@@ -122,6 +124,7 @@ servers:
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     volume_size: 40
+    enable_cross_region_backup: yes
   
   - server_name: "es_a{i}-production"
     server_instance_type: r5.4xlarge
@@ -130,6 +133,7 @@ servers:
     volume_size: 30
     block_device:
       volume_size: 1890
+      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     count: 5
@@ -141,6 +145,7 @@ servers:
     volume_size: 30
     block_device:
       volume_size: 2370
+      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     count: 5
@@ -153,6 +158,7 @@ servers:
     volume_encrypted: yes
     block_device:
       volume_size: 2100
+      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: bionic
     count: 2
@@ -165,6 +171,7 @@ servers:
     volume_encrypted: yes
     block_device:
       volume_size: 2100
+      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: bionic
     count: 2
@@ -214,6 +221,7 @@ servers:
     block_device:
       volume_size: 8000
       encrypted: yes
+      enable_cross_region_backup: yes
     group: "couchdb2"
     os: bionic
 

@@ -65,6 +65,7 @@ servers:
       volume_size: 80
       encrypted: true
       volume_type: "gp3"
+      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: ubuntu_pro_bionic
 
@@ -79,6 +80,7 @@ servers:
       volume_size: 80
       encrypted: true
       volume_type: "gp3"
+      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: ubuntu_pro_bionic
 
@@ -91,6 +93,7 @@ servers:
     block_device:
       volume_size: 80
       volume_type: "gp3"
+      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: ubuntu_pro_bionic
 
@@ -103,6 +106,7 @@ servers:
     block_device:
       volume_size: 80
       volume_type: "gp3"
+      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: ubuntu_pro_bionic
 
@@ -115,6 +119,7 @@ servers:
     block_device:
       volume_size: 80
       volume_type: "gp3"
+      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: ubuntu_pro_bionic
 
@@ -128,6 +133,7 @@ servers:
     block_device:
       volume_size: 80
       volume_type: "gp3"
+      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: bionic
 
@@ -191,6 +197,7 @@ servers:
       volume_size: 150
       encrypted: true
       volume_type: "gp3"
+      enable_cross_region_backup: yes
     group: "couchdb2"
     os: ubuntu_pro_bionic
 
