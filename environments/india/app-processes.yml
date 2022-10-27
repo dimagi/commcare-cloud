@@ -72,5 +72,3 @@ pillows:
     user-pillow:
       num_processes: 1
       processor_chunk_size: 1
-    CaseSearchToElasticsearchPillowBackfill:
-      num_processes: 2

@@ -154,14 +154,6 @@ localsettings:
     auditcare: auditcare
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
-  LOCAL_PILLOWS:
-    reindex:
-      - name: 'CaseSearchToElasticsearchPillowBackfill'
-        class: 'pillowtop.pillow.interface.ConstructedPillow'
-        instance: 'corehq.pillows.case_search.get_case_search_to_elasticsearch_pillow'
-        params:
-          index_name: 'case_search_2022-10-04'
-          index_alias: 'case_search-1'
   PILLOWTOP_MACHINE_ID: indiacloud
   RATE_LIMIT_SUBMISSIONS: yes
   SES_CONFIGURATION_SET: india-email-events
