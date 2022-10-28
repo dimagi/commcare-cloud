@@ -34,3 +34,10 @@
       state: link
       force: yes
       follow: no
+
+  - name: Re-read supervisor config
+    command: supervisorctl reread
+
+  - name: Restart formplayer service
+    supervisorctl: name=all state=restarted
+    # on a monolith this actually restarts all services
