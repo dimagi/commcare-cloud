@@ -28,11 +28,11 @@ resource "aws_s3_bucket_public_access_block" "deploy_archive_bucket" {
 
 resource "aws_iam_role_policy" "access_deploy_archive" {
   name = "AccessDeployArchive"
-  role = ${var.commcare_server_role_id}
+  role = var.commcare_server_role_id
 
   policy = <<POLICY
 {
-    "Version": "2022-09-29",
+    "Version": "2012-10-17",
     "Statement": [
         {
             "Sid": "Terraform0",
