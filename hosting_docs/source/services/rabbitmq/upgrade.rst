@@ -3,11 +3,11 @@ Upgrading RabbitMQ
 ==================
 
 
-* Current default RabbitMQ version: 3.6.15
-* Example target version:3.8.5-1
+* Current default RabbitMQ version: 3.8.5
+* Example target version: 3.10.7
   ## Dependency on Erlang Version
-* Current default Erlang version: 20.2.2
-* Example target version: 23.0.2 
+* Current default Erlang version: 1:23.0.2-2 
+* Example target version: 1:25.0.4-1 
 
 Refer to `RabbitMQ Erlang Version Requirements <https://www.rabbitmq.com/which-erlang.html>`_ for more details.
 Refer to `RabbitMQ Upgrade documentation <https://www.rabbitmq.com/upgrade.html#rabbitmq-cluster-configuration>`_ for more details.
@@ -27,7 +27,8 @@ Refer to `RabbitMQ Upgrade documentation <https://www.rabbitmq.com/upgrade.html#
 
    .. code-block::
 
-       rabbitmq_version: 3.8.5-1
+       rabbitmq_version: 3.10.7-1 
+       erlang: 1:25.0.4-1
 
 #. 
    Update the Erlang version in ``main.yml``
@@ -36,10 +37,10 @@ Refer to `RabbitMQ Upgrade documentation <https://www.rabbitmq.com/upgrade.html#
 
    .. code-block::
 
-      erlang: 1:23.0.2-2
+      erlang: 1:25.0.4-1 
 
 #. 
-   Full RabbitMQ Cluster downtime is required to upgrade from 3.6.15 to 3.8.5-1 version. 
+   Full RabbitMQ Cluster downtime is required to upgrade from 3.8.5 to 3.10.7 version. 
 
 
 #. 

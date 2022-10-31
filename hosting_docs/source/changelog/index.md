@@ -7,6 +7,13 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-10-30** [RabbitMQ upgrade to 3.10.7 version](0058-RabbitMQ_upgrade_to_3.10.7_version.md)
+This change upgrade RabbitMQ 3.10.7 version. 
+The current installed RabbitMQ version 3.8.5 is already End of Life. 
+So, we strongly recommend applying this change. 
+
+
+---
 #### **2022-09-15** [Update Prometheus variable](0057-update-prometheus-variable.md)
 If using prometheus, run `update-config` to apply changes to prometheus environment variable.
 
