@@ -292,6 +292,25 @@ servers:
     os: ubuntu_pro_bionic
     count: 1
 
+
+  - server_name: "pillow_a1{i}-production"
+    server_instance_type: r5.12xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 100
+    group: "pillowtop"
+    os: bionic
+    count: 1
+
+  - server_name: "pillow_b1{i}-production"
+    server_instance_type: r5a.12xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 50
+    group: "pillowtop"
+    os: bionic
+    count: 1
+
   - server_name: "formplayer_a{i}-production"
     server_instance_type: r6a.2xlarge
     network_tier: "app-private"
