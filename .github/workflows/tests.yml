@@ -14,12 +14,12 @@ permissions:
 
 jobs:
   build:
-
-    runs-on: ubuntu-18.04
-
     strategy:
       matrix:
-        python-version: [ "3.10" ]
+        os: ["ubuntu-18.04", "ubuntu-22.04"]
+        python-version: ["3.10"]
+
+    runs-on: ${{ matrix.os }}
 
     env:
       ANSIBLE_ROLES_PATH: "~/.ansible/roles"
@@ -29,14 +29,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Set Up Commcare-Cloud Python Version
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Install dependencies
       run: |
-        sudo apt-get clean
-        sudo apt-get update -qq
         source control/init.sh
         # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
         # tries to install from the commcare-cloud-bootstrap.egg_info directory
