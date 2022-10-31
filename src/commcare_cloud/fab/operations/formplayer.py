@@ -4,32 +4,11 @@ from __future__ import unicode_literals
 import datetime
 import os
 
-from fabric import utils
-from fabric.api import roles, env, sudo
+from fabric.api import env, sudo
 from fabric.context_managers import cd
-from fabric.contrib import console
 from fabric.contrib import files
 
-from ..const import ROLES_FORMPLAYER, FORMPLAYER_BUILD_DIR, DATE_FMT
-
-
-@roles(ROLES_FORMPLAYER)
-def rollback_formplayer():
-    build_dir = os.path.join(env.root, FORMPLAYER_BUILD_DIR)
-
-    builds = _get_old_formplayer_builds(build_dir)
-    if not builds:
-        utils.abort('No formplayer builds to rollback to.')
-
-    rollback_build = builds[0]
-    if not console.confirm('Confirm rollback to "{}"'.format(rollback_build), default=False):
-        utils.abort('Action aborted.')
-
-    with cd(build_dir):
-        sudo('ln -sfn {build_dir}/releases/{rollback} {build_dir}/current'.format(
-            build_dir=build_dir,
-            rollback=rollback_build
-        ))
+from ..const import FORMPLAYER_BUILD_DIR, DATE_FMT
 
 
 def clean_formplayer_releases(keep=1):
