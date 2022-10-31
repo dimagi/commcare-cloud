@@ -125,30 +125,6 @@ servers:
     os: ubuntu_pro_bionic
     volume_size: 40
     enable_cross_region_backup: yes
-  
-  - server_name: "es_a{i}-production"
-    server_instance_type: r5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    block_device:
-      volume_size: 1890
-      enable_cross_region_backup: yes
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-    count: 5
-
-  - server_name: "es_b{i}-production"
-    server_instance_type: r5.4xlarge
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 30
-    block_device:
-      volume_size: 2370
-      enable_cross_region_backup: yes
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-    count: 5
 
   - server_name: "es_a1{i}-production"
     server_instance_type: r5.4xlarge
