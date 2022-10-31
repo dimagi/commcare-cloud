@@ -84,33 +84,7 @@ servers:
     group: "elasticsearch"
     os: ubuntu_pro_bionic
 
-  - server_name: "es8-staging"
-    server_instance_type: "t3.medium"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_type: "gp3"
-    block_device:
-      volume_size: 80
-      volume_type: "gp3"
-      enable_cross_region_backup: yes
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-
   - server_name: "es9-staging"
-    server_instance_type: "t3.medium"
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 30
-    volume_type: "gp3"
-    block_device:
-      volume_size: 80
-      volume_type: "gp3"
-      enable_cross_region_backup: yes
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-
-  - server_name: "es10-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
     az: "b"
