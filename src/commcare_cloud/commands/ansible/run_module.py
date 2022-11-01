@@ -138,6 +138,7 @@ def run_ansible_module(ansible_context, inventory_group, module, module_args,
             '-e', '@{}'.format(environment.paths.generated_yml),
         )
         cmd_parts += environment.secrets_backend.get_extra_ansible_args()
+    if needs_secrets or environment.secrets_backend.has_extra_env_vars():
         env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
 
     if run_command is ansible_json:
