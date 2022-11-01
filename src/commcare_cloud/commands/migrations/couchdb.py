@@ -27,7 +27,6 @@ from couchdb_cluster_admin.utils import (
     get_shard_allocation,
     put_shard_allocation,
 )
-from six.moves import map, zip
 from tabulate import tabulate
 
 from commcare_cloud.cli_utils import ask
@@ -93,7 +92,7 @@ class MigrateCouchdb(CommandBase):
             if there are no "pivot" locations for a shard---then running migrate and commit
             without stopping couchdb will result in data loss.
             If your shard reallocation has a pivot location for each shard,
-            then it's acceptable to do live. 
+            then it's acceptable to do live.
         """),
         shared_args.SKIP_CHECK_ARG,
         shared_args.LIMIT_ARG,
@@ -520,6 +519,7 @@ def get_shard_table(shard_allocation_docs):
     for shard_allocation_doc in sorted(shard_allocation_docs, key=lambda doc: doc.db_name):
         this_header = sorted(shard_allocation_doc.by_range)
         change_header = (last_header != this_header)
-        lines.append(shard_allocation_doc.get_printable(include_shard_names=change_header, db_name_len=max_db_name_len))
+        lines.append(shard_allocation_doc.get_printable(
+            include_shard_names=change_header, db_name_len=max_db_name_len))
         last_header = this_header
     return lines

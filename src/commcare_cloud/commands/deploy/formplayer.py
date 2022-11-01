@@ -135,7 +135,7 @@ def run_ansible_playbook_command(environment, args):
 
 def record_deploy_in_datadog(environment, diff, tdelta):
     if environment.public_vars.get('DATADOG_ENABLED', False):
-        print(color_summary(f">> Recording deploy in Datadog"))
+        print(color_summary(">> Recording deploy in Datadog"))
         diff_url = f"\nDiff link: [Git Diff]({diff.url})"
         deploy_notification_text = (
             "Formplayer has been successfully deployed to "
@@ -154,6 +154,7 @@ def record_deploy_in_datadog(environment, diff, tdelta):
             '--alert_type', "success",
             show_command=False
         )
+
 
 def get_current_formplayer_version(environment):
     """Get version of currently deployed Formplayer by querying

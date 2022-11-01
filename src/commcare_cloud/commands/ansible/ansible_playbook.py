@@ -4,13 +4,13 @@ from __future__ import print_function
 from __future__ import unicode_literals
 import os
 import re
+import shlex
 import subprocess
 import ansible
 from packaging import version
 from copy import deepcopy
 
 from clint.textui import puts
-from six.moves import shlex_quote
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command, has_local_connection_arg
@@ -33,7 +33,7 @@ class AnsiblePlaybook(CommandBase):
     Run a playbook as you would with ansible-playbook
 
     By default, you will see --check output and then asked whether to apply.
-    
+
     Example:
 
     ```
@@ -88,10 +88,10 @@ class AnsiblePlaybook(CommandBase):
 
 
 def run_ansible_playbook(
-        environment, playbook, ansible_context,
-        skip_check=False, quiet=False, always_skip_check=False, limit=None,
-        use_factory_auth=False, unknown_args=None, respect_ansible_skip=True,
-    ):
+    environment, playbook, ansible_context,
+    skip_check=False, quiet=False, always_skip_check=False, limit=None,
+    use_factory_auth=False, unknown_args=None, respect_ansible_skip=True,
+):
 
     unknown_args = unknown_args or []
 
@@ -110,8 +110,16 @@ def run_ansible_playbook(
     def ansible_playbook(environment, playbook, *cmd_args):
         min_ansible_version = "2.10.0"
         if version.parse(ansible.__version__) < version.parse(min_ansible_version):
-            puts(color_error(f"The version of ansible-core you have installed ({ansible.__version__}) is no longer supported."))
-            puts(color_notice(f"To upgrade from ansible-core {ansible.__version__} to {min_ansible_version} or above you will first have to uninstall the current version of ansible (due to an idiosyncratic issue)"))
+            puts(color_error(
+                f"The version of ansible-core you have installed ({ansible.__version__}) "
+                "is no longer supported."
+            ))
+            puts(color_notice(
+                f"To upgrade from ansible-core {ansible.__version__} to "
+                f"{min_ansible_version} or above you will first have to "
+                "uninstall the current version of ansible (due to an "
+                "idiosyncratic issue)"
+            ))
             puts(color_code("  pip uninstall ansible"))
             puts(color_notice("before re-installing the supported version using your standard method."))
             return 2
@@ -144,7 +152,7 @@ def run_ansible_playbook(
 
         cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
         cmd_parts += cmd_parts_with_common_ssh_args
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command(cmd)
         env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
         return subprocess.call(cmd_parts, env=env_vars)
@@ -265,20 +273,20 @@ class UpdateConfig(CommandBase):
     def run(self, args, unknown_args):
         unknown_args += ('-e', '{"_should_update_formplayer_in_place": true}')
         rc = commcare_cloud(args.env_name, 'ansible-playbook', 'deploy_localsettings.yml',
-                              tags='localsettings', branch=args.branch, *unknown_args)
+                            tags='localsettings', branch=args.branch, *unknown_args)
         if rc == 0 and ask("Would you like to run Django checks to validate the settings?"):
             environment = get_environment(args.env_name)
-            server_args = []
+            server_arg = []
             try:
                 limit_arg = unknown_args.index('--limit')
             except ValueError:
                 pass
             else:
                 servers = environment.inventory_manager.get_hosts(unknown_args[limit_arg + 1])
-                server_args.extend(['--server', servers[0]])
-            commcare_cloud(args.env_name, 'django-manage', *(['check', '--deploy'] + server_args))
-            commcare_cloud(args.env_name, 'django-manage', *(['check', '--deploy', '-t', 'database'] + server_args))
-            commcare_cloud(args.env_name, 'django-manage', *(['check_services'] + server_args))
+                server_arg.extend(['--server', servers[0]])
+            commcare_cloud(args.env_name, 'django-manage', *(['check', '--deploy'] + server_arg))
+            commcare_cloud(args.env_name, 'django-manage', *(['check', '--deploy', '-t', 'database'] + server_arg))
+            commcare_cloud(args.env_name, 'django-manage', *(['check_services'] + server_arg))
         else:
             return rc
 
@@ -325,7 +333,10 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         args.use_factory_auth = not has_local_connection_arg(unknown_args)
         public_vars = environment.public_vars
-        unknown_args += ('--tags=bootstrap-users', '--skip-tags=validate_key') + get_user_arg(public_vars, unknown_args, use_factory_auth=True)
+        unknown_args += (
+            '--tags=bootstrap-users',
+            '--skip-tags=validate_key',
+        ) + get_user_arg(public_vars, unknown_args, use_factory_auth=True)
 
         if not public_vars.get('commcare_cloud_pem') and not has_local_connection_arg(unknown_args):
             unknown_args += ('--ask-pass',)
@@ -345,7 +356,7 @@ class UpdateUsers(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         username = get_dev_username(args.env_name)
         args.playbook = 'deploy_stack.yml'
-        unknown_args += ('--tags=users,update_users', '-e ssh_user=' + shlex_quote(username))
+        unknown_args += ('--tags=users,update_users', '-e ssh_user=' + shlex.quote(username))
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
@@ -358,7 +369,8 @@ class UpdateUserPublicKey(_AnsiblePlaybookAlias):
 
     def run(self, args, unknown_args):
         puts(color_notice("The 'update-user-key' command has been removed. Please use 'update-users' instead."))
-        return 0 # exit code
+        return 0  # exit code
+
 
 class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
     command = 'update-supervisor-confs'

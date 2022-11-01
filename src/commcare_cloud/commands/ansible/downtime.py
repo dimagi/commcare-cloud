@@ -2,12 +2,10 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import inspect
-import os
 import time
 from datetime import datetime
 
 import datadog
-import yaml
 from clint.textui import puts, indent
 from memoized import memoized
 
@@ -90,13 +88,13 @@ def wait_for_all_processes_to_stop(environment, ansible_context):
         if not still_running:
             break
 
-        options = ['abort', 'wait', 'continue', 'kill',]
+        options = ['abort', 'wait', 'continue', 'kill']
         response = ask_option(inspect.cleandoc(
-            """Some processes are still running. Do you want to:"
-             - abort downtime"
-             - wait for processes to stop"
-             - continue with downtime regardless"
-             - kill running processes   
+            """Some processes are still running. Do you want to:
+             - abort downtime
+             - wait for processes to stop
+             - continue with downtime regardless
+             - kill running processes
             """),
             options,
             options + ['a', 'w', 'c', 'k']
