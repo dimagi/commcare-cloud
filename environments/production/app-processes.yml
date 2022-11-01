@@ -11,7 +11,7 @@ management_commands:
     queue_schedule_instances:
     handle_survey_actions:
     run_sms_queue:
-  pillow_a000:
+  pillow_a1000:
     run_pillow_retry_queue:
 celery_processes:
   celery_b1000,celery_b1001,celery_b1002,celery_b1003,celery_c1001,celery_c1002,celery_c1003:
@@ -99,7 +99,7 @@ celery_processes:
       concurrency: 50
 
 pillows:
-  pillow_a000:
+  pillow_a000,pillow_a1000:
     # case-sql partitions: 96
     case-pillow:
       num_processes: 25
@@ -132,7 +132,7 @@ pillows:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
-  pillow_b000:
+  pillow_b000,pillow_b1000:
     xform-pillow:
       num_processes: 33
       dedicated_migration_process: True
