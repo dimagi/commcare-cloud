@@ -7,6 +7,13 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-11-01** [postgres-v14-upgrade](0059-postgres-v14-upgrade.md)
+Postgres upgrade is recommended to be upgraded in two steps,upgrade from v10 to v13 and then to v14. 
+This change upgrade PostgreSQL from 10 to 13 and then to 14 version.
+As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and libraries we have updated PostgreSQL from version 10 to version 14. 
+
+
+---
 #### **2022-10-30** [RabbitMQ upgrade to 3.10.7 version](0058-RabbitMQ_upgrade_to_3.10.7_version.md)
 This change upgrade RabbitMQ 3.10.7 version. 
 The current installed RabbitMQ version 3.8.5 is already End of Life. 
