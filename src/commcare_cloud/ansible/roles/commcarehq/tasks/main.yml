@@ -17,6 +17,7 @@
       - libxml2-dev
       - libxmlsec1-dev
       - libxmlsec1-openssl
+      - awscli
   tags:
     - hq-apt-requirements
 
@@ -166,3 +167,15 @@
       force: True
     tags:
       - services
+
+- name: copy archive
+  become: yes
+  template:
+    src: "fetch_release.sh.j2"
+    dest: "/usr/local/sbin/fetch_release.sh"
+    group: "{{ cchq_user }}"
+    owner: "{{ cchq_user }}"
+    mode: 0700
+    backup: yes
+  tags:
+    - cron

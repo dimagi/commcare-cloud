@@ -27,6 +27,7 @@ class FabSettingsConfig(jsonobject.JsonObject):
     deploy_event_url = jsonobject.StringProperty(default=None)
     generate_deploy_diffs = jsonobject.BooleanProperty(default=True)
     custom_deploy_details = jsonobject.DictProperty()
+    archive_release = jsonobject.BooleanProperty(default=False)
 
     @classmethod
     def wrap(cls, data):
