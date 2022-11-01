@@ -1,0 +1,12 @@
+# usage: rollback_formplayer.yml --tags=rollback
+#
+# The --tags=rollback option excludes dependent role (java and supervisor)
+# tasks, which are not necessary during rollback. Omitting it should make
+# no difference other than the rollback will take longer.
+- hosts:
+  - formplayer
+  become: true
+  tasks:
+  - import_role:
+      name: formplayer
+      tasks_from: rollback

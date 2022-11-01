@@ -49,7 +49,7 @@ from commcare_cloud.github import github_repo
 from .checks import check_servers
 from .const import ROLES_ALL_SERVICES, ROLES_ALL_SRC, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .exceptions import PreindexNotFinished
-from .operations import db, formplayer
+from .operations import db
 from .operations import release, staticfiles, supervisor
 from .utils import (
     cache_deploy_state,
@@ -249,8 +249,8 @@ def kill_stale_celery_workers():
 
 @task
 def rollback_formplayer():
-    execute(formplayer.rollback_formplayer)
-    execute(supervisor.restart_formplayer)
+    print(red("This command is now implemented with ansible:"))
+    print("cchq {} ansible-playbook rollback_formplayer.yml --tags=rollback".format(env.deploy_env))
 
 
 def parse_int_or_exit(val):

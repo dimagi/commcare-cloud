@@ -101,13 +101,6 @@ def restart_webworkers():
         _services_restart()
 
 
-@roles(ROLES_FORMPLAYER)
-def restart_formplayer():
-    # since this just restarts "all"
-    # on a monolith this actually restarts all services
-    _services_restart()
-
-
 def _services_restart():
     """Stop and restart all supervisord services"""
     supervisor_command('stop all')
