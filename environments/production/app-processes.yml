@@ -99,7 +99,7 @@ celery_processes:
       concurrency: 50
 
 pillows:
-  pillow_a000,pillow_a1000:
+  pillow_a1000:
     # case-sql partitions: 96
     case-pillow:
       num_processes: 25
@@ -132,7 +132,7 @@ pillows:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
-  pillow_b000,pillow_b1000:
+  pillow_b1000:
     xform-pillow:
       num_processes: 33
       dedicated_migration_process: True
