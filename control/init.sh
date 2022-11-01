@@ -3,6 +3,7 @@ CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
 VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
 NO_INPUT=0
 BIONIC_USE_SYSTEM_PYTHON=${BIONIC_USE_SYSTEM_PYTHON:-false}
+OLD_VENV=''
 
 if [[ $_ == $0 ]]
 then
@@ -22,7 +23,8 @@ if [ -z ${CI_TEST} ]; then
     if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null && [[ $( source /etc/os-release; echo $VERSION_ID ) == 18.04 ]]; then
         # only append 3.10 if it is not already in the name
         if [[ $CCHQ_VIRTUALENV != *"3.10"* ]]; then
-          CCHQ_VIRTUALENV=$CCHQ_VIRTUALENV-3.10
+            OLD_VENV=$VENV
+            CCHQ_VIRTUALENV=$CCHQ_VIRTUALENV-3.10
         fi
         VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
     fi
@@ -30,6 +32,10 @@ if [ -z ${CI_TEST} ]; then
     if [[ ! -f $VENV/bin/activate ]]; then
         if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null; then
             echo "Creating a python3.10 virtual environment named ${CCHQ_VIRTUALENV}"
+            if [[ $OLD_VENV != '' ]]; then
+                echo "Your old virtual environment will remain at ${OLD_VENV}"
+                echo "If you wish to delete it, run 'rm -rf ${OLD_VENV}'"
+            fi
             # use venv because 3.10 setup includes installing python3.10-venv
             python3.10 -m venv $VENV
         else
