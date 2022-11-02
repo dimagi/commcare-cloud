@@ -97,6 +97,7 @@ class BackupPlan(jsonobject.JsonObject):
     outside_account_id = jsonobject.StringProperty()
     daily_retention = jsonobject.IntegerProperty()
     monthly_retention = jsonobject.IntegerProperty()
+    quarterly_retention = jsonobject.IntegerProperty()
 
 
 class ServerConfig(jsonobject.JsonObject):
