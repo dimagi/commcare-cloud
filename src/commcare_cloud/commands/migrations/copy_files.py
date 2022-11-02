@@ -96,7 +96,7 @@ class CopyFiles(CommandBase):
             Action to perform
 
             - prepare: generate the scripts and push them to the target servers
-            - migrate: execute the scripts
+            - copy: execute the scripts
             - cleanup: remove temporary files and remote auth
         """),
         shared_args.LIMIT_ARG,
