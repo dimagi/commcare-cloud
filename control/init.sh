@@ -3,7 +3,6 @@ CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
 VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
 NO_INPUT=0
 BIONIC_USE_SYSTEM_PYTHON=${BIONIC_USE_SYSTEM_PYTHON:-false}
-OLD_VENV=''
 
 if [[ $_ == $0 ]]
 then
@@ -32,7 +31,7 @@ if [ -z ${CI_TEST} ]; then
     if [[ ! -f $VENV/bin/activate ]]; then
         if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null; then
             echo "Creating a python3.10 virtual environment named ${CCHQ_VIRTUALENV}"
-            if [[ $OLD_VENV != '' ]]; then
+            if [ $OLD_VENV ]; then
                 echo "Your old virtual environment will remain at ${OLD_VENV}"
                 echo "If you wish to delete it, run 'rm -rf ${OLD_VENV}'"
             fi
