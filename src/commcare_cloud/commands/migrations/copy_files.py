@@ -135,6 +135,8 @@ class CopyFiles(CommandBase):
             return run_action_with_check_mode(run_check, run_apply, args.skip_check)
 
         if args.action == 'cleanup':
+            for target_host in plan.configs:
+                remove_scripts(target_host, environment, ansible_context)
             teardown_auth(plan, environment, ansible_context, working_directory)
             shutil.rmtree(working_directory)
 
@@ -218,12 +220,10 @@ def prepare_file_copy_scripts(target_host, source_file_configs, script_root):
 
 def copy_scripts_to_target_host(target_host, script_root, environment, ansible_context):
     local_files_path = os.path.join(script_root, target_host)
-
     destination_path = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
 
     # remove destination path to ensure we're starting fresh
-    file_args = "path={} state=absent".format(destination_path)
-    run_ansible_module(environment, ansible_context, target_host, 'file', file_args)
+    remove_scripts(target_host, environment, ansible_context)
 
     # recursively copy all rsync file lists to destination
     copy_args = "src={src}/ dest={dest} mode={mode}".format(
@@ -238,6 +238,12 @@ def copy_scripts_to_target_host(target_host, script_root, environment, ansible_c
         path=os.path.join(destination_path, FILE_MIGRATION_RSYNC_SCRIPT)
     )
     run_ansible_module(environment, ansible_context, target_host, 'file', file_args)
+
+
+def remove_scripts(target_host, environment, ansible_context):
+    destination_path = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
+    args = "path={} state=absent".format(destination_path)
+    run_ansible_module(environment, ansible_context, target_host, 'file', args)
 
 
 def execute_file_copy_scripts(environment, ansible_context, limit, check_mode=True):
