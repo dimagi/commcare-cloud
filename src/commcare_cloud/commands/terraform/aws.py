@@ -204,11 +204,10 @@ class AwsFillInventoryHelper(object):
         servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
         for server_spec in servers:
             for server_name in server_spec.get_all_server_names():
-                is_bionic = server_spec.os in ('bionic', 'ubuntu_pro_bionic')
                 inventory_vars = [
                     ('hostname', server_name.replace('_', '-')),
-                    ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
-                    ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
+                    ('ufw_private_interface', 'ens5'),
+                    ('ansible_python_interpreter', '/usr/bin/python3'),
                     ('ec2_instance_id', self.resources['{}.instance_id'.format(server_name)])
                 ]
                 if server_spec.block_device:
