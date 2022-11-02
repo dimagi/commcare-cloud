@@ -280,31 +280,32 @@ def _run_auth_playbook(plan, environment, ansible_context, action, working_direc
         })
 
     for target_host, source_host, source_user in auth_pairs:
-        if action == 'add':
-            _genearate_and_fetch_key(environment, target_host, 'root', ansible_context, working_directory)
-            _set_auth_key(plan.source_env, source_host, source_user, ansible_context, working_directory)
-        elif action == 'remove':
-            _set_auth_key(plan.source_env, source_host, source_user, ansible_context, working_directory, True)
-
-    os.remove(os.path.join(working_directory, 'id_rsa.tmp'))
-
-
-def _genearate_and_fetch_key(env, host, user, ansible_context, working_directory):
-    user_args = "name={} generate_ssh_key=yes".format(user)
-    run_ansible_module(env, ansible_context, host, 'user', user_args)
-
-    command = "getent passwd {} | cut -d: -f6".format(user)
-    data = run_ansible_module(env, ansible_context, host, 'shell', command, run_command=ansible_json)
-    user_home = data[host]["stdout"]
-
-    fetch_args = "src={user_home}/.ssh/id_rsa.pub dest={key_tmp} flat=yes fail_on_missing=yes".format(
-        user_home=user_home, key_tmp=os.path.join(working_directory, 'id_rsa.tmp')
-    )
-    run_ansible_module(env, ansible_context, host, 'fetch', fetch_args)
+        _set_auth_key(
+            plan.source_env,
+            source_host,
+            source_user,
+            environment,  # target_env
+            target_host,
+            ansible_context,
+            working_directory,
+            remove=(action == 'remove'),
+        )
 
 
-def _set_auth_key(env, host, user, ansible_context, working_directory, remove=False):
+def _set_auth_key(source_env, source_host, source_user,
+                  target_env, target_host, ansible_context, working_directory, remove=False):
+    target_user = "root"
+    key_path = os.path.join(working_directory, 'id_rsa_{}.pub'.format(target_host))
+    if not remove:
+        user_args = "name={} generate_ssh_key=yes".format(target_user)
+        data = run_ansible_module(
+            target_env, ansible_context, target_host, 'user', user_args, run_command=ansible_json)
+        with open(key_path, "w") as fh:
+            fh.write(data[target_host]["ssh_public_key"])
+
     state = 'absent' if remove else 'present'
-    key_path = os.path.join(working_directory, 'id_rsa.tmp')
-    args = "user={} state={} key={{{{ lookup('file', '{}') }}}}".format(user, state, key_path)
-    run_ansible_module(env, ansible_context, host, 'authorized_key', args)
+    args = "user={} state={} key={{{{ lookup('file', '{}') }}}}".format(source_user, state, key_path)
+    run_ansible_module(source_env, ansible_context, source_host, 'authorized_key', args)
+
+    if remove:
+        os.remove(key_path)
