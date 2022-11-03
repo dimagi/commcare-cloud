@@ -7,6 +7,14 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-11-03** [Install Elasticsearch Phonetic Analysis Plugin](0059-Install_Elasticsearch_Phonetic_Analysis_Plugin.md)
+The Elasticsearch 'case search' index now requires the [phonetic analysis][plugin docs] plugin
+to be install in Elasticsearch.
+
+[plugin docs]: https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/analysis-phonetic.html
+
+
+---
 #### **2022-10-30** [RabbitMQ upgrade to 3.10.7 version](0058-RabbitMQ_upgrade_to_3.10.7_version.md)
 This change upgrade RabbitMQ 3.10.7 version. 
 The current installed RabbitMQ version 3.8.5 is already End of Life. 
