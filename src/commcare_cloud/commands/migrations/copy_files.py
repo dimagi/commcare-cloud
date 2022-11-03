@@ -26,10 +26,12 @@ FILE_MIGRATION_RSYNC_SCRIPT = 'file_migration_rsync.sh'
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 REMOTE_MIGRATION_ROOT = 'file_migration'
 
+
 @attr.s
 class Plan(object):
     source_env = attr.ib()
     configs = attr.ib()
+
 
 @attr.s
 class SourceFiles(object):
@@ -49,12 +51,12 @@ class CopyFiles(CommandBase):
 
     This is a general purpose command that can be used to copy files between
     hosts in the cluster.
-    
+
     Files are copied using `rsync` from the target host. This tool assumes that the
     specified user on the source host has permissions to read the files being copied.
-    
+
     The plan file must be formatted as follows:
-    
+
     ```yml
     source_env: env1 (optional if source is different from target)
     copy_files:
@@ -70,19 +72,21 @@ class CopyFiles(CommandBase):
             exclude:
               - logs/*
               - test/temp.txt
-    ```       
-    - **copy_files**: Multiple target hosts can be listed. 
-    - **target-host**: Hostname or IP of the target host. Multiple source definitions can be 
-    listed for each target host.
+    ```
+    - **copy_files**: Multiple target hosts can be listed.
+    - **target-host**: Hostname or IP of the target host. Multiple source
+      definitions can be listed for each target host.
     - **source-host**: Hostname or IP of the source host.
-    - **source-user**: (optional) User to ssh as from target to source. Defaults to 'ansible'. This user must have permissions
-    to read the files being copied.
+    - **source-user**: (optional) User to ssh as from target to source. Defaults
+      to 'ansible'. This user must have permissions to read the files being
+      copied.
     - **source-dir**: The base directory from which all source files referenced.
     - **target-dir**: Directory on the target host to copy the files to.
     - **rsync_args**: Additional arguments to pass to rsync.
-    - **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
-    end with a `/`.
-    - **exclude**: (optional) List of relative paths to exclude from the *source-dir*. Supports wildcards e.g. "logs/*".
+    - **files**: List of files to copy. File paths are relative to `source-dir`.
+      Directories can be included and must end with a `/`.
+    - **exclude**: (optional) List of relative paths to exclude from the
+      *source-dir*. Supports wildcards e.g. "logs/*".
     """
 
     arguments = (
@@ -166,7 +170,7 @@ def read_plan(plan_path, target_env, limit=None):
         raise CommandError("Limit pattern did not match any hosts: {}".format(limit))
 
     return Plan(
-        source_env = source_env or target_env,
+        source_env=source_env or target_env,
         configs=configs
     )
 
