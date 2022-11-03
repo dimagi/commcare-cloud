@@ -7,7 +7,7 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2022-11-03** [Install Elasticsearch Phonetic Analysis Plugin](0059-Install_Elasticsearch_Phonetic_Analysis_Plugin.md)
+#### **2022-11-03** [Install Elasticsearch Phonetic Analysis Plugin](0059-install-elasticsearch-phonetic-analysis-plugin.md)
 The Elasticsearch 'case search' index now requires the [phonetic analysis][plugin docs] plugin
 to be install in Elasticsearch.
 
