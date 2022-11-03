@@ -22,6 +22,7 @@ backup_plan:
   outside_account_id: '213307118311'
   daily_retention: 7
   monthly_retention: 365
+  quarterly_retention: 0
 
 servers:
   - server_name: "control3-production"
