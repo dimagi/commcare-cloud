@@ -151,7 +151,7 @@ def clean(migration, target_context, skip_check, limit):
     nodes = generate_shard_prune_playbook(migration)
     if nodes:
         return run_ansible_playbook(
-            migration.target_environment, migration.prune_playbook_path, target_context,
+            migration.prune_playbook_path, target_context,
             skip_check=skip_check,
             limit=limit
         )
@@ -248,7 +248,7 @@ def assert_files(migration, alloc_docs_by_db, target_context):
 
     play_path = os.path.join(PLAY_DIR, 'assert_couch_files.yml')
     return_code = run_ansible_playbook(
-        migration.target_environment, play_path, target_context,
+        play_path, target_context,
         always_skip_check=True,
         quiet=True,
         unknown_args=['-e', '@{}'.format(expected_files_vars)]

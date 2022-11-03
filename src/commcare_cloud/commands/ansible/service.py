@@ -357,8 +357,7 @@ class Elasticsearch(ServiceBase):
         extra_args = ['--tags={}'.format(tags)]
         if limit:
             extra_args.extend(['--limit={}'.format(limit)])
-        run_ansible_playbook(environment=self.environment,
-                             playbook='es_rolling_restart.yml',
+        run_ansible_playbook(playbook='es_rolling_restart.yml',
                              ansible_context=AnsibleContext(None, self.environment),
                              unknown_args=extra_args,
                              skip_check=True, quiet=True)

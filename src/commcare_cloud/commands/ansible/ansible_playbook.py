@@ -77,25 +77,24 @@ class AnsiblePlaybook(CommandBase):
 
     def run(self, args, unknown_args, always_skip_check=False, respect_ansible_skip=True):
         ansible_context = AnsibleContext(args)
-        environment = ansible_context.environment
-        environment.create_generated_yml()
+        ansible_context.environment.create_generated_yml()
         check_branch(args)
         return run_ansible_playbook(
-            environment, args.playbook, ansible_context, args.skip_check, args.quiet,
+            args.playbook, ansible_context, args.skip_check, args.quiet,
             always_skip_check, args.limit, args.use_factory_auth, unknown_args,
             respect_ansible_skip=respect_ansible_skip,
         )
 
 
 def run_ansible_playbook(
-    environment, playbook, ansible_context,
+    playbook, ansible_context,
     skip_check=False, quiet=False, always_skip_check=False, limit=None,
     use_factory_auth=False, unknown_args=None, respect_ansible_skip=True,
 ):
 
     unknown_args = unknown_args or []
 
-    def get_limit():
+    def get_limit(environment):
         limit_parts = []
         if limit:
             limit_parts = re.split('[,:]', limit)
@@ -107,7 +106,7 @@ def run_ansible_playbook(
         else:
             return ()
 
-    def ansible_playbook(environment, playbook, *cmd_args):
+    def ansible_playbook(playbook, *cmd_args):
         min_ansible_version = "2.10.0"
         if version.parse(ansible.__version__) < version.parse(min_ansible_version):
             puts(color_error(
@@ -128,6 +127,7 @@ def run_ansible_playbook(
             playbook_path = playbook
         else:
             playbook_path = os.path.join(ANSIBLE_DIR, '{playbook}'.format(playbook=playbook))
+        environment = ansible_context.environment
         cmd_parts = (
             'ansible-playbook',
             playbook_path,
@@ -135,7 +135,7 @@ def run_ansible_playbook(
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
             '--diff',
-        ) + get_limit() + cmd_args
+        ) + get_limit(environment) + cmd_args
 
         public_vars = environment.public_vars
         env_vars = ansible_context.env_vars
@@ -158,11 +158,11 @@ def run_ansible_playbook(
         return subprocess.call(cmd_parts, env=env_vars)
 
     def run_check():
-        with environment.secrets_backend.suppress_datadog_event():
-            return ansible_playbook(environment, playbook, '--check', *unknown_args)
+        with ansible_context.environment.secrets_backend.suppress_datadog_event():
+            return ansible_playbook(playbook, '--check', *unknown_args)
 
     def run_apply():
-        return ansible_playbook(environment, playbook, *unknown_args)
+        return ansible_playbook(playbook, *unknown_args)
 
     return run_action_with_check_mode(run_check, run_apply, skip_check, quiet, always_skip_check)
 
