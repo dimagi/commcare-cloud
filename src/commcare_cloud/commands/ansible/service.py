@@ -62,8 +62,8 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
         """Location of the service's logs shown on the command line."""
         raise NotImplementedError
 
-    def __init__(self, environment, ansible_context):
-        self.environment = environment
+    def __init__(self, ansible_context):
+        self.environment = ansible_context.environment
         self.ansible_context = ansible_context
 
     def run(self, action, host_pattern=None, process_pattern=None):
@@ -323,7 +323,7 @@ class Elasticsearch(ServiceBase):
 
     def execute_action(self, action, host_pattern=None, process_pattern=None):
         if action == 'status':
-            es = ElasticsearchClassic(self.environment, self.ansible_context)
+            es = ElasticsearchClassic(self.ansible_context)
             return es.execute_action(action, host_pattern, process_pattern)
         else:
             if not ask(
@@ -347,7 +347,7 @@ class Elasticsearch(ServiceBase):
 
     def _act_on_pillows(self, action):
         # Used to stop or start pillows
-        service = Pillowtop(self.environment, AnsibleContext(None, self.environment))
+        service = Pillowtop(AnsibleContext(None, self.environment))
         exit_code = service.run(action=action)
         if not exit_code == 0:
             print("ERROR while trying to {} pillows. Exiting.".format(action))
@@ -702,10 +702,9 @@ class Service(CommandBase):
         ]
 
         ansible_context = AnsibleContext(args)
-        environment = ansible_context.environment
         non_zero_exits = []
         for service_cls in services:
-            service = service_cls(environment, ansible_context)
+            service = service_cls(ansible_context)
             exit_code = service.run(args.action, args.limit, args.process_pattern)
             if exit_code != 0:
                 non_zero_exits.append(exit_code)

@@ -40,17 +40,17 @@ class Downtime(CommandBase):
 
     def run(self, args, unknown_args):
         ansible_context = AnsibleContext(args)
-        environment = ansible_context.environment
-        environment.create_generated_yml()
+        ansible_context.environment.create_generated_yml()
 
         if args.action == 'start':
-            start_downtime(environment, ansible_context, args)
+            start_downtime(ansible_context, args)
 
         if args.action == 'end':
-            end_downtime(environment, ansible_context)
+            end_downtime(ansible_context)
 
 
-def end_downtime(environment, ansible_context):
+def end_downtime(ansible_context):
+    environment = ansible_context.environment
     downtime = get_downtime_record(environment)
     if not downtime:
         puts(color_notice('Downtime record not found.'))
@@ -64,7 +64,8 @@ def end_downtime(environment, ansible_context):
             cancel_downtime_record(environment, downtime)
 
 
-def start_downtime(environment, ansible_context, args):
+def start_downtime(ansible_context, args):
+    environment = ansible_context.environment
     downtime = get_downtime_record(environment)
     if downtime:
         puts(color_notice('Downtime already active'))
