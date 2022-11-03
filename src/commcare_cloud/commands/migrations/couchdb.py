@@ -100,11 +100,10 @@ class MigrateCouchdb(CommandBase):
     def run(self, args, unknown_args):
         assert args.action == 'migrate' or not args.no_stop, \
             "You can only use --no-stop with migrate"
-        ansible_context = AnsibleContext(args)
-        environment = ansible_context.environment
-        environment.create_generated_yml()
+        target_context = AnsibleContext(args)
+        target_context.environment.create_generated_yml()
 
-        migration = CouchMigration(environment, args.migration_plan)
+        migration = CouchMigration(target_context.environment, args.migration_plan)
         check_connection(migration.target_couch_config.get_control_node())
         if migration.separate_source_and_target:
             check_connection(migration.source_couch_config.get_control_node())
@@ -119,16 +118,16 @@ class MigrateCouchdb(CommandBase):
             return plan(migration)
 
         if args.action == 'migrate':
-            return migrate(migration, ansible_context, args.skip_check, args.no_stop)
+            return migrate(migration, target_context, args.skip_check, args.no_stop)
 
         if args.action == 'commit':
-            return commit(migration, ansible_context)
+            return commit(migration, target_context)
 
         if args.action == 'clean':
-            return clean(migration, ansible_context, args.skip_check, args.limit)
+            return clean(migration, target_context, args.skip_check, args.limit)
 
 
-def clean(migration, ansible_context, skip_check, limit):
+def clean(migration, target_context, skip_check, limit):
     diff_with_db = diff_plan(migration)
     if diff_with_db:
         puts(color_warning("Current plan differs with database:\n"))
@@ -145,14 +144,14 @@ def clean(migration, ansible_context, skip_check, limit):
 
     alloc_docs_by_db = get_db_allocations(migration.target_couch_config)
     puts(color_summary("Checking shards on disk vs DB. Please wait."))
-    if not assert_files(migration, alloc_docs_by_db, ansible_context):
+    if not assert_files(migration, alloc_docs_by_db, target_context):
         puts(color_error("Not all couch files are accounted for. Aborting."))
         return 1
 
     nodes = generate_shard_prune_playbook(migration)
     if nodes:
         return run_ansible_playbook(
-            migration.target_environment, migration.prune_playbook_path, ansible_context,
+            migration.target_environment, migration.prune_playbook_path, target_context,
             skip_check=skip_check,
             limit=limit
         )
@@ -209,11 +208,11 @@ def generate_shard_prune_playbook(migration):
     return list(deletable_files_by_node)
 
 
-def commit(migration, ansible_context):
+def commit(migration, target_context):
     print_allocation(migration)
     alloc_docs_by_db = {plan.db_name: plan for plan in migration.shard_plan}
     puts(color_summary("Checking shards on disk vs plan. Please wait."))
-    if not assert_files(migration, alloc_docs_by_db, ansible_context):
+    if not assert_files(migration, alloc_docs_by_db, target_context):
         puts(color_error("Some shard files are not where we expect. Have you run 'migrate'?"))
         puts(color_error("Aborting"))
         return 1
@@ -238,7 +237,7 @@ def commit(migration, ansible_context):
     return 0
 
 
-def assert_files(migration, alloc_docs_by_db, ansible_context):
+def assert_files(migration, alloc_docs_by_db, target_context):
     files_by_node = get_files_for_assertion(alloc_docs_by_db)
     expected_files_vars = os.path.abspath(os.path.join(migration.working_dir, 'assert_vars.yml'))
     with open(expected_files_vars, 'w', encoding='utf-8') as f:
@@ -249,7 +248,7 @@ def assert_files(migration, alloc_docs_by_db, ansible_context):
 
     play_path = os.path.join(PLAY_DIR, 'assert_couch_files.yml')
     return_code = run_ansible_playbook(
-        migration.target_environment, play_path, ansible_context,
+        migration.target_environment, play_path, target_context,
         always_skip_check=True,
         quiet=True,
         unknown_args=['-e', '@{}'.format(expected_files_vars)]
@@ -257,7 +256,7 @@ def assert_files(migration, alloc_docs_by_db, ansible_context):
     return return_code == 0
 
 
-def migrate(migration, ansible_context, skip_check, no_stop):
+def migrate(migration, target_context, skip_check, no_stop):
     print_allocation(migration)
     if not ask("Continue with this plan?"):
         puts("Abort")
@@ -273,10 +272,10 @@ def migrate(migration, ansible_context, skip_check, no_stop):
             return 0
 
     def run_check():
-        return _run_migration(migration, ansible_context, check_mode=True, no_stop=no_stop)
+        return _run_migration(migration, target_context, check_mode=True, no_stop=no_stop)
 
     def run_apply():
-        return _run_migration(migration, ansible_context, check_mode=False, no_stop=no_stop)
+        return _run_migration(migration, target_context, check_mode=False, no_stop=no_stop)
 
     return run_action_with_check_mode(run_check, run_apply, skip_check)
 
@@ -401,36 +400,37 @@ def get_files_for_assertion(alloc_docs_by_db):
     return files_by_nodes
 
 
-def _run_migration(migration, ansible_context, check_mode, no_stop):
+def _run_migration(migration, target_context, check_mode, no_stop):
+    source_context = AnsibleContext(None, migration.source_environment)
     puts(color_summary('Give ansible user access to couchdb files:'))
     user_args = "user=ansible groups=couchdb append=yes"
-    run_ansible_module(migration.source_environment, ansible_context, 'couchdb2', 'user', user_args)
+    run_ansible_module(source_context, 'couchdb2', 'user', user_args)
 
     file_args = "path={} mode=0755".format(migration.couchdb2_data_dir)
-    run_ansible_module(migration.source_environment, ansible_context, 'couchdb2', 'file', file_args)
+    run_ansible_module(source_context, 'couchdb2', 'file', file_args)
 
     puts(color_summary('Copy file lists to nodes:'))
-    rsync_files_by_host = prepare_to_sync_files(migration, ansible_context)
+    rsync_files_by_host = prepare_to_sync_files(migration, target_context)
 
     if no_stop:
         stop_couch_context = noop_context()
     else:
         puts(color_summary('Stop couch and reallocate shards'))
-        stop_couch_context = stop_couch(migration.all_environments, ansible_context, check_mode)
+        stop_couch_context = stop_couch(migration.all_environments, check_mode)
 
     with stop_couch_context:
-        execute_file_copy_scripts(migration.target_environment, list(rsync_files_by_host), check_mode)
+        execute_file_copy_scripts(target_context, list(rsync_files_by_host), check_mode)
 
     return 0
 
 
 @contextmanager
-def stop_couch(environments, ansible_context, check_mode=False):
+def stop_couch(environments, check_mode=False):
     for env in environments:
-        start_stop_service(env, ansible_context, 'stopped', check_mode)
+        start_stop_service(AnsibleContext(None, env), 'stopped', check_mode)
     yield
     for env in environments:
-        start_stop_service(env, ansible_context, 'started', check_mode)
+        start_stop_service(AnsibleContext(None, env), 'started', check_mode)
 
 
 @contextmanager
@@ -438,16 +438,14 @@ def noop_context():
     yield
 
 
-def start_stop_service(environment, ansible_context, service_state, check_mode=False):
+def start_stop_service(ansible_context, service_state, check_mode=False):
     extra_args = []
     if check_mode:
         extra_args.append('--check')
 
     for service in ('monit', 'couchdb2'):
         args = 'name={} state={}'.format(service, service_state)
-        run_ansible_module(
-            environment, ansible_context, 'couchdb2', 'service', args, extra_args=extra_args
-        )
+        run_ansible_module(ansible_context, 'couchdb2', 'service', args, extra_args=extra_args)
 
 
 def commit_migration(migration):
@@ -463,15 +461,14 @@ def commit_migration(migration):
         print(response)
 
 
-def prepare_to_sync_files(migration, ansible_context):
+def prepare_to_sync_files(migration, target_context):
     rsync_files_by_host = generate_rsync_lists(migration)
 
     for host_ip in rsync_files_by_host:
         copy_scripts_to_target_host(
             host_ip,
             migration.rsync_files_path,
-            migration.target_environment,
-            ansible_context
+            target_context
         )
     return rsync_files_by_host
 

@@ -85,7 +85,7 @@ class RunAnsibleModule(CommandBase):
 
         def _run_ansible(args, *unknown_args):
             return run_ansible_module(
-                environment, ansible_context,
+                ansible_context,
                 args.inventory_group, args.module, args.module_args,
                 become=args.become, become_user=args.become_user,
                 use_factory_auth=args.use_factory_auth, extra_args=unknown_args
@@ -101,7 +101,7 @@ class RunAnsibleModule(CommandBase):
         return run_action_with_check_mode(run_check, run_apply, args.skip_check, args.quiet)
 
 
-def run_ansible_module(environment, ansible_context, inventory_group, module, module_args,
+def run_ansible_module(ansible_context, inventory_group, module, module_args,
                        become=True, become_user=None, use_factory_auth=False, quiet=False,
                        extra_args=(), run_command=subprocess.call):
     extra_args = tuple(extra_args)
@@ -110,6 +110,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     else:
         extra_args = ("--one-line",) + extra_args
 
+    environment = ansible_context.environment
     cmd_parts = (
         'ansible', inventory_group,
         '-m', module,
@@ -252,7 +253,7 @@ class SendDatadogEvent(CommandBase):
                 agg='commcare-cloud'
             )
         return run_ansible_module(
-            environment, ansible_context,
+            ansible_context,
             '127.0.0.1', args.module, args.module_args,
             become=False, quiet=True
         )

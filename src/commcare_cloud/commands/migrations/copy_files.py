@@ -59,7 +59,8 @@ class CopyFiles(CommandBase):
     The plan file must be formatted as follows:
 
     ```yml
-    source_env: env1 (optional if source is different from target)
+    source_env: env1 (optional if source is different from target;
+                      SSH access must be allowed from the target host(s) to source host(s))
     copy_files:
       - <target-host>:
           - source_host: <source-host>
@@ -120,24 +121,24 @@ class CopyFiles(CommandBase):
                 self.log("Creating scripts to copy files.")
                 prepare_file_copy_scripts(target_host, source_configs, working_directory)
                 self.log("Moving scripts to target hosts.")
-                copy_scripts_to_target_host(target_host, working_directory, environment, ansible_context)
+                copy_scripts_to_target_host(target_host, working_directory, ansible_context)
             self.log("Establishing auth between target and source.")
-            setup_auth(plan, environment, ansible_context, working_directory)
+            setup_auth(plan, ansible_context, working_directory)
 
         if args.action == 'copy':
             def run_check():
-                return execute_file_copy_scripts(environment, ansible_context, limit, check_mode=True)
+                return execute_file_copy_scripts(ansible_context, limit, check_mode=True)
 
             def run_apply():
-                return execute_file_copy_scripts(environment, ansible_context, limit, check_mode=False)
+                return execute_file_copy_scripts(ansible_context, limit, check_mode=False)
 
             limit = args.limit or ",".join(plan.configs)
             return run_action_with_check_mode(run_check, run_apply, args.skip_check)
 
         if args.action == 'cleanup':
             for target_host in plan.configs:
-                remove_scripts(target_host, environment, ansible_context)
-            teardown_auth(plan, environment, ansible_context, working_directory)
+                remove_scripts(target_host, ansible_context)
+            teardown_auth(plan, ansible_context, working_directory)
             shutil.rmtree(working_directory)
 
 
@@ -218,11 +219,11 @@ def prepare_file_copy_scripts(target_host, source_file_configs, script_root):
             f.write(rsync_script_contents)
 
 
-def copy_scripts_to_target_host(target_host, script_root, environment, ansible_context):
+def copy_scripts_to_target_host(target_host, script_root, ansible_context):
     local_files_path = os.path.join(script_root, target_host)
 
     # remove destination path to ensure we're starting fresh
-    remove_scripts(target_host, environment, ansible_context)
+    remove_scripts(target_host, ansible_context)
 
     # recursively copy all rsync file lists to destination
     copy_args = "src={src}/ dest={dest} mode={mode}".format(
@@ -230,25 +231,24 @@ def copy_scripts_to_target_host(target_host, script_root, environment, ansible_c
         dest=REMOTE_MIGRATION_ROOT,
         mode='0644'
     )
-    run_ansible_module(environment, ansible_context, target_host, 'copy', copy_args)
+    run_ansible_module(ansible_context, target_host, 'copy', copy_args)
 
     # make script executable
     file_args = "path={path} mode='0744'".format(
         path=os.path.join(REMOTE_MIGRATION_ROOT, FILE_MIGRATION_RSYNC_SCRIPT)
     )
-    run_ansible_module(environment, ansible_context, target_host, 'file', file_args)
+    run_ansible_module(ansible_context, target_host, 'file', file_args)
 
 
-def remove_scripts(target_host, environment, ansible_context):
+def remove_scripts(target_host, ansible_context):
     args = "path={} state=absent".format(REMOTE_MIGRATION_ROOT)
-    run_ansible_module(environment, ansible_context, target_host, 'file', args)
+    run_ansible_module(ansible_context, target_host, 'file', args)
 
 
-def execute_file_copy_scripts(environment, ansible_context, limit, check_mode=True):
+def execute_file_copy_scripts(ansible_context, limit, check_mode=True):
     script = os.path.join(REMOTE_MIGRATION_ROOT, FILE_MIGRATION_RSYNC_SCRIPT)
     try:
         run_ansible_module(
-            environment,
             ansible_context,
             'all',
             'shell',
@@ -268,15 +268,15 @@ def get_file_list_filename(config):
     return filename
 
 
-def setup_auth(plan, environment, ansible_context, working_directory):
-    _run_auth_playbook(plan, environment, ansible_context, 'add', working_directory)
+def setup_auth(plan, ansible_context, working_directory):
+    _run_auth_playbook(plan, ansible_context, 'add', working_directory)
 
 
-def teardown_auth(plan, environment, ansible_context, working_directory):
-    _run_auth_playbook(plan, environment, ansible_context, 'remove', working_directory)
+def teardown_auth(plan, ansible_context, working_directory):
+    _run_auth_playbook(plan, ansible_context, 'remove', working_directory)
 
 
-def _run_auth_playbook(plan, environment, ansible_context, action, working_directory):
+def _run_auth_playbook(plan, ansible_context, action, working_directory):
     auth_pairs = set()
     for target_host, source_configs in plan.configs.items():
         auth_pairs.update({
@@ -285,31 +285,29 @@ def _run_auth_playbook(plan, environment, ansible_context, action, working_direc
 
     for target_host, source_host, source_user in auth_pairs:
         _set_auth_key(
-            plan.source_env,
+            AnsibleContext(None, plan.source_env),
             source_host,
             source_user,
-            environment,  # target_env
+            ansible_context,  # target_context
             target_host,
-            ansible_context,
             working_directory,
             remove=(action == 'remove'),
         )
 
 
-def _set_auth_key(source_env, source_host, source_user,
-                  target_env, target_host, ansible_context, working_directory, remove=False):
+def _set_auth_key(source_context, source_host, source_user,
+                  target_context, target_host, working_directory, remove=False):
     target_user = "root"
     key_path = os.path.join(working_directory, 'id_rsa_{}.pub'.format(target_host))
     if not remove:
         user_args = "name={} generate_ssh_key=yes".format(target_user)
-        data = run_ansible_module(
-            target_env, ansible_context, target_host, 'user', user_args, run_command=ansible_json)
+        data = run_ansible_module(target_context, target_host, 'user', user_args, run_command=ansible_json)
         with open(key_path, "w") as fh:
             fh.write(data[target_host]["ssh_public_key"])
 
     state = 'absent' if remove else 'present'
     args = "user={} state={} key={{{{ lookup('file', '{}') }}}}".format(source_user, state, key_path)
-    run_ansible_module(source_env, ansible_context, source_host, 'authorized_key', args)
+    run_ansible_module(source_context, source_host, 'authorized_key', args)
 
     if remove:
         os.remove(key_path)

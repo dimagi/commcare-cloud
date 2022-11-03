@@ -125,7 +125,6 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
 
     def _run_ansible_module(self, host_pattern, module, module_args):
         return run_ansible_module(
-            self.environment,
             self.ansible_context,
             host_pattern,
             module,
