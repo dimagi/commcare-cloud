@@ -190,11 +190,7 @@ proxy
 pillowtop
 webworkers
 
-{{ __es_a__ }}
-
 {{ __es_a1__ }}
-
-{{ __es_b__ }}
 
 {{ __es_b1__ }}
 
@@ -220,16 +216,8 @@ elasticsearch_master=true
 elasticsearch_data=false
 
 [es_data:children]
-es_a
-es_b
 es_a1
 es_b1
-
-[es_a:vars]
-elasticsearch_node_zone=us-east-1a
-
-[es_b:vars]
-elasticsearch_node_zone=us-east-1b
 
 [es_a1:vars]
 elasticsearch_node_zone=us-east-1a
