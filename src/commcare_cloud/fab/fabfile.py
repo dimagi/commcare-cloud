@@ -49,7 +49,7 @@ from commcare_cloud.github import github_repo
 from .checks import check_servers
 from .const import ROLES_ALL_SERVICES, ROLES_ALL_SRC, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .exceptions import PreindexNotFinished
-from .operations import airflow, db, formplayer
+from .operations import db
 from .operations import release, staticfiles, supervisor
 from .utils import (
     cache_deploy_state,
@@ -115,9 +115,6 @@ def _setup_path():
 
     env.services = posixpath.join(env.code_root, 'services')
     env.db = '%s_%s' % (env.project, env.deploy_env)
-    env.airflow_home = posixpath.join(env.home, 'airflow')
-    env.airflow_env = posixpath.join(env.airflow_home, 'env')
-    env.airflow_code_root = posixpath.join(env.airflow_home, 'pipes')
 
 
 def load_env():
@@ -173,7 +170,6 @@ def env_common():
     celery = servers['celery']
     # if no server specified, just don't run pillowtop
     pillowtop = servers.get('pillowtop', [])
-    airflow = servers.get('airflow', [])
 
     deploy = servers.get('deploy', servers['webworkers'])[:1]
 
@@ -203,7 +199,6 @@ def env_common():
         # fab complains if this doesn't exist
         'django_monolith': [],
         'control': servers.get('control')[:1],
-        'airflow': airflow
     }
     env.roles = ['deploy']
     env.hosts = env.roledefs['deploy']
@@ -254,8 +249,8 @@ def kill_stale_celery_workers():
 
 @task
 def rollback_formplayer():
-    execute(formplayer.rollback_formplayer)
-    execute(supervisor.restart_formplayer)
+    print(red("This command is now implemented with ansible:"))
+    print("cchq {} ansible-playbook rollback_formplayer.yml --tags=rollback".format(env.deploy_env))
 
 
 def parse_int_or_exit(val):
@@ -668,11 +663,6 @@ def check_status():
 @task
 def perform_system_checks():
     execute(check_servers.perform_system_checks, True)
-
-
-@task
-def deploy_airflow():
-    execute(airflow.update_airflow)
 
 
 def make_tasks_for_envs(available_envs):

@@ -1,6 +1,6 @@
 title: Upgrade to Python 3.10
 key: upgrade-to-python-3-10
-date: 2022-10-19
+date: 2022-11-07
 optional_per_env: no
 min_commcare_version:
 max_commcare_version:

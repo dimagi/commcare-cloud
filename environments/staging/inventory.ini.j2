@@ -126,13 +126,13 @@ formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 
 {{ __es7__ }} elasticsearch_node_name=es7-staging elasticsearch_node_zone=us-east-1a
 
-{{ __es8__ }} elasticsearch_node_name=es8-staging elasticsearch_node_zone=us-east-1a
-
 {{ __es9__ }} elasticsearch_node_name=es9-staging elasticsearch_node_zone=us-east-1b
 
-{{ __es10__ }} elasticsearch_node_name=es10-staging elasticsearch_node_zone=us-east-1b
-
 {{ __es12__ }} elasticsearch_node_name=es12-staging elasticsearch_node_zone=us-east-1b
+
+{{ __es13__ }} elasticsearch_node_name=es13-staging elasticsearch_node_zone=us-east-1a
+
+{{ __es14__ }} elasticsearch_node_name=es14-staging elasticsearch_node_zone=us-east-1b
 
 [elasticsearch:children]
 # Amazon EC2
@@ -150,8 +150,8 @@ elasticsearch_master=true
 elasticsearch_data=true
 
 [es_data:children]
-es8
-es10
+es13
+es14
 
 [es_coordinator:children]
 es12

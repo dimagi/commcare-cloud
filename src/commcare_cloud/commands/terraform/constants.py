@@ -37,6 +37,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/settings/locations/import/$
 ^/a/([\w\.:-]+)/settings/users/commcare/fields/$
 ^/a/([\w\.:-]+)/settings/users/commcare/upload/$
+^/a/([\w\.:-]+)/settings/users/join/([ \w-]+)/$
 ^/a/([\w\.:-]+)/settings/users/web/upload/$
 ^/formplayer/new-form$
 ^/formplayer/validate_form$
@@ -45,8 +46,8 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/log_email_event/([\w]+)/?$
 ^/telerivet/in/?$
 ^/telerivet/status/([\w\-]+)/$
-""".strip().split()
+""".strip().split('\n')
 
 COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX = """
 ^/trumpia/sms/([\w-]+)/?$
-""".strip().split()
+""".strip().split('\n')

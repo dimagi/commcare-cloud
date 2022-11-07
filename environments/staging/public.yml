@@ -8,7 +8,7 @@ elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a7
 elasticsearch_delete_old_logs: True
 es_plugins_phonetic_enabled: True
 
-kafka_version: 3.2.0
+kafka_version: 3.2.3
 kafka_scala_version: 2.13
 kafka_download_sha512: sha512:736A129823B058DC10788D0893BDE47B6F39B9E4972F9EAC2D5C9E85E51E477344C6F1E1EBD126CE34D5FD430EB07E55FDD60D60CB541F1D48655C0EBC0A4778
 kafka_inter_broker_protocol_version: 3.2
@@ -34,7 +34,7 @@ backup_es_s3: False
 postgres_s3: False
 
 # pg_repack
-pg_repack_version: 1.4.3
+pg_repack_version: 1.4.7
 
 filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}-timing.log"

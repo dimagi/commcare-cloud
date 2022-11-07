@@ -13,8 +13,15 @@
     owner: rabbitmq
     mode: 0644
   loop:
-    - {"src": "rabbitmq.config.j2", "dest": "rabbitmq.config"}
+    - {"src": "rabbitmq.conf.j2", "dest": "rabbitmq.conf"}
     - {"src": "rabbitmq-env.conf.j2", "dest": "rabbitmq-env.conf"}
+
+- name: Remove old config file
+  file:
+    path: "/etc/rabbitmq/{{ item.dest }}"
+    state: absent
+  loop:
+    - {dest: "rabbitmq.config"}
 
 - name: Create directory for ulimt
   file:

@@ -13,12 +13,21 @@ vpc_begin_range: "10.201"
 
 openvpn_image: ami-5e73b923
 
+backup_plan:
+  local_vault_name: "BusinessContinuity_Staging_East-1"
+  remote_vault_name: "BusinessContinuity_Staging_West-1"
+  remote_vault_region: us-west-1
+  outside_account_id: '767699164629'
+  daily_retention: 7
+  monthly_retention: 90
+  quarterly_retention: 365
+
 servers:
   - server_name: "control2-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "a"
-    volume_size: 50
+    volume_size: 100
     volume_encrypted: yes
     volume_type: "gp3"
     group: "control"
@@ -57,6 +66,7 @@ servers:
       volume_size: 80
       encrypted: true
       volume_type: "gp3"
+      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: ubuntu_pro_bionic
 
@@ -71,18 +81,7 @@ servers:
       volume_size: 80
       encrypted: true
       volume_type: "gp3"
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-
-  - server_name: "es8-staging"
-    server_instance_type: "t3.medium"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_type: "gp3"
-    block_device:
-      volume_size: 80
-      volume_type: "gp3"
+      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: ubuntu_pro_bionic
 
@@ -95,18 +94,7 @@ servers:
     block_device:
       volume_size: 80
       volume_type: "gp3"
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-
-  - server_name: "es10-staging"
-    server_instance_type: "t3.medium"
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 30
-    volume_type: "gp3"
-    block_device:
-      volume_size: 80
-      volume_type: "gp3"
+      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: ubuntu_pro_bionic
 
@@ -117,6 +105,33 @@ servers:
     volume_size: 30
     volume_type: "gp3"
     volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      volume_type: "gp3"
+      enable_cross_region_backup: yes
+    group: "elasticsearch"
+    os: bionic
+
+  - server_name: "es13-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      volume_type: "gp3"
+    group: "elasticsearch"
+    os: bionic
+
+  - server_name: "es14-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
     block_device:
       volume_size: 80
       volume_type: "gp3"
@@ -183,6 +198,7 @@ servers:
       volume_size: 150
       encrypted: true
       volume_type: "gp3"
+      enable_cross_region_backup: yes
     group: "couchdb2"
     os: ubuntu_pro_bionic
 
@@ -330,6 +346,7 @@ rds_instances:
     params:
       shared_preload_libraries: pg_stat_statements
       track_io_timing: 1
+    enable_cross_region_backup: yes
 
   - identifier: "pgformplayer0-staging"
     instance_type: "db.t3.small"
