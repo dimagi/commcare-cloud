@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-11-07** [Upgrade to Python 3.10](0060-upgrade-to-python-3-10.md)
+Follow these steps to install and use Python 3.10 on your control machine(s) by December 19th, 2022.
+
+
+---
 #### **2022-11-01** [postgres-v14-upgrade](0059-postgres-v14-upgrade.md)
 Postgres upgrade is recommended to be upgraded in two steps,upgrade from v10 to v13 and then to v14. 
 This change upgrade PostgreSQL from 10 to 13 and then to 14 version.
