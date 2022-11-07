@@ -7,11 +7,17 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2022-11-03** [Install Elasticsearch Phonetic Analysis Plugin](0059-install-elasticsearch-phonetic-analysis-plugin.md)
+#### **2022-11-03** [Install Elasticsearch Phonetic Analysis Plugin](0060-install-elasticsearch-phonetic-analysis-plugin.md)
 The Elasticsearch 'case search' index now requires the [phonetic analysis][plugin docs] plugin
 to be install in Elasticsearch.
 
 [plugin docs]: https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/analysis-phonetic.html
+
+---
+#### **2022-11-01** [postgres-v14-upgrade](0059-postgres-v14-upgrade.md)
+Postgres upgrade is recommended to be upgraded in two steps,upgrade from v10 to v13 and then to v14. 
+This change upgrade PostgreSQL from 10 to 13 and then to 14 version.
+As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and libraries we have updated PostgreSQL from version 10 to version 14. 
 
 
 ---

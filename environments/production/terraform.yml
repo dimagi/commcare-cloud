@@ -22,6 +22,7 @@ backup_plan:
   outside_account_id: '213307118311'
   daily_retention: 7
   monthly_retention: 365
+  quarterly_retention: 0
 
 servers:
   - server_name: "control3-production"
@@ -522,6 +523,7 @@ rds_instances:
     storage: 1000
     multi_az: true
     engine_version: "14"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
       pg_transport.work_mem: 131072
@@ -541,6 +543,7 @@ rds_instances:
     storage: 200
     multi_az: true
     engine_version: "14"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
       log_min_duration_statement: 1000
