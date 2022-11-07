@@ -40,13 +40,12 @@ sudo apt --assume-yes -qq update
 sudo apt --assume-yes -qq install python3-pip sshpass
 sudo -H pip3 -q install --upgrade pip
 sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
-if [[ $CCHQ_VIRTUALENV == *3.10* ]]; then
-  sudo add-apt-repository -y ppa:deadsnakes/ppa
-  sudo apt update
-  sudo apt-get --assume-yes -q install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
-else
-  sudo -H pip -q install ansible virtualenv --ignore-installed six
+if ! hash python3.10 2>/dev/null && [[ $( source /etc/os-release; echo $VERSION_ID ) == 18.04 ]]; then
+    echo "Starting December 12th, 2022, commcare-cloud will require Python 3.10."
+    echo "To upgrade, follow the instructions in:"
+    echo "   https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#upgrade-to-python-3-10"
 fi
+sudo -H pip -q install ansible virtualenv --ignore-installed six
 
 printf "\n"
 printf "#################################################"
