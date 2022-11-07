@@ -8,7 +8,7 @@ need to be applied on your environment to keep it up to date.
 ### Changelog
 
 #### **2022-10-19** [Upgrade to Python 3.10](0058-upgrade-to-python-3-10.md)
-Follow these steps to install and use Python 3.10 on your control machine(s) by December 12th, 2022.
+Follow these steps to install and use Python 3.10 on your control machine(s) by December 19th, 2022.
 
 
 ---
