@@ -7,6 +7,12 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-11-08** [kafka-upgrade-to-3.2.3](0062-kafka-upgrade-to-3.2.3.md)
+Run command to upgrade Kafka version  to 3.2.3 
+Update Scala version to recommended version 2.13 
+
+
+---
 #### **2022-11-08** [Install Elasticsearch Phonetic Analysis Plugin](0061-install-elasticsearch-phonetic-analysis-plugin.md)
 The Elasticsearch 'case search' index now requires the [phonetic analysis][plugin docs] plugin
 to be install in Elasticsearch.
