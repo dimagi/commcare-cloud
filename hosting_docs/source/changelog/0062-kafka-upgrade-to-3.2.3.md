@@ -18,8 +18,8 @@ Update Scala version to recommended version 2.13
 ## Details
 As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
 libraries we have updated the Kafka version to use the kafka==3.2.3 and recommended Scala 2.13.
-Reference Document: https://kafka.apache.org/downloads
+Reference Document: `kafka_download <https://kafka.apache.org/downloads>`
 
 ## Steps to update
 1. For users running Kafka on Linux machines:
-   instructions: [kafka_upgrade](https://commcare-cloud.readthedocs.io/en/latest/services/kafka.html?highlight=kafka%20upgrade#upgrading-kafka)
+   instructions: `kafka_upgrade <https://commcare-cloud.readthedocs.io/en/latest/services/kafka.html?highlight=kafka%20upgrade#upgrading-kafka>`
