@@ -288,8 +288,8 @@ for more detail in what can go here.
 
 ###### `module`
 
-The name of the ansible module to run. Complete list of built-in modules
-can be found at [Module Index](http://docs.ansible.com/ansible/latest/modules/modules_by_category.html).
+The name of the ansible module to run. Complete list of built-in modules can be found at
+[Module Index](http://docs.ansible.com/ansible/latest/modules/modules_by_category.html).
 
 ###### `module_args`
 
@@ -1301,19 +1301,21 @@ copy_files:
         exclude:
           - logs/*
           - test/temp.txt
-```       
-- **copy_files**: Multiple target hosts can be listed. 
-- **target-host**: Hostname or IP of the target host. Multiple source definitions can be 
-listed for each target host.
+```
+- **copy_files**: Multiple target hosts can be listed.
+- **target-host**: Hostname or IP of the target host. Multiple source
+  definitions can be listed for each target host.
 - **source-host**: Hostname or IP of the source host.
-- **source-user**: (optional) User to ssh as from target to source. Defaults to 'ansible'. This user must have permissions
-to read the files being copied.
+- **source-user**: (optional) User to ssh as from target to source. Defaults
+  to 'ansible'. This user must have permissions to read the files being
+  copied.
 - **source-dir**: The base directory from which all source files referenced.
 - **target-dir**: Directory on the target host to copy the files to.
 - **rsync_args**: Additional arguments to pass to rsync.
-- **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
-end with a `/`.
-- **exclude**: (optional) List of relative paths to exclude from the *source-dir*. Supports wildcards e.g. "logs/*".
+- **files**: List of files to copy. File paths are relative to `source-dir`.
+  Directories can be included and must end with a `/`.
+- **exclude**: (optional) List of relative paths to exclude from the
+  *source-dir*. Supports wildcards e.g. "logs/*".
 
 ##### Positional Arguments
 
@@ -1326,7 +1328,7 @@ Path to plan file
 Action to perform
 
 - prepare: generate the scripts and push them to the target servers
-- migrate: execute the scripts
+- copy: execute the scripts
 - cleanup: remove temporary files and remote auth
 
 ---
