@@ -566,7 +566,7 @@ rds_instances:
       shared_buffers: 12GB
       maintenance_work_mem: 4172000kB
       vacuum_cost_limit: 1000
-      pg_transport.work_mem: 131072
+      pg_transport.work_mem: 262144 
       pg_transport.timing: 1
       max_worker_processes: 40
       pg_transport.num_workers: 8
