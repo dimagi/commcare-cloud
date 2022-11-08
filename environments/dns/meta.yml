@@ -1,0 +1,5 @@
+deploy_env: dns
+env_monitoring_id: dns
+always_deploy_formplayer: true
+users:
+  - admins
