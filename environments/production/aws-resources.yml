@@ -66,6 +66,8 @@ esmaster7-production: 10.202.41.228
 esmaster7-production.instance_id: i-027b4e84c95947214
 esmaster8-production: 10.202.40.83
 esmaster8-production.instance_id: i-0117799da26730df7
+esmaster_c0-production: 10.202.42.111
+esmaster_c0-production.instance_id: i-0f9ffe26126cd9c5a
 formplayer-efs: fs-150b0596.efs.us-east-1.amazonaws.com
 formplayer_a000-production: 10.202.10.173
 formplayer_a000-production.instance_id: i-0a24cbe1649f336fc
@@ -117,6 +119,8 @@ kafka_b0-production.instance_id: i-0abddbb0185c5eec9
 kafka_c0-production: 10.202.42.90
 kafka_c0-production.instance_id: i-0a5f1bfb00239c313
 pgauditcare0-production: pgauditcare0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgauditcare0-snapshot: pgauditcare0-snapshot.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+pgauditcare1-production: pgauditcare1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgbouncer10-production: 10.202.40.47
 pgbouncer10-production.instance_id: i-0060bcb23d7941807
 pgbouncer11-production: 10.202.40.150
@@ -147,12 +151,8 @@ pgsynclog2-production: pgsynclog2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaw
 pgsynclogs_nlb-production: pgsynclogs-nlb-production-a0590d45cd55994b.elb.us-east-1.amazonaws.com
 pgucr0-production: pgucr0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgucr_nlb-production: pgucr-nlb-production-3790c322477cf782.elb.us-east-1.amazonaws.com
-pillow_a000-production: 10.202.12.40
-pillow_a000-production.instance_id: i-0602e9c17c2720084
 pillow_a1000-production: 10.202.10.89
 pillow_a1000-production.instance_id: i-0c771b97eb57696f8
-pillow_b000-production: 10.202.11.221
-pillow_b000-production.instance_id: i-06bca093c3f5590cb
 pillow_b1000-production: 10.202.11.238
 pillow_b1000-production.instance_id: i-0f2b1fa8b3bb96b5c
 proxy_a2-production: 10.202.10.21
