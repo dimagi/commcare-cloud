@@ -196,7 +196,6 @@ For details on how to use this tool please see `kafka-reassign-tool <https://git
 Upgrading Kafka
 ---------------
 
-HOSTS-TO-UPGRADE: list of hosts / host groups to upgrade include standbys
 KAFKA-VERSION: Version of Kafka being upgraded to 
 KAFKA-SCALA-VERSION: Version required by KAFKA-VERSION ( Can be found `here <https://kafka.apache.org/downloads>`_) .
 KAFKA_INTER_BROKER_PROTOCOL_VERSION: Maps to Kafka's inter.broker.protocol.version. If you have a cluster that runs brokers with different Kafka versions make sure they communicate with the same protocol version.
