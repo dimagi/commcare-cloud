@@ -102,14 +102,6 @@ servers:
     count: 3
     server_auto_recovery: true
 
-  - server_name: "esmaster6-production"
-    server_instance_type: r6a.large
-    network_tier: "db-private"
-    az: "b"
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-    volume_size: 40
-    enable_cross_region_backup: yes
   - server_name: "esmaster7-production"
     server_instance_type: r6a.large
     network_tier: "db-private"
@@ -125,6 +117,16 @@ servers:
     group: "elasticsearch"
     os: ubuntu_pro_bionic
     volume_size: 40
+    enable_cross_region_backup: yes
+
+  - server_name: "esmaster_c0-production"
+    server_instance_type: r6a.large
+    network_tier: "db-private"
+    az: "c"
+    group: "elasticsearch"
+    os: bionic
+    volume_size: 40
+    volume_encrypted: yes
     enable_cross_region_backup: yes
 
   - server_name: "es_a1{i}-production"
