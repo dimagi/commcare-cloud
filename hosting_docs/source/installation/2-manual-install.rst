@@ -190,13 +190,14 @@ Starting on December 19th, 2022, commcare-cloud will require Python 3.10. Follow
         $ sudo apt update
         $ sudo apt-get -y install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
 
-Once Python 3.10 is installed on your control machine, run:
+**The remaining steps for installing Python 3.10 are only relevant if you have already installed commcare-cloud.
+If commcare-cloud has not been installed on this machine yet, please skip to the next section.**
+
+Run the following to pull the latest version of commcare-cloud and trigger the creation and activation of a Python 3.10 virtual environment.
 
 ::
 
         $ update-code
-
-which will pull the latest version of commcare-cloud and trigger the creation and activation of a Python 3.10 virtual environment.
 
 Confirm the active virtual environment is using Python 3.10
 
