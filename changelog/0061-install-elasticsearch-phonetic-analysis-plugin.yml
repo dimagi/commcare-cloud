@@ -1,6 +1,6 @@
 title: Install Elasticsearch Phonetic Analysis Plugin
 key: Install_Elasticsearch_Phonetic_Analysis_Plugin
-date: 2022-11-03
+date: 2022-11-08
 optional_per_env: no
 min_commcare_version: cdd8da8425a06eefc5257f7720fb6f332000e01c
 context: |

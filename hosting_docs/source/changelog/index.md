@@ -7,11 +7,16 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2022-11-03** [Install Elasticsearch Phonetic Analysis Plugin](0060-install-elasticsearch-phonetic-analysis-plugin.md)
+#### **2022-11-08** [Install Elasticsearch Phonetic Analysis Plugin](0061-install-elasticsearch-phonetic-analysis-plugin.md)
 The Elasticsearch 'case search' index now requires the [phonetic analysis][plugin docs] plugin
 to be install in Elasticsearch.
 
 [plugin docs]: https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/analysis-phonetic.html
+
+
+---
+#### **2022-11-07** [Upgrade to Python 3.10](0060-upgrade-to-python-3-10.md)
+Follow these steps to install and use Python 3.10 on your control machine(s) by December 19th, 2022.
 
 
 ---
