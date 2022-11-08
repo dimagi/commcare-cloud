@@ -197,8 +197,8 @@ Upgrading Kafka
 ---------------
 
 
-* Current default version: 2.4.1
-* Example target version: 2.6.1
+* Current default version: 3.2.0
+* Example target version: 3.2.3
 
 Refer to `Kafka Upgrade documentation <https://kafka.apache.org/documentation/#upgrade>`_ for more details.
 
@@ -213,11 +213,11 @@ Refer to `Kafka Upgrade documentation <https://kafka.apache.org/documentation/#u
 #. 
    Update the Kafka version number and Scala version in ``public.yml``. For right Scala version please refer the `Kafka documentation <https://kafka.apache.org/downloads>`.
 
-    **environments/\ :raw-html-m2r:`<env>`\ /public.yml**
+    **environments/\ `<env>`\ /public.yml**
 
    .. code-block::
 
-       kafka_version: 2.6.1
+       kafka_version: 3.2.3
        kafka_scala_version: 2.13
 
 #. 
@@ -233,11 +233,11 @@ Refer to `Kafka Upgrade documentation <https://kafka.apache.org/documentation/#u
 #. 
    Update Kafka config:
 
-    **environments/\ :raw-html-m2r:`<env>`\ /public.yml**
+    **environments/\ `<env>`\ /public.yml**
 
    .. code-block::
 
-       kafka_inter_broker_protocol_version: 2.6
+       kafka_inter_broker_protocol_version: 3.2
 
    .. code-block::
 
@@ -246,11 +246,11 @@ Refer to `Kafka Upgrade documentation <https://kafka.apache.org/documentation/#u
 #. 
    Update Kafka config (again):
 
-    **environments/\ :raw-html-m2r:`<env>`\ /public.yml**
+    **environments/\ `<env>`\ /public.yml**
 
    .. code-block::
 
-       kafka_log_message_format_version: 2.6
+       kafka_log_message_format_version: 3.2
 
    .. code-block::
 
