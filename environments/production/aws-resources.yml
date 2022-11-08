@@ -148,8 +148,12 @@ pgsynclog2-production: pgsynclog2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaw
 pgsynclogs_nlb-production: pgsynclogs-nlb-production-a0590d45cd55994b.elb.us-east-1.amazonaws.com
 pgucr0-production: pgucr0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgucr_nlb-production: pgucr-nlb-production-3790c322477cf782.elb.us-east-1.amazonaws.com
+pillow_a000-production: 10.202.12.40
+pillow_a000-production.instance_id: i-0602e9c17c2720084
 pillow_a1000-production: 10.202.10.89
 pillow_a1000-production.instance_id: i-0c771b97eb57696f8
+pillow_b000-production: 10.202.11.221
+pillow_b000-production.instance_id: i-06bca093c3f5590cb
 pillow_b1000-production: 10.202.11.238
 pillow_b1000-production.instance_id: i-0f2b1fa8b3bb96b5c
 proxy_a2-production: 10.202.10.21
