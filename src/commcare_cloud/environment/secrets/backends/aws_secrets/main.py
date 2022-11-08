@@ -21,6 +21,17 @@ class AwsSecretsBackend(AbstractSecretsBackend):
     def __init__(self, secret_name_prefix, environment):
         self.secret_name_prefix = secret_name_prefix
         self.environment = environment
+        self._validate_ssm_proxy()
+
+    def _validate_ssm_proxy(self):
+        if (
+            os.environ.get("COMMCARE_CLOUD_PROXY_SSM")
+            and not self.environment.public_vars.get("allow_aws_ssm_proxy")
+        ):
+            sys.exit(
+                "ERROR: AWS SSM proxy is not allowed for this environment. "
+                "Use --control and/or unset COMMCARE_CLOUD_PROXY_SSM instead."
+            )
 
     @classmethod
     def from_environment(cls, environment):
