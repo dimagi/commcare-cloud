@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 import hashlib
 import os
 import shutil
+import subprocess
 from io import open
 
 import attr
@@ -13,13 +14,13 @@ from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext,
     run_action_with_check_mode,
 )
-from commcare_cloud.commands.ansible.run_module import run_ansible_module
+from commcare_cloud.commands.ansible.run_module import run_ansible_module, ansible_json
 from commcare_cloud.commands.command_base import (
     Argument,
     CommandBase,
     CommandError,
 )
-from commcare_cloud.commands.utils import PrivilegedCommand, render_template
+from commcare_cloud.commands.utils import render_template
 from commcare_cloud.environment.main import get_environment
 
 FILE_MIGRATION_RSYNC_SCRIPT = 'file_migration_rsync.sh'
@@ -125,11 +126,12 @@ class CopyFiles(CommandBase):
 
         if args.action == 'copy':
             def run_check():
-                return execute_file_copy_scripts(environment, list(plan.configs), check_mode=True)
+                return execute_file_copy_scripts(environment, ansible_context, limit, check_mode=True)
 
             def run_apply():
-                return execute_file_copy_scripts(environment, list(plan.configs), check_mode=False)
+                return execute_file_copy_scripts(environment, ansible_context, limit, check_mode=False)
 
+            limit = args.limit or ",".join(plan.configs)
             return run_action_with_check_mode(run_check, run_apply, args.skip_check)
 
         if args.action == 'cleanup':
@@ -238,16 +240,21 @@ def copy_scripts_to_target_host(target_host, script_root, environment, ansible_c
     run_ansible_module(environment, ansible_context, target_host, 'file', file_args)
 
 
-def execute_file_copy_scripts(environment, target_hosts, check_mode=True):
-    file_root = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
-    command = "{}{}".format(
-        os.path.join(file_root, FILE_MIGRATION_RSYNC_SCRIPT),
-        ' --dry-run' if check_mode else ''
-    )
-    piv_command = PrivilegedCommand('ansible', environment.get_ansible_user_password(), command)
-    results = piv_command.run_command(target_hosts, parallel_pool_size=len(target_hosts))
-    non_zero_returns = [ret.return_code for ret in results.values() if ret.return_code]
-    return non_zero_returns[0] if non_zero_returns else 0
+def execute_file_copy_scripts(environment, ansible_context, limit, check_mode=True):
+    script = os.path.join('/tmp', REMOTE_MIGRATION_ROOT, FILE_MIGRATION_RSYNC_SCRIPT)
+    try:
+        run_ansible_module(
+            environment,
+            ansible_context,
+            'all',
+            'shell',
+            script + (' --dry-run' if check_mode else ''),
+            extra_args=('--limit=' + limit,),
+            run_command=subprocess.check_call,
+        )
+    except subprocess.CalledProcessError as err:
+        return err.returncode
+    return 0
 
 
 def get_file_list_filename(config):
@@ -286,12 +293,9 @@ def _genearate_and_fetch_key(env, host, user, ansible_context, working_directory
     user_args = "name={} generate_ssh_key=yes".format(user)
     run_ansible_module(env, ansible_context, host, 'user', user_args)
 
-    user_home_output = PrivilegedCommand(
-        'ansible',
-        env.get_ansible_user_password(),
-        "getent passwd {} | cut -d: -f6".format(user)
-    ).run_command(host)
-    user_home = user_home_output[host]
+    command = "getent passwd {} | cut -d: -f6".format(user)
+    data = run_ansible_module(env, ansible_context, host, 'shell', command, run_command=ansible_json)
+    user_home = data[host]["stdout"]
 
     fetch_args = "src={user_home}/.ssh/id_rsa.pub dest={key_tmp} flat=yes fail_on_missing=yes".format(
         user_home=user_home, key_tmp=os.path.join(working_directory, 'id_rsa.tmp')

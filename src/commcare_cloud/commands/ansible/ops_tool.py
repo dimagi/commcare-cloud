@@ -30,26 +30,25 @@ from commcare_cloud.colors import (
     color_success,
 )
 from commcare_cloud.commands import shared_args
-from commcare_cloud.commands.ansible.couch_utils import (
-    get_cluster_shard_details,
-    print_db_info,
-    print_shard_table,
-)
 from commcare_cloud.commands.command_base import (
     Argument,
     CommandBase,
     CommandError,
 )
-from commcare_cloud.commands.inventory_lookup.getinventory import (
-    get_instance_group,
-)
 from commcare_cloud.commands.inventory_lookup.inventory_lookup import (
     DjangoManage,
 )
-from commcare_cloud.commands.utils import PrivilegedCommand
 from commcare_cloud.environment.exceptions import EnvironmentException
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.schemas.app_processes import get_machine_alias
+
+from .couch_utils import (
+    get_cluster_shard_details,
+    print_db_info,
+    print_shard_table,
+)
+from .helpers import AnsibleContext
+from .run_module import run_ansible_module, ansible_json
 
 
 class ListDatabases(CommandBase):
@@ -93,23 +92,20 @@ class ListDatabases(CommandBase):
     @staticmethod
     def get_present_dbs(args):
         dbs_present_in_host = collections.defaultdict(list)
-        args.server = 'postgresql'
-        ansible_username = 'ansible'
-        command = "python /usr/local/sbin/db-tools.py  --list-all"
-
-        environment = get_environment(args.env_name)
-        ansible_password = environment.get_ansible_user_password()
-        host_addresses = get_instance_group(args.env_name, args.server)
-        user_as = 'postgres'
-
-        privileged_command = PrivilegedCommand(ansible_username, ansible_password, command, user_as)
-
-        present_db_op = privileged_command.run_command(host_addresses)
-
-        # List from Postgresql query.
-
-        for host_address in present_db_op.keys():
-            dbs_present_in_host[host_address] = present_db_op[host_address].split("\r\n")
+        hosts = run_ansible_module(
+            get_environment(args.env_name),
+            AnsibleContext(args),
+            "postgresql",
+            "shell",
+            "python /usr/local/sbin/db-tools.py --list-all",
+            run_command=ansible_json,
+        )
+        for host, task in hosts.items():
+            if task.get("rc") == 0:
+                dbs = task["stdout_lines"]
+            else:
+                dbs = [task.get("stderr") or task.get("msg") or str(task)]
+            dbs_present_in_host[host].extend(dbs)
 
         return dbs_present_in_host
 
