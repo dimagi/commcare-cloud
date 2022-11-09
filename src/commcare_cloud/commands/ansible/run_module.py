@@ -1,9 +1,9 @@
 # coding: utf-8
 from __future__ import absolute_import
 from __future__ import unicode_literals
-import os
+import json
+import shlex
 import subprocess
-from six.moves import shlex_quote
 from clint.textui import puts
 from commcare_cloud.cli_utils import ask, print_command
 from commcare_cloud.colors import color_notice
@@ -16,7 +16,6 @@ from commcare_cloud.commands.ansible.helpers import (
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import ANSIBLE_HELP_OPTIONS_PREFIX, add_to_help_text, filtered_help_message
-from commcare_cloud.environment.paths import ANSIBLE_DIR
 
 NON_POSITIONAL_ARGUMENTS = (
     Argument('-b', '--become', action='store_true', help=(
@@ -47,8 +46,8 @@ class RunAnsibleModule(CommandBase):
     arguments = (
         shared_args.INVENTORY_GROUP_ARG,
         Argument('module', help="""
-            The name of the ansible module to run. Complete list of built-in modules
-            can be found at [Module Index](http://docs.ansible.com/ansible/latest/modules/modules_by_category.html).
+            The name of the ansible module to run. Complete list of built-in modules can be found at
+            [Module Index](http://docs.ansible.com/ansible/latest/modules/modules_by_category.html).
         """),
         Argument('module_args', help="""
             Args for the module, formatted as a single string.
@@ -104,7 +103,8 @@ class RunAnsibleModule(CommandBase):
 
 
 def run_ansible_module(environment, ansible_context, inventory_group, module, module_args,
-                       become=True, become_user=None, use_factory_auth=False, quiet=False, extra_args=()):
+                       become=True, become_user=None, use_factory_auth=False, quiet=False,
+                       extra_args=(), run_command=subprocess.call):
     extra_args = tuple(extra_args)
     if not quiet:
         extra_args = ("--diff",) + extra_args
@@ -140,12 +140,31 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
         cmd_parts += environment.secrets_backend.get_extra_ansible_args()
         env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
 
+    if run_command is ansible_json:
+        env_vars.setdefault("ANSIBLE_LOAD_CALLBACK_PLUGINS", "1")
+        env_vars.setdefault("ANSIBLE_STDOUT_CALLBACK", "json")
+
     cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args
-    cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+    cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
     if not quiet:
         print_command(cmd)
-    return subprocess.call(cmd_parts, env=env_vars)
+    return run_command(cmd_parts, env=env_vars)
+
+
+def ansible_json(*args, **kw):
+    """JSON command runner for run_ansible_module
+
+    Usage: run_ansible_module(..., run_command=ansible_json)
+    """
+    try:
+        output = subprocess.check_output(*args, **kw)
+    except subprocess.CalledProcessError as err:
+        output = err.output
+    try:
+        return json.loads(output)["plays"][-1]["tasks"][-1]["hosts"]
+    except (KeyError, IndexError, ValueError, TypeError):
+        raise BadAnsibleResult(output)
 
 
 class RunShellCommand(CommandBase):
@@ -251,3 +270,7 @@ class Ping(CommandBase):
         args.shell_command = 'echo {{ inventory_hostname }}'
         args.silence_warnings = False
         return RunShellCommand(self.parser).run(args, unknown_args)
+
+
+class BadAnsibleResult(Exception):
+    pass
