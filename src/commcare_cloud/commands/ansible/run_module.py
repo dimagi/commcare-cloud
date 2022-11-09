@@ -105,7 +105,9 @@ def run_ansible_module(ansible_context, inventory_group, module, module_args,
                        become=True, become_user=None, use_factory_auth=False, quiet=False,
                        extra_args=(), run_command=subprocess.call):
     extra_args = tuple(extra_args)
-    if not quiet:
+    if run_command is ansible_json:
+        assert not quiet, "quiet=True has no effect with run_command=ansible_json"
+    elif not quiet:
         extra_args = ("--diff",) + extra_args
     else:
         extra_args = ("--one-line",) + extra_args
@@ -136,8 +138,8 @@ def run_ansible_module(ansible_context, inventory_group, module, module_args,
 
     env_vars = ansible_context.build_env(need_secrets=become)
     if run_command is ansible_json:
-        env_vars.setdefault("ANSIBLE_LOAD_CALLBACK_PLUGINS", "1")
-        env_vars.setdefault("ANSIBLE_STDOUT_CALLBACK", "json")
+        env_vars["ANSIBLE_LOAD_CALLBACK_PLUGINS"] = "1"
+        env_vars["ANSIBLE_STDOUT_CALLBACK"] = "json"
 
     cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args
@@ -151,6 +153,8 @@ def ansible_json(*args, **kw):
     """JSON command runner for run_ansible_module
 
     Usage: run_ansible_module(..., run_command=ansible_json)
+
+    Returns a dict: {<host>: <result_dict>, ...}
     """
     try:
         output = subprocess.check_output(*args, **kw)
