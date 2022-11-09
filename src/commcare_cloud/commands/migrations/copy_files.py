@@ -25,7 +25,7 @@ from commcare_cloud.environment.main import get_environment
 
 FILE_MIGRATION_RSYNC_SCRIPT = 'file_migration_rsync.sh'
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-REMOTE_MIGRATION_ROOT = 'file_migration'
+REMOTE_MIGRATION_ROOT = '/tmp/file_migration'
 
 
 @attr.s
@@ -211,7 +211,7 @@ def prepare_file_copy_scripts(target_host, source_file_configs, script_root):
         # create rsync script
         rsync_script_contents = render_template('file_migration_rsync.sh.j2', {
             'rsync_file_list': files_for_node,
-            'rsync_file_root': os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
+            'rsync_file_root': REMOTE_MIGRATION_ROOT
         }, TEMPLATE_DIR)
         rsync_script_path = os.path.join(target_script_root, FILE_MIGRATION_RSYNC_SCRIPT)
         with open(rsync_script_path, 'w', encoding='utf-8') as f:
@@ -220,7 +220,6 @@ def prepare_file_copy_scripts(target_host, source_file_configs, script_root):
 
 def copy_scripts_to_target_host(target_host, script_root, environment, ansible_context):
     local_files_path = os.path.join(script_root, target_host)
-    destination_path = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
 
     # remove destination path to ensure we're starting fresh
     remove_scripts(target_host, environment, ansible_context)
@@ -228,26 +227,25 @@ def copy_scripts_to_target_host(target_host, script_root, environment, ansible_c
     # recursively copy all rsync file lists to destination
     copy_args = "src={src}/ dest={dest} mode={mode}".format(
         src=local_files_path,
-        dest=destination_path,
+        dest=REMOTE_MIGRATION_ROOT,
         mode='0644'
     )
     run_ansible_module(environment, ansible_context, target_host, 'copy', copy_args)
 
     # make script executable
     file_args = "path={path} mode='0744'".format(
-        path=os.path.join(destination_path, FILE_MIGRATION_RSYNC_SCRIPT)
+        path=os.path.join(REMOTE_MIGRATION_ROOT, FILE_MIGRATION_RSYNC_SCRIPT)
     )
     run_ansible_module(environment, ansible_context, target_host, 'file', file_args)
 
 
 def remove_scripts(target_host, environment, ansible_context):
-    destination_path = os.path.join('/tmp', REMOTE_MIGRATION_ROOT)
-    args = "path={} state=absent".format(destination_path)
+    args = "path={} state=absent".format(REMOTE_MIGRATION_ROOT)
     run_ansible_module(environment, ansible_context, target_host, 'file', args)
 
 
 def execute_file_copy_scripts(environment, ansible_context, limit, check_mode=True):
-    script = os.path.join('/tmp', REMOTE_MIGRATION_ROOT, FILE_MIGRATION_RSYNC_SCRIPT)
+    script = os.path.join(REMOTE_MIGRATION_ROOT, FILE_MIGRATION_RSYNC_SCRIPT)
     try:
         run_ansible_module(
             environment,
