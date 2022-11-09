@@ -194,9 +194,9 @@ webworkers
 
 {{ __es_b1__ }}
 
-{{ __esmaster7__ }} elasticsearch_node_name=esmaster7
-
 {{ __esmaster8__ }} elasticsearch_node_name=esmaster8
+
+{{ __esmaster_b0__ }} elasticsearch_node_name=esmaster_b0
 
 {{ __esmaster_c0__ }} elasticsearch_node_name=esmaster_c0
 
@@ -207,8 +207,8 @@ webworkers
 {{ __escoordinator_c0__ }} elasticsearch_node_name=escoordinator_c0 elasticsearch_node_zone=us-east-1c
 
 [es_master:children]
-esmaster7
 esmaster8
+esmaster_b0
 esmaster_c0
 
 [es_master:vars]

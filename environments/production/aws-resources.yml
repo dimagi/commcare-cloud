@@ -60,10 +60,10 @@ escoordinator_b0-production: 10.202.41.5
 escoordinator_b0-production.instance_id: i-047023a500bbaf45a
 escoordinator_c0-production: 10.202.42.202
 escoordinator_c0-production.instance_id: i-0dce3c54b64ff42cf
-esmaster7-production: 10.202.41.228
-esmaster7-production.instance_id: i-027b4e84c95947214
 esmaster8-production: 10.202.40.83
 esmaster8-production.instance_id: i-0117799da26730df7
+esmaster_b0-production: 10.202.41.8
+esmaster_b0-production.instance_id: i-082edb050f9cf8869
 esmaster_c0-production: 10.202.42.111
 esmaster_c0-production.instance_id: i-0f9ffe26126cd9c5a
 formplayer-efs: fs-150b0596.efs.us-east-1.amazonaws.com
