@@ -22,7 +22,14 @@ class AnsibleContext(object):
     stdout_callback = 'ANSIBLE_STDOUT_CALLBACK'
     collections_paths = 'ANSIBLE_COLLECTIONS_PATHS'
 
-    def __init__(self, args):
+    def __init__(self, args, environment=None):
+        from commcare_cloud.environment.main import get_environment
+        assert args is not None or environment is not None, "'args' or 'environment' is required"
+        if environment is None:
+            environment = get_environment(args.env_name)
+        if args is not None:
+            assert args.env_name == environment.name, (args.env_name, environment.name)
+        self.environment = environment
         self.env_vars = self._build_env(args)
 
     def _build_env(self, args):

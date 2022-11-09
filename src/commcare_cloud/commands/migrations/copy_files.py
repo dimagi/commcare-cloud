@@ -104,12 +104,12 @@ class CopyFiles(CommandBase):
     )
 
     def run(self, args, unknown_args):
-        environment = get_environment(args.env_name)
+        ansible_context = AnsibleContext(args)
+        environment = ansible_context.environment
         environment.create_generated_yml()
 
         plan = read_plan(args.plan_path, environment, args.limit)
         working_directory = _get_working_dir(args.plan_path, environment)
-        ansible_context = AnsibleContext(args)
 
         environment.secrets_backend.prompt_user_input()
         if plan.source_env != environment and args.action in ('prepare', 'cleanup'):

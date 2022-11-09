@@ -21,7 +21,6 @@ from commcare_cloud.commands.ansible.helpers import (
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_role_defaults
 from commcare_cloud.fab.exceptions import NoHostsMatch
 
@@ -348,7 +347,7 @@ class Elasticsearch(ServiceBase):
 
     def _act_on_pillows(self, action):
         # Used to stop or start pillows
-        service = Pillowtop(self.environment, AnsibleContext(None))
+        service = Pillowtop(self.environment, AnsibleContext(None, self.environment))
         exit_code = service.run(action=action)
         if not exit_code == 0:
             print("ERROR while trying to {} pillows. Exiting.".format(action))
@@ -361,7 +360,7 @@ class Elasticsearch(ServiceBase):
             extra_args.extend(['--limit={}'.format(limit)])
         run_ansible_playbook(environment=self.environment,
                              playbook='es_rolling_restart.yml',
-                             ansible_context=AnsibleContext(args=None),
+                             ansible_context=AnsibleContext(None, self.environment),
                              unknown_args=extra_args,
                              skip_check=True, quiet=True)
 
@@ -697,14 +696,13 @@ class Service(CommandBase):
     )
 
     def run(self, args, unknown_args):
-        environment = get_environment(args.env_name)
-
         services = [
             SERVICES_BY_NAME[name]
             for name in args.services
         ]
 
         ansible_context = AnsibleContext(args)
+        environment = ansible_context.environment
         non_zero_exits = []
         for service_cls in services:
             service = service_cls(environment, ansible_context)

@@ -92,9 +92,10 @@ class ListDatabases(CommandBase):
     @staticmethod
     def get_present_dbs(args):
         dbs_present_in_host = collections.defaultdict(list)
+        ansible_context = AnsibleContext(args)
         hosts = run_ansible_module(
-            get_environment(args.env_name),
-            AnsibleContext(args),
+            ansible_context.environment,
+            ansible_context,
             "postgresql",
             "shell",
             "python /usr/local/sbin/db-tools.py --list-all",

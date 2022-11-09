@@ -76,9 +76,9 @@ class AnsiblePlaybook(CommandBase):
         ))
 
     def run(self, args, unknown_args, always_skip_check=False, respect_ansible_skip=True):
-        environment = get_environment(args.env_name)
-        environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
+        environment = ansible_context.environment
+        environment.create_generated_yml()
         check_branch(args)
         return run_ansible_playbook(
             environment, args.playbook, ansible_context, args.skip_check, args.quiet,

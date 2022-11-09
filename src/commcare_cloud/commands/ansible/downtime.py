@@ -15,7 +15,6 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.ansible.service import COMMCARE_INVENTORY_GROUPS
 from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.environment.main import get_environment
 
 
 class Downtime(CommandBase):
@@ -40,9 +39,9 @@ class Downtime(CommandBase):
     )
 
     def run(self, args, unknown_args):
-        environment = get_environment(args.env_name)
-        environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
+        environment = ansible_context.environment
+        environment.create_generated_yml()
 
         if args.action == 'start':
             start_downtime(environment, ansible_context, args)

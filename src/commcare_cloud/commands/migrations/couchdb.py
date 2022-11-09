@@ -56,7 +56,6 @@ from commcare_cloud.commands.migrations.copy_files import (
     prepare_file_copy_scripts,
 )
 from commcare_cloud.commands.utils import render_template
-from commcare_cloud.environment.main import get_environment
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 PLAY_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'plays')
@@ -101,7 +100,8 @@ class MigrateCouchdb(CommandBase):
     def run(self, args, unknown_args):
         assert args.action == 'migrate' or not args.no_stop, \
             "You can only use --no-stop with migrate"
-        environment = get_environment(args.env_name)
+        ansible_context = AnsibleContext(args)
+        environment = ansible_context.environment
         environment.create_generated_yml()
 
         migration = CouchMigration(environment, args.migration_plan)
@@ -109,7 +109,6 @@ class MigrateCouchdb(CommandBase):
         if migration.separate_source_and_target:
             check_connection(migration.source_couch_config.get_control_node())
 
-        ansible_context = AnsibleContext(args)
         if args.limit and args.action != 'clean':
             puts(color_notice('Ignoring --limit (it only applies to "clean" action).'))
 

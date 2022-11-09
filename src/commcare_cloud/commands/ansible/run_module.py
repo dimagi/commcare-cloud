@@ -14,7 +14,6 @@ from commcare_cloud.commands.ansible.helpers import (
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import ANSIBLE_HELP_OPTIONS_PREFIX, add_to_help_text, filtered_help_message
 
 NON_POSITIONAL_ARGUMENTS = (
@@ -80,9 +79,9 @@ class RunAnsibleModule(CommandBase):
         ))
 
     def run(self, args, unknown_args):
-        environment = get_environment(args.env_name)
-        environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
+        environment = ansible_context.environment
+        environment.create_generated_yml()
 
         def _run_ansible(args, *unknown_args):
             return run_ansible_module(
@@ -237,7 +236,8 @@ class SendDatadogEvent(CommandBase):
 
     def run(self, args, unknown_args):
         args.module = 'datadog_event'
-        environment = get_environment(args.env_name)
+        ansible_context = AnsibleContext(args)
+        environment = ansible_context.environment
         datadog_api_key = environment.get_secret('DATADOG_API_KEY')
         datadog_app_key = environment.get_secret('DATADOG_APP_KEY')
         tags = args.tags or []
@@ -252,7 +252,7 @@ class SendDatadogEvent(CommandBase):
                 agg='commcare-cloud'
             )
         return run_ansible_module(
-            environment, AnsibleContext(args),
+            environment, ansible_context,
             '127.0.0.1', args.module, args.module_args,
             become=False, quiet=True
         )
