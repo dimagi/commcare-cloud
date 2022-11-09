@@ -65,8 +65,8 @@ def confirm_deploy(environment, deploy_revs, diffs, args):
             return False
 
     if not (
-        _confirm_translated(environment, quiet=args.quiet) and
-        _confirm_environment_time(environment, quiet=args.quiet)
+        _confirm_translated(environment, quiet=args.quiet)
+        and _confirm_environment_time(environment, quiet=args.quiet)
     ):
         return False
 
@@ -110,7 +110,8 @@ def _confirm_translated(environment, quiet=False):
     if datetime.now().isoweekday() != 3 or environment.meta_config.deploy_env != 'production':
         return True
     github_update_translations_pr_link = \
-        "https://github.com/dimagi/commcare-hq/pulls?q=is%3Apr+Update+Translations+author%3Aapp%2Fgithub-actions+is%3Aopen"
+        "https://github.com/dimagi/commcare-hq/pulls?" \
+        "q=is%3Apr+Update+Translations+author%3Aapp%2Fgithub-actions+is%3Aopen"
     return ask(
         "It's the weekly Wednesday deploy, did you update the translations "
         "from transifex?\n"

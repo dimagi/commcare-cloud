@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 import inspect
 import os
+import shlex
 import sys
 from collections import OrderedDict
 from textwrap import dedent
@@ -42,7 +43,6 @@ from .environment.paths import (
     get_available_envs,
     put_virtualenv_bin_on_the_path,
 )
-from six.moves import shlex_quote
 
 COMMAND_GROUPS = OrderedDict([
     ('housekeeping', [
@@ -121,11 +121,11 @@ def run_on_control_instead(args, argv, force_latest_code):
             env=('export CCHQ_VIRTUALENV=%s; ' % venv if venv else ''),
             branch=branch,
             cchq=executable,
-            cchq_args=' '.join(shlex_quote(arg) for arg in argv),
+            cchq_args=' '.join(shlex.quote(arg) for arg in argv),
         )
     ]
 
-    print_command(' '.join([shlex_quote(part) for part in cmd_parts]))
+    print_command(' '.join([shlex.quote(part) for part in cmd_parts]))
     os.execvp(executable, cmd_parts)
 
 
