@@ -318,6 +318,14 @@ servers:
     volume_encrypted: yes
     group: "postgresql"
     os: bionic
+  - server_name: "pgbouncer_a2-production"  # former pgbouncer_host formplayer
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: bionic
   - server_name: "pgbouncer5-production"  # former pgbouncer_host formplayer
     server_instance_type: m5n.large
     network_tier: "db-private"
