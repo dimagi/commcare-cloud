@@ -196,9 +196,10 @@ For details on how to use this tool please see `kafka-reassign-tool <https://git
 Upgrading Kafka
 ---------------
 
-
-* Current default version: 2.4.1
-* Example target version: 2.6.1
+KAFKA-VERSION: Version of Kafka being upgraded to 
+KAFKA-SCALA-VERSION: Version required by KAFKA-VERSION ( Can be found `here <https://kafka.apache.org/downloads>`_) .
+KAFKA_INTER_BROKER_PROTOCOL_VERSION: Maps to Kafka's inter.broker.protocol.version. If you have a cluster that runs brokers with different Kafka versions make sure they communicate with the same protocol version.
+KAFKA_LOG_MESSAGE_FORMAT_VERSION: Maps to Kafka's log.message.format.version. Specifies the protocol version with which your cluster communicates with its consumers. 
 
 Refer to `Kafka Upgrade documentation <https://kafka.apache.org/documentation/#upgrade>`_ for more details.
 
@@ -213,12 +214,12 @@ Refer to `Kafka Upgrade documentation <https://kafka.apache.org/documentation/#u
 #. 
    Update the Kafka version number and Scala version in ``public.yml``. For right Scala version please refer the `Kafka documentation <https://kafka.apache.org/downloads>`.
 
-    **environments/\ :raw-html-m2r:`<env>`\ /public.yml**
+    **environments/\ `<env>`\ /public.yml**
 
    .. code-block::
 
-       kafka_version: 2.6.1
-       kafka_scala_version: 2.13
+       kafka_version: <KAFKA-VERSION> 
+       kafka_scala_version: <KAFKA-SCALA-VERSION>
 
 #. 
    Upgrade the Kafka binaries and config
@@ -233,11 +234,11 @@ Refer to `Kafka Upgrade documentation <https://kafka.apache.org/documentation/#u
 #. 
    Update Kafka config:
 
-    **environments/\ :raw-html-m2r:`<env>`\ /public.yml**
+    **environments/\ `<env>`\ /public.yml**
 
    .. code-block::
 
-       kafka_inter_broker_protocol_version: 2.6
+       kafka_inter_broker_protocol_version: <KAFKA_INTER_BROKER_PROTOCOL_VERSION> 
 
    .. code-block::
 
@@ -246,11 +247,11 @@ Refer to `Kafka Upgrade documentation <https://kafka.apache.org/documentation/#u
 #. 
    Update Kafka config (again):
 
-    **environments/\ :raw-html-m2r:`<env>`\ /public.yml**
+    **environments/\ `<env>`\ /public.yml**
 
    .. code-block::
 
-       kafka_log_message_format_version: 2.6
+       kafka_log_message_format_version: <KAFKA_LOG_MESSAGE_FORMAT_VERSION>
 
    .. code-block::
 

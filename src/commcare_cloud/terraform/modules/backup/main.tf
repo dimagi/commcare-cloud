@@ -52,6 +52,29 @@ resource "aws_backup_plan" "business_continuity_plan" {
       delete_after = 1
     }
   }
+  dynamic "rule" {
+    for_each = toset(var.quarterly_retention != 0 ? [1] : [])
+    content {
+      completion_window        = 10080
+      enable_continuous_backup = false
+      rule_name                = "Quarterly"
+      schedule                 = "cron(0 13 ? JAN,APR,JUL,OCT 1#1 *)"
+      start_window             = 60
+      target_vault_name        = aws_backup_vault.business_continuity_local_vault.name
+
+      copy_action {
+        destination_vault_arn = aws_backup_vault.business_continuity_remote_vault.arn
+
+        lifecycle {
+          delete_after = var.quarterly_retention
+        }
+      }
+
+      lifecycle {
+        delete_after = 1
+      }
+    }
+  }
 }
 
 resource "aws_backup_vault" "business_continuity_local_vault" {

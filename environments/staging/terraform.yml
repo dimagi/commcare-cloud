@@ -20,6 +20,7 @@ backup_plan:
   outside_account_id: '767699164629'
   daily_retention: 7
   monthly_retention: 90
+  quarterly_retention: 365
 
 servers:
   - server_name: "control2-staging"
