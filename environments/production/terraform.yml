@@ -21,8 +21,8 @@ backup_plan:
   remote_vault_region: us-west-1
   outside_account_id: '213307118311'
   daily_retention: 7
-  monthly_retention: 365
-  quarterly_retention: 0
+  monthly_retention: 90
+  quarterly_retention: 365
 
 servers:
   - server_name: "control3-production"
