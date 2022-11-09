@@ -1,3 +1,4 @@
+import shlex
 from datetime import datetime
 
 import pytz
@@ -5,6 +6,11 @@ import pytz
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_notice
+from commcare_cloud.commands.ansible.run_module import (
+    AnsibleContext,
+    ansible_json,
+    run_ansible_module,
+)
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
 from commcare_cloud.commands.deploy.utils import (
     record_deploy_start,
@@ -14,7 +20,6 @@ from commcare_cloud.commands.deploy.utils import (
     DeployContext,
     record_deploy_failed,
 )
-from commcare_cloud.commands.utils import run_fab_task
 from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff
 from commcare_cloud.github import github_repo
@@ -184,15 +189,16 @@ def call_record_deploy_success(environment, context, end_time):
 
 
 def _get_deployed_version(environment):
-    from fabric.api import cd, run
-
-    def _task():
-        with cd(environment.remote_conf.code_current):
-            return run('git rev-parse HEAD')
-
-    host = environment.sshable_hostnames_by_group["django_manage"][0]
-    res = run_fab_task(_task, host, 'ansible')
-    return res[host]
+    code_current = shlex.quote(environment.remote_conf.code_current)
+    res = run_ansible_module(
+        AnsibleContext(None, environment),
+        "django_manage",
+        "shell",
+        f"cd {code_current}; git rev-parse HEAD",
+        become=False,
+        run_command=ansible_json,
+    )
+    return next(iter(res.values()))["stdout"]
 
 
 def get_deploy_commcare_fab_func_args(args):
