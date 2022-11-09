@@ -11,31 +11,6 @@ def render_template(name, context, template_root):
     return env.get_template(name).render(context)
 
 
-class PrivilegedCommand():
-    """
-    This Class allows to execute sudo commands over ssh.
-    """
-    def __init__(self, user_name, password, command, user_as=None):
-        """
-        :param user_name: Username to login with
-        :param password: Password of the user
-        :param command: command to execute (This command will be executed using sudo. )
-        """
-        self.user_name = user_name
-        self.password = password
-        self.command = command
-        self.user_as = user_as
-
-    def run_command(self, hosts, parallel_pool_size=1):
-        from fabric.api import sudo
-
-        def _task():
-            result = sudo(self.command, user=self.user_as)
-            return result
-
-        return run_fab_task(_task, hosts, self.user_name, self.password, parallel_pool_size=parallel_pool_size)
-
-
 def run_fab_task(task_fn, hosts, username, password=None, parallel_pool_size=1):
     from fabric.api import execute, env, parallel
     if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
