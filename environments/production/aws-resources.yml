@@ -64,6 +64,8 @@ esmaster7-production: 10.202.41.228
 esmaster7-production.instance_id: i-027b4e84c95947214
 esmaster8-production: 10.202.40.83
 esmaster8-production.instance_id: i-0117799da26730df7
+esmaster_b0-production: 10.202.41.8
+esmaster_b0-production.instance_id: i-082edb050f9cf8869
 esmaster_c0-production: 10.202.42.111
 esmaster_c0-production.instance_id: i-0f9ffe26126cd9c5a
 formplayer-efs: fs-150b0596.efs.us-east-1.amazonaws.com
@@ -133,6 +135,8 @@ pgbouncer9-production: 10.202.40.241
 pgbouncer9-production.instance_id: i-00f2c8e5755593a07
 pgbouncer_a1-production: 10.202.40.25
 pgbouncer_a1-production.instance_id: i-0aa5010ad7af8c5e0
+pgbouncer_a2-production: 10.202.40.146
+pgbouncer_a2-production.instance_id: i-0612f04e1165d4c10
 pgformplayer2-production: pgformplayer2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgformplayer_nlb-production: pgformplayer-nlb-production-ec7390b942368541.elb.us-east-1.amazonaws.com
 pgmain1-production: pgmain1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
