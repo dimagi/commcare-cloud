@@ -135,6 +135,14 @@ pgbouncer_a1-production: 10.202.40.25
 pgbouncer_a1-production.instance_id: i-0aa5010ad7af8c5e0
 pgbouncer_a2-production: 10.202.40.146
 pgbouncer_a2-production.instance_id: i-0612f04e1165d4c10
+pgbouncer_a3-production: 10.202.40.35
+pgbouncer_a3-production.instance_id: i-032539ac74d6765f2
+pgbouncer_b0-production: 10.202.41.97
+pgbouncer_b0-production.instance_id: i-06d5afa8b4f9fbba2
+pgbouncer_b1-production: 10.202.41.15
+pgbouncer_b1-production.instance_id: i-05e3e5ba1f577db98
+pgbouncer_c0-production: 10.202.42.148
+pgbouncer_c0-production.instance_id: i-08c3b28e8b27ec39d
 pgformplayer2-production: pgformplayer2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgformplayer_nlb-production: pgformplayer-nlb-production-ec7390b942368541.elb.us-east-1.amazonaws.com
 pgmain1-production: pgmain1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
