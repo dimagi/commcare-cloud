@@ -33,7 +33,6 @@ import functools
 import os
 import pipes
 import posixpath
-from getpass import getpass
 
 from fabric import utils
 from fabric.api import env, execute, parallel, roles, sudo, task
@@ -651,13 +650,12 @@ ONLINE_DEPLOY_COMMANDS = [
 
 @task
 def check_status():
-    env.user = 'ansible'
-    env.sudo_user = 'root'
-    env.password = getpass('Enter the password for the ansbile user: ')
+    exit("""OBSOLETE replaced by
 
-    execute(check_servers.ping)
-    execute(check_servers.postgresql)
-    execute(check_servers.elasticsearch)
+    commcare-cloud <env> ping all
+    commcare-cloud <env> service postgresql status
+    commcare-cloud <env> service elasticsearch status
+    """)
 
 
 @task

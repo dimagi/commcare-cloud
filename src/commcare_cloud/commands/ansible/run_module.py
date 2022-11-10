@@ -267,7 +267,7 @@ class Ping(CommandBase):
     ) + NON_POSITIONAL_ARGUMENTS
 
     def run(self, args, unknown_args):
-        args.shell_command = 'echo {{ inventory_hostname }}'
+        args.shell_command = 'echo "$(hostname) - $(uptime)"'
         args.silence_warnings = False
         return RunShellCommand(self.parser).run(args, unknown_args)
 
