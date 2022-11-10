@@ -192,6 +192,7 @@ def env_common():
         'staticfiles': staticfiles,
         'staticfiles_primary': [staticfiles[0]],
         'lb': [],
+        # deploy contains one server to which commcare-hq is deployed
         # having deploy here makes it so that
         # we don't get prompted for a host or run deploy too many times
         'deploy': deploy,
