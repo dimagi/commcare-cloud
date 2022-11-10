@@ -14,7 +14,6 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.parsing.utils.yaml import from_yaml
 from ansible.vars.manager import VariableManager
 from memoized import memoized, memoized_property
-from six.moves import map
 
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import EnvironmentException
@@ -90,13 +89,8 @@ class Environment(object):
             if not re.search(r'\b{}\b'.format(sshable), known_hosts_contents)
         }
         if missing_hosts:
-            raise EnvironmentException(
-                'The following hosts are missing from known_hosts:\n{}'.format(
-                   '\n'.join(
-                       "{} ({})".format(sshable, hostname) for sshable, hostname in missing_hosts
-                   )
-                )
-            )
+            missing = '\n'.join(f"{sshable} ({hostname})" for sshable, hostname in missing_hosts)
+            raise EnvironmentException(f'The following hosts are missing from known_hosts:\n{missing}')
 
     def get_secret(self, var):
         return self.secrets_backend.get_secret(var)
@@ -133,9 +127,9 @@ class Environment(object):
 
     @memoized_property
     def _disallowed_public_variables(self):
-        return set(get_role_defaults('postgresql_base').keys()) | \
-               set(get_role_defaults('pgbouncer').keys()) | \
-               set(ProxyConfig.get_claimed_variables())
+        return set(get_role_defaults('postgresql_base').keys()) \
+            | set(get_role_defaults('pgbouncer').keys()) \
+            | set(ProxyConfig.get_claimed_variables())
 
     @memoized_property
     def meta_config(self):
@@ -223,9 +217,11 @@ class Environment(object):
     def check_user_group_absent_present_overlaps(self, absent_users, present_users):
         if not set(present_users).isdisjoint(absent_users):
             repeated_users = list((Counter(present_users) & Counter(absent_users)).elements())
-            raise EnvironmentException('The user(s) {} appear(s) in both the absent and present users list for '
-                                       'the environment {}. Please fix this and try again.'.format((', '.join(
-                                        map(str, repeated_users))), self.meta_config.deploy_env))
+            users = ', '.join(map(str, repeated_users))
+            raise EnvironmentException(
+                f'The user(s) {users} appear(s) in both the absent and present users list for '
+                f'the environment {self.name}. Please fix this and try again.'
+            )
 
     @memoized_property
     def _raw_app_processes_config(self):
