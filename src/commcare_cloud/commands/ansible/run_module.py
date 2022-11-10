@@ -166,6 +166,10 @@ def ansible_json(*args, **kw):
         raise BadAnsibleResult(output)
 
 
+class BadAnsibleResult(Exception):
+    pass
+
+
 class RunShellCommand(CommandBase):
     command = 'run-shell-command'
     help = """
@@ -270,7 +274,3 @@ class Ping(CommandBase):
         args.shell_command = 'echo "$(hostname) - $(uptime)"'
         args.silence_warnings = False
         return RunShellCommand(self.parser).run(args, unknown_args)
-
-
-class BadAnsibleResult(Exception):
-    pass
