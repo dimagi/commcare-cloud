@@ -177,6 +177,9 @@ class _AnsiblePlaybookAlias(CommandBase):
     )
 
 
+NO_FACTORY_AUTH_ARGS = tuple(a for a in _AnsiblePlaybookAlias.arguments if a is not shared_args.FACTORY_AUTH_ARG)
+
+
 class DeployStack(_AnsiblePlaybookAlias):
     command = 'deploy-stack'
     aliases = ('aps',)
@@ -393,3 +396,19 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
             )
         else:
             return rc
+
+
+class PerformSystemChecks(_AnsiblePlaybookAlias):
+    command = "perform-system-checks"
+    help = """
+    Check the Django project for potential problems in two phases, first
+    check all apps, then run database checks only.
+
+    See https://docs.djangoproject.com/en/dev/ref/django-admin/#check
+    """
+    arguments = NO_FACTORY_AUTH_ARGS
+
+    def run(self, args, unknown_args):
+        args.playbook = 'perform_system_checks.yml'
+        args.quiet = True
+        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)

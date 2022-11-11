@@ -589,7 +589,7 @@ def check_status():
 
 @task
 def perform_system_checks():
-    execute(check_servers.perform_system_checks, True)
+    exit("OBSOLETE use 'perform-system-checks' instead")
 
 
 def make_tasks_for_envs(available_envs):

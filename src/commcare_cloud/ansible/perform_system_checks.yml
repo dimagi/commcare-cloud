@@ -1,0 +1,12 @@
+- hosts: django_manage
+  become: true
+  become_user: cchq
+  tasks:
+  - shell: 'cd {{ code_home }}; {{ virtualenv_home }}/bin/python manage.py check --deploy'
+    register: deploy_check
+  - shell: 'cd {{ code_home }}; {{ virtualenv_home }}/bin/python manage.py check --deploy -t database'
+    register: database_check
+  - name: "manage.py check --deploy"
+    debug: msg={{ deploy_check.stdout }}
+  - name: "manage.py check --deploy -t database"
+    debug: msg={{ database_check.stdout }}

@@ -31,6 +31,7 @@ from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
     UpdateConfig, AfterReboot, BootstrapUsers, DeployStack,
     UpdateUsers, UpdateUserPublicKey, UpdateSupervisorConfs,
+    PerformSystemChecks,
 )
 from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping, SendDatadogEvent
@@ -82,6 +83,7 @@ COMMAND_GROUPS = OrderedDict([
         ListDatabases,
         CeleryResourceReport,
         PillowResourceReport,
+        PerformSystemChecks,
         CouchDBClusterInfo,
         Terraform,
         TerraformMigrateState,

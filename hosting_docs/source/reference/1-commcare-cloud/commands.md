@@ -1385,6 +1385,19 @@ Output table as CSV
 
 ---
 
+#### ``perform-system-checks`` Command
+
+```
+commcare-cloud <env> perform-system-checks
+```
+
+Check the Django project for potential problems in two phases, first
+check all apps, then run database checks only.
+
+See https://docs.djangoproject.com/en/dev/ref/django-admin/#check
+
+---
+
 #### ``couchdb-cluster-info`` Command
 
 Output information about the CouchDB cluster.
