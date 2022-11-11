@@ -62,6 +62,8 @@ escoordinator_c0-production: 10.202.42.202
 escoordinator_c0-production.instance_id: i-0dce3c54b64ff42cf
 esmaster8-production: 10.202.40.83
 esmaster8-production.instance_id: i-0117799da26730df7
+esmaster_a0-production: 10.202.40.59
+esmaster_a0-production.instance_id: i-01a88536152bb19bf
 esmaster_b0-production: 10.202.41.8
 esmaster_b0-production.instance_id: i-082edb050f9cf8869
 esmaster_c0-production: 10.202.42.111
