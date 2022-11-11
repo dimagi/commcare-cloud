@@ -388,22 +388,6 @@ def update_current(release=None):
     execute(release.update_current, release)
 
 
-@task
-@roles(ROLES_ALL_SRC)
-@parallel
-def unlink_current():
-    """
-    Unlinks the current code directory. Use with caution.
-    """
-    message = 'Are you sure you want to unlink the current release of {env.deploy_env}?'.format(env=env)
-
-    if not console.confirm(message, default=False):
-        utils.abort('Deployment aborted.')
-
-    if files.exists(env.code_current, use_sudo=True):
-        sudo('unlink {}'.format(env.code_current))
-
-
 def copy_release_files(full_cluster=True):
     execute(release.copy_localsettings(full_cluster))
     if full_cluster:

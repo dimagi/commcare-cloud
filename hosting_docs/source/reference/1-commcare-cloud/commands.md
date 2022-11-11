@@ -1100,7 +1100,6 @@ Use `-l` instead of a command to see the full list of commands.
     stop_celery
     stop_pillows
     supervisorctl
-    unlink_current             Unlinks the current code directory. Use with c...
     update_current
     webworkers
 ```
