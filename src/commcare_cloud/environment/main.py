@@ -438,8 +438,8 @@ class Environment(object):
         """
         from commcare_cloud.commands.ansible.helpers import get_default_ssh_options_as_cmd_parts
         if not self.public_vars.get("allow_aws_ssm_proxy"):
-            print(f"WARNING SSM proxy is not allowed for {self.name}"
-                " (COMMCARE_CLOUD_PROXY_SSM is set)", file=sys.stderr)
+            print(f"WARNING SSM proxy is not allowed for {self.name}. Use "
+                "--control and/or unset COMMCARE_CLOUD_PROXY_SSM.", file=sys.stderr)
             return []
         control = self.sshable_hostnames_by_group.get('control')
         if not control:
