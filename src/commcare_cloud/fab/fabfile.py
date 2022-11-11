@@ -498,17 +498,7 @@ def clean_releases(keep=3):
 @task
 @roles(['deploy'])
 def manage(cmd):
-    """
-    run a management command
-
-    usage:
-        fab <env> manage:<command>
-    e.g.
-        fab production manage:'prune_couch_views --noinput'
-    """
-    _require_target()
-    with cd(env.code_current):
-        sudo(f'{env.virtualenv_current}/bin/python manage.py {cmd}')
+    exit("OBSOLETE use 'django-manage' instead.")
 
 
 @task
