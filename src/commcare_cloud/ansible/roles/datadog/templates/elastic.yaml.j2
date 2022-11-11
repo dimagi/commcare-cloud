@@ -4,7 +4,8 @@
 init_config:
 
 instances:
-  - url: http://{{ inventory_hostname }}:9200&timeout=60
+  - url: http://{{ inventory_hostname }}:9200
+    timeout=60
     tags:
       - environment:{{ env_monitoring_id }}
 {% if elasticsearch_version is version('7.0.0', '>=') %}
