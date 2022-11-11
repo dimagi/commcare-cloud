@@ -154,7 +154,7 @@ def run_ansible_playbook(
         cmd_parts += cmd_parts_with_common_ssh_args
         cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command(cmd)
-        env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
+        env_vars.update(environment.get_ansible_env_vars())
         return subprocess.call(cmd_parts, env=env_vars)
 
     def run_check():

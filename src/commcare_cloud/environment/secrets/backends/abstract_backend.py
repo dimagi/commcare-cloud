@@ -38,10 +38,6 @@ class AbstractSecretsBackend(object):
         return ()
 
     @staticmethod
-    def has_extra_env_vars():
-        return False
-
-    @staticmethod
     def get_extra_ansible_env_vars():
         """
         Return the extra environment variables to pass to ansible to make this secrets backend work

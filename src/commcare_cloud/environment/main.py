@@ -2,6 +2,8 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 import re
+import shlex
+import sys
 from collections import Counter
 from datetime import datetime
 from io import open
@@ -418,6 +420,49 @@ class Environment(object):
         if full and self.public_vars.get('internal_domain_name'):
             return "{}.{}".format(hostname, self.public_vars['internal_domain_name'])
         return hostname
+
+    def has_ansible_env_vars(self):
+        return os.environ.get("COMMCARE_CLOUD_PROXY_SSM")
+
+    def get_ansible_env_vars(self):
+        env = self.secrets_backend.get_extra_ansible_env_vars()
+        if "AWS_PROFILE" in env and os.environ.get("COMMCARE_CLOUD_PROXY_SSM"):
+            args = self._get_ssm_proxy()
+            if args:
+                env['ANSIBLE_SSH_EXTRA_ARGS'] = _opt_str(args)
+        return env
+
+    def _get_ssm_proxy(self):
+        """Get SSH arguments to connect via AWS SSM with 'control' as jump host
+
+        These options can be observed and debugged with environment variables:
+
+            ANSIBLE_VERBOSITY=3
+            VERBOSE_TO_STDERR=true
+        """
+        from commcare_cloud.commands.ansible.helpers import get_default_ssh_options_as_cmd_parts
+        if not self.public_vars.get("allow_aws_ssm_proxy"):
+            print(f"WARNING SSM proxy is not allowed for {self.name}"
+                " (COMMCARE_CLOUD_PROXY_SSM is set)", file=sys.stderr)
+            return []
+        control = self.sshable_hostnames_by_group.get('control')
+        if not control:
+            print(f"cannot find {self.name} 'control' group", file=sys.stderr)
+            return []
+        control_addr = control[0]
+        control_ip = control_addr.partition(":")[0]
+        hostvars = self.get_host_vars(control_ip)
+        try:
+            control_id = hostvars['ec2_instance_id']
+        except KeyError:
+            print(f"{self.name} 'control' machine has no 'ec2_instance_id'", file=sys.stderr)
+            return []
+        ssm_proxy = get_default_ssh_options_as_cmd_parts(self, aws_ssm_target=control_id)
+        return ['-o', 'ProxyCommand=' + _opt_str(['ssh', '-W', "%h:%p"] + ssm_proxy + [control_addr])]
+
+
+def _opt_str(args):
+    return ' '.join(map(shlex.quote, args))
 
 
 @memoized
