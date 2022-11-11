@@ -111,6 +111,15 @@ servers:
     volume_size: 40
     enable_cross_region_backup: yes
 
+  - server_name: "esmaster_a0-production"
+    server_instance_type: r6a.large
+    network_tier: "db-private"
+    az: "a"
+    group: "elasticsearch"
+    os: bionic
+    volume_size: 40
+    volume_encrypted: yes
+    enable_cross_region_backup: yes
   - server_name: "esmaster_b0-production"
     server_instance_type: r6a.large
     network_tier: "db-private"
