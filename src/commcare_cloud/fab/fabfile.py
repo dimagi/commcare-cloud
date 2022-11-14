@@ -542,18 +542,6 @@ def start_pillows():
     execute(supervisor.start_pillows, True)
 
 
-@task
-def reset_mvp_pillows():
-    _require_target()
-    _setup_release()
-    mvp_pillows = [
-        'MVPFormIndicatorPillow',
-        'MVPCaseIndicatorPillow',
-    ]
-    for pillow in mvp_pillows:
-        reset_pillow(pillow)
-
-
 @roles(ROLES_PILLOWTOP)
 def reset_pillow(pillow):
     _require_target()

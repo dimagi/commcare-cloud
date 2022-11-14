@@ -1085,7 +1085,6 @@ Use `-l` instead of a command to see the full list of commands.
     perform_system_checks
     pillowtop
     preindex_views             Creates a new release that runs preindex_every...
-    reset_mvp_pillows
     restart_services
     restart_webworkers
     rollback                   Rolls back the servers to the previous release...
