@@ -241,10 +241,7 @@ def send_email(subject, message, use_current_release=False):
 
 @task
 def kill_stale_celery_workers():
-    """
-    Kills celery workers that failed to properly go into warm shutdown
-    """
-    execute(release.kill_stale_celery_workers)
+    print("OBSOLETE use 'kill-stale-celery-workers' instead")
 
 
 @task

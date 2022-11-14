@@ -34,7 +34,13 @@ from .commands.ansible.ansible_playbook import (
     PerformSystemChecks,
 )
 from commcare_cloud.commands.ansible.service import Service
-from .commands.ansible.run_module import RunAnsibleModule, RunShellCommand, Ping, SendDatadogEvent
+from .commands.ansible.run_module import (
+    Ping,
+    KillStaleCeleryWorkers,
+    RunAnsibleModule,
+    RunShellCommand,
+    SendDatadogEvent,
+)
 from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Mosh, DjangoManage, Tmux, ForwardPort
 from .commands.ansible.ops_tool import ListDatabases, CeleryResourceReport, PillowResourceReport, \
@@ -83,6 +89,7 @@ COMMAND_GROUPS = OrderedDict([
         ListDatabases,
         CeleryResourceReport,
         PillowResourceReport,
+        KillStaleCeleryWorkers,
         PerformSystemChecks,
         CouchDBClusterInfo,
         Terraform,

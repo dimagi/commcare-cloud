@@ -273,3 +273,25 @@ class Ping(CommandBase):
         args.shell_command = 'echo "$(hostname) - $(uptime)"'
         args.silence_warnings = False
         return RunShellCommand(self.parser).run(args, unknown_args)
+
+
+class KillStaleCeleryWorkers(CommandBase):
+    command = 'kill-stale-celery-workers'
+    help = 'Kill celery workers that failed to properly go into warm shutdown.'
+    run_setup_on_control_by_default = False
+
+    def run(self, args, unknown_args):
+        ansible_context = AnsibleContext(args)
+        group_vars = ansible_context.environment.paths.group_vars_all_yml
+        return run_ansible_module(
+            ansible_context,
+            'django_manage[0]',
+            'shell',
+            (
+                'cd {{ code_home }}; '
+                '{{ virtualenv_home }}/bin/python manage.py kill_stale_celery_workers'
+            ),
+            become=True,
+            become_user='cchq',
+            extra_args=['-e', f'@{group_vars}'] + unknown_args,
+        )

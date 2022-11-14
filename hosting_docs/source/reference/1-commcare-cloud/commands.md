@@ -1080,7 +1080,7 @@ Use `-l` instead of a command to see the full list of commands.
     check_status
     clean_releases             Cleans old and failed deploys from the ~/www/&lt;...
     deploy_commcare            Preindex and deploy if it completes quickly en...
-    kill_stale_celery_workers  Kills celery workers that failed to properly g...
+    kill_stale_celery_workers
     manage
     perform_system_checks
     pillowtop
@@ -1382,6 +1382,19 @@ commcare-cloud <env> pillow-resource-report [--csv]
 ###### `--csv`
 
 Output table as CSV
+
+---
+
+#### ``kill-stale-celery-workers`` Command
+
+Kill celery workers that failed to properly go into warm shutdown.
+
+```
+commcare-cloud <env> kill-stale-celery-workers
+```
+
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
 
 ---
 
