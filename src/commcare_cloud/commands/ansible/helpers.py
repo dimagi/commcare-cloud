@@ -5,7 +5,6 @@ import itertools
 import os
 import shlex
 from collections import namedtuple, defaultdict
-from contextlib import contextmanager
 
 from clint.textui import puts
 
@@ -44,13 +43,6 @@ class AnsibleContext(object):
         if hasattr(args, 'stdout_callback'):
             env[self.stdout_callback] = args.stdout_callback
         return env
-
-    @contextmanager
-    def with_vars(self, vars):
-        current_vars = self.env_vars.copy()
-        self.env_vars.update(vars)
-        yield
-        self.env_vars = current_vars
 
 
 def get_common_ssh_args(environment, use_factory_auth=False):
