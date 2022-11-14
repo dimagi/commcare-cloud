@@ -561,27 +561,25 @@ pgbouncer_nlbs:
   - name: pgformplayer_nlb-production
     targets:
       - pgbouncer_a2-production
-      - pgbouncer5-production
-      - pgbouncer6-production
-      - pgbouncer7-production
+      - pgbouncer_b0-production
+      - pgbouncer_c0-production
   - name: pgmain_nlb-production
     targets:
       - pgbouncer_a2-production
-      - pgbouncer5-production
-      - pgbouncer6-production
-      - pgbouncer7-production
+      - pgbouncer_b0-production
+      - pgbouncer_c0-production
   - name: pgucr_nlb-production
     targets:
       - pgbouncer10-production
       - pgbouncer11-production
   - name: pgsynclogs_nlb-production
     targets:
-      - pgbouncer8-production
-      - pgbouncer9-production
+      - pgbouncer_a3-production
+      - pgbouncer_b1-production
   - name: pgshard_nlb-production
     targets:
-      - pgbouncer8-production
-      - pgbouncer9-production
+      - pgbouncer_a3-production
+      - pgbouncer_b1-production
 
 
 internal_albs:
