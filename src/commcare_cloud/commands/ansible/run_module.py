@@ -123,24 +123,18 @@ def run_ansible_module(ansible_context, inventory_group, module, module_args,
     cmd_parts += get_user_arg(public_vars, extra_args, use_factory_auth=use_factory_auth)
     become = become or bool(become_user)
     become_user = become_user
-    needs_secrets = False
-    env_vars = ansible_context.env_vars
 
     if become:
         cmd_parts += ('--become',)
-        needs_secrets = True
         if become_user:
             cmd_parts += ('--become-user', become_user)
-
-    if needs_secrets:
         cmd_parts += (
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
         )
         cmd_parts += environment.secrets_backend.get_extra_ansible_args()
-    if needs_secrets or environment.has_ansible_env_vars():
-        env_vars.update(environment.get_ansible_env_vars())
 
+    env_vars = ansible_context.build_env(need_secrets=become)
     if run_command is ansible_json:
         env_vars.setdefault("ANSIBLE_LOAD_CALLBACK_PLUGINS", "1")
         env_vars.setdefault("ANSIBLE_STDOUT_CALLBACK", "json")

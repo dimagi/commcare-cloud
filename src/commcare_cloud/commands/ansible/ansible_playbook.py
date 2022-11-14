@@ -138,7 +138,7 @@ def run_ansible_playbook(
         ) + get_limit(environment) + cmd_args
 
         public_vars = environment.public_vars
-        env_vars = ansible_context.env_vars
+        env_vars = ansible_context.build_env()
         cmd_parts += get_user_arg(public_vars, unknown_args, use_factory_auth)
 
         if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
@@ -154,7 +154,6 @@ def run_ansible_playbook(
         cmd_parts += cmd_parts_with_common_ssh_args
         cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command(cmd)
-        env_vars.update(environment.get_ansible_env_vars())
         return subprocess.call(cmd_parts, env=env_vars)
 
     def run_check():

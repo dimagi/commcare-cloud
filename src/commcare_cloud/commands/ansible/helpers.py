@@ -29,9 +29,9 @@ class AnsibleContext(object):
         if args is not None:
             assert args.env_name == environment.name, (args.env_name, environment.name)
         self.environment = environment
-        self.env_vars = self._build_env(args)
+        self._stdout_callback = getattr(args, 'stdout_callback', None)
 
-    def _build_env(self, args):
+    def build_env(self, need_secrets=True):
         """Look for args that have been flagged as environment variables
         and add them to the env dict with appropriate naming
         """
@@ -40,8 +40,10 @@ class AnsibleContext(object):
         env[self.roles_path] = ANSIBLE_ROLES_PATH
         env[self.collections_paths] = ANSIBLE_COLLECTIONS_PATHS
 
-        if hasattr(args, 'stdout_callback'):
-            env[self.stdout_callback] = args.stdout_callback
+        if self._stdout_callback is not None:
+            env[self.stdout_callback] = self._stdout_callback
+        if need_secrets or self.environment.has_ansible_env_vars():
+            env.update(self.environment.get_ansible_env_vars())
         return env
 
 
