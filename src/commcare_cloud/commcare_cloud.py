@@ -134,13 +134,10 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
     if subparser_formatter_class is None:
         subparser_formatter_class = formatter_class
     parser = ArgumentParser(formatter_class=formatter_class, prog=prog, add_help=add_help)
-    if available_envs:
-        env_name_kwargs = dict(choices=available_envs)
-    else:
-        env_name_kwargs = dict(metavar='<env>')
+    env_name_kwargs = {'choices': available_envs} if available_envs else {}
     parser.add_argument('env_name', help=(
         "server environment to run against"
-    ), **env_name_kwargs)
+    ), metavar='<env>', **env_name_kwargs)
     Argument('--control', action='store_true', help="""
         Run command remotely on the control machine.
 
@@ -165,7 +162,7 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
         is already on the control machine.
         This defaults to 'yes' if command.run_setup_on_control_by_default is True, otherwise to 'no'.
     """).add_to_parser(parser),
-    subparsers = parser.add_subparsers(dest='command')
+    subparsers = parser.add_subparsers(dest='command', metavar="<command>")
 
     commands = {}
 

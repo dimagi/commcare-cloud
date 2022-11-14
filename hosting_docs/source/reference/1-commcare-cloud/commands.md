@@ -21,10 +21,7 @@ To run any commcare-cloud command you need to install commcare-cloud first
 All `commcare-cloud` commands take the following form:
 
 ```
-commcare-cloud [--control] [--control-setup {yes,no}]
-               <env>
-               {after-reboot,ansible-playbook,ap,aws-fill-inventory,aws-list,aws-sign-in,bootstrap-users,celery-resource-report,copy-files,couchdb-cluster-info,deploy,deploy-stack,aps,django-manage,downtime,export-sentry-events,fab,forward-port,list-postgresql-dbs,lookup,migrate-couchdb,migrate_couchdb,migrate-secrets,mosh,openvpn-activate-user,openvpn-claim-user,pillow-resource-report,pillow-topic-assignments,ping,run-module,run-shell-command,secrets,send-datadog-event,service,ssh,terraform,terraform-migrate-state,tmux,update-config,update-local-known-hosts,update-supervisor-confs,update-user-key,update-users,validate-environment-settings}
-               ...
+commcare-cloud [--control] [--control-setup {yes,no}] <env> <command> ...
 ```
 
 ## Positional Arguments
