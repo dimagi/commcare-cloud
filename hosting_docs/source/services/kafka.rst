@@ -195,11 +195,12 @@ For details on how to use this tool please see `kafka-reassign-tool <https://git
 ---------------
 Upgrading Kafka
 ---------------
+   .. code-block::
 
-KAFKA-VERSION: Version of Kafka being upgraded to 
-KAFKA-SCALA-VERSION: Version required by KAFKA-VERSION ( Can be found `here <https://kafka.apache.org/downloads>`_) .
-KAFKA_INTER_BROKER_PROTOCOL_VERSION: Maps to Kafka's inter.broker.protocol.version. If you have a cluster that runs brokers with different Kafka versions make sure they communicate with the same protocol version.
-KAFKA_LOG_MESSAGE_FORMAT_VERSION: Maps to Kafka's log.message.format.version. Specifies the protocol version with which your cluster communicates with its consumers. 
+      KAFKA-VERSION: Version of Kafka being upgraded to
+      KAFKA-SCALA-VERSION: Version required by KAFKA-VERSION ( Can be found `here <https://kafka.apache.org/downloads>`_) .
+      KAFKA_INTER_BROKER_PROTOCOL_VERSION: Maps to Kafka's inter.broker.protocol.version. If you have a cluster that runs brokers with different Kafka versions make sure they communicate with the same protocol version.
+      KAFKA_LOG_MESSAGE_FORMAT_VERSION: Maps to Kafka's log.message.format.version. Specifies the protocol version with which your cluster communicates with its consumers.
 
 Refer to `Kafka Upgrade documentation <https://kafka.apache.org/documentation/#upgrade>`_ for more details.
 

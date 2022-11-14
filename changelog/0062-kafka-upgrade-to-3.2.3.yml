@@ -12,12 +12,12 @@ context: |
 details: |
   As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
   libraries we have updated the Kafka version to use the kafka==3.2.3 and recommended Scala 2.13.
-  Reference Document: [kafka_download] [kafka download]
+  Reference Document: [kafka download]
 
   [kafka download]: https://kafka.apache.org/downloads
 
 update_steps: |
   1. For users running Kafka on Linux machines:
-     instructions: [kafka_upgrade] [kafka docs]
+     instructions: [kafka docs]
 
      [kafka docs]: https://commcare-cloud.readthedocs.io/en/latest/services/kafka.html?highlight=kafka%20upgrade#upgrading-kafka 
