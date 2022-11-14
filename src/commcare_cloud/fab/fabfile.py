@@ -38,7 +38,7 @@ from fabric import utils
 from fabric.api import env, execute, parallel, roles, sudo, task
 from fabric.colors import blue, magenta, red
 from fabric.context_managers import cd
-from fabric.contrib import console, files
+from fabric.contrib import console
 from fabric.operations import require
 from github import GithubException
 
@@ -46,7 +46,7 @@ from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
 from commcare_cloud.github import github_repo
 from .checks import check_servers
-from .const import ROLES_ALL_SERVICES, ROLES_ALL_SRC, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
+from .const import ROLES_ALL_SERVICES, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .exceptions import PreindexNotFinished
 from .operations import db
 from .operations import release, staticfiles, supervisor
