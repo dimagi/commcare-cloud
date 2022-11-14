@@ -199,3 +199,4 @@ use_chrony: True
 
 python_version: '3.9'
 use_deadsnakes: '{{ ansible_distribution_version <= "18.04" }}'
+allow_aws_ssm_proxy: true

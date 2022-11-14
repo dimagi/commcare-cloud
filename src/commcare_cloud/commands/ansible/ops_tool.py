@@ -93,7 +93,6 @@ class ListDatabases(CommandBase):
     def get_present_dbs(args):
         dbs_present_in_host = collections.defaultdict(list)
         hosts = run_ansible_module(
-            get_environment(args.env_name),
             AnsibleContext(args),
             "postgresql",
             "shell",

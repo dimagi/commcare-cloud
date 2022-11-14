@@ -14,7 +14,6 @@ from commcare_cloud.commands.ansible.helpers import (
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import ANSIBLE_HELP_OPTIONS_PREFIX, add_to_help_text, filtered_help_message
 
 NON_POSITIONAL_ARGUMENTS = (
@@ -80,13 +79,13 @@ class RunAnsibleModule(CommandBase):
         ))
 
     def run(self, args, unknown_args):
-        environment = get_environment(args.env_name)
-        environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
+        environment = ansible_context.environment
+        environment.create_generated_yml()
 
         def _run_ansible(args, *unknown_args):
             return run_ansible_module(
-                environment, ansible_context,
+                ansible_context,
                 args.inventory_group, args.module, args.module_args,
                 become=args.become, become_user=args.become_user,
                 use_factory_auth=args.use_factory_auth, extra_args=unknown_args
@@ -102,7 +101,7 @@ class RunAnsibleModule(CommandBase):
         return run_action_with_check_mode(run_check, run_apply, args.skip_check, args.quiet)
 
 
-def run_ansible_module(environment, ansible_context, inventory_group, module, module_args,
+def run_ansible_module(ansible_context, inventory_group, module, module_args,
                        become=True, become_user=None, use_factory_auth=False, quiet=False,
                        extra_args=(), run_command=subprocess.call):
     extra_args = tuple(extra_args)
@@ -111,6 +110,7 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     else:
         extra_args = ("--one-line",) + extra_args
 
+    environment = ansible_context.environment
     cmd_parts = (
         'ansible', inventory_group,
         '-m', module,
@@ -123,23 +123,18 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     cmd_parts += get_user_arg(public_vars, extra_args, use_factory_auth=use_factory_auth)
     become = become or bool(become_user)
     become_user = become_user
-    needs_secrets = False
-    env_vars = ansible_context.env_vars
 
     if become:
         cmd_parts += ('--become',)
-        needs_secrets = True
         if become_user:
             cmd_parts += ('--become-user', become_user)
-
-    if needs_secrets:
         cmd_parts += (
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
         )
         cmd_parts += environment.secrets_backend.get_extra_ansible_args()
-        env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
 
+    env_vars = ansible_context.build_env(need_secrets=become)
     if run_command is ansible_json:
         env_vars.setdefault("ANSIBLE_LOAD_CALLBACK_PLUGINS", "1")
         env_vars.setdefault("ANSIBLE_STDOUT_CALLBACK", "json")
@@ -237,7 +232,8 @@ class SendDatadogEvent(CommandBase):
 
     def run(self, args, unknown_args):
         args.module = 'datadog_event'
-        environment = get_environment(args.env_name)
+        ansible_context = AnsibleContext(args)
+        environment = ansible_context.environment
         datadog_api_key = environment.get_secret('DATADOG_API_KEY')
         datadog_app_key = environment.get_secret('DATADOG_APP_KEY')
         tags = args.tags or []
@@ -252,7 +248,7 @@ class SendDatadogEvent(CommandBase):
                 agg='commcare-cloud'
             )
         return run_ansible_module(
-            environment, AnsibleContext(args),
+            ansible_context,
             '127.0.0.1', args.module, args.module_args,
             become=False, quiet=True
         )
