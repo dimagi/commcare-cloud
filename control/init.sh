@@ -25,38 +25,26 @@ if [ -z ${CI_TEST} ]; then
 fi
 
 if [ -z ${CI_TEST} ]; then
-    # if on 18.04 with 3.10 installed, use cchq-3.10 unless $BIONIC_USE_SYSTEM_PYTHON is true
-    if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null && [[ $( source /etc/os-release; echo $VERSION_ID ) == 18.04 ]]; then
-        # only append 3.10 if it is not already in the name
-        if [[ $CCHQ_VIRTUALENV != *"3.10"* ]]; then
-            CCHQ_VENV_PATH_OLD=$VENV
-            CCHQ_VIRTUALENV=$CCHQ_VIRTUALENV-3.10
-        fi
-        VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
-    fi
-    # check if a virtualenv at $VENV exists yet, and create if not
-    if [[ ! -f $VENV/bin/activate ]]; then
-        if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null; then
-            echo "Creating a python3.10 virtual environment named ${CCHQ_VIRTUALENV}"
-            if [ -n "$CCHQ_VENV_PATH_OLD" ]; then
-                echo "Your old virtual environment will remain at ${CCHQ_VENV_PATH_OLD}"
-                echo "If you wish to delete it, run 'rm -rf ${CCHQ_VENV_PATH_OLD}'"
+    # attempt to activate
+    if ! source ${COMMCARE_CLOUD_REPO}/control/activate_venv.sh --quiet; then
+        # check if a virtualenv at $VENV exists yet, and create if not
+        if [[ ! -f $VENV/bin/activate ]]; then
+            if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null; then
+                echo "Creating a python3.10 virtual environment named ${CCHQ_VIRTUALENV}"
+                if [ -n "$CCHQ_VENV_PATH_OLD" ]; then
+                    echo "Your old virtual environment will remain at ${CCHQ_VENV_PATH_OLD}"
+                    echo "If you wish to delete it, run 'rm -rf ${CCHQ_VENV_PATH_OLD}'"
+                fi
+                # use venv because 3.10 setup includes installing python3.10-venv
+                python3.10 -m venv $VENV
+            else
+                # use virtualenv because `python3 -m venv` requires python3-venv
+                python3 -m pip install --user --upgrade virtualenv
+                python3 -m virtualenv $VENV
             fi
-            # use venv because 3.10 setup includes installing python3.10-venv
-            python3.10 -m venv $VENV
-        else
-            # use virtualenv because `python3 -m venv` requires python3-venv
-            python3 -m pip install --user --upgrade virtualenv
-            python3 -m virtualenv $VENV
         fi
+        source $VENV/bin/activate
     fi
-    source $VENV/bin/activate
-fi
-
-if [[ $BIONIC_USE_SYSTEM_PYTHON == true ]]; then
-    echo "The variable BIONIC_USE_SYSTEM_PYTHON is set in your environment."
-    echo "This variable should only be used temporarily when it is absolutely necessary to use Python 3.6 on 18.04."
-    echo "Please remove this variable from your environment when you are able to use Python 3.10 again."
 fi
 
 if [ -n "${BASH_SOURCE[0]}" ] && [ -z "${BASH_SOURCE[0]##*init.sh*}" ]
