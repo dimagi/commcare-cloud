@@ -10,7 +10,9 @@ need to be applied on your environment to keep it up to date.
 #### **2022-11-11** [Backfill SMS event data for API performance](0063-backfill_sms_event_data_for_api_performance.md)
 Backfill data in the `sms_smssubevent` table to improve the performance of the 'messaging-event' API.
 
-This operation is only required if your environment is using SMS or Email workflows.
+This operation is only required if your environment is using SMS or Email workflows. Furthermore,
+an automatic migration will be added to CommCare in the future which will apply these changes
+during a code deploy if they have not already been applied.
 
 
 ---

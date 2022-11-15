@@ -15,7 +15,9 @@ The following version of CommCare must be deployed before rolling out this chang
 ## Change Context
 Backfill data in the `sms_smssubevent` table to improve the performance of the 'messaging-event' API.
 
-This operation is only required if your environment is using SMS or Email workflows.
+This operation is only required if your environment is using SMS or Email workflows. Furthermore,
+an automatic migration will be added to CommCare in the future which will apply these changes
+during a code deploy if they have not already been applied.
 
 ## Details
 To improve the performance of the 'messaging-event' API we have denormalized one of the date fields.
