@@ -10,15 +10,13 @@ from io import open
 
 from fabric.api import env, execute
 from fabric.operations import sudo
-from github import UnknownObjectException, Github
-from memoized import memoized_property
+from github import Github
 
 from .const import (
     CACHED_DEPLOY_CHECKPOINT_FILENAME,
     CACHED_DEPLOY_ENV_FILENAME,
     PROJECT_ROOT,
 )
-from commcare_cloud.github import github_repo
 
 
 def execute_with_timing(fn, *args, **kwargs):
