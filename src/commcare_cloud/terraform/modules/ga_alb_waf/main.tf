@@ -782,8 +782,9 @@ resource "aws_globalaccelerator_endpoint_group" "front_end" {
   listener_arn = aws_globalaccelerator_listener.front_end.id
 
   endpoint_configuration {
-    endpoint_id = aws_lb.front_end.arn
-    weight      = 128
+    endpoint_id                    = aws_lb.front_end.arn
+    weight                         = 128
+    client_ip_preservation_enabled = true
   }
 
   // these are unused because when pointing to an ALB it uses those health checks instead
