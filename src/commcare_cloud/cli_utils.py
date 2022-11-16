@@ -7,6 +7,7 @@ import sys
 from io import open
 
 from clint.textui import puts
+from fabric.operations import local
 from six.moves import input, shlex_quote
 
 from commcare_cloud.colors import color_code, color_error
@@ -127,6 +128,13 @@ def check_branch(args):
             print("Create a pull request if you have new commits to contribute.")
             print("Or add --branch=master to use your local branch (not recommended).")
             exit(-1)
+
+
+def get_changelogs_published_since_days(num_days):
+    # Returns list of changelog URLs since_days
+    return local("git log --pretty=format:  --name-only --since='{} days ago' -- changelog "
+    "| sed '/^[[:space:]]*$/d' | sed 's/\.yml$/.html/' "
+    "| sed 's/^/https:\/\/commcare-cloud.readthedocs.io\/en\/latest\//'".format(num_days))
 
 
 def print_command(command):

@@ -43,6 +43,7 @@ from fabric.contrib import console, files
 from fabric.operations import require
 from github import GithubException
 
+from commcare_cloud.cli_utils import get_changelogs_published_since_days
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
 from commcare_cloud.github import github_repo
@@ -526,7 +527,9 @@ def deploy_commcare(resume='no', skip_record='no'):
     _require_target()
 
     env.full_deploy = True
-
+    since_days = release.get_days_since_last_release()
+    xx = get_changelogs_published_since_days(since_days)
+    import pdb; pdb.set_trace()
     if resume == 'yes':
         try:
             cached_payload = retrieve_cached_deploy_env(env.deploy_env)

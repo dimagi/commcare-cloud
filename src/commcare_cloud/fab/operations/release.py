@@ -347,6 +347,15 @@ def get_previous_release():
 
 @roles(ROLES_ALL_SRC)
 @parallel
+def get_days_since_last_release():
+    with cd(env.root):
+        last_release_dir = sudo('tail -1 {}'.format(RELEASE_RECORD))
+        last_release_date = last_release_dir.split("/")[-1]
+    return (datetime.utcnow() - datetime.strptime(last_release_date, DATE_FMT)).days
+
+
+@roles(ROLES_ALL_SRC)
+@parallel
 def get_number_of_releases():
     with cd(env.root):
         return int(sudo("wc -l {} | awk '{{ print $1 }}'".format(RELEASE_RECORD)))
