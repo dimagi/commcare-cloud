@@ -11,7 +11,7 @@ pgbouncer_override:
   pgbouncer_reserve_pool: 5
 
 postgres_override:
-  postgresql_version: '10'
+  postgresql_version: '14'
   postgresql_max_connections: 300
   postgresql_hba_entries:
     # required for backup
@@ -84,12 +84,6 @@ dbs:
     - django_alias: aaa-data
       name: aaa-data
       django_migrate: True  # AAA dashboard models are stored here
-      pgbouncer_endpoint: pgshard_nlb
-      pgbouncer_hosts:
-        - pgbouncer1
-        - pgbouncer2
-    - name: airflow
-      django_migrate: False
       pgbouncer_endpoint: pgshard_nlb
       pgbouncer_hosts:
         - pgbouncer1

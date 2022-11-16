@@ -7,7 +7,7 @@ elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 elasticsearch_delete_old_logs: True
 
-kafka_version: 3.2.0
+kafka_version: 3.2.3
 kafka_scala_version: 2.13
 kafka_download_sha512: sha512:736A129823B058DC10788D0893BDE47B6F39B9E4972F9EAC2D5C9E85E51E477344C6F1E1EBD126CE34D5FD430EB07E55FDD60D60CB541F1D48655C0EBC0A4778
 kafka_inter_broker_protocol_version: 3.2
@@ -19,8 +19,8 @@ zookeeper_cluster: True
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
-erlang: 1:24.2.1-1
-rabbitmq_version: 3.9.13-1
+erlang: 1:25.0.4-1
+rabbitmq_version: 3.10.7-1
 
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
@@ -33,7 +33,7 @@ backup_es_s3: False
 postgres_s3: False
 
 # pg_repack
-pg_repack_version: 1.4.3
+pg_repack_version: 1.4.7
 
 filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
@@ -199,3 +199,4 @@ use_chrony: True
 
 python_version: '3.9'
 use_deadsnakes: '{{ ansible_distribution_version <= "18.04" }}'
+allow_aws_ssm_proxy: true

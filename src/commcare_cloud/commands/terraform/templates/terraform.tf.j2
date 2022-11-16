@@ -31,6 +31,14 @@ provider "aws" {
   region = "us-west-2"
 }
 
+{% if backup_plan %}
+// for aws backup to another region
+provider "aws" {
+  alias = {{ backup_plan.remote_vault_region|tojson }}
+  region = {{ backup_plan.remote_vault_region|tojson }}
+}
+{% endif %}
+
 variable "rds_password" {
   type = string
 }

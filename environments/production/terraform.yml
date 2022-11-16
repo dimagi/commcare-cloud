@@ -14,14 +14,25 @@ vpc_begin_range: "10.202"
 openvpn_image: ami-5e73b923
 
 ec2_metadata_tokens_required: yes
+
+backup_plan:
+  local_vault_name: "BusinessContinuity_Production_East-1"
+  remote_vault_name: "BusinessContinuity_Production_West-1"
+  remote_vault_region: us-west-1
+  outside_account_id: '213307118311'
+  daily_retention: 7
+  monthly_retention: 90
+  quarterly_retention: 365
+
 servers:
-  - server_name: "control2-production"
+  - server_name: "control3-production"
     server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
-    volume_size: 40
+    volume_size: 60
+    volume_encrypted: yes
     group: "control"
-    os: ubuntu_pro_bionic
+    os: bionic
 
   - server_name: "djangomanage_a0-production"
     server_instance_type: m6a.xlarge
@@ -31,108 +42,118 @@ servers:
     group: "django_manage"
     os: bionic
 
-  - server_name: "web_a{i}-production"
-    server_instance_type: c5.2xlarge
+  - server_name: "web_a1{i}-production"
+    server_instance_type: c6a.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
     group: "hq_webworkers"
-    os: ubuntu_pro_bionic
+    os: bionic
     count: 6
     server_auto_recovery: true
 
-  - server_name: "web_b{i}-production"
-    server_instance_type: c5.2xlarge
+  - server_name: "web_b1{i}-production"
+    server_instance_type: c6a.2xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
     group: "hq_webworkers"
-    os: ubuntu_pro_bionic
+    os: bionic 
     count: 6
     server_auto_recovery: true
 
-  - server_name: "web_c{i}-production"
-    server_instance_type: c5.2xlarge
+  - server_name: "web_c1{i}-production"
+    server_instance_type: c6a.2xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 40
     group: "hq_webworkers"
-    os: ubuntu_pro_bionic
+    os: bionic
     count: 6
     server_auto_recovery: true
 
-  - server_name: "web_m_a{i}-production"
-    server_instance_type: c5.2xlarge
+  - server_name: "web_m_a1{i}-production"
+    server_instance_type: c6a.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
     group: "mobile_webworkers"
-    os: ubuntu_pro_bionic
+    os: bionic
     count: 3
     server_auto_recovery: true
 
-  - server_name: "web_m_b{i}-production"
-    server_instance_type: c5.2xlarge
+  - server_name: "web_m_b1{i}-production"
+    server_instance_type: c6a.2xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
     group: "mobile_webworkers"
-    os: ubuntu_pro_bionic
+    os: bionic
     count: 3
     server_auto_recovery: true
 
-  - server_name: "web_m_c{i}-production"
-    server_instance_type: c5.2xlarge
+  - server_name: "web_m_c1{i}-production"
+    server_instance_type: c6a.2xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 40
     group: "mobile_webworkers"
-    os: ubuntu_pro_bionic
+    os: bionic 
     count: 3
     server_auto_recovery: true
 
-  - server_name: "esmaster6-production"
-    server_instance_type: r6a.large
-    network_tier: "db-private"
-    az: "b"
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-    volume_size: 40
-  - server_name: "esmaster7-production"
-    server_instance_type: r6a.large
-    network_tier: "db-private"
-    az: "b"
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-    volume_size: 40
-  - server_name: "esmaster8-production"
+  - server_name: "esmaster_a0-production"
     server_instance_type: r6a.large
     network_tier: "db-private"
     az: "a"
     group: "elasticsearch"
-    os: ubuntu_pro_bionic
+    os: bionic
     volume_size: 40
-  
-  - server_name: "es_a{i}-production"
+    volume_encrypted: yes
+    enable_cross_region_backup: yes
+  - server_name: "esmaster_b0-production"
+    server_instance_type: r6a.large
+    network_tier: "db-private"
+    az: "b"
+    group: "elasticsearch"
+    os: bionic
+    volume_size: 40
+    volume_encrypted: yes
+    enable_cross_region_backup: yes
+  - server_name: "esmaster_c0-production"
+    server_instance_type: r6a.large
+    network_tier: "db-private"
+    az: "c"
+    group: "elasticsearch"
+    os: bionic
+    volume_size: 40
+    volume_encrypted: yes
+    enable_cross_region_backup: yes
+
+  - server_name: "es_a1{i}-production"
     server_instance_type: r5.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
+    volume_encrypted: yes
     block_device:
-      volume_size: 1890
+      volume_size: 2100
+      enable_cross_region_backup: yes
     group: "elasticsearch"
-    os: ubuntu_pro_bionic
+    os: bionic
     count: 7
 
-  - server_name: "es_b{i}-production"
+  - server_name: "es_b1{i}-production"
     server_instance_type: r5.4xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 30
+    volume_encrypted: yes
     block_device:
-      volume_size: 2370
+      volume_size: 2100
+      enable_cross_region_backup: yes
     group: "elasticsearch"
-    os: ubuntu_pro_bionic
+    os: bionic
     count: 7
 
   - server_name: "escoordinator_a0-production"
@@ -180,6 +201,7 @@ servers:
     block_device:
       volume_size: 8000
       encrypted: yes
+      enable_cross_region_backup: yes
     group: "couchdb2"
     os: bionic
 
@@ -195,70 +217,60 @@ servers:
     group: "couchdb2"
     os: bionic
 
-  - server_name: "rabbit6-production"
+  - server_name: "rabbit8-production"
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 80
     volume_encrypted: yes
     group: "rabbitmq"
-    os: ubuntu_pro_bionic
+    os: bionic
 
-  - server_name: "rabbit7-production"
+  - server_name: "rabbit9-production"
     server_instance_type: m5.2xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     volume_encrypted: yes
     group: "rabbitmq"
-    os: ubuntu_pro_bionic
+    os: bionic
 
-  - server_name: "celery_b{i}-production"
+  - server_name: "celery_b1{i}-production"
     server_instance_type: r5.2xlarge
     network_tier: "app-private"
-    az: "a"
-    volume_size: 200
+    az: "b"
+    volume_size: 80
     volume_encrypted: yes
     group: "celery"
-    os: ubuntu_pro_bionic
+    os: bionic
     count: 4
 
-  - server_name: "celery_c{i}-production"
+  - server_name: "celery_c1{i}-production"
     server_instance_type: r5.2xlarge
     network_tier: "app-private"
     az: "c"
-    volume_size: 120
+    volume_size: 80
     group: "celery"
-    os: ubuntu_pro_bionic
+    os: bionic
     count: 4
  
-  - server_name: "pillow_a{i}-production"
+  - server_name: "pillow_a1{i}-production"
     server_instance_type: r5.12xlarge
     network_tier: "app-private"
-    az: "c"
-    volume_size: 150
+    az: "a"
+    volume_size: 100
     group: "pillowtop"
-    os: ubuntu_pro_bionic
+    os: bionic
     count: 1
 
-  - server_name: "pillow_b{i}-production"
+  - server_name: "pillow_b1{i}-production"
     server_instance_type: r5a.12xlarge
     network_tier: "app-private"
     az: "b"
-    volume_size: 60
+    volume_size: 50
     group: "pillowtop"
-    os: ubuntu_pro_bionic
+    os: bionic
     count: 1
-
-  - server_name: "formplayer_c{i}-production"
-    server_instance_type: r6a.2xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 400
-    group: "formplayer"
-    os: ubuntu_pro_bionic
-    count: 11
-    server_auto_recovery: true
 
   - server_name: "formplayer_a{i}-production"
     server_instance_type: r6a.2xlarge
@@ -268,7 +280,7 @@ servers:
     volume_encrypted: yes
     group: "formplayer"
     os: bionic
-    count: 10
+    count: 21
     server_auto_recovery: true
 
   - server_name: "kafka_a0-production"
@@ -306,6 +318,46 @@ servers:
     volume_encrypted: yes
     group: "postgresql"
     os: bionic
+  - server_name: "pgbouncer_a2-production"  # former pgbouncer_host formplayer
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: bionic
+  - server_name: "pgbouncer_a3-production"  # pgbouncer_host formplayer
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: bionic
+  - server_name: "pgbouncer_b0-production"  # pgbouncer_host for synclogs
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: bionic
+  - server_name: "pgbouncer_b1-production"
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: bionic
+  - server_name: "pgbouncer_c0-production"  # pgbouncer_host for main, ucr
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: bionic 
   - server_name: "pgbouncer5-production"  # former pgbouncer_host formplayer
     server_instance_type: m5n.large
     network_tier: "db-private"
@@ -341,32 +393,22 @@ servers:
     volume_size: 80
     group: "postgresql"
     os: ubuntu_pro_bionic
+  - server_name: "pgbouncer10-production"
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: bionic
+  - server_name: "pgbouncer11-production"
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    group: "postgresql"
+    os: bionic
 
 proxy_servers:
-  - server_name: "proxy_a1-production"
-    server_instance_type: "t3.large"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    group: "proxy"
-    os: ubuntu_pro_bionic
-
-  - server_name: "proxy_b1-production"
-    server_instance_type: "t3.large"
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-    group: "proxy"
-    os: ubuntu_pro_bionic
-
-  - server_name: "proxy_c1-production"
-    server_instance_type: "t3.large"
-    network_tier: "app-private"
-    az: "c"
-    volume_size: 80
-    group: "proxy"
-    os: ubuntu_pro_bionic
-
   - server_name: "proxy_a2-production"
     server_instance_type: "t3.large"
     network_tier: "app-private"
@@ -399,7 +441,7 @@ rds_instances:
     instance_type: "db.m5.4xlarge"
     storage: 2000
     multi_az: true
-    engine_version: "10.17"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -421,7 +463,7 @@ rds_instances:
     storage: 850
     max_storage: 5000
     multi_az: true
-    engine_version: "10.17"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -433,7 +475,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     multi_az: true
-    engine_version: "10.17"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -447,7 +489,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     multi_az: true
-    engine_version: "10.17"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -460,7 +502,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     multi_az: true
-    engine_version: "10.17"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -473,7 +515,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     multi_az: true
-    engine_version: "10.17"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -486,7 +528,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     multi_az: true
-    engine_version: "10.17"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -495,30 +537,12 @@ rds_instances:
       log_min_duration_statement: -1
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
-  - identifier: "pgsynclog1-production"
-    instance_type: "db.m5.xlarge"
-    storage: 5000
-    multi_az: true
-    engine_version: "10.17"
-    params:
-      shared_preload_libraries: pg_stat_statements,pg_transport
-      pg_transport.work_mem: 131072
-      pg_transport.timing: 1
-      max_worker_processes: 40
-      pg_transport.num_workers: 8
-      track_io_timing: 1
-      work_mem: 2457kB
-      shared_buffers: 3840MB
-      effective_cache_size: 11520MB
-      maintenance_work_mem: 960MB
-      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
-      vacuum_cost_limit: 2000
-
   - identifier: "pgsynclog2-production"
     instance_type: "db.m5.xlarge"
     storage: 1000
     multi_az: true
-    engine_version: "10.17"
+    engine_version: "14"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
       pg_transport.work_mem: 131072
@@ -532,31 +556,13 @@ rds_instances:
       maintenance_work_mem: 960MB
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
       vacuum_cost_limit: 2000
-
-  - identifier: "pgformplayer1-production"
-    instance_type: "db.m5.xlarge"
-    storage: 1500
-    multi_az: true
-    engine_version: "10.17"
-    params:
-      shared_preload_libraries: pg_stat_statements,pg_transport
-      log_min_duration_statement: 1000
-      # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
-      # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
-      maintenance_work_mem: 4172000kB
-      max_wal_size: 4GB
-      vacuum_cost_limit: 1000
-      pg_transport.work_mem: 131072
-      pg_transport.timing: 1
-      max_worker_processes: 40
-      pg_transport.num_workers: 8
-      track_io_timing: 1
 
   - identifier: "pgformplayer2-production"
     instance_type: "db.m5.xlarge"
     storage: 200
     multi_az: true
-    engine_version: "10.17"
+    engine_version: "14"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
       log_min_duration_statement: 1000
@@ -575,7 +581,7 @@ rds_instances:
     instance_type: "db.m5.2xlarge"
     storage: 10000
     multi_az: true
-    engine_version: "10.17"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -589,18 +595,20 @@ rds_instances:
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-production
     targets:
+      - pgbouncer_a2-production
       - pgbouncer5-production
       - pgbouncer6-production
       - pgbouncer7-production
   - name: pgmain_nlb-production
     targets:
+      - pgbouncer_a2-production
       - pgbouncer5-production
       - pgbouncer6-production
       - pgbouncer7-production
   - name: pgucr_nlb-production
     targets:
-      - pgbouncer8-production
-      - pgbouncer9-production
+      - pgbouncer10-production
+      - pgbouncer11-production
   - name: pgsynclogs_nlb-production
     targets:
       - pgbouncer8-production

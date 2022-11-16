@@ -288,8 +288,8 @@ for more detail in what can go here.
 
 ###### `module`
 
-The name of the ansible module to run. Complete list of built-in modules
-can be found at [Module Index](http://docs.ansible.com/ansible/latest/modules/modules_by_category.html).
+The name of the ansible module to run. Complete list of built-in modules can be found at
+[Module Index](http://docs.ansible.com/ansible/latest/modules/modules_by_category.html).
 
 ###### `module_args`
 
@@ -1080,20 +1080,17 @@ Use `-l` instead of a command to see the full list of commands.
 ##### Available commands
 ```
 
-    apply_patch                Used to apply a git patch created via `git for...
     check_status
-    clean_releases             Cleans old and failed deploys from the ~/www/<...
-    deploy_airflow
+    clean_releases             Cleans old and failed deploys from the ~/www/&lt;...
     deploy_commcare            Preindex and deploy if it completes quickly en...
     kill_stale_celery_workers  Kills celery workers that failed to properly g...
-    manage                     run a management command
+    manage
     perform_system_checks
     pillowtop
     preindex_views             Creates a new release that runs preindex_every...
     reset_mvp_pillows
     restart_services
     restart_webworkers
-    reverse_patch              Used to reverse a git patch created via `git f...
     rollback                   Rolls back the servers to the previous release...
     rollback_formplayer
     setup_limited_release      Sets up a release on a single machine
@@ -1103,7 +1100,6 @@ Use `-l` instead of a command to see the full list of commands.
     stop_celery
     stop_pillows
     supervisorctl
-    unlink_current             Unlinks the current code directory. Use with c...
     update_current
     webworkers
 ```
@@ -1288,7 +1284,8 @@ specified user on the source host has permissions to read the files being copied
 The plan file must be formatted as follows:
 
 ```yml
-source_env: env1 (optional if source is different from target)
+source_env: env1 (optional if source is different from target;
+                  SSH access must be allowed from the target host(s) to source host(s))
 copy_files:
   - <target-host>:
       - source_host: <source-host>
@@ -1302,19 +1299,21 @@ copy_files:
         exclude:
           - logs/*
           - test/temp.txt
-```       
-- **copy_files**: Multiple target hosts can be listed. 
-- **target-host**: Hostname or IP of the target host. Multiple source definitions can be 
-listed for each target host.
+```
+- **copy_files**: Multiple target hosts can be listed.
+- **target-host**: Hostname or IP of the target host. Multiple source
+  definitions can be listed for each target host.
 - **source-host**: Hostname or IP of the source host.
-- **source-user**: (optional) User to ssh as from target to source. Defaults to 'ansible'. This user must have permissions
-to read the files being copied.
+- **source-user**: (optional) User to ssh as from target to source. Defaults
+  to 'ansible'. This user must have permissions to read the files being
+  copied.
 - **source-dir**: The base directory from which all source files referenced.
 - **target-dir**: Directory on the target host to copy the files to.
 - **rsync_args**: Additional arguments to pass to rsync.
-- **files**: List of files to copy. File paths are relative to `source-dir`. Directories can be included and must
-end with a `/`.
-- **exclude**: (optional) List of relative paths to exclude from the *source-dir*. Supports wildcards e.g. "logs/*".
+- **files**: List of files to copy. File paths are relative to `source-dir`.
+  Directories can be included and must end with a `/`.
+- **exclude**: (optional) List of relative paths to exclude from the
+  *source-dir*. Supports wildcards e.g. "logs/*".
 
 ##### Positional Arguments
 
@@ -1327,7 +1326,7 @@ Path to plan file
 Action to perform
 
 - prepare: generate the scripts and push them to the target servers
-- migrate: execute the scripts
+- copy: execute the scripts
 - cleanup: remove temporary files and remote auth
 
 ---

@@ -5,16 +5,18 @@ dev_users:
     - aphulera
     - biyeun
     - cellowitz
+    - chrissmit
     - csmit
     - ctsims
     - czue
     - dmiller
-    - dochoa
     - droberts
+    - emapson
     - esoergel
     - gherceg
     - jmiller
     - jschweers
+    - jtang
     - matthewriley
     - mlee
     - mkangia
@@ -46,3 +48,4 @@ dev_users:
     - rnegi
     - spokhriyal
     - frener
+    - dochoa

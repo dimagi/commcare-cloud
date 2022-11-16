@@ -30,6 +30,7 @@ class TerraformConfig(jsonobject.JsonObject):
     vpn_connections = jsonobject.ListProperty(lambda: VpnConnectionConfig)
     external_routes = jsonobject.ListProperty(lambda: ExternalRouteConfig)
     ec2_metadata_tokens_required = jsonobject.BooleanProperty(default=True)
+    backup_plan = jsonobject.ObjectProperty(lambda: BackupPlan, default=None)
     servers = jsonobject.ListProperty(lambda: ServerConfig)
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)
@@ -88,6 +89,17 @@ class ExternalRouteConfig(jsonobject.JsonObject):
     gateway_id = jsonobject.StringProperty()
 
 
+class BackupPlan(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    local_vault_name = jsonobject.StringProperty()
+    remote_vault_name = jsonobject.StringProperty()
+    remote_vault_region = jsonobject.StringProperty()
+    outside_account_id = jsonobject.StringProperty()
+    daily_retention = jsonobject.IntegerProperty()
+    monthly_retention = jsonobject.IntegerProperty()
+    quarterly_retention = jsonobject.IntegerProperty()
+
+
 class ServerConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     server_name = jsonobject.StringProperty()
@@ -99,8 +111,9 @@ class ServerConfig(jsonobject.JsonObject):
     volume_encrypted = jsonobject.BooleanProperty(default=True, required=True)
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
-    os = jsonobject.StringProperty(required=True, choices=['trusty', 'bionic', 'ubuntu_pro_bionic'])
+    os = jsonobject.StringProperty(required=True, choices=['bionic', 'ubuntu_pro_bionic', 'jammy'])
     server_auto_recovery = jsonobject.BooleanProperty(default=False)
+    enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
     count = jsonobject.IntegerProperty(default=None)
 
     @classmethod
@@ -146,6 +159,7 @@ class BlockDevice(jsonobject.JsonObject):
     volume_type = jsonobject.StringProperty(default='gp3', choices=['gp2', 'gp3', 'io1', 'standard'])
     volume_size = jsonobject.IntegerProperty(required=True)
     encrypted = jsonobject.BooleanProperty(default=True, required=True)
+    enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
 
 
 class RdsInstanceConfig(jsonobject.JsonObject):

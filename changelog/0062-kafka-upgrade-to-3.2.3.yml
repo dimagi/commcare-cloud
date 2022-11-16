@@ -1,0 +1,23 @@
+title: kafka-upgrade-to-3.2.3
+key: kafka-upgrade-to-3.2.3
+date: 2022-11-08
+optional_per_env: no 
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version:
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  Run command to upgrade Kafka version  to 3.2.3 
+  Update Scala version to recommended version 2.13 
+details: |
+  As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
+  libraries we have updated the Kafka version to use the kafka==3.2.3 and recommended Scala 2.13.
+  Reference Document: [kafka download]
+
+  [kafka download]: https://kafka.apache.org/downloads
+
+update_steps: |
+  1. For users running Kafka on Linux machines:
+     instructions: [kafka docs]
+
+     [kafka docs]: https://commcare-cloud.readthedocs.io/en/latest/services/kafka.html?highlight=kafka%20upgrade#upgrading-kafka 

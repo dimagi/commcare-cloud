@@ -157,6 +157,10 @@ BIGCOUCH = '{{ localsettings.BIGCOUCH }}'
 BIGCOUCH_QUORUM_COUNT = '{{ localsettings.BIGCOUCH_QUORUM_COUNT }}'
 {% endif %}
 
+{% if 'COMMCARE_ANALYTICS_HOST' in localsettings %}
+COMMCARE_ANALYTICS_HOST = '{{ localsettings.COMMCARE_ANALYTICS_HOST }}'
+{% endif %}
+
 {% if 'COUCH_CACHE_DOCS' in localsettings %}
 COUCH_CACHE_DOCS = '{{ localsettings.COUCH_CACHE_DOCS }}'
 {% endif %}
@@ -704,8 +708,6 @@ BASE_ADDRESS = '{{ SITE_HOST }}'
 {% if localsettings.get('J2ME_ADDRESS') %}
 J2ME_ADDRESS = '{{ localsettings.J2ME_ADDRESS }}'
 {% endif %}
-
-CLOUDCARE_BASE_URL = '{{ localsettings.get('CLOUDCARE_BASE_URL', '') }}'
 
 EMAIL_USE_TLS = {{ localsettings.EMAIL_USE_TLS }}
 

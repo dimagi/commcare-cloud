@@ -3,17 +3,14 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 import itertools
 import os
+import shlex
 from collections import namedtuple, defaultdict
-from contextlib import contextmanager
 
 from clint.textui import puts
 
 from commcare_cloud.cli_utils import has_arg, ask
 from commcare_cloud.colors import color_error, color_success
 from commcare_cloud.environment.paths import ANSIBLE_DIR, ANSIBLE_ROLES_PATH, ANSIBLE_COLLECTIONS_PATHS
-from six.moves import shlex_quote
-from six.moves import range
-from six.moves import map
 
 DEPRECATED_ANSIBLE_ARGS = []
 
@@ -22,12 +19,19 @@ class AnsibleContext(object):
     config = 'ANSIBLE_CONFIG'
     roles_path = 'ANSIBLE_ROLES_PATH'
     stdout_callback = 'ANSIBLE_STDOUT_CALLBACK'
-    collections_paths= 'ANSIBLE_COLLECTIONS_PATHS'
+    collections_paths = 'ANSIBLE_COLLECTIONS_PATHS'
 
-    def __init__(self, args):
-        self.env_vars = self._build_env(args)
+    def __init__(self, args, environment=None):
+        from commcare_cloud.environment.main import get_environment
+        assert args is not None or environment is not None, "'args' or 'environment' is required"
+        if environment is None:
+            environment = get_environment(args.env_name)
+        if args is not None:
+            assert args.env_name == environment.name, (args.env_name, environment.name)
+        self.environment = environment
+        self._stdout_callback = getattr(args, 'stdout_callback', None)
 
-    def _build_env(self, args):
+    def build_env(self, need_secrets=True):
         """Look for args that have been flagged as environment variables
         and add them to the env dict with appropriate naming
         """
@@ -36,16 +40,11 @@ class AnsibleContext(object):
         env[self.roles_path] = ANSIBLE_ROLES_PATH
         env[self.collections_paths] = ANSIBLE_COLLECTIONS_PATHS
 
-        if hasattr(args, 'stdout_callback'):
-            env[self.stdout_callback] = args.stdout_callback
+        if self._stdout_callback is not None:
+            env[self.stdout_callback] = self._stdout_callback
+        if need_secrets or self.environment.has_ansible_env_vars():
+            env.update(self.environment.get_ansible_env_vars())
         return env
-
-    @contextmanager
-    def with_vars(self, vars):
-        current_vars = self.env_vars.copy()
-        self.env_vars.update(vars)
-        yield
-        self.env_vars = current_vars
 
 
 def get_common_ssh_args(environment, use_factory_auth=False):
@@ -60,7 +59,8 @@ def get_common_ssh_args(environment, use_factory_auth=False):
     common_ssh_args.extend(get_default_ssh_options_as_cmd_parts(environment))
 
     if common_ssh_args:
-        cmd_parts_with_common_ssh_args += ('--ssh-common-args={}'.format(' '.join(map(shlex_quote, common_ssh_args))),)
+        args = ' '.join(map(shlex.quote, common_ssh_args))
+        cmd_parts_with_common_ssh_args += ('--ssh-common-args={}'.format(args),)
     return cmd_parts_with_common_ssh_args
 
 
@@ -257,8 +257,6 @@ def get_all_supervisor_processes_by_host(environment):
         get_management_command_processes(environment),
         _get_simple_processes(environment, 'webworkers', get_django_webworker_name(environment)),
         _get_simple_processes(environment, 'formplayer', get_formplayer_spring_instance_name(environment)),
-        _get_simple_processes(environment, 'airflow', _get_process_name(environment, 'airflow_scheduler')),
-        _get_simple_processes(environment, 'airflow', _get_process_name(environment, 'airflow_webserver')),
         _get_simple_processes(environment, 'proxy', _get_process_name(environment, 'websockets')),
     )
     for process in processes:
