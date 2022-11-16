@@ -27,6 +27,8 @@ web8
 
 {{ __pgbouncer0__ }}
 
+{{ __pgbouncer1__ }}
+
 {{ __rds_pg0__ }}
 
 {{ __rds_pgformplayer0__ }}
@@ -53,6 +55,7 @@ pgshard_nlb
 
 [pgbouncer:children]
 pgbouncer0
+pgbouncer1
 
 {{ __couch6__ }}
 
