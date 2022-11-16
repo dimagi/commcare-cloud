@@ -36,7 +36,7 @@ if [ -f "$VENV/bin/activate" ]; then
     source "$VENV/bin/activate"
     exit 0
 else
-    if $quiet_mode; then
+    if ! $quiet_mode; then
         echo "A virtual environment was not found at ${VENV}."
         echo "Try running your cchq command with --control-setup=yes."
     fi
