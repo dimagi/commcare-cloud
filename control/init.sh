@@ -26,7 +26,7 @@ fi
 
 if [ -z ${CI_TEST} ]; then
     # attempt to activate
-    if ! source ${COMMCARE_CLOUD_REPO}/control/activate_venv.sh --quiet; then
+    if ! source "${COMMCARE_CLOUD_REPO}/control/activate_venv.sh" --quiet; then
         # check if a virtualenv at $VENV exists yet, and create if not
         if [[ ! -f $VENV/bin/activate ]]; then
             if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null; then
@@ -36,14 +36,14 @@ if [ -z ${CI_TEST} ]; then
                     echo "If you wish to delete it, run 'rm -rf ${CCHQ_VENV_PATH_OLD}'"
                 fi
                 # use venv because 3.10 setup includes installing python3.10-venv
-                python3.10 -m venv $VENV
+                python3.10 -m venv "$VENV"
             else
                 # use virtualenv because `python3 -m venv` requires python3-venv
                 python3 -m pip install --user --upgrade virtualenv
-                python3 -m virtualenv $VENV
+                python3 -m virtualenv "$VENV"
             fi
         fi
-        source $VENV/bin/activate
+        source "$VENV/bin/activate"
     fi
 fi
 
