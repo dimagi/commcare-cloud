@@ -32,7 +32,7 @@ if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null && [[
 fi
 
 # activate virtualenv if it exists, otherwise exit with error
-if [ -f $VENV/bin/activate ]; then
+if [ -f "$VENV/bin/activate" ]; then
     source "$VENV/bin/activate"
     exit 0
 else
