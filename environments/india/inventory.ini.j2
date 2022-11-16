@@ -13,6 +13,7 @@
 {{ __esmaster4__ }} elasticsearch_node_name=esmaster4 elasticsearch_node_zone=ap-south-1a
 {{ __es0__ }} elasticsearch_node_name=es0 elasticsearch_node_zone=ap-south-1a
 {{ __es2__ }} elasticsearch_node_name=es2 elasticsearch_node_zone=ap-south-1b
+{{ __es3__ }} elasticsearch_node_name=es3 elasticsearch_node_zone=ap-south-1b
 {{ __escoordinator1__ }} elasticsearch_node_name=escoordinator1 elasticsearch_node_zone=ap-south-1a
 {{ __escoordinator2__ }} elasticsearch_node_name=escoordinator2 elasticsearch_node_zone=ap-south-1b
 {{ __escoordinator3__ }} elasticsearch_node_name=escoordinator3 elasticsearch_node_zone=ap-south-1c
@@ -29,6 +30,7 @@ elasticsearch_data=false
 [es_data:children]
 es0
 es2
+es3
 
 [elasticsearch:children]
 es_master
@@ -118,6 +120,7 @@ formplayer1
 [elasticsearch:children]
 es0
 es2
+es3
 
 [shared_efs_client_host:children]
 celery
