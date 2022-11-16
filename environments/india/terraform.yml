@@ -187,7 +187,7 @@ servers:
     group: elasticsearch
     os: ubuntu_pro_bionic
 
-  - server_name: "es2-india"
+  - server_name: "es3-india"
     server_instance_type: "m5a.xlarge"
     network_tier: "db-private"
     az: "b"
