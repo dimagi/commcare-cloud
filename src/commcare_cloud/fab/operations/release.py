@@ -18,7 +18,6 @@ from ..const import (
     KEEP_UNTIL_PREFIX,
     RELEASE_RECORD,
     ROLES_ALL_SRC,
-    ROLES_DEPLOY,
     ROLES_MANAGE,
     ROLES_STATIC,
 )
@@ -202,16 +201,6 @@ def create_code_dir(full_cluster=True):
         sudo('mkdir -p {}'.format(env.code_root))
 
     return create
-
-
-@roles(ROLES_DEPLOY)
-def kill_stale_celery_workers(delay=0):
-    with cd(env.code_current):
-        sudo(
-            'echo "{}/bin/python manage.py '
-            'kill_stale_celery_workers" '
-            '| at now + {} minutes'.format(env.virtualenv_current, delay)
-        )
 
 
 @roles(ROLES_ALL_SRC)

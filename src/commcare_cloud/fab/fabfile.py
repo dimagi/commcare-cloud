@@ -192,6 +192,7 @@ def env_common():
         'staticfiles': staticfiles,
         'staticfiles_primary': [staticfiles[0]],
         'lb': [],
+        # 'deploy' contains a single server, one that commcare-hq is deployed to.
         # having deploy here makes it so that
         # we don't get prompted for a host or run deploy too many times
         'deploy': deploy,
@@ -240,10 +241,8 @@ def send_email(subject, message, use_current_release=False):
 
 @task
 def kill_stale_celery_workers():
-    """
-    Kills celery workers that failed to properly go into warm shutdown
-    """
-    execute(release.kill_stale_celery_workers)
+    """OBSOLETE use 'kill-stale-celery-workers' instead"""
+    print(kill_stale_celery_workers.__doc__)
 
 
 @task
@@ -447,8 +446,9 @@ def clean_releases(keep=3):
 
 @task
 @roles(['deploy'])
-def manage(cmd):
-    exit("OBSOLETE use 'django-manage' instead.")
+def manage(cmd=None):
+    """OBSOLETE use 'django-manage' instead"""
+    exit(manage.__doc__)
 
 
 @task
@@ -541,18 +541,6 @@ def start_pillows():
     execute(supervisor.start_pillows, True)
 
 
-@task
-def reset_mvp_pillows():
-    _require_target()
-    _setup_release()
-    mvp_pillows = [
-        'MVPFormIndicatorPillow',
-        'MVPCaseIndicatorPillow',
-    ]
-    for pillow in mvp_pillows:
-        reset_pillow(pillow)
-
-
 @roles(ROLES_PILLOWTOP)
 def reset_pillow(pillow):
     _require_target()
@@ -590,17 +578,19 @@ ONLINE_DEPLOY_COMMANDS = [
 
 @task
 def check_status():
-    exit("""OBSOLETE replaced by
+    """OBSOLETE replaced by
 
     commcare-cloud <env> ping all
     commcare-cloud <env> service postgresql status
     commcare-cloud <env> service elasticsearch status
-    """)
+    """
+    exit(check_status.__doc__)
 
 
 @task
 def perform_system_checks():
-    execute(check_servers.perform_system_checks, True)
+    """OBSOLETE use 'perform-system-checks' instead"""
+    exit(perform_system_checks.__doc__)
 
 
 def make_tasks_for_envs(available_envs):

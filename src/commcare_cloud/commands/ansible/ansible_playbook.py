@@ -79,9 +79,10 @@ class AnsiblePlaybook(CommandBase):
         ansible_context = AnsibleContext(args)
         ansible_context.environment.create_generated_yml()
         check_branch(args)
+        use_factory_auth = getattr(args, 'use_factory_auth', False)
         return run_ansible_playbook(
             args.playbook, ansible_context, args.skip_check, args.quiet,
-            always_skip_check, args.limit, args.use_factory_auth, unknown_args,
+            always_skip_check, args.limit, use_factory_auth, unknown_args,
             respect_ansible_skip=respect_ansible_skip,
         )
 
@@ -175,6 +176,9 @@ class _AnsiblePlaybookAlias(CommandBase):
         shared_args.FACTORY_AUTH_ARG,
         shared_args.LIMIT_ARG,
     )
+
+
+NO_FACTORY_AUTH_ARGS = tuple(a for a in _AnsiblePlaybookAlias.arguments if a is not shared_args.FACTORY_AUTH_ARG)
 
 
 class DeployStack(_AnsiblePlaybookAlias):
@@ -393,3 +397,19 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
             )
         else:
             return rc
+
+
+class PerformSystemChecks(_AnsiblePlaybookAlias):
+    command = "perform-system-checks"
+    help = """
+    Check the Django project for potential problems in two phases, first
+    check all apps, then run database checks only.
+
+    See https://docs.djangoproject.com/en/dev/ref/django-admin/#check
+    """
+    arguments = NO_FACTORY_AUTH_ARGS
+
+    def run(self, args, unknown_args):
+        args.playbook = 'perform_system_checks.yml'
+        args.quiet = True
+        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
