@@ -1077,12 +1077,12 @@ Use `-l` instead of a command to see the full list of commands.
 ##### Available commands
 ```
 
-    check_status
+    check_status               OBSOLETE replaced by
     clean_releases             Cleans old and failed deploys from the ~/www/&lt;...
     deploy_commcare            Preindex and deploy if it completes quickly en...
-    kill_stale_celery_workers
-    manage
-    perform_system_checks
+    kill_stale_celery_workers  OBSOLETE use 'kill-stale-celery-workers' inste...
+    manage                     OBSOLETE use 'django-manage' instead
+    perform_system_checks      OBSOLETE use 'perform-system-checks' instead
     pillowtop
     preindex_views             Creates a new release that runs preindex_every...
     restart_services

@@ -241,7 +241,8 @@ def send_email(subject, message, use_current_release=False):
 
 @task
 def kill_stale_celery_workers():
-    print("OBSOLETE use 'kill-stale-celery-workers' instead")
+    """OBSOLETE use 'kill-stale-celery-workers' instead"""
+    print(kill_stale_celery_workers.__doc__)
 
 
 @task
@@ -445,8 +446,9 @@ def clean_releases(keep=3):
 
 @task
 @roles(['deploy'])
-def manage(cmd):
-    exit("OBSOLETE use 'django-manage' instead.")
+def manage(cmd=None):
+    """OBSOLETE use 'django-manage' instead"""
+    exit(manage.__doc__)
 
 
 @task
@@ -576,17 +578,19 @@ ONLINE_DEPLOY_COMMANDS = [
 
 @task
 def check_status():
-    exit("""OBSOLETE replaced by
+    """OBSOLETE replaced by
 
     commcare-cloud <env> ping all
     commcare-cloud <env> service postgresql status
     commcare-cloud <env> service elasticsearch status
-    """)
+    """
+    exit(check_status.__doc__)
 
 
 @task
 def perform_system_checks():
-    exit("OBSOLETE use 'perform-system-checks' instead")
+    """OBSOLETE use 'perform-system-checks' instead"""
+    exit(perform_system_checks.__doc__)
 
 
 def make_tasks_for_envs(available_envs):
