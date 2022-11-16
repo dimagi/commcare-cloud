@@ -79,9 +79,10 @@ class AnsiblePlaybook(CommandBase):
         ansible_context = AnsibleContext(args)
         ansible_context.environment.create_generated_yml()
         check_branch(args)
+        use_factory_auth = getattr(args, 'use_factory_auth', False)
         return run_ansible_playbook(
             args.playbook, ansible_context, args.skip_check, args.quiet,
-            always_skip_check, args.limit, args.use_factory_auth, unknown_args,
+            always_skip_check, args.limit, use_factory_auth, unknown_args,
             respect_ansible_skip=respect_ansible_skip,
         )
 
