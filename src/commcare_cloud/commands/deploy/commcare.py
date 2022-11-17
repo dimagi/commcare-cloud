@@ -8,6 +8,7 @@ from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_notice
 from commcare_cloud.commands.ansible.run_module import (
     AnsibleContext,
+    BadAnsibleResult,
     ansible_json,
     run_ansible_module,
 )
@@ -198,7 +199,13 @@ def _get_deployed_version(environment):
         become=False,
         run_command=ansible_json,
     )
-    return next(iter(res.values()))["stdout"]
+    result = next(iter(res.values()), {"stderr": "no result for host"})
+    if "stdout" in result:
+        return ["stdout"]
+    error = result["stderr"] if "stderr" in result else repr(result)
+    if "rc" in result:
+        error += f"\n\nreturn code: {result['rc']}"
+    raise BadAnsibleResult(error)
 
 
 def get_deploy_commcare_fab_func_args(args):
