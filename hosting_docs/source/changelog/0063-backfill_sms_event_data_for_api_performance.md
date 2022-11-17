@@ -20,9 +20,9 @@ an automatic migration will be added to CommCare in the future which will apply 
 during a code deploy if they have not already been applied.
 
 ## Details
-To improve the performance of the 'messaging-event' API we have denormalized one of the date fields.
-This field is already being populated for new data but a command needs to be executed to populate
-the column for existing data.
+To improve the performance of the 'messaging-event' API we have denormalized some of the fields.
+The fields are already being populated for new data but a command needs to be executed to populate
+the columns for existing data.
 
 ## Steps to update
 Execute the following command:
