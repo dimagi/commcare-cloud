@@ -551,7 +551,7 @@ rds_instances:
 
   - identifier: "pgauditcare1-production"
     instance_type: "db.m5.2xlarge"
-    storage: 6000
+    storage: 7000
     multi_az: true
     engine_version: "14"
     monitoring_interval: 0
