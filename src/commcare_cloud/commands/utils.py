@@ -1,34 +1,12 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-import os
-
 from jinja2 import Environment, FileSystemLoader
 
 
 def render_template(name, context, template_root):
     env = Environment(loader=FileSystemLoader(template_root))
     return env.get_template(name).render(context)
-
-
-def run_fab_task(task_fn, hosts, username, password=None, parallel_pool_size=1):
-    from fabric.api import execute, env, parallel
-    if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
-        env.use_ssh_config = True
-    env.forward_agent = True
-    # pass `-E` to sudo to preserve environment for ssh agent forwarding
-    env.sudo_prefix = "sudo -SE -p '%(sudo_prompt)s' "
-    env.user = username
-    env.password = password
-    env.hosts = hosts
-    env.warn_only = True
-
-    task = task_fn
-    if parallel_pool_size > 1:
-        task = parallel(pool_size=parallel_pool_size)(task_fn)
-
-    res = execute(task)
-    return res
 
 
 def timeago(tdelta):

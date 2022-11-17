@@ -81,7 +81,6 @@ class RunAnsibleModule(CommandBase):
     def run(self, args, unknown_args):
         ansible_context = AnsibleContext(args)
         environment = ansible_context.environment
-        environment.create_generated_yml()
 
         def _run_ansible(args, *unknown_args):
             return run_ansible_module(
@@ -105,7 +104,9 @@ def run_ansible_module(ansible_context, inventory_group, module, module_args,
                        become=True, become_user=None, use_factory_auth=False, quiet=False,
                        extra_args=(), run_command=subprocess.call):
     extra_args = tuple(extra_args)
-    if not quiet:
+    if run_command is ansible_json:
+        assert not quiet, "quiet=True has no effect with run_command=ansible_json"
+    elif not quiet:
         extra_args = ("--diff",) + extra_args
     else:
         extra_args = ("--one-line",) + extra_args
@@ -136,8 +137,8 @@ def run_ansible_module(ansible_context, inventory_group, module, module_args,
 
     env_vars = ansible_context.build_env(need_secrets=become)
     if run_command is ansible_json:
-        env_vars.setdefault("ANSIBLE_LOAD_CALLBACK_PLUGINS", "1")
-        env_vars.setdefault("ANSIBLE_STDOUT_CALLBACK", "json")
+        env_vars["ANSIBLE_LOAD_CALLBACK_PLUGINS"] = "1"
+        env_vars["ANSIBLE_STDOUT_CALLBACK"] = "json"
 
     cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args
@@ -151,6 +152,8 @@ def ansible_json(*args, **kw):
     """JSON command runner for run_ansible_module
 
     Usage: run_ansible_module(..., run_command=ansible_json)
+
+    Returns a dict: {<host>: <result_dict>, ...}
     """
     try:
         output = subprocess.check_output(*args, **kw)
@@ -160,6 +163,10 @@ def ansible_json(*args, **kw):
         return json.loads(output)["plays"][-1]["tasks"][-1]["hosts"]
     except (KeyError, IndexError, ValueError, TypeError):
         raise BadAnsibleResult(output)
+
+
+class BadAnsibleResult(Exception):
+    pass
 
 
 class RunShellCommand(CommandBase):
@@ -263,10 +270,28 @@ class Ping(CommandBase):
     ) + NON_POSITIONAL_ARGUMENTS
 
     def run(self, args, unknown_args):
-        args.shell_command = 'echo {{ inventory_hostname }}'
+        args.shell_command = 'echo "$(hostname) - $(uptime)"'
         args.silence_warnings = False
         return RunShellCommand(self.parser).run(args, unknown_args)
 
 
-class BadAnsibleResult(Exception):
-    pass
+class KillStaleCeleryWorkers(CommandBase):
+    command = 'kill-stale-celery-workers'
+    help = 'Kill celery workers that failed to properly go into warm shutdown.'
+    run_setup_on_control_by_default = False
+
+    def run(self, args, unknown_args):
+        ansible_context = AnsibleContext(args)
+        group_vars = ansible_context.environment.paths.group_vars_all_yml
+        return run_ansible_module(
+            ansible_context,
+            'django_manage[0]',
+            'shell',
+            (
+                'cd {{ code_home }}; '
+                '{{ virtualenv_home }}/bin/python manage.py kill_stale_celery_workers'
+            ),
+            become=True,
+            become_user='cchq',
+            extra_args=['-e', f'@{group_vars}'] + unknown_args,
+        )

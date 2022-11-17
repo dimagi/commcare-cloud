@@ -6,7 +6,7 @@ import posixpath
 from collections import namedtuple
 from datetime import datetime, timedelta
 
-from fabric import operations, utils
+from fabric import utils
 from fabric.api import env, parallel, roles, run, sudo
 from fabric.colors import red
 from fabric.context_managers import cd, shell_env
@@ -18,7 +18,6 @@ from ..const import (
     KEEP_UNTIL_PREFIX,
     RELEASE_RECORD,
     ROLES_ALL_SRC,
-    ROLES_DEPLOY,
     ROLES_MANAGE,
     ROLES_STATIC,
 )
@@ -204,16 +203,6 @@ def create_code_dir(full_cluster=True):
     return create
 
 
-@roles(ROLES_DEPLOY)
-def kill_stale_celery_workers(delay=0):
-    with cd(env.code_current):
-        sudo(
-            'echo "{}/bin/python manage.py '
-            'kill_stale_celery_workers" '
-            '| at now + {} minutes'.format(env.virtualenv_current, delay)
-        )
-
-
 @roles(ROLES_ALL_SRC)
 @parallel
 def record_successful_release():
@@ -366,32 +355,6 @@ def mark_keep_until(full_cluster=True):
             sudo('touch {}{}'.format(KEEP_UNTIL_PREFIX, until_date))
 
     return mark
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def apply_patch(filepath):
-    destination = '/home/{}/{}.patch'.format(env.user, env.ccc_environment.new_release_name())
-    operations.put(
-        filepath,
-        destination,
-    )
-
-    current_dir = sudo('readlink -f {}'.format(env.code_current))
-    sudo('git apply --unsafe-paths {} --directory={}'.format(destination, current_dir))
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def reverse_patch(filepath):
-    destination = '/home/{}/{}.patch'.format(env.user, env.ccc_environment.new_release_name())
-    operations.put(
-        filepath,
-        destination,
-    )
-
-    current_dir = sudo('readlink -f {}'.format(env.code_current))
-    sudo('git apply -R --unsafe-paths {} --directory={}'.format(destination, current_dir))
 
 
 def _get_roles(full_cluster):

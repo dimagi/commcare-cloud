@@ -1,3 +1,4 @@
+import shlex
 from datetime import datetime
 
 import pytz
@@ -5,6 +6,12 @@ import pytz
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_notice
+from commcare_cloud.commands.ansible.run_module import (
+    AnsibleContext,
+    BadAnsibleResult,
+    ansible_json,
+    run_ansible_module,
+)
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
 from commcare_cloud.commands.deploy.utils import (
     record_deploy_start,
@@ -14,7 +21,6 @@ from commcare_cloud.commands.deploy.utils import (
     DeployContext,
     record_deploy_failed,
 )
-from commcare_cloud.commands.utils import run_fab_task
 from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.fab.deploy_diff import DeployDiff
 from commcare_cloud.github import github_repo
@@ -65,8 +71,8 @@ def confirm_deploy(environment, deploy_revs, diffs, args):
             return False
 
     if not (
-        _confirm_translated(environment, quiet=args.quiet) and
-        _confirm_environment_time(environment, quiet=args.quiet)
+        _confirm_translated(environment, quiet=args.quiet)
+        and _confirm_environment_time(environment, quiet=args.quiet)
     ):
         return False
 
@@ -110,7 +116,8 @@ def _confirm_translated(environment, quiet=False):
     if datetime.now().isoweekday() != 3 or environment.meta_config.deploy_env != 'production':
         return True
     github_update_translations_pr_link = \
-        "https://github.com/dimagi/commcare-hq/pulls?q=is%3Apr+Update+Translations+author%3Aapp%2Fgithub-actions+is%3Aopen"
+        "https://github.com/dimagi/commcare-hq/pulls?" \
+        "q=is%3Apr+Update+Translations+author%3Aapp%2Fgithub-actions+is%3Aopen"
     return ask(
         "It's the weekly Wednesday deploy, did you update the translations "
         "from transifex?\n"
@@ -183,15 +190,22 @@ def call_record_deploy_success(environment, context, end_time):
 
 
 def _get_deployed_version(environment):
-    from fabric.api import cd, run
-
-    def _task():
-        with cd(environment.remote_conf.code_current):
-            return run('git rev-parse HEAD')
-
-    host = environment.sshable_hostnames_by_group["django_manage"][0]
-    res = run_fab_task(_task, host, 'ansible')
-    return res[host]
+    code_current = shlex.quote(environment.remote_conf.code_current)
+    res = run_ansible_module(
+        AnsibleContext(None, environment),
+        "django_manage",
+        "shell",
+        f"cd {code_current}; git rev-parse HEAD",
+        become=False,
+        run_command=ansible_json,
+    )
+    result = next(iter(res.values()), {"stderr": "no result for host"})
+    if "stdout" in result:
+        return ["stdout"]
+    error = result["stderr"] if "stderr" in result else repr(result)
+    if "rc" in result:
+        error += f"\n\nreturn code: {result['rc']}"
+    raise BadAnsibleResult(error)
 
 
 def get_deploy_commcare_fab_func_args(args):

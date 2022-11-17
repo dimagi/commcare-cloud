@@ -157,6 +157,10 @@ BIGCOUCH = '{{ localsettings.BIGCOUCH }}'
 BIGCOUCH_QUORUM_COUNT = '{{ localsettings.BIGCOUCH_QUORUM_COUNT }}'
 {% endif %}
 
+{% if 'COMMCARE_ANALYTICS_HOST' in localsettings %}
+COMMCARE_ANALYTICS_HOST = '{{ localsettings.COMMCARE_ANALYTICS_HOST }}'
+{% endif %}
+
 {% if 'COUCH_CACHE_DOCS' in localsettings %}
 COUCH_CACHE_DOCS = '{{ localsettings.COUCH_CACHE_DOCS }}'
 {% endif %}

@@ -21,10 +21,7 @@ To run any commcare-cloud command you need to install commcare-cloud first
 All `commcare-cloud` commands take the following form:
 
 ```
-commcare-cloud [--control] [--control-setup {yes,no}]
-               <env>
-               {after-reboot,ansible-playbook,ap,aws-fill-inventory,aws-list,aws-sign-in,bootstrap-users,celery-resource-report,copy-files,couchdb-cluster-info,deploy,deploy-stack,aps,django-manage,downtime,export-sentry-events,fab,forward-port,list-postgresql-dbs,lookup,migrate-couchdb,migrate_couchdb,migrate-secrets,mosh,openvpn-activate-user,openvpn-claim-user,pillow-resource-report,pillow-topic-assignments,ping,run-module,run-shell-command,secrets,send-datadog-event,service,ssh,terraform,terraform-migrate-state,tmux,update-config,update-local-known-hosts,update-supervisor-confs,update-user-key,update-users,validate-environment-settings}
-               ...
+commcare-cloud [--control] [--control-setup {yes,no}] <env> <command> ...
 ```
 
 ## Positional Arguments
@@ -1080,19 +1077,16 @@ Use `-l` instead of a command to see the full list of commands.
 ##### Available commands
 ```
 
-    apply_patch                Used to apply a git patch created via `git for...
-    check_status
-    clean_releases             Cleans old and failed deploys from the ~/www/<...
+    check_status               OBSOLETE replaced by
+    clean_releases             Cleans old and failed deploys from the ~/www/&lt;...
     deploy_commcare            Preindex and deploy if it completes quickly en...
-    kill_stale_celery_workers  Kills celery workers that failed to properly g...
-    manage                     run a management command
-    perform_system_checks
+    kill_stale_celery_workers  OBSOLETE use 'kill-stale-celery-workers' inste...
+    manage                     OBSOLETE use 'django-manage' instead
+    perform_system_checks      OBSOLETE use 'perform-system-checks' instead
     pillowtop
     preindex_views             Creates a new release that runs preindex_every...
-    reset_mvp_pillows
     restart_services
     restart_webworkers
-    reverse_patch              Used to reverse a git patch created via `git f...
     rollback                   Rolls back the servers to the previous release...
     rollback_formplayer
     setup_limited_release      Sets up a release on a single machine
@@ -1102,7 +1096,6 @@ Use `-l` instead of a command to see the full list of commands.
     stop_celery
     stop_pillows
     supervisorctl
-    unlink_current             Unlinks the current code directory. Use with c...
     update_current
     webworkers
 ```
@@ -1389,6 +1382,32 @@ commcare-cloud <env> pillow-resource-report [--csv]
 ###### `--csv`
 
 Output table as CSV
+
+---
+
+#### ``kill-stale-celery-workers`` Command
+
+Kill celery workers that failed to properly go into warm shutdown.
+
+```
+commcare-cloud <env> kill-stale-celery-workers
+```
+
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
+
+---
+
+#### ``perform-system-checks`` Command
+
+```
+commcare-cloud <env> perform-system-checks
+```
+
+Check the Django project for potential problems in two phases, first
+check all apps, then run database checks only.
+
+See https://docs.djangoproject.com/en/dev/ref/django-admin/#check
 
 ---
 
