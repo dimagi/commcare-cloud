@@ -16,6 +16,24 @@ function realpath() {
     python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
 }
 
+if [ -n "${BASH_SOURCE[0]}" ] && [ -z "${BASH_SOURCE[0]##*init.sh*}" ]
+then
+    # this script is being run from a file on disk, presumably from within commcare-cloud repo
+    COMMCARE_CLOUD_REPO=$(dirname $(dirname $(realpath ${BASH_SOURCE[0]})))
+
+    # check for expected file to verify we've got the right place
+    if [ ! -f ${COMMCARE_CLOUD_REPO}/control/update_code.sh ]
+    then
+        echo "It looks like you're running this script from an unexpected location."
+        echo "Please check the README for installation instructions:"
+        echo "    https://github.com/dimagi/commcare-cloud/blob/master/README.md"
+        return 1
+    fi
+else
+    # use pre-assigned location if set; fallback to the default location
+    COMMCARE_CLOUD_REPO=${COMMCARE_CLOUD_REPO:-${HOME}/commcare-cloud}
+fi
+
 if [ -z ${CI_TEST} ]; then
     if ! hash python3.10 2>/dev/null; then
       echo "Starting December 19th, 2022, commcare-cloud will require Python 3.10."
@@ -45,24 +63,6 @@ if [ -z ${CI_TEST} ]; then
         fi
         source "$VENV/bin/activate"
     fi
-fi
-
-if [ -n "${BASH_SOURCE[0]}" ] && [ -z "${BASH_SOURCE[0]##*init.sh*}" ]
-then
-    # this script is being run from a file on disk, presumably from within commcare-cloud repo
-    COMMCARE_CLOUD_REPO=$(dirname $(dirname $(realpath ${BASH_SOURCE[0]})))
-
-    # check for expected file to verify we've got the right place
-    if [ ! -f ${COMMCARE_CLOUD_REPO}/control/update_code.sh ]
-    then
-        echo "It looks like you're running this script from an unexpected location."
-        echo "Please check the README for installation instructions:"
-        echo "    https://github.com/dimagi/commcare-cloud/blob/master/README.md"
-        return 1
-    fi
-else
-    # use pre-assigned location if set; fallback to the default location
-    COMMCARE_CLOUD_REPO=${COMMCARE_CLOUD_REPO:-${HOME}/commcare-cloud}
 fi
 
 if [ -d ~/commcarehq-ansible ]; then
