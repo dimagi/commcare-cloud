@@ -16,16 +16,16 @@ while test $# -gt 0; do
   esac
 done
 
-if [[ $BIONIC_USE_SYSTEM_PYTHON == true ]]; then
+if [ "$BIONIC_USE_SYSTEM_PYTHON" == "true" ]; then
     echo "The variable BIONIC_USE_SYSTEM_PYTHON is set in your environment."
     echo "This variable should only be used temporarily when it is absolutely necessary to use Python 3.6 on 18.04."
     echo "Please remove this variable from your environment when you are able to use Python 3.10 again."
 fi
 
 # if on 18.04 with 3.10 installed, use cchq-3.10 unless $BIONIC_USE_SYSTEM_PYTHON is true
-if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null && [[ $( source /etc/os-release; echo $VERSION_ID ) == 18.04 ]]; then
+if [ "$BIONIC_USE_SYSTEM_PYTHON" == "false" ] && hash python3.10 2>/dev/null && [ $( source /etc/os-release; echo "$VERSION_ID" ) == "18.04" ]; then
     # only append 3.10 if it is not already in the name
-    if [[ $CCHQ_VIRTUALENV != *"3.10"* ]]; then
+    if [ "$CCHQ_VIRTUALENV" != *"3.10"* ]; then
         CCHQ_VENV_PATH_OLD="$VENV"
         CCHQ_VIRTUALENV=$CCHQ_VIRTUALENV-3.10
     fi
