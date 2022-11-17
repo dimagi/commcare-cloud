@@ -41,6 +41,6 @@ elif $fail_on_error; then
     echo "A virtual environment was not found at ${VENV}."
     echo "Try running your cchq command with --control-setup=yes."
     exit 1
-else; then
+else
     VIRTUALENV_NOT_FOUND='true'
 fi
