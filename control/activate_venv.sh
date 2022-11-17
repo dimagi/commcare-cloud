@@ -2,12 +2,12 @@
 CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
 VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
 BIONIC_USE_SYSTEM_PYTHON=${BIONIC_USE_SYSTEM_PYTHON:-false}
-quiet_mode='false'
+fail_on_error='false' # if true, prints error message and returns exit code 1
 
 while test $# -gt 0; do
   case "$1" in
-    -q|--quiet)
-      quiet_mode='true'
+    --fail-on-error)
+      fail_on_error='true'
       shift
       ;;
     *)
@@ -35,12 +35,12 @@ fi
 
 # activate virtualenv if it exists, otherwise exit with error
 if [ -f "$VENV/bin/activate" ]; then
+    VIRTUALENV_NOT_FOUND='false'
     source "$VENV/bin/activate"
-    exit 0
-else
-    if ! $quiet_mode; then
-        echo "A virtual environment was not found at ${VENV}."
-        echo "Try running your cchq command with --control-setup=yes."
-    fi
+elif $fail_on_error; then
+    echo "A virtual environment was not found at ${VENV}."
+    echo "Try running your cchq command with --control-setup=yes."
     exit 1
+else; then
+    VIRTUALENV_NOT_FOUND='true'
 fi

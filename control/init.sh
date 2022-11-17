@@ -44,7 +44,8 @@ fi
 
 if [ -z ${CI_TEST} ]; then
     # attempt to activate
-    if ! source "${COMMCARE_CLOUD_REPO}/control/activate_venv.sh" --quiet; then
+    source "${COMMCARE_CLOUD_REPO}/control/activate_venv.sh"
+    if [ "$VIRTUALENV_NOT_FOUND" == "true" ]; then
         # check if a virtualenv at $VENV exists yet, and create if not
         if [[ ! -f $VENV/bin/activate ]]; then
             if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null; then
