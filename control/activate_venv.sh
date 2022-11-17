@@ -1,6 +1,7 @@
 #! /bin/bash
 CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
 VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
+BIONIC_USE_SYSTEM_PYTHON=${BIONIC_USE_SYSTEM_PYTHON:-false}
 quiet_mode='false'
 
 while test $# -gt 0; do
