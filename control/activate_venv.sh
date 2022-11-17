@@ -35,9 +35,7 @@ fi
 
 # activate virtualenv if it exists, otherwise exit with error
 if [ -f "$VENV/bin/activate" ]; then
-    if [ $( which python ) != "$VENV/bin/python" ]; then
-        source "$VENV/bin/activate"
-    fi
+    source "$VENV/bin/activate"
     exit 0
 else
     if ! $quiet_mode; then
