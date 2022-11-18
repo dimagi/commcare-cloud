@@ -120,7 +120,7 @@ def run_on_control_instead(args, argv, force_latest_code):
         )
     else:
         bash_commands_template = (
-            '{env}source ~/commcare-cloud/control/activate_venv.sh --fail-on-error'
+            '{env}source ~/commcare-cloud/control/activate_venv.sh --fail-on-error '
             '&& {cchq} {cchq_args}'
         )
     cmd_parts = [
