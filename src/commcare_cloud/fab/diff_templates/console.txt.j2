@@ -16,6 +16,13 @@ New version details:
 {{ mgs|warning }}
 {%- endfor %}
 
+{%- if changelogs -%}
+There have been some changelogs since last deploy, please review to make sure that these are applied on your environment before proceeded:
+{% for info in changelogs -%}
+{{ changelogs }}
+{% endfor %}
+{%- endif %}
+
 {%- if pr_infos -%}
 List of PRs since last deploy:
 {% for info in pr_infos -%}
