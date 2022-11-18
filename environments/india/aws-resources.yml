@@ -28,6 +28,12 @@ escoordinator2-india: 10.203.41.222
 escoordinator2-india.instance_id: i-0544129698554df22
 escoordinator3-india: 10.203.42.153
 escoordinator3-india.instance_id: i-0a5caa00da26ccc4f
+escoordinator4-india: 10.203.40.36
+escoordinator4-india.instance_id: i-09a20b31a65c5f413
+escoordinator5-india: 10.203.41.213
+escoordinator5-india.instance_id: i-0efd6987acd095cc2
+escoordinator6-india: 10.203.42.64
+escoordinator6-india.instance_id: i-05f0ae5ed99ce46a4
 esmaster2-india: 10.203.41.233
 esmaster2-india.instance_id: i-0be0872cee341b69e
 esmaster3-india: 10.203.41.191
