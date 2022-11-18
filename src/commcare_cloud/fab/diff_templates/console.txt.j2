@@ -17,9 +17,10 @@ New version details:
 {%- endfor %}
 
 {%- if changelogs -%}
-There have been some changelogs since last deploy, please review to make sure that these are applied on your environment before proceeded:
-{% for info in changelogs -%}
-{{ changelogs }}
+There have been some changelogs since last deploy, you must make sure that these are applied on your environment before proceeding to avoid getting your environment into a broaken state.
+
+{% for log in changelogs -%}
+{{ log }}
 {% endfor %}
 {%- endif %}
 
