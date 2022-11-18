@@ -59,7 +59,7 @@ class DeployDiff:
                 self.repo.get_commit(commit).last_modified,
                 "%a, %d %b %Y %H:%M:%S GMT"
             )
-        return = get_changelogs_in_date_range(
+        return get_changelogs_in_date_range(
             get_commit_date(self.current_commit),
             get_commit_date(self.deploy_commit)
         )
