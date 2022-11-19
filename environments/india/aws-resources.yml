@@ -20,6 +20,8 @@ es0-india: 10.203.40.175
 es0-india.instance_id: i-0702187fc57ff75e3
 es2-india: 10.203.41.100
 es2-india.instance_id: i-0d4b15c5b4d908be0
+es3-india: 10.203.41.242
+es3-india.instance_id: i-0f094e166a616e446
 escoordinator1-india: 10.203.40.129
 escoordinator1-india.instance_id: i-0bbb3e7fb5e7da68c
 escoordinator2-india: 10.203.41.222

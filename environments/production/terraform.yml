@@ -21,8 +21,8 @@ backup_plan:
   remote_vault_region: us-west-1
   outside_account_id: '213307118311'
   daily_retention: 7
-  monthly_retention: 365
-  quarterly_retention: 0
+  monthly_retention: 90
+  quarterly_retention: 365
 
 servers:
   - server_name: "control3-production"
@@ -102,29 +102,32 @@ servers:
     count: 3
     server_auto_recovery: true
 
-  - server_name: "esmaster6-production"
-    server_instance_type: r6a.large
-    network_tier: "db-private"
-    az: "b"
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-    volume_size: 40
-    enable_cross_region_backup: yes
-  - server_name: "esmaster7-production"
-    server_instance_type: r6a.large
-    network_tier: "db-private"
-    az: "b"
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-    volume_size: 40
-    enable_cross_region_backup: yes
-  - server_name: "esmaster8-production"
+  - server_name: "esmaster_a0-production"
     server_instance_type: r6a.large
     network_tier: "db-private"
     az: "a"
     group: "elasticsearch"
-    os: ubuntu_pro_bionic
+    os: bionic
     volume_size: 40
+    volume_encrypted: yes
+    enable_cross_region_backup: yes
+  - server_name: "esmaster_b0-production"
+    server_instance_type: r6a.large
+    network_tier: "db-private"
+    az: "b"
+    group: "elasticsearch"
+    os: bionic
+    volume_size: 40
+    volume_encrypted: yes
+    enable_cross_region_backup: yes
+  - server_name: "esmaster_c0-production"
+    server_instance_type: r6a.large
+    network_tier: "db-private"
+    az: "c"
+    group: "elasticsearch"
+    os: bionic
+    volume_size: 40
+    volume_encrypted: yes
     enable_cross_region_backup: yes
 
   - server_name: "es_a1{i}-production"
@@ -315,6 +318,46 @@ servers:
     volume_encrypted: yes
     group: "postgresql"
     os: bionic
+  - server_name: "pgbouncer_a2-production"  # former pgbouncer_host formplayer
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: bionic
+  - server_name: "pgbouncer_a3-production"  # pgbouncer_host formplayer
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: bionic
+  - server_name: "pgbouncer_b0-production"  # pgbouncer_host for synclogs
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: bionic
+  - server_name: "pgbouncer_b1-production"
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: bionic
+  - server_name: "pgbouncer_c0-production"  # pgbouncer_host for main, ucr
+    server_instance_type: m5n.large
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "postgresql"
+    os: bionic 
   - server_name: "pgbouncer5-production"  # former pgbouncer_host formplayer
     server_instance_type: m5n.large
     network_tier: "db-private"
@@ -575,11 +618,13 @@ rds_instances:
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-production
     targets:
+      - pgbouncer_a2-production
       - pgbouncer5-production
       - pgbouncer6-production
       - pgbouncer7-production
   - name: pgmain_nlb-production
     targets:
+      - pgbouncer_a2-production
       - pgbouncer5-production
       - pgbouncer6-production
       - pgbouncer7-production

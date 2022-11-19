@@ -1,9 +1,9 @@
 # coding: utf-8
 from __future__ import absolute_import
 from __future__ import unicode_literals
-import os
+import json
+import shlex
 import subprocess
-from six.moves import shlex_quote
 from clint.textui import puts
 from commcare_cloud.cli_utils import ask, print_command
 from commcare_cloud.colors import color_notice
@@ -14,9 +14,7 @@ from commcare_cloud.commands.ansible.helpers import (
     get_common_ssh_args,
     get_user_arg, run_action_with_check_mode)
 from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.environment.main import get_environment
 from commcare_cloud.parse_help import ANSIBLE_HELP_OPTIONS_PREFIX, add_to_help_text, filtered_help_message
-from commcare_cloud.environment.paths import ANSIBLE_DIR
 
 NON_POSITIONAL_ARGUMENTS = (
     Argument('-b', '--become', action='store_true', help=(
@@ -47,8 +45,8 @@ class RunAnsibleModule(CommandBase):
     arguments = (
         shared_args.INVENTORY_GROUP_ARG,
         Argument('module', help="""
-            The name of the ansible module to run. Complete list of built-in modules
-            can be found at [Module Index](http://docs.ansible.com/ansible/latest/modules/modules_by_category.html).
+            The name of the ansible module to run. Complete list of built-in modules can be found at
+            [Module Index](http://docs.ansible.com/ansible/latest/modules/modules_by_category.html).
         """),
         Argument('module_args', help="""
             Args for the module, formatted as a single string.
@@ -81,13 +79,12 @@ class RunAnsibleModule(CommandBase):
         ))
 
     def run(self, args, unknown_args):
-        environment = get_environment(args.env_name)
-        environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
+        environment = ansible_context.environment
 
         def _run_ansible(args, *unknown_args):
             return run_ansible_module(
-                environment, ansible_context,
+                ansible_context,
                 args.inventory_group, args.module, args.module_args,
                 become=args.become, become_user=args.become_user,
                 use_factory_auth=args.use_factory_auth, extra_args=unknown_args
@@ -103,14 +100,18 @@ class RunAnsibleModule(CommandBase):
         return run_action_with_check_mode(run_check, run_apply, args.skip_check, args.quiet)
 
 
-def run_ansible_module(environment, ansible_context, inventory_group, module, module_args,
-                       become=True, become_user=None, use_factory_auth=False, quiet=False, extra_args=()):
+def run_ansible_module(ansible_context, inventory_group, module, module_args,
+                       become=True, become_user=None, use_factory_auth=False, quiet=False,
+                       extra_args=(), run_command=subprocess.call):
     extra_args = tuple(extra_args)
-    if not quiet:
+    if run_command is ansible_json:
+        assert not quiet, "quiet=True has no effect with run_command=ansible_json"
+    elif not quiet:
         extra_args = ("--diff",) + extra_args
     else:
         extra_args = ("--one-line",) + extra_args
 
+    environment = ansible_context.environment
     cmd_parts = (
         'ansible', inventory_group,
         '-m', module,
@@ -123,29 +124,49 @@ def run_ansible_module(environment, ansible_context, inventory_group, module, mo
     cmd_parts += get_user_arg(public_vars, extra_args, use_factory_auth=use_factory_auth)
     become = become or bool(become_user)
     become_user = become_user
-    needs_secrets = False
-    env_vars = ansible_context.env_vars
 
     if become:
         cmd_parts += ('--become',)
-        needs_secrets = True
         if become_user:
             cmd_parts += ('--become-user', become_user)
-
-    if needs_secrets:
         cmd_parts += (
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
         )
         cmd_parts += environment.secrets_backend.get_extra_ansible_args()
-        env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
+
+    env_vars = ansible_context.build_env(need_secrets=become)
+    if run_command is ansible_json:
+        env_vars["ANSIBLE_LOAD_CALLBACK_PLUGINS"] = "1"
+        env_vars["ANSIBLE_STDOUT_CALLBACK"] = "json"
 
     cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
     cmd_parts += cmd_parts_with_common_ssh_args
-    cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+    cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
     if not quiet:
         print_command(cmd)
-    return subprocess.call(cmd_parts, env=env_vars)
+    return run_command(cmd_parts, env=env_vars)
+
+
+def ansible_json(*args, **kw):
+    """JSON command runner for run_ansible_module
+
+    Usage: run_ansible_module(..., run_command=ansible_json)
+
+    Returns a dict: {<host>: <result_dict>, ...}
+    """
+    try:
+        output = subprocess.check_output(*args, **kw)
+    except subprocess.CalledProcessError as err:
+        output = err.output
+    try:
+        return json.loads(output)["plays"][-1]["tasks"][-1]["hosts"]
+    except (KeyError, IndexError, ValueError, TypeError):
+        raise BadAnsibleResult(output)
+
+
+class BadAnsibleResult(Exception):
+    pass
 
 
 class RunShellCommand(CommandBase):
@@ -218,7 +239,8 @@ class SendDatadogEvent(CommandBase):
 
     def run(self, args, unknown_args):
         args.module = 'datadog_event'
-        environment = get_environment(args.env_name)
+        ansible_context = AnsibleContext(args)
+        environment = ansible_context.environment
         datadog_api_key = environment.get_secret('DATADOG_API_KEY')
         datadog_app_key = environment.get_secret('DATADOG_APP_KEY')
         tags = args.tags or []
@@ -233,7 +255,7 @@ class SendDatadogEvent(CommandBase):
                 agg='commcare-cloud'
             )
         return run_ansible_module(
-            environment, AnsibleContext(args),
+            ansible_context,
             '127.0.0.1', args.module, args.module_args,
             become=False, quiet=True
         )
@@ -248,6 +270,28 @@ class Ping(CommandBase):
     ) + NON_POSITIONAL_ARGUMENTS
 
     def run(self, args, unknown_args):
-        args.shell_command = 'echo {{ inventory_hostname }}'
+        args.shell_command = 'echo "$(hostname) - $(uptime)"'
         args.silence_warnings = False
         return RunShellCommand(self.parser).run(args, unknown_args)
+
+
+class KillStaleCeleryWorkers(CommandBase):
+    command = 'kill-stale-celery-workers'
+    help = 'Kill celery workers that failed to properly go into warm shutdown.'
+    run_setup_on_control_by_default = False
+
+    def run(self, args, unknown_args):
+        ansible_context = AnsibleContext(args)
+        group_vars = ansible_context.environment.paths.group_vars_all_yml
+        return run_ansible_module(
+            ansible_context,
+            'django_manage[0]',
+            'shell',
+            (
+                'cd {{ code_home }}; '
+                '{{ virtualenv_home }}/bin/python manage.py kill_stale_celery_workers'
+            ),
+            become=True,
+            become_user='cchq',
+            extra_args=['-e', f'@{group_vars}'] + unknown_args,
+        )

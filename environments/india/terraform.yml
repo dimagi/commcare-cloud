@@ -187,6 +187,16 @@ servers:
     group: elasticsearch
     os: ubuntu_pro_bionic
 
+  - server_name: "es3-india"
+    server_instance_type: "m5a.xlarge"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 150
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: elasticsearch
+    os: bionic
+
   - server_name: "escoordinator1-india"
     server_instance_type: "t3.large"
     network_tier: "db-private"

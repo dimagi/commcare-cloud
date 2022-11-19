@@ -37,6 +37,11 @@ hq_webworkers
 mobile_webworkers
 
 {{ __pgbouncer_a1__ }} pgbouncer_processes=2
+{{ __pgbouncer_a2__ }} pgbouncer_processes=2
+{{ __pgbouncer_a3__ }} pgbouncer_processes=2
+{{ __pgbouncer_b0__ }} pgbouncer_processes=2
+{{ __pgbouncer_b1__ }} pgbouncer_processes=2
+{{ __pgbouncer_c0__ }} pgbouncer_processes=2
 {{ __pgbouncer5__ }} pgbouncer_processes=2
 {{ __pgbouncer6__ }} pgbouncer_processes=2
 {{ __pgbouncer7__ }} pgbouncer_processes=2
@@ -98,6 +103,11 @@ remote_postgresql
 
 [pgbouncer:children]
 pgbouncer_a1
+pgbouncer_a2
+pgbouncer_a3
+pgbouncer_b0
+pgbouncer_b1
+pgbouncer_c0
 pgbouncer5
 pgbouncer6
 pgbouncer7
@@ -197,11 +207,11 @@ webworkers
 
 {{ __es_b1__ }}
 
-{{ __esmaster6__ }} elasticsearch_node_name=esmaster6
+{{ __esmaster_a0__ }} elasticsearch_node_name=esmaster_a0
 
-{{ __esmaster7__ }} elasticsearch_node_name=esmaster7
+{{ __esmaster_b0__ }} elasticsearch_node_name=esmaster_b0
 
-{{ __esmaster8__ }} elasticsearch_node_name=esmaster8
+{{ __esmaster_c0__ }} elasticsearch_node_name=esmaster_c0
 
 {{ __escoordinator_a0__ }} elasticsearch_node_name=escoordinator_a0 elasticsearch_node_zone=us-east-1a
 
@@ -210,9 +220,9 @@ webworkers
 {{ __escoordinator_c0__ }} elasticsearch_node_name=escoordinator_c0 elasticsearch_node_zone=us-east-1c
 
 [es_master:children]
-esmaster6
-esmaster7
-esmaster8
+esmaster_a0
+esmaster_b0
+esmaster_c0
 
 [es_master:vars]
 elasticsearch_master=true
