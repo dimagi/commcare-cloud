@@ -49,11 +49,6 @@ dbs:
       - pgbouncer_b0
       - pgbouncer_b1
       - pgbouncer_c0
-      - pgbouncer5
-      - pgbouncer6
-      - pgbouncer7
-      - pgbouncer8
-      - pgbouncer9
       - pgbouncer10
       - pgbouncer11
   formplayer:
@@ -66,11 +61,6 @@ dbs:
       - pgbouncer_b0
       - pgbouncer_b1
       - pgbouncer_c0
-      - pgbouncer5
-      - pgbouncer6
-      - pgbouncer7
-      - pgbouncer8
-      - pgbouncer9
       - pgbouncer10
       - pgbouncer11
   ucr:
@@ -84,11 +74,6 @@ dbs:
       - pgbouncer_b0
       - pgbouncer_b1
       - pgbouncer_c0
-      - pgbouncer5
-      - pgbouncer6
-      - pgbouncer7
-      - pgbouncer8
-      - pgbouncer9
       - pgbouncer10
       - pgbouncer11
     query_stats: True
@@ -101,11 +86,6 @@ dbs:
       - pgbouncer_b0
       - pgbouncer_b1
       - pgbouncer_c0
-      - pgbouncer5
-      - pgbouncer6
-      - pgbouncer7
-      - pgbouncer8
-      - pgbouncer9
       - pgbouncer10
       - pgbouncer11
   auditcare:
@@ -119,11 +99,6 @@ dbs:
       - pgbouncer_b0
       - pgbouncer_b1
       - pgbouncer_c0
-      - pgbouncer5
-      - pgbouncer6
-      - pgbouncer7
-      - pgbouncer8
-      - pgbouncer9
       - pgbouncer10
       - pgbouncer11
   form_processing:
@@ -143,11 +118,6 @@ dbs:
           - pgbouncer_b0
           - pgbouncer_b1
           - pgbouncer_c0
-          - pgbouncer5
-          - pgbouncer6
-          - pgbouncer7
-          - pgbouncer8
-          - pgbouncer9
           - pgbouncer10
           - pgbouncer11
       p2:
@@ -160,11 +130,6 @@ dbs:
           - pgbouncer_b0
           - pgbouncer_b1
           - pgbouncer_c0
-          - pgbouncer5
-          - pgbouncer6
-          - pgbouncer7
-          - pgbouncer8
-          - pgbouncer9
           - pgbouncer10
           - pgbouncer11
       p3:
@@ -177,11 +142,6 @@ dbs:
           - pgbouncer_b0
           - pgbouncer_b1
           - pgbouncer_c0
-          - pgbouncer5
-          - pgbouncer6
-          - pgbouncer7
-          - pgbouncer8
-          - pgbouncer9
           - pgbouncer10
           - pgbouncer11
       p4:
@@ -194,11 +154,6 @@ dbs:
           - pgbouncer_b0
           - pgbouncer_b1
           - pgbouncer_c0
-          - pgbouncer5
-          - pgbouncer6
-          - pgbouncer7
-          - pgbouncer8
-          - pgbouncer9
           - pgbouncer10
           - pgbouncer11
       p5:
@@ -211,10 +166,5 @@ dbs:
           - pgbouncer_b0
           - pgbouncer_b1
           - pgbouncer_c0
-          - pgbouncer5
-          - pgbouncer6
-          - pgbouncer7
-          - pgbouncer8
-          - pgbouncer9
           - pgbouncer10
           - pgbouncer11
