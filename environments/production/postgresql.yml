@@ -109,7 +109,7 @@ dbs:
       - pgbouncer10
       - pgbouncer11
   auditcare:
-    host: rds_pgauditcare0
+    host: rds_pgauditcare1
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_pool_size: 6
     pgbouncer_reserve_pool_size: 2
