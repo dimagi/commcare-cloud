@@ -597,7 +597,6 @@ rds_instances:
     storage: 7000
     multi_az: true
     engine_version: "14"
-    monitoring_interval: 0
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: false 
