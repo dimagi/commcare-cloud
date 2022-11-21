@@ -227,6 +227,36 @@ servers:
     group: elasticsearch
     os: ubuntu_pro_bionic
 
+  - server_name: "escoordinator4-india"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 150
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: elasticsearch
+    os: bionic
+
+  - server_name: "escoordinator5-india"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 150
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: elasticsearch
+    os: bionic
+
+  - server_name: "escoordinator6-india"
+    server_instance_type: "t3.large"
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 150
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: elasticsearch
+    os: bionic
+
   - server_name: "formplayer1-india"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
