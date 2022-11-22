@@ -217,3 +217,22 @@ Recommendations are the same as for a Small Cluster configuration:
 
 The level of skills, and the number of personnel, required to manage a
 Large Cluster configuration are higher than for a Small Cluster.
+
+
+
+Running CommCareHQ inside Docker
+--------------------------------
+Running CommCareHQ inside docker is currently not supported/optimized for production environments. However, it is
+the recommended way to get the CommCareHQ ecosystem up and running for development purposes.
+
+Running services inside containers requires additional resources to the base resource requirements for the
+ecosystem running inside the container(s). Some testing revealed that the minimum resource requirements to run
+the CommCareHQ ecosystem with docker is the following:
+
+* CPU: 31.133% (equavalent to 1 core)
+
+* Memory: 5GB
+
+However, it is recommended that your system have more resources than the above in order to do more than just
+"keep the lights on". The exact resource requirement is heavily dependend on your own system and you should use the
+above only as a baseline.
