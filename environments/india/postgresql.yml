@@ -34,6 +34,7 @@ dbs:
     pgbouncer_hosts:
       - pgbouncer0
       - pgbouncer1
+      - pgbouncer3
   ucr:
     pgbouncer_endpoint: pgucr_nlb
     pgbouncer_hosts:
@@ -56,30 +57,40 @@ dbs:
         pgbouncer_hosts:
           - pgbouncer1
           - pgbouncer2
+          - pgbouncer3
+          - pgbouncer4
       p2:
         shards: [205, 409]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer1
           - pgbouncer2
+          - pgbouncer3
+          - pgbouncer4
       p3:
         shards: [410, 614]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer1
           - pgbouncer2
+          - pgbouncer3
+          - pgbouncer4
       p4:
         shards: [615, 819]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer1
           - pgbouncer2
+          - pgbouncer3
+          - pgbouncer4
       p5:
         shards: [820, 1023]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
           - pgbouncer1
           - pgbouncer2
+          - pgbouncer3
+          - pgbouncer4
   custom:
     - django_alias: aaa-data
       name: aaa-data
@@ -88,3 +99,5 @@ dbs:
       pgbouncer_hosts:
         - pgbouncer1
         - pgbouncer2
+        - pgbouncer3
+        - pgbouncer4
