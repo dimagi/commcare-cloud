@@ -298,6 +298,26 @@ servers:
     group: "postgresql"
     os: ubuntu_pro_bionic
 
+  - server_name: "pgbouncer3-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "postgresql"
+    os: bionic
+
+  - server_name: "pgbouncer4-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "postgresql"
+    os: bionic
+
   - server_name: "rabbit_a4-india"
     server_instance_type: t3.small
     network_tier: "db-private"
@@ -341,6 +361,7 @@ pgbouncer_nlbs:
     targets:
       - pgbouncer0-india
       - pgbouncer1-india
+      - pgbouncer3-india
   - name: pgmain_nlb-india
     targets:
       - pgbouncer0-india
@@ -354,6 +375,8 @@ pgbouncer_nlbs:
     targets:
       - pgbouncer1-india
       - pgbouncer2-india
+      - pgbouncer3-india
+      - pgbouncer4-india
 
 internal_albs:
   - name: "couch_alb-india"
