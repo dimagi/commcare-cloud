@@ -18,10 +18,16 @@ proxy
 
 {{ __web8__ }} swap_size=1G
 
+{{ __web9__ }} swap_size=1G
+
+{{ __web10__ }} swap_size=1G
+
 [webworkers:children]
 # Amazon EC2
 web7
 web8
+web9
+web10
 
 {{ __pgproxy4__ }} pgbouncer_processes=2 swap_size=2G
 
@@ -189,3 +195,4 @@ couch_alb
 [django_manage:children]
 # Amazon EC2
 web7
+web10
