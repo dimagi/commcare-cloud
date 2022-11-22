@@ -549,7 +549,7 @@ rds_instances:
     engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
-    enable_cross_region_backup: true
+    enable_cross_region_backup: false
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
@@ -564,7 +564,7 @@ rds_instances:
     engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
-    enable_cross_region_backup: false 
+    enable_cross_region_backup: true
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
       log_min_duration_statement: 1000
