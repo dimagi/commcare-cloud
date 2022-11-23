@@ -12,8 +12,6 @@ couch6-staging: 10.201.40.74
 couch6-staging.instance_id: i-01b32f8a2eebe07bc
 couch_alb-staging: internal-couch-alb-staging-546646078.us-east-1.elb.amazonaws.com
 efs_staging-efs: fs-9e8f8369.efs.us-east-1.amazonaws.com
-es10-staging: 10.201.41.31
-es10-staging.instance_id: i-08c2645edf582d4b6
 es12-staging: 10.201.41.120
 es12-staging.instance_id: i-0af798b05d79c2507
 es13-staging: 10.201.40.41
@@ -24,8 +22,6 @@ es6-staging: 10.201.40.126
 es6-staging.instance_id: i-0161d2187f667e405
 es7-staging: 10.201.40.107
 es7-staging.instance_id: i-087ff77521605d9b9
-es8-staging: 10.201.40.31
-es8-staging.instance_id: i-0d9e988943761e595
 es9-staging: 10.201.41.168
 es9-staging.instance_id: i-02073b820430efb60
 formplayer-efs: fs-ba70cd39.efs.us-east-1.amazonaws.com
@@ -43,6 +39,8 @@ kafka6-staging.instance_id: i-048eab1516c5561a1
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgbouncer0-staging: 10.201.40.72
 pgbouncer0-staging.instance_id: i-0315ba6f2f8ba45f5
+pgbouncer1-staging: 10.201.40.36
+pgbouncer1-staging.instance_id: i-0081f23981fbc09e0
 pgformplayer0-staging: pgformplayer0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgformplayer_nlb-staging: pgformplayer-nlb-staging-98b68467f6f5717b.elb.us-east-1.amazonaws.com
 pgmain_nlb-staging: pgmain-nlb-staging-fe77ab2d143eedbb.elb.us-east-1.amazonaws.com
@@ -62,7 +60,11 @@ rabbit_a0-staging: 10.201.10.144
 rabbit_a0-staging.instance_id: i-0d7e4372b83c5fef4
 rabbit_b0-staging: 10.201.11.176
 rabbit_b0-staging.instance_id: i-03ed9f03d635c825e
+web10-staging: 10.201.11.25
+web10-staging.instance_id: i-03fb01724d1dfd3cf
 web7-staging: 10.201.11.170
 web7-staging.instance_id: i-00c29bc6df3a1f47b
 web8-staging: 10.201.11.222
 web8-staging.instance_id: i-0bd7718f045f89e11
+web9-staging: 10.201.10.135
+web9-staging.instance_id: i-0a7254dc9652698e3

@@ -41,7 +41,6 @@ elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a7
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
 elasticsearch_delete_old_logs: True
-es_plugins_phonetic_enabled: True
 
 nofile_limit: 65536
 
@@ -55,7 +54,7 @@ postgresql_backup_weeks: 1
 nadir_hour: 16
 
 # pg_repack
-pg_repack_version: 1.4.3
+pg_repack_version: 1.4.7
 
 aws_region: 'us-east-1'
 
@@ -103,7 +102,7 @@ couchdb_cluster_settings:
   w: 2
   n: 3
 
-kafka_version: 3.2.0
+kafka_version: 3.2.3
 kafka_scala_version: 2.13
 kafka_download_sha512: 36A129823B058DC10788D0893BDE47B6F39B9E4972F9EAC2D5C9E85E51E477344C6F1E1EBD126CE34D5FD430EB07E55FDD60D60CB541F1D48655C0EBC0A4778
 kafka_inter_broker_protocol_version: 3.2
@@ -204,7 +203,6 @@ localsettings:
         - 'ews-ghana'
         - 'ils-gateway'
         - 'ils-gateway-train'
-#  USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER: True
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   WS4REDIS_CONNECTION_HOST: "redis.production.commcare.local"
 

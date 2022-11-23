@@ -5,6 +5,7 @@ from __future__ import absolute_import, print_function
 
 from __future__ import unicode_literals
 import re
+from collections import defaultdict
 
 import attr
 from ansible.utils.display import Display
@@ -25,19 +26,31 @@ class HostPattern(object):
     index = attr.ib()
 
 
-def get_instance_group(environment, group):
+def get_instance_group(environment, group, add_groups=False):
     env = get_environment(environment)
-    return env.sshable_hostnames_by_group[group]
+    names = env.sshable_hostnames_by_group[group]
+    if add_groups:
+        names = _add_groups(names, env)
+    return names
 
 
-def get_monolith_address(environment):
-    env = get_environment(environment)
-    hosts = env.inventory_manager.get_hosts()
-    if len(hosts) != 1:
-        raise HostMatchException("There are {} servers in the environment. Please include the 'server'"
-             "argument to select one.".format(len(hosts)))
-    else:
-        return get_server_address(environment, 'all')
+def _add_groups(names, env):
+    """Add groups to hostnames and sort result by groups"""
+    def format_host(name):
+        return "{name} - {other_names}".format(
+            name=name,
+            other_names=", ".join(sorted(
+                groups_by_host[name],
+                key=lambda g: len(hosts_by_group[g])
+            ))
+        )
+    hosts_by_group = env.sshable_hostnames_by_group
+    groups_by_host = defaultdict(list)
+    for group, hosts in hosts_by_group.items():
+        for host in hosts:
+            groups_by_host[host].append(group)
+    result = [format_host(n) for n in names]
+    return sorted(result, key=lambda n: n.split(" - ", 1)[-1])
 
 
 def split_host_group(group):
@@ -50,7 +63,7 @@ def split_host_group(group):
     return HostPattern(None, group, None)
 
 
-def get_server_address(environment, group):
+def get_server_address(environment, group, allow_multiple=False):
     host_group = split_host_group(group)
     username, group, index = host_group.user, host_group.group, host_group.index
 
@@ -70,7 +83,7 @@ def get_server_address(environment, group):
         return username + group
 
     try:
-        servers = get_instance_group(environment, group)
+        servers = get_instance_group(environment, group, add_groups=allow_multiple)
     except IOError as err:
         raise HostMatchException(err)
     except KeyError:
@@ -84,6 +97,8 @@ def get_server_address(environment, group):
         )
     if len(servers) > 1:
         if index is None:
+            if allow_multiple:
+                return "\n".join(username + s for s in servers)
             raise HostMatchException(
                 "There are {num} servers in the '{group}' group\n"
                 "Please specify the index of the server. Example: {group}[0]\n"

@@ -93,6 +93,7 @@
   become: yes
   tags:
     - formplayer_deploy
+    - clean_releases
 
 - name: Formplayer build dir
   file:

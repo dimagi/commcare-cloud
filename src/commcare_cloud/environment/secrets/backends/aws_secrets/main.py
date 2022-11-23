@@ -21,7 +21,10 @@ class AwsSecretsBackend(AbstractSecretsBackend):
 
     @classmethod
     def from_environment(cls, environment):
-        return AwsSecretsBackend(secret_name_prefix='commcare-{}'.format(environment.name), environment=environment)
+        return AwsSecretsBackend(
+            secret_name_prefix='commcare-{}'.format(environment.name),
+            environment=environment,
+        )
 
     def prompt_user_input(self):
         from commcare_cloud.commands.terraform.aws import aws_sign_in
@@ -35,7 +38,8 @@ class AwsSecretsBackend(AbstractSecretsBackend):
         # and json decodes them for the caller.
         # It's less elegant than doing it outside, but simplifies the error handling.
         return get_generated_variables(
-            lambda secret_spec: "lookup('cchq_aws_secret', '{}/{}', errors='ignore')".format(self.secret_name_prefix, secret_spec.name))
+            lambda secret_spec: "lookup('cchq_aws_secret', '{}/{}', errors='ignore')".format(
+                self.secret_name_prefix, secret_spec.name))
 
     def get_extra_ansible_env_vars(self):
         from commcare_cloud.commands.terraform.aws import aws_sign_in

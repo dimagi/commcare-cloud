@@ -1,0 +1,43 @@
+- name: Rollback to previous release
+  tags: rollback
+  block:
+  - name: List releases
+    find:
+      paths: "{{ formplayer_releases_base_dir }}"
+      file_type: directory
+      pattern: "*_*"
+    register: releases
+
+  - name: Aggregate available releases
+    set_fact:
+      available_releases: "{{ hostvars | release_names(ansible_play_hosts) }}"
+
+  - name: Select release for rollback
+    pause:
+      prompt: |-
+        Available releases:
+        {% for name in available_releases %}
+        - {{ name }}
+        {% endfor -%}
+        Enter your selection
+    register: rollback_release
+    failed_when: rollback_release.user_input not in available_releases
+
+  - name: "Distribute selected release to play hosts"
+    set_fact:
+      selected_release: '{{ hostvars[ansible_play_hosts[0]].rollback_release.user_input }}'
+
+  - name: Rollback
+    file:
+      src: "{{ formplayer_releases_base_dir }}/{{ selected_release }}"
+      dest: "{{ formplayer_current_dir }}"
+      state: link
+      force: yes
+      follow: no
+
+  - name: Re-read supervisor config
+    command: supervisorctl reread
+
+  - name: Restart formplayer service
+    supervisorctl: name=all state=restarted
+    # on a monolith this actually restarts all services

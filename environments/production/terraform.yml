@@ -21,7 +21,8 @@ backup_plan:
   remote_vault_region: us-west-1
   outside_account_id: '213307118311'
   daily_retention: 7
-  monthly_retention: 365
+  monthly_retention: 90
+  quarterly_retention: 365
 
 servers:
   - server_name: "control3-production"
@@ -101,54 +102,33 @@ servers:
     count: 3
     server_auto_recovery: true
 
-  - server_name: "esmaster6-production"
-    server_instance_type: r6a.large
-    network_tier: "db-private"
-    az: "b"
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-    volume_size: 40
-    enable_cross_region_backup: yes
-  - server_name: "esmaster7-production"
-    server_instance_type: r6a.large
-    network_tier: "db-private"
-    az: "b"
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-    volume_size: 40
-    enable_cross_region_backup: yes
-  - server_name: "esmaster8-production"
+  - server_name: "esmaster_a0-production"
     server_instance_type: r6a.large
     network_tier: "db-private"
     az: "a"
     group: "elasticsearch"
-    os: ubuntu_pro_bionic
+    os: bionic
     volume_size: 40
+    volume_encrypted: yes
     enable_cross_region_backup: yes
-  
-  - server_name: "es_a{i}-production"
-    server_instance_type: r5.4xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    block_device:
-      volume_size: 1890
-      enable_cross_region_backup: yes
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-    count: 5
-
-  - server_name: "es_b{i}-production"
-    server_instance_type: r5.4xlarge
+  - server_name: "esmaster_b0-production"
+    server_instance_type: r6a.large
     network_tier: "db-private"
     az: "b"
-    volume_size: 30
-    block_device:
-      volume_size: 2370
-      enable_cross_region_backup: yes
     group: "elasticsearch"
-    os: ubuntu_pro_bionic
-    count: 5
+    os: bionic
+    volume_size: 40
+    volume_encrypted: yes
+    enable_cross_region_backup: yes
+  - server_name: "esmaster_c0-production"
+    server_instance_type: r6a.large
+    network_tier: "db-private"
+    az: "c"
+    group: "elasticsearch"
+    os: bionic
+    volume_size: 40
+    volume_encrypted: yes
+    enable_cross_region_backup: yes
 
   - server_name: "es_a1{i}-production"
     server_instance_type: r5.4xlarge
@@ -274,22 +254,22 @@ servers:
     os: bionic
     count: 4
  
-  - server_name: "pillow_a{i}-production"
+  - server_name: "pillow_a1{i}-production"
     server_instance_type: r5.12xlarge
     network_tier: "app-private"
-    az: "c"
-    volume_size: 150
+    az: "a"
+    volume_size: 100
     group: "pillowtop"
-    os: ubuntu_pro_bionic
+    os: bionic
     count: 1
 
-  - server_name: "pillow_b{i}-production"
+  - server_name: "pillow_b1{i}-production"
     server_instance_type: r5a.12xlarge
     network_tier: "app-private"
     az: "b"
-    volume_size: 60
+    volume_size: 50
     group: "pillowtop"
-    os: ubuntu_pro_bionic
+    os: bionic
     count: 1
 
   - server_name: "formplayer_a{i}-production"
@@ -338,41 +318,46 @@ servers:
     volume_encrypted: yes
     group: "postgresql"
     os: bionic
-  - server_name: "pgbouncer5-production"  # former pgbouncer_host formplayer
+  - server_name: "pgbouncer_a2-production"  # former pgbouncer_host formplayer
     server_instance_type: m5n.large
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    volume_encrypted: yes
     group: "postgresql"
-    os: ubuntu_pro_bionic
-  - server_name: "pgbouncer6-production"  # pgbouncer_host for synclogs
+    os: bionic
+  - server_name: "pgbouncer_a3-production"  # pgbouncer_host formplayer
     server_instance_type: m5n.large
     network_tier: "db-private"
     az: "a"
     volume_size: 80
+    volume_encrypted: yes
     group: "postgresql"
-    os: ubuntu_pro_bionic
-  - server_name: "pgbouncer7-production"  # pgbouncer_host for main, ucr
+    os: bionic
+  - server_name: "pgbouncer_b0-production"  # pgbouncer_host for synclogs
     server_instance_type: m5n.large
     network_tier: "db-private"
-    az: "a"
+    az: "b"
     volume_size: 80
+    volume_encrypted: yes
     group: "postgresql"
-    os: ubuntu_pro_bionic
-  - server_name: "pgbouncer8-production"  # pgbouncer_host formplayer
+    os: bionic
+  - server_name: "pgbouncer_b1-production"
     server_instance_type: m5n.large
     network_tier: "db-private"
-    az: "a"
+    az: "b"
     volume_size: 80
+    volume_encrypted: yes
     group: "postgresql"
-    os: ubuntu_pro_bionic
-  - server_name: "pgbouncer9-production"
+    os: bionic
+  - server_name: "pgbouncer_c0-production"  # pgbouncer_host for main, ucr
     server_instance_type: m5n.large
     network_tier: "db-private"
-    az: "a"
+    az: "c"
     volume_size: 80
+    volume_encrypted: yes
     group: "postgresql"
-    os: ubuntu_pro_bionic
+    os: bionic 
   - server_name: "pgbouncer10-production"
     server_instance_type: m5n.large
     network_tier: "db-private"
@@ -421,7 +406,7 @@ rds_instances:
     instance_type: "db.m5.4xlarge"
     storage: 2000
     multi_az: true
-    engine_version: "13"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -443,7 +428,7 @@ rds_instances:
     storage: 850
     max_storage: 5000
     multi_az: true
-    engine_version: "13"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -455,7 +440,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     multi_az: true
-    engine_version: "13"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -469,7 +454,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     multi_az: true
-    engine_version: "13"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -482,7 +467,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     multi_az: true
-    engine_version: "13"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -495,7 +480,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     multi_az: true
-    engine_version: "13"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -508,7 +493,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     multi_az: true
-    engine_version: "13"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -521,7 +506,8 @@ rds_instances:
     instance_type: "db.m5.xlarge"
     storage: 1000
     multi_az: true
-    engine_version: "13"
+    engine_version: "14"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
       pg_transport.work_mem: 131072
@@ -540,7 +526,8 @@ rds_instances:
     instance_type: "db.m5.xlarge"
     storage: 200
     multi_az: true
-    engine_version: "13"
+    engine_version: "14"
+    backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
       log_min_duration_statement: 1000
@@ -559,10 +546,10 @@ rds_instances:
     instance_type: "db.m5.2xlarge"
     storage: 10000
     multi_az: true
-    engine_version: "13"
+    engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
-    enable_cross_region_backup: true
+    enable_cross_region_backup: false
     params:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: 1000
@@ -570,29 +557,51 @@ rds_instances:
       wal_buffers: 32MB
       shared_buffers: 12GB
 
+  - identifier: "pgauditcare1-production"
+    instance_type: "db.m5.2xlarge"
+    storage: 7000
+    multi_az: true
+    engine_version: "14"
+    backup_window: "23:00-01:00"
+    backup_retention: 7
+    enable_cross_region_backup: true
+    params:
+      shared_preload_libraries: pg_stat_statements,pg_transport
+      log_min_duration_statement: 1000
+      max_wal_size: 8GB
+      wal_buffers: 32MB
+      shared_buffers: 12GB
+      maintenance_work_mem: 4172000kB
+      vacuum_cost_limit: 1000
+      pg_transport.work_mem: 262144 
+      pg_transport.timing: 1
+      max_worker_processes: 40
+      pg_transport.num_workers: 8
+      track_io_timing: 1
+
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-production
     targets:
-      - pgbouncer5-production
-      - pgbouncer6-production
-      - pgbouncer7-production
+      - pgbouncer_a2-production
+      - pgbouncer_b0-production
+      - pgbouncer_c0-production
   - name: pgmain_nlb-production
     targets:
-      - pgbouncer5-production
-      - pgbouncer6-production
-      - pgbouncer7-production
+      - pgbouncer_a2-production
+      - pgbouncer_b0-production
+      - pgbouncer_c0-production
   - name: pgucr_nlb-production
     targets:
       - pgbouncer10-production
       - pgbouncer11-production
   - name: pgsynclogs_nlb-production
     targets:
-      - pgbouncer8-production
-      - pgbouncer9-production
+      - pgbouncer_a3-production
+      - pgbouncer_b1-production
   - name: pgshard_nlb-production
     targets:
-      - pgbouncer8-production
-      - pgbouncer9-production
+      - pgbouncer_a3-production
+      - pgbouncer_b1-production
 
 
 internal_albs:

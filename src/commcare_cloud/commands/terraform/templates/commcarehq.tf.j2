@@ -91,6 +91,7 @@ module "backup_plan" {
   remote_vault_region = {{ backup_plan.remote_vault_region|tojson }}
   daily_retention = {{ backup_plan.daily_retention|tojson }}
   monthly_retention = {{ backup_plan.monthly_retention|tojson }}
+  quarterly_retention = {{ backup_plan.quarterly_retention|tojson }}
   providers = {
     aws.remote_region = aws.{{ backup_plan.remote_vault_region }}
   }
@@ -132,10 +133,12 @@ module "server__{{ server_name }}" {
   server_image = data.aws_ami.ubuntu_pro_bionic.id
 {% elif server_spec.os == 'bionic' %}
   server_image = data.aws_ami.ubuntu_bionic.id
+{% elif server_spec.os == 'jammy' %}
+  server_image = data.aws_ami.ubuntu_jammy.id
 {% else %}
-  server_image = var.server_image
+  server_image = data.aws_ami.ubuntu_jammy.id
 {% endif %}
- environment = var.environment
+  environment = var.environment
   vpc_id = module.network.vpc-id
   subnet_options = local.subnet_options
   security_group_options = local.security_group_options

@@ -1,0 +1,35 @@
+- hosts: django_manage
+
+  # uncomment these and comment the "become" lines below for local debugging
+  #connection: local
+  #vars:
+  #  code_home: '{{ "~/code/commcare-hq" | expanduser}}'
+  #  virtualenv_home: ../virtualenvs/hq
+
+  become: true
+  become_user: cchq
+  gather_facts: no
+  tasks:
+  - shell: 'cd {{ code_home }}; {{ virtualenv_home }}/bin/python manage.py check --deploy'
+    register: deploy_check
+    failed_when: false
+    changed_when: deploy_check.rc
+  - name: "display output: manage.py check --deploy"
+    debug: var=deploy_check.stdout_lines
+    when: deploy_check.stdout_lines
+  - name: "display errors: manage.py check --deploy"
+    debug: var=deploy_check.stderr_lines
+    when: deploy_check.rc or deploy_check.stderr_lines
+    failed_when: deploy_check.rc
+
+  - shell: 'cd {{ code_home }}; {{ virtualenv_home }}/bin/python manage.py check --deploy -t database'
+    register: database_check
+    failed_when: false
+    changed_when: database_check.rc
+  - name: "display output: manage.py check --deploy -t database"
+    debug: var=database_check.stdout_lines
+    when: database_check.stdout_lines
+  - name: "display errors: manage.py check --deploy -t database"
+    debug: var=database_check.stderr_lines
+    when: database_check.rc or database_check.stderr_lines
+    failed_when: database_check.rc

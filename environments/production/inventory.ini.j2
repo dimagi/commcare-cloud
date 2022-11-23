@@ -37,11 +37,11 @@ hq_webworkers
 mobile_webworkers
 
 {{ __pgbouncer_a1__ }} pgbouncer_processes=2
-{{ __pgbouncer5__ }} pgbouncer_processes=2
-{{ __pgbouncer6__ }} pgbouncer_processes=2
-{{ __pgbouncer7__ }} pgbouncer_processes=2
-{{ __pgbouncer8__ }} pgbouncer_processes=2
-{{ __pgbouncer9__ }} pgbouncer_processes=2
+{{ __pgbouncer_a2__ }} pgbouncer_processes=2
+{{ __pgbouncer_a3__ }} pgbouncer_processes=2
+{{ __pgbouncer_b0__ }} pgbouncer_processes=2
+{{ __pgbouncer_b1__ }} pgbouncer_processes=2
+{{ __pgbouncer_c0__ }} pgbouncer_processes=2
 {{ __pgbouncer10__ }} pgbouncer_processes=2
 {{ __pgbouncer11__ }} pgbouncer_processes=2
 
@@ -64,6 +64,8 @@ mobile_webworkers
 {{ __rds_pgsynclog2__ }}
 
 {{ __rds_pgauditcare0__ }}
+
+{{ __rds_pgauditcare1__ }}
 
 {{ __pgformplayer_nlb__ }}
 
@@ -88,6 +90,7 @@ rds_pgshard4
 rds_pgshard5
 rds_pgsynclog2
 rds_pgauditcare0
+rds_pgauditcare1
 
 [postgresql:children]
 pgbouncer_a1
@@ -95,11 +98,11 @@ remote_postgresql
 
 [pgbouncer:children]
 pgbouncer_a1
-pgbouncer5
-pgbouncer6
-pgbouncer7
-pgbouncer8
-pgbouncer9
+pgbouncer_a2
+pgbouncer_a3
+pgbouncer_b0
+pgbouncer_b1
+pgbouncer_c0
 pgbouncer10
 pgbouncer11
 pgformplayer_nlb
@@ -152,13 +155,13 @@ celery_c1
 [celery:vars]
 swap_size=8G
 
-{{ __pillow_a__ }}
+{{ __pillow_a1__ }}
 
-{{ __pillow_b__ }}
+{{ __pillow_b1__ }}
 
 [pillowtop:children]
-pillow_a
-pillow_b
+pillow_a1
+pillow_b1
 
 {{ __formplayer_a__ }}
 
@@ -190,19 +193,15 @@ proxy
 pillowtop
 webworkers
 
-{{ __es_a__ }}
-
 {{ __es_a1__ }}
-
-{{ __es_b__ }}
 
 {{ __es_b1__ }}
 
-{{ __esmaster6__ }} elasticsearch_node_name=esmaster6
+{{ __esmaster_a0__ }} elasticsearch_node_name=esmaster_a0
 
-{{ __esmaster7__ }} elasticsearch_node_name=esmaster7
+{{ __esmaster_b0__ }} elasticsearch_node_name=esmaster_b0
 
-{{ __esmaster8__ }} elasticsearch_node_name=esmaster8
+{{ __esmaster_c0__ }} elasticsearch_node_name=esmaster_c0
 
 {{ __escoordinator_a0__ }} elasticsearch_node_name=escoordinator_a0 elasticsearch_node_zone=us-east-1a
 
@@ -211,25 +210,17 @@ webworkers
 {{ __escoordinator_c0__ }} elasticsearch_node_name=escoordinator_c0 elasticsearch_node_zone=us-east-1c
 
 [es_master:children]
-esmaster6
-esmaster7
-esmaster8
+esmaster_a0
+esmaster_b0
+esmaster_c0
 
 [es_master:vars]
 elasticsearch_master=true
 elasticsearch_data=false
 
 [es_data:children]
-es_a
-es_b
 es_a1
 es_b1
-
-[es_a:vars]
-elasticsearch_node_zone=us-east-1a
-
-[es_b:vars]
-elasticsearch_node_zone=us-east-1b
 
 [es_a1:vars]
 elasticsearch_node_zone=us-east-1a

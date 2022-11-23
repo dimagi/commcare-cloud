@@ -1,0 +1,34 @@
+title: Upgrade to Python 3.10
+key: upgrade-to-python-3-10
+date: 2022-11-07
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Follow these steps to install and use Python 3.10 on your control machine(s) by December 19th, 2022.
+
+details: |
+  As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
+  libraries we are requiring that commcare-cloud run on Python 3.10. Python 3.6 has reached end of life,
+  and we are requiring that everyone move to Python 3.10 by December 19th, 2022.
+
+update_steps: |
+  Follow the steps below to properly install Python 3.10 and its dependencies.
+
+  $ sudo add-apt-repository -y ppa:deadsnakes/ppa
+  $ sudo apt update
+  $ sudo apt-get -y install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
+
+  Once Python 3.10 is installed on your control machine, run:
+  
+  $ update-code
+
+  which will pull the latest version of commcare-cloud and trigger the creation and activation of a Python 3.10 virtual environment.
+
+  Confirm the active virtual environment is using Python 3.10
+
+  $ python --version
+
+  Finally, run:
+  
+  $ manage-commcare-cloud configure

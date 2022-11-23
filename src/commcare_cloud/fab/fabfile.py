@@ -33,13 +33,12 @@ import functools
 import os
 import pipes
 import posixpath
-from getpass import getpass
 
 from fabric import utils
 from fabric.api import env, execute, parallel, roles, sudo, task
 from fabric.colors import blue, magenta, red
 from fabric.context_managers import cd
-from fabric.contrib import console, files
+from fabric.contrib import console
 from fabric.operations import require
 from github import GithubException
 
@@ -47,9 +46,9 @@ from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
 from commcare_cloud.github import github_repo
 from .checks import check_servers
-from .const import ROLES_ALL_SERVICES, ROLES_ALL_SRC, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
+from .const import ROLES_ALL_SERVICES, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .exceptions import PreindexNotFinished
-from .operations import db, formplayer
+from .operations import db
 from .operations import release, staticfiles, supervisor
 from .utils import (
     cache_deploy_state,
@@ -193,6 +192,7 @@ def env_common():
         'staticfiles': staticfiles,
         'staticfiles_primary': [staticfiles[0]],
         'lb': [],
+        # 'deploy' contains a single server, one that commcare-hq is deployed to.
         # having deploy here makes it so that
         # we don't get prompted for a host or run deploy too many times
         'deploy': deploy,
@@ -241,16 +241,14 @@ def send_email(subject, message, use_current_release=False):
 
 @task
 def kill_stale_celery_workers():
-    """
-    Kills celery workers that failed to properly go into warm shutdown
-    """
-    execute(release.kill_stale_celery_workers)
+    """OBSOLETE use 'kill-stale-celery-workers' instead"""
+    print(kill_stale_celery_workers.__doc__)
 
 
 @task
 def rollback_formplayer():
-    execute(formplayer.rollback_formplayer)
-    execute(supervisor.restart_formplayer)
+    print(red("This command is now implemented with ansible:"))
+    print("cchq {} ansible-playbook rollback_formplayer.yml --tags=rollback".format(env.deploy_env))
 
 
 def parse_int_or_exit(val):
@@ -331,40 +329,6 @@ def _setup_release(keep_days=2, full_cluster=True):
     print(blue(env.code_root))
 
 
-@task
-def apply_patch(patchfile=None):
-    """
-    Used to apply a git patch created via `git format-patch`. Usage:
-
-        fab <env> apply_patch:patchfile=/path/to/patch
-
-    Note: Only use this when absolutely necessary. Normally we should use regular
-    deploy. This is only used for patching when we do not have access to the Internet.
-    """
-    if not patchfile:
-        print(red("Must specify patch filepath"))
-        exit()
-    execute(release.apply_patch, patchfile)
-    silent_services_restart(use_current_release=True)
-
-
-@task
-def reverse_patch(patchfile=None):
-    """
-    Used to reverse a git patch created via `git format-patch`. Usage:
-
-        fab <env> reverse_patch:patchfile=/path/to/patch
-
-    Note: Only use this when absolutely necessary. Normally we should use regular
-    deploy. This is only used for patching when we do not have access to the Internet.
-    """
-    if not patchfile:
-        print(red("Must specify patch filepath"))
-        exit()
-    execute(release.reverse_patch, patchfile)
-    silent_services_restart(use_current_release=True)
-
-
 def conditionally_stop_pillows_and_celery_during_migrate():
     """
     Conditionally stops pillows and celery if any migrations exist
@@ -421,22 +385,6 @@ def _deploy_without_asking(skip_record):
 @task
 def update_current(release=None):
     execute(release.update_current, release)
-
-
-@task
-@roles(ROLES_ALL_SRC)
-@parallel
-def unlink_current():
-    """
-    Unlinks the current code directory. Use with caution.
-    """
-    message = 'Are you sure you want to unlink the current release of {env.deploy_env}?'.format(env=env)
-
-    if not console.confirm(message, default=False):
-        utils.abort('Deployment aborted.')
-
-    if files.exists(env.code_current, use_sudo=True):
-        sudo('unlink {}'.format(env.code_current))
 
 
 def copy_release_files(full_cluster=True):
@@ -498,18 +446,9 @@ def clean_releases(keep=3):
 
 @task
 @roles(['deploy'])
-def manage(cmd):
-    """
-    run a management command
-
-    usage:
-        fab <env> manage:<command>
-    e.g.
-        fab production manage:'prune_couch_views --noinput'
-    """
-    _require_target()
-    with cd(env.code_current):
-        sudo(f'{env.virtualenv_current}/bin/python manage.py {cmd}')
+def manage(cmd=None):
+    """OBSOLETE use 'django-manage' instead"""
+    exit(manage.__doc__)
 
 
 @task
@@ -602,18 +541,6 @@ def start_pillows():
     execute(supervisor.start_pillows, True)
 
 
-@task
-def reset_mvp_pillows():
-    _require_target()
-    _setup_release()
-    mvp_pillows = [
-        'MVPFormIndicatorPillow',
-        'MVPCaseIndicatorPillow',
-    ]
-    for pillow in mvp_pillows:
-        reset_pillow(pillow)
-
-
 @roles(ROLES_PILLOWTOP)
 def reset_pillow(pillow):
     _require_target()
@@ -651,18 +578,19 @@ ONLINE_DEPLOY_COMMANDS = [
 
 @task
 def check_status():
-    env.user = 'ansible'
-    env.sudo_user = 'root'
-    env.password = getpass('Enter the password for the ansbile user: ')
+    """OBSOLETE replaced by
 
-    execute(check_servers.ping)
-    execute(check_servers.postgresql)
-    execute(check_servers.elasticsearch)
+    commcare-cloud <env> ping all
+    commcare-cloud <env> service postgresql status
+    commcare-cloud <env> service elasticsearch status
+    """
+    exit(check_status.__doc__)
 
 
 @task
 def perform_system_checks():
-    execute(check_servers.perform_system_checks, True)
+    """OBSOLETE use 'perform-system-checks' instead"""
+    exit(perform_system_checks.__doc__)
 
 
 def make_tasks_for_envs(available_envs):

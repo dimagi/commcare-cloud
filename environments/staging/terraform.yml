@@ -20,13 +20,14 @@ backup_plan:
   outside_account_id: '767699164629'
   daily_retention: 7
   monthly_retention: 90
+  quarterly_retention: 365
 
 servers:
   - server_name: "control2-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
     az: "a"
-    volume_size: 50
+    volume_size: 100
     volume_encrypted: yes
     volume_type: "gp3"
     group: "control"
@@ -52,6 +53,28 @@ servers:
     volume_encrypted: yes
     group: webworkers
     os: ubuntu_pro_bionic
+    server_auto_recovery: true
+
+  - server_name: "web9-staging"
+    server_instance_type: "t3.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_type: "gp3"
+    volume_encrypted: yes
+    group: webworkers
+    os: bionic
+    server_auto_recovery: true
+
+  - server_name: "web10-staging"
+    server_instance_type: "t3.xlarge"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_type: "gp3"
+    volume_encrypted: yes
+    group: webworkers
+    os: bionic
     server_auto_recovery: true
 
   - server_name: "es6-staging"
@@ -84,33 +107,7 @@ servers:
     group: "elasticsearch"
     os: ubuntu_pro_bionic
 
-  - server_name: "es8-staging"
-    server_instance_type: "t3.medium"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_type: "gp3"
-    block_device:
-      volume_size: 80
-      volume_type: "gp3"
-      enable_cross_region_backup: yes
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-
   - server_name: "es9-staging"
-    server_instance_type: "t3.medium"
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 30
-    volume_type: "gp3"
-    block_device:
-      volume_size: 80
-      volume_type: "gp3"
-      enable_cross_region_backup: yes
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-
-  - server_name: "es10-staging"
     server_instance_type: "t3.medium"
     network_tier: "db-private"
     az: "b"
@@ -386,6 +383,16 @@ servers:
     group: postgresql
     os: ubuntu_pro_bionic
 
+  - server_name: "pgbouncer1-staging"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: postgresql
+    os: bionic
+
 proxy_servers:
   - server_name: "proxy2-staging"
     server_instance_type: "t3.medium"
@@ -412,7 +419,7 @@ rds_instances:
     instance_type: "db.t3.small"
     storage: 160
     multi_az: yes
-    engine_version: "10.17"
+    engine_version: "14"
     params:
       shared_preload_libraries: pg_stat_statements
       track_io_timing: 1
@@ -422,7 +429,7 @@ rds_instances:
     instance_type: "db.t3.small"
     storage: 160
     multi_az: yes
-    engine_version: "14.4"
+    engine_version: "14"
     params:
       shared_preload_libraries: pg_stat_statements
       track_io_timing: 1
@@ -431,6 +438,7 @@ pgbouncer_nlbs:
   - name: "pgformplayer_nlb-staging"
     targets:
       - pgbouncer0-staging
+      - pgbouncer1-staging
       - pgproxy4-staging
   - name: "pgmain_nlb-staging"
     targets:
@@ -444,6 +452,7 @@ pgbouncer_nlbs:
   - name: "pgshard_nlb-staging"
     targets:
       - pgbouncer0-staging
+      - pgbouncer1-staging
 
 internal_albs:
   - name: "couch_alb-staging"

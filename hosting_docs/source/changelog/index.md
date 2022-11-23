@@ -7,6 +7,48 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-11-11** [Backfill SMS event data for API performance](0063-backfill_sms_event_data_for_api_performance.md)
+Backfill data in the `sms_smssubevent` table to improve the performance of the 'messaging-event' API.
+
+This operation is only required if your environment is using SMS or Email workflows. Furthermore,
+an automatic migration will be added to CommCare in the future which will apply these changes
+during a code deploy if they have not already been applied.
+
+
+---
+#### **2022-11-08** [kafka-upgrade-to-3.2.3](0062-kafka-upgrade-to-3.2.3.md)
+Run command to upgrade Kafka version  to 3.2.3 
+Update Scala version to recommended version 2.13 
+
+
+---
+#### **2022-11-08** [Install Elasticsearch Phonetic Analysis Plugin](0061-install-elasticsearch-phonetic-analysis-plugin.md)
+The Elasticsearch 'case search' index now requires the [phonetic analysis][plugin docs] plugin
+to be install in Elasticsearch.
+
+[plugin docs]: https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/analysis-phonetic.html
+
+
+---
+#### **2022-11-07** [Upgrade to Python 3.10](0060-upgrade-to-python-3-10.md)
+Follow these steps to install and use Python 3.10 on your control machine(s) by December 19th, 2022.
+
+
+---
+#### **2022-11-01** [postgres-v14-upgrade](0059-postgres-v14-upgrade.md)
+Postgres upgrade is recommended to be upgraded in two steps,upgrade from v10 to v13 and then to v14. 
+This change upgrade PostgreSQL from 10 to 13 and then to 14 version.
+As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and libraries we have updated PostgreSQL from version 10 to version 14. 
+
+
+---
+#### **2022-10-30** [RabbitMQ upgrade to 3.10.7 version](0058-RabbitMQ_upgrade_to_3.10.7_version.md)
+This change upgrade RabbitMQ 3.10.7 version. 
+The current installed RabbitMQ version 3.8.5 is already End of Life. 
+So, we strongly recommend applying this change. 
+
+
+---
 #### **2022-09-15** [Update Prometheus variable](0057-update-prometheus-variable.md)
 If using prometheus, run `update-config` to apply changes to prometheus environment variable.
 
