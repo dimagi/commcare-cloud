@@ -25,8 +25,6 @@ web10
 
 {{ __pgproxy4__ }} pgbouncer_processes=2 swap_size=2G
 
-{{ __pgbouncer0__ }}
-
 {{ __pgbouncer1__ }}
 
 {{ __rds_pg0__ }}
@@ -54,7 +52,6 @@ pgsynclogs_nlb
 pgshard_nlb
 
 [pgbouncer:children]
-pgbouncer0
 pgbouncer1
 
 {{ __couch6__ }}
