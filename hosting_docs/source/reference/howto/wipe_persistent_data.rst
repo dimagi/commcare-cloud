@@ -1,5 +1,5 @@
-How To Rebuild a CommCareHQ environment
-=======================================
+How To Rebuild a CommCare HQ environment
+========================================
 
 This step deletes all of the CommCare data from your environment and resets to as if it's a new environment.
 In practice, you will likely need this only to delete test environments and not production data. Please understand fully

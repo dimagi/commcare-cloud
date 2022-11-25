@@ -1,14 +1,14 @@
 .. _migrate-instance:
 
-Migrating an entire CommCareHQ instance
-=======================================
+Migrating an entire CommCare HQ instance
+========================================
 
-This document describes high level steps to migrate an entire CommCareHQ instance from one set of servers
+This document describes high level steps to migrate an entire CommCare HQ instance from one set of servers
 to another set of servers.  If you are looking to migrate just a single project to a new environment
 please see :ref:`migrate-instance`. You can also use that method if you care about
 only a single project in your environment and don't need other projects.
 
-There are database and application services in a CommCareHQ instance. Only the data for database services need to be
+There are database and application services in a CommCare HQ instance. Only the data for database services need to be
 migrated. There is no data to be migrated for stateless application services such as Django/Nginx/Celery/Pillow.
 It is recommended that you understand the below high level steps, document necessary commands to be run prior
 and plan out a migration timeline since it involves downtime. The downtime amount depends on how large your data size is.

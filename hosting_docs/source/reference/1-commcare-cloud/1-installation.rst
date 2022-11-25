@@ -3,7 +3,7 @@
 Installation
 ============
 
-commcare-cloud can be installed on a local machine or on a remote control machine that's part of the CommCareHQ environment. We recommend installing on a control machine.
+commcare-cloud can be installed on a local machine or on a remote control machine that's part of the CommCare HQ environment. We recommend installing on a control machine.
 
 Installation using a script
 ---------------------------
@@ -199,7 +199,7 @@ This will make sure you never commit an unencrypted vault.yml file.
 Point to your environments directory
 ------------------------------------
 
-commcare-cloud needs to know where environments config directory is located to be able to run commands against the servers in that environment. See :ref:`reference/1-commcare-cloud/2-configuration:Configuring your CommCare Cloud Environments Directory` to understand what this directory is. The instructions on how this directory is created are part of the CommCareHQ installation docs in :ref:`quick-install` and :ref:`cchq-manual-install`.
+commcare-cloud needs to know where environments config directory is located to be able to run commands against the servers in that environment. See :ref:`reference/1-commcare-cloud/2-configuration:Configuring your CommCare Cloud Environments Directory` to understand what this directory is. The instructions on how this directory is created are part of the CommCare HQ installation docs in :ref:`quick-install` and :ref:`cchq-manual-install`.
 
 Once you have installed commcare-cloud, you can do below to point commcare-cloud to your environments directory.
 

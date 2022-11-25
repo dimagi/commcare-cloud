@@ -3,7 +3,7 @@
 CommCare Cloud Reference
 ========================
 
-commcare-cloud is a python based tool used to automate deployment of CommCareHQ on a given set of servers. For more information on what commcare-cloud is please see :ref:`prereqs/7-commcare-cloud:CommCare Cloud Deployment Tool`.
+commcare-cloud is a python based tool used to automate deployment of CommCare HQ on a given set of servers. For more information on what commcare-cloud is please see :ref:`prereqs/7-commcare-cloud:CommCare Cloud Deployment Tool`.
 
 .. toctree::
    :maxdepth: 2
