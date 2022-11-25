@@ -122,12 +122,6 @@ formplayer5
 [formplayer:vars]
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 
-{{ __es6__ }} elasticsearch_node_name=es6-staging elasticsearch_node_zone=us-east-1a
-
-{{ __es7__ }} elasticsearch_node_name=es7-staging elasticsearch_node_zone=us-east-1a
-
-{{ __es9__ }} elasticsearch_node_name=es9-staging elasticsearch_node_zone=us-east-1b
-
 {{ __es12__ }} elasticsearch_node_name=es12-staging elasticsearch_node_zone=us-east-1b
 
 {{ __es13__ }} elasticsearch_node_name=es13-staging elasticsearch_node_zone=us-east-1a
@@ -147,9 +141,6 @@ es_data
 es_coordinator
 
 [es_master:children]
-es6
-es7
-es9
 es15
 es16
 es17
