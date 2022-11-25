@@ -226,8 +226,7 @@ Running CommCareHQ inside docker is currently not supported/optimized for produc
 the recommended way to get the CommCareHQ ecosystem up and running for development purposes.
 
 Running services inside containers requires additional resources to the base resource requirements for the
-ecosystem running inside the container(s). Some testing revealed that the minimum resource requirements to run
-the CommCareHQ ecosystem with docker is the following:
+ecosystem running inside the container(s). The minimum resource requirements to run the CommCareHQ ecosystem with docker is the following:
 
 * CPU: 31.133% (equavalent to 1 core)
 
