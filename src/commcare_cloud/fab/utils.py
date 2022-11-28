@@ -119,7 +119,7 @@ def bower_command(command, production=True, config=None):
     sudo(cmd)
 
 
-def get_changelogs_in_date_range(since, until):
+def get_changelogs_in_date_range(since, until, get_file_fn=None):
     """
     This generates the list of changelogs in a given daterange
         from the changelog index file in commacare-cloud github repo.
@@ -130,9 +130,12 @@ def get_changelogs_in_date_range(since, until):
 
     A bit hacky since we don't have an actual changelog feed
     """
-    repo = Github().get_repo("dimagi/commcare-cloud")
-    CHANGELOG_INDEX = "hosting_docs/source/changelog/index.md"
-    file_lines = str(repo.get_contents(CHANGELOG_INDEX).decoded_content).split("\\n")
+    def _get_file_content():
+        repo = Github().get_repo("dimagi/commcare-cloud")
+        CHANGELOG_INDEX = "hosting_docs/source/changelog/index.md"
+        return str(repo.get_contents(CHANGELOG_INDEX).decoded_content)
+
+    file_content = _get_file_content() if not get_file_fn  else get_file_fn()
     search_dates = [
         (since + datetime.timedelta(day)).strftime('%Y-%m-%d')
         for day in range((until - since).days + 1)
@@ -140,7 +143,7 @@ def get_changelogs_in_date_range(since, until):
     regex = r"({}).*\((.*)\.md\)".format("|".join(search_dates))
     base_url = "https://commcare-cloud.readthedocs.io/en/latest/changelog"
     changelogs = []
-    for line in file_lines:
+    for line in file_content.split("\\n"):
         matches = re.findall(regex, line)
         if matches:
             changelogs.append("{}/{}.html".format(base_url, matches[0][1]))
