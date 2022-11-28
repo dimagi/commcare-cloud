@@ -112,8 +112,7 @@ COMMAND_TYPES = sorted(
 def run_on_control_instead(args, argv, force_latest_code):
     executable = 'commcare-cloud'
     branch = getattr(args, 'branch', 'master')
-    default_virtualenv = "ansible" if sys.version_info[0] == 2 else "cchq"
-    venv = os.environ.get("CCHQ_VIRTUALENV", default_virtualenv)
+    venv = os.environ.get("CCHQ_VIRTUALENV")
     if force_latest_code:
         bash_commands_template = (
             '{env}cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
@@ -121,13 +120,13 @@ def run_on_control_instead(args, argv, force_latest_code):
         )
     else:
         bash_commands_template = (
-            '{env}cd ~/commcare-cloud && source ~/.virtualenvs/${{CCHQ_VIRTUALENV:-cchq}}/bin/activate '
+            '{env}source ~/commcare-cloud/control/activate_venv.sh --fail-on-error '
             '&& {cchq} {cchq_args}'
         )
     cmd_parts = [
         executable, args.env_name, 'ssh', 'control[0]', '-t',
         bash_commands_template.format(
-            env=('export CCHQ_VIRTUALENV=%s; ' % venv if venv else ''),
+            env=(f'export CCHQ_VIRTUALENV={venv}; ' if venv else ''),
             branch=branch,
             cchq=executable,
             cchq_args=' '.join(shlex.quote(arg) for arg in argv),
