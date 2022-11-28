@@ -130,10 +130,10 @@ def get_changelogs_in_date_range(since, until, get_file_fn=None):
 
     A bit hacky since we don't have an actual changelog feed
     """
-    def _get_file_content():
+    def _get_file_content_as_lines():
         repo = Github().get_repo("dimagi/commcare-cloud")
         CHANGELOG_INDEX = "hosting_docs/source/changelog/index.md"
-        return str(repo.get_contents(CHANGELOG_INDEX).decoded_content)
+        return str(repo.get_contents(CHANGELOG_INDEX).decoded_content).split("\\n")
 
     file_content = _get_file_content() if not get_file_fn  else get_file_fn()
     search_dates = [
@@ -143,7 +143,7 @@ def get_changelogs_in_date_range(since, until, get_file_fn=None):
     regex = r"({}).*\((.*)\.md\)".format("|".join(search_dates))
     base_url = "https://commcare-cloud.readthedocs.io/en/latest/changelog"
     changelogs = []
-    for line in file_content.split("\\n"):
+    for line in file_content:
         matches = re.findall(regex, line)
         if matches:
             changelogs.append("{}/{}.html".format(base_url, matches[0][1]))
