@@ -1,0 +1,20 @@
+title: New script added for virtualenv activation
+key: new-script-for-venv-activation
+date: 2022-11-28
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Instructions to resolve this issue connecting to remote machines:
+  "/home/<user>/commcare-cloud/control/activate_venv.sh: No such file or directory"
+
+details: |
+  A recent change to commcare-cloud requires that both local and server versions
+  be at or greater than commit hash 86e754c7246e1c5460ee1ec5af51d27a50921dcf,
+  which introduced a new script `activate_venv.sh` that local checkouts of
+  commcare-cloud expect to be available on the control machine.
+
+update_steps: |
+  - Ensure your local checkout of commcare-cloud is up to date.
+  - Run `cchq --control --control-setup=yes <env> ssh control` to ensure the
+  latest code is pulled on the control machine.
