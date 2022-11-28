@@ -1,6 +1,6 @@
 .. _sentry-on-prem:
 
-:ref:`sentry` has infomration on how you can send metrics to `sentry.io <https://sentry.io>`_ account from your CommCareHQ instance. commcare-cloud also allows you to self host Sentry instance. The below guide describes how to do this.
+:ref:`sentry` has infomration on how you can send metrics to `sentry.io <https://sentry.io>`_ account from your CommCare HQ instance. commcare-cloud also allows you to self host Sentry instance. The below guide describes how to do this.
 
 Setup Sentry self hosting
 ^^^^^^^^^^^^^^^^^^^^^^^^^

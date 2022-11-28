@@ -3,7 +3,7 @@
 Software and Tools requirements
 ===============================
 
-A production grade CommCareHQ instance with all the features available requires good number of third-party software. Below is a list of softwares and tools required to run an instance.
+A production grade CommCare HQ instance with all the features available requires good number of third-party software. Below is a list of softwares and tools required to run an instance.
 
 #. Ubuntu 18.04 Server as operating system on all environments.
 #. :ref:`prereqs/7-commcare-cloud:CommCare Cloud Deployment Tool` to deploy all the other services.

@@ -1,7 +1,7 @@
 Reference Annexure
 ==================
 
-This section contains reference sections for various topics related to hosting a CommCareHQ instance.
+This section contains reference sections for various topics related to hosting a CommCare HQ instance.
 
 .. toctree::
    :maxdepth: 4

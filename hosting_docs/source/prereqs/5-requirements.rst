@@ -8,7 +8,7 @@ Introduction
 
 CommCare HQ is a complex software platform, composed of several parts
 (application builder, report builder, databases, etc.). The architecture
-of CommCareHQ allows hosting for wide variety of usage loads. In this guide
+of CommCare HQ allows hosting for wide variety of usage loads. In this guide
 we list down various server configurations suitable for various user loads
 to start with.
 
@@ -220,13 +220,13 @@ Large Cluster configuration are higher than for a Small Cluster.
 
 
 
-Running CommCareHQ inside Docker
---------------------------------
-Running CommCareHQ inside docker is currently not supported/optimized for production environments. However, it is
-the recommended way to get the CommCareHQ ecosystem up and running for development purposes.
+Running CommCare HQ inside Docker
+---------------------------------
+Running CommCare HQ inside docker is currently not supported/optimized for production environments. However, it is
+the recommended way to get the CommCare HQ ecosystem up and running for development purposes.
 
 Running services inside containers requires additional resources to the base resource requirements for the
-ecosystem running inside the container(s). The minimum resource requirements to run the CommCareHQ ecosystem with docker is the following:
+ecosystem running inside the container(s). The minimum resource requirements to run the CommCare HQ ecosystem with docker is the following:
 
 * CPU: 31.133% (on a single core)
 

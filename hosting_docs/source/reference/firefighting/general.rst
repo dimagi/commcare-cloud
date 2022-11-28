@@ -1,6 +1,6 @@
 .. _firefighting:
 
-This is a firefighting guide to help troubleshoot various issues that might come up while running a CommCareHQ Server.
+This is a firefighting guide to help troubleshoot various issues that might come up while running a CommCare HQ Server.
 
 .. note::
 
