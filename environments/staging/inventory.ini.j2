@@ -14,18 +14,18 @@ proxy3
 [logproxy:children]
 proxy
 
-{{ __web7__ }} swap_size=1G
+{{ __web9__ }} swap_size=1G
 
-{{ __web8__ }} swap_size=1G
+{{ __web10__ }} swap_size=1G
 
 [webworkers:children]
 # Amazon EC2
-web7
-web8
+web9
+web10
 
 {{ __pgproxy4__ }} pgbouncer_processes=2 swap_size=2G
 
-{{ __pgbouncer0__ }}
+{{ __pgbouncer1__ }}
 
 {{ __rds_pg0__ }}
 
@@ -52,7 +52,7 @@ pgsynclogs_nlb
 pgshard_nlb
 
 [pgbouncer:children]
-pgbouncer0
+pgbouncer1
 
 {{ __couch6__ }}
 
@@ -140,6 +140,12 @@ formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
 
 {{ __es14__ }} elasticsearch_node_name=es14-staging elasticsearch_node_zone=us-east-1b
 
+{{ __es15__ }} elasticsearch_node_name=es15-staging elasticsearch_node_zone=us-east-1a
+
+{{ __es16__ }} elasticsearch_node_name=es16-staging elasticsearch_node_zone=us-east-1b
+
+{{ __es17__ }} elasticsearch_node_name=es17-staging elasticsearch_node_zone=us-east-1c
+
 [elasticsearch:children]
 # Amazon EC2
 es_master
@@ -150,6 +156,9 @@ es_coordinator
 es6
 es7
 es9
+es15
+es16
+es17
 
 [es_master:vars]
 elasticsearch_master=true
@@ -191,4 +200,4 @@ couch_alb
 
 [django_manage:children]
 # Amazon EC2
-web7
+web10

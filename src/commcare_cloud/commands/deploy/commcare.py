@@ -201,7 +201,7 @@ def _get_deployed_version(environment):
     )
     result = next(iter(res.values()), {"stderr": "no result for host"})
     if "stdout" in result:
-        return ["stdout"]
+        return result["stdout"]
     error = result["stderr"] if "stderr" in result else repr(result)
     if "rc" in result:
         error += f"\n\nreturn code: {result['rc']}"
