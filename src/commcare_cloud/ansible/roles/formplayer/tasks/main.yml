@@ -101,14 +101,37 @@
     state: directory
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
-    mode: 0755
+    mode: "0755"
   tags:
     - localsettings
     - formplayer_deploy
   with_items:
     - "{{ formplayer_build_dir }}"
     - "{{ [] if _should_update_formplayer_in_place else formplayer_release_dir }}"
+
+- name: Check if formplayer data dir exists
+  stat:
+    path: "{{ formplayer_data_dir }}"
+  register: check_data_dir
+
+- name: Formplayer data dir
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: "0755"
+  tags:
+    - localsettings
+    - formplayer_deploy
+  with_items:
     - "{{ formplayer_data_dir }}"
+  when: not check_data_dir
+
+- name: Check if formplayer log dir exists
+  stat:
+    path: "{{ formplayer_access_log_dir }}"
+  register: check_access_log_dir
 
 - name: Formplayer request-response logging directory
   file:
@@ -117,6 +140,7 @@
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0755
+  when: not check_access_log_dir
 
 - name: Download formplayer release
   get_url:
