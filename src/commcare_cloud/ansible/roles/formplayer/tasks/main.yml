@@ -112,6 +112,9 @@
 - name: Check if formplayer data dir exists
   stat:
     path: "{{ formplayer_data_dir }}"
+  tags:
+    - localsettings
+    - formplayer_deploy
   register: check_data_dir
 
 - name: Formplayer data dir
