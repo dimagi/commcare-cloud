@@ -16,11 +16,16 @@ New version details:
 {{ mgs|warning }}
 {%- endfor %}
 
-{%- if changelogs -%}
-There have been some changelogs since last deploy, you must make sure that these are applied on your environment before proceeding to avoid getting your environment into a broaken state.
+{%- if changelogs.error -%}
+Changelogs:
+    Please review any pending changelogs from https://commcare-cloud.readthedocs.io/en/latest/ and make sure that these are applied on your environment before deploying to avoid getting your environment into a broaken state.
 
-{% for log in changelogs -%}
-{{ log }}
+{%- else -%}
+Changelogs:
+    There have been some changelogs since last deploy, you must make sure that these are applied on your environment before deploying to avoid getting your environment into a broaken state.
+
+{% for log in changelogs.changelogs -%}
+        {{ log }}
 {% endfor %}
 {%- endif %}
 

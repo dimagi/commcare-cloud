@@ -53,16 +53,34 @@ class DeployDiff:
             return self.current_commit == self.deploy_commit or long.startswith(short)
         return False
 
-    def get_changelogs(self):
+    def get_changelog_context(self):
         def get_commit_date(commit):
             return datetime.strptime(
                 self.repo.get_commit(commit).last_modified,
                 "%a, %d %b %Y %H:%M:%S GMT"
             )
-        return get_changelogs_in_date_range(
-            get_commit_date(self.current_commit),
-            get_commit_date(self.deploy_commit)
-        )
+        if not (self.current_commit and self.deploy_commit):
+            return {
+                "changelogs": [],
+                "error": True
+            }
+        try:
+            return {
+                "changelogs": get_changelogs_in_date_range(
+                    get_commit_date(self.current_commit),
+                    get_commit_date(self.deploy_commit)
+                ),
+                "error": False
+            }
+        except Exception as e:
+            print(color_error(
+                f"Error getting changelogs: {e}. "
+                "Please report this at https://forum.dimagi.com/c/developers/"
+            ))
+            return {
+                "changelogs": [],
+                "error": True
+            }
 
     @memoized
     def get_diff_context(self):
@@ -72,7 +90,7 @@ class DeployDiff:
             "LABELS_TO_EXPAND": LABELS_TO_EXPAND,
             "errors": [],
             "warnings": [],
-            "changelogs": self.get_changelogs()
+            "changelogs": self.get_changelog_context()
         }
 
         if self.deployed_commit_matches_latest_commit:
