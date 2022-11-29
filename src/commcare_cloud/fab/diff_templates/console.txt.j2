@@ -16,10 +16,15 @@ New version details:
 {{ mgs|warning }}
 {%- endfor %}
 
-{%- if changelogs -%}
+{%- if changelogs.error -%}
+There was an error fetching changelogs, however please review if there any pending changelogs from https://commcare-cloud.readthedocs.io/en/latest/ and make sure that these are applied on your environment before proceeding to avoid getting your environment into a broaken state.
+
+Also, please report this error at https://forum.dimagi.com/c/developers/
+
+{%- else -%}
 There have been some changelogs since last deploy, you must make sure that these are applied on your environment before proceeding to avoid getting your environment into a broaken state.
 
-{% for log in changelogs -%}
+{% for log in changelogs.changelogs -%}
 {{ log }}
 {% endfor %}
 {%- endif %}
