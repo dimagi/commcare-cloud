@@ -59,6 +59,11 @@ class DeployDiff:
                 self.repo.get_commit(commit).last_modified,
                 "%a, %d %b %Y %H:%M:%S GMT"
             )
+        if not (self.current_commit and self.deploy_commit):
+            return {
+                "changelogs": [],
+                "error": True
+            }
         try:
             return {
                 "changelogs": get_changelogs_in_date_range(
@@ -68,7 +73,10 @@ class DeployDiff:
                 "error": False
             }
         except Exception as e:
-            print(color_error(f"Error getting changelogs: {e}"))
+            print(color_error(
+                f"Error getting changelogs: {e}. "
+                "Please report this at https://forum.dimagi.com/c/developers/"
+            ))
             return {
                 "changelogs": [],
                 "error": True
