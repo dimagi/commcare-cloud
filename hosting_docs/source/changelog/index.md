@@ -7,6 +7,12 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-11-28** [New script added for virtualenv activation](0064-new-script-for-venv-activation.md)
+Instructions to resolve this issue connecting to remote machines:
+"/home/<user>/commcare-cloud/control/activate_venv.sh: No such file or directory"
+
+
+---
 #### **2022-11-11** [Backfill SMS event data for API performance](0063-backfill_sms_event_data_for_api_performance.md)
 Backfill data in the `sms_smssubevent` table to improve the performance of the 'messaging-event' API.
 
