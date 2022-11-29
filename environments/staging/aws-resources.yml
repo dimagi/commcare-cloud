@@ -35,6 +35,10 @@ formplayer4-staging: 10.201.10.18
 formplayer4-staging.instance_id: i-07ad9548c23f0aa68
 formplayer5-staging: 10.201.10.139
 formplayer5-staging.instance_id: i-09e0754049b4ea4aa
+formplayer6-staging: 10.201.10.242
+formplayer6-staging.instance_id: i-08695e60d70ddd76d
+formplayer7-staging: 10.201.11.10
+formplayer7-staging.instance_id: i-0ec364ea0016b5afb
 frontend_alb-staging: internal-frontend-alb-staging-383875913.us-east-1.elb.amazonaws.com
 fsx_staging-fsx: fs-01fe0af927cf0c331.fsx.us-east-1.amazonaws.com
 kafka2-staging: 10.201.40.170
@@ -44,8 +48,6 @@ kafka5-staging.instance_id: i-09b929afcd5f3185e
 kafka6-staging: 10.201.42.177
 kafka6-staging.instance_id: i-048eab1516c5561a1
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
-pgbouncer0-staging: 10.201.40.72
-pgbouncer0-staging.instance_id: i-0315ba6f2f8ba45f5
 pgbouncer1-staging: 10.201.40.36
 pgbouncer1-staging.instance_id: i-0081f23981fbc09e0
 pgformplayer0-staging: pgformplayer0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
@@ -69,9 +71,5 @@ rabbit_b0-staging: 10.201.11.176
 rabbit_b0-staging.instance_id: i-03ed9f03d635c825e
 web10-staging: 10.201.11.25
 web10-staging.instance_id: i-03fb01724d1dfd3cf
-web7-staging: 10.201.11.170
-web7-staging.instance_id: i-00c29bc6df3a1f47b
-web8-staging: 10.201.11.222
-web8-staging.instance_id: i-0bd7718f045f89e11
 web9-staging: 10.201.10.135
 web9-staging.instance_id: i-0a7254dc9652698e3

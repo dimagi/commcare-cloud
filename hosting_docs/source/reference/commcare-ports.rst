@@ -1,9 +1,9 @@
 .. _hq-ports:
 
-Ports Required for CommCareHQ
-=============================
+Ports Required for CommCare HQ
+==============================
 
-Below are the list of ports for various services required for running CommCareHQ.
+Below are the list of ports for various services required for running CommCare HQ.
 
 .. list-table::
    :header-rows: 1

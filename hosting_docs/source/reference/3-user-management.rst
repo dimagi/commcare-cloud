@@ -1,10 +1,10 @@
 User Access Management
 ======================
 
-Setting up CommCareHQ Server Administrators
--------------------------------------------
+Setting up CommCare HQ Server Administrators
+--------------------------------------------
 
-It is possible that a team hosting CommCareHQ may have multiple developers managing the server environment. For a developer (referred to as user in rest of this doc) to be able to enter and execute commands on the server using commcare cloud, users have to be added and then configured. Through the lifetime of a project new users might need to be added to the servers and some users may need to be removed. 
+It is possible that a team hosting CommCare HQ may have multiple developers managing the server environment. For a developer (referred to as user in rest of this doc) to be able to enter and execute commands on the server using commcare cloud, users have to be added and then configured. Through the lifetime of a project new users might need to be added to the servers and some users may need to be removed.
 
 This document describes the process of how to set up additional users on the server and how to remove an existing user.
 
