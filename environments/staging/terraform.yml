@@ -472,3 +472,9 @@ efs_file_systems:
     create_record: yes
     domain_name: "staging.commcare.local"
     route_names: "shared-efs"
+
+fsx_file_systems:
+  - fsx_name: "fsx_staging"
+    create: yes
+    storage_capacity: 64
+    throughput_capacity: 128

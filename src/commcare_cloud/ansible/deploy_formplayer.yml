@@ -13,6 +13,19 @@
       tags:
         - efs
 
+- name: Formplayer FSX
+  hosts: formplayer
+  become: true
+  roles:
+    - role: aws-fsx
+      vars:
+        fsx_mount_dir: /opt/data
+        fsx_mount_uid: "{{ cchq_uid|default(None) }}"
+        fsx_mount_gid: "{{ cchq_gid|default(None) }}"
+      when: "formplayer_fsx_dns|default(False)"
+      tags:
+        - fsx
+
 - name: Formplayer
   hosts: formplayer
   become: true

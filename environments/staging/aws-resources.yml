@@ -36,6 +36,7 @@ formplayer6-staging.instance_id: i-08695e60d70ddd76d
 formplayer7-staging: 10.201.11.10
 formplayer7-staging.instance_id: i-0ec364ea0016b5afb
 frontend_alb-staging: internal-frontend-alb-staging-383875913.us-east-1.elb.amazonaws.com
+fsx_staging-fsx: fs-01fe0af927cf0c331.fsx.us-east-1.amazonaws.com
 kafka2-staging: 10.201.40.170
 kafka2-staging.instance_id: i-08a404d6bad630a35
 kafka5-staging: 10.201.41.121
