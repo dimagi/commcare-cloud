@@ -49,8 +49,6 @@ pgproxy_nlb-staging: pgproxy-nlb-staging-c421403bce4ecc4b.elb.us-east-1.amazonaw
 pgshard_nlb-staging: pgshard-nlb-staging-e8ef6b4c55f3618d.elb.us-east-1.amazonaws.com
 pgsynclogs_nlb-staging: pgsynclogs-nlb-staging-1102365451f68242.elb.us-east-1.amazonaws.com
 pgucr_nlb-staging: pgucr-nlb-staging-b32586fcc9999b2d.elb.us-east-1.amazonaws.com
-pillow3-staging: 10.201.10.68
-pillow3-staging.instance_id: i-0ef555fec7fe64804
 pillow4-staging: 10.201.10.90
 pillow4-staging.instance_id: i-0bc1af8fcf6e5e300
 proxy2-staging: 10.201.10.72
