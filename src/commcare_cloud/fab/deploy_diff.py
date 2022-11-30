@@ -1,6 +1,7 @@
 import os
 import re
 from collections import defaultdict
+from datetime import datetime
 
 import jinja2
 from gevent.pool import Pool
@@ -11,6 +12,7 @@ from commcare_cloud.colors import (
     color_warning, color_error, color_success,
     color_highlight, color_summary, color_code
 )
+from commcare_cloud.fab.utils import get_changelogs_in_date_range
 from commcare_cloud.user_utils import get_default_username
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'diff_templates')
@@ -51,6 +53,35 @@ class DeployDiff:
             return self.current_commit == self.deploy_commit or long.startswith(short)
         return False
 
+    def get_changelog_context(self):
+        def get_commit_date(commit):
+            return datetime.strptime(
+                self.repo.get_commit(commit).last_modified,
+                "%a, %d %b %Y %H:%M:%S GMT"
+            )
+        if not (self.current_commit and self.deploy_commit):
+            return {
+                "changelogs": [],
+                "error": True
+            }
+        try:
+            return {
+                "changelogs": get_changelogs_in_date_range(
+                    get_commit_date(self.current_commit),
+                    get_commit_date(self.deploy_commit)
+                ),
+                "error": False
+            }
+        except Exception as e:
+            print(color_error(
+                f"Error getting changelogs: {e}. "
+                "Please report this at https://forum.dimagi.com/c/developers/"
+            ))
+            return {
+                "changelogs": [],
+                "error": True
+            }
+
     @memoized
     def get_diff_context(self):
         context = {
@@ -58,7 +89,8 @@ class DeployDiff:
             "user": get_default_username(),
             "LABELS_TO_EXPAND": LABELS_TO_EXPAND,
             "errors": [],
-            "warnings": []
+            "warnings": [],
+            "changelogs": self.get_changelog_context()
         }
 
         if self.deployed_commit_matches_latest_commit:
