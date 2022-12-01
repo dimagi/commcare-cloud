@@ -37,6 +37,10 @@ kafka5-staging: 10.201.41.121
 kafka5-staging.instance_id: i-09b929afcd5f3185e
 kafka6-staging: 10.201.42.177
 kafka6-staging.instance_id: i-048eab1516c5561a1
+kafka7-staging: 10.201.41.86
+kafka7-staging.instance_id: i-04f10b9cf0b98c6a3
+kafka8-staging: 10.201.42.194
+kafka8-staging.instance_id: i-001ac227a7e8d37b3
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgbouncer1-staging: 10.201.40.36
 pgbouncer1-staging.instance_id: i-0081f23981fbc09e0
