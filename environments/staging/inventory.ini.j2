@@ -83,18 +83,24 @@ rabbit_b0
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=1
 {{ __kafka5__ }} kafka_broker_id=4 zookeeper_server_id=4
 {{ __kafka6__ }} kafka_broker_id=5 zookeeper_server_id=5
+{{ __kafka7__ }} kafka_broker_id=6 zookeeper_server_id=6
+{{ __kafka8__ }} kafka_broker_id=7 zookeeper_server_id=7
 
 [zookeeper:children]
 # Amazon EC2
 kafka2
 kafka5
 kafka6
+kafka7
+kafka8
 
 [kafka:children]
 # Amazon EC2
 kafka2
 kafka5
 kafka6
+kafka7
+kafka8
 
 {{ __celery_a0__ }}
 
