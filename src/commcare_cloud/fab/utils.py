@@ -135,7 +135,7 @@ def get_changelogs_in_date_range(since, until, get_file_fn=None):
         CHANGELOG_INDEX = "hosting_docs/source/changelog/index.md"
         return str(repo.get_contents(CHANGELOG_INDEX).decoded_content).split("\\n")
 
-    file_content = _get_file_content() if not get_file_fn  else get_file_fn()
+    file_content = _get_file_content_as_lines() if not get_file_fn  else get_file_fn()
     search_dates = [
         (since + datetime.timedelta(day)).strftime('%Y-%m-%d')
         for day in range((until - since).days + 1)
