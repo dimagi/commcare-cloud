@@ -311,7 +311,7 @@ servers:
   - server_name: "kafka8-staging"
     server_instance_type: t3.medium
     network_tier: "db-private"
-    az: "b"
+    az: "c"
     volume_size: 30
     volume_encrypted: yes
     volume_type: "gp3"
