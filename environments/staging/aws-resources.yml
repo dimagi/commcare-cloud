@@ -33,10 +33,6 @@ frontend_alb-staging: internal-frontend-alb-staging-383875913.us-east-1.elb.amaz
 fsx_staging-fsx: fs-01fe0af927cf0c331.fsx.us-east-1.amazonaws.com
 kafka2-staging: 10.201.40.170
 kafka2-staging.instance_id: i-08a404d6bad630a35
-kafka5-staging: 10.201.41.121
-kafka5-staging.instance_id: i-09b929afcd5f3185e
-kafka6-staging: 10.201.42.177
-kafka6-staging.instance_id: i-048eab1516c5561a1
 kafka7-staging: 10.201.41.86
 kafka7-staging.instance_id: i-04f10b9cf0b98c6a3
 kafka8-staging: 10.201.42.194
