@@ -60,10 +60,19 @@ pgbouncer1
 
 {{ __couch13__ }}
 
+{{ __couch16__ }}
+
+{{ __couch17__ }}
+
+{{ __couch18__ }}
+
 [couchdb2:children]
 couch6
 couch15
 couch13
+couch16
+couch17
+couch18
 
 [couchdb2_proxy:children]
 couch_alb
