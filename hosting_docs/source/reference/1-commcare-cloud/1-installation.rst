@@ -117,12 +117,11 @@ If you get to this point, congratulations! ``commcare-cloud`` is installed.
 Manual Installation
 -------------------
 
-You will need python 3.10 installed to follow these instructions (for
-Ubuntu 22.04; other operating systems may differ):
+You will need python 3.10 installed to follow these instructions. See
+:ref:`installation/2-manual-install:Upgrade to Python 3.10` for instructions on
+getting it installed on Ubuntu 18.04. Steps for other operating systems may
+differ.
 
-.. code-block::
-
-   sudo apt-get install git python3.10-dev python3-pip
 
 Setup
 ^^^^^
