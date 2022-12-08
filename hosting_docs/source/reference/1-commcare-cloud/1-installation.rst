@@ -160,10 +160,8 @@ and ``~/.virtualenvs/cchq``. Adjust according to your preferred configuration.*
 
 .. code-block:: sh
 
-   # using virtualenv
-   python3 -m pip install --user --upgrade virtualenv
-   python3 -m virtualenv ~/.virtualenvs/cchq
-   source ~/.virtualenvs/cchq/bin/activate
+   # using venv
+   python3.10 -m venv ~/.virtualenvs/cchq
 
    # -- or --
 
