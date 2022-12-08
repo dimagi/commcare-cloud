@@ -410,7 +410,7 @@ def _run_migration(migration, target_context, check_mode, no_stop):
     run_ansible_module(source_context, 'couchdb2', 'file', file_args)
 
     puts(color_summary('Copy file lists to nodes:'))
-    rsync_files_by_host = prepare_to_sync_files(migration, target_context)
+    host_ips = ",".join(prepare_to_sync_files(migration, target_context))
 
     if no_stop:
         stop_couch_context = noop_context()
@@ -419,7 +419,7 @@ def _run_migration(migration, target_context, check_mode, no_stop):
         stop_couch_context = stop_couch(migration.all_environments, check_mode)
 
     with stop_couch_context:
-        execute_file_copy_scripts(target_context, list(rsync_files_by_host), check_mode)
+        execute_file_copy_scripts(target_context, host_ips, check_mode)
 
     return 0
 
