@@ -165,7 +165,7 @@ and ``~/.virtualenvs/cchq``. Adjust according to your preferred configuration.*
 
    # -- or --
 
-   # using pyenv 
+   # using pyenv
    pyenv virtualenv 3.10 cchq
    pyenv activate cchq
 
