@@ -162,6 +162,7 @@ and ``~/.virtualenvs/cchq``. Adjust according to your preferred configuration.*
 
    # using venv
    python3.10 -m venv ~/.virtualenvs/cchq
+   source ~/.virtualenvs/cchq/bin/activate
 
    # -- or --
 
