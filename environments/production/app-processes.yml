@@ -93,7 +93,8 @@ celery_processes:
       pooling: gevent
       concurrency: 2
     submission_reprocessing_queue:
-        concurrency: 1
+      concurrency: 3
+      prefetch_multiplier: 1
     sumologic_logs_queue:
       pooling: gevent
       concurrency: 50
