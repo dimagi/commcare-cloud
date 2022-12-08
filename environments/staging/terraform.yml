@@ -243,7 +243,6 @@ servers:
       volume_size: 80
       encrypted: true
       volume_type: "gp3"
-      enable_cross_region_backup: yes
     group: "couchdb2"
     os: bionic
 
