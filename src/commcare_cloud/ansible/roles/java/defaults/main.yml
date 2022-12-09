@@ -1,3 +1,4 @@
 java_packages:
   - openjdk-8-jdk
-java_bin_path: /usr/lib/jvm/java-8-openjdk-amd64/jre/bin
+  - openjdk-17-jre
+java_bin_path: /usr/lib/jvm/java-17-openjdk-amd64/bin
