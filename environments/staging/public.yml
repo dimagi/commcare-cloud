@@ -208,6 +208,4 @@ python_version: '3.9'
 use_deadsnakes: '{{ ansible_distribution_version <= "18.04" }}'
 allow_aws_ssm_proxy: true
 
-java_packages:
-  - openjdk-17-jdk
-java_bin_path: /usr/lib/jvm/java-17-openjdk-amd64/bin
+formplayer_java_version: /usr/lib/jvm/java-1.17.0-openjdk-amd64/bin/java
