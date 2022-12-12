@@ -59,7 +59,7 @@
 - hosts:
   - zookeeper
   tasks:
-  - command: service zookeeper status
+  - command: service zookeeper-server status
     name: Check zookeeper status
     become: True
     args:

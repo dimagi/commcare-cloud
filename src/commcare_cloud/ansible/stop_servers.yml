@@ -74,7 +74,7 @@
   - zookeeper
   tasks:
   - service:
-      name: zookeeper
+      name: zookeeper-server
       state: stopped
     name: Stop zookeeper
     become: yes
