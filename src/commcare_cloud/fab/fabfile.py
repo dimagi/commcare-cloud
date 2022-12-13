@@ -299,27 +299,10 @@ def _setup_release(keep_days=2, full_cluster=True):
     :param keep_days: The number of days to keep this release before it will be purged
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
-    for repo in env.ccc_environment.meta_config.git_repositories:
-        try:
-            repo.deploy_ref  # noqa
-        except GithubException as e:
-            utils.abort(
-                "\nUnable to access Git repository. Please check your authentication credentials.\n"
-                "Error: {}\n"
-                "Repository: {}\n".format(e.data["message"], repo.url)
-            )
-
     execute_with_timing(release.create_code_dir(full_cluster))
-
     update_code = release.update_code(full_cluster)
     execute_with_timing(update_code, env.deploy_ref)
-    for repo in env.ccc_environment.meta_config.git_repositories:
-        var_name = "{}_code_branch".format(repo.name)
-        repo_deploy_ref = repo.deploy_ref(getattr(env, var_name, None))
-        execute_with_timing(update_code, repo_deploy_ref, repo.relative_dest, repo.url, repo.deploy_key)
-
     execute_with_timing(release.update_virtualenv(full_cluster))
-
     execute_with_timing(copy_release_files, full_cluster)
 
     if keep_days > 0:
