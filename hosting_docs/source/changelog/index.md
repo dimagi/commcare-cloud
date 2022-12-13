@@ -7,6 +7,15 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-12-13** [Populate repeater names](0065-Populate_repeater_names.md)
+Populate all repeaters' `name` fields with its respective connection settings' name.
+
+This is optional, but is recommended to do for all environments having more than 200 repeaters. A migration will
+be added in the future which will automatically apply these changes during a code deploy if they have not yet
+been applied. If there are many repeaters, it will slow down the migration process.
+
+
+---
 #### **2022-11-28** [New script added for virtualenv activation](0064-new-script-for-venv-activation.md)
 Instructions to resolve this issue connecting to remote machines:
 "/home/<user>/commcare-cloud/control/activate_venv.sh: No such file or directory"
