@@ -38,4 +38,4 @@ localsettings:
   ES_XFORM_DISABLE_ALL: True
 ```
 
-If find either of these values, remove them.
+If either of these values are present, remove them.
