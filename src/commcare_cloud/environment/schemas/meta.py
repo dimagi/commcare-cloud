@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 import re
 
 import jsonobject
-import six
 from memoized import memoized_property, memoized
 
 from commcare_cloud.environment.exceptions import EnvironmentException
@@ -48,12 +47,12 @@ class MetaConfig(jsonobject.JsonObject):
     deploy_env = jsonobject.StringProperty(required=True)
     always_deploy_formplayer = jsonobject.BooleanProperty(default=False)
     env_monitoring_id = jsonobject.StringProperty(required=True)
-    users = jsonobject.ListProperty(six.text_type, required=True)
+    users = jsonobject.ListProperty(str, required=True)
     slack_alerts_channel = jsonobject.StringProperty()
     slack_notifications_channel = jsonobject.StringProperty()
     bare_non_cchq_environment = jsonobject.BooleanProperty(default=False)
     git_repositories = jsonobject.ListProperty(GitRepository)
-    deploy_keys = jsonobject.DictProperty(six.text_type)
+    deploy_keys = jsonobject.DictProperty(str)
     secrets_backend = jsonobject.StringProperty(
         choices=list(all_secrets_backends_by_name),
         default='ansible-vault',

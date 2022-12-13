@@ -44,7 +44,7 @@ class Deploy(CommandBase):
             The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
         """, default=None),
         Argument('--set', dest='fab_settings', help="""
-            fab settings in k1=v1,k2=v2 format to be passed down to fab 
+            fab settings in k1=v1,k2=v2 format to be passed down to fab
         """, default=None),
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
@@ -93,7 +93,8 @@ class Deploy(CommandBase):
         if 'formplayer' in deploy_component:
             if 'commcare' not in deploy_component:
                 if args.commcare_rev:
-                    print(color_warning('--commcare-rev does not apply to a formplayer deploy and will be ignored'))
+                    print(color_warning(
+                        '--commcare-rev does not apply to a formplayer deploy and will be ignored'))
                 if args.fab_settings:
                     print(color_warning('--set does not apply to a formplayer deploy and will be ignored'))
             if rc:
