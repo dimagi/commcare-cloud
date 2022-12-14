@@ -159,10 +159,10 @@ servers:
     group: celery
     os: bionic
 
-  - server_name: "formplayer6-staging"
+  - server_name: "formplayer7-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
-    az: "a"
+    az: "b"
     volume_size: 30
     volume_encrypted: yes
     volume_type: "gp3"
@@ -174,10 +174,10 @@ servers:
     os: bionic
     server_auto_recovery: true
 
-  - server_name: "formplayer7-staging"
+  - server_name: "formplayer8-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
-    az: "b"
+    az: "a"
     volume_size: 30
     volume_encrypted: yes
     volume_type: "gp3"
