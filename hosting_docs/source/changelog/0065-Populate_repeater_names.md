@@ -16,12 +16,12 @@ The following version of CommCare must be deployed before rolling out this chang
 Populate all repeaters' `name` fields with its respective connection settings' name.
 
 This is optional, but is recommended to do for all environments having more than 200 repeaters. A migration will
-be added in the future which will automatically apply these changes during a code deploy if they have not yet
+be added in the future, which will automatically apply these changes during a code deploy if they have not yet
 been applied. If there are many repeaters, it will slow down the migration process.
 
 ## Details
 To prepare for a future change where we allow repeater names to be configurable, we added a `name` field to the
-`repeaters_repeater` table. In the future change, this field will be popualted with the repeater's corresponding
+`repeaters_repeater` table. In the future change, this field will be populated with the repeater's corresponding
 connection settings' name by means of a migration. If there are many repeaters in the environment, this migration
 might take a long time to complete, so it is recommended to apply the changes before that migration runs in order
 speed up that migration's execution time.
@@ -31,21 +31,21 @@ To see how many repeaters there are in an environment, follow the steps below:
 
 Go into the django shell
 ```shell
-$ commcare-cloud <env> django-manage shell
+commcare-cloud <env> django-manage shell
 ```
 
 Inside the django shell, run
 ```python
-$ from corehq.motech.repeaters.models import SQLRepeater
-$ SQLRepeater.objects.count()
+from corehq.motech.repeaters.models import SQLRepeater
+SQLRepeater.objects.count()
 ```
 
 To run the data migration, execute the following command:
 
 ```shell
-$ commcare-cloud <env> django-manage populate_repeater_names 
+commcare-cloud <env> django-manage populate_repeater_names 
 ```
 
 Precautions:
-* No downtime is needed for this operation however it is best to run the command during a period
+* No downtime is needed for this operation. However, it is best to run the command during a period
   of low traffic.

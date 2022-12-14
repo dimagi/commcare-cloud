@@ -11,7 +11,7 @@ need to be applied on your environment to keep it up to date.
 Populate all repeaters' `name` fields with its respective connection settings' name.
 
 This is optional, but is recommended to do for all environments having more than 200 repeaters. A migration will
-be added in the future which will automatically apply these changes during a code deploy if they have not yet
+be added in the future, which will automatically apply these changes during a code deploy if they have not yet
 been applied. If there are many repeaters, it will slow down the migration process.
 
 
