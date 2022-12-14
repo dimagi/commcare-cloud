@@ -1,0 +1,34 @@
+title: Populate a new field for Data Forwarders
+key: Populate_repeater_names
+date: 2022-12-13
+optional_per_env: yes
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version: ec13eaccc55d14b708c4e25349edcfd6936fb4d1
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  Populate a new field for all Data Forwarders (repeaters).
+
+  This is optional, but is recommended to do for all environments where Data Forwarders are being used. A migration
+  will be added in the future, which will automatically apply these changes during a code deploy if they have not
+  yet been applied. If there are many Data Forwarders, it will slow down the deploy process.
+
+details: |
+  To prepare for a future change where we allow repeater names to be configurable, we have added a `name` field to
+  the `repeaters_repeater` SQL table. In order to populate the field correctly for all existing repeaters we are
+  running a data migration which will copy the name from the connection settings associated with the repeater.
+
+  If this migration is not run manually it will be run during a future code deploy. We advise running it manually
+  prior to that to prevent any issues or delays during code deploy.
+  
+
+update_steps: |
+  To run the data migration, execute the following command:
+  
+  ```shell
+  commcare-cloud <env> django-manage populate_repeater_names 
+  ```
+  
+  Precautions:
+  * No downtime is needed for this operation. However, it is best to run the command during a period
+    of low traffic.
