@@ -7,7 +7,7 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2022-12-13** [remove-unused-elastic-settings](0065-remove-unused-elastic-settings.md)
+#### **2022-12-13** [remove-unused-elastic-settings](0066-remove-unused-elastic-settings.md)
 CommCareHQ has two settings (`CASE_ES_DROP_FORM_FIELDS` and
 `ES_XFORM_DISABLE_ALL`) that were created several years ago for tuning
 Elasticsearch in a specific environment which no longer exists. This change
