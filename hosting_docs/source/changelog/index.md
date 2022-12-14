@@ -7,12 +7,12 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2022-12-13** [Populate repeater names](0065-Populate_repeater_names.md)
-Populate all repeaters' `name` fields with its respective connection settings' name.
+#### **2022-12-13** [Populate a new field for Data Forwarders](0065-Populate_repeater_names.md)
+Populate a new field for all Data Forwarders (repeaters).
 
-This is optional, but is recommended to do for all environments having more than 200 repeaters. A migration will
-be added in the future, which will automatically apply these changes during a code deploy if they have not yet
-been applied. If there are many repeaters, it will slow down the migration process.
+This is optional, but is recommended to do for all environments where Data Forwarders are being used. A migration
+will be added in the future, which will automatically apply these changes during a code deploy if they have not
+yet been applied. If there are many Data Forwarders, it will slow down the deploy process.
 
 
 ---
