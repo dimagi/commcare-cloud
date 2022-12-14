@@ -75,8 +75,8 @@
   become: yes
   service: name=supervisord state=stopped
   register: result
-  failed_when: result.rc > 1
-  changed_when: result.rc == 0
+  failed_when: result.get("rc", -1) > 1
+  changed_when: result.get("rc") == 0
   when: service_conf.changed
 
 - name: pkill supervisord if run by cchq
