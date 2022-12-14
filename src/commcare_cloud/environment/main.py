@@ -373,7 +373,6 @@ class Environment(object):
                 if not self.meta_config.bare_non_cchq_environment else {}
             ),
             'new_release_name': self.new_release_name(),
-            'git_repositories': [repo.to_generated_variables() for repo in self.meta_config.git_repositories],
             'deploy_keys': dict(self.meta_config.deploy_keys.items()),
         }
         if not self.meta_config.bare_non_cchq_environment:
