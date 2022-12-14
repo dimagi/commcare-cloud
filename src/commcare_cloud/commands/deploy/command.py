@@ -2,7 +2,6 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import sys
 from textwrap import dedent
 
 from commcare_cloud.cli_utils import check_branch
@@ -12,7 +11,6 @@ from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.deploy.commcare import deploy_commcare
 from commcare_cloud.commands.deploy.formplayer import deploy_formplayer
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.environment.paths import get_available_envs
 from commcare_cloud.fab.utils import retrieve_cached_deploy_env
 
 
@@ -44,28 +42,11 @@ class Deploy(CommandBase):
             The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
         """, default=None),
         Argument('--set', dest='fab_settings', help="""
-            fab settings in k1=v1,k2=v2 format to be passed down to fab 
+            fab settings in k1=v1,k2=v2 format to be passed down to fab
         """, default=None),
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
     )
-
-    def modify_parser(self):
-        if len(sys.argv) <= 1:
-            # No environment specified, so no need to add environment-specific repositories
-            return
-
-        env_name = sys.argv[1]
-        if env_name not in get_available_envs():
-            return
-
-        environment = get_environment(env_name)
-        if environment.meta_config.git_repositories:
-            for repo in environment.meta_config.git_repositories:
-                Argument('--{}-rev'.format(repo.name), help="""
-                    The name of the git branch, tag, or SHA-1 commit hash to deploy for the
-                    '{}' ({}) repository
-                """.format(repo.name, repo.url)).add_to_parser(self.parser)
 
     def run(self, args, unknown_args):
         check_branch(args)
@@ -93,7 +74,8 @@ class Deploy(CommandBase):
         if 'formplayer' in deploy_component:
             if 'commcare' not in deploy_component:
                 if args.commcare_rev:
-                    print(color_warning('--commcare-rev does not apply to a formplayer deploy and will be ignored'))
+                    print(color_warning(
+                        '--commcare-rev does not apply to a formplayer deploy and will be ignored'))
                 if args.fab_settings:
                     print(color_warning('--set does not apply to a formplayer deploy and will be ignored'))
             if rc:

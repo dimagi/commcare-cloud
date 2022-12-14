@@ -183,8 +183,8 @@ Install commcare-cloud with pip
    pip install -e .
    manage-commcare-cloud install
 
-   # Optional: to setup local environments and use commcare-cloud (cchq) without
-   # first activating virtualenv. Follow interactive prompts and instructions.
+   # (Optional) To use commcare-cloud (cchq) without needing an active virtual
+   # environment, run the following and respond to the prompts.
    manage-commcare-cloud configure
 
 If you opted out of the final ``manage-commcare-cloud configure`` step and you
@@ -203,12 +203,12 @@ profile (\ ``~/.profile``\ ) as needed:
 git-hook setup
 ^^^^^^^^^^^^^^
 
-If you have done the manual setup, Before making any commits, make sure you install the git hooks:
-the set up is pretty simple. Just run:
+After completing the manual setup, make sure you install the git hooks.
+From the ~/commcare-cloud directory, run the following:
 
 .. code-block::
 
-   (cchq)$ ~/commcare-cloud/git-hooks/install.sh
+   (cchq)$ ./git-hooks/install.sh
 
 This will make sure you never commit an unencrypted vault.yml file.
 
