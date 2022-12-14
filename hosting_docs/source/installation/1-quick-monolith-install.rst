@@ -3,7 +3,7 @@
 Quick Install on Single Server
 ==============================
 
-This is a guide on how to deploy a CommCareHQ instance on a monolith server using an install script. Please refer to :ref:`deploy-commcarehq` guide to decide if this is the right deployment method for you before proceeding.
+This is a guide on how to deploy a CommCare HQ instance on a monolith server using an install script. Please refer to :ref:`deploy-commcarehq` guide to decide if this is the right deployment method for you before proceeding.
 
 Prerequisites
 -------------

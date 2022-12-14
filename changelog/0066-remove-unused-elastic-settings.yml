@@ -1,0 +1,34 @@
+title: remove-unused-elastic-settings
+key: remove-unused-elastic-settings
+date: 2022-12-13
+optional_per_env: yes
+min_commcare_version:
+max_commcare_version:
+context: |
+  CommCareHQ has two settings (`CASE_ES_DROP_FORM_FIELDS` and
+  `ES_XFORM_DISABLE_ALL`) that were created several years ago for tuning
+  Elasticsearch in a specific environment which no longer exists. This change
+  removes support for those settings and the application logic that existed for
+  them. We do not expect this to impact any self-hosted environments, but it's
+  prudent to confirm.
+
+details: |
+  If your environment references either of the following Django settings then
+  they will need to be removed:
+
+  - `CASE_ES_DROP_FORM_FIELDS`
+  - `ES_XFORM_DISABLE_ALL`
+
+update_steps: |
+  Search your environment's public.yml `localsettings` section for
+  `CASE_ES_DROP_FORM_FIELDS` and `ES_XFORM_DISABLE_ALL`. If present, they may
+  look something like this:
+
+  ```yaml
+  localsettings:
+    # ...
+    CASE_ES_DROP_FORM_FIELDS: True
+    ES_XFORM_DISABLE_ALL: True
+  ```
+
+  If either of these values are present, remove them.

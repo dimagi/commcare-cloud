@@ -228,11 +228,7 @@ def get_deploy_revs_and_diffs(environment, args):
     revisions to deploy and whether they are different from the defaults.
     """
     default_branch = environment.fab_settings_config.default_branch
-    branches = [
-        ('commcare', 'commcare_rev', default_branch),
-    ]
-    for repo in environment.meta_config.git_repositories:
-        branches.append((repo.name, '{}_rev'.format(repo.name), repo.version))
+    branches = [('commcare', 'commcare_rev', default_branch)]
 
     diffs = []
     actuals = {}

@@ -7,6 +7,31 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-12-13** [remove-unused-elastic-settings](0066-remove-unused-elastic-settings.md)
+CommCareHQ has two settings (`CASE_ES_DROP_FORM_FIELDS` and
+`ES_XFORM_DISABLE_ALL`) that were created several years ago for tuning
+Elasticsearch in a specific environment which no longer exists. This change
+removes support for those settings and the application logic that existed for
+them. We do not expect this to impact any self-hosted environments, but it's
+prudent to confirm.
+
+
+---
+#### **2022-12-13** [Populate a new field for Data Forwarders](0065-Populate_repeater_names.md)
+Populate a new field for all Data Forwarders (repeaters).
+
+This is optional, but is recommended to do for all environments where Data Forwarders are being used. A migration
+will be added in the future, which will automatically apply these changes during a code deploy if they have not
+yet been applied. If there are many Data Forwarders, it will slow down the deploy process.
+
+
+---
+#### **2022-11-28** [New script added for virtualenv activation](0064-new-script-for-venv-activation.md)
+Instructions to resolve this issue connecting to remote machines:
+"/home/<user>/commcare-cloud/control/activate_venv.sh: No such file or directory"
+
+
+---
 #### **2022-11-11** [Backfill SMS event data for API performance](0063-backfill_sms_event_data_for_api_performance.md)
 Backfill data in the `sms_smssubevent` table to improve the performance of the 'messaging-event' API.
 

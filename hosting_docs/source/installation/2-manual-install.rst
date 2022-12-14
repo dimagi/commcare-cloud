@@ -5,12 +5,12 @@ Install Using Commcare-Cloud on one or more machines
 
 This tutorial will walk you through the process of setting up a new environment to run CommCare HQ using :ref:`commcare-cloud <commcare-cloud>`. It covers both a single-server (“monolith”) environment and a small cluster of virtual machines. If you want to quickly test or preview the environment setup on a single machine you can follow :ref:`quick-install` which uses a script to automate all of the below.
 
-This assumes you have gone through :ref:`deploy-commcarehq` which details what all you need to know to deploy CommCareHQ in production.
+This assumes you have gone through :ref:`deploy-commcarehq` which details what all you need to know to deploy CommCare HQ in production.
 
 Procure Hardware
 ----------------
 
-The first step is to procure the hardware required to run CommCareHQ to meet your project requirements. To understand the hardware resources required for your project please see :ref:`deployment-options`. Below are configurations used for the purpose of the tutorial.
+The first step is to procure the hardware required to run CommCare HQ to meet your project requirements. To understand the hardware resources required for your project please see :ref:`deployment-options`. Below are configurations used for the purpose of the tutorial.
 
 
 Single server
@@ -647,7 +647,7 @@ initially.
    When prompted for the ``sudo`` password, enter the
    “ansible_sudo_pass” value.
 
-See the Deploying CommCareHQ code changes section in :ref:`manage-deployment` for more information.
+See the Deploying CommCare HQ code changes section in :ref:`manage-deployment` for more information.
 
    If deploy fails, you can restart where it left off:
 
@@ -734,7 +734,7 @@ all the services back up, and mount the encrypted drive by running:
 First Steps with CommCare HQ
 ----------------------------
 
-If you are migrating data you can refer to :ref:`migrate-project` or :ref:`migrate-instance`. Otherwise, you can do below to start using CommCareHQ.
+If you are migrating data you can refer to :ref:`migrate-project` or :ref:`migrate-instance`. Otherwise, you can do below to start using CommCare HQ.
 
 Make a user
 ~~~~~~~~~~~
@@ -770,14 +770,14 @@ the command below - it will fetch the latest version from GitHub.
 
    $ commcare-cloud cluster django-manage add_commcare_build --latest
 
-Link to a project on other CommCareHQ instance
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Link to a project on other CommCare HQ instance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you intend to use `Linked Projects <https://confluence.dimagi.com/display/commcarepublic/Linked+Project+Spaces>`_ feature to link projects on between two different instances of CommCareHQ, you may refer to `Remote Linked Projects <https://commcare-hq.readthedocs.io/linked_projects.html>`_ to set this up.
+If you intend to use `Linked Projects <https://confluence.dimagi.com/display/commcarepublic/Linked+Project+Spaces>`_ feature to link projects on between two different instances of CommCare HQ, you may refer to `Remote Linked Projects <https://commcare-hq.readthedocs.io/linked_projects.html>`_ to set this up.
 
 Operations
 ----------
 
-Once you have your CommCareHQ live, please refer to :ref:`operations-maintenance` for maintaining your environment.
+Once you have your CommCare HQ live, please refer to :ref:`operations-maintenance` for maintaining your environment.
 
-To add new server administrators please refer to :ref:`reference/3-user-management:Setting up CommCareHQ Server Administrators`.
+To add new server administrators please refer to :ref:`reference/3-user-management:Setting up CommCare HQ Server Administrators`.

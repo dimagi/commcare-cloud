@@ -3,13 +3,14 @@ from __future__ import absolute_import, print_function, unicode_literals
 import datetime
 import os
 import pickle
+import re
 import sys
 import traceback
 from io import open
 
 from fabric.api import env, execute
 from fabric.operations import sudo
-from github import UnknownObjectException
+from github import UnknownObjectException, Github
 from memoized import memoized_property
 
 from .const import (
@@ -116,3 +117,34 @@ def generate_bower_command(command, production=True, config=None):
 def bower_command(command, production=True, config=None):
     cmd = generate_bower_command(command, production, config)
     sudo(cmd)
+
+
+def get_changelogs_in_date_range(since, until, get_file_fn=None):
+    """
+    This generates the list of changelogs in a given daterange
+        from the changelog index file in commacare-cloud github repo.
+
+    This relies on the fact that 'hosting_docs/source/changelog/index.md'
+        contains below style header for each dated changelog and its docs link.
+        #### **2022-11-08** [kafka-upgrade-to-3.2.3](0062-kafka-upgrade.md)
+
+    A bit hacky since we don't have an actual changelog feed
+    """
+    def _get_file_content_as_lines():
+        repo = Github().get_repo("dimagi/commcare-cloud")
+        CHANGELOG_INDEX = "hosting_docs/source/changelog/index.md"
+        return str(repo.get_contents(CHANGELOG_INDEX).decoded_content).split("\\n")
+
+    file_content = _get_file_content_as_lines() if not get_file_fn  else get_file_fn()
+    search_dates = [
+        (since + datetime.timedelta(day)).strftime('%Y-%m-%d')
+        for day in range((until - since).days + 1)
+    ]
+    regex = r"({}).*\((.*)\.md\)".format("|".join(search_dates))
+    base_url = "https://commcare-cloud.readthedocs.io/en/latest/changelog"
+    changelogs = []
+    for line in file_content:
+        matches = re.findall(regex, line)
+        if matches:
+            changelogs.append("{}/{}.html".format(base_url, matches[0][1]))
+    return changelogs

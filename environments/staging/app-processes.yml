@@ -5,7 +5,7 @@ management_commands:
     queue_schedule_instances:
     run_sms_queue:
     run_submission_reprocessing_queue:
-  pillow3:
+  pillow4:
     run_pillow_retry_queue:
 celery_processes:
   celery_a0:
@@ -51,7 +51,7 @@ celery_processes:
     beat: {}
     flower: {}
 pillows:
-  'pillow3':
+  'pillow4':
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:

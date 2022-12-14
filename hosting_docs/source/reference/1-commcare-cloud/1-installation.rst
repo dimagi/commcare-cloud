@@ -3,7 +3,7 @@
 Installation
 ============
 
-commcare-cloud can be installed on a local machine or on a remote control machine that's part of the CommCareHQ environment. We recommend installing on a control machine.
+commcare-cloud can be installed on a local machine or on a remote control machine that's part of the CommCare HQ environment. We recommend installing on a control machine.
 
 Installation using a script
 ---------------------------
@@ -117,12 +117,11 @@ If you get to this point, congratulations! ``commcare-cloud`` is installed.
 Manual Installation
 -------------------
 
-You will need python 3.6 installed to follow these instructions (for
-Ubuntu 18.04; other operating systems may differ):
+You will need python 3.10 installed to follow these instructions. See
+:ref:`installation/2-manual-install:Upgrade to Python 3.10` for instructions on
+getting it installed on Ubuntu 18.04. Steps for other operating systems may
+differ.
 
-.. code-block::
-
-   sudo apt-get install git python3-dev python3-pip
 
 Setup
 ^^^^^
@@ -152,23 +151,41 @@ Manual setup
 If you'd rather use your own virtualenv name or a different commcare-cloud repo
 location, or if the script above did not work.
 
+Setup and activate the virtualenv
+"""""""""""""""""""""""""""""""""
+
+**NOTE**: *The virtualenv name and location may be customized, below example uses ``cchq``
+and ``~/.virtualenvs/cchq``. Adjust according to your preferred configuration.*
+
 .. code-block:: sh
 
-   ## Create/activate Python 3.6 virtualenv (name and location may be customized)
-   $ python3.6 -m pip install --user --upgrade virtualenv
-   $ python3.6 -m virtualenv ~/.virtualenvs/cchq
-   $ source ~/.virtualenvs/cchq/bin/activate
+   # using venv
+   python3.10 -m venv ~/.virtualenvs/cchq
+   source ~/.virtualenvs/cchq/bin/activate
 
-   ## Install commcare-cloud
-   (cchq)$ git clone https://github.com/dimagi/commcare-cloud.git
-   (cchq)$ pip install --upgrade pip-tools
-   (cchq)$ pip-sync commcare-cloud/requirements.txt
-   (cchq)$ pip install -e commcare-cloud
-   (cchq)$ manage-commcare-cloud install
+   # -- or --
 
-   ## Optional: to setup local environments and use commcare-cloud (cchq) without
-   ## first activating virtualenv. Follow interactive prompts and instructions.
-   (cchq)$ manage-commcare-cloud configure
+   # using pyenv
+   pyenv virtualenv 3.10 cchq
+   pyenv activate cchq
+
+
+Install commcare-cloud with pip
+"""""""""""""""""""""""""""""""
+
+.. code-block:: sh
+
+   # IMPORTANT: ensure the virtual environment is activated
+   git clone https://github.com/dimagi/commcare-cloud.git
+   cd ./commcare-cloud
+   pip install --upgrade pip-tools
+   pip-sync requirements.txt
+   pip install -e .
+   manage-commcare-cloud install
+
+   # (Optional) To use commcare-cloud (cchq) without needing an active virtual
+   # environment, run the following and respond to the prompts.
+   manage-commcare-cloud configure
 
 If you opted out of the final ``manage-commcare-cloud configure`` step and you
 have a local environments directory or cloned the repo somewhere other than
@@ -186,12 +203,12 @@ profile (\ ``~/.profile``\ ) as needed:
 git-hook setup
 ^^^^^^^^^^^^^^
 
-If you have done the manual setup, Before making any commits, make sure you install the git hooks:
-the set up is pretty simple. Just run:
+After completing the manual setup, make sure you install the git hooks.
+From the ~/commcare-cloud directory, run the following:
 
 .. code-block::
 
-   (cchq)$ ~/commcare-cloud/git-hooks/install.sh
+   (cchq)$ ./git-hooks/install.sh
 
 This will make sure you never commit an unencrypted vault.yml file.
 
@@ -199,7 +216,7 @@ This will make sure you never commit an unencrypted vault.yml file.
 Point to your environments directory
 ------------------------------------
 
-commcare-cloud needs to know where environments config directory is located to be able to run commands against the servers in that environment. See :ref:`reference/1-commcare-cloud/2-configuration:Configuring your CommCare Cloud Environments Directory` to understand what this directory is. The instructions on how this directory is created are part of the CommCareHQ installation docs in :ref:`quick-install` and :ref:`cchq-manual-install`.
+commcare-cloud needs to know where environments config directory is located to be able to run commands against the servers in that environment. See :ref:`reference/1-commcare-cloud/2-configuration:Configuring your CommCare Cloud Environments Directory` to understand what this directory is. The instructions on how this directory is created are part of the CommCare HQ installation docs in :ref:`quick-install` and :ref:`cchq-manual-install`.
 
 Once you have installed commcare-cloud, you can do below to point commcare-cloud to your environments directory.
 

@@ -15,6 +15,12 @@
   tags:
     - nfs
 
+- name: Check if /opt/data is already mounted
+  debug: msg="The mount point exists"
+  with_items: "{{ ansible_mounts }}"
+  when: item.mount == "/opt/data"
+  register: check_mount
+
 - name: Create shared mount dir
   become: yes
   when: shared_drive_enabled|bool
@@ -22,9 +28,10 @@
     path: "{{ shared_mount_dir }}"
     owner: "{{ shared_dir_user }}"
     group: "{{ shared_dir_group }}"
-    mode: 0775
+    mode: "{{ shared_dir_mode|default(0775) }}"
     state: directory
   run_once: yes
+  when: not check_mount
   tags:
     - nfs
 

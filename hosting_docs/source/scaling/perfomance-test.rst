@@ -4,7 +4,7 @@ Performance Benchmarking for CommCare HQ using Locust
 Introduction
 ------------
 
-Performance testing is useful to understand how well your CommCareHQ instance performs under a given load. The results of this testing will inform any bottlenecks in your setup and how to scale it for more number of users.
+Performance testing is useful to understand how well your CommCare HQ instance performs under a given load. The results of this testing will inform any bottlenecks in your setup and how to scale it for more number of users.
 
 Dimagi uses `Locust <https://locust.io/>`_, and scripts stored in the
 `commcare-perf repository <https://github.com/dimagi/commcare-perf/>`_,

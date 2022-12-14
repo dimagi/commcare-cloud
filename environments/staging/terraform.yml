@@ -33,7 +33,18 @@ servers:
     group: "control"
     os: bionic
 
-  - server_name: "web7-staging"
+  - server_name: "web9-staging"
+    server_instance_type: "t3.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_type: "gp3"
+    volume_encrypted: yes
+    group: webworkers
+    os: bionic
+    server_auto_recovery: true
+
+  - server_name: "web10-staging"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
     az: "b"
@@ -41,62 +52,8 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     group: webworkers
-    os: ubuntu_pro_bionic
+    os: bionic
     server_auto_recovery: true
-
-  - server_name: "web8-staging"
-    server_instance_type: "t3.medium"
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 80
-    volume_type: "gp3"
-    volume_encrypted: yes
-    group: webworkers
-    os: ubuntu_pro_bionic
-    server_auto_recovery: true
-
-  - server_name: "es6-staging"
-    server_instance_type: "t3.medium"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    block_device:
-      volume_size: 80
-      encrypted: true
-      volume_type: "gp3"
-      enable_cross_region_backup: yes
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-
-  - server_name: "es7-staging"
-    server_instance_type: "t3.medium"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    block_device:
-      volume_size: 80
-      encrypted: true
-      volume_type: "gp3"
-      enable_cross_region_backup: yes
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
-
-  - server_name: "es9-staging"
-    server_instance_type: "t3.medium"
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 30
-    volume_type: "gp3"
-    block_device:
-      volume_size: 80
-      volume_type: "gp3"
-      enable_cross_region_backup: yes
-    group: "elasticsearch"
-    os: ubuntu_pro_bionic
 
   - server_name: "es12-staging"
     server_instance_type: "t3.medium"
@@ -138,7 +95,52 @@ servers:
     group: "elasticsearch"
     os: bionic
 
-  - server_name: "pillow3-staging"
+  - server_name: "es15-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      encrypted: true
+      volume_type: "gp3"
+      enable_cross_region_backup: yes
+    group: "elasticsearch"
+    os: bionic
+
+  - server_name: "es16-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      encrypted: true
+      volume_type: "gp3"
+      enable_cross_region_backup: yes
+    group: "elasticsearch"
+    os: bionic
+
+  - server_name: "es17-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      encrypted: true
+      volume_type: "gp3"
+      enable_cross_region_backup: yes
+    group: "elasticsearch"
+    os: bionic
+
+  - server_name: "pillow4-staging"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
     az: "a"
@@ -146,7 +148,7 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     group: pillowtop
-    os: ubuntu_pro_bionic
+    os: bionic
 
   - server_name: "celery_a0-staging"
     server_instance_type: "t3a.xlarge"
@@ -157,10 +159,10 @@ servers:
     group: celery
     os: bionic
 
-  - server_name: "formplayer4-staging"
+  - server_name: "formplayer7-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
-    az: "a"
+    az: "b"
     volume_size: 30
     volume_encrypted: yes
     volume_type: "gp3"
@@ -169,10 +171,10 @@ servers:
       encrypted: true
       volume_type: "gp3"
     group: formplayer
-    os: ubuntu_pro_bionic
+    os: bionic
     server_auto_recovery: true
 
-  - server_name: "formplayer5-staging"
+  - server_name: "formplayer8-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
@@ -184,7 +186,7 @@ servers:
       encrypted: true
       volume_type: "gp3"
     group: formplayer
-    os: ubuntu_pro_bionic
+    os: bionic
     server_auto_recovery: true
 
   - server_name: "couch6-staging"
@@ -264,7 +266,7 @@ servers:
     group: "kafka"
     os: bionic
 
-  - server_name: "kafka5-staging"
+  - server_name: "kafka7-staging"
     server_instance_type: t3.medium
     network_tier: "db-private"
     az: "b"
@@ -276,9 +278,9 @@ servers:
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
-    os: ubuntu_pro_bionic
+    os: bionic
 
-  - server_name: "kafka6-staging"
+  - server_name: "kafka8-staging"
     server_instance_type: t3.medium
     network_tier: "db-private"
     az: "c"
@@ -290,7 +292,7 @@ servers:
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
-    os: ubuntu_pro_bionic
+    os: bionic
 
   - server_name: "pgproxy4-staging"
     server_instance_type: t3.small
@@ -306,7 +308,7 @@ servers:
     group: postgresql
     os: ubuntu_pro_bionic
 
-  - server_name: "pgbouncer0-staging"
+  - server_name: "pgbouncer1-staging"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "a"
@@ -314,7 +316,7 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     group: postgresql
-    os: ubuntu_pro_bionic
+    os: bionic
 
 proxy_servers:
   - server_name: "proxy2-staging"
@@ -337,6 +339,26 @@ proxy_servers:
     group: "proxy"
     os: ubuntu_pro_bionic
 
+  - server_name: "proxy4-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_type: "gp3"
+    volume_encrypted: yes
+    group: "proxy"
+    os: bionic
+
+  - server_name: "proxy5-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_type: "gp3"
+    volume_encrypted: yes
+    group: "proxy"
+    os: bionic
+
 rds_instances:
   - identifier: "pg0-staging"
     instance_type: "db.t3.small"
@@ -352,7 +374,7 @@ rds_instances:
     instance_type: "db.t3.small"
     storage: 160
     multi_az: yes
-    engine_version: "14"
+    engine_version: "14.4"
     params:
       shared_preload_libraries: pg_stat_statements
       track_io_timing: 1
@@ -360,7 +382,7 @@ rds_instances:
 pgbouncer_nlbs:
   - name: "pgformplayer_nlb-staging"
     targets:
-      - pgbouncer0-staging
+      - pgbouncer1-staging
       - pgproxy4-staging
   - name: "pgmain_nlb-staging"
     targets:
@@ -373,7 +395,7 @@ pgbouncer_nlbs:
       - pgproxy4-staging
   - name: "pgshard_nlb-staging"
     targets:
-      - pgbouncer0-staging
+      - pgbouncer1-staging
 
 internal_albs:
   - name: "couch_alb-staging"
@@ -417,3 +439,9 @@ efs_file_systems:
     create_record: yes
     domain_name: "staging.commcare.local"
     route_names: "shared-efs"
+
+fsx_file_systems:
+  - fsx_name: "fsx_staging"
+    create: yes
+    storage_capacity: 64
+    throughput_capacity: 128

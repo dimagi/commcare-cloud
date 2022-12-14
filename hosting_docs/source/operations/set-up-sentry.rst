@@ -3,7 +3,7 @@
 Set up Sentry for error logs
 ============================
 
-`sentry.io <https://sentry.io>`_ is an error logging platform that CommCareHQ server is integrated with. This is a guide on how setup this integration. If you would like to self host Sentry using commcare-cloud, see :ref:`sentry-on-prem`.
+`sentry.io <https://sentry.io>`_ is an error logging platform that CommCare HQ server is integrated with. This is a guide on how setup this integration. If you would like to self host Sentry using commcare-cloud, see :ref:`sentry-on-prem`.
 
 
 Register account on sentry.io

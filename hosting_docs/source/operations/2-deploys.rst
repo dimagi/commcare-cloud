@@ -3,7 +3,7 @@
 Managing The Deployment
 =======================
 
-This section describes how to restart services, how to deploy CommCareHQ code changes and other advanced topics.
+This section describes how to restart services, how to deploy CommCare HQ code changes and other advanced topics.
 
 .. contents:: Table of Contents
     :depth: 2
@@ -115,7 +115,7 @@ Prerequisites
 
 Ensure that you have a working version of ``commcare-cloud`` which is configured to act on your monolith or fleet of servers. You can find more information on setting up ``commcare-cloud`` in :ref:`reference/1-commcare-cloud/index:CommCare Cloud Reference`.
 
-If you have followed :ref:`installation/quick-monolith-install:` ``commcare-cloud`` will be installed on the CommCareHQ server itself.
+If you have followed :ref:`installation/quick-monolith-install:` ``commcare-cloud`` will be installed on the CommCare HQ server itself.
 
 All commands listed here will be run from your control machine which has ``commcare-cloud`` installed.
 

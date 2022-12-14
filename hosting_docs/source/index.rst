@@ -1,13 +1,13 @@
-.. CommCareHQ Deployment documentation master file, created by
+.. CommCare HQ Deployment documentation master file, created by
    sphinx-quickstart on Thu Aug 26 12:26:34 2021.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-=================================================
-Welcome to CommCareHQ Deployment's documentation!
-=================================================
+==================================================
+Welcome to CommCare HQ Deployment's documentation!
+==================================================
 
-This documentation contains guides and reference material on how to self host CommCareHQ locally. It covers requirements to self host CommCareHQ, various deployment types, infrastrucutre and team requirements to host CommCareHQ, installation instructions for single and multi server deployment and how to manage CommCareHQ deployment through the entire hosting lifecycle.
+This documentation contains guides and reference material on how to self host CommCare HQ locally. It covers requirements to self host CommCare HQ, various deployment types, infrastrucutre and team requirements to host CommCare HQ, installation instructions for single and multi server deployment and how to manage CommCare HQ deployment through the entire hosting lifecycle.
 
 
 
@@ -16,7 +16,7 @@ This documentation contains guides and reference material on how to self host Co
 
    Getting Started <about/index>
    Prerequisites <prereqs/index>
-   Deploy CommCareHQ <installation/index>
+   Deploy CommCare HQ <installation/index>
    Operations and Maintenance <operations/1-index>
    How to Scale <scaling/1-index>
    Service Guides <services/0-index>
