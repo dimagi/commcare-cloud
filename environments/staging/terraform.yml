@@ -319,26 +319,6 @@ servers:
     os: bionic
 
 proxy_servers:
-  - server_name: "proxy2-staging"
-    server_instance_type: "t3.medium"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 80
-    volume_type: "gp3"
-    volume_encrypted: yes
-    group: "proxy"
-    os: ubuntu_pro_bionic
-
-  - server_name: "proxy3-staging"
-    server_instance_type: "t3.medium"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 80
-    volume_type: "gp3"
-    volume_encrypted: yes
-    group: "proxy"
-    os: ubuntu_pro_bionic
-
   - server_name: "proxy4-staging"
     server_instance_type: "t3.medium"
     network_tier: "app-private"
