@@ -308,6 +308,20 @@ servers:
     group: postgresql
     os: ubuntu_pro_bionic
 
+  - server_name: "pgproxy5-staging"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      encrypted: true
+      volume_type: "gp3"
+    group: postgresql
+    os: bionic
+
   - server_name: "pgbouncer1-staging"
     server_instance_type: t3.small
     network_tier: "db-private"
@@ -364,15 +378,19 @@ pgbouncer_nlbs:
     targets:
       - pgbouncer1-staging
       - pgproxy4-staging
+      - pgproxy5-staging
   - name: "pgmain_nlb-staging"
     targets:
       - pgproxy4-staging
+      - pgproxy5-staging
   - name: "pgucr_nlb-staging"
     targets:
       - pgproxy4-staging
+      - pgproxy5-staging
   - name: "pgsynclogs_nlb-staging"
     targets:
       - pgproxy4-staging
+      - pgproxy5-staging
   - name: "pgshard_nlb-staging"
     targets:
       - pgbouncer1-staging
