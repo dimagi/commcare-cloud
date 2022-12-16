@@ -156,12 +156,6 @@ def update_virtualenv(full_cluster=True):
             _clone_virtualenv(env)
 
         requirements_files = [join("requirements", "prod-requirements.txt")]
-        requirements_files.extend(
-            join(repo.relative_dest, repo.requirements_path)
-            for repo in env.ccc_environment.meta_config.git_repositories
-            if repo.requirements_path
-        )
-
         with cd(env.code_root):
             cmd_prefix = f'{env.virtualenv_root}/bin/'
             proxy = f" --proxy={env.http_proxy}" if env.http_proxy else ""

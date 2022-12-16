@@ -391,7 +391,7 @@ class Kafka(MultiAnsibleService):
     name = 'kafka'
     service_process_mapping = {
         'kafka': ('kafka-server', 'kafka'),
-        'zookeeper': ('zookeeper', 'zookeeper')
+        'zookeeper': ('zookeeper-server', 'zookeeper')
     }
     log_location = '/opt/kafka/logs/'
 

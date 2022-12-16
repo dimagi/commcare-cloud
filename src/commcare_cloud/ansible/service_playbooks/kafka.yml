@@ -12,7 +12,7 @@
   become: true
   hosts: zookeeper
   tasks:
-    - service: name=zookeeper state={{ desired_state }}
+    - service: name=zookeeper-server state={{ desired_state }}
   tags:
     - restart_zookeeper
     - start_zookeeper

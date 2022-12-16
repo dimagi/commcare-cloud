@@ -155,7 +155,10 @@ def run_ansible_playbook(
         cmd_parts += cmd_parts_with_common_ssh_args
         cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command(cmd)
-        return subprocess.call(cmd_parts, env=env_vars)
+        try:
+            return subprocess.call(cmd_parts, env=env_vars)
+        except KeyboardInterrupt:
+            return 1
 
     def run_check():
         with ansible_context.environment.secrets_backend.suppress_datadog_event():
