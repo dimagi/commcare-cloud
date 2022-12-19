@@ -28,4 +28,107 @@ resource "aws_elasticache_replication_group" "redis-dev-cluster-0" {
   tags = {
     Name = "${var.namespace}-cache"
   }
+
+#Redis Log Delivery enginelog configuration
+log_delivery_configuration {
+  destination      = "${var.namespace}-elastic-cache-engine-logs"
+  destination_type = "cloudwatch-logs"
+  log_format       = "json"
+  log_type         = "engine-log"
+}
+
+#Redis Log Delivery slowlog configuration
+
+log_delivery_configuration {
+  destination      = "${var.namespace}-elastic-cache-slow-logs"
+  destination_type = "cloudwatch-logs"
+  log_format       = "json"
+  log_type         = "slow-log"
+}
+}
+
+#must have the following permissions settings to configure ElastiCache for Redis to send enginelogs to a CloudWatch Logs
+resource "aws_cloudwatch_log_group" "elastic-cache-engine-logs" {
+  name = "${var.namespace}-elastic-cache-engine-logs"
+}
+
+resource "aws_cloudwatch_log_resource_policy" "elastic-cache-engine-logs-policy" {
+  policy_name = "elastic-cache-engine-logs-policy"
+
+  policy_document = <<CONFIG
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "logs:CreateLogDelivery",
+                "logs:GetLogDelivery",
+                "logs:UpdateLogDelivery",
+                "logs:DeleteLogDelivery",
+                "logs:ListLogDeliveries"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow",
+            "Sid": "ElastiCacheLogging"
+        },
+        {
+            "Sid": "ElastiCacheLoggingCWL",
+            "Action": [
+                "logs:PutResourcePolicy",
+                "logs:DescribeResourcePolicies",
+                "logs:DescribeLogGroups"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow"
+        }
+    ]
+}
+CONFIG
+}
+
+#must have the following permissions settings to configure ElastiCache for Redis to send slowlogs to a CloudWatch Logs
+resource "aws_cloudwatch_log_group" "elastic-cache-slow-logs" {
+  name = "${var.namespace}-elastic-cache-slow-logs"
+}
+
+resource "aws_cloudwatch_log_resource_policy" "elastic-cache-slow-logs-policy" {
+  policy_name = "elastic-cache-slow-logs-policy"
+
+  policy_document = <<CONFIG
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "logs:CreateLogDelivery",
+                "logs:GetLogDelivery",
+                "logs:UpdateLogDelivery",
+                "logs:DeleteLogDelivery",
+                "logs:ListLogDeliveries"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow",
+            "Sid": "ElastiCacheLogging"
+        },
+        {
+            "Sid": "ElastiCacheLoggingCWL",
+            "Action": [
+                "logs:PutResourcePolicy",
+                "logs:DescribeResourcePolicies",
+                "logs:DescribeLogGroups"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow"
+        }
+    ]
+}
+CONFIG
 }
