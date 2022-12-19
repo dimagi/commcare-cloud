@@ -48,7 +48,7 @@ log_delivery_configuration {
 
 #must have the following permissions settings to configure ElastiCache for Redis to send enginelogs to a CloudWatch Logs
 resource "aws_cloudwatch_log_group" "elastic-cache-engine-logs" {
-  name = "${var.namespace}-elastic-cache-engine-logs"
+  name = "${var.namespace}-engine-logs"
 }
 
 resource "aws_cloudwatch_log_resource_policy" "elastic-cache-engine-logs-policy" {
@@ -91,7 +91,7 @@ CONFIG
 
 #must have the following permissions settings to configure ElastiCache for Redis to send slowlogs to a CloudWatch Logs
 resource "aws_cloudwatch_log_group" "elastic-cache-slow-logs" {
-  name = "${var.namespace}-elastic-cache-slow-logs"
+  name = "${var.namespace}-slow-logs"
 }
 
 resource "aws_cloudwatch_log_resource_policy" "elastic-cache-slow-logs-policy" {
