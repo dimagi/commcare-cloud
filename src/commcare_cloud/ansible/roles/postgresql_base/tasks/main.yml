@@ -28,6 +28,7 @@
       - libpq-dev
       - python-psycopg2
       - unzip
+      - libreadline-dev 
 
 - name: Install PostgreSQL & dependencies (bionic)
   apt:
