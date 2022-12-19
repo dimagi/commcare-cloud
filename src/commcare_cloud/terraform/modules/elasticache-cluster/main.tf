@@ -38,7 +38,6 @@ log_delivery_configuration {
 }
 
 #Redis Log Delivery slowlog configuration
-
 log_delivery_configuration {
   destination      = "${var.namespace}-elastic-cache-slow-logs"
   destination_type = "cloudwatch-logs"
