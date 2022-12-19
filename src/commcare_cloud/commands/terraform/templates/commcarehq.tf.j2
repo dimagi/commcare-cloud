@@ -299,6 +299,26 @@ module "pgbouncer_nlb__{{ pgbouncer_nlb.name }}" {
 
 {% endfor %}
 
+{% for internal_nlb in internal_nlbs %}
+module "internal_nlb__{{ internal_nlb.name }}" {
+  source = "./modules/internal_nlb"
+  vpc_id   = module.network.vpc-id
+  nlb_identifier = "{{ internal_nlb.identifier }}"
+  subnets = [
+    {%- for az in az_codes %}{% if not loop.first %}, {% endif %}
+    lookup(module.network.subnets-app-private, "{{ az }}", "")
+    {%- endfor %}
+  ]
+  environment = var.environment
+  server_ids = [
+    {%- for server_id in internal_nlb.targets %}{% if not loop.first %}, {% endif %}
+    module.server__{{ server_id }}.server
+    {%- endfor %}
+  ]
+}
+
+{% endfor %}
+
 {% for internal_alb in internal_albs %}
 module "internal_alb__{{ internal_alb.name }}" {
   source = "./modules/internal_alb"

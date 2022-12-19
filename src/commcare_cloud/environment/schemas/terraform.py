@@ -35,6 +35,7 @@ class TerraformConfig(jsonobject.JsonObject):
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)
     pgbouncer_nlbs = jsonobject.ListProperty(lambda: PgbouncerNlbs)
+    internal_nlbs = jsonobject.ListProperty(lambda: InternalNlbs)
     internal_albs = jsonobject.ListProperty(lambda: InternalAlbs)
     elasticache = jsonobject.ObjectProperty(lambda: ElasticacheConfig, default=None)
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
@@ -211,6 +212,21 @@ class PgbouncerNlbs(jsonobject.JsonObject):
             self.identifier = self.name.replace('_', '-')
         if not re.match('[a-z]+-nlb-[a-z]+', self.identifier):
             raise ValueError("commcare-cloud requires pgbouncer nlb identifier to be of the form 'pg{name}-nlb-{environment}'")
+        return self
+
+class InternalNlbs(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    name = jsonobject.StringProperty(required=True)
+    identifier = jsonobject.StringProperty(required=False)
+    targets = jsonobject.ListProperty(str)
+
+    @classmethod
+    def wrap(cls, data):
+        self = super(InternalNlbs, cls).wrap(data)
+        if not self.identifier:
+            self.identifier = self.name.replace('_', '-')
+        if not re.match('[a-z]+-nlb-[a-z]+', self.identifier):
+            raise ValueError("commcare-cloud requires Internal nlb identifier to be of the form '{name}-nlb-{environment}'")
         return self
 
 class InternalAlbs(jsonobject.JsonObject):

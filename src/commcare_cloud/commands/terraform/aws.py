@@ -259,6 +259,11 @@ class AwsFillInventoryHelper(object):
                 self.get_host_group_definition(resource_name=pgbouncer_nlb.name)
             )
 
+        for internal_nlb in self.environment.terraform_config.network_nlbs:
+            context.update(
+                self.get_host_group_definition(resource_name=internal_nlb.name)
+            )
+
         for internal_alb in self.environment.terraform_config.internal_albs:
             context.update(
                 self.get_host_group_definition(resource_name=internal_alb.name)
