@@ -35,6 +35,7 @@
     name:
       - python3-docutils  # required for building pghashlib
       - python3-psycopg2
+      - libreadline-dev 
   when: ansible_distribution_version == '18.04'
 
 - name: Install pglogical
