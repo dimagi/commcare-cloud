@@ -1,5 +1,5 @@
 data "aws_secretsmanager_secret" "AMQP_USER" {
-  name = "commcare-staging/AMQP_USER"
+  name = "${var.account_alias}/AMQP_USER"
 }
 
 data "aws_secretsmanager_secret_version" "AMQP_USER" {
@@ -11,7 +11,7 @@ locals {
 }
 
 data "aws_secretsmanager_secret" "AMQP_PASSWORD" {
-  name = "commcare-staging/AMQP_PASSWORD"
+  name = "${var.account_alias}/AMQP_PASSWORD"
 }
 
 data "aws_secretsmanager_secret_version" "AMQP_PASSWORD" {

@@ -42,3 +42,7 @@ variable "subnet_ids" {
   description = "List of VPC subnet IDs"
   type = list
 }
+variable "account_alias" {
+  description = "The name of the environment working in"
+  type = string
+}
