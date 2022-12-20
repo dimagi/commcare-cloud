@@ -248,11 +248,13 @@ module "logshipping" {
   account_id = {{ account_id|tojson }}
 }
 
+{% if release_bucket %}
 module "autoscaling" {
   source = "./modules/autoscaling"
   release_bucket = var.release_bucket
   commcare_server_role_id = module.server_iam_role.commcare_server_role_id
 }
+{% endif %}
 
 module "ga_alb_waf" {
   source = "./modules/ga_alb_waf"
