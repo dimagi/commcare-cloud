@@ -46,11 +46,11 @@ log_delivery_configuration {
 }
 
 #log group creation for redis engine logs
-resource "aws_cloudwatch_log_group" "elastic-cache-engine-logs" {
+resource "aws_cloudwatch_log_group" "elasticache-engine-logs" {
   name = "${var.namespace}-engine-logs"
 }
 
 #log group creation for redis slow logs
-resource "aws_cloudwatch_log_group" "elastic-cache-slow-logs" {
+resource "aws_cloudwatch_log_group" "elasticache-slow-logs" {
   name = "${var.namespace}-slow-logs"
 }
