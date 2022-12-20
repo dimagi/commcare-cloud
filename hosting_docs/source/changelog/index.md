@@ -7,6 +7,13 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2022-12-20** [Dropping support for 3.6](0067-dropping-3.6-support.md)
+Commcare-cloud will no longer attempt to support Python 3.6. We strongly
+encourage you to follow the steps below to upgrade to Python 3.10 if you have
+not done so already.
+
+
+---
 #### **2022-12-13** [remove-unused-elastic-settings](0066-remove-unused-elastic-settings.md)
 CommCareHQ has two settings (`CASE_ES_DROP_FORM_FIELDS` and
 `ES_XFORM_DISABLE_ALL`) that were created several years ago for tuning
