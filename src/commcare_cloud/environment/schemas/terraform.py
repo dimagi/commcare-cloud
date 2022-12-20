@@ -36,6 +36,7 @@ class TerraformConfig(jsonobject.JsonObject):
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)
     pgbouncer_nlbs = jsonobject.ListProperty(lambda: PgbouncerNlbs)
     internal_albs = jsonobject.ListProperty(lambda: InternalAlbs)
+    proxy_internal_albs = jsonobject.ListProperty(lambda: ProxyInternalAlbs)
     elasticache = jsonobject.ObjectProperty(lambda: ElasticacheConfig, default=None)
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
     r53_private_zone = jsonobject.ObjectProperty(lambda: RoutePrivateZoneConfig, default=None)
@@ -228,6 +229,23 @@ class InternalAlbs(jsonobject.JsonObject):
             self.identifier = self.name.replace('_', '-')
         if not re.match('[a-z]+-alb-[a-z]+', self.identifier):
             raise ValueError("commcare-cloud requires internal alb identifier to be of the form 'internal{name}-alb-{environment}'")
+        return self
+
+class ProxyInternalAlbs(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    name = jsonobject.StringProperty(required=True)
+    identifier = jsonobject.StringProperty(required=False)
+    targets = jsonobject.ListProperty(str)
+    target_port = jsonobject.IntegerProperty(required=True)
+    listener_port = jsonobject.IntegerProperty(required=True)
+    health_check_interval = jsonobject.IntegerProperty(default=30)
+    @classmethod
+    def wrap(cls, data):
+        self = super(ProxyInternalAlbs, cls).wrap(data)
+        if not self.identifier:
+            self.identifier = self.name.replace('_', '-')
+        if not re.match('[a-z]+-alb-[a-z]+', self.identifier):
+            raise ValueError("commcare-cloud requires proxy internal alb identifier to be of the form 'proxy_internal{name}-alb-{environment}'")
         return self
 
 class ElasticacheConfig(jsonobject.JsonObject):

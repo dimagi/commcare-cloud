@@ -323,6 +323,29 @@ module "internal_alb__{{ internal_alb.name }}" {
 
 {% endfor %}
 
+{% for proxy_internal_alb in proxy_internal_albs %}
+module "proxy_internal_alb__{{ proxy_internal_alb.name }}" {
+  source = "./modules/proxy_internal_alb"
+  vpc_id   = module.network.vpc-id
+  alb_identifier = "{{ proxy_internal_alb.identifier }}"
+  target_port = "{{ proxy_internal_alb.target_port }}"
+  listener_port = "{{ proxy_internal_alb.listener_port }}"
+  health_check_interval = "{{ proxy_internal_alb.health_check_interval }}"
+  security_groups = [module.network.db-private-sg]
+  subnets = [
+    {%- for az in az_codes %}{% if not loop.first %}, {% endif %}
+    lookup(module.network.subnets-app-private, "{{ az }}", "")
+    {%- endfor %}
+  ]
+  environment = var.environment
+  server_ids = [
+    {%- for server_id in proxy_internal_alb.targets %}{% if not loop.first %}, {% endif %}
+    module.server__{{ server_id }}.server
+    {%- endfor %}
+  ]
+}
+
+{% endfor %}
 {% if ec2_auto_recovery %}
 {% for cloudwatch_alarm in ec2_auto_recovery %}
 module "cloudwatch_alarm__{{ cloudwatch_alarm.name_prefix }}" {
