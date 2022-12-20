@@ -181,7 +181,7 @@ our example cluster, the control machine is named “control1”.
 Upgrade to Python 3.10
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting on December 19th, 2022, commcare-cloud will require Python 3.10. Follow the steps below to properly install it.
+We recommend using Python 3.10 with commcare-cloud. Follow the steps below to properly install it.
 
 
 ::
