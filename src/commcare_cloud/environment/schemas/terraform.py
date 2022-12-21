@@ -267,8 +267,7 @@ class awsmqConfig(jsonobject.JsonObject):
     engine_version = jsonobject.StringProperty(default="3.10.10")
     host_instance_type = jsonobject.StringProperty(default="mq.m5.large")
     publicly_accessible = jsonobject.BooleanProperty(default=False)
-    general_log_enabled = jsonobject.BooleanProperty(default=True)
-    audit_log_enabled = jsonobject.BooleanProperty(default=True)
+    general_log_enabled = jsonobject.BooleanProperty(default=True)    
     encryption_enabled = jsonobject.BooleanProperty(default=True)    
 
 class RoutePrivateZoneConfig(jsonobject.JsonObject):
