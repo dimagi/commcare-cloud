@@ -24,6 +24,7 @@ resource "aws_elasticache_replication_group" "redis-dev-cluster-0" {
   subnet_group_name             = aws_elasticache_subnet_group.redis-dev-subnet-group-0[count.index].name
   security_group_ids            = var.securitygroup_id
   multi_az_enabled              = var.multi_az
+  apply_immediately             = true
 
   tags = {
     Name = "${var.namespace}-cache"
