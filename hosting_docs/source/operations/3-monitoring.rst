@@ -39,11 +39,11 @@ Recommended Dashboards
 Here are few non-exhaustive preset dashboard views that you can import using Datadog `import dashboard through json <https://docs.datadoghq.com/dashboards/#copy-import-or-export-dashboard-json>`_ functionality.
 
 
--  `hq-vitals.json <datadog_dashboards/hq-vitals.json>`__ gives a glance of all components of CommCare
--  `mobile-success.json <datadog_dashboards/mobile-success.json>`__ for monitoring success rate of mobile requests to the server
--  `postgres-overview.json <datadog_dashboards/postgres-overview.json>`__ for Postgres monitoring
--  `celery.json <datadog_dashboards/celery.json>`__ for monitoring bakcground application tasks of celery
--  `couchdb.json <datadog_dashboards/couchdb.json>`__ for CouchDB monitoring
+-  :download:`hq-vitals.json <./datadog_dashboards/hq-vitals.json>` gives a glance of all components of CommCare
+-  :download:`mobile-success.json <datadog_dashboards/mobile-success.json>` for monitoring success rate of mobile requests to the server
+-  :download:`postgres-overview.json <datadog_dashboards/postgres-overview.json>` for Postgres monitoring
+-  :download:`celery.json <datadog_dashboards/celery.json>` for monitoring bakcground application tasks of celery
+-  :download:`couchdb.json <datadog_dashboards/couchdb.json>` for CouchDB monitoring
 
 
 The tables below tabulate most of the metrics already found in the `.json` Datadog dashboards listed above, but in some instances contain
