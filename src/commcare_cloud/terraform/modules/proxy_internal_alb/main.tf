@@ -17,7 +17,7 @@ resource "aws_lb" "this" {
 resource "aws_lb_target_group" "this" {
   name     = var.alb_identifier
   port     = var.target_port
-  protocol = "HTTP"
+  protocol = "HTTPS"
   vpc_id   = var.vpc_id
 
   tags = {
@@ -45,7 +45,7 @@ resource "aws_lb_target_group_attachment" "this" {
 resource "aws_lb_listener" "this" {
   load_balancer_arn = aws_lb.this.arn
   port              = var.listener_port
-  protocol          = "HTTP"
+  protocol          = "HTTPS"
 
   default_action {
     type             = "forward"

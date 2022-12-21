@@ -388,8 +388,8 @@ internal_albs:
 
 proxy_internal_albs:
   - name: "proxy_alb-staging"
-    listener_port: 80
-    target_port: 80
+    listener_port: 443 
+    target_port: 443 
     targets:
       - proxy4-staging
       - proxy5-staging
