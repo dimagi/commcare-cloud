@@ -24,6 +24,7 @@ locals {
 module "awsmq" {
   source  = "cloudposse/mq-broker/aws"
   version = "2.0.1"
+  count   = var.create == true ? 1 : 0
   broker_name = var.name
   apply_immediately = var.apply_immediately
   auto_minor_version_upgrade = var.auto_minor_version_upgrade
@@ -32,7 +33,7 @@ module "awsmq" {
   engine_version = var.engine_version
   host_instance_type = var.host_instance_type
   publicly_accessible = var.publicly_accessible
-  allowed_security_group_ids = var.allowed_security_group_ids
+  securitygroup_id = var.securitygroup_id
   vpc_id = var.vpc_id
   subnet_ids = var.subnet_ids  
   mq_admin_user = local.AMQP_USER

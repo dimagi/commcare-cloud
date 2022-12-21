@@ -30,19 +30,11 @@ variable "publicly_accessible" {
   description = "Whether to enable connections from applications outside of the VPC that hosts the broker's subnets"
   type = bool
 }
-variable "allowed_security_group_ids" {
+variable "security_group_id" {
   description = "A list of IDs of Security Groups to allow access to the security group created by this module. The length of this list must be known at "plan" time."
-  type = string
-}
-variable "vpc_id" {
-  description = "The ID of the VPC to create the broker in"
   type = string
 }
 variable "subnet_ids" {
   description = "List of VPC subnet IDs"
   type = list
-}
-variable "account_alias" {
-  description = "The name of the environment working in"
-  type = string
 }
