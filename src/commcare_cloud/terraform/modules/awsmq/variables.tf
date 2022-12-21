@@ -30,11 +30,13 @@ variable "publicly_accessible" {
   description = "Whether to enable connections from applications outside of the VPC that hosts the broker's subnets"
   type = bool
 }
-variable "security_group_id" {
-  description = "A list of IDs of Security Groups to allow access to the security group created by this module. The length of this list must be known at "plan" time."
-  type = string
+variable "securitygroup_id" {
+  description = "A list of IDs of Security Groups to allow access to the security group created by this module. The length of this list must be known at \"plan\" time."
+  type = list
 }
 variable "subnet_ids" {
   description = "List of VPC subnet IDs"
   type = list
+}
+variable "vpc_id" {
 }

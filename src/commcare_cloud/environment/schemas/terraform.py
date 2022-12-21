@@ -259,13 +259,13 @@ class ElasticacheClusterConfig(jsonobject.JsonObject):
 class awsmqConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     create = jsonobject.BooleanProperty(default=True)
-    broker_name = jsonobject.BooleanProperty(default="mq-broker")
+    broker_name = jsonobject.StringProperty(default="mq-broker")
     apply_immediately = jsonobject.BooleanProperty(default=True)
     auto_minor_version_upgrade = jsonobject.BooleanProperty(default=False)
-    deployment_mode = jsonobject.BooleanProperty(default="ACTIVE_STANDBY_MULTI_AZ")
-    engine_type = jsonobject.BooleanProperty(default="RabbitMQ")
-    engine_version = jsonobject.BooleanProperty(default="3.10.10")
-    host_instance_type = jsonobject.BooleanProperty(default="mq.m5.large")
+    deployment_mode = jsonobject.StringProperty(default="ACTIVE_STANDBY_MULTI_AZ")
+    engine_type = jsonobject.StringProperty(default="RabbitMQ")
+    engine_version = jsonobject.StringProperty(default="3.10.10")
+    host_instance_type = jsonobject.StringProperty(default="mq.m5.large")
     publicly_accessible = jsonobject.BooleanProperty(default=False)
     general_log_enabled = jsonobject.BooleanProperty(default=True)
     audit_log_enabled = jsonobject.BooleanProperty(default=True)

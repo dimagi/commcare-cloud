@@ -1,5 +1,5 @@
 data "aws_secretsmanager_secret" "AMQP_USER" {
-  name = "${var.account_alias}/AMQP_USER"
+  name = "${var.secret_name_prefix}/AMQP_USER"
 }
 
 data "aws_secretsmanager_secret_version" "AMQP_USER" {
@@ -11,7 +11,7 @@ locals {
 }
 
 data "aws_secretsmanager_secret" "AMQP_PASSWORD" {
-  name = "${var.account_alias}/AMQP_PASSWORD"
+  name = "${var.secret_name_prefix}/AMQP_PASSWORD"
 }
 
 data "aws_secretsmanager_secret_version" "AMQP_PASSWORD" {
@@ -23,17 +23,16 @@ locals {
 }
 module "awsmq" {
   source  = "cloudposse/mq-broker/aws"
-  version = "2.0.1"
-  count   = var.create == true ? 1 : 0
-  broker_name = var.name
-  apply_immediately = var.apply_immediately
+  version = "2.0.1"  
+  name = var.broker_name
+  apply_immediately = var.broker_apply_immediately
   auto_minor_version_upgrade = var.auto_minor_version_upgrade
   deployment_mode = var.deployment_mode
   engine_type = var.engine_type
   engine_version = var.engine_version
   host_instance_type = var.host_instance_type
   publicly_accessible = var.publicly_accessible
-  securitygroup_id = var.securitygroup_id
+  allowed_security_groups = var.securitygroup_id
   vpc_id = var.vpc_id
   subnet_ids = var.subnet_ids  
   mq_admin_user = local.AMQP_USER

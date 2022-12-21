@@ -391,17 +391,15 @@ module "fsx_file_system__{{ fsx_file_system.efs_name }}" {
 
 module "awsmq" {
   source                	= "./modules/awsmq"
-  create               	= "{{ awsmq.create|tojson }}"
-  namespace             	= "${var.environment}-awsmq"
+  broker_name             = {{ awsmq.broker_name|tojson }}  
   subnet_ids			= values(module.network.subnets-db-private)
+  vpc_id = module.network.vpc-id
   securitygroup_id      	= compact([module.network.db-private-sg, module.network.ssh-sg, module.network.vpn-connections-sg])
-  apply_immediately     	=  {{ awsmq.apply_immediately|tojson }}
+  broker_apply_immediately     	=  {{ awsmq.apply_immediately|tojson }}
   auto_minor_version_upgrade 	= {{ awsmq.auto_minor_version_upgrade|tojson }}
   deployment_mode 		= {{ awsmq.deployment_mode|tojson }}
-  engine_type			= {{ aws.engine_type|tojson }}
-  host_instance_type 		= {{ aws.host_instance_type|tojson }}
-  publicly_accessible		= {{ aws.publicly_accessible|tojson }}
-  general_log_enabled  	= {{ aws.general_log_enabled|tojson }}
-  audit_log_enabled		= {{ aws.audit_log_enabled|tojson }}
-  encryption_enabled		= {{ aws.encryption_enabled|tojson }}
+  engine_type			= {{ awsmq.engine_type|tojson }}
+  engine_version  = {{ awsmq.engine_version|tojson }}
+  host_instance_type 		= {{ awsmq.host_instance_type|tojson }}
+  publicly_accessible		= {{ awsmq.publicly_accessible|tojson }}
 }    
