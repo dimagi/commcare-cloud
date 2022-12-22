@@ -392,7 +392,7 @@ module "fsx_file_system__{{ fsx_file_system.efs_name }}" {
 module "awsmq" {
   source                	= "./modules/awsmq"
   broker_name             = {{ awsmq.broker_name|tojson }}  
-  subnet_ids			= values(module.network.subnets-db-private)
+  subnet_ids			        = ["${lookup(module.network.subnets-app-private, "a", "")}"]
   vpc_id = module.network.vpc-id
   securitygroup_id      	= compact([module.network.db-private-sg, module.network.ssh-sg, module.network.vpn-connections-sg])
   broker_apply_immediately     	=  {{ awsmq.apply_immediately|tojson }}

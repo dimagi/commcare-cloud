@@ -409,13 +409,12 @@ awsmq:
   broker_name: "mq-broker"
   apply_immediately: false
   auto_minor_version_upgrade: false
-  deployment_mode: "ACTIVE_STANDBY_MULTI_AZ"
+  deployment_mode: "SINGLE_INSTANCE"
   engine_type: "RabbitMQ"
   engine_version: "3.10.10"
   host_instance_type: "mq.m5.large"
   publicly_accessible: false
   general_log_enabled: true  
-  encryption_enabled: true
 
 r53_private_zone:
   create: yes
