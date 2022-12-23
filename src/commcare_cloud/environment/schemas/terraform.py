@@ -262,7 +262,7 @@ class awsmqConfig(jsonobject.JsonObject):
     broker_name = jsonobject.StringProperty(default="mq-broker")
     apply_immediately = jsonobject.BooleanProperty(default=True)
     auto_minor_version_upgrade = jsonobject.BooleanProperty(default=False)
-    deployment_mode = jsonobject.StringProperty(default="SINGLE_INSTANCE")
+    deployment_mode = jsonobject.StringProperty(default="CLUSTER_MULTI_AZ")
     engine_type = jsonobject.StringProperty(default="RabbitMQ")
     engine_version = jsonobject.StringProperty(default="3.10.10")
     host_instance_type = jsonobject.StringProperty(default="mq.m5.large")
