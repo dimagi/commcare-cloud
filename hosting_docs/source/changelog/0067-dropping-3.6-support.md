@@ -24,21 +24,22 @@ to support it on commcare-cloud.
 
 ## Steps to update
 Follow the steps below to properly install Python 3.10 and its dependencies.
-
-$ sudo add-apt-repository -y ppa:deadsnakes/ppa
-$ sudo apt update
-$ sudo apt-get -y install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
-
+```
+sudo add-apt-repository -y ppa:deadsnakes/ppa
+sudo apt update
+sudo apt-get -y install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
+```
 Once Python 3.10 is installed on your control machine, run:
-
-$ update-code
-
+```
+update-code
+```
 which will pull the latest version of commcare-cloud and trigger the creation and activation of a Python 3.10 virtual environment.
 
 Confirm the active virtual environment is using Python 3.10
-
-$ python --version
-
+```
+python --version
+```
 Finally, run:
-
-$ manage-commcare-cloud configure
+```
+manage-commcare-cloud configure
+```
