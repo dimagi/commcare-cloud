@@ -35,14 +35,6 @@ else
 fi
 
 if [ -z ${CI_TEST} ]; then
-    if ! hash python3.10 2>/dev/null; then
-      echo "Starting December 19th, 2022, commcare-cloud will require Python 3.10."
-      echo "To upgrade, follow the instructions in:"
-      echo "   https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#upgrade-to-python-3-10"
-    fi
-fi
-
-if [ -z ${CI_TEST} ]; then
     # attempt to activate
     source "${COMMCARE_CLOUD_REPO}/control/activate_venv.sh"
     if [ "$VIRTUALENV_NOT_FOUND" == "true" ]; then
@@ -64,6 +56,14 @@ if [ -z ${CI_TEST} ]; then
         fi
         source "$VENV/bin/activate"
     fi
+fi
+
+# check for unsupported python version after virtual env is activated
+python_version=`python --version 2>&1 | awk '{print $2}'`
+if [[ $python_version = 3.6* ]]; then
+    echo "commcare-cloud no longer supports Python 3.6."
+    echo "To upgrade, follow the instructions in:"
+    echo "   https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#upgrade-to-python-3-10"
 fi
 
 if [ -d ~/commcarehq-ansible ]; then
