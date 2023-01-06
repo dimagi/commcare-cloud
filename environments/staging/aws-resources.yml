@@ -57,8 +57,6 @@ proxy5-staging: 10.201.11.200
 proxy5-staging.instance_id: i-022175194bcb24508
 rabbit_a0-staging: 10.201.10.144
 rabbit_a0-staging.instance_id: i-0d7e4372b83c5fef4
-rabbit_a1-staging: 10.201.10.197
-rabbit_a1-staging.instance_id: i-0fcb3bfbb0dbbb3f6
 rabbit_b0-staging: 10.201.11.176
 rabbit_b0-staging.instance_id: i-03ed9f03d635c825e
 web10-staging: 10.201.11.25
