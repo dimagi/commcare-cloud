@@ -19,11 +19,13 @@ zookeeper_cluster: True
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
-erlang: 1:25.0.4-1
-rabbitmq_version: 3.10.7-1
+erlang: 1:24.3.3-1
+rabbitmq_version: 3.10.13-1
 
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
+
+AMQP_HOST: 10.201.10.20
 
 run_websockets_wsgi: True
 
