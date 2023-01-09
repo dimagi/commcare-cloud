@@ -12,7 +12,7 @@ from textwrap import dedent
 
 from clint.textui import puts
 
-from commcare_cloud.cli_utils import print_command
+from commcare_cloud.cli_utils import print_command, log_command
 from commcare_cloud.colors import color_error
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.deploy.command import Deploy
@@ -200,7 +200,7 @@ def make_command_parser(available_envs, formatter_class=RawTextHelpFormatter,
             commands[alias] = cmd
     return parser, subparsers, commands
 
-
+@log_command
 def call_commcare_cloud(input_argv=sys.argv):
     # throw error if user is attempting to use python 2
     if not os.environ.get("CI_TEST") and sys.version_info[0] == 2:
@@ -240,7 +240,6 @@ def call_commcare_cloud(input_argv=sys.argv):
 
     return exit_code
 
-
 def _get_cleaned_args_for_control(args, input_argv):
     """
     Prepares input_argv to be used in run_on_control_instead
@@ -261,7 +260,6 @@ def _get_cleaned_args_for_control(args, input_argv):
             # delete '--control-setup', and then delete the value that comes after it
             del argv[i:i + 2]
     return argv
-
 
 def main():
     exit_code = call_commcare_cloud()
