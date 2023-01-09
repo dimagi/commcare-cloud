@@ -35,6 +35,7 @@
     - {name: 'yarn', version: '1.22.4'}
     - {name: 'bower', version: '1.8.4'}
     - {name: 'uglify-js', version: '2.6.1'}
+    - {name: 'sass', version: '1.57.1'}
   tags:
     - npm
 
