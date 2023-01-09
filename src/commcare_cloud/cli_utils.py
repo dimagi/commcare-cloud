@@ -3,8 +3,9 @@ from __future__ import absolute_import, print_function, unicode_literals
 import re
 import subprocess
 import sys
+import os
 from io import open
-
+import functools
 from clint.textui import puts
 from six.moves import input, shlex_quote
 
@@ -134,3 +135,16 @@ def print_command(command):
     if isinstance(command, (list, tuple)):
         command = ' '.join(shlex_quote(arg) for arg in command)
     print(color_code(command), file=sys.stderr)
+
+
+def log_command(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        base_dir = os.path.expanduser("~/.commcare-cloud")
+        file_path = os.path.join(base_dir, "history")
+        cmd = " ".join(sys.argv)
+
+        with open(file_path, "a+") as file:
+            file.write(f"{cmd}\n")
+            return func(*args, **kwargs)
+    return wrapper
