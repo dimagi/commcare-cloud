@@ -242,7 +242,27 @@ servers:
     group: "rabbitmq"
     os: bionic
 
+  - server_name: "rabbit_a2-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "rabbitmq"
+    os: bionic
+
   - server_name: "rabbit_b0-staging"
+    server_instance_type: "t3.large"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "rabbitmq"
+    os: bionic
+
+  - server_name: "rabbit_b1-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "b"
@@ -294,7 +314,7 @@ servers:
     group: "kafka"
     os: bionic
 
-  - server_name: "pgproxy4-staging"
+  - server_name: "pgproxy5-staging"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "b"
@@ -306,7 +326,7 @@ servers:
       encrypted: true
       volume_type: "gp3"
     group: postgresql
-    os: ubuntu_pro_bionic
+    os: bionic
 
   - server_name: "pgbouncer1-staging"
     server_instance_type: t3.small
@@ -363,16 +383,16 @@ pgbouncer_nlbs:
   - name: "pgformplayer_nlb-staging"
     targets:
       - pgbouncer1-staging
-      - pgproxy4-staging
+      - pgproxy5-staging
   - name: "pgmain_nlb-staging"
     targets:
-      - pgproxy4-staging
+      - pgproxy5-staging
   - name: "pgucr_nlb-staging"
     targets:
-      - pgproxy4-staging
+      - pgproxy5-staging
   - name: "pgsynclogs_nlb-staging"
     targets:
-      - pgproxy4-staging
+      - pgproxy5-staging
   - name: "pgshard_nlb-staging"
     targets:
       - pgbouncer1-staging
