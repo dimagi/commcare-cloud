@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2023-01-10** [Install Dart Sass as npm global dependency in preparation of Bootstrap upgrade](0068-install-dart-sass.md)
+Install Dart Sass as global NPM library. 
+
+
+---
 #### **2022-12-20** [Dropping support for 3.6](0067-dropping-3.6-support.md)
 Commcare-cloud will no longer attempt to support Python 3.6. We strongly
 encourage you to follow the steps below to upgrade to Python 3.10 if you have
