@@ -406,7 +406,7 @@ elasticache_cluster:
 
 awsmq:
   create: yes
-  broker_name: "mq-broker"
+  broker_name: "staging-mq-broker"
   apply_immediately: false
   auto_minor_version_upgrade: false
   deployment_mode: "CLUSTER_MULTI_AZ"
