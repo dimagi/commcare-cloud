@@ -46,6 +46,28 @@ in the sequence given below, so you shouldn't proceed to next steps until the pr
 
 #. Wipe PostgreSQL databases
 
+   Check status & start postgres if NOT running.
+
+   .. code-block::
+
+      $ cchq <env_name> service postgresql status
+
+   Status should be "OK" for both postgresql and pgbouncer.
+
+   If not running, Start postgresql and pgbouncer through postgresql service
+
+   .. code-block::
+
+      $ cchq <env_name> service postgresql start
+
+   If that does not start both successfully, reset services by running
+
+   .. code-block::
+
+      $ cchq <env_name> ap deploy_postgres.yml
+
+   Check status & once status is "OK", Wipe postgres data
+
    .. code-block::
 
       $ cchq <env_name> ap wipe_postgres.yml
