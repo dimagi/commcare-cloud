@@ -127,6 +127,10 @@ will be unable to submit forms or sync with the server.
 
 * Transfer these two files to the new environment.
 
+.. note::
+  If you would like to receive dump files for practising or testing, please contact us via https://forum.dimagi.com/c/developers/ with subject "Request for test domain dump data for migration testing" and mention this page. A dimagi developer will provide you above data for any test/QA domains from https://staging.commcarehq.org.
+
+
 3. Prepare the new environment to be populated
 ----------------------------------------------
 
