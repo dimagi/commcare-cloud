@@ -112,8 +112,13 @@ Rebuilding environment
 
       $ cchq <env_name> ap deploy_db.yml --skip-check
 
-#. Run a code deploy to create Kafka topics, create Postgres
-   tables, and Elasticsearch indices.
+   Run initial migration
+
+   .. code-block::
+
+      $ cchq <env_name> ap migrate_on_fresh_install.yml -e CCHQ_IS_FRESH_INSTALL=1
+
+#. Run a code deploy to create Kafka topics and Elasticsearch indices.
 
    .. code-block::
 
