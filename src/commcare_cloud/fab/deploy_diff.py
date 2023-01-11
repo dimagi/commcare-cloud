@@ -1,7 +1,7 @@
 import os
 import re
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import jinja2
 from gevent.pool import Pool
@@ -82,6 +82,32 @@ class DeployDiff:
                 "error": True
             }
 
+    def get_maintenance_pr_context(self):
+        from github import Github
+
+        now = datetime.now().strftime( '%Y-%m-%d')
+        sixweeks_ago = (datetime.now() - timedelta(days=6*7)).strftime( '%Y-%m-%d')
+        created = f"{sixweeks_ago}..{now}"
+        query = f"repo:dimagi/commcare-hq is:pr is:open created:{created} label:maintenance0,maintenance1"
+
+        try:
+            return {
+                "maintenance_prs": [
+                    f"{pr.html_url} ({pr.title})"
+                    for pr in Github().search_issues(query)
+                ],
+                "error": False
+            }
+        except GithubException as e:
+            print(color_error(
+                f"Error getting maintenance_prs: {e}. "
+                "Please report this at https://forum.dimagi.com/c/developers/"
+            ))
+            return {
+                "maintenance_prs": [],
+                "error": True
+            }
+
     @memoized
     def get_diff_context(self):
         context = {
@@ -90,7 +116,8 @@ class DeployDiff:
             "LABELS_TO_EXPAND": LABELS_TO_EXPAND,
             "errors": [],
             "warnings": [],
-            "changelogs": self.get_changelog_context()
+            "changelogs": self.get_changelog_context(),
+            "maintenance_prs": self.get_maintenance_pr_context()
         }
 
         if self.deployed_commit_matches_latest_commit:
@@ -137,16 +164,17 @@ class DeployDiff:
         context["prs_by_label"] = prs_by_label
         return context
 
-    def print_deployer_diff(self):
-        print(self.render_diff('console.txt.j2'))
+    def print_deployer_diff(self, is_dimagi_env=True):
+        print(self.render_diff('console.txt.j2', is_dimagi_env=is_dimagi_env))
 
     def get_email_diff(self):
         return self.render_diff("email.html.j2")
 
-    def render_diff(self, template_name):
+    def render_diff(self, template_name, is_dimagi_env=True):
         template = self.j2.get_template(template_name)
         return template.render(
-            **self.get_diff_context()
+            **self.get_diff_context(),
+            is_dimagi_env=is_dimagi_env
         )
 
     @memoized_property

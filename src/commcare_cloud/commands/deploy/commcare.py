@@ -77,7 +77,7 @@ def confirm_deploy(environment, deploy_revs, diffs, args):
         return False
 
     diff = _get_diff(environment, deploy_revs)
-    diff.print_deployer_diff()
+    diff.print_deployer_diff(environment.is_dimagi_env)
     if diff.deployed_commit_matches_latest_commit and not args.quiet:
         _print_same_code_warning(deploy_revs['commcare'])
     return ask(
