@@ -298,7 +298,7 @@ servers:
     group: "postgresql"
     os: bionic
 
-  - server_name: "rabbit_a4-india"
+  - server_name: "rabbit_a5-india"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "a"
@@ -308,7 +308,7 @@ servers:
     group: "rabbitmq"
     os: bionic
 
-  - server_name: "rabbit_c5-india"
+  - server_name: "rabbit_c6-india"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "c"
