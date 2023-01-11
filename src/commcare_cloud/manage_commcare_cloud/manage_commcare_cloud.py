@@ -6,6 +6,7 @@ from commcare_cloud.manage_commcare_cloud.datadog_monitors import UpdateDatadogM
 from commcare_cloud.manage_commcare_cloud.test_environments import TestEnvironments
 from ..argparse14 import ArgumentParser
 
+from commcare_cloud.cli_utils import log_command
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.manage_commcare_cloud.configure import Configure
 from commcare_cloud.manage_commcare_cloud.get import Get
@@ -29,7 +30,7 @@ COMMAND_TYPES = [
     ListDatadogMonitors,
 ]
 
-
+@log_command
 def main():
     parser = ArgumentParser()
     subparsers = parser.add_subparsers(dest='command')

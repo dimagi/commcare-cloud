@@ -8,6 +8,7 @@ from io import open
 import functools
 from clint.textui import puts
 from six.moves import input, shlex_quote
+from datetime import datetime
 
 from commcare_cloud.colors import color_code, color_error
 
@@ -140,11 +141,18 @@ def print_command(command):
 def log_command(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        base_dir = os.path.expanduser("~/.commcare-cloud")
-        file_path = os.path.join(base_dir, "history")
+        base_dir = "/var/log/"
+        file_path = os.path.join(base_dir, "commcare_cloud_command_history.log")
         cmd = " ".join(sys.argv)
 
-        with open(file_path, "a+") as file:
-            file.write(f"{cmd}\n")
-            return func(*args, **kwargs)
+        current_datetime = datetime.now()
+        current_date_time = current_datetime.strftime("%Y-%m-%d %H:%M:%S,%f")
+
+        try:
+            with open(file_path, "a") as file:
+                file.write(f"{current_date_time} - {cmd}\n")
+        except PermissionError:
+            pass
+        return func(*args, **kwargs)
     return wrapper
+# 2023-01-09 09:39:09,668
