@@ -11,6 +11,15 @@
     group: "{{ dev_group }}"
     state: touch
 
+- name: create commcare cloud command history log file
+  become: true
+  file:
+    path: /var/log/commcare_cloud_command_history.log.log
+    mode: 0666
+    owner: ansible
+    group: "{{ dev_group }}"
+    state: touch
+
 - name: Pull commcare-cloud source
   become: yes
   become_user: "{{ item }}"
