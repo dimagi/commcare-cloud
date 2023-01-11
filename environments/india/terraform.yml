@@ -298,26 +298,6 @@ servers:
     group: "postgresql"
     os: bionic
 
-  - server_name: "rabbit_a4-india"
-    server_instance_type: t3.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: bionic
-
-  - server_name: "rabbit_c5-india"
-    server_instance_type: t3.small
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: bionic
-
   - server_name: "rabbit_a5-india"
     server_instance_type: t3.small
     network_tier: "db-private"
