@@ -31,7 +31,9 @@ Changelogs:
 
 {%- if not (is_dimagi_env and maintenance_prs.error) and maintenance_prs.maintenance_prs -%}
 Be prepared for next deploy cycle:
+
     There are some maintenance changelogs that must be performed within next 3/6 weeks. Please review below Pull Requests and associated changelogs to be up to date.
+
 {% for pr in maintenance_prs.maintenance_prs -%}
         {{ pr }}
 {% endfor %}

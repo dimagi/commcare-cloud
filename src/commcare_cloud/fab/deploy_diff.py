@@ -93,7 +93,7 @@ class DeployDiff:
         try:
             return {
                 "maintenance_prs": [
-                    f"{pr.html_url} ({pr.title})"
+                    f"{pr.title} ({pr.html_url})"
                     for pr in Github().search_issues(query)
                 ],
                 "error": False
