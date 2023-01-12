@@ -1,0 +1,18 @@
+title: Install Dart Sass as npm global dependency in preparation of Bootstrap upgrade
+key: install-dart-sass
+date: 2023-01-10
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Install Dart Sass as global NPM library. 
+
+details: |
+  We are preparing to upgrade CommCare HQ to Bootstrap 5. In order to support this upgrade, we need to compile
+  SCSS files. Dart Sass is the current recommended compiler for this and will need to be installed.
+
+update_steps: |
+  To install dart sass on your machines, please run:
+  ```bash
+  cchq <env> deploy-stack --tags=npm
+  ```
