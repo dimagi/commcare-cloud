@@ -141,16 +141,13 @@ def print_command(command):
 def log_command(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        base_dir = "/var/log/"
-        file_path = os.path.join(base_dir, "commcare_cloud_command_history.log")
+        # Use systemd package for keeping track of the commands. We'll write to it        
         cmd = " ".join(sys.argv)
-
         current_datetime = datetime.now()
         current_date_time = current_datetime.strftime("%Y-%m-%d %H:%M:%S,%f")
 
         try:
-            with open(file_path, "a") as file:
-                file.write(f"{current_date_time} - {cmd}\n")
+            # Write to journald
         except PermissionError:
             pass
         return func(*args, **kwargs)
