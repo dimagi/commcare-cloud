@@ -30,6 +30,7 @@ install_deps = [
     'pytz',
     'simplejson',
     'six',
+    'cysystemd~=1.5',
     'tabulate'
 ]
 test_deps = [

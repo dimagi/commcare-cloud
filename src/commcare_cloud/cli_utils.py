@@ -5,6 +5,7 @@ import subprocess
 import sys
 import os
 from io import open
+from cysystemd import journal
 import functools
 from clint.textui import puts
 from six.moves import input, shlex_quote
@@ -13,7 +14,6 @@ from datetime import datetime
 from commcare_cloud.colors import color_code, color_error
 
 from .environment.paths import ANSIBLE_DIR
-
 
 def ask(message, strict=False, quiet=False):
     if quiet:
@@ -141,14 +141,7 @@ def print_command(command):
 def log_command(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        # Use systemd package for keeping track of the commands. We'll write to it        
         cmd = " ".join(sys.argv)
-        current_datetime = datetime.now()
-        current_date_time = current_datetime.strftime("%Y-%m-%d %H:%M:%S,%f")
-
-        try:
-            # Write to journald
-        except PermissionError:
-            pass
+        journal.write(cmd)
         return func(*args, **kwargs)
     return wrapper

@@ -86,6 +86,7 @@
       - libcairo2
       - libpango1.0-0
       - auditd
+      - libsystemd-dev
 
 # Install ntp package
 - name: Install NTP package when Chrony is not defined.
