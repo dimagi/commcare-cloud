@@ -1,12 +1,12 @@
 title: configure-java-17-for-formplayer
 key: configure-java-17-for-formplayer
-date: 2023-01-09
+date: 2023-01-10
 optional_per_env: no
 context: |
   This change is to configure Java 17 for Formplayer. 
 
 details: |
-  This sets a specific Java version just for formplayer. It should only affect the machine that formplayer is on and it shouldn't imapct other 
+  This sets a specific Java version just for formplayer. It should only affect the machine that formplayer is on and it shouldn't imapct any other 
   Java processes running on that machine. 
 
 update_steps: |
@@ -20,4 +20,7 @@ update_steps: |
       ```
       commcare-cloud <env> ap deploy_formplayer.yml --limit=formplayer
       ```
-
+  4. Redeploy Formplayer 
+      ```
+      cchq <env> deploy formplayer
+      ```

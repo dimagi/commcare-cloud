@@ -2,7 +2,7 @@
 <!--See https://github.com/dimagi/commcare-cloud/blob/master/changelog/README.md for instructions-->
 # 69. configure-java-17-for-formplayer
 
-**Date:** 2023-01-09
+**Date:** 2023-01-10
 
 **Optional per env:** _required on all environments_
 
@@ -15,7 +15,7 @@ This change is not known to be dependent on any particular version of CommCare.
 This change is to configure Java 17 for Formplayer. 
 
 ## Details
-This sets a specific Java version just for formplayer. It should only affect the machine that formplayer is on and it shouldn't imapct other 
+This sets a specific Java version just for formplayer. It should only affect the machine that formplayer is on and it shouldn't imapct any other 
 Java processes running on that machine. 
 
 ## Steps to update
@@ -28,4 +28,8 @@ Java processes running on that machine.
 3. Update Formplayer 
     ```
     commcare-cloud <env> ap deploy_formplayer.yml --limit=formplayer
+    ```
+4. Redeploy Formplayer 
+    ```
+    cchq <env> deploy formplayer
     ```

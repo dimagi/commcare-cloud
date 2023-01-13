@@ -7,7 +7,7 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2023-01-09** [configure-java-17-for-formplayer](0069-configure-java-17-for-formplayer.md)
+#### **2023-01-10** [configure-java-17-for-formplayer](0069-configure-java-17-for-formplayer.md)
 This change is to configure Java 17 for Formplayer. 
 
 
