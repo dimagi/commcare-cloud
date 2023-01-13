@@ -385,7 +385,6 @@ internal_albs:
       - couch6-staging
       - couch13-staging
       - couch15-staging
-      - couch16-staging
       
 elasticache:
   create: no
