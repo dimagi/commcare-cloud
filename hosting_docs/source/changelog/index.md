@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2023-01-10** [configure-java-17-for-formplayer](0069-configure-java-17-for-formplayer.md)
+This change is to configure Java 17 for Formplayer. 
+
+
+---
 #### **2023-01-10** [Install Dart Sass as npm global dependency in preparation of Bootstrap upgrade](0068-install-dart-sass.md)
 Install Dart Sass as global NPM library. 
 
