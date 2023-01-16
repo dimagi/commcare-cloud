@@ -6,12 +6,6 @@
 - name: add user "kafka"
   user: name="{{ kafka_group }}" group="{{ kafka_group }}" shell=/sbin/nologin system=yes state=present
 
-- name: Set JMX_PORT in /etc/environment
-  lineinfile:
-    dest: /etc/environment
-    line: 'JMX_PORT={{ kafka_jmx_port }}'
-    state: "{{ 'present' if ansible_distribution_version == '14.04' else 'absent' }}"
-
 - name: Download Kafka
   get_url:
     url: "http://{{ apache_mirror }}/kafka/{{ kafka_version }}/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz"
@@ -82,10 +76,6 @@
     mode: 0644
   when: kafka_version == "0.8.2.2"
   tags: log4j
-
-- name: Install Kafka init script
-  template: src=kafka-server.j2 dest=/etc/init.d/kafka-server mode=0755
-  when: ansible_distribution_version == '14.04'
 
 - name: Install Kafka systemd script
   template: src=kafka-server.service.j2 dest=/etc/systemd/system/kafka-server.service mode=0755

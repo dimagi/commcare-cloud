@@ -55,14 +55,6 @@
   template: src=supervisord.conf.j2 dest=/etc/supervisord.conf
   become: yes
 
-- name: Add Upstart Conf
-  become: yes
-  template:
-    src: supervisord.upstart.conf.j2
-    dest: /etc/init/supervisord.conf
-  when: ansible_distribution_version == '14.04'
-  register: service_conf
-
 - name: Add Systemd Conf
   become: yes
   template:
