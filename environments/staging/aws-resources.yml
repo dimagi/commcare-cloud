@@ -6,6 +6,10 @@ couch13-staging: 10.201.41.223
 couch13-staging.instance_id: i-0bb571d1765a241dc
 couch15-staging: 10.201.42.109
 couch15-staging.instance_id: i-0f618ee36887bb494
+couch17-staging: 10.201.40.49
+couch17-staging.instance_id: i-010faf5cec47dd24e
+couch18-staging: 10.201.42.21
+couch18-staging.instance_id: i-08c6688ec9f82dcfe
 couch6-staging: 10.201.40.74
 couch6-staging.instance_id: i-01b32f8a2eebe07bc
 couch_alb-staging: internal-couch-alb-staging-546646078.us-east-1.elb.amazonaws.com
@@ -52,6 +56,7 @@ proxy4-staging: 10.201.10.38
 proxy4-staging.instance_id: i-023a8c825401fd149
 proxy5-staging: 10.201.11.200
 proxy5-staging.instance_id: i-022175194bcb24508
+proxyalb: internal-proxyalb-435630483.us-east-1.elb.amazonaws.com
 rabbit_a2-staging: 10.201.10.20
 rabbit_a2-staging.instance_id: i-07edbe70562292516
 rabbit_b1-staging: 10.201.11.184
