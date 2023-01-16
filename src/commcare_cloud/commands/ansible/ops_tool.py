@@ -2,16 +2,21 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import collections
 import csv
+import git
 import inspect
 import itertools
 import json
 import subprocess
 import sys
+import os
 from collections import defaultdict
+from commcare_cloud.fab.const import DATE_FMT
+from datetime import datetime
 from io import open
 from operator import attrgetter, itemgetter
 from distutils.version import LooseVersion
-
+from commcare_cloud.commands.ansible.ansible_playbook import _AnsiblePlaybookAlias
+from commcare_cloud.commands.deploy.commcare import get_deployed_version
 import yaml
 from clint.textui import indent, puts
 from couchdb_cluster_admin.utils import (
@@ -351,7 +356,7 @@ class UpdateLocalKnownHosts(CommandBase):
         "You can run this on a regular basis to avoid having to `yes` through\n"
         "the ssh prompts. Note that when you run this, you are implicitly\n"
         "trusting that at the moment you run it, there is no man-in-the-middle\n"
-        "attack going on, the type of security breech that the SSH prompt\n"
+        "attack going on, the type of security breach that the SSH prompt\n"
         "is meant to mitigate against in the first place."
     )
 
@@ -476,3 +481,58 @@ def chunked(iterable, n, fillvalue=None):
     # https://docs.python.org/3/library/itertools.html#itertools-recipes
     args = [iter(iterable)] * n
     return itertools.zip_longest(*args, fillvalue=fillvalue)
+
+
+class Snapshot(_AnsiblePlaybookAlias):
+    command = 'create-snapshot'
+    help = (
+        "This command creates a snapshot of your current environment's state.\n\n"
+        "State information is saved in the '~/.commcare-cloud/snapshots' directory. It is a good idea to run this"
+        "before making any major changes to your environment, as it allows you to have a record of your"
+        "environment's current state.\n\n"
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.env_info_dict = {}
+
+    def run(self, args, unknown_args):
+        self.env_info_dict
+        self.environment = get_environment(args.env_name)
+        self.env_info_dict["environment"] = args.env_name
+        self.log_commcare_cloud_statistics()
+        self.log_commcare_hq_statistics()
+        self.log_environment_settings_validation()
+    
+        self._create_snapshot_dir()
+
+    def _create_snapshot_dir(self):
+        env_name = self.env_info_dict["environment"]
+        snapshot_name = datetime.utcnow().strftime(DATE_FMT)
+        
+        self.snapshot_directory = os.path.expanduser(f"~/.commcare-cloud/snapshots/{env_name}/{snapshot_name}")
+        if not os.path.isdir(self.snapshot_directory):
+            os.makedirs(self.snapshot_directory)
+
+        file_path = os.path.join(self.snapshot_directory, "info.json")
+        with open(file_path, "w") as file:
+            json_str = json.dumps(self.env_info_dict)
+            file.write(json_str)
+
+    def log_commcare_cloud_statistics(self):
+        repo = git.Repo(search_parent_directories=True)
+        hexsha = repo.head.object.hexsha
+        self.env_info_dict["commcare_cloud"] = {"commit": hexsha}
+
+    def log_commcare_hq_statistics(self):
+        hexsha = get_deployed_version(self.environment)
+        self.env_info_dict["commcare_hq"] = {"commit": hexsha}
+
+    def log_environment_settings_validation(self):
+        settings_validaton = {"passed": True, "failure_reason": None}
+        try:
+            self.environment.check()
+        except Exception as exception:
+            settings_validaton["passed"] = False
+            self.env_info_dict["reason"] = str(exception)
+        self.env_info_dict["settings_validation"] = settings_validaton
