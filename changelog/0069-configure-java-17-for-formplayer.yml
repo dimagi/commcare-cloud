@@ -1,4 +1,4 @@
-title: configure-java-17-for-formplayer
+title: Configure Java 17 for Formplayer
 key: configure-java-17-for-formplayer
 date: 2023-01-10
 optional_per_env: no
@@ -14,7 +14,7 @@ update_steps: |
   1. Update commcare-cloud to the latest version
   2. Add the following setting to the environment's `public.yml` and set its value accordingly:
       ```
-      formplayer_java_version: {{ java_17_bin_path }}/java
+      formplayer_java_version: {\{ java_17_bin_path }}/java
       ```
   3. Update Formplayer 
       ```
