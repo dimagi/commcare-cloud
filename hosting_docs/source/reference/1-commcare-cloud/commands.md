@@ -154,7 +154,7 @@ commcare-cloud <env> update-local-known-hosts
 You can run this on a regular basis to avoid having to `yes` through
 the ssh prompts. Note that when you run this, you are implicitly
 trusting that at the moment you run it, there is no man-in-the-middle
-attack going on, the type of security breech that the SSH prompt
+attack going on, the type of security breach that the SSH prompt
 is meant to mitigate against in the first place.
 
 ---
@@ -218,6 +218,24 @@ Use '-' for default (django_manage[0])
 ###### `--quiet`
 
 Don't output the command to be run.
+
+---
+
+#### ``create-snapshot`` Command
+
+This command creates a snapshot of your current environment's state.
+
+```
+commcare-cloud <env> create-snapshot [--use-factory-auth]
+```
+
+State information is saved in the '~/.commcare-cloud/snapshots' directory. It is a good idea to run this before making any major changes to your environment, as it allows you to have a record of yourenvironment's current state.
+
+##### Optional Arguments
+
+###### `--use-factory-auth`
+
+authenticate using the pem file (or prompt for root password if there is no pem file)
 
 ---
 
