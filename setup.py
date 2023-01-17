@@ -18,7 +18,7 @@ install_deps = [
     'Fabric3>=1.10.2,<1.11',
     # can remove once requests bumps its version requirement
     # https://github.com/requests/requests/issues/4681
-    'gitpython~=3.1',
+    'gitpython',
     'idna==2.6',
     'importlib-metadata==3.1.0',
     'jinja2-cli',
