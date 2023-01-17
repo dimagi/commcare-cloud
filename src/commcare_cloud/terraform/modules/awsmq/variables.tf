@@ -53,3 +53,15 @@ variable "account_alias" {
   description = "account_alias"
   type = string
 }
+variable "logs_general" {
+  description = "Whether to enable general logs for cloudwatch"
+  type = bool
+}
+variable "security_groups" {
+  description = "A list of IDs of Security Groups to allow access to the security group created by this module. The length of this list must be known at \"plan\" time."
+  type = list
+}
+variable "subnet_ids" {
+  description = "List of VPC subnet IDs"
+  type = list(string)
+}

@@ -413,8 +413,8 @@ awsmq:
   deployment_mode: "CLUSTER_MULTI_AZ"  
   apply_immediately: false
   auto_minor_version_upgrade: false  
-  publicly_accessible: true
-  general_log_enabled: true 
+  publicly_accessible: false
+  logs_general: true 
   audit_log_enabled: false
   encryption_enabled: false
 
