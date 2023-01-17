@@ -497,12 +497,11 @@ class Snapshot(_AnsiblePlaybookAlias):
         self.env_info_dict = {}
 
     def run(self, args, unknown_args):
-        self.env_info_dict
         self.environment = get_environment(args.env_name)
         self.env_info_dict["environment"] = args.env_name
-        self.log_commcare_cloud_statistics()
-        self.log_commcare_hq_statistics()
-        self.log_environment_settings_validation()
+        self.collect_commcare_cloud_details()
+        self.collect_commcare_hq_details()
+        self.collect_environment_settings_validation()
     
         self._create_snapshot_dir()
 
@@ -516,19 +515,18 @@ class Snapshot(_AnsiblePlaybookAlias):
 
         file_path = os.path.join(self.snapshot_directory, "info.json")
         with open(file_path, "w") as file:
-            json_str = json.dumps(self.env_info_dict)
-            file.write(json_str)
+            json.dump(self.env_info_dict, fp=file)
 
-    def log_commcare_cloud_statistics(self):
+    def collect_commcare_cloud_details(self):
         repo = git.Repo(search_parent_directories=True)
         hexsha = repo.head.object.hexsha
         self.env_info_dict["commcare_cloud"] = {"commit": hexsha}
 
-    def log_commcare_hq_statistics(self):
+    def collect_commcare_hq_details(self):
         hexsha = get_deployed_version(self.environment)
         self.env_info_dict["commcare_hq"] = {"commit": hexsha}
 
-    def log_environment_settings_validation(self):
+    def collect_environment_settings_validation(self):
         settings_validaton = {"passed": True, "failure_reason": None}
         try:
             self.environment.check()
