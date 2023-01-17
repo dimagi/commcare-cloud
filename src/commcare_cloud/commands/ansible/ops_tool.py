@@ -501,7 +501,7 @@ class Snapshot(_AnsiblePlaybookAlias):
         self.env_info_dict["environment"] = args.env_name
         self.collect_commcare_cloud_details()
         self.collect_commcare_hq_details()
-        self.collect_environment_settings_validation()
+        self.log_environment_settings_validation()
     
         self._create_snapshot_dir()
 
@@ -526,7 +526,7 @@ class Snapshot(_AnsiblePlaybookAlias):
         hexsha = get_deployed_version(self.environment)
         self.env_info_dict["commcare_hq"] = {"commit": hexsha}
 
-    def collect_environment_settings_validation(self):
+    def log_environment_settings_validation(self):
         settings_validaton = {"passed": True, "failure_reason": None}
         try:
             self.environment.check()
