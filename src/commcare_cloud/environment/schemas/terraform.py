@@ -14,6 +14,8 @@ class TerraformConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     aws_profile = jsonobject.StringProperty(required=True)
     account_alias = jsonobject.StringProperty()
+    username = jsonobject.StringProperty()
+    password = jsonobject.StringProperty()
     terraform_version = jsonobject.StringProperty(choices=['0.12', '0.13', '0.14', '0.15', '1.0', '1.1', '1.2'])
     manage_users = jsonobject.BooleanProperty(default=True)
     state_bucket = jsonobject.StringProperty()
@@ -265,9 +267,11 @@ class awsmqConfig(jsonobject.JsonObject):
     deployment_mode = jsonobject.StringProperty(default="CLUSTER_MULTI_AZ")
     engine_type = jsonobject.StringProperty(default="RabbitMQ")
     engine_version = jsonobject.StringProperty(default="3.10.10")
-    host_instance_type = jsonobject.StringProperty(default="mq.m5.large")
-    publicly_accessible = jsonobject.BooleanProperty(default=False)
-    general_log_enabled = jsonobject.BooleanProperty(default=True)        
+    host_instance_type = jsonobject.StringProperty(default="mq.m5.large")   
+    publicly_accessible = jsonobject.BooleanProperty(default=True)
+    general_log_enabled = jsonobject.BooleanProperty(default=True)
+    audit_log_enabled = jsonobject.BooleanProperty(default=False) 
+    encryption_enabled = jsonobject.BooleanProperty(default=False)     
 
 class RoutePrivateZoneConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False

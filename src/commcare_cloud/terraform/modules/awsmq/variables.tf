@@ -2,7 +2,7 @@ variable "broker_name" {
   description = "Name of the broker"
   type = string
 }
-variable "broker_apply_immediately" {
+variable "apply_immediately" {
   description = "Specifies whether any cluster modifications are applied immediately, or during the next maintenance window"
   type = bool
 }
@@ -30,13 +30,26 @@ variable "publicly_accessible" {
   description = "Whether to enable connections from applications outside of the VPC that hosts the broker's subnets"
   type = bool
 }
-variable "securitygroup_id" {
-  description = "A list of IDs of Security Groups to allow access to the security group created by this module. The length of this list must be known at \"plan\" time."
-  type = list
-}
-variable "subnet_ids" {
-  description = "List of VPC subnet IDs"
-  type = list(string)
-}
 variable "vpc_id" {
+}
+variable "encryption_enabled" {
+  description = "Whether to enable connections from applications outside of the VPC that hosts the broker's subnets"
+  type = bool
+}
+variable "username" {
+  type        = string
+  description = "(optional) description"
+}
+variable "password" {
+  type        = string
+  sensitive   = false
+  description = "(optional) description"
+}
+variable "environment" {
+  description = "environment"
+  type = string
+}
+variable "account_alias" {
+  description = "account_alias"
+  type = string
 }

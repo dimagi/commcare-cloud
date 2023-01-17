@@ -392,14 +392,17 @@ module "fsx_file_system__{{ fsx_file_system.efs_name }}" {
 module "awsmq" {
   source                	= "./modules/awsmq"
   broker_name             = {{ awsmq.broker_name|tojson }}  
-  subnet_ids			        = ["${lookup(module.network.subnets-app-private, "a", "")}"]
-  vpc_id = module.network.vpc-id
-  securitygroup_id      	= compact([module.network.db-private-sg, module.network.ssh-sg, module.network.vpn-connections-sg])
-  broker_apply_immediately     	=  {{ awsmq.apply_immediately|tojson }}
+  vpc_id = module.network.vpc-id  
+  apply_immediately     	=  {{ awsmq.apply_immediately|tojson }}
   auto_minor_version_upgrade 	= {{ awsmq.auto_minor_version_upgrade|tojson }}
   deployment_mode 		= {{ awsmq.deployment_mode|tojson }}
+  environment = var.environment
+  account_alias = var.account_alias
+  username            = "${var.environment}_worker"
+  password            = var.password
   engine_type			= {{ awsmq.engine_type|tojson }}
   engine_version  = {{ awsmq.engine_version|tojson }}
   host_instance_type 		= {{ awsmq.host_instance_type|tojson }}
   publicly_accessible		= {{ awsmq.publicly_accessible|tojson }}
+  encryption_enabled    = {{ awsmq.encryption_enabled|tojson }}
 }    
