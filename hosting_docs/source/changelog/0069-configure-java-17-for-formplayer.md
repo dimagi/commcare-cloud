@@ -15,16 +15,18 @@ This change is not known to be dependent on any particular version of CommCare.
 This change is to configure Java 17 for Formplayer. 
 
 ## Details
-This sets a specific Java version just for formplayer. It should only affect the machine that formplayer is on and it shouldn't imapct any other 
+This sets a specific Java version just for formplayer. It should only affect the machine that formplayer is on and it shouldn't impact any other 
 Java processes running on that machine. 
 
 ## Steps to update
 
 1. Update commcare-cloud to the latest version
 2. Add the following setting to the environment's `public.yml` and set its value accordingly:
-    ```
-    formplayer_java_version: {\{ java_17_bin_path }}/java
-    ```
+    +++
+    <pre style="background-color:#f8f8f8" class="code literal-block">
+    formplayer_java_version: &#123;&#123; java_17_bin_path }}/java
+    </pre>
+    +++
 3. Update Formplayer 
     ```
     commcare-cloud <env> ap deploy_formplayer.yml --limit=formplayer
