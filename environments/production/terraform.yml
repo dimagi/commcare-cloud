@@ -404,7 +404,7 @@ proxy_servers:
 rds_instances:
   - identifier: "pgmain1-production"
     instance_type: "db.m5.4xlarge"
-    storage: 2000
+    storage: 2500
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
