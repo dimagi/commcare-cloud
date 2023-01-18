@@ -487,8 +487,8 @@ class Snapshot(_AnsiblePlaybookAlias):
     command = 'create-snapshot'
     help = (
         "This command creates a snapshot of your current environment's state.\n\n"
-        "State information is saved in the '~/.commcare-cloud/snapshots' directory. It is a good idea to run this"
-        " before making any major changes to your environment, as it allows you to have a record of your"
+        "State information is saved in the '~/.commcare-cloud/snapshots' directory. It is a good idea to run this "
+        "before making any major changes to your environment, as it allows you to have a record of your "
         "environment's current state.\n\n"
     )
 

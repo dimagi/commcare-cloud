@@ -229,7 +229,7 @@ This command creates a snapshot of your current environment's state.
 commcare-cloud <env> create-snapshot [--use-factory-auth]
 ```
 
-State information is saved in the '~/.commcare-cloud/snapshots' directory. It is a good idea to run this before making any major changes to your environment, as it allows you to have a record of yourenvironment's current state.
+State information is saved in the '~/.commcare-cloud/snapshots' directory. It is a good idea to run this before making any major changes to your environment, as it allows you to have a record of your environment's current state.
 
 ##### Optional Arguments
 
