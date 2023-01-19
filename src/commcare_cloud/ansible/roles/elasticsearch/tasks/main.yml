@@ -126,7 +126,7 @@
 - name: Restart Elasticsearch
   become: yes
   service: name=elasticsearch state=restarted
-  when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed or copy_elasticsearch_logging_result.changed
+  when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_logging_result.changed
   tags:
     - es_restart
 
