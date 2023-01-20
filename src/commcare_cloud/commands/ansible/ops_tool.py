@@ -8,7 +8,9 @@ import itertools
 import json
 import subprocess
 import sys
+import stat
 import os
+from pathlib import Path
 from collections import defaultdict
 from commcare_cloud.fab.const import DATE_FMT
 from datetime import datetime
@@ -502,6 +504,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self.collect_commcare_cloud_details()
         self.collect_commcare_hq_details()
         self.validate_environment_settings()
+        self.collect_control_machine_os_info()
     
         self._create_audit_dir()
 
@@ -534,3 +537,34 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
             settings_validaton["passed"] = False
             settings_validaton["failure_reason"] = str(exception)
         self.env_info_dict["settings_validation"] = settings_validaton
+
+    def collect_control_machine_os_info(self):
+        os_data = {}
+        # Distribution
+        os_distrib = {}
+        with open("/etc/lsb-release", "r") as file:
+            distrib_info = file.read().split("\n")
+            for info in distrib_info:
+                if not info:
+                    continue
+                key = info.split("=")[0]
+                value = info.split("=")[1]
+                os_distrib[key] = value
+        
+        os_data["os_distrib"] = os_distrib
+        
+        # File/Dir stats
+        paths = ["/opt/data"]
+        file_stats = []
+        for path_raw in paths:
+            path = Path(path_raw)
+            stats = {}
+            path_stats = path.stat()
+            stats["path"] = path_raw
+            stats["mode"] = stat.filemode(path_stats.st_mode)
+            stats["owner"] = path.owner()
+            stats["group"] = path.group()
+            file_stats.append(stats)
+        
+        os_data["path_stats"] = file_stats
+        self.env_info_dict["os_data"] = os_data
