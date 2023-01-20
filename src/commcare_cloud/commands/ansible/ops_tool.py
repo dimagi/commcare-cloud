@@ -504,7 +504,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self.collect_commcare_cloud_details()
         self.collect_commcare_hq_details()
         self.validate_environment_settings()
-        self.collect_control_machine_os_info()
+        self.collect_control_machine_os_level_info()
     
         self._create_audit_dir()
 
@@ -538,7 +538,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
             settings_validaton["failure_reason"] = str(exception)
         self.env_info_dict["settings_validation"] = settings_validaton
 
-    def collect_control_machine_os_info(self):
+    def collect_control_machine_os_level_info(self):
         os_data = {}
         # Distribution
         os_distrib = {}
