@@ -483,8 +483,8 @@ def chunked(iterable, n, fillvalue=None):
     return itertools.zip_longest(*args, fillvalue=fillvalue)
 
 
-class AuditInstallation(_AnsiblePlaybookAlias):
-    command = 'audit-installation'
+class AuditEnvironment(_AnsiblePlaybookAlias):
+    command = 'audit-environment'
     help = (
         "This command gathers information about your current environment's state.\n\n"
         "State information is saved in the '~/.commcare-cloud/snapshots' directory. It is a good idea to run this "
