@@ -503,17 +503,17 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self.collect_commcare_hq_details()
         self.validate_environment_settings()
     
-        self._create_snapshot_dir()
+        self._create_audit_dir()
 
-    def _create_snapshot_dir(self):
+    def _create_audit_dir(self):
         env_name = self.env_info_dict["environment"]
-        snapshot_name = datetime.utcnow().strftime(DATE_FMT)
+        audit_name = datetime.utcnow().strftime(DATE_FMT)
         
-        self.snapshot_directory = os.path.expanduser(f"~/.commcare-cloud/snapshots/{env_name}/{snapshot_name}")
-        if not os.path.isdir(self.snapshot_directory):
-            os.makedirs(self.snapshot_directory)
+        self.audits_directory = os.path.expanduser(f"~/.commcare-cloud/audits/{env_name}/{audit_name}")
+        if not os.path.isdir(self.audits_directory):
+            os.makedirs(self.audits_directory)
 
-        file_path = os.path.join(self.snapshot_directory, "info.json")
+        file_path = os.path.join(self.audits_directory, "info.json")
         with open(file_path, "w") as file:
             json.dump(self.env_info_dict, fp=file)
 
