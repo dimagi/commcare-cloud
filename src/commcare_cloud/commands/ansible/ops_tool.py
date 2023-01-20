@@ -483,10 +483,10 @@ def chunked(iterable, n, fillvalue=None):
     return itertools.zip_longest(*args, fillvalue=fillvalue)
 
 
-class Snapshot(_AnsiblePlaybookAlias):
-    command = 'create-snapshot'
+class AuditInstallation(_AnsiblePlaybookAlias):
+    command = 'audit-installation'
     help = (
-        "This command creates a snapshot of your current environment's state.\n\n"
+        "This command gathers information about your current environment's state.\n\n"
         "State information is saved in the '~/.commcare-cloud/snapshots' directory. It is a good idea to run this "
         "before making any major changes to your environment, as it allows you to have a record of your "
         "environment's current state.\n\n"
@@ -501,7 +501,7 @@ class Snapshot(_AnsiblePlaybookAlias):
         self.env_info_dict["environment"] = args.env_name
         self.collect_commcare_cloud_details()
         self.collect_commcare_hq_details()
-        self.log_environment_settings_validation()
+        self.validate_environment_settings()
     
         self._create_snapshot_dir()
 
@@ -526,7 +526,7 @@ class Snapshot(_AnsiblePlaybookAlias):
         hexsha = get_deployed_version(self.environment)
         self.env_info_dict["commcare_hq"] = {"commit": hexsha}
 
-    def log_environment_settings_validation(self):
+    def validate_environment_settings(self):
         settings_validaton = {"passed": True, "failure_reason": None}
         try:
             self.environment.check()
