@@ -103,12 +103,6 @@ formplayer_a016-production: 10.202.10.43
 formplayer_a016-production.instance_id: i-045339c9cde0985f4
 formplayer_a017-production: 10.202.10.106
 formplayer_a017-production.instance_id: i-08af566a01df77ec9
-formplayer_a018-production: 10.202.10.95
-formplayer_a018-production.instance_id: i-0e3faabcdf556530f
-formplayer_a019-production: 10.202.10.30
-formplayer_a019-production.instance_id: i-0b53bf503c60eb37a
-formplayer_a020-production: 10.202.10.81
-formplayer_a020-production.instance_id: i-03955bfb423b784c5
 frontend_alb-production: internal-frontend-alb-production-457692877.us-east-1.elb.amazonaws.com
 kafka_a0-production: 10.202.40.160
 kafka_a0-production.instance_id: i-07503ef11e2df4acf
@@ -157,10 +151,10 @@ proxy_b2-production: 10.202.11.61
 proxy_b2-production.instance_id: i-022aa901b35cce1ad
 proxy_c2-production: 10.202.12.193
 proxy_c2-production.instance_id: i-02d37f3c42cdcd811
-rabbit8-production: 10.202.41.233
-rabbit8-production.instance_id: i-0f3bac0b68c140d4d
-rabbit9-production: 10.202.40.174
-rabbit9-production.instance_id: i-0fb543773b8c2fe2f
+rabbit10-production: 10.202.41.18
+rabbit10-production.instance_id: i-08b0e930a246fee4e
+rabbit11-production: 10.202.40.162
+rabbit11-production.instance_id: i-00d47546d05e5a018
 web_a1000-production: 10.202.10.11
 web_a1000-production.instance_id: i-0a42a19b2055bfaf9
 web_a1001-production: 10.202.10.155
