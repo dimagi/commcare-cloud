@@ -501,10 +501,10 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         self.environment = get_environment(args.env_name)
         self.env_info_dict["environment"] = args.env_name
-        self.collect_commcare_cloud_details()
-        self.collect_commcare_hq_details()
-        self.validate_environment_settings()
-        self.collect_control_machine_os_level_info()
+        self._collect_commcare_cloud_details()
+        self._collect_commcare_hq_details()
+        self._validate_environment_settings()
+        self._collect_control_machine_os_level_info()
     
         self._create_audit_dir()
 
@@ -520,16 +520,16 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         with open(file_path, "w") as file:
             json.dump(self.env_info_dict, fp=file)
 
-    def collect_commcare_cloud_details(self):
+    def _collect_commcare_cloud_details(self):
         repo = git.Repo(search_parent_directories=True)
         hexsha = repo.head.object.hexsha
         self.env_info_dict["commcare_cloud"] = {"commit": hexsha}
 
-    def collect_commcare_hq_details(self):
+    def _collect_commcare_hq_details(self):
         hexsha = get_deployed_version(self.environment)
         self.env_info_dict["commcare_hq"] = {"commit": hexsha}
 
-    def validate_environment_settings(self):
+    def _validate_environment_settings(self):
         settings_validaton = {"passed": True, "failure_reason": None}
         try:
             self.environment.check()
@@ -538,7 +538,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
             settings_validaton["failure_reason"] = str(exception)
         self.env_info_dict["settings_validation"] = settings_validaton
 
-    def collect_control_machine_os_level_info(self):
+    def _collect_control_machine_os_level_info(self):
         os_data = {}
         # Distribution
         os_distrib = {}
