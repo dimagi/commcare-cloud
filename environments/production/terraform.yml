@@ -523,7 +523,7 @@ rds_instances:
       vacuum_cost_limit: 2000
 
   - identifier: "pgformplayer2-production"
-    instance_type: "db.m5.xlarge"
+    instance_type: "db.m5.large"
     storage: 200
     multi_az: true
     engine_version: "14"
