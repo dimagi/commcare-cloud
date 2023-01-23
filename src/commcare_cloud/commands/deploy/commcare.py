@@ -195,7 +195,7 @@ def _get_deployed_version(environment):
         AnsibleContext(None, environment),
         "django_manage",
         "shell",
-        f"cd {code_current}; git rev-parse HEAD",
+        f"sudo -iu cchq bash -c 'git --git-dir={code_current}/.git rev-parse HEAD'",
         become=False,
         run_command=ansible_json,
     )

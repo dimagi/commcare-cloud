@@ -46,6 +46,28 @@ in the sequence given below, so you shouldn't proceed to next steps until the pr
 
 #. Wipe PostgreSQL databases
 
+   Check status & start postgres if NOT running.
+
+   .. code-block::
+
+      $ cchq <env_name> service postgresql status
+
+   Status should be "OK" for both postgresql and pgbouncer.
+
+   If not running, Start postgresql and pgbouncer through postgresql service
+
+   .. code-block::
+
+      $ cchq <env_name> service postgresql start
+
+   If that does not start both successfully, reset services by running
+
+   .. code-block::
+
+      $ cchq <env_name> ap deploy_postgres.yml
+
+   Check status & once status is "OK", Wipe postgres data
+
    .. code-block::
 
       $ cchq <env_name> ap wipe_postgres.yml
@@ -90,8 +112,13 @@ Rebuilding environment
 
       $ cchq <env_name> ap deploy_db.yml --skip-check
 
-#. Run a code deploy to create Kafka topics, create Postgres
-   tables, and Elasticsearch indices.
+   Run initial migration
+
+   .. code-block::
+
+      $ cchq <env_name> ap migrate_on_fresh_install.yml -e CCHQ_IS_FRESH_INSTALL=1
+
+#. Run a code deploy to create Kafka topics and Elasticsearch indices.
 
    .. code-block::
 

@@ -23,7 +23,7 @@ proxy
 web9
 web10
 
-{{ __pgproxy4__ }} pgbouncer_processes=2 swap_size=2G
+{{ __pgproxy5__ }} pgbouncer_processes=2 swap_size=2G
 
 {{ __pgbouncer1__ }}
 
@@ -43,7 +43,7 @@ rds_pgformplayer0
 {{ __couch_alb__ }}
 
 [postgresql:children]
-pgproxy4
+pgproxy5
 remote_postgresql
 pgformplayer_nlb
 pgmain_nlb
@@ -71,14 +71,13 @@ couch_alb
 [couchdb2_alb:children]
 couch_alb
 
-{{ __rabbit_a0__ }}
-{{ __rabbit_b0__ }}
-
+{{ __rabbit_a2__ }}
+{{ __rabbit_b1__ }}
 
 [rabbitmq:children]
 # Amazon EC2
-rabbit_a0
-rabbit_b0
+rabbit_a2
+rabbit_b1
 
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=1
 {{ __kafka7__ }} kafka_broker_id=6 zookeeper_server_id=6

@@ -3,4 +3,3 @@ dependencies:
   - {role: common_installs, tags: common_installs}
   - {role: logrotate, tags: logging}
   - role: edit
-  - {role: ksplice, tags: ksplice, when: ansible_distribution_version == '14.04'}
