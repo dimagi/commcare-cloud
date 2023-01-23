@@ -12,7 +12,6 @@ import stat
 import os
 from pathlib import Path
 from collections import defaultdict
-from commcare_cloud.fab.const import DATE_FMT
 from datetime import datetime
 from io import open
 from operator import attrgetter, itemgetter
@@ -497,26 +496,34 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.env_info_dict = {}
+        # We set the audits_directory in the `run` method
+        self.audits_directory = os.path.expanduser(f"~/.commcare-cloud/audits")
+        self.environment = ""
+        self.curr_audit_directory = ""
 
     def run(self, args, unknown_args):
         self.environment = get_environment(args.env_name)
         self.env_info_dict["environment"] = args.env_name
+        
+        env_name = args.env_name
+        audit_name = datetime.utcnow().strftime('%Y-%m-%d_%H.%M.%S')
+        self.curr_audit_directory = os.path.join(self.audits_directory, f"{env_name}/{audit_name}")
+        self._ensure_dir_exists(self.curr_audit_directory)
+
         self._collect_commcare_cloud_details()
         self._collect_commcare_hq_details()
         self._validate_environment_settings()
         self._collect_control_machine_os_level_info()
-    
-        self._create_audit_dir()
 
-    def _create_audit_dir(self):
-        env_name = self.env_info_dict["environment"]
-        audit_name = datetime.utcnow().strftime(DATE_FMT)
-        
-        self.audits_directory = os.path.expanduser(f"~/.commcare-cloud/audits/{env_name}/{audit_name}")
-        if not os.path.isdir(self.audits_directory):
-            os.makedirs(self.audits_directory)
+        self._collect_service_status_info()
+        self._write_details()
 
-        file_path = os.path.join(self.audits_directory, "info.json")
+    def _ensure_dir_exists(self, path):
+        if not os.path.isdir(path):
+            os.makedirs(path)
+
+    def _write_details(self):
+        file_path = os.path.join(self.curr_audit_directory, "info.json")
         with open(file_path, "w") as file:
             json.dump(self.env_info_dict, fp=file)
 
