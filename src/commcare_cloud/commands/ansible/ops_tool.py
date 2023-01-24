@@ -532,5 +532,5 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
             self.environment.check()
         except Exception as exception:
             settings_validaton["passed"] = False
-            self.env_info_dict["reason"] = str(exception)
+            settings_validaton["failure_reason"] = str(exception)
         self.env_info_dict["settings_validation"] = settings_validaton
