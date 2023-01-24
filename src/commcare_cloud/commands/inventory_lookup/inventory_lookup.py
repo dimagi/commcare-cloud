@@ -87,7 +87,10 @@ class _Ssh(Lookup):
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         if not args.quiet:
             print_command(cmd)
-        return subprocess.call(cmd_parts, **({'env': env_vars} if env_vars else {}))
+        try:
+            return subprocess.call(cmd_parts, **({'env': env_vars} if env_vars else {}))
+        except KeyboardInterrupt:
+            return 1
 
     def get_address_tuple(self, args):
         address = self.lookup_server_address(args)

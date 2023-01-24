@@ -112,9 +112,6 @@
   notify: restart chrony
   when: use_chrony
 
-- include: trusty_apt_installs.yml
-  when: ansible_distribution_version == '14.04'
-
 - include: bionic_apt_installs.yml
   when: ansible_distribution_version == '18.04'
 

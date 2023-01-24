@@ -363,7 +363,7 @@ class UpdateDatadogMonitors(CommandBase):
 
 class ListDatadogMonitors(CommandBase):
     command = 'list-datadog-monitors'
-    help = """Lost Datadog Monitor definitions"""
+    help = """List Datadog Monitor definitions"""
 
     arguments = (
         Argument('config'),
