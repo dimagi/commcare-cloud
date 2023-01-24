@@ -30,7 +30,7 @@ commcare-cloud [--control] [--control-setup {yes,no}] <env> <command> ...
 
 server environment to run against
 
-## Optional Arguments
+## Options
 
 ### `--control`
 
@@ -213,7 +213,7 @@ omitted for environments with only a single server.
 
 Use '-' for default (django_manage[0])
 
-##### Optional Arguments
+##### Options
 
 ###### `--quiet`
 
@@ -248,7 +248,7 @@ omitted for environments with only a single server.
 
 Use '-' for default (django_manage[0])
 
-##### Optional Arguments
+##### Options
 
 ###### `--quiet`
 
@@ -295,7 +295,7 @@ Args for the module, formatted as a single string.
 Both `arg1=value1 arg2=value2` syntax
 and `{"arg1": "value1", "arg2": "value2"}` syntax are accepted.
 
-##### Optional Arguments
+##### Options
 
 ###### `--use-factory-auth`
 
@@ -420,7 +420,7 @@ Command to run remotely.
 (Tip: put quotes around it, as it will likely contain spaces.)
 Cannot being with `sudo`; to do that use the ansible `--become` option.
 
-##### Optional Arguments
+##### Options
 
 ###### `--silence-warnings`
 
@@ -517,7 +517,7 @@ Some actions do not make sense in Ad-Hoc (include, meta, etc)
 Track an infrastructure maintainance event in Datadog
 
 ```
-commcare-cloud <env> send-datadog-event [--tags [TAGS [TAGS ...]]] [--alert_type {error,warning,info,success}]
+commcare-cloud <env> send-datadog-event [--tags [TAGS ...]] [--alert_type {error,warning,info,success}]
                                         event_title event_text
 ```
 
@@ -531,9 +531,9 @@ Title of the datadog event.
 
 Text content of the datadog event.
 
-##### Optional Arguments
+##### Options
 
-###### `--tags [TAGS [TAGS ...]]`
+###### `--tags [TAGS ...]`
 
 Additional tags e.g. host:web2
 
@@ -573,7 +573,7 @@ To do this on a specific server
 commcare-cloud <env> django-manage --tmux shell --server web0
 ```
 
-##### Optional Arguments
+##### Options
 
 ###### `--tmux`
 
@@ -647,7 +647,7 @@ If a command is *not* specified, then it will rejoin the most
 recently visited tmux window; only if there are no currently open
 tmux windows will a new one be opened.
 
-##### Optional Arguments
+##### Options
 
 ###### `--quiet`
 
@@ -663,7 +663,7 @@ Export Sentry events. One line per event JSON.
 commcare-cloud <env> export-sentry-events -k API_KEY -i ISSUE_ID [--full] [--cursor CURSOR]
 ```
 
-##### Optional Arguments
+##### Options
 
 ###### `-k API_KEY, --api-key API_KEY`
 
@@ -700,7 +700,7 @@ To force setup, use --control-setup=yes instead.
 
 Name of the pillow.
 
-##### Optional Arguments
+##### Options
 
 ###### `--csv`
 
@@ -738,7 +738,7 @@ commcare-cloud <env> migrate-secrets [--to-backend TO_BACKEND] from_backend
 
 ###### `from_backend`
 
-##### Optional Arguments
+##### Options
 
 ###### `--to-backend TO_BACKEND`
 
@@ -764,7 +764,7 @@ Machines to run on. Is anything that could be used in as a value for
 See the description in [this blog](http://goinbigdata.com/understanding-ansible-patterns/)
 for more detail in what can go here.
 
-##### Optional Arguments
+##### Options
 
 ###### `--use-factory-auth`
 
@@ -798,7 +798,7 @@ Options are the `*.yml` files located under `commcare_cloud/ansible`
 which is under `src` for an egg install and under
 `<virtualenv>/lib/python<version>/site-packages` for a wheel install.
 
-##### Optional Arguments
+##### Options
 
 ###### `--use-factory-auth`
 
@@ -894,7 +894,7 @@ commcare-cloud <env> deploy-stack [--use-factory-auth] [--first-time]
 Often used in conjunction with --limit and/or --tag
 for a more specific update.
 
-##### Optional Arguments
+##### Options
 
 ###### `--use-factory-auth`
 
@@ -960,7 +960,7 @@ Machines to run on. Is anything that could be used in as a value for
 See the description in [this blog](http://goinbigdata.com/understanding-ansible-patterns/)
 for more detail in what can go here.
 
-##### Optional Arguments
+##### Options
 
 ###### `--use-factory-auth`
 
@@ -984,7 +984,7 @@ you have specified in your environment. This can only be run once
 per machine; if after running it you would like to run it again,
 you have to use `update-users` below instead.
 
-##### Optional Arguments
+##### Options
 
 ###### `--use-factory-auth`
 
@@ -1004,7 +1004,7 @@ In steady state this command (and not `bootstrap-users`) should be used
 to keep machine user accounts, permissions, and login information
 up to date.
 
-##### Optional Arguments
+##### Options
 
 ###### `--use-factory-auth`
 
@@ -1026,7 +1026,7 @@ commcare-cloud <env> update-user-key [--use-factory-auth] username
 
 username who owns the public key
 
-##### Optional Arguments
+##### Options
 
 ###### `--use-factory-auth`
 
@@ -1044,7 +1044,7 @@ commcare-cloud <env> update-supervisor-confs [--use-factory-auth]
 
 These services are defined in app-processes.yml.
 
-##### Optional Arguments
+##### Options
 
 ###### `--use-factory-auth`
 
@@ -1068,7 +1068,7 @@ The name of the fab task to run. It and all following arguments
 will be passed on without modification to `fab`, so all normal `fab`
 syntax rules apply.
 
-##### Optional Arguments
+##### Options
 
 ###### `-l`
 
@@ -1108,7 +1108,7 @@ Deploy CommCare
 
 ```
 commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_REV] [--set FAB_SETTINGS]
-                            [{commcare,formplayer} [{commcare,formplayer} ...]]
+                            [{commcare,formplayer} ...]
 ```
 
 ##### Positional Arguments
@@ -1118,7 +1118,7 @@ commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_
 Component(s) to deploy. Default is 'commcare', or if
 always_deploy_formplayer is set in meta.yml, 'commcare formplayer'
 
-##### Optional Arguments
+##### Options
 
 ###### `--resume`
 
@@ -1144,7 +1144,6 @@ Manage services.
 
 ```
 commcare-cloud <env> service [--only PROCESS_PATTERN]
-                             
                              {celery,citusdb,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}
                              [{celery,citusdb,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker} ...]
                              {start,stop,restart,status,logs,help}
@@ -1179,7 +1178,7 @@ More than one service may be supplied as separate arguments in a row.
 Action can be `status`, `start`, `stop`, `restart`, or `logs`.
 This action is applied to every matching service.
 
-##### Optional Arguments
+##### Options
 
 ###### `--only PROCESS_PATTERN`
 
@@ -1218,7 +1217,7 @@ Action to perform
 - commit: update database docs with new shard allocation
 - clean: remove shard files from hosts where they aren't needed
 
-##### Optional Arguments
+##### Options
 
 ###### `--no-stop`
 
@@ -1248,7 +1247,7 @@ in the history, and so that during it service alerts are silenced.
 
 ###### `{start,end}`
 
-##### Optional Arguments
+##### Options
 
 ###### `-m MESSAGE, --message MESSAGE`
 
@@ -1341,7 +1340,7 @@ To list all database on a particular environment.
 commcare-cloud <env> list-postgresql-dbs
 ```
 
-##### Optional Arguments
+##### Options
 
 ###### `--compare`
 
@@ -1357,7 +1356,7 @@ Report of celery resources by queue.
 commcare-cloud <env> celery-resource-report [--show-workers] [--csv]
 ```
 
-##### Optional Arguments
+##### Options
 
 ###### `--show-workers`
 
@@ -1377,7 +1376,7 @@ Report of pillow resources.
 commcare-cloud <env> pillow-resource-report [--csv]
 ```
 
-##### Optional Arguments
+##### Options
 
 ###### `--csv`
 
@@ -1427,7 +1426,7 @@ commcare-cloud <env> couchdb-cluster-info [--raw] [--shard-counts] [--database D
   e.g. 2000,+1,-2 indicates that the counts are 2000,2001,1998
 ```
 
-##### Optional Arguments
+##### Options
 
 ###### `--raw`
 
@@ -1463,7 +1462,7 @@ Run terraform for this env with the given arguments
 commcare-cloud <env> terraform [--skip-secrets] [--apply-immediately] [--username USERNAME]
 ```
 
-##### Optional Arguments
+##### Options
 
 ###### `--skip-secrets`
 
@@ -1507,7 +1506,7 @@ so you can tell it how existing resources map to your new code.
 This is a tedious task, and often follows a very predictable renaming pattern.
 This command helps fill this gap.
 
-##### Optional Arguments
+##### Options
 
 ###### `--replay-from REPLAY_FROM`
 
@@ -1528,7 +1527,7 @@ under a profile named with the pattern "&lt;aws_profile&gt;:profile".
 After this you can use other AWS-related commands for up to &lt;duration&gt; minutes
 before having to sign in again.
 
-##### Optional Arguments
+##### Options
 
 ###### `--duration-minutes DURATION_MINUTES`
 
@@ -1557,7 +1556,7 @@ commcare-cloud <env> aws-fill-inventory [--cached]
 If --cached is not specified, also refresh aws-resources.yml
 to match what is actually in AWS.
 
-##### Optional Arguments
+##### Options
 
 ###### `--cached`
 
@@ -1590,7 +1589,7 @@ The user to activate.
 
 Must be one of the defined ssh users defined for the environment.
 
-##### Optional Arguments
+##### Options
 
 ###### `--use-factory-auth`
 
@@ -1614,7 +1613,7 @@ The user to claim.
 
 Must be one of the defined ssh users defined for the environment.
 
-##### Optional Arguments
+##### Options
 
 ###### `--use-factory-auth`
 
