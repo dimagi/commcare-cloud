@@ -586,7 +586,6 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
                 service_class = SERVICES_BY_NAME[service_name]
                 log_path = os.path.join(self.service_status_directory, service_name)
                 ansible_context = AnsibleContext(None, self.environment, ansible_logfile=log_path)
-
                 service = service_class(ansible_context)
                 service.run("status")
             except Exception as ex:
