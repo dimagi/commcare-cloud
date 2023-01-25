@@ -10,7 +10,8 @@ from io import StringIO
 
 import jinja2
 
-from ..argparse14 import RawTextHelpFormatter, SubParsersAction
+from argparse import RawTextHelpFormatter
+from argparse import _SubParsersAction as SubParsersAction
 from gettext import gettext as _
 
 from commcare_cloud.commands.command_base import CommandBase
