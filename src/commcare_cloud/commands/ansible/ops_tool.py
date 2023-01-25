@@ -16,6 +16,7 @@ from datetime import datetime
 from io import open
 from operator import attrgetter, itemgetter
 from distutils.version import LooseVersion
+from commcare_cloud.commands.ansible.service import SERVICE_NAMES, SERVICES_BY_NAME
 from commcare_cloud.commands.ansible.ansible_playbook import _AnsiblePlaybookAlias, AnsiblePlaybook
 from commcare_cloud.commands.deploy.commcare import get_deployed_version
 import yaml
@@ -516,14 +517,15 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self._validate_environment_settings()
         self._collect_control_machine_os_level_info()
         self._collect_service_folder_permissions_info()
-
-        self._write_details()
+        self._collect_service_status_info()
+        
+        self._write_info_file()
 
     def _ensure_dir_exists(self, path):
         if not os.path.isdir(path):
             os.makedirs(path)
 
-    def _write_details(self):
+    def _write_info_file(self):
         file_path = os.path.join(self.curr_audit_directory, "info.json")
         with open(file_path, "w") as file:
             json.dump(self.env_info_dict, fp=file)
@@ -568,3 +570,21 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         control_user = os.getlogin()
         unknown_args = ('-e', f'audit_path={self.curr_audit_directory}', '-e', f'control_user={control_user}')
         return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
+
+    def _collect_service_status_info(self):
+        """Collects service information for each service in SERVICE_NAMES. This method changes the
+        ansible context for each check so that ansible logs the status to a service-specific file.
+        """
+        self.service_status_directory = os.path.join(self.curr_audit_directory, "service_statuses")
+        self._ensure_dir_exists(self.service_status_directory)
+
+        for service_name in SERVICE_NAMES:
+            try:
+                service_class = SERVICES_BY_NAME[service_name]
+                log_path = os.path.join(self.service_status_directory, service_name)
+                ansible_context = AnsibleContext(None, self.environment, ansible_logfile=log_path)
+                
+                service = service_class(ansible_context)
+                service.run("status")
+            except Exception as ex:
+                print(f"Unable to get status for {service_name}.\nError: {ex}")
