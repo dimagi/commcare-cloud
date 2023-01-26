@@ -96,7 +96,7 @@ def _get_diff(environment, deploy_revs):
     tag_commits = environment.fab_settings_config.tag_deploy_commits
     repo = github_repo('dimagi/commcare-hq', require_write_permissions=tag_commits)
 
-    deployed_version = _get_deployed_version(environment)
+    deployed_version = get_deployed_version(environment)
     latest_version = repo.get_commit(deploy_revs['commcare']).sha if repo else None
 
     new_version_details = {
@@ -189,7 +189,7 @@ def call_record_deploy_success(environment, context, end_time):
     commcare_cloud(environment.name, 'django-manage', 'record_deploy_success', *args)
 
 
-def _get_deployed_version(environment):
+def get_deployed_version(environment):
     code_current = shlex.quote(environment.remote_conf.code_current)
     res = run_ansible_module(
         AnsibleContext(None, environment),
