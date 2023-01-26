@@ -4,7 +4,7 @@ import sys
 
 from commcare_cloud.manage_commcare_cloud.datadog_monitors import UpdateDatadogMonitors, ListDatadogMonitors
 from commcare_cloud.manage_commcare_cloud.test_environments import TestEnvironments
-from ..argparse14 import ArgumentParser
+from argparse import ArgumentParser
 
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.manage_commcare_cloud.configure import Configure

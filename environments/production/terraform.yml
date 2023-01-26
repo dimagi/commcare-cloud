@@ -187,7 +187,7 @@ servers:
     volume_size: 90
     volume_encrypted: yes
     block_device:
-      volume_size: 2700
+      volume_size: 2800
       encrypted: yes
     group: "couchdb2"
     os: bionic
@@ -199,7 +199,7 @@ servers:
     volume_size: 90
     volume_encrypted: yes
     block_device:
-      volume_size: 2700
+      volume_size: 2800
       encrypted: yes
       enable_cross_region_backup: yes
     group: "couchdb2"
@@ -212,7 +212,7 @@ servers:
     volume_size: 90
     volume_encrypted: yes
     block_device:
-      volume_size: 2700
+      volume_size: 2800
       encrypted: yes
     group: "couchdb2"
     os: bionic
@@ -280,7 +280,7 @@ servers:
     volume_encrypted: yes
     group: "formplayer"
     os: bionic
-    count: 21
+    count: 14
     server_auto_recovery: true
 
   - server_name: "kafka_a0-production"

@@ -161,3 +161,6 @@ celery_hours_before_hard_kill: ~
 celery_hours_before_soft_kill: ~
 
 ansible_become_password: "{{ ansible_sudo_pass }}"
+
+# Java version for Formplayer
+java_17_bin_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64/bin

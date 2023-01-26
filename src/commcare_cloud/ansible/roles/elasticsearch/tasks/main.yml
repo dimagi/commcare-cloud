@@ -82,18 +82,6 @@
 - include: misc_v7.yml
   when: elasticsearch_version is version('7.0.0', '>=')
 
-- name: Copy Elasticsearch Upstart Conf
-  become: yes
-  template:
-    src: upstart/elasticsearch.conf.j2
-    dest: "/etc/init/elasticsearch.conf"
-    owner: elasticsearch
-    group: elasticsearch
-  register: copy_elasticsearch_upstart_result
-  tags:
-    - es_conf
-  when: ansible_distribution_version == '14.04'
-
 - name: Copy Elasticsearch Systemd Conf
   become: yes
   template:
@@ -128,11 +116,6 @@
     - "{{ elasticsearch_data_dir }}/data"
     - "{{ elasticsearch_data_dir }}/logs"
 
-- name: Reload upstart
-  become: yes
-  shell: initctl reload-configuration
-  when: ansible_distribution_version == '14.04'
-
 - name: Start Elasticsearch
   become: yes
   service: name=elasticsearch state=started  enabled=yes
@@ -143,7 +126,7 @@
 - name: Restart Elasticsearch
   become: yes
   service: name=elasticsearch state=restarted
-  when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_upstart_result.changed or copy_elasticsearch_logging_result.changed
+  when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_logging_result.changed
   tags:
     - es_restart
 
