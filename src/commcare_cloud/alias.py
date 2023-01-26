@@ -1,4 +1,8 @@
 from __future__ import absolute_import, unicode_literals
+
+import threading
+from contextlib import contextmanager
+
 import six
 
 
@@ -26,3 +30,20 @@ def commcare_cloud(*args, show_command=True, **kwargs):
     if show_command:
         print_command(argv)
     return call_commcare_cloud(argv)
+
+
+_global = threading.local()
+_global.contents_for_stdin = None
+
+
+@contextmanager
+def set_contents_for_stdin(contents):
+    _global.contents_for_stdin = contents.encode('utf-8') if isinstance(contents, str) else contents
+    yield
+    _global.contents_for_stdin = None
+
+
+def read_contents_for_stdin():
+    contents_for_stdin = _global.contents_for_stdin
+    _global.contents_for_stdin = None
+    return contents_for_stdin

@@ -8,7 +8,9 @@ from io import open
 
 import attr
 import yaml
+from gevent.pool import Pool
 
+from commcare_cloud.alias import commcare_cloud, set_contents_for_stdin
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext,
@@ -245,20 +247,31 @@ def remove_scripts(target_host, ansible_context):
     run_ansible_module(ansible_context, target_host, 'file', args)
 
 
-def execute_file_copy_scripts(ansible_context, limit, check_mode=True):
+def execute_file_copy_scripts(ansible_context, host_ips, check_mode=True):
     script = os.path.join(REMOTE_MIGRATION_ROOT, FILE_MIGRATION_RSYNC_SCRIPT)
     try:
-        run_ansible_module(
-            ansible_context,
-            'all',
-            'shell',
-            script + (' --dry-run' if check_mode else ''),
-            extra_args=('--limit=' + limit,),
-            run_command=subprocess.check_call,
+        sudo_with_agent_forwarding(
+            ansible_context.environment,
+            host_ips=host_ips,
+            command=script + (' --dry-run' if check_mode else ''),
         )
     except subprocess.CalledProcessError as err:
         return err.returncode
     return 0
+
+
+def sudo_with_agent_forwarding(environment, host_ips, command):
+    def run_for_host(host):
+        with set_contents_for_stdin(environment.get_ansible_user_password()):
+            commcare_cloud(environment.name, 'ssh', f'ansible@{host}', '-A', f'sudo -E -S {command}')
+
+    pool = Pool(len(host_ips))
+    rcs = pool.map(run_for_host, host_ips)
+    # return the first non-zero return code if there are any
+    if any(rcs):
+        return next(rc for rc in rcs if rc)
+    else:
+        return 0
 
 
 def get_file_list_filename(config):

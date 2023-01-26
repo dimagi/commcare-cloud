@@ -18,7 +18,7 @@ from commcare_cloud.user_utils import get_ssh_username
 from ..ansible.helpers import get_default_ssh_options_as_cmd_parts
 from ..terraform.aws import aws_sign_in, is_aws_env, is_ec2_instance_in_account, \
     is_session_manager_plugin_installed
-from ...alias import commcare_cloud
+from ...alias import commcare_cloud, read_contents_for_stdin
 
 from ...colors import color_error, color_notice, color_link
 from .getinventory import get_server_address, split_host_group
@@ -87,8 +87,9 @@ class _Ssh(Lookup):
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         if not args.quiet:
             print_command(cmd)
+
         try:
-            return subprocess.call(cmd_parts, **({'env': env_vars} if env_vars else {}))
+            return subprocess.run(cmd_parts, input=read_contents_for_stdin(), **({'env': env_vars} if env_vars else {})).returncode
         except KeyboardInterrupt:
             return 1
 
