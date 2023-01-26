@@ -489,7 +489,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
     command = 'audit-environment'
     help = (
         "This command gathers information about your current environment's state.\n\n"
-        "State information is saved in the '~/.commcare-cloud/snapshots' directory. It is a good idea to run this "
+        "State information is saved in the '~/.commcare-cloud/audits' directory. It is a good idea to run this "
         "before making any major changes to your environment, as it allows you to have a record of your "
         "environment's current state.\n\n"
     )
