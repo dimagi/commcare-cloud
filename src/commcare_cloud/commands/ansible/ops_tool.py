@@ -515,7 +515,6 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self._validate_environment_settings()
         self._collect_control_machine_os_level_info()
 
-        self._collect_service_status_info()
         self._write_details()
 
     def _ensure_dir_exists(self, path):
