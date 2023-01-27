@@ -29,7 +29,7 @@ Changelogs:
 {% endfor %}
 {%- endif %}
 
-{%- if not (is_dimagi_env and maintenance_prs.error) and maintenance_prs.maintenance_prs -%}
+{%- if show_maintenance_updates_on_deploy and not maintenance_prs.error and maintenance_prs.maintenance_prs -%}
 Be prepared for next deploy cycle:
 
     There are some maintenance changelogs that must be performed within next 3/6 weeks. Please review below Pull Requests and associated changelogs to be up to date.
@@ -54,7 +54,7 @@ Click the URL for additional context.
 {% endfor %}
 {%- endif %}
 
-{%- if not is_dimagi_env and prs_by_label and (prs_by_label.get("maintenance0") or prs_by_label.get("maintenance1")) -%}
+{%- if show_maintenance_updates_on_deploy and prs_by_label and (prs_by_label.get("maintenance0") or prs_by_label.get("maintenance1")) -%}
 Attention! Predeploy Maintenance Required:
     You are about to deploy the following PR(s), which have manual maintenance that must be performed before proceeding with this deploy. Please review them and associated changelogs and make sure these are applied before deploying.
 

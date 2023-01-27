@@ -60,6 +60,8 @@ control_machine_ip: 10.162.36.196
 
 run_websockets_wsgi: True
 
+show_maintenance_updates_on_deploy: False
+
 couch_dbs:
   default:
     host: "{{ groups.couchdb2_alb[0] }}"
