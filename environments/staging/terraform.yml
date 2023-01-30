@@ -387,7 +387,7 @@ internal_albs:
       - couch15-staging
      
 proxy_internal_albs:
-  - name: "proxy_internal_alb-staging"
+  - name: "proxy_alb-staging"
     listener_port: 80 
     target_port: 80 
     targets:
