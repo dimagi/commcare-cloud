@@ -66,10 +66,6 @@ class Environment(object):
             self.proxy_config
         self.create_generated_yml()
 
-    @property
-    def is_dimagi_env(self):
-        return self.name in ["production", "staging", "india"]
-
     def check_known_hosts(self):
         if not os.path.exists(self.paths.known_hosts):
             return
