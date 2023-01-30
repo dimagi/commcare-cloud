@@ -331,7 +331,7 @@ module "proxy_internal_alb__{{ proxy_internal_alb.name }}" {
   target_port = "{{ proxy_internal_alb.target_port }}"
   listener_port = "{{ proxy_internal_alb.listener_port }}"
   health_check_interval = "{{ proxy_internal_alb.health_check_interval }}"
-  security_groups = [module.network.db-private-sg]
+  security_groups = [module.network.app-private-sg]
   subnets = [
     {%- for az in az_codes %}{% if not loop.first %}, {% endif %}
     lookup(module.network.subnets-app-private, "{{ az }}", "")
