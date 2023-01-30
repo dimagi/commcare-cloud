@@ -583,7 +583,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         
     def _collect_service_folder_permissions_info(self):
         args = self.args
-        args.playbook = 'audit.yml'
+        args.playbook = 'commcare-audit.yml'
         control_user = os.getlogin()
         unknown_args = ('-e', f'audit_path={self.curr_audit_directory}', '-e', f'control_user={control_user}')
         return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)

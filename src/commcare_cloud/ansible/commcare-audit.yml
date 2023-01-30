@@ -1,6 +1,6 @@
 - name: Store stats of "/opt/data" directory
   hosts: all
-  gather_facts: no
+  gather_facts: true
   become: true
   roles:
-    - {role: audit}
+    - {role: commcare-audit}
