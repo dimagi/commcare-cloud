@@ -32,7 +32,6 @@
     mode: "{{ data_stats.stat.mode }}"
     owner: "{{ data_stats.stat.uid }}"
     group: "{{ data_stats.stat.gid }}"
-
 - name: Create template
   copy:
     content: "{{ dfout.stdout }}"
