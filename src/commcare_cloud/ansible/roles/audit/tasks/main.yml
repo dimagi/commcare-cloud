@@ -1,0 +1,41 @@
+---
+- name: Check if /opt/data exists
+  stat:
+    path: /opt/data
+  register: data_dir
+
+- name: Get stats of "/opt/data" directory
+  stat:
+    path: /opt/data
+  register: data_stats
+  when: data_dir.stat.exists
+
+- name: Execute the `$df -h` command.
+  command: "df"
+  register: dfout
+
+- name: Add "/opt/data" stats folder to control machine
+  delegate_to: localhost
+  become_user: "{{ control_user }}"
+  file:
+    path: "{{ audit_path }}/{{ ansible_hostname }}/"
+    state: directory
+  when: data_dir.stat.exists
+
+- name: Create permissions file
+  template:
+    src: opt_data_file_permissions.txt.j2
+    dest: "{{ audit_path }}/{{ ansible_hostname }}/opt_data_file_permissions.txt"
+  delegate_to: localhost
+  become_user: "{{ control_user }}"
+  vars:
+    mode: "{{ data_stats.stat.mode }}"
+    owner: "{{ data_stats.stat.uid }}"
+    group: "{{ data_stats.stat.gid }}"
+  
+- name: Create template
+  copy:
+    content: "{{ dfout.stdout }}"
+    dest: "{{ audit_path }}/{{ ansible_hostname }}/disk_usage.txt"
+  delegate_to: localhost
+  become_user: "{{ control_user }}"

@@ -17,7 +17,7 @@ from io import open
 from operator import attrgetter, itemgetter
 from distutils.version import LooseVersion
 from commcare_cloud.commands.ansible.service import SERVICE_NAMES, SERVICES_BY_NAME
-from commcare_cloud.commands.ansible.ansible_playbook import _AnsiblePlaybookAlias
+from commcare_cloud.commands.ansible.ansible_playbook import _AnsiblePlaybookAlias, AnsiblePlaybook
 from commcare_cloud.commands.deploy.commcare import get_deployed_version
 import yaml
 from clint.textui import indent, puts
@@ -503,6 +503,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self.curr_audit_directory = ""
 
     def run(self, args, unknown_args):
+        self.args = args
         self.environment = get_environment(args.env_name)
         self.env_info_dict["environment"] = args.env_name
         
@@ -548,7 +549,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
 
     def _collect_control_machine_os_level_info(self):
         os_data = {}
-        # Distribution
+        
         os_distrib = {}
         with open("/etc/lsb-release", "r") as file:
             distrib_info = file.read().split("\n")
@@ -560,21 +561,6 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
                 os_distrib[key] = value
         
         os_data["os_distrib"] = os_distrib
-        
-        # File/Dir stats
-        paths = ["/opt/data"]
-        file_stats = []
-        for path_raw in paths:
-            path = Path(path_raw)
-            stats = {}
-            path_stats = path.stat()
-            stats["path"] = path_raw
-            stats["mode"] = stat.filemode(path_stats.st_mode)
-            stats["owner"] = path.owner()
-            stats["group"] = path.group()
-            file_stats.append(stats)
-        
-        os_data["path_stats"] = file_stats
         self.env_info_dict["os_data"] = os_data
 
     def _collect_service_status_info(self):
@@ -594,3 +580,10 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
                 service.run("status")
             except Exception as ex:
                 print(f"Unable to get status for {service_name}.\nError: {ex}")
+        
+    def _collect_service_folder_permissions_info(self):
+        args = self.args
+        args.playbook = 'audit.yml'
+        control_user = os.getlogin()
+        unknown_args = ('-e', f'audit_path={self.curr_audit_directory}', '-e', f'control_user={control_user}')
+        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)

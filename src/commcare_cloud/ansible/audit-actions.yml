@@ -1,0 +1,6 @@
+- name: Store stats of "/opt/data" directory
+  hosts: all
+  gather_facts: no
+  become: true
+  roles:
+    - {role: audit}
