@@ -43,7 +43,7 @@ nginx_sites:
    file_name: "{{ deploy_env }}_internal_commcare"
    listen: "80"
    root: "/var/www/html"
-   server_name: "ALTERNATE_FORMPLAYER_HQ_HOST"
+   server_name: "{{ ALTERNATE_FORMPLAYER_HQ_HOST }}"
    client_max_body_size: 600m
    proxy_max_temp_file_size: 5120m
    proxy_set_headers:
