@@ -2,13 +2,13 @@
 nginx_sites:
 - server:
    balancers:
-    - name: "{{ deploy_env }}_commcare"
+    - name: "{{ deploy_env }}_internal_commcare"
       hosts: "{{ groups['hq_webworkers'] | default('webworkers') }}"
       port: "{{ django_port }}"
-    - name: "{{ deploy_env }}_commcare_submissions"
+    - name: "{{ deploy_env }}_internal_commcare_submissions"
       hosts: "{{ groups['mobile_webworkers'] | default('webworkers') }}"
       port: "{{ django_port }}"
-    - name: "{{ deploy_env }}_formplayer"
+    - name: "{{ deploy_env }}_internal_formplayer"
       hosts: formplayer
       port: "{{ formplayer_port }}"
       zone: 256k
@@ -32,12 +32,12 @@ nginx_sites:
          - key: '"~^(?P<path>[^?]*)\?(?P<args1>.*?)(&?username=[^&]*)(?P<args2>&?.*)?$"'
            value: '$path?$args1$args2'
    proxy_cache_path:
-    - name: "hq_media_cache"
-      path: "{{ www_home }}/hq_media/cache"
+    - name: "hq_media_internal_cache"
+      path: "{{ www_home }}/hq_media/internal/cache"
       max_size: "2g"
       inactive_time: "24h"
-    - name: "app_cache"
-      path: "{{ www_home }}/app_downloads/cache"
+    - name: "app_internal_cache"
+      path: "{{ www_home }}/app_downloads/internal/cache"
       max_size: "1g"
       inactive_time: "24h"
    file_name: "{{ deploy_env }}_internal_commcare"
@@ -60,21 +60,21 @@ nginx_sites:
     - 'X-Content-Type-Options nosniff'
    locations:
     - name: /
-      balancer: "{{ deploy_env }}_commcare"
+      balancer: "{{ deploy_env }}_internal_commcare"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 1200s # 900s temporarily increase timeout for UCR data exports for ICDS
       proxy_buffers: 8 64k
       proxy_buffer_size: 64k
       client_body_buffer_size: 512k
     - name: '~ /a/[^/]+/(receiver|phone)/'
-      balancer: "{{ deploy_env }}_commcare_submissions"
+      balancer: "{{ deploy_env }}_internal_commcare_submissions"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
       proxy_buffers: 8 64k
       proxy_buffer_size: 64k
       client_body_buffer_size: 512k
     - name: "~ /a/[^/]+/apps/download/"
-      balancer: "{{ deploy_env }}_commcare"
+      balancer: "{{ deploy_env }}_internal_commcare"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
       proxy_cache: app_cache
@@ -101,12 +101,12 @@ nginx_sites:
       - "Upgrade $http_upgrade"
       - "Connection \"upgrade\""
     - name: /formplayer/
-      balancer: "{{ deploy_env }}_formplayer/"
+      balancer: "{{ deploy_env }}_internal_formplayer/"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
     - name: "/hq/multimedia/file"
-      balancer: "{{ deploy_env }}_commcare"
+      balancer: "{{ deploy_env }}_internal_commcare"
       proxy_next_upstream_tries: 1
       proxy_read_timeout: 900s
-      proxy_cache: hq_media_cache
+      proxy_cache: hq_media_internal_cache
    extra_locations: "{{ site_locations|default([]) }}"
