@@ -264,6 +264,10 @@ class AwsFillInventoryHelper(object):
                 self.get_host_group_definition(resource_name=internal_alb.name)
             )
 
+        for proxy_internal_alb in self.environment.terraform_config.proxy_internal_albs:
+            context.update(
+                self.get_host_group_definition(resource_name=proxy_internal_alb.name)
+
         return context
 
     @property
