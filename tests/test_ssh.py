@@ -6,7 +6,7 @@ import subprocess
 from unittest.mock import patch
 from parameterized import parameterized
 
-from commcare_cloud.argparse14 import ArgumentParser
+from argparse import ArgumentParser
 from commcare_cloud.commands.inventory_lookup.inventory_lookup import Ssh
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'test_ssh_envs')

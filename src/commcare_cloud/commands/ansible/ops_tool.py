@@ -2,16 +2,21 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import collections
 import csv
+import git
 import inspect
 import itertools
 import json
 import subprocess
 import sys
+import os
 from collections import defaultdict
+from commcare_cloud.fab.const import DATE_FMT
+from datetime import datetime
 from io import open
 from operator import attrgetter, itemgetter
 from distutils.version import LooseVersion
-
+from commcare_cloud.commands.ansible.ansible_playbook import _AnsiblePlaybookAlias
+from commcare_cloud.commands.deploy.commcare import get_deployed_version
 import yaml
 from clint.textui import indent, puts
 from couchdb_cluster_admin.utils import (
@@ -351,7 +356,7 @@ class UpdateLocalKnownHosts(CommandBase):
         "You can run this on a regular basis to avoid having to `yes` through\n"
         "the ssh prompts. Note that when you run this, you are implicitly\n"
         "trusting that at the moment you run it, there is no man-in-the-middle\n"
-        "attack going on, the type of security breech that the SSH prompt\n"
+        "attack going on, the type of security breach that the SSH prompt\n"
         "is meant to mitigate against in the first place."
     )
 
@@ -476,3 +481,56 @@ def chunked(iterable, n, fillvalue=None):
     # https://docs.python.org/3/library/itertools.html#itertools-recipes
     args = [iter(iterable)] * n
     return itertools.zip_longest(*args, fillvalue=fillvalue)
+
+
+class AuditEnvironment(_AnsiblePlaybookAlias):
+    command = 'audit-environment'
+    help = (
+        "This command gathers information about your current environment's state.\n\n"
+        "State information is saved in the '~/.commcare-cloud/snapshots' directory. It is a good idea to run this "
+        "before making any major changes to your environment, as it allows you to have a record of your "
+        "environment's current state.\n\n"
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.env_info_dict = {}
+
+    def run(self, args, unknown_args):
+        self.environment = get_environment(args.env_name)
+        self.env_info_dict["environment"] = args.env_name
+        self.collect_commcare_cloud_details()
+        self.collect_commcare_hq_details()
+        self.validate_environment_settings()
+    
+        self._create_audit_dir()
+
+    def _create_audit_dir(self):
+        env_name = self.env_info_dict["environment"]
+        audit_name = datetime.utcnow().strftime(DATE_FMT)
+        
+        self.audits_directory = os.path.expanduser(f"~/.commcare-cloud/audits/{env_name}/{audit_name}")
+        if not os.path.isdir(self.audits_directory):
+            os.makedirs(self.audits_directory)
+
+        file_path = os.path.join(self.audits_directory, "info.json")
+        with open(file_path, "w") as file:
+            json.dump(self.env_info_dict, fp=file)
+
+    def collect_commcare_cloud_details(self):
+        repo = git.Repo(search_parent_directories=True)
+        hexsha = repo.head.object.hexsha
+        self.env_info_dict["commcare_cloud"] = {"commit": hexsha}
+
+    def collect_commcare_hq_details(self):
+        hexsha = get_deployed_version(self.environment)
+        self.env_info_dict["commcare_hq"] = {"commit": hexsha}
+
+    def validate_environment_settings(self):
+        settings_validaton = {"passed": True, "failure_reason": None}
+        try:
+            self.environment.check()
+        except Exception as exception:
+            settings_validaton["passed"] = False
+            settings_validaton["failure_reason"] = str(exception)
+        self.env_info_dict["settings_validation"] = settings_validaton
