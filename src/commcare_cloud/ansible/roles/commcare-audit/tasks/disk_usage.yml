@@ -1,0 +1,11 @@
+--- 
+- name: Execute the `$df -h` command.
+  command: "df"
+  register: dfout
+
+- name: Create template
+  copy:
+    content: "{{ dfout.stdout }}"
+    dest: "{{ audit_directory }}/disk_usage.txt"
+  delegate_to: localhost
+  become_user: "{{ control_user }}"
