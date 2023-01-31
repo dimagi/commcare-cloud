@@ -1,7 +1,7 @@
 aws_config:
   pem: ~/.ssh/commcarehq_cluster_testing.pem
-#  ami: ami-0d70546e43a941d70 # ubuntu 22.04, untested
-  ami: ami-0b152cfd354c4c7a4 # ubuntu 18.04, tested
+  ami: ami-0d70546e43a941d70 # ubuntu 22.04, untested
+  # ami: ami-0b152cfd354c4c7a4 # ubuntu 18.04, tested
   type: t3.micro
   key_name: commcarehq_cluster_testing
   security_group_id: sg-0f454b13d335c7ba8
