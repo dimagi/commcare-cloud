@@ -190,6 +190,9 @@ couch_alb
 web10
 
 
-[awsmq:children]
-{{ aws_resources['staging-mq-broker'] }}
+[awsmq]
+staging-mq-broker
+
+[awsmq:vars]
+awsmq_endpoint={{ aws_resources['staging-mq-broker'] }}
 
