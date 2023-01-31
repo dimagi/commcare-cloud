@@ -6,6 +6,8 @@ couch13-staging: 10.201.41.223
 couch13-staging.instance_id: i-0bb571d1765a241dc
 couch15-staging: 10.201.42.109
 couch15-staging.instance_id: i-0f618ee36887bb494
+couch17-staging: 10.201.40.49
+couch17-staging.instance_id: i-010faf5cec47dd24e
 couch6-staging: 10.201.40.74
 couch6-staging.instance_id: i-01b32f8a2eebe07bc
 couch_alb-staging: internal-couch-alb-staging-546646078.us-east-1.elb.amazonaws.com
@@ -28,7 +30,7 @@ formplayer7-staging.instance_id: i-0ec364ea0016b5afb
 formplayer8-staging: 10.201.10.12
 formplayer8-staging.instance_id: i-09b94e86d86038850
 frontend_alb-staging: internal-frontend-alb-staging-383875913.us-east-1.elb.amazonaws.com
-fsx_staging-fsx: fs-0ffde07db112793e4.fsx.us-east-1.amazonaws.com
+fsx_staging-fsx: fs-077d903809981e8c5.fsx.us-east-1.amazonaws.com
 kafka2-staging: 10.201.40.170
 kafka2-staging.instance_id: i-08a404d6bad630a35
 kafka7-staging: 10.201.41.86
@@ -52,10 +54,12 @@ proxy4-staging: 10.201.10.38
 proxy4-staging.instance_id: i-023a8c825401fd149
 proxy5-staging: 10.201.11.200
 proxy5-staging.instance_id: i-022175194bcb24508
+proxy_alb-staging: internal-proxy-alb-staging-1025146289.us-east-1.elb.amazonaws.com
 rabbit_a2-staging: 10.201.10.20
 rabbit_a2-staging.instance_id: i-07edbe70562292516
 rabbit_b1-staging: 10.201.11.184
 rabbit_b1-staging.instance_id: i-0f25d0640d6f32c11
+staging-mq-broker: b-fd350ded-5c5b-430c-a289-d6c99bb21799.mq.us-east-1.amazonaws.com:5671
 web10-staging: 10.201.11.25
 web10-staging.instance_id: i-03fb01724d1dfd3cf
 web9-staging: 10.201.10.135

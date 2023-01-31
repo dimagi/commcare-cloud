@@ -189,5 +189,7 @@ couch_alb
 # Amazon EC2
 web10
 
+
 [awsmq:children]
-b-fd350ded-5c5b-430c-a289-d6c99bb21799
+{{ aws_resources['staging-mq-broker'] }}
+
