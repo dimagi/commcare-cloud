@@ -17,7 +17,7 @@ zookeeper_version: 3.7.1
 zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
 zookeeper_cluster: True
 amqp: True
-AMQP_HOST: "{{ {{ groups.amqp.0 }} if amqp == 'True' else group.rabbitmq.0 }}"
+AMQP_HOST: "{{ {{ groups.awsmq.0 }} if amqp == 'True' else group.rabbitmq.0 }}"
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 erlang: 1:24.3.3-1
