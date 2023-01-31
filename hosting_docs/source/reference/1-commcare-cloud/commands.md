@@ -231,7 +231,7 @@ commcare-cloud <env> audit-environment [--use-factory-auth]
 
 State information is saved in the '~/.commcare-cloud/snapshots' directory. It is a good idea to run this before making any major changes to your environment, as it allows you to have a record of your environment's current state.
 
-##### Optional Arguments
+##### Options
 
 ###### `--use-factory-auth`
 
