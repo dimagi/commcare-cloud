@@ -19,8 +19,6 @@ nginx_sites:
       method: "hash $cookie_formplayer_session$http_x_formplayer_session consistent"
    mappings:
      # Remove 'username' query param from request uri for use in cache key
-     # https://stackoverflow.com/a/45587134
-     # https://stackoverflow.com/a/35772678
      - name: "$request_uri_no_username"
        variable: "$request_uri"
        default_value: "$request_uri"
