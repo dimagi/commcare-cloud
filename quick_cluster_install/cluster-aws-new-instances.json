@@ -1,0 +1,967 @@
+{
+    "Groups": [],
+    "Instances": [
+        {
+            "AmiLaunchIndex": 2,
+            "ImageId": "ami-0d70546e43a941d70",
+            "InstanceId": "i-0d56b9ab1b2b7394d",
+            "InstanceType": "t3.micro",
+            "KeyName": "commcarehq_cluster_testing",
+            "LaunchTime": "2023-01-31T13:41:49+00:00",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "us-west-2a",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-172-31-23-215.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.31.23.215",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-5d896c25",
+            "VpcId": "vpc-5544cc2d",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "0f6130c8-c0ff-448a-8e3c-0e52b002ebab",
+            "EbsOptimized": false,
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2023-01-31T13:41:49+00:00",
+                        "AttachmentId": "eni-attach-0bc1241ab8e6eafe9",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching",
+                        "NetworkCardIndex": 0
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "cluster_test",
+                            "GroupId": "sg-0f454b13d335c7ba8"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "02:54:d9:be:af:61",
+                    "NetworkInterfaceId": "eni-08488bc7a5b2e747f",
+                    "OwnerId": "825838806448",
+                    "PrivateDnsName": "ip-172-31-23-215.us-west-2.compute.internal",
+                    "PrivateIpAddress": "172.31.23.215",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-172-31-23-215.us-west-2.compute.internal",
+                            "PrivateIpAddress": "172.31.23.215"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-5d896c25",
+                    "VpcId": "vpc-5544cc2d",
+                    "InterfaceType": "interface"
+                }
+            ],
+            "RootDeviceName": "/dev/sda1",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "cluster_test",
+                    "GroupId": "sg-0f454b13d335c7ba8"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "Tags": [
+                {
+                    "Key": "user",
+                    "Value": "smittiec"
+                },
+                {
+                    "Key": "env",
+                    "Value": "cluster"
+                }
+            ],
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 2
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            },
+            "MetadataOptions": {
+                "State": "pending",
+                "HttpTokens": "optional",
+                "HttpPutResponseHopLimit": 1,
+                "HttpEndpoint": "enabled",
+                "HttpProtocolIpv6": "disabled",
+                "InstanceMetadataTags": "disabled"
+            },
+            "EnclaveOptions": {
+                "Enabled": false
+            },
+            "PrivateDnsNameOptions": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "MaintenanceOptions": {
+                "AutoRecovery": "default"
+            }
+        },
+        {
+            "AmiLaunchIndex": 1,
+            "ImageId": "ami-0d70546e43a941d70",
+            "InstanceId": "i-0b328674d20147540",
+            "InstanceType": "t3.micro",
+            "KeyName": "commcarehq_cluster_testing",
+            "LaunchTime": "2023-01-31T13:41:49+00:00",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "us-west-2a",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-172-31-29-7.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.31.29.7",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-5d896c25",
+            "VpcId": "vpc-5544cc2d",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "0f6130c8-c0ff-448a-8e3c-0e52b002ebab",
+            "EbsOptimized": false,
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2023-01-31T13:41:49+00:00",
+                        "AttachmentId": "eni-attach-0d864899d635f65ad",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching",
+                        "NetworkCardIndex": 0
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "cluster_test",
+                            "GroupId": "sg-0f454b13d335c7ba8"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "02:d1:2c:c7:c0:5d",
+                    "NetworkInterfaceId": "eni-0152e564cf63d46df",
+                    "OwnerId": "825838806448",
+                    "PrivateDnsName": "ip-172-31-29-7.us-west-2.compute.internal",
+                    "PrivateIpAddress": "172.31.29.7",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-172-31-29-7.us-west-2.compute.internal",
+                            "PrivateIpAddress": "172.31.29.7"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-5d896c25",
+                    "VpcId": "vpc-5544cc2d",
+                    "InterfaceType": "interface"
+                }
+            ],
+            "RootDeviceName": "/dev/sda1",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "cluster_test",
+                    "GroupId": "sg-0f454b13d335c7ba8"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "Tags": [
+                {
+                    "Key": "user",
+                    "Value": "smittiec"
+                },
+                {
+                    "Key": "env",
+                    "Value": "cluster"
+                }
+            ],
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 2
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            },
+            "MetadataOptions": {
+                "State": "pending",
+                "HttpTokens": "optional",
+                "HttpPutResponseHopLimit": 1,
+                "HttpEndpoint": "enabled",
+                "HttpProtocolIpv6": "disabled",
+                "InstanceMetadataTags": "disabled"
+            },
+            "EnclaveOptions": {
+                "Enabled": false
+            },
+            "PrivateDnsNameOptions": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "MaintenanceOptions": {
+                "AutoRecovery": "default"
+            }
+        },
+        {
+            "AmiLaunchIndex": 0,
+            "ImageId": "ami-0d70546e43a941d70",
+            "InstanceId": "i-0322ac463303393be",
+            "InstanceType": "t3.micro",
+            "KeyName": "commcarehq_cluster_testing",
+            "LaunchTime": "2023-01-31T13:41:49+00:00",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "us-west-2a",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-172-31-22-211.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.31.22.211",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-5d896c25",
+            "VpcId": "vpc-5544cc2d",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "0f6130c8-c0ff-448a-8e3c-0e52b002ebab",
+            "EbsOptimized": false,
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2023-01-31T13:41:49+00:00",
+                        "AttachmentId": "eni-attach-0993f72aa38da6e66",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching",
+                        "NetworkCardIndex": 0
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "cluster_test",
+                            "GroupId": "sg-0f454b13d335c7ba8"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "02:63:46:83:6b:eb",
+                    "NetworkInterfaceId": "eni-02a993dc7ab839b05",
+                    "OwnerId": "825838806448",
+                    "PrivateDnsName": "ip-172-31-22-211.us-west-2.compute.internal",
+                    "PrivateIpAddress": "172.31.22.211",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-172-31-22-211.us-west-2.compute.internal",
+                            "PrivateIpAddress": "172.31.22.211"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-5d896c25",
+                    "VpcId": "vpc-5544cc2d",
+                    "InterfaceType": "interface"
+                }
+            ],
+            "RootDeviceName": "/dev/sda1",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "cluster_test",
+                    "GroupId": "sg-0f454b13d335c7ba8"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "Tags": [
+                {
+                    "Key": "user",
+                    "Value": "smittiec"
+                },
+                {
+                    "Key": "env",
+                    "Value": "cluster"
+                }
+            ],
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 2
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            },
+            "MetadataOptions": {
+                "State": "pending",
+                "HttpTokens": "optional",
+                "HttpPutResponseHopLimit": 1,
+                "HttpEndpoint": "enabled",
+                "HttpProtocolIpv6": "disabled",
+                "InstanceMetadataTags": "disabled"
+            },
+            "EnclaveOptions": {
+                "Enabled": false
+            },
+            "PrivateDnsNameOptions": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "MaintenanceOptions": {
+                "AutoRecovery": "default"
+            }
+        },
+        {
+            "AmiLaunchIndex": 3,
+            "ImageId": "ami-0d70546e43a941d70",
+            "InstanceId": "i-0afe598db108211d5",
+            "InstanceType": "t3.micro",
+            "KeyName": "commcarehq_cluster_testing",
+            "LaunchTime": "2023-01-31T13:41:49+00:00",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "us-west-2a",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-172-31-22-107.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.31.22.107",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-5d896c25",
+            "VpcId": "vpc-5544cc2d",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "0f6130c8-c0ff-448a-8e3c-0e52b002ebab",
+            "EbsOptimized": false,
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2023-01-31T13:41:49+00:00",
+                        "AttachmentId": "eni-attach-03e55a59da1261deb",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching",
+                        "NetworkCardIndex": 0
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "cluster_test",
+                            "GroupId": "sg-0f454b13d335c7ba8"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "02:36:86:2b:a9:15",
+                    "NetworkInterfaceId": "eni-03d89ed9687e80740",
+                    "OwnerId": "825838806448",
+                    "PrivateDnsName": "ip-172-31-22-107.us-west-2.compute.internal",
+                    "PrivateIpAddress": "172.31.22.107",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-172-31-22-107.us-west-2.compute.internal",
+                            "PrivateIpAddress": "172.31.22.107"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-5d896c25",
+                    "VpcId": "vpc-5544cc2d",
+                    "InterfaceType": "interface"
+                }
+            ],
+            "RootDeviceName": "/dev/sda1",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "cluster_test",
+                    "GroupId": "sg-0f454b13d335c7ba8"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "Tags": [
+                {
+                    "Key": "user",
+                    "Value": "smittiec"
+                },
+                {
+                    "Key": "env",
+                    "Value": "cluster"
+                }
+            ],
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 2
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            },
+            "MetadataOptions": {
+                "State": "pending",
+                "HttpTokens": "optional",
+                "HttpPutResponseHopLimit": 1,
+                "HttpEndpoint": "enabled",
+                "HttpProtocolIpv6": "disabled",
+                "InstanceMetadataTags": "disabled"
+            },
+            "EnclaveOptions": {
+                "Enabled": false
+            },
+            "PrivateDnsNameOptions": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "MaintenanceOptions": {
+                "AutoRecovery": "default"
+            }
+        },
+        {
+            "AmiLaunchIndex": 7,
+            "ImageId": "ami-0d70546e43a941d70",
+            "InstanceId": "i-081cf3d231207c460",
+            "InstanceType": "t3.micro",
+            "KeyName": "commcarehq_cluster_testing",
+            "LaunchTime": "2023-01-31T13:41:49+00:00",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "us-west-2a",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-172-31-17-47.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.31.17.47",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-5d896c25",
+            "VpcId": "vpc-5544cc2d",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "0f6130c8-c0ff-448a-8e3c-0e52b002ebab",
+            "EbsOptimized": false,
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2023-01-31T13:41:49+00:00",
+                        "AttachmentId": "eni-attach-02bddb93c94dab1df",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching",
+                        "NetworkCardIndex": 0
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "cluster_test",
+                            "GroupId": "sg-0f454b13d335c7ba8"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "02:44:4f:89:25:0d",
+                    "NetworkInterfaceId": "eni-05ff3b076f7ead051",
+                    "OwnerId": "825838806448",
+                    "PrivateDnsName": "ip-172-31-17-47.us-west-2.compute.internal",
+                    "PrivateIpAddress": "172.31.17.47",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-172-31-17-47.us-west-2.compute.internal",
+                            "PrivateIpAddress": "172.31.17.47"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-5d896c25",
+                    "VpcId": "vpc-5544cc2d",
+                    "InterfaceType": "interface"
+                }
+            ],
+            "RootDeviceName": "/dev/sda1",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "cluster_test",
+                    "GroupId": "sg-0f454b13d335c7ba8"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "Tags": [
+                {
+                    "Key": "user",
+                    "Value": "smittiec"
+                },
+                {
+                    "Key": "env",
+                    "Value": "cluster"
+                }
+            ],
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 2
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            },
+            "MetadataOptions": {
+                "State": "pending",
+                "HttpTokens": "optional",
+                "HttpPutResponseHopLimit": 1,
+                "HttpEndpoint": "enabled",
+                "HttpProtocolIpv6": "disabled",
+                "InstanceMetadataTags": "disabled"
+            },
+            "EnclaveOptions": {
+                "Enabled": false
+            },
+            "PrivateDnsNameOptions": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "MaintenanceOptions": {
+                "AutoRecovery": "default"
+            }
+        },
+        {
+            "AmiLaunchIndex": 6,
+            "ImageId": "ami-0d70546e43a941d70",
+            "InstanceId": "i-00373de290d776822",
+            "InstanceType": "t3.micro",
+            "KeyName": "commcarehq_cluster_testing",
+            "LaunchTime": "2023-01-31T13:41:49+00:00",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "us-west-2a",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-172-31-24-222.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.31.24.222",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-5d896c25",
+            "VpcId": "vpc-5544cc2d",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "0f6130c8-c0ff-448a-8e3c-0e52b002ebab",
+            "EbsOptimized": false,
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2023-01-31T13:41:49+00:00",
+                        "AttachmentId": "eni-attach-0397fa22ff5a530c7",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching",
+                        "NetworkCardIndex": 0
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "cluster_test",
+                            "GroupId": "sg-0f454b13d335c7ba8"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "02:af:14:e6:02:69",
+                    "NetworkInterfaceId": "eni-0914a436dd76cfaec",
+                    "OwnerId": "825838806448",
+                    "PrivateDnsName": "ip-172-31-24-222.us-west-2.compute.internal",
+                    "PrivateIpAddress": "172.31.24.222",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-172-31-24-222.us-west-2.compute.internal",
+                            "PrivateIpAddress": "172.31.24.222"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-5d896c25",
+                    "VpcId": "vpc-5544cc2d",
+                    "InterfaceType": "interface"
+                }
+            ],
+            "RootDeviceName": "/dev/sda1",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "cluster_test",
+                    "GroupId": "sg-0f454b13d335c7ba8"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "Tags": [
+                {
+                    "Key": "user",
+                    "Value": "smittiec"
+                },
+                {
+                    "Key": "env",
+                    "Value": "cluster"
+                }
+            ],
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 2
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            },
+            "MetadataOptions": {
+                "State": "pending",
+                "HttpTokens": "optional",
+                "HttpPutResponseHopLimit": 1,
+                "HttpEndpoint": "enabled",
+                "HttpProtocolIpv6": "disabled",
+                "InstanceMetadataTags": "disabled"
+            },
+            "EnclaveOptions": {
+                "Enabled": false
+            },
+            "PrivateDnsNameOptions": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "MaintenanceOptions": {
+                "AutoRecovery": "default"
+            }
+        },
+        {
+            "AmiLaunchIndex": 5,
+            "ImageId": "ami-0d70546e43a941d70",
+            "InstanceId": "i-0ae1fdb29080cc9b7",
+            "InstanceType": "t3.micro",
+            "KeyName": "commcarehq_cluster_testing",
+            "LaunchTime": "2023-01-31T13:41:49+00:00",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "us-west-2a",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-172-31-28-204.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.31.28.204",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-5d896c25",
+            "VpcId": "vpc-5544cc2d",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "0f6130c8-c0ff-448a-8e3c-0e52b002ebab",
+            "EbsOptimized": false,
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2023-01-31T13:41:49+00:00",
+                        "AttachmentId": "eni-attach-0529da98a9de99b69",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching",
+                        "NetworkCardIndex": 0
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "cluster_test",
+                            "GroupId": "sg-0f454b13d335c7ba8"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "02:57:0a:15:57:e1",
+                    "NetworkInterfaceId": "eni-099dbbafbae7c1629",
+                    "OwnerId": "825838806448",
+                    "PrivateDnsName": "ip-172-31-28-204.us-west-2.compute.internal",
+                    "PrivateIpAddress": "172.31.28.204",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-172-31-28-204.us-west-2.compute.internal",
+                            "PrivateIpAddress": "172.31.28.204"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-5d896c25",
+                    "VpcId": "vpc-5544cc2d",
+                    "InterfaceType": "interface"
+                }
+            ],
+            "RootDeviceName": "/dev/sda1",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "cluster_test",
+                    "GroupId": "sg-0f454b13d335c7ba8"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "Tags": [
+                {
+                    "Key": "env",
+                    "Value": "cluster"
+                },
+                {
+                    "Key": "user",
+                    "Value": "smittiec"
+                }
+            ],
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 2
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            },
+            "MetadataOptions": {
+                "State": "pending",
+                "HttpTokens": "optional",
+                "HttpPutResponseHopLimit": 1,
+                "HttpEndpoint": "enabled",
+                "HttpProtocolIpv6": "disabled",
+                "InstanceMetadataTags": "disabled"
+            },
+            "EnclaveOptions": {
+                "Enabled": false
+            },
+            "PrivateDnsNameOptions": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "MaintenanceOptions": {
+                "AutoRecovery": "default"
+            }
+        },
+        {
+            "AmiLaunchIndex": 4,
+            "ImageId": "ami-0d70546e43a941d70",
+            "InstanceId": "i-097971677a4db8efd",
+            "InstanceType": "t3.micro",
+            "KeyName": "commcarehq_cluster_testing",
+            "LaunchTime": "2023-01-31T13:41:49+00:00",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "us-west-2a",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-172-31-21-75.us-west-2.compute.internal",
+            "PrivateIpAddress": "172.31.21.75",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-5d896c25",
+            "VpcId": "vpc-5544cc2d",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "0f6130c8-c0ff-448a-8e3c-0e52b002ebab",
+            "EbsOptimized": false,
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2023-01-31T13:41:49+00:00",
+                        "AttachmentId": "eni-attach-0f6157a5bd4e1dcf9",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching",
+                        "NetworkCardIndex": 0
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "cluster_test",
+                            "GroupId": "sg-0f454b13d335c7ba8"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "02:a8:54:de:25:f5",
+                    "NetworkInterfaceId": "eni-07ae9f33c796c6426",
+                    "OwnerId": "825838806448",
+                    "PrivateDnsName": "ip-172-31-21-75.us-west-2.compute.internal",
+                    "PrivateIpAddress": "172.31.21.75",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-172-31-21-75.us-west-2.compute.internal",
+                            "PrivateIpAddress": "172.31.21.75"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-5d896c25",
+                    "VpcId": "vpc-5544cc2d",
+                    "InterfaceType": "interface"
+                }
+            ],
+            "RootDeviceName": "/dev/sda1",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "cluster_test",
+                    "GroupId": "sg-0f454b13d335c7ba8"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "Tags": [
+                {
+                    "Key": "env",
+                    "Value": "cluster"
+                },
+                {
+                    "Key": "user",
+                    "Value": "smittiec"
+                }
+            ],
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 2
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            },
+            "MetadataOptions": {
+                "State": "pending",
+                "HttpTokens": "optional",
+                "HttpPutResponseHopLimit": 1,
+                "HttpEndpoint": "enabled",
+                "HttpProtocolIpv6": "disabled",
+                "InstanceMetadataTags": "disabled"
+            },
+            "EnclaveOptions": {
+                "Enabled": false
+            },
+            "PrivateDnsNameOptions": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "MaintenanceOptions": {
+                "AutoRecovery": "default"
+            }
+        }
+    ],
+    "OwnerId": "825838806448",
+    "ReservationId": "r-08c05fe8c944bf2eb"
+}
