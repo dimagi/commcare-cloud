@@ -8,24 +8,6 @@ from ..const import ROLES_DEPLOY
 
 
 @roles(ROLES_DEPLOY)
-def ensure_checkpoints_safe():
-    extras = '--print-only' if env.ignore_kafka_checkpoint_warning else ''
-    with cd(env.code_root):
-        try:
-            sudo(f'{env.virtualenv_root}/bin/python manage.py validate_kafka_pillow_checkpoints {extras}')
-        except Exception:
-            if env.ignore_kafka_checkpoint_warning:
-                # if we were forcing and still got an error this is likely a bug so we should raise it
-                raise
-            raise Exception(
-                "Deploy failed, likely because kafka checkpoints weren't available.\n"
-                "Scroll up for more detailed information.\n"
-                "You can rerun with --set ignore_kafka_checkpoint_warning=true "
-                "to prevent this error from blocking the deploy."
-            )
-
-
-@roles(ROLES_DEPLOY)
 def migrate():
     """run migrations on remote environment"""
     with cd(env.code_root):

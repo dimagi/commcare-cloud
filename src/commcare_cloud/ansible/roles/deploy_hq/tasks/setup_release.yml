@@ -52,3 +52,23 @@
     regexp: "^#!"
     firstmatch: true
     state: present
+
+- name: Ensure checkpoints safe
+  command:
+    cmd: >-
+      ./manage.py validate_kafka_pillow_checkpoints
+      {{ "--print-only" if ignore_kafka_checkpoint_warning | default(False) else "" }}
+    chdir: '{{ code_source }}'
+  register: checkpoints_result
+  changed_when: checkpoints_result.rc
+  failed_when: '"rc" not in checkpoints_result'
+  when: '"private_release" not in ansible_run_tags'
+  run_once: true
+
+- name: Unsafe checkpoints error
+  fail:
+    msg: >-
+      Deploy failed, likely because kafka checkpoints were not available.
+      You can rerun with --ignore-kafka-checkpoint-warning to prevent this
+      error from blocking the deploy.
+  when: '"private_release" not in ansible_run_tags and checkpoints_result.rc'
