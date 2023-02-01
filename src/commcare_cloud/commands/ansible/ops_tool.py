@@ -8,9 +8,7 @@ import itertools
 import json
 import subprocess
 import sys
-import stat
 import os
-from pathlib import Path
 from collections import defaultdict
 from datetime import datetime
 from io import open
