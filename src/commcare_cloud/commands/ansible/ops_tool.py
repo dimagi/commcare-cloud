@@ -8,15 +8,13 @@ import itertools
 import json
 import subprocess
 import sys
-import stat
 import os
-from pathlib import Path
 from collections import defaultdict
 from datetime import datetime
 from io import open
 from operator import attrgetter, itemgetter
 from distutils.version import LooseVersion
-from commcare_cloud.commands.ansible.service import SERVICE_NAMES, SERVICES_BY_NAME
+from commcare_cloud.commands.ansible.service import SERVICE_NAMES, SERVICES_BY_NAME, ElasticsearchClassic
 from commcare_cloud.commands.ansible.ansible_playbook import _AnsiblePlaybookAlias, AnsiblePlaybook
 from commcare_cloud.commands.deploy.commcare import get_deployed_version
 import yaml
@@ -569,8 +567,10 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         """
         self.service_status_directory = os.path.join(self.curr_audit_directory, "service_statuses")
         self._ensure_dir_exists(self.service_status_directory)
-
-        for service_name in SERVICE_NAMES:
+        
+        exclude_services = [ElasticsearchClassic]
+        services_to_check = [service for service in SERVICE_NAMES if service not in exclude_services]
+        for service_name in services_to_check:
             try:
                 service_class = SERVICES_BY_NAME[service_name]
                 log_path = os.path.join(self.service_status_directory, service_name)
