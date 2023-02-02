@@ -191,8 +191,4 @@ web10
 
 
 [awsmq]
-staging-mq-broker
-
-[awsmq:vars]
-awsmq_endpoint={{ aws_resources['staging-mq-broker'] }}
-
+{{ aws_resources['staging-mq-broker'] }}
