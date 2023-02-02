@@ -93,7 +93,7 @@ def get_default_ssh_options(environment, aws_ssm_target=None):
 
 
 def get_default_ssh_options_as_cmd_parts(environment, original_ssh_args=(), aws_ssm_target=None):
-    ssh_args = []
+    ssh_args = environment.public_vars.get('commcare_cloud_ssh_args', [])
     options = get_default_ssh_options(environment, aws_ssm_target)
     for option_name, default_option_value in options:
         arg_names = ('{}='.format(option_name), "-o{}=".format(option_name))
