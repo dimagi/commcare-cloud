@@ -427,7 +427,8 @@ def manage(cmd=None):
 
 @task
 def deploy_commcare(resume='no', skip_record='no'):
-    """
+    """Deploy CommCare HQ
+
     fab <env> deploy_commcare:resume=yes  # resume from previous deploy
     fab <env> deploy_commcare:skip_record=yes  # skip record_successful_release
     """
