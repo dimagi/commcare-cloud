@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 import jinja2
 from gevent.pool import Pool
+from github import Github
 from github.GithubException import GithubException
 from memoized import memoized, memoized_property
 
@@ -89,8 +90,6 @@ class DeployDiff:
                 "maintenance_prs": [],
                 "error": False
             }
-
-        from github import Github
 
         sixweeks_ago = (datetime.now() - timedelta(days=6*7)).strftime( '%Y-%m-%d')
         created = f">{sixweeks_ago}"
