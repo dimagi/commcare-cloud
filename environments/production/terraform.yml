@@ -521,9 +521,10 @@ rds_instances:
       maintenance_work_mem: 960MB
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
       vacuum_cost_limit: 2000
+      autovacuum_vacuum_cost_limit: 2000
 
   - identifier: "pgformplayer2-production"
-    instance_type: "db.m5.xlarge"
+    instance_type: "db.m5.large"
     storage: 200
     multi_az: true
     engine_version: "14"
@@ -536,6 +537,7 @@ rds_instances:
       maintenance_work_mem: 4172000kB
       max_wal_size: 4GB
       vacuum_cost_limit: 1000
+      autovacuum_vacuum_cost_limit: 1000
       pg_transport.work_mem: 131072
       pg_transport.timing: 1
       max_worker_processes: 40
@@ -543,7 +545,7 @@ rds_instances:
       track_io_timing: 1
 
   - identifier: "pgauditcare1-production"
-    instance_type: "db.m5.2xlarge"
+    instance_type: "db.t3.2xlarge"
     storage: 7000
     multi_az: true
     engine_version: "14"
@@ -558,6 +560,7 @@ rds_instances:
       shared_buffers: 12GB
       maintenance_work_mem: 4172000kB
       vacuum_cost_limit: 1000
+      autovacuum_vacuum_cost_limit: 1000
       pg_transport.work_mem: 262144 
       pg_transport.timing: 1
       max_worker_processes: 40
