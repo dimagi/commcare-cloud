@@ -514,7 +514,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self._collect_commcare_hq_details()
         self._validate_environment_settings()
         self._collect_control_machine_os_level_info()
-        self._collect_service_folder_permissions_info()
+        self._audit_hosts()
         self._collect_service_status_info()
         
         self._write_info_file()
@@ -562,7 +562,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         os_data["os_distrib"] = os_distrib
         self.env_info_dict["os_data"] = os_data
         
-    def _collect_service_folder_permissions_info(self):
+    def _audit_hosts(self):
         args = self.args
         args.playbook = 'commcare-audit.yml'
         control_user = os.getlogin()
