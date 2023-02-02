@@ -576,6 +576,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self.service_status_directory = os.path.join(self.curr_audit_directory, "service_statuses")
         self._ensure_dir_exists(self.service_status_directory)
 
+        # We exclude ElasticsearchClassic here since Elasticsearch invokes ElasticsearchClassic underneath
         exclude_services = [ElasticsearchClassic]
         services_to_check = [service for service in SERVICE_NAMES if service not in exclude_services]
         for service_name in services_to_check:
