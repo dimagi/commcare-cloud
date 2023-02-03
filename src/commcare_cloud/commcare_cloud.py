@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import inspect
 import os
 import shlex
+import subprocess
 import sys
 from collections import OrderedDict
 from textwrap import dedent
@@ -50,6 +51,9 @@ from .environment.paths import (
     get_available_envs,
     put_virtualenv_bin_on_the_path,
 )
+
+COMMCARE_CLOUD_COMMAND_LOG_FILE = f"{os.environ['HOME']}/.commcare-cloud/command_output.log"
+ANSIBLE_LOG_FILE = "/var/log/ansible.log"
 
 COMMAND_GROUPS = OrderedDict([
     ('housekeeping', [
@@ -264,9 +268,20 @@ def _get_cleaned_args_for_control(args, input_argv):
     return argv
 
 
+def report_command_failure():
+    from subprocess import CalledProcessError
+    try:
+        cmd_args = ["cp", ANSIBLE_LOG_FILE, COMMCARE_CLOUD_COMMAND_LOG_FILE]
+        subprocess.check_call(cmd_args)
+    except CalledProcessError:
+        error_msg = f"Failed to copy {ANSIBLE_LOG_FILE} {COMMCARE_CLOUD_COMMAND_LOG_FILE}."
+        puts(color_error(error_msg))
+
+
 def main():
     exit_code = call_commcare_cloud()
     if exit_code != 0:
+        report_command_failure()
         exit(exit_code)
 
 
