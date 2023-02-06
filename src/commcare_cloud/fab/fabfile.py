@@ -47,7 +47,6 @@ from commcare_cloud.environment.paths import get_available_envs
 from commcare_cloud.github import github_repo
 from .checks import check_servers
 from .const import ROLES_ALL_SERVICES, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
-from .exceptions import PreindexNotFinished
 from .operations import db
 from .operations import release, staticfiles, supervisor
 from .utils import (
@@ -338,14 +337,6 @@ def _deploy_without_asking(skip_record):
     try:
         for index, command in enumerate(ONLINE_DEPLOY_COMMANDS):
             deploy_checkpoint(index, command.__name__, execute_with_timing, command)
-    except PreindexNotFinished:
-        send_email(
-            " You can't deploy to {} yet. There's a preindex in process.".format(env.env_name),
-            ("Preindexing is taking a while, so hold tight "
-             "and wait for an email saying it's done. "
-             "Thank you for using AWESOME DEPLOY.")
-        )
-        raise
     except Exception:
         execute_with_timing(
             send_email,
@@ -436,7 +427,8 @@ def manage(cmd=None):
 
 @task
 def deploy_commcare(resume='no', skip_record='no'):
-    """Preindex and deploy if it completes quickly enough, otherwise abort
+    """Deploy CommCare HQ
+
     fab <env> deploy_commcare:resume=yes  # resume from previous deploy
     fab <env> deploy_commcare:skip_record=yes  # skip record_successful_release
     """
@@ -542,8 +534,6 @@ def reset_pillow(pillow):
 
 ONLINE_DEPLOY_COMMANDS = [
     _setup_release,
-    db.preindex_views,
-    db.ensure_preindex_completion,
     db.ensure_checkpoints_safe,
     staticfiles.yarn_install,
     staticfiles.version_static,     # run after any new bower code has been installed
@@ -552,7 +542,6 @@ ONLINE_DEPLOY_COMMANDS = [
     staticfiles.update_translations,
     conditionally_stop_pillows_and_celery_during_migrate,
     db.create_kafka_topics,
-    db.flip_es_aliases,
     staticfiles.pull_manifest,
     staticfiles.pull_staticfiles_cache,
     release.clean_releases,

@@ -1,13 +1,10 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
-import datetime
-import time
 
 from fabric.context_managers import cd, settings, hide
 from fabric.api import roles, sudo, env
 from fabric.decorators import runs_once
 
-from ..exceptions import PreindexNotFinished
 from ..const import ROLES_PILLOWTOP, ROLES_DEPLOY
 
 
@@ -18,24 +15,6 @@ def preindex_views():
         command = f'{env.virtualenv_root}/bin/python {env.code_root}/manage.py preindex_everything 8 {env.user}'
         mail_flag = '--mail' if env.email_enabled else ''
         sudo(f'echo "{command}" {mail_flag} | at -t `date -d "5 seconds" +%m%d%H%M.%S`')
-
-
-def ensure_preindex_completion():
-    max_wait = datetime.timedelta(minutes=5)
-    pause_length = datetime.timedelta(seconds=5)
-    start = datetime.datetime.utcnow()
-
-    _is_preindex_complete()
-
-    done = False
-    while not done and datetime.datetime.utcnow() - start < max_wait:
-        time.sleep(pause_length.seconds)
-        if _is_preindex_complete():
-            done = True
-        pause_length *= 2
-
-    if not done:
-        raise PreindexNotFinished()
 
 
 @roles(ROLES_DEPLOY)
@@ -57,25 +36,9 @@ def ensure_checkpoints_safe():
 
 
 @roles(ROLES_DEPLOY)
-def _is_preindex_complete():
-    with settings(warn_only=True), hide('warnings'):
-        return sudo(
-            f'{env.virtualenv_root}/bin/python {env.code_root}/manage.py preindex_everything --check'
-        ).succeeded
-
-
-@roles(ROLES_DEPLOY)
-def flip_es_aliases():
-    """Flip elasticsearch aliases to the latest version"""
-    with cd(env.code_root):
-        sudo(f'{env.virtualenv_root}/bin/python manage.py ptop_es_manage --flip_all_aliases')
-
-
-@roles(ROLES_DEPLOY)
 def migrate():
     """run migrations on remote environment"""
     with cd(env.code_root):
-        sudo(f'{env.virtualenv_root}/bin/python manage.py sync_finish_couchdb_hq')
         sudo(f'{env.virtualenv_root}/bin/python manage.py migrate_multi --noinput')
 
 
