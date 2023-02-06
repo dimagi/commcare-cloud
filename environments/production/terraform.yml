@@ -436,7 +436,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard1-production"
-    instance_type: "db.m5.4xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 750
     max_storage: 2500
     multi_az: true
@@ -450,7 +450,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard2-production"
-    instance_type: "db.m5.4xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 750
     max_storage: 2500
     multi_az: true
@@ -462,8 +462,9 @@ rds_instances:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: -1
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
+
   - identifier: "pgshard3-production"
-    instance_type: "db.m5.4xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 750
     max_storage: 2500
     multi_az: true
@@ -475,8 +476,9 @@ rds_instances:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: -1
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
+
   - identifier: "pgshard4-production"
-    instance_type: "db.m5.4xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 750
     max_storage: 2500
     multi_az: true
@@ -488,8 +490,9 @@ rds_instances:
       shared_preload_libraries: pg_stat_statements
       log_min_duration_statement: -1
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
+
   - identifier: "pgshard5-production"
-    instance_type: "db.m5.4xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 750
     max_storage: 2500
     multi_az: true
