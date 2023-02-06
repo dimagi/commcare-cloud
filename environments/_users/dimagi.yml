@@ -24,7 +24,6 @@ dev_users:
     - mperosa
     - nhooper
     - pverma
-    - rpietersen
     - sgoyal
     - skelly
     - sravfeyn
@@ -48,6 +47,7 @@ dev_users:
     - dchung
     - cstahl
     - rnegi
+    - rpietersen
     - spokhriyal
     - frener
     - dochoa
