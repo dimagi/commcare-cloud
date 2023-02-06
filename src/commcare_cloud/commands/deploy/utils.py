@@ -72,6 +72,9 @@ def _log_deploy(environment, context, start_of_deploy=True):
         }
     }
     """
+    def format_time(date_time):
+        return date_time.astimezone().strftime("%Y-%m-%dT%H:%M:%S %Z")
+
     commcare_cloud_path = os.path.expanduser("~/.commcare-cloud")
     if not os.path.exists(commcare_cloud_path):
         # We leave the creation of this folder to the init script
@@ -79,10 +82,7 @@ def _log_deploy(environment, context, start_of_deploy=True):
 
     repo = context.diff.repo
     deploy_log_path = os.path.join(commcare_cloud_path, "deploy_log.json")
-    deploy_log = {}
-    if os.path.exists(deploy_log_path):
-        with open(deploy_log_path, "r+") as file:
-            deploy_log = json.loads(file.read())
+    deploy_log = _get_current_deploy_log(deploy_log_path)
 
     with open(deploy_log_path, "w") as file:
         if environment.name not in deploy_log:
@@ -93,7 +93,6 @@ def _log_deploy(environment, context, start_of_deploy=True):
             environment_repos[repo.name] = []
         
         repo_deploys = environment_repos[repo.name]
-        format_time = lambda date_time: date_time.astimezone().strftime("%Y-%m-%dT%H:%M:%S %Z")
 
         if start_of_deploy:
             current_deploy = {
@@ -101,12 +100,19 @@ def _log_deploy(environment, context, start_of_deploy=True):
                 'deploy_commit': context.diff.deploy_commit,
                 'start_time': format_time(context.start_time),
                 'end_time': None
-                }
+            }
             repo_deploys.append(current_deploy)
         else:
             last_repo_deploy = repo_deploys[-1]
             last_repo_deploy['end_time'] = format_time(datetime.utcnow())
         json.dump(deploy_log, file)
+
+def _get_current_deploy_log(log_path):
+    if not os.path.exists(log_path):
+        return {}
+    
+    with open(log_path, "r+") as file:
+        return json.loads(file.read())
 
 def send_deploy_start_email(environment, context):
     is_nonstandard_deploy_time = not within_maintenance_window(environment)
