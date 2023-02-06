@@ -4,7 +4,9 @@ import attr
 from github.GithubException import GithubException
 import pytz
 from memoized import memoized
-
+import os
+import json
+from commcare_cloud.fab.const import DATE_FMT
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.colors import color_summary, color_error
 from commcare_cloud.commands.deploy.slack import notify_slack_deploy_start, notify_slack_deploy_end
@@ -49,7 +51,62 @@ def create_release_tag(environment, repo, diff):
 def record_deploy_start(environment, context):
     notify_slack_deploy_start(environment, context)
     send_deploy_start_email(environment, context)
+    _log_deploy(environment, context)
 
+def _log_deploy(environment, context, start_of_deploy=True):
+    """
+    Logs the deploy to a json file in the ~/.commcare-cloud directory. With start=True, a new deployment with the
+    start_time will be recorded. With start=False, the latest deployment's end_time will be recorded.
+
+    File contents example:
+    {
+        "<env>": {
+            "<repo>": [
+                {
+                    "start_time": <start time>,
+                    "end_time": <end time>,
+                    "current_commit": <commit id>,
+                    "deploy_commit": <commit id>
+                }
+            ]
+        }
+    }
+    """
+    commcare_cloud_path = os.path.expanduser("~/.commcare-cloud")
+    if not os.path.exists(commcare_cloud_path):
+        # We leave the creation of this folder to the init script
+        return
+
+    repo = context.diff.repo
+    deploy_log_path = os.path.join(commcare_cloud_path, "deploy_log.json")
+    deploy_log = {}
+    if os.path.exists(deploy_log_path):
+        with open(deploy_log_path, "r+") as file:
+            deploy_log = json.loads(file.read())
+
+    with open(deploy_log_path, "w") as file:
+        if environment.name not in deploy_log:
+            deploy_log[environment.name] = {}
+        
+        environment_repos = deploy_log[environment.name]
+        if repo.name not in environment_repos:
+            environment_repos[repo.name] = []
+        
+        repo_deploys = environment_repos[repo.name]
+        format_time = lambda date_time: date_time.astimezone().strftime("%Y-%m-%dT%H:%M:%S %Z")
+
+        if start_of_deploy:
+            current_deploy = {
+                'current_commit': context.diff.current_commit,
+                'deploy_commit': context.diff.deploy_commit,
+                'start_time': format_time(context.start_time),
+                'end_time': None
+                }
+            repo_deploys.append(current_deploy)
+        else:
+            last_repo_deploy = repo_deploys[-1]
+            last_repo_deploy['end_time'] = format_time(datetime.utcnow())
+        json.dump(deploy_log, file)
 
 def send_deploy_start_email(environment, context):
     is_nonstandard_deploy_time = not within_maintenance_window(environment)
@@ -92,6 +149,7 @@ def announce_deploy_success(environment, context):
         to_admins=True,
         recipients=[recipient] if recipient else None
     )
+    _log_deploy(environment, context, start_of_deploy=False)
 
 
 def send_email(environment, subject, message='', to_admins=True, recipients=None):
