@@ -133,6 +133,8 @@ pillows:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
+    XFormToElasticsearchPillowBackfill:
+      num_processes: 12
   pillow_b1000:
     xform-pillow:
       num_processes: 33
