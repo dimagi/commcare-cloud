@@ -39,6 +39,7 @@
       with_items:
         - {name: cchq_http, vars_file: cchq_http}
         - {name: cchq_ssl, vars_file: cchq_ssl}
+        - {name: cchq_internal, vars_file: cchq_internal}
       loop_control:
         loop_var: site_config
       tags: nginx_sites
