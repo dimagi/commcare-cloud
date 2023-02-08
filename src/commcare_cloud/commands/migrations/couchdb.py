@@ -414,7 +414,8 @@ def _run_migration(migration, target_context, check_mode, no_stop):
 
     puts(color_summary('Copy file lists to nodes:'))
     file_configs = get_migration_file_configs(migration)
-    host_ips = ",".join(prepare_to_sync_files(migration, file_configs, target_context))
+    prepare_to_sync_files(migration, file_configs, target_context)
+    host_ips = ",".join(file_configs)
 
     auth = noop_context() if check_mode else ssh_auth(migration, file_configs, target_context)
     if no_stop:
@@ -477,21 +478,19 @@ def commit_migration(migration):
 
 
 def prepare_to_sync_files(migration, file_configs, target_context):
-    rsync_files_by_host = generate_rsync_lists(migration, file_configs)
+    generate_rsync_lists(migration, file_configs)
 
-    for host_ip in rsync_files_by_host:
+    for host_ip in file_configs:
         copy_scripts_to_target_host(
             host_ip,
             migration.rsync_files_path,
             target_context
         )
-    return rsync_files_by_host
 
 
 def generate_rsync_lists(migration, file_configs):
     for target_host, files_for_node in file_configs.items():
         prepare_file_copy_scripts(target_host, files_for_node, migration.rsync_files_path)
-    return list(file_configs)
 
 
 def get_migration_file_configs(migration):
