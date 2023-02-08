@@ -45,7 +45,7 @@ clint==0.5.1
     # via commcare-cloud (setup.py)
 couchdb-cluster-admin==0.7.2
     # via commcare-cloud (setup.py)
-cryptography==38.0.3
+cryptography==39.0.1
     # via
     #   ansible-core
     #   commcare-cloud (setup.py)
