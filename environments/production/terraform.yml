@@ -249,7 +249,7 @@ servers:
     server_instance_type: r5.2xlarge
     network_tier: "app-private"
     az: "c"
-    volume_size: 80
+    volume_size: 83
     group: "celery"
     os: bionic
     count: 4
