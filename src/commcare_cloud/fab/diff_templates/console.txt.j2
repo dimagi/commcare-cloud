@@ -59,7 +59,7 @@ Attention! Predeploy Maintenance Required:
     You are about to deploy the following PR(s), which have manual maintenance that must be performed before proceeding with this deploy. Please review them and associated changelogs and make sure these are applied before deploying.
 
     Click the URL for additional context.
-{% for info in prs_by_label.get("migration-maintenance") + prs_by_label.get("breaking-maintenance") -%}
+{% for info in prs_by_label.get("migration-maintenance", []) + prs_by_label.get("breaking-maintenance", []) -%}
 {{ render_pr(info) }}
 {% endfor %}
 {%- endif %}
