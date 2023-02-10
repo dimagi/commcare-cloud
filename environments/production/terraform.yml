@@ -187,7 +187,7 @@ servers:
     volume_size: 90
     volume_encrypted: yes
     block_device:
-      volume_size: 2800
+      volume_size: 2975
       encrypted: yes
     group: "couchdb2"
     os: bionic
@@ -199,7 +199,7 @@ servers:
     volume_size: 90
     volume_encrypted: yes
     block_device:
-      volume_size: 2800
+      volume_size: 2975
       encrypted: yes
       enable_cross_region_backup: yes
     group: "couchdb2"
@@ -212,7 +212,7 @@ servers:
     volume_size: 90
     volume_encrypted: yes
     block_device:
-      volume_size: 2800
+      volume_size: 2975
       encrypted: yes
     group: "couchdb2"
     os: bionic
@@ -249,7 +249,7 @@ servers:
     server_instance_type: r5.2xlarge
     network_tier: "app-private"
     az: "c"
-    volume_size: 80
+    volume_size: 83
     group: "celery"
     os: bionic
     count: 4
@@ -424,7 +424,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgucr0-production"
-    instance_type: "db.m6g.2xlarge"
+    instance_type: "db.m5.2xlarge"
     storage: 850
     max_storage: 5000
     multi_az: true
@@ -621,6 +621,20 @@ elasticache_cluster:
   maintenance_window: "sun:08:30-sun:09:30"
   snapshot_retention: 7
   snapshot_window: "06:30-07:30"
+
+awsmq:
+  create: yes
+  broker_name: "production-mq-broker"
+  engine_type: "RabbitMQ"  
+  engine_version: "3.10.10"  
+  host_instance_type: "mq.m5.large"
+  deployment_mode: "CLUSTER_MULTI_AZ"  
+  apply_immediately: false
+  auto_minor_version_upgrade: false  
+  publicly_accessible: false
+  logs_general: true 
+  audit_log_enabled: false
+  encryption_enabled: false  
 
 r53_private_zone:
   create: yes
