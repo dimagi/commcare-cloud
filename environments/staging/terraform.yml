@@ -343,6 +343,7 @@ rds_instances:
   - identifier: "pg0-staging"
     instance_type: "db.t3.small"
     storage: 160
+    storage_type: gp3
     multi_az: yes
     engine_version: "14"
     params:
@@ -353,6 +354,7 @@ rds_instances:
   - identifier: "pgformplayer0-staging"
     instance_type: "db.t3.small"
     storage: 160
+    storage_type: gp3
     multi_az: yes
     engine_version: "14.4"
     params:
