@@ -10,12 +10,11 @@ import subprocess
 import sys
 import os
 from collections import defaultdict
-from commcare_cloud.fab.const import DATE_FMT
 from datetime import datetime
 from io import open
 from operator import attrgetter, itemgetter
 from distutils.version import LooseVersion
-from commcare_cloud.commands.ansible.ansible_playbook import _AnsiblePlaybookAlias
+from commcare_cloud.commands.ansible.ansible_playbook import _AnsiblePlaybookAlias, AnsiblePlaybook
 from commcare_cloud.commands.deploy.commcare import get_deployed_version
 import yaml
 from clint.textui import indent, puts
@@ -487,7 +486,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
     command = 'audit-environment'
     help = (
         "This command gathers information about your current environment's state.\n\n"
-        "State information is saved in the '~/.commcare-cloud/snapshots' directory. It is a good idea to run this "
+        "State information is saved in the '~/.commcare-cloud/audits' directory. It is a good idea to run this "
         "before making any major changes to your environment, as it allows you to have a record of your "
         "environment's current state.\n\n"
     )
@@ -495,38 +494,48 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.env_info_dict = {}
+        # We set the audits_directory in the `run` method
+        self.audits_directory = os.path.expanduser(f"~/.commcare-cloud/audits")
+        self.environment = ""
+        self.curr_audit_directory = ""
 
     def run(self, args, unknown_args):
+        self.args = args
         self.environment = get_environment(args.env_name)
         self.env_info_dict["environment"] = args.env_name
-        self.collect_commcare_cloud_details()
-        self.collect_commcare_hq_details()
-        self.validate_environment_settings()
-    
-        self._create_audit_dir()
-
-    def _create_audit_dir(self):
-        env_name = self.env_info_dict["environment"]
-        audit_name = datetime.utcnow().strftime(DATE_FMT)
         
-        self.audits_directory = os.path.expanduser(f"~/.commcare-cloud/audits/{env_name}/{audit_name}")
-        if not os.path.isdir(self.audits_directory):
-            os.makedirs(self.audits_directory)
+        env_name = args.env_name
+        audit_name = datetime.utcnow().strftime('%Y-%m-%d_%H.%M.%S')
+        self.curr_audit_directory = os.path.join(self.audits_directory, f"{env_name}/{audit_name}")
+        self._ensure_dir_exists(self.curr_audit_directory)
 
-        file_path = os.path.join(self.audits_directory, "info.json")
+        self._collect_commcare_cloud_details()
+        self._collect_commcare_hq_details()
+        self._validate_environment_settings()
+        self._collect_control_machine_os_level_info()
+        self._collect_service_folder_permissions_info()
+
+        self._write_details()
+
+    def _ensure_dir_exists(self, path):
+        if not os.path.isdir(path):
+            os.makedirs(path)
+
+    def _write_details(self):
+        file_path = os.path.join(self.curr_audit_directory, "info.json")
         with open(file_path, "w") as file:
             json.dump(self.env_info_dict, fp=file)
 
-    def collect_commcare_cloud_details(self):
+    def _collect_commcare_cloud_details(self):
         repo = git.Repo(search_parent_directories=True)
         hexsha = repo.head.object.hexsha
         self.env_info_dict["commcare_cloud"] = {"commit": hexsha}
 
-    def collect_commcare_hq_details(self):
+    def _collect_commcare_hq_details(self):
         hexsha = get_deployed_version(self.environment)
         self.env_info_dict["commcare_hq"] = {"commit": hexsha}
 
-    def validate_environment_settings(self):
+    def _validate_environment_settings(self):
         settings_validaton = {"passed": True, "failure_reason": None}
         try:
             self.environment.check()
@@ -534,3 +543,26 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
             settings_validaton["passed"] = False
             settings_validaton["failure_reason"] = str(exception)
         self.env_info_dict["settings_validation"] = settings_validaton
+
+    def _collect_control_machine_os_level_info(self):
+        os_data = {}
+        
+        os_distrib = {}
+        with open("/etc/lsb-release", "r") as file:
+            distrib_info = file.read().split("\n")
+            for info in distrib_info:
+                if not info:
+                    continue
+                key = info.split("=")[0]
+                value = info.split("=")[1]
+                os_distrib[key] = value
+        
+        os_data["os_distrib"] = os_distrib
+        self.env_info_dict["os_data"] = os_data
+        
+    def _collect_service_folder_permissions_info(self):
+        args = self.args
+        args.playbook = 'commcare-audit.yml'
+        control_user = os.getlogin()
+        unknown_args = ('-e', f'audit_path={self.curr_audit_directory}', '-e', f'control_user={control_user}')
+        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)

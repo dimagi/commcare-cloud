@@ -229,7 +229,7 @@ This command gathers information about your current environment's state.
 commcare-cloud <env> audit-environment [--use-factory-auth]
 ```
 
-State information is saved in the '~/.commcare-cloud/snapshots' directory. It is a good idea to run this before making any major changes to your environment, as it allows you to have a record of your environment's current state.
+State information is saved in the '~/.commcare-cloud/audits' directory. It is a good idea to run this before making any major changes to your environment, as it allows you to have a record of your environment's current state.
 
 ##### Optional Arguments
 
@@ -1097,7 +1097,7 @@ Use `-l` instead of a command to see the full list of commands.
 
     check_status               OBSOLETE replaced by
     clean_releases             Cleans old and failed deploys from the ~/www/&lt;...
-    deploy_commcare            Preindex and deploy if it completes quickly en...
+    deploy_commcare            Deploy CommCare HQ
     kill_stale_celery_workers  OBSOLETE use 'kill-stale-celery-workers' inste...
     manage                     OBSOLETE use 'django-manage' instead
     perform_system_checks      OBSOLETE use 'perform-system-checks' instead
