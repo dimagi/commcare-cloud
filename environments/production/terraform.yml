@@ -439,6 +439,7 @@ rds_instances:
     instance_type: "db.m5.2xlarge"
     storage: 750
     max_storage: 2500
+    storage_type: gp3
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -453,6 +454,7 @@ rds_instances:
     instance_type: "db.m5.2xlarge"
     storage: 750
     max_storage: 2500
+    storage_type: gp3
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -467,6 +469,7 @@ rds_instances:
     instance_type: "db.m5.2xlarge"
     storage: 750
     max_storage: 2500
+    storage_type: gp3
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -481,6 +484,7 @@ rds_instances:
     instance_type: "db.m5.2xlarge"
     storage: 750
     max_storage: 2500
+    storage_type: gp3
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -495,6 +499,7 @@ rds_instances:
     instance_type: "db.m5.2xlarge"
     storage: 750
     max_storage: 2500
+    storage_type: gp3
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
