@@ -93,7 +93,7 @@ class DeployDiff:
 
         sixweeks_ago = (datetime.now() - timedelta(days=6*7)).strftime( '%Y-%m-%d')
         created = f">{sixweeks_ago}"
-        query = f"repo:dimagi/commcare-hq is:pr is:open created:{created} label:migration-maintenance,breaking-maintenance"
+        query = f"repo:dimagi/commcare-hq is:pr is:open created:{created} label:product/invisible,reindex/migration"
 
         try:
             return {

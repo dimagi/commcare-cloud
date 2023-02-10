@@ -54,12 +54,12 @@ Click the URL for additional context.
 {% endfor %}
 {%- endif %}
 
-{%- if show_maintenance_updates_on_deploy and prs_by_label and (prs_by_label.get("migration-maintenance") or prs_by_label.get("breaking-maintenance")) -%}
+{%- if show_maintenance_updates_on_deploy and prs_by_label and (prs_by_label.get("product/invisible") or prs_by_label.get("migration/reindex")) -%}
 Attention! Predeploy Maintenance Required:
     You are about to deploy the following PR(s), which have manual maintenance that must be performed before proceeding with this deploy. Please review them and associated changelogs and make sure these are applied before deploying.
 
     Click the URL for additional context.
-{% for info in prs_by_label.get("migration-maintenance") + prs_by_label.get("breaking-maintenance") -%}
+{% for info in prs_by_label.get("product/invisible") + prs_by_label.get("migration/reindex") -%}
 {{ render_pr(info) }}
 {% endfor %}
 {%- endif %}
