@@ -417,7 +417,7 @@ def _run_migration(migration, target_context, check_mode, no_stop):
     prepare_to_sync_files(migration, file_configs, target_context)
     host_ips = ",".join(file_configs)
 
-    auth = noop_context() if check_mode else ssh_auth(migration, file_configs, target_context)
+    auth = ssh_auth(migration, file_configs, target_context)
     if no_stop:
         stop_couch_context = noop_context()
     else:
