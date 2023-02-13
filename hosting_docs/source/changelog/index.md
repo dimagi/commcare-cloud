@@ -8,7 +8,8 @@ need to be applied on your environment to keep it up to date.
 ### Changelog
 
 #### **2023-01-10** [Configure Java 17 for Formplayer](0069-configure-java-17-for-formplayer.md)
-This change is to configure Java 17 for Formplayer. 
+In preparation for the release of Formplayer Java 17 version, we have shipped a few infrastructure changes through Commcare Cloud. 
+At this point, the ask to those maintaining CommCare instances is to follow the steps below to configure Java 17 for Formplayer.
 
 
 ---
