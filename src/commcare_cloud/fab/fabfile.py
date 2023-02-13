@@ -449,8 +449,6 @@ def reset_pillow(pillow):
 
 
 ONLINE_DEPLOY_COMMANDS = [
-    db.migrate,
-    db.create_kafka_topics,
     staticfiles.pull_manifest,
     staticfiles.pull_staticfiles_cache,
     release.clean_releases,

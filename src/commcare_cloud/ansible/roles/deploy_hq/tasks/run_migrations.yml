@@ -1,0 +1,9 @@
+- name: Migrate databases
+  command:
+    cmd: ./manage.py {{ item }}
+    chdir: '{{ code_source }}'
+  register: stop_loop_hack
+  when: not stop_loop_hack.failed | default(False)
+  loop:
+    - migrate_multi --noinput
+    - create_kafka_topics
