@@ -38,6 +38,16 @@ https://www.commcarehq.org/hq/admin/system/ - catchall system info, contains dep
 
 https://www.commcarehq.org/hq/admin/system/check_services - plaintext URL that checks the status of a bunch of support services
 
+
+Control machine log files
+===================
+There are two log files on the control machine that might be useful to reference if you need to know what commands were executed.
+These files are located in the `/var/log/` directory and are:
+
+- ansible.log: shows the output of ansible commands.
+- commands.log: Shows the commands that were run and by which user
+
+
 In case of a reboot
 ===================
 
