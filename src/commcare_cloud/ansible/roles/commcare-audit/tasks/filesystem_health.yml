@@ -1,0 +1,29 @@
+---
+- name: Get lsblk output in JSON format
+  shell: "lsblk -l --json"
+  register: lsblk_output
+
+- name: Filter JSON output for non-null mountpoints
+  set_fact:
+    filtered_mountpoints: "{{ (lsblk_output.stdout | from_json).blockdevices\
+    | selectattr('mountpoint', '!=', None) | map(attribute='name') }}"
+
+- name: Get filesystem health
+  shell: "sudo tune2fs -l /dev/{{ item }}"
+  with_items: "{{ filtered_mountpoints }}"
+  register: filesystems_health
+  ignore_errors: true
+
+- name: Filter for successfull checks
+  set_fact:
+    successfull_filesystem_checks: "{{ filesystems_health.results | selectattr('rc', 'eq', 0)\
+    | map(attribute='stdout_lines') | flatten }}"
+
+- name: Save to file
+  lineinfile:
+    path: "{{ audit_directory }}/filesystems_health.txt"
+    line: "{{ item }}"
+    create: true
+  with_items: "{{ successfull_filesystem_checks }}"
+  delegate_to: localhost
+  become_user: "{{ control_user }}"
