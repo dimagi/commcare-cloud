@@ -311,17 +311,6 @@ def _setup_release(keep_days=2, full_cluster=True):
     print(blue(env.code_root))
 
 
-def conditionally_stop_pillows_and_celery_during_migrate():
-    """
-    Conditionally stops pillows and celery if any migrations exist
-    """
-    if all(execute(db.migrations_exist).values()):
-        execute_with_timing(supervisor.stop_pillows)
-        execute(db.set_in_progress_flag)
-        execute_with_timing(supervisor.stop_celery_tasks)
-    execute_with_timing(db.migrate)
-
-
 def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
     """
     Stores fabric env in redis and then runs the function if it shouldn't be skipped
@@ -344,8 +333,6 @@ def _deploy_without_asking(skip_record):
             "fab {environment} deploy:resume=yes.".format(environment=env.env_name),
             traceback_string()
         )
-        # hopefully bring the server back to life
-        silent_services_restart()
         raise
     else:
         execute(check_servers.perform_system_checks)
@@ -540,7 +527,7 @@ ONLINE_DEPLOY_COMMANDS = [
     staticfiles.collectstatic,
     staticfiles.compress,
     staticfiles.update_translations,
-    conditionally_stop_pillows_and_celery_during_migrate,
+    db.migrate,
     db.create_kafka_topics,
     staticfiles.pull_manifest,
     staticfiles.pull_staticfiles_cache,

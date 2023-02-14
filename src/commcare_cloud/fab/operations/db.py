@@ -50,24 +50,6 @@ def set_in_progress_flag(use_current_release=False):
 
 
 @roles(ROLES_DEPLOY)
-def migrations_exist():
-    """
-    Check if there exists database migrations to run
-    """
-    with cd(env.code_root):
-        result = sudo(f'{env.virtualenv_root}/bin/python manage.py showmigrations | grep "\\[ ]" | wc -l')
-        try:
-            # This command usually returns some logging and then then number of migrations
-            result = result.splitlines()
-            n_migrations = int(result[-1])
-        except Exception:
-            # If we fail on this, return True to be safe. It's most likely cause we lost connection and
-            # failed to return a value python could parse into an int
-            return True
-        return n_migrations > 0
-
-
-@roles(ROLES_DEPLOY)
 def create_kafka_topics():
     """Create kafka topics if needed.  This is pretty fast."""
     with cd(env.code_root):
