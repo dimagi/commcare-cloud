@@ -44,8 +44,8 @@ Control machine log files
 There are two log files on the control machine that might be useful to reference if you need to know what commands were executed.
 These files are located in the `/var/log/` directory and are:
 
-- ansible.log: shows the output of ansible commands.
-- commands.log: Shows the commands that were run and by which user
+- ansible.log: Shows the output of ansible commands.
+- commands.log: Shows the commands that were run and by which user.
 
 
 In case of a reboot
