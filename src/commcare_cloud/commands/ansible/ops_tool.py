@@ -17,6 +17,7 @@ from distutils.version import LooseVersion
 from commcare_cloud.commands.ansible.service import SERVICE_NAMES, SERVICES_BY_NAME, ElasticsearchClassic
 from commcare_cloud.commands.ansible.ansible_playbook import _AnsiblePlaybookAlias, AnsiblePlaybook
 from commcare_cloud.commands.deploy.commcare import get_deployed_version
+import shutil
 import yaml
 from clint.textui import indent, puts
 from couchdb_cluster_admin.utils import (
@@ -518,6 +519,24 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self._collect_service_status_info()
         
         self._write_info_file()
+        self._remove_old_audit_folders()
+
+    def _remove_old_audit_folders(self):
+        """
+        Makes sure that there are only 5 audits at all times.
+        """
+        env_audits_path = os.path.join(self.audits_directory, self.environment.name)
+        audits = os.listdir(env_audits_path)
+        # Audits are named like '2023-02-02_11.07.13'. A simple reverse sort will put the latest audits first
+        audits.sort(reverse=True)
+        audit_to_remove = audits[5:]
+        if len(audit_to_remove) == 0:
+            return
+        print("Removing old audits")
+        for audit in audit_to_remove:
+            print(f"Removing {audit}")
+            audit_path = os.path.join(env_audits_path, audit)
+            shutil.rmtree(audit_path)
 
     def _ensure_dir_exists(self, path):
         if not os.path.isdir(path):
