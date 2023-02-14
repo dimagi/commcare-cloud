@@ -1,4 +1,4 @@
-- name: Store stats of "/opt/data" directory
+- name: Collect audit information
   hosts: all
   gather_facts: true
   become: true
