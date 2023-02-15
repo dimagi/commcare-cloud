@@ -179,14 +179,6 @@ localsettings:
     auditcare: auditcare
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
-  LOCAL_PILLOWS:
-    reindex:
-      - name: 'XFormToElasticsearchPillowBackfill'
-        class: 'pillowtop.pillow.interface.ConstructedPillow'
-        instance: 'corehq.pillows.xform.get_xform_to_elasticsearch_pillow'
-        params:
-          index_name: 'xforms_2023-01-27'
-          index_alias: 'xforms-1'
   PILLOWTOP_MACHINE_ID: hqdb0
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes
