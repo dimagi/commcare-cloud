@@ -50,10 +50,13 @@ from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.migrations.config import CouchMigration
 from commcare_cloud.commands.migrations.copy_files import (
+    Plan,
     SourceFiles,
     copy_scripts_to_target_host,
     execute_file_copy_scripts,
     prepare_file_copy_scripts,
+    setup_auth,
+    teardown_auth,
 )
 from commcare_cloud.commands.utils import render_template
 
@@ -410,18 +413,31 @@ def _run_migration(migration, target_context, check_mode, no_stop):
     run_ansible_module(source_context, 'couchdb2', 'file', file_args)
 
     puts(color_summary('Copy file lists to nodes:'))
-    host_ips = ",".join(prepare_to_sync_files(migration, target_context))
+    file_configs = get_migration_file_configs(migration)
+    prepare_to_sync_files(migration, file_configs, target_context)
+    host_ips = ",".join(file_configs)
 
+    auth = ssh_auth(migration, file_configs, target_context)
     if no_stop:
         stop_couch_context = noop_context()
     else:
         puts(color_summary('Stop couch and reallocate shards'))
         stop_couch_context = stop_couch(migration.all_environments, check_mode)
 
-    with stop_couch_context:
+    with auth, stop_couch_context:
         execute_file_copy_scripts(target_context, host_ips, check_mode)
 
     return 0
+
+
+@contextmanager
+def ssh_auth(migration, file_configs, target_context):
+    plan = Plan(migration.source_environment, file_configs)
+    setup_auth(plan, target_context, migration.working_dir)
+    try:
+        yield
+    finally:
+        teardown_auth(plan, target_context, migration.working_dir)
 
 
 @contextmanager
@@ -461,23 +477,20 @@ def commit_migration(migration):
         print(response)
 
 
-def prepare_to_sync_files(migration, target_context):
-    rsync_files_by_host = generate_rsync_lists(migration)
+def prepare_to_sync_files(migration, file_configs, target_context):
+    generate_rsync_lists(migration, file_configs)
 
-    for host_ip in rsync_files_by_host:
+    for host_ip in file_configs:
         copy_scripts_to_target_host(
             host_ip,
             migration.rsync_files_path,
             target_context
         )
-    return rsync_files_by_host
 
 
-def generate_rsync_lists(migration):
-    migration_file_configs = get_migration_file_configs(migration)
-    for target_host, files_for_node in migration_file_configs.items():
+def generate_rsync_lists(migration, file_configs):
+    for target_host, files_for_node in file_configs.items():
         prepare_file_copy_scripts(target_host, files_for_node, migration.rsync_files_path)
-    return list(migration_file_configs)
 
 
 def get_migration_file_configs(migration):

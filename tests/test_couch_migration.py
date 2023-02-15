@@ -116,9 +116,8 @@ def _generate_plan_and_rsync_lists(migration, plan_name):
         generate_shard_plan(migration)
 
     with patch('couchdb_cluster_admin.file_plan.get_shard_allocation', mock_func):
-        # this also get's called in generate_rsync_lists but we want the result to test against
         migration_file_configs = get_migration_file_configs(migration)
-        generate_rsync_lists(migration)
+        generate_rsync_lists(migration, migration_file_configs)
     return migration_file_configs
 
 
