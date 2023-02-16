@@ -24,6 +24,7 @@ citus_postgresql_port: 5432
 
 aws_region: 'ap-south-1'
 
+formplayer_java_version: "{{ java_17_bin_path }}/java"
 formplayer_sensitive_data_logging: true
 
 nofile_limit: 65536
