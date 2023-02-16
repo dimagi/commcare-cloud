@@ -1,0 +1,23 @@
+---
+- name: Check if current data directory exists
+  stat:
+    path: /opt/data
+  register: data_dir
+
+- name: Get stats of current data directory
+  stat:
+    path: /opt/data
+  register: data_stats
+  when: data_dir.stat.exists
+
+- name: Save current data directory permissions
+  template:
+    src: opt_data_file_permissions.txt.j2
+    dest: "{{ audit_directory }}/opt_data_file_permissions.txt"
+  delegate_to: localhost
+  become_user: "{{ control_user }}"
+  when: data_dir.stat.exists
+  vars:
+    mode: "{{ data_stats.stat.mode }}"
+    owner: "{{ data_stats.stat.uid }}"
+    group: "{{ data_stats.stat.gid }}"

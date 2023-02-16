@@ -14,8 +14,10 @@ from datetime import datetime
 from io import open
 from operator import attrgetter, itemgetter
 from distutils.version import LooseVersion
+from commcare_cloud.commands.ansible.service import SERVICE_NAMES, SERVICES_BY_NAME, ElasticsearchClassic
 from commcare_cloud.commands.ansible.ansible_playbook import _AnsiblePlaybookAlias, AnsiblePlaybook
 from commcare_cloud.commands.deploy.commcare import get_deployed_version
+import shutil
 import yaml
 from clint.textui import indent, puts
 from couchdb_cluster_admin.utils import (
@@ -513,15 +515,34 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self._collect_commcare_hq_details()
         self._validate_environment_settings()
         self._collect_control_machine_os_level_info()
-        self._collect_service_folder_permissions_info()
+        self._audit_hosts()
+        self._collect_service_status_info()
+        
+        self._write_info_file()
+        self._remove_old_audit_folders()
 
-        self._write_details()
+    def _remove_old_audit_folders(self):
+        """
+        Makes sure that there are only 5 audits at all times.
+        """
+        env_audits_path = os.path.join(self.audits_directory, self.environment.name)
+        audits = os.listdir(env_audits_path)
+        # Audits are named like '2023-02-02_11.07.13'. A simple reverse sort will put the latest audits first
+        audits.sort(reverse=True)
+        audit_to_remove = audits[5:]
+        if len(audit_to_remove) == 0:
+            return
+        print("Removing old audits")
+        for audit in audit_to_remove:
+            print(f"Removing {audit}")
+            audit_path = os.path.join(env_audits_path, audit)
+            shutil.rmtree(audit_path)
 
     def _ensure_dir_exists(self, path):
         if not os.path.isdir(path):
             os.makedirs(path)
 
-    def _write_details(self):
+    def _write_info_file(self):
         file_path = os.path.join(self.curr_audit_directory, "info.json")
         with open(file_path, "w") as file:
             json.dump(self.env_info_dict, fp=file)
@@ -560,9 +581,30 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         os_data["os_distrib"] = os_distrib
         self.env_info_dict["os_data"] = os_data
         
-    def _collect_service_folder_permissions_info(self):
+    def _audit_hosts(self):
         args = self.args
         args.playbook = 'commcare-audit.yml'
         control_user = os.getlogin()
         unknown_args = ('-e', f'audit_path={self.curr_audit_directory}', '-e', f'control_user={control_user}')
         return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)
+
+    def _collect_service_status_info(self):
+        """Collects service information for each service in SERVICE_NAMES. This method changes the
+        ansible context for each check so that ansible logs the status to a service-specific file.
+        """
+        self.service_status_directory = os.path.join(self.curr_audit_directory, "service_statuses")
+        self._ensure_dir_exists(self.service_status_directory)
+
+        # We exclude ElasticsearchClassic here since Elasticsearch invokes ElasticsearchClassic underneath
+        exclude_services = [ElasticsearchClassic]
+        services_to_check = [service for service in SERVICE_NAMES if service not in exclude_services]
+        for service_name in services_to_check:
+            try:
+                service_class = SERVICES_BY_NAME[service_name]
+                log_path = os.path.join(self.service_status_directory, service_name)
+                ansible_context = AnsibleContext(None, self.environment, ansible_logfile=log_path)
+
+                service = service_class(ansible_context)
+                service.run("status")
+            except Exception as ex:
+                print(f"Unable to get status for {service_name}.\nError: {ex}")

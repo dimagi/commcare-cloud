@@ -21,7 +21,7 @@ class AnsibleContext(object):
     stdout_callback = 'ANSIBLE_STDOUT_CALLBACK'
     collections_paths = 'ANSIBLE_COLLECTIONS_PATHS'
 
-    def __init__(self, args, environment=None):
+    def __init__(self, args, environment=None, ansible_logfile=None):
         from commcare_cloud.environment.main import get_environment
         assert args is not None or environment is not None, "'args' or 'environment' is required"
         if environment is None:
@@ -30,6 +30,7 @@ class AnsibleContext(object):
             assert args.env_name == environment.name, (args.env_name, environment.name)
         self.environment = environment
         self._stdout_callback = getattr(args, 'stdout_callback', None)
+        self.ansible_logfile = ansible_logfile
 
     def build_env(self, need_secrets=True):
         """Look for args that have been flagged as environment variables
@@ -39,6 +40,8 @@ class AnsibleContext(object):
         env[self.config] = os.path.join(ANSIBLE_DIR, 'ansible.cfg')
         env[self.roles_path] = ANSIBLE_ROLES_PATH
         env[self.collections_paths] = ANSIBLE_COLLECTIONS_PATHS
+        if self.ansible_logfile:
+            env["ANSIBLE_LOG_PATH"] = self.ansible_logfile
 
         if self._stdout_callback is not None:
             env[self.stdout_callback] = self._stdout_callback

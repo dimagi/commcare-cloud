@@ -1,10 +1,11 @@
 import os
 import re
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import jinja2
 from gevent.pool import Pool
+from github import Github
 from github.GithubException import GithubException
 from memoized import memoized, memoized_property
 
@@ -25,7 +26,7 @@ LABELS_TO_EXPAND = [
 
 
 class DeployDiff:
-    def __init__(self, repo, current_commit, deploy_commit, new_version_details=None, generate_diff=True):
+    def __init__(self, repo, current_commit, deploy_commit, environment, new_version_details=None, generate_diff=True):
         """
         :param repo: github.Repository.Repository object
         :param current_commit: Commit SHA of the currently deployed code
@@ -36,6 +37,7 @@ class DeployDiff:
         self.repo = repo
         self.current_commit = current_commit
         self.deploy_commit = deploy_commit
+        self.environment = environment
         self.new_version_details = new_version_details
         self.generate_diff = generate_diff
         self.j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
@@ -82,6 +84,35 @@ class DeployDiff:
                 "error": True
             }
 
+    def get_maintenance_pr_context(self):
+        if not self.show_maintenance_updates_on_deploy:
+            return {
+                "maintenance_prs": [],
+                "error": False
+            }
+
+        sixweeks_ago = (datetime.now() - timedelta(days=6*7)).strftime( '%Y-%m-%d')
+        created = f">{sixweeks_ago}"
+        query = f"repo:dimagi/commcare-hq is:pr is:open created:{created} label:migration-maintenance,breaking-maintenance"
+
+        try:
+            return {
+                "maintenance_prs": [
+                    f"{pr.title} ({pr.html_url})"
+                    for pr in Github().search_issues(query)
+                ],
+                "error": False
+            }
+        except GithubException as e:
+            print(color_error(
+                f"Error getting maintenance_prs: {e}. "
+                "Please report this at https://forum.dimagi.com/c/developers/"
+            ))
+            return {
+                "maintenance_prs": [],
+                "error": True
+            }
+
     @memoized
     def get_diff_context(self):
         context = {
@@ -90,7 +121,8 @@ class DeployDiff:
             "LABELS_TO_EXPAND": LABELS_TO_EXPAND,
             "errors": [],
             "warnings": [],
-            "changelogs": self.get_changelog_context()
+            "changelogs": self.get_changelog_context(),
+            "maintenance_prs": self.get_maintenance_pr_context(),
         }
 
         if self.deployed_commit_matches_latest_commit:
@@ -137,6 +169,13 @@ class DeployDiff:
         context["prs_by_label"] = prs_by_label
         return context
 
+    def show_maintenance_updates_on_deploy(self):
+        if not self.repo.name == 'commcare-hq':
+            return False
+        return self.environment.public_vars.get(
+            'show_maintenance_updates_on_deploy', True
+        )
+
     def print_deployer_diff(self):
         print(self.render_diff('console.txt.j2'))
 
@@ -146,7 +185,8 @@ class DeployDiff:
     def render_diff(self, template_name):
         template = self.j2.get_template(template_name)
         return template.render(
-            **self.get_diff_context()
+            **self.get_diff_context(),
+            show_maintenance_updates_on_deploy=self.show_maintenance_updates_on_deploy
         )
 
     @memoized_property

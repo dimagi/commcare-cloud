@@ -1,0 +1,5 @@
+--- 
+- name: Running 'df -h' command
+  shell: "df -h | tee {{ audit_directory }}/disk_usage.txt"
+  delegate_to: localhost
+  become_user: "{{ control_user }}"

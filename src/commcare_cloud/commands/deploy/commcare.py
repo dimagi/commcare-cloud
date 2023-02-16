@@ -105,7 +105,7 @@ def _get_diff(environment, deploy_revs):
     if environment.fab_settings_config.custom_deploy_details:
         new_version_details.update(environment.fab_settings_config.custom_deploy_details)
     DEPLOY_DIFF = DeployDiff(
-        repo, deployed_version, latest_version,
+        repo, deployed_version, latest_version, environment,
         new_version_details=new_version_details,
         generate_diff=environment.fab_settings_config.generate_deploy_diffs
     )

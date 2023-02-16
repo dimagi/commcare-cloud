@@ -26,6 +26,7 @@ new_domain_email: inquiries@dimagi.com
 ALTERNATE_HOSTS:
   - rec-mobile.sante.gov.bf
   - onse-iss.commcarehq.org
+show_maintenance_updates_on_deploy: False
 
 DATADOG_ENABLED: True
 
@@ -158,6 +159,7 @@ localsettings:
   ENFORCE_SSO_LOGIN: True
   ELASTICSEARCH_MAJOR_VERSION: 2
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-04"
+  ES_XFORM_INDEX_NAME: "xforms_2023-01-27"
   IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'www'
   INACTIVITY_TIMEOUT: 20160

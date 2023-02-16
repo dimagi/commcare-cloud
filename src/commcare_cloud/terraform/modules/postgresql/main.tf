@@ -13,8 +13,9 @@ locals {
 }
 module "postgresql" {
   source = "terraform-aws-modules/rds/aws"
-  version = "~> v2.34"
+  version = "~> 5.4.0"
 
+  create_random_password = false
   create_db_instance = local.create
   create_db_option_group = local.create
   create_db_parameter_group = local.create
@@ -26,11 +27,11 @@ module "postgresql" {
   instance_class    = var.rds_instance["instance_type"]
   allocated_storage = var.rds_instance["storage"]
   max_allocated_storage = var.rds_instance["max_storage"]
+  storage_type = var.rds_instance["storage_type"]
 
   apply_immediately     = var.apply_immediately
   auto_minor_version_upgrade = false
 
-  name     = ""
   username = var.rds_instance["username"]
   password = var.rds_instance["password"]
   port     = var.rds_instance["port"]
@@ -64,7 +65,7 @@ module "postgresql" {
 
   # Snapshot name upon DB deletion
   skip_final_snapshot = true
-  final_snapshot_identifier = "final-snapshot-${var.rds_instance["identifier"]}"
+  final_snapshot_identifier_prefix = "final-snapshot-${var.rds_instance["identifier"]}"
   copy_tags_to_snapshot = true
 
   parameters = var.parameters
