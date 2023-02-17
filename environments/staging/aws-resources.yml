@@ -6,6 +6,8 @@ couch13-staging: 10.201.41.223
 couch13-staging.instance_id: i-0bb571d1765a241dc
 couch15-staging: 10.201.42.109
 couch15-staging.instance_id: i-0f618ee36887bb494
+couch18-staging: 10.201.42.139
+couch18-staging.instance_id: i-0514a309257323a46
 couch6-staging: 10.201.40.74
 couch6-staging.instance_id: i-01b32f8a2eebe07bc
 couch_alb-staging: internal-couch-alb-staging-546646078.us-east-1.elb.amazonaws.com
