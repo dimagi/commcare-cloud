@@ -30,6 +30,7 @@ dev_users:
     - schauhan
     - sherbers
     - rcostello
+    - zeng
   absent:
     - astone
     - wpride
