@@ -4,8 +4,6 @@ control2-staging: 10.201.10.17
 control2-staging.instance_id: i-029e59cea6b6485dc
 couch13-staging: 10.201.41.223
 couch13-staging.instance_id: i-0bb571d1765a241dc
-couch15-staging: 10.201.42.109
-couch15-staging.instance_id: i-0f618ee36887bb494
 couch18-staging: 10.201.42.139
 couch18-staging.instance_id: i-0514a309257323a46
 couch6-staging: 10.201.40.74
