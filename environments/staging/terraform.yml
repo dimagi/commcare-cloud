@@ -189,21 +189,6 @@ servers:
     os: bionic
     server_auto_recovery: true
 
-  - server_name: "couch6-staging"
-    server_instance_type: "t3.large"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    block_device:
-      volume_size: 150
-      encrypted: true
-      volume_type: "gp3"
-      enable_cross_region_backup: yes
-    group: "couchdb2"
-    os: ubuntu_pro_bionic
-
   - server_name: "couch18-staging"
     server_instance_type: "t3.large"
     network_tier: "db-private"
@@ -399,7 +384,6 @@ internal_albs:
     listener_port: 25984
     target_port: 15984
     targets:
-      - couch6-staging
       - couch18-staging
       - couch19-staging
       - couch20-staging
