@@ -26,3 +26,7 @@ your SSH public key is located at ``~/.ssh/id_rsa.pub`` or if the
 to a file containing your public key.
 
 Test environment configuration is located in ``tests/cloud/environments/test``.
+
+The ``tests/cloud`` directory can be copied to a directory outside of version
+control (and environment variables adjusted accordingly) for experimentation
+and customization.
