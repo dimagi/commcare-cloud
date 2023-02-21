@@ -1,0 +1,12 @@
+management_commands:
+  celery:
+celery_processes:
+  celery:
+    beat: {}
+    background_queue,analytics_queue,case_rule_queue,case_import_queue,celery,email_queue,export_download_queue,reminder_case_update_queue,reminder_rule_queue,repeat_record_queue,saved_exports_queue:
+      concurrency: 1
+    flower: {}
+pillows:
+  pillowtop:
+    AppDbChangeFeedPillow:
+      num_processes: 1

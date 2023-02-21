@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  # The portal container allows proxied SSH connections between the host
+  # and composed containers via a port mapped to the host. It is not
+  # possible to communicate directly with composed containers without
+  # less secure network configurations.
+  portal:
+    build:
+      context: "${TEST_CLOUD_CONTAINER_CONTEXT:-.}"
+    init: true
+    # By default, bind to port 2222 on localhost. Use
+    # `TEST_CLOUD_SSH_PORT=22` to bind to a random available
+    # port and then inspect the portal container to discover the port.
+    ports: ["${TEST_CLOUD_SSH_PORT:-2222:22}"]
+    secrets:
+      - authorized_keys
+
+  worker:
+    build:
+      context: "${TEST_CLOUD_CONTAINER_CONTEXT:-.}"
+    init: true
+    deploy:
+      replicas: ${TEST_CLOUD_WORKERS:-1}
+    volumes:
+      - ${TEST_CLOUD_SHARED_DIR:-test_cloud_shared}:/mnt
+    secrets:
+      - authorized_keys
+
+secrets:
+  authorized_keys:
+    file: ${TEST_CLOUD_AUTHORIZED_KEYS}

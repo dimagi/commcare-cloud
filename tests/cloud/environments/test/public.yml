@@ -1,0 +1,41 @@
+internal_domain_name: null
+internal_network_interface: eth1
+internal_ipv4: "{{ ansible_default_ipv4.address }}"
+nofile_limit: 65536
+proxy_type: nginx
+rabbitmq_create_cluster: false
+DATADOG_ENABLED: False
+
+couch_dbs:
+  default:
+    host: couch.fake
+    port: 15984
+    name: commcarehq
+    username: "{{ COUCH_USERNAME }}"
+    password: "{{ COUCH_PASSWORD }}"
+    is_https: False
+
+localsettings:
+  DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
+  EMAIL_SMTP_HOST: email.fake
+  EMAIL_SMTP_PORT: '1025'
+  EMAIL_USE_TLS: no
+  HQ_INSTANCE: 'dev'
+  STATIC_CDN: ""
+  REDIS_HOST: "redis.fake"
+  REDIS_PORT: '6379'
+
+root_email: /dev/null
+root_encryption_mode: none
+
+commcare_cloud_remote_user: admin
+commcare_cloud_root_user: ansible
+commcare_cloud_strict_host_key_checking: no
+commcare_cloud_use_vault: no
+commcare_cloud_ssh_args:
+- -o UserKnownHostsFile=/dev/null
+- >-
+  -o ProxyCommand=ssh
+  -o UserKnownHostsFile=/dev/null
+  -o StrictHostKeyChecking=no
+  -W %h:%p -p 2222 admin@localhost
