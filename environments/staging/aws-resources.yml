@@ -1,3 +1,5 @@
+2204_test-staging: 10.201.10.161
+2204_test-staging.instance_id: i-062f01c788b417654
 celery_a0-staging: 10.201.10.232
 celery_a0-staging.instance_id: i-0b026baa6469e2354
 control2-staging: 10.201.10.17
@@ -8,8 +10,6 @@ couch19-staging: 10.201.41.140
 couch19-staging.instance_id: i-0bcade57e4c515737
 couch20-staging: 10.201.40.61
 couch20-staging.instance_id: i-075638c994c8eb44f
-couch6-staging: 10.201.40.74
-couch6-staging.instance_id: i-01b32f8a2eebe07bc
 couch_alb-staging: internal-couch-alb-staging-546646078.us-east-1.elb.amazonaws.com
 efs_staging-efs: fs-9e8f8369.efs.us-east-1.amazonaws.com
 es12-staging: 10.201.41.120
