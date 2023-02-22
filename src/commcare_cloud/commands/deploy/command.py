@@ -54,7 +54,7 @@ class Deploy(CommandBase):
         if args.resume:
             try:
                 # use cached env to ensure consistency with last deploy
-                cached_fab_env = retrieve_cached_deploy_env(environment.deploy_env)
+                cached_fab_env = retrieve_cached_deploy_env(environment.name)
             except Exception:
                 print(color_error('Unable to resume deploy, please start anew'))
             else:
