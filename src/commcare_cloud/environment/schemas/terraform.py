@@ -100,6 +100,7 @@ class BackupPlan(jsonobject.JsonObject):
     remote_vault_region = jsonobject.StringProperty()
     outside_account_id = jsonobject.StringProperty()
     daily_retention = jsonobject.IntegerProperty()
+    weekly_retention = jsonobject.IntegerProperty()
     monthly_retention = jsonobject.IntegerProperty()
     quarterly_retention = jsonobject.IntegerProperty()
 

@@ -90,6 +90,7 @@ module "backup_plan" {
   remote_vault_name = {{ backup_plan.remote_vault_name|tojson }}
   remote_vault_region = {{ backup_plan.remote_vault_region|tojson }}
   daily_retention = {{ backup_plan.daily_retention|tojson }}
+  weekly_retention = {{ backup_plan.weekly_retention|tojson }}
   monthly_retention = {{ backup_plan.monthly_retention|tojson }}
   quarterly_retention = {{ backup_plan.quarterly_retention|tojson }}
   providers = {

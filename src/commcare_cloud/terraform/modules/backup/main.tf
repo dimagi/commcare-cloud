@@ -16,7 +16,7 @@ resource "aws_backup_plan" "business_continuity_plan" {
     completion_window        = 10080
     enable_continuous_backup = false
     rule_name                = "Daily"
-    schedule                 = "cron(0 1 ? * * *)"
+    schedule                 = "cron(0 13 ? * 2,3,4,5,6 *)"
     start_window             = 60
     target_vault_name        = aws_backup_vault.business_continuity_local_vault.name
 
@@ -25,6 +25,26 @@ resource "aws_backup_plan" "business_continuity_plan" {
 
       lifecycle {
         delete_after = var.daily_retention
+      }
+    }
+
+    lifecycle {
+      delete_after = 1
+    }
+  }
+  rule {
+    completion_window        = 10080
+    enable_continuous_backup = false
+    rule_name                = "Weekly"
+    schedule                 = "cron(0 13 ? * 1 *)"
+    start_window             = 60
+    target_vault_name        = aws_backup_vault.business_continuity_local_vault.name
+
+    copy_action {
+      destination_vault_arn = aws_backup_vault.business_continuity_remote_vault.arn
+
+      lifecycle {
+        delete_after = max(var.weekly_retention, var.daily_retention)
       }
     }
 
@@ -64,9 +84,6 @@ resource "aws_backup_plan" "business_continuity_plan" {
       destination_vault_arn = aws_backup_vault.business_continuity_remote_vault.arn
 
       lifecycle {
-        // if quarterly retention is 0, or even just less than monthly retention
-        // then save these month's backups only as long as we'd save *any* month's backups
-        // i.e. the length used in the "Monthly" rule
         delete_after = max(var.quarterly_retention, var.monthly_retention)
       }
     }
