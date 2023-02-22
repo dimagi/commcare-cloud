@@ -38,7 +38,7 @@ def create_release_tag(environment, repo, diff):
         try:
             repo.create_git_ref(
                 ref='refs/tags/{}-{}-deploy'.format(
-                    environment.new_release_name(),
+                    environment.release_name,
                     environment.name),
                 sha=diff.deploy_commit,
             )

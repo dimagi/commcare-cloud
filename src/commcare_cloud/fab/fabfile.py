@@ -101,7 +101,7 @@ def _setup_path():
     env.log_dir = posixpath.join(env.home, 'www', env.deploy_env, 'log')
     env.releases = posixpath.join(env.root, 'releases')
     env.code_current = posixpath.join(env.root, 'current')
-    env.code_root = posixpath.join(env.releases, env.ccc_environment.new_release_name())
+    env.code_root = posixpath.join(env.releases, env.ccc_environment.release_name)
     env.project_root = posixpath.join(env.code_root, env.project)
     env.project_media = posixpath.join(env.code_root, 'media')
 
