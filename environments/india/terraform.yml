@@ -377,10 +377,10 @@ internal_albs:
 elasticache_cluster:
   create: yes
   cache_node_type: "cache.t4g.medium"
-  cache_engine_version: "6.x"
-  cache_prameter_group: "default.redis6.x"
+  cache_engine_version: "7.0"
+  cache_prameter_group: "default.redis7"
   automatic_failover: true
-  transit_encryption: false
+  transit_encryption: true
   at_rest_encryption: true
   auto_minor_version: false
   cluster_size: 2
