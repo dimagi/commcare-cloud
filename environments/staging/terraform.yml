@@ -395,7 +395,7 @@ elasticache_cluster:
   create: yes
   cache_node_type: "cache.t3.medium"
   cache_engine_version: "7.0"
-  cache_prameter_group: "default.redis7.0"
+  cache_prameter_group: "default.redis7"
   automatic_failover: true
   transit_encryption: true
   at_rest_encryption: true
