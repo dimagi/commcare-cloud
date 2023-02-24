@@ -1,0 +1,11 @@
+SEPARATE_SYNCLOGS_DB: False
+SEPARATE_FORM_PROCESSING_DBS: False
+
+postgres_override:
+  postgresql_hba_entries: []
+
+dbs:
+  synclogs: null
+  form_processing: null
+  ucr:
+    host: postgresql
