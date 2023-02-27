@@ -16,7 +16,7 @@ class TerraformConfig(jsonobject.JsonObject):
     account_alias = jsonobject.StringProperty()
     username = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
-    terraform_version = jsonobject.StringProperty(choices=['0.12', '0.13', '0.14', '0.15', '1.0', '1.1', '1.2'])
+    terraform_version = jsonobject.StringProperty(choices=['0.12', '0.13', '0.14', '0.15', '1.0', '1.1', '1.2', '1.3'])
     manage_users = jsonobject.BooleanProperty(default=True)
     state_bucket = jsonobject.StringProperty()
     state_bucket_region = jsonobject.StringProperty()
@@ -69,6 +69,7 @@ class TerraformConfig(jsonobject.JsonObject):
             '1.0': "~> 1.0, < 1.1",
             '1.1': "~> 1.1, < 1.2",
             '1.2': "~> 1.2, < 1.3",
+            '1.3': "~> 1.3, < 1.4",
         }[self.terraform_version]
         # Using the |tojson jinja2 filter replaces < and > with their \u-style escape code.
         # As a workaround, we use `"{{ terraform_version_range_string }}"`,
