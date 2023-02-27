@@ -2,12 +2,10 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import inspect
-import os
 import time
 from datetime import datetime
 
 import datadog
-import yaml
 from clint.textui import puts, indent
 from memoized import memoized
 
@@ -17,7 +15,6 @@ from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.ansible.service import COMMCARE_INVENTORY_GROUPS
 from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.environment.main import get_environment
 
 
 class Downtime(CommandBase):
@@ -42,18 +39,18 @@ class Downtime(CommandBase):
     )
 
     def run(self, args, unknown_args):
-        environment = get_environment(args.env_name)
-        environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
+        ansible_context.environment.create_generated_yml()
 
         if args.action == 'start':
-            start_downtime(environment, ansible_context, args)
+            start_downtime(ansible_context, args)
 
         if args.action == 'end':
-            end_downtime(environment, ansible_context)
+            end_downtime(ansible_context)
 
 
-def end_downtime(environment, ansible_context):
+def end_downtime(ansible_context):
+    environment = ansible_context.environment
     downtime = get_downtime_record(environment)
     if not downtime:
         puts(color_notice('Downtime record not found.'))
@@ -62,12 +59,13 @@ def end_downtime(environment, ansible_context):
         end_downtime = ask("Do you want to start all CommCare services?")
 
     if end_downtime:
-        supervisor_services(environment, ansible_context, 'start')
+        supervisor_services(ansible_context, 'start')
         if downtime:
             cancel_downtime_record(environment, downtime)
 
 
-def start_downtime(environment, ansible_context, args):
+def start_downtime(ansible_context, args):
+    environment = ansible_context.environment
     downtime = get_downtime_record(environment)
     if downtime:
         puts(color_notice('Downtime already active'))
@@ -80,32 +78,32 @@ def start_downtime(environment, ansible_context, args):
     if go_down:
         if not downtime:
             create_downtime_record(environment, args.message, args.duration)
-        supervisor_services(environment, ansible_context, 'stop')
-        wait_for_all_processes_to_stop(environment, ansible_context)
+        supervisor_services(ansible_context, 'stop')
+        wait_for_all_processes_to_stop(ansible_context)
 
 
-def wait_for_all_processes_to_stop(environment, ansible_context):
+def wait_for_all_processes_to_stop(ansible_context):
     while True:
-        still_running = check_for_running_cchq_processes(environment, ansible_context)
+        still_running = check_for_running_cchq_processes(ansible_context)
         if not still_running:
             break
 
-        options = ['abort', 'wait', 'continue', 'kill',]
+        options = ['abort', 'wait', 'continue', 'kill']
         response = ask_option(inspect.cleandoc(
-            """Some processes are still running. Do you want to:"
-             - abort downtime"
-             - wait for processes to stop"
-             - continue with downtime regardless"
-             - kill running processes   
+            """Some processes are still running. Do you want to:
+             - abort downtime
+             - wait for processes to stop
+             - continue with downtime regardless
+             - kill running processes
             """),
             options,
             options + ['a', 'w', 'c', 'k']
         )
         if response in ('a', 'abort'):
             if ask('This will start all CommCare processes again. Do you want to proceed?'):
-                downtime = get_downtime_record(environment)
-                supervisor_services(environment, ansible_context, 'start')
-                cancel_downtime_record(environment, downtime)
+                downtime = get_downtime_record(ansible_context.environment)
+                supervisor_services(ansible_context, 'start')
+                cancel_downtime_record(ansible_context.environment, downtime)
                 return
         elif response in ('w', 'wait'):
             time.sleep(30)
@@ -116,30 +114,28 @@ def wait_for_all_processes_to_stop(environment, ansible_context):
         elif response in ('k', 'kill'):
             kill = ask('Are you sure you want to kill all remaining processes?', strict=True)
             if kill:
-                kill_remaining_processes(environment, ansible_context)
+                kill_remaining_processes(ansible_context)
 
 
-def kill_remaining_processes(environment, ansible_context):
+def kill_remaining_processes(ansible_context):
     command = 'pkill -u cchq -9; test $? -eq 0 -o $? -eq 1'
-    return _run_command(environment, ansible_context, command, become=True)
+    return _run_command(ansible_context, command, become=True)
 
 
-def check_for_running_cchq_processes(environment, ansible_context, invert_success=True):
+def check_for_running_cchq_processes(ansible_context, invert_success=True):
     command = 'ps -u cchq -U cchq -f'
     if invert_success:
         command = '{}; test $? -eq 1'.format(command)
-    return _run_command(environment, ansible_context, command)
+    return _run_command(ansible_context, command)
 
 
-def supervisor_services(environment, ansible_context, action):
-    return _run_command(environment, ansible_context, 'supervisorctl {} all'.format(action), become=True)
+def supervisor_services(ansible_context, action):
+    return _run_command(ansible_context, 'supervisorctl {} all'.format(action), become=True)
 
 
-def _run_command(environment, ansible_context, command, become=False):
-    return run_ansible_module(
-        environment, ansible_context, ','.join(COMMCARE_INVENTORY_GROUPS), 'shell', command,
-        become=become
-    )
+def _run_command(ansible_context, command, become=False):
+    groups = ','.join(COMMCARE_INVENTORY_GROUPS)
+    return run_ansible_module(ansible_context, groups, 'shell', command, become=become)
 
 
 def print_downtime(downtime):

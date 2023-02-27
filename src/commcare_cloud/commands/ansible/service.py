@@ -21,7 +21,6 @@ from commcare_cloud.commands.ansible.helpers import (
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_role_defaults
 from commcare_cloud.fab.exceptions import NoHostsMatch
 
@@ -36,7 +35,7 @@ STATES = {
 
 MONIT_MANAGED_SERVICES = ['postgresql', 'pgbouncer', 'redis', 'couchdb2']
 
-COMMCARE_INVENTORY_GROUPS = ['webworkers', 'celery', 'pillowtop', 'formplayer', 'proxy', 'airflow']
+COMMCARE_INVENTORY_GROUPS = ['webworkers', 'celery', 'pillowtop', 'formplayer', 'proxy']
 
 
 @attr.s
@@ -63,8 +62,8 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
         """Location of the service's logs shown on the command line."""
         raise NotImplementedError
 
-    def __init__(self, environment, ansible_context):
-        self.environment = environment
+    def __init__(self, ansible_context):
+        self.environment = ansible_context.environment
         self.ansible_context = ansible_context
 
     def run(self, action, host_pattern=None, process_pattern=None):
@@ -126,7 +125,6 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
 
     def _run_ansible_module(self, host_pattern, module, module_args):
         return run_ansible_module(
-            self.environment,
             self.ansible_context,
             host_pattern,
             module,
@@ -324,7 +322,8 @@ class Elasticsearch(ServiceBase):
 
     def execute_action(self, action, host_pattern=None, process_pattern=None):
         if action == 'status':
-            return ElasticsearchClassic(self.environment, self.ansible_context).execute_action(action, host_pattern, process_pattern)
+            es = ElasticsearchClassic(self.ansible_context)
+            return es.execute_action(action, host_pattern, process_pattern)
         else:
             if not ask(
                     "This function does more than stop and start the elasticsearch service. "
@@ -347,7 +346,7 @@ class Elasticsearch(ServiceBase):
 
     def _act_on_pillows(self, action):
         # Used to stop or start pillows
-        service = Pillowtop(self.environment, AnsibleContext(None))
+        service = Pillowtop(AnsibleContext(None, self.environment))
         exit_code = service.run(action=action)
         if not exit_code == 0:
             print("ERROR while trying to {} pillows. Exiting.".format(action))
@@ -358,9 +357,8 @@ class Elasticsearch(ServiceBase):
         extra_args = ['--tags={}'.format(tags)]
         if limit:
             extra_args.extend(['--limit={}'.format(limit)])
-        run_ansible_playbook(environment=self.environment,
-                             playbook='es_rolling_restart.yml',
-                             ansible_context=AnsibleContext(args=None),
+        run_ansible_playbook(playbook='es_rolling_restart.yml',
+                             ansible_context=AnsibleContext(None, self.environment),
                              unknown_args=extra_args,
                              skip_check=True, quiet=True)
 
@@ -393,7 +391,7 @@ class Kafka(MultiAnsibleService):
     name = 'kafka'
     service_process_mapping = {
         'kafka': ('kafka-server', 'kafka'),
-        'zookeeper': ('zookeeper', 'zookeeper')
+        'zookeeper': ('zookeeper-server', 'zookeeper')
     }
     log_location = '/opt/kafka/logs/'
 
@@ -461,10 +459,13 @@ class CommCare(SingleSupervisorService):
         if action == 'restart':
             puts(color_warning("The 'commcare' service command rejects the 'restart' action"))
             puts(color_warning("in order to protect against accidental downtime."))
-            puts(color_notice("For a no-downtime restart of commcare-hq services, please use one of the following"))
-            puts(color_code(f"  cchq {self.environment.name} fab restart_services  # for all processes that run commcare-hq code."))
+            puts(color_notice("For a no-downtime restart of commcare-hq services, "
+                              "please use one of the following"))
+            puts(color_code(f"  cchq {self.environment.name} fab restart_services  "
+                            "# for all processes that run commcare-hq code."))
             puts(color_code(f"  cchq {self.environment.name} fab restart_webworkers  # for webworkers only"))
-            puts(color_notice("To restart formplayer, which always causes downtime, use the 'formplayer' service command."))
+            puts(color_notice("To restart formplayer, which always causes downtime, "
+                              "use the 'formplayer' service command."))
             puts(color_error("Refusing to run commcare service command with action 'restart'."))
             return 1
         return super().run(action, host_pattern=host_pattern, process_pattern=process_pattern)
@@ -693,8 +694,6 @@ class Service(CommandBase):
     )
 
     def run(self, args, unknown_args):
-        environment = get_environment(args.env_name)
-
         services = [
             SERVICES_BY_NAME[name]
             for name in args.services
@@ -703,7 +702,7 @@ class Service(CommandBase):
         ansible_context = AnsibleContext(args)
         non_zero_exits = []
         for service_cls in services:
-            service = service_cls(environment, ansible_context)
+            service = service_cls(ansible_context)
             exit_code = service.run(args.action, args.limit, args.process_pattern)
             if exit_code != 0:
                 non_zero_exits.append(exit_code)

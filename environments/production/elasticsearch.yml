@@ -1,3 +1,5 @@
 settings:
   case_search:
-    number_of_shards: 16
+    number_of_shards: 96
+  xforms:
+    number_of_shards: 64

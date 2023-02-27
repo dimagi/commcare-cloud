@@ -1,0 +1,28 @@
+title: Configure Java 17 for Formplayer
+key: configure-java-17-for-formplayer
+date: 2023-01-10
+optional_per_env: no
+context: |
+  In preparation for the release of Formplayer Java 17 version, we have shipped a few infrastructure changes through Commcare Cloud. 
+  At this point, the ask to those maintaining CommCare instances is to follow the steps below to configure Java 17 for Formplayer.
+
+details: |
+  This change should only affect the machine that Formplayer is on and it shouldn't impact any other Java processes running on that machine. 
+
+update_steps: |
+
+  1. Update commcare-cloud to the latest version
+  2. Add the following setting to the environment's `public.yml`:
+      +++
+      <pre style="background-color:#f8f8f8" class="code literal-block">
+      formplayer_java_version: "&#123;&#123; java_17_bin_path }}/java"
+      </pre>
+      +++
+  3. Update Formplayer 
+      ```
+      commcare-cloud <env> ap deploy_formplayer.yml --limit=formplayer
+      ```
+  4. Redeploy Formplayer 
+      ```
+      cchq <env> deploy formplayer
+      ```

@@ -5,12 +5,12 @@ Install Using Commcare-Cloud on one or more machines
 
 This tutorial will walk you through the process of setting up a new environment to run CommCare HQ using :ref:`commcare-cloud <commcare-cloud>`. It covers both a single-server (“monolith”) environment and a small cluster of virtual machines. If you want to quickly test or preview the environment setup on a single machine you can follow :ref:`quick-install` which uses a script to automate all of the below.
 
-This assumes you have gone through :ref:`deploy-commcarehq` which details what all you need to know to deploy CommCareHQ in production.
+This assumes you have gone through :ref:`deploy-commcarehq` which details what all you need to know to deploy CommCare HQ in production.
 
 Procure Hardware
 ----------------
 
-The first step is to procure the hardware required to run CommCareHQ to meet your project requirements. To understand the hardware resources required for your project please see :ref:`deployment-options`. Below are configurations used for the purpose of the tutorial.
+The first step is to procure the hardware required to run CommCare HQ to meet your project requirements. To understand the hardware resources required for your project please see :ref:`deployment-options`. Below are configurations used for the purpose of the tutorial.
 
 
 Single server
@@ -70,113 +70,147 @@ cluster’s proxy server.
 
 Prepare all machines for automated deploy
 -----------------------------------------
+Do the following on the monolith, or on each machine in the cluster.
 
-1. Do the following on the monolith, or on each machine in the cluster:
+Enable root login via SSH
+~~~~~~~~~~~~~~~~~~~~~~~~~
+On a standard Ubuntu install, the root user is not enabled or
+allowed to SSH. The root user will only be used initially, and
+will then be disabled automatically by the install scripts.
 
-   1. Enable root login via SSH.
+Make a root password and store it somewhere safe for later
+reference.
 
-      On a standard Ubuntu install, the root user is not enabled or
-      allowed to SSH. The root user will only be used initially, and
-      will then be disabled automatically by the install scripts.
+1.  Set the root password:
 
-      Make a root password and store it somewhere safe for later
-      reference.
+    ::
 
-      Set the root password:
+        $ sudo passwd root
 
-      ::
+2.  Enable the root user:
 
-         $ sudo passwd root
+    ::
 
-      Enable the root user:
+        $ sudo passwd -u root
 
-      ::
+3.  Edit ``/etc/ssh/sshd_config``:
 
-         $ sudo passwd -u root
+    ::
 
-      Edit ``/etc/ssh/sshd_config``:
+        $ sudo nano /etc/ssh/sshd_config
 
-      ::
+    To allow logging in as root, set
 
-         $ sudo nano /etc/ssh/sshd_config
+    ::
 
-      To allow logging in as root, set
+        PermitRootLogin yes
 
-      ::
+    To allow password authentication, ensure
 
-         PermitRootLogin yes
+    ::
 
-      To allow password authentication, ensure
+        PasswordAuthentication yes
 
-      ::
+4.  Restart SSH:
 
-         PasswordAuthentication yes
+    ::
 
-      Then restart SSH:
+        $ sudo service ssh reload
 
-      ::
+Initialize log file
+~~~~~~~~~~~~~~~~~~~
+To be used in the installation process.
 
-         $ sudo service ssh reload
+::
 
-   2. Initialize a log file to be used in the installation process.
+    $ sudo touch /var/log/ansible.log
+    $ sudo chmod 666 /var/log/ansible.log
 
-      ::
+Install system dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This only needs to be done on the control machine. In the case of a monolith,
+there is only one machine to manage so that is also the control machine. In
+our example cluster, the control machine is named “control1”.
 
-         $ sudo touch /var/log/ansible.log
-         $ sudo chmod 666 /var/log/ansible.log
 
-2. In the case of a monolith, there is only one machine to manage. The
-   “control” machine is used for managing a cluster. In our example
-   cluster, the control machine is named “control1”.
+1.  SSH into control1 as the “ansible” user, or the user you created during installation. You can skip this step if you are installing a monolith:
 
-   1. SSH into control1 as the “ansible” user, or the user you created
-      during installation. You can skip this if you are installing a
-      monolith.
+    ::
 
-      (This instruction assumes that the control machine’s name resolves
-      to its IP address. Replace the name with the IP address if
-      necessary.)
+        $ ssh ansible@control1
 
-      ::
+    This instruction assumes that the control machine’s name resolves to its IP address.
+    Replace the name with the IP address if necessary.
 
-         $ ssh ansible@control1
+2.  On the control machine, or the monolith, install required packages:
 
-   2. On the control machine, or the monolith, install required
-      packages:
+    ::
 
-      ::
+        $ sudo apt update
+        $ sudo apt install python3-pip sshpass net-tools
 
-         $ sudo apt update
-         $ sudo apt install python3-pip sshpass net-tools
+3.  Check your default Python version for Python 3.x:
 
-   3. Check your default Python version for Python 3.x
+    ::
 
-      ::
+        $ python --version
 
-         $ python --version
+    If your default version is not 3.x or if the “python” command was
+    not found, make python3 your default by running the command below,
+    otherwise skip it.
 
-   4. If your default version is not 3.x or if the “python” command was
-      not found, make python3 your default by running the command below,
-      otherwise skip it.
+    ::
 
-      ::
+        $ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 
-         $ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+5.  Now update pip; you might encounter installation issues otherwise.
 
-   5. Now update pip; you might encounter installation issues otherwise.
+    ::
 
-      ::
+        $ sudo -H pip install --upgrade pip
 
-         $ sudo -H pip install --upgrade pip
+6.  Lastly, install the following:
 
-   6. Lastly, install the following:
-
-      ::
+    ::
 
          $ sudo -H pip install ansible virtualenv --ignore-installed six
 
-      .. note ::
+    .. note ::
         We no longer depend on virtualenvwrapper, but you are welcome to install and manage it manually.
+
+Upgrade to Python 3.10
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We recommend using Python 3.10 with commcare-cloud. Follow the steps below to properly install it.
+
+
+::
+
+        $ sudo add-apt-repository -y ppa:deadsnakes/ppa
+        $ sudo apt update
+        $ sudo apt-get -y install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
+
+**The remaining steps for installing Python 3.10 are only relevant if you have already installed commcare-cloud.
+If commcare-cloud has not been installed on this machine yet, please skip to the next section.**
+
+Run the following to pull the latest version of commcare-cloud and trigger the creation and activation of a Python 3.10 virtual environment.
+
+::
+
+        $ update-code
+
+Confirm the active virtual environment is using Python 3.10
+
+::
+
+        $ python --version
+
+Finally, run:
+
+::
+
+        $ manage-commcare-cloud configure
+
 
 Create a user for yourself
 --------------------------
@@ -613,7 +647,7 @@ initially.
    When prompted for the ``sudo`` password, enter the
    “ansible_sudo_pass” value.
 
-See the Deploying CommCareHQ code changes section in :ref:`manage-deployment` for more information.
+See the Deploying CommCare HQ code changes section in :ref:`manage-deployment` for more information.
 
    If deploy fails, you can restart where it left off:
 
@@ -700,7 +734,7 @@ all the services back up, and mount the encrypted drive by running:
 First Steps with CommCare HQ
 ----------------------------
 
-If you are migrating data you can refer to :ref:`migrate-project` or :ref:`migrate-instance`. Otherwise, you can do below to start using CommCareHQ.
+If you are migrating data you can refer to :ref:`migrate-project` or :ref:`migrate-instance`. Otherwise, you can do below to start using CommCare HQ.
 
 Make a user
 ~~~~~~~~~~~
@@ -721,6 +755,9 @@ If you want to leave this setting as is, you can make a superuser with:
 where ``{email}`` is the email address you would like to use as the
 username.
 
+Note that promoting a user to superuser status using this command will also give them the
+ability to assign other users as superuser in the in-app Superuser Management page.
+
 Add a new CommCare build
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -733,14 +770,14 @@ the command below - it will fetch the latest version from GitHub.
 
    $ commcare-cloud cluster django-manage add_commcare_build --latest
 
-Link to a project on other CommCareHQ instance
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Link to a project on other CommCare HQ instance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you intend to use `Linked Projects <https://confluence.dimagi.com/display/commcarepublic/Linked+Project+Spaces>`_ feature to link projects on between two different instances of CommCareHQ, you may refer to `Remote Linked Projects <https://commcare-hq.readthedocs.io/linked_projects.html>`_ to set this up.
+If you intend to use `Linked Projects <https://confluence.dimagi.com/display/commcarepublic/Linked+Project+Spaces>`_ feature to link projects on between two different instances of CommCare HQ, you may refer to `Remote Linked Projects <https://commcare-hq.readthedocs.io/linked_projects.html>`_ to set this up.
 
 Operations
 ----------
 
-Once you have your CommCareHQ live, please refer to :ref:`operations-maintenance` for maintaining your environment.
+Once you have your CommCare HQ live, please refer to :ref:`operations-maintenance` for maintaining your environment.
 
-To add new server administrators please refer to :ref:`reference/3-user-management:Setting up CommCareHQ Server Administrators`.
+To add new server administrators please refer to :ref:`reference/3-user-management:Setting up CommCare HQ Server Administrators`.

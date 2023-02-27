@@ -1,9 +1,9 @@
 ---
 - include: install_latest.yml
-  when: rabbitmq_version >= '3.8.5-1'
+  when: rabbitmq_version == '3.10.13-1'
 
 - include: install_old.yml
-  when: rabbitmq_version == '3.6.15'
+  when: rabbitmq_version == '3.10.7-1'
 
 - name: Place config file
   template:
@@ -13,8 +13,15 @@
     owner: rabbitmq
     mode: 0644
   loop:
-    - {"src": "rabbitmq.config.j2", "dest": "rabbitmq.config"}
+    - {"src": "rabbitmq.conf.j2", "dest": "rabbitmq.conf"}
     - {"src": "rabbitmq-env.conf.j2", "dest": "rabbitmq-env.conf"}
+
+- name: Remove old config file
+  file:
+    path: "/etc/rabbitmq/{{ item.dest }}"
+    state: absent
+  loop:
+    - {dest: "rabbitmq.config"}
 
 - name: Create directory for ulimt
   file:

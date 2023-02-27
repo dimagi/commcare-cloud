@@ -6,20 +6,18 @@ import posixpath
 from collections import namedtuple
 from datetime import datetime, timedelta
 
-from fabric import operations, utils
+from fabric import utils
 from fabric.api import env, parallel, roles, run, sudo
 from fabric.colors import red
 from fabric.context_managers import cd, shell_env
 from fabric.contrib import files
 
 from commcare_cloud.environment.exceptions import EnvironmentException
-from .formplayer import clean_formplayer_releases
 from ..const import (
     DATE_FMT,
     KEEP_UNTIL_PREFIX,
     RELEASE_RECORD,
     ROLES_ALL_SRC,
-    ROLES_DEPLOY,
     ROLES_MANAGE,
     ROLES_STATIC,
 )
@@ -158,12 +156,6 @@ def update_virtualenv(full_cluster=True):
             _clone_virtualenv(env)
 
         requirements_files = [join("requirements", "prod-requirements.txt")]
-        requirements_files.extend(
-            join(repo.relative_dest, repo.requirements_path)
-            for repo in env.ccc_environment.meta_config.git_repositories
-            if repo.requirements_path
-        )
-
         with cd(env.code_root):
             cmd_prefix = f'{env.virtualenv_root}/bin/'
             proxy = f" --proxy={env.http_proxy}" if env.http_proxy else ""
@@ -203,16 +195,6 @@ def create_code_dir(full_cluster=True):
         sudo('mkdir -p {}'.format(env.code_root))
 
     return create
-
-
-@roles(ROLES_DEPLOY)
-def kill_stale_celery_workers(delay=0):
-    with cd(env.code_current):
-        sudo(
-            'echo "{}/bin/python manage.py '
-            'kill_stale_celery_workers" '
-            '| at now + {} minutes'.format(env.virtualenv_current, delay)
-        )
 
 
 @roles(ROLES_ALL_SRC)
@@ -294,8 +276,6 @@ def clean_releases(keep=3):
     for release in to_remove:
         sudo('rm -rf {}/{}'.format(env.releases, release))
 
-    clean_formplayer_releases()
-
     # as part of the clean up step, run gc in the 'current' directory
     git_gc_current()
 
@@ -369,32 +349,6 @@ def mark_keep_until(full_cluster=True):
             sudo('touch {}{}'.format(KEEP_UNTIL_PREFIX, until_date))
 
     return mark
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def apply_patch(filepath):
-    destination = '/home/{}/{}.patch'.format(env.user, env.ccc_environment.new_release_name())
-    operations.put(
-        filepath,
-        destination,
-    )
-
-    current_dir = sudo('readlink -f {}'.format(env.code_current))
-    sudo('git apply --unsafe-paths {} --directory={}'.format(destination, current_dir))
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def reverse_patch(filepath):
-    destination = '/home/{}/{}.patch'.format(env.user, env.ccc_environment.new_release_name())
-    operations.put(
-        filepath,
-        destination,
-    )
-
-    current_dir = sudo('readlink -f {}'.format(env.code_current))
-    sudo('git apply -R --unsafe-paths {} --directory={}'.format(destination, current_dir))
 
 
 def _get_roles(full_cluster):

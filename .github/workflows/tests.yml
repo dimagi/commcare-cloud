@@ -14,12 +14,12 @@ permissions:
 
 jobs:
   build:
-
-    runs-on: ubuntu-18.04
-
     strategy:
       matrix:
-        python-version: [ "3.6", "3.10" ]
+        os: ["ubuntu-18.04", "ubuntu-22.04"]
+        python-version: ["3.10"]
+
+    runs-on: ${{ matrix.os }}
 
     env:
       ANSIBLE_ROLES_PATH: "~/.ansible/roles"
@@ -29,14 +29,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Set Up Commcare-Cloud Python Version
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Install dependencies
       run: |
-        sudo apt-get clean
-        sudo apt-get update -qq
         source control/init.sh
         # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
         # tries to install from the commcare-cloud-bootstrap.egg_info directory
@@ -44,7 +42,7 @@ jobs:
 
         # setup 3.9 for deploy-stack
         # may be removed when this file is updated to match global_vars/all.yml:python_version
-        sudo add-apt-repository ppa:deadsnakes/ppa
+        sudo add-apt-repository -y ppa:deadsnakes/ppa
         sudo apt update
         sudo apt install python3.9 python3.9-venv
 

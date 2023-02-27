@@ -26,6 +26,7 @@ new_domain_email: inquiries@dimagi.com
 ALTERNATE_HOSTS:
   - rec-mobile.sante.gov.bf
   - onse-iss.commcarehq.org
+show_maintenance_updates_on_deploy: False
 
 DATADOG_ENABLED: True
 
@@ -54,7 +55,7 @@ postgresql_backup_weeks: 1
 nadir_hour: 16
 
 # pg_repack
-pg_repack_version: 1.4.3
+pg_repack_version: 1.4.7
 
 aws_region: 'us-east-1'
 
@@ -64,6 +65,7 @@ filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
     tags: nginx-error
 
+formplayer_java_version: "{{ java_17_bin_path }}/java"
 formplayer_purge_time_spec: '10d'
 formplayer_sensitive_data_logging: true
 formplayer_forward_ip_proxy: true
@@ -102,7 +104,7 @@ couchdb_cluster_settings:
   w: 2
   n: 3
 
-kafka_version: 3.2.0
+kafka_version: 3.2.3
 kafka_scala_version: 2.13
 kafka_download_sha512: 36A129823B058DC10788D0893BDE47B6F39B9E4972F9EAC2D5C9E85E51E477344C6F1E1EBD126CE34D5FD430EB07E55FDD60D60CB541F1D48655C0EBC0A4778
 kafka_inter_broker_protocol_version: 3.2
@@ -114,8 +116,8 @@ zookeeper_cluster: True
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
-erlang: 1:23.0.2-2
-rabbitmq_version: 3.8.5-1
+erlang: 1:24.3.3-1
+rabbitmq_version: 3.10.13-1
 
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
@@ -143,6 +145,7 @@ localsettings:
   BIGCOUCH_QUORUM_COUNT: 2
   CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE: "reminder_case_update_bulk_queue"
   CHECK_REPEATERS_PARTITION_COUNT: 4
+  COMMCARE_ANALYTICS_HOST: "https://commcare-analytics.dimagi.com"
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_REINDEX_SCHEDULE: {'timedelta': {'minutes': 5}}
@@ -156,7 +159,8 @@ localsettings:
   ENABLE_SOFT_ASSERT_EMAILS: True
   ENFORCE_SSO_LOGIN: True
   ELASTICSEARCH_MAJOR_VERSION: 2
-  ES_CASE_SEARCH_INDEX_NAME: "case_search_2021-06-04"
+  ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-04"
+  ES_XFORM_INDEX_NAME: "xforms_2023-01-27"
   IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'www'
   INACTIVITY_TIMEOUT: 20160
@@ -202,7 +206,6 @@ localsettings:
         - 'ews-ghana'
         - 'ils-gateway'
         - 'ils-gateway-train'
-#  USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER: True
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   WS4REDIS_CONNECTION_HOST: "redis.production.commcare.local"
 

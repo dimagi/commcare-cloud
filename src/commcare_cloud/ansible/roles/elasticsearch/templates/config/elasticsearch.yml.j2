@@ -27,6 +27,7 @@ http.port: {{ elasticsearch_http_port }}
 
 http.cors.enabled: true
 http.cors.allow-origin: "null"
+http.max_content_length: 200mb
 path.data: {{ elasticsearch_data_dir }}/data
 path.logs: {{ elasticsearch_data_dir }}/logs
 
@@ -69,7 +70,7 @@ index.search.slowlog.threshold.query.warn: 10s
 index.search.slowlog.threshold.query.info: 5s
 index.search.slowlog.threshold.query.debug: 2s
 index.search.slowlog.threshold.query.trace: 500ms
-index.max_result_window: 1000000
+index.max_result_window: 1050000
 {% endif %}
 
 {% if elasticsearch_fielddata_cache_size|default('') %}

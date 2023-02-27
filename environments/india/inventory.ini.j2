@@ -12,10 +12,10 @@
 {{ __esmaster3__ }} elasticsearch_node_name=esmaster3 elasticsearch_node_zone=ap-south-1b
 {{ __esmaster4__ }} elasticsearch_node_name=esmaster4 elasticsearch_node_zone=ap-south-1a
 {{ __es0__ }} elasticsearch_node_name=es0 elasticsearch_node_zone=ap-south-1a
-{{ __es2__ }} elasticsearch_node_name=es2 elasticsearch_node_zone=ap-south-1b
-{{ __escoordinator1__ }} elasticsearch_node_name=escoordinator1 elasticsearch_node_zone=ap-south-1a
-{{ __escoordinator2__ }} elasticsearch_node_name=escoordinator2 elasticsearch_node_zone=ap-south-1b
-{{ __escoordinator3__ }} elasticsearch_node_name=escoordinator3 elasticsearch_node_zone=ap-south-1c
+{{ __es3__ }} elasticsearch_node_name=es3 elasticsearch_node_zone=ap-south-1b
+{{ __escoordinator4__ }} elasticsearch_node_name=escoordinator4 elasticsearch_node_zone=ap-south-1a
+{{ __escoordinator5__ }} elasticsearch_node_name=escoordinator5 elasticsearch_node_zone=ap-south-1b
+{{ __escoordinator6__ }} elasticsearch_node_name=escoordinator6 elasticsearch_node_zone=ap-south-1c
 
 [es_master:children]
 esmaster2
@@ -28,7 +28,7 @@ elasticsearch_data=false
 
 [es_data:children]
 es0
-es2
+es3
 
 [elasticsearch:children]
 es_master
@@ -36,9 +36,9 @@ es_data
 es_coordinator
 
 [es_coordinator:children]
-escoordinator1
-escoordinator2
-escoordinator3
+escoordinator4
+escoordinator5
+escoordinator6
 
 [es_coordinator:vars]
 elasticsearch_master=false
@@ -49,12 +49,13 @@ elasticsearch_data=false
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=2
 {{ __kafka3__ }} kafka_broker_id=2 zookeeper_server_id=3
 {{ __kafka_a0__ }} kafka_broker_id=3 zookeeper_server_id=4
-{{ __rabbit_a3__ }}
-{{ __rabbit_c4__ }}
+{{ __rabbit_a5__ }}
+{{ __rabbit_c6__ }}
 {{ __pgbouncer0__ }}
-{{ __pgbouncer1__ }} pgbouncer_processes=2
-{{ __pgbouncer2__ }} pgbouncer_processes=2
+{{ __pgbouncer3__ }} pgbouncer_processes=2
+{{ __pgbouncer4__ }} pgbouncer_processes=2
 {{ __proxy_a0__ }}
+{{ __proxy_b0__ }}
 {{ __rds_pgmain0__ }}
 {{ __pgformplayer_nlb__ }}
 {{ __pgmain_nlb__ }}
@@ -69,9 +70,11 @@ elasticsearch_data=false
 
 [proxy:children]
 proxy_a0
+proxy_b0
 
 [logproxy:children]
 proxy_a0
+proxy_b0
 
 [webworkers:children]
 web2
@@ -82,8 +85,8 @@ remote_postgresql
 pgbouncer0
 
 [pgbouncer:children]
-pgbouncer1
-pgbouncer2
+pgbouncer3
+pgbouncer4
 pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
@@ -91,8 +94,8 @@ pgsynclogs_nlb
 pgshard_nlb
 
 [rabbitmq:children]
-rabbit_a3
-rabbit_c4
+rabbit_a5
+rabbit_c6
 
 [zookeeper:children]
 kafka2
@@ -117,7 +120,7 @@ formplayer1
 
 [elasticsearch:children]
 es0
-es2
+es3
 
 [shared_efs_client_host:children]
 celery

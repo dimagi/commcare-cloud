@@ -1,0 +1,26 @@
+---
+- name: Set host's audit directory
+  set_fact:
+    host_audit_directory: "{{ audit_path }}/{{ ansible_hostname }}"
+
+- name: Create host's audit directory
+  delegate_to: localhost
+  become_user: "{{ control_user }}"
+  file:
+    path: "{{ host_audit_directory }}/"
+    state: directory
+
+- name: Store disk usage stats
+  include_tasks: disk_usage.yml
+  vars:
+    - audit_directory: "{{ host_audit_directory }}"
+
+- name: Store data directory permissions
+  include_tasks: file_permissions.yml
+  vars:
+    - audit_directory: "{{ host_audit_directory }}"
+
+- name: Store filesystem stats
+  include_tasks: filesystem_health.yml
+  vars:
+    - audit_directory: "{{ host_audit_directory }}"

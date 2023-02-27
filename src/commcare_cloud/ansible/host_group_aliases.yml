@@ -17,7 +17,6 @@
         - "{{ groups['celery']|default([]) }}"
         - "{{ groups['proxy']|default([]) }}"
         - "{{ groups['pillowtop']|default([]) }}"
-        - "{{ groups['airflow']|default([]) }}"
         - "{{ groups['django_manage']|default([]) }}"
       changed_when: no
   tags:

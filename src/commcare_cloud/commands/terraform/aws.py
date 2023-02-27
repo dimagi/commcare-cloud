@@ -79,6 +79,18 @@ def get_aws_resources(environment):
         '--output', 'json', '--region', config.region,
     ])
 
+    awsmq_info = [{
+        'brokerid': brokerid,
+        'brokername': brokername,
+        'endpoint': '{brokerid}.mq.{config.region}.amazonaws.com:5671'.format(brokerid=brokerid, config=config)
+    } for brokername, brokerid in aws_cli(environment, [
+        'aws', 'mq', 'list-brokers',
+        '--query', 'BrokerSummaries[*].[BrokerName,BrokerId]',
+        "--output", "json",
+        "--region", config.region,
+    ])]
+
+
     nlb_endpoints = aws_cli(environment, [
         'aws', 'elbv2', 'describe-load-balancers',
         '--query', "LoadBalancers[?Type=='network'].[LoadBalancerName,DNSName]",
@@ -97,6 +109,16 @@ def get_aws_resources(environment):
         'efs_dns': '{efs_id}.efs.{config.region}.amazonaws.com'.format(efs_id=efs_id, config=config)
     } for (name,), efs_id in aws_cli(environment, [
         'aws', 'efs', 'describe-file-systems', '--query', "FileSystems[*][Tags[?Key=='Name'].Value,FileSystemId]",
+        "--output", "json",
+        "--region", config.region,
+    ])]
+
+    fsx_info = [{
+        'name': name,
+        'fsx_id': fsx_id,
+        'fsx_dns': '{fsx_id}.fsx.{config.region}.amazonaws.com'.format(fsx_id=fsx_id, config=config)
+    } for (name,), fsx_id in aws_cli(environment, [
+        'aws', 'fsx', 'describe-file-systems', '--query', "FileSystems[*][Tags[?Key=='Name'].Value,FileSystemId]",
         "--output", "json",
         "--region", config.region,
     ])]
@@ -123,6 +145,12 @@ def get_aws_resources(environment):
 
     for info in efs_info:
         resources['{name}-efs'.format(**info)] = info['efs_dns']
+
+    for info in fsx_info:
+        resources['{name}-fsx'.format(**info)] = info['fsx_dns']
+
+    for info in awsmq_info:
+        resources[info['brokername']] = info['endpoint']
 
     return resources
 
@@ -204,11 +232,10 @@ class AwsFillInventoryHelper(object):
         servers = self.environment.terraform_config.servers + self.environment.terraform_config.proxy_servers
         for server_spec in servers:
             for server_name in server_spec.get_all_server_names():
-                is_bionic = server_spec.os in ('bionic', 'ubuntu_pro_bionic')
                 inventory_vars = [
                     ('hostname', server_name.replace('_', '-')),
-                    ('ufw_private_interface', ('ens5' if is_bionic else 'eth0')),
-                    ('ansible_python_interpreter', ('/usr/bin/python3' if is_bionic else None)),
+                    ('ufw_private_interface', 'ens5'),
+                    ('ansible_python_interpreter', '/usr/bin/python3'),
                     ('ec2_instance_id', self.resources['{}.instance_id'.format(server_name)])
                 ]
                 if server_spec.block_device:

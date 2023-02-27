@@ -3,7 +3,7 @@
 Backups and Disaster Recovery
 =============================
 
-This section describes how to configure backups and restore method for each database service used by CommCareHQ instance.
+This section describes how to configure backups and restore method for each database service used by CommCare HQ instance.
 
 .. toctree::
    :maxdepth: 2

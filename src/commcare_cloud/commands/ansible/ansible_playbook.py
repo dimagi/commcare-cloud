@@ -4,13 +4,13 @@ from __future__ import print_function
 from __future__ import unicode_literals
 import os
 import re
+import shlex
 import subprocess
 import ansible
 from packaging import version
 from copy import deepcopy
 
 from clint.textui import puts
-from six.moves import shlex_quote
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask, has_arg, check_branch, print_command, has_local_connection_arg
@@ -33,7 +33,7 @@ class AnsiblePlaybook(CommandBase):
     Run a playbook as you would with ansible-playbook
 
     By default, you will see --check output and then asked whether to apply.
-    
+
     Example:
 
     ```
@@ -76,26 +76,26 @@ class AnsiblePlaybook(CommandBase):
         ))
 
     def run(self, args, unknown_args, always_skip_check=False, respect_ansible_skip=True):
-        environment = get_environment(args.env_name)
-        environment.create_generated_yml()
         ansible_context = AnsibleContext(args)
+        ansible_context.environment.create_generated_yml()
         check_branch(args)
+        use_factory_auth = getattr(args, 'use_factory_auth', False)
         return run_ansible_playbook(
-            environment, args.playbook, ansible_context, args.skip_check, args.quiet,
-            always_skip_check, args.limit, args.use_factory_auth, unknown_args,
+            args.playbook, ansible_context, args.skip_check, args.quiet,
+            always_skip_check, args.limit, use_factory_auth, unknown_args,
             respect_ansible_skip=respect_ansible_skip,
         )
 
 
 def run_ansible_playbook(
-        environment, playbook, ansible_context,
-        skip_check=False, quiet=False, always_skip_check=False, limit=None,
-        use_factory_auth=False, unknown_args=None, respect_ansible_skip=True,
-    ):
+    playbook, ansible_context,
+    skip_check=False, quiet=False, always_skip_check=False, limit=None,
+    use_factory_auth=False, unknown_args=None, respect_ansible_skip=True,
+):
 
     unknown_args = unknown_args or []
 
-    def get_limit():
+    def get_limit(environment):
         limit_parts = []
         if limit:
             limit_parts = re.split('[,:]', limit)
@@ -107,11 +107,19 @@ def run_ansible_playbook(
         else:
             return ()
 
-    def ansible_playbook(environment, playbook, *cmd_args):
+    def ansible_playbook(playbook, *cmd_args):
         min_ansible_version = "2.10.0"
         if version.parse(ansible.__version__) < version.parse(min_ansible_version):
-            puts(color_error(f"The version of ansible-core you have installed ({ansible.__version__}) is no longer supported."))
-            puts(color_notice(f"To upgrade from ansible-core {ansible.__version__} to {min_ansible_version} or above you will first have to uninstall the current version of ansible (due to an idiosyncratic issue)"))
+            puts(color_error(
+                f"The version of ansible-core you have installed ({ansible.__version__}) "
+                "is no longer supported."
+            ))
+            puts(color_notice(
+                f"To upgrade from ansible-core {ansible.__version__} to "
+                f"{min_ansible_version} or above you will first have to "
+                "uninstall the current version of ansible (due to an "
+                "idiosyncratic issue)"
+            ))
             puts(color_code("  pip uninstall ansible"))
             puts(color_notice("before re-installing the supported version using your standard method."))
             return 2
@@ -120,6 +128,7 @@ def run_ansible_playbook(
             playbook_path = playbook
         else:
             playbook_path = os.path.join(ANSIBLE_DIR, '{playbook}'.format(playbook=playbook))
+        environment = ansible_context.environment
         cmd_parts = (
             'ansible-playbook',
             playbook_path,
@@ -127,10 +136,10 @@ def run_ansible_playbook(
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
             '--diff',
-        ) + get_limit() + cmd_args
+        ) + get_limit(environment) + cmd_args
 
         public_vars = environment.public_vars
-        env_vars = ansible_context.env_vars
+        env_vars = ansible_context.build_env()
         cmd_parts += get_user_arg(public_vars, unknown_args, use_factory_auth)
 
         if has_arg(unknown_args, '-D', '--diff') or has_arg(unknown_args, '-C', '--check'):
@@ -144,17 +153,19 @@ def run_ansible_playbook(
 
         cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
         cmd_parts += cmd_parts_with_common_ssh_args
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command(cmd)
-        env_vars.update(environment.secrets_backend.get_extra_ansible_env_vars())
-        return subprocess.call(cmd_parts, env=env_vars)
+        try:
+            return subprocess.call(cmd_parts, env=env_vars)
+        except KeyboardInterrupt:
+            return 1
 
     def run_check():
-        with environment.secrets_backend.suppress_datadog_event():
-            return ansible_playbook(environment, playbook, '--check', *unknown_args)
+        with ansible_context.environment.secrets_backend.suppress_datadog_event():
+            return ansible_playbook(playbook, '--check', *unknown_args)
 
     def run_apply():
-        return ansible_playbook(environment, playbook, *unknown_args)
+        return ansible_playbook(playbook, *unknown_args)
 
     return run_action_with_check_mode(run_check, run_apply, skip_check, quiet, always_skip_check)
 
@@ -168,6 +179,9 @@ class _AnsiblePlaybookAlias(CommandBase):
         shared_args.FACTORY_AUTH_ARG,
         shared_args.LIMIT_ARG,
     )
+
+
+NO_FACTORY_AUTH_ARGS = tuple(a for a in _AnsiblePlaybookAlias.arguments if a is not shared_args.FACTORY_AUTH_ARG)
 
 
 class DeployStack(_AnsiblePlaybookAlias):
@@ -265,20 +279,20 @@ class UpdateConfig(CommandBase):
     def run(self, args, unknown_args):
         unknown_args += ('-e', '{"_should_update_formplayer_in_place": true}')
         rc = commcare_cloud(args.env_name, 'ansible-playbook', 'deploy_localsettings.yml',
-                              tags='localsettings', branch=args.branch, *unknown_args)
+                            tags='localsettings', branch=args.branch, *unknown_args)
         if rc == 0 and ask("Would you like to run Django checks to validate the settings?"):
             environment = get_environment(args.env_name)
-            server_args = []
+            server_arg = []
             try:
                 limit_arg = unknown_args.index('--limit')
             except ValueError:
                 pass
             else:
                 servers = environment.inventory_manager.get_hosts(unknown_args[limit_arg + 1])
-                server_args.extend(['--server', servers[0]])
-            commcare_cloud(args.env_name, 'django-manage', *(['check', '--deploy'] + server_args))
-            commcare_cloud(args.env_name, 'django-manage', *(['check', '--deploy', '-t', 'database'] + server_args))
-            commcare_cloud(args.env_name, 'django-manage', *(['check_services'] + server_args))
+                server_arg.extend(['--server', servers[0]])
+            commcare_cloud(args.env_name, 'django-manage', *(['check', '--deploy'] + server_arg))
+            commcare_cloud(args.env_name, 'django-manage', *(['check', '--deploy', '-t', 'database'] + server_arg))
+            commcare_cloud(args.env_name, 'django-manage', *(['check_services'] + server_arg))
         else:
             return rc
 
@@ -325,7 +339,10 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         args.playbook = 'deploy_stack.yml'
         args.use_factory_auth = not has_local_connection_arg(unknown_args)
         public_vars = environment.public_vars
-        unknown_args += ('--tags=bootstrap-users', '--skip-tags=validate_key') + get_user_arg(public_vars, unknown_args, use_factory_auth=True)
+        unknown_args += (
+            '--tags=bootstrap-users',
+            '--skip-tags=validate_key',
+        ) + get_user_arg(public_vars, unknown_args, use_factory_auth=True)
 
         if not public_vars.get('commcare_cloud_pem') and not has_local_connection_arg(unknown_args):
             unknown_args += ('--ask-pass',)
@@ -345,7 +362,7 @@ class UpdateUsers(_AnsiblePlaybookAlias):
     def run(self, args, unknown_args):
         username = get_dev_username(args.env_name)
         args.playbook = 'deploy_stack.yml'
-        unknown_args += ('--tags=users,update_users', '-e ssh_user=' + shlex_quote(username))
+        unknown_args += ('--tags=users,update_users', '-e ssh_user=' + shlex.quote(username))
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 
@@ -358,7 +375,8 @@ class UpdateUserPublicKey(_AnsiblePlaybookAlias):
 
     def run(self, args, unknown_args):
         puts(color_notice("The 'update-user-key' command has been removed. Please use 'update-users' instead."))
-        return 0 # exit code
+        return 0  # exit code
+
 
 class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
     command = 'update-supervisor-confs'
@@ -382,3 +400,19 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
             )
         else:
             return rc
+
+
+class PerformSystemChecks(_AnsiblePlaybookAlias):
+    command = "perform-system-checks"
+    help = """
+    Check the Django project for potential problems in two phases, first
+    check all apps, then run database checks only.
+
+    See https://docs.djangoproject.com/en/dev/ref/django-admin/#check
+    """
+    arguments = NO_FACTORY_AUTH_ARGS
+
+    def run(self, args, unknown_args):
+        args.playbook = 'perform_system_checks.yml'
+        args.quiet = True
+        return AnsiblePlaybook(self.parser).run(args, unknown_args, always_skip_check=True)

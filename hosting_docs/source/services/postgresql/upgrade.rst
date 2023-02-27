@@ -86,3 +86,12 @@ and apply the changes.
 .. code-block::
 
    commcare-cloud <env> ansible-playbook deploy_postgres.yml --limit HOSTS-TO-UPGRADE
+
+4. Upgrade the psql client
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Once the postgres upgrade is completed, update the psql client on all hosts
+
+.. code-block::
+
+   commcare-cloud <env> ansible-playbook deploy_common.yml

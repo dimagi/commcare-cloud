@@ -17,9 +17,6 @@ project: "commcare-hq"
 
 prometheus_monitoring_enabled: False
 
-airflow_home: "{{ cchq_home }}/airflow"
-airflow_virtualenv: "{{ airflow_home }}/env"
-
 internal_network_interface: "{{ ansible_default_ipv4.interface }}"
 internal_network_interface_fact: "ansible_{{ internal_network_interface }}"
 internal_ipv4: "{{ hostvars[inventory_hostname][internal_network_interface_fact].ipv4 }}"
@@ -127,7 +124,7 @@ daily_deploy_email: null
 check_s3_backups_email: null
 return_path_email: null
 new_domain_email: inquiries@example.com
-
+show_maintenance_updates_on_deploy: true
 
 ALTERNATE_HOSTS: []
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
@@ -164,3 +161,6 @@ celery_hours_before_hard_kill: ~
 celery_hours_before_soft_kill: ~
 
 ansible_become_password: "{{ ansible_sudo_pass }}"
+
+# Java version for Formplayer
+java_17_bin_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64/bin

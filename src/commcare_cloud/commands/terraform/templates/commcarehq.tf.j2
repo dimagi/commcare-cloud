@@ -79,6 +79,25 @@ resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
   }
 }
 
+{% if backup_plan %}
+module "backup_plan" {
+  source = "./modules/backup"
+  environment = var.environment
+  region = var.region
+  account_id = {{ account_id|tojson }}
+  outside_account_id = {{ backup_plan.outside_account_id|tojson }}
+  local_vault_name = {{ backup_plan.local_vault_name|tojson }}
+  remote_vault_name = {{ backup_plan.remote_vault_name|tojson }}
+  remote_vault_region = {{ backup_plan.remote_vault_region|tojson }}
+  daily_retention = {{ backup_plan.daily_retention|tojson }}
+  monthly_retention = {{ backup_plan.monthly_retention|tojson }}
+  quarterly_retention = {{ backup_plan.quarterly_retention|tojson }}
+  providers = {
+    aws.remote_region = aws.{{ backup_plan.remote_vault_region }}
+  }
+}
+{% endif %}
+
 module "server_iam_role" {
   source = "./modules/server/iam"
   environment = var.environment
@@ -104,18 +123,22 @@ module "server__{{ server_name }}" {
   secondary_volume_size = {{ server_spec.block_device.volume_size|default(0)|tojson }}
   secondary_volume_type = {{ server_spec.block_device.volume_type|default("")|tojson }}
   secondary_volume_encrypted = {{ server_spec.block_device.encrypted|default(False)|tojson }}
+  secondary_volume_enable_cross_region_backup = {{ server_spec.block_device.enable_cross_region_backup|default(False)|tojson }}
   server_auto_recovery = {{ server_spec.server_auto_recovery|default(False)|tojson }}
   iam_instance_profile = module.server_iam_role.commcare_server_instance_profile
   metadata_tokens = "{{ 'required' if ec2_metadata_tokens_required else 'optional' }}"
+  enable_cross_region_backup = {{ server_spec.enable_cross_region_backup|tojson }}
 
 {% if server_spec.os == 'ubuntu_pro_bionic' %}
   server_image = data.aws_ami.ubuntu_pro_bionic.id
 {% elif server_spec.os == 'bionic' %}
   server_image = data.aws_ami.ubuntu_bionic.id
+{% elif server_spec.os == 'jammy' %}
+  server_image = data.aws_ami.ubuntu_jammy.id
 {% else %}
-  server_image = var.server_image
+  server_image = data.aws_ami.ubuntu_jammy.id
 {% endif %}
- environment = var.environment
+  environment = var.environment
   vpc_id = module.network.vpc-id
   subnet_options = local.subnet_options
   security_group_options = local.security_group_options
@@ -224,6 +247,14 @@ module "logshipping" {
   source = "./modules/logshipping"
   account_id = {{ account_id|tojson }}
 }
+
+{% if release_bucket %}
+module "autoscaling" {
+  source = "./modules/autoscaling"
+  release_bucket = var.release_bucket
+  commcare_server_role_id = module.server_iam_role.commcare_server_role_id
+}
+{% endif %}
 
 module "ga_alb_waf" {
   source = "./modules/ga_alb_waf"
@@ -349,3 +380,40 @@ module "efs_mount__{{ efs_file_system_mount.efs_name }}__{{ az }}" {
 {% endfor %}
 
 {% endif %}
+
+{% if fsx_file_systems %}
+{% for fsx_file_system in fsx_file_systems %}
+module "fsx_file_system__{{ fsx_file_system.efs_name }}" {
+  source = "./modules/fsx_file_system"
+  create               = {{ fsx_file_system.create|tojson }}
+  fsx_name             = {{ fsx_file_system.fsx_name|tojson }}
+  namespace            = "${var.environment}"
+  storage_capacity     = {{ fsx_file_system.storage_capacity|tojson }}
+  throughput_capacity  = {{ fsx_file_system.throughput_capacity|tojson }}
+  fsx_subnet_ids       = ["${lookup(module.network.subnets-app-private, "a", "")}"]
+  security_group_ids = [module.network.app-private-sg]
+}
+{% endfor %}
+
+{% endif %}
+
+module "awsmq" {
+  source                	= "./modules/awsmq"
+  broker_name             = {{ awsmq.broker_name|tojson }}  
+  vpc_id = module.network.vpc-id  
+  apply_immediately     	=  {{ awsmq.apply_immediately|tojson }}
+  auto_minor_version_upgrade 	= {{ awsmq.auto_minor_version_upgrade|tojson }}
+  deployment_mode 		= {{ awsmq.deployment_mode|tojson }}
+  subnet_ids			    = ["${lookup(module.network.subnets-app-private, "a", "")}"]
+  security_groups    	= compact([module.network.db-private-sg, module.network.ssh-sg, module.network.vpn-connections-sg])
+  environment = var.environment
+  account_alias = var.account_alias
+  username            = var.username
+  password            = var.password
+  engine_type			= {{ awsmq.engine_type|tojson }}
+  engine_version  = {{ awsmq.engine_version|tojson }}
+  host_instance_type 		= {{ awsmq.host_instance_type|tojson }}
+  publicly_accessible		= {{ awsmq.publicly_accessible|tojson }}
+  encryption_enabled    = {{ awsmq.encryption_enabled|tojson }}
+  logs_general          = {{ awsmq.logs_general|tojson }}
+}    

@@ -11,7 +11,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.8.0"
+      version = "~> 4.45.0"
     }
     archive = {
       source = "hashicorp/archive"
@@ -31,6 +31,20 @@ provider "aws" {
   region = "us-west-2"
 }
 
+{% if backup_plan %}
+// for aws backup to another region
+provider "aws" {
+  alias = {{ backup_plan.remote_vault_region|tojson }}
+  region = {{ backup_plan.remote_vault_region|tojson }}
+}
+{% endif %}
+
 variable "rds_password" {
+  type = string
+}
+variable "password" {
+  type = string
+}
+variable "username" {
   type = string
 }

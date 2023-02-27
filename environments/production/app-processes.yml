@@ -2,19 +2,19 @@ datadog_pythonagent: True
 django_command_prefix: ''
 celery_command_prefix: ''
 gunicorn_workers_static_factor: 0
-gunicorn_workers_factor: 2
+gunicorn_workers_factor: 4
 formplayer_memory: "31g"
 formplayer_g1heapregionsize: "16m"
 management_commands:
-  celery_c000:
+  celery_c1000:
     run_submission_reprocessing_queue:
     queue_schedule_instances:
     handle_survey_actions:
     run_sms_queue:
-  pillow_a000:
+  pillow_a1000:
     run_pillow_retry_queue:
 celery_processes:
-  celery_b000,celery_b001,celery_b002,celery_b003,celery_c001,celery_c002,celery_c003:
+  celery_b1000,celery_b1001,celery_b1002,celery_b1003,celery_c1001,celery_c1002,celery_c1003:
     analytics_queue:
       pooling: gevent
       concurrency: 4
@@ -53,7 +53,8 @@ celery_processes:
       concurrency: 1
     repeat_record_queue:
       pooling: gevent
-      concurrency: 3
+      concurrency: 6
+      prefetch_multiplier: 1
     saved_exports_queue:
       concurrency: 3
       prefetch_multiplier: 1
@@ -71,7 +72,7 @@ celery_processes:
     ush_background_tasks:
       concurrency: 8
 
-  celery_c000:
+  celery_c1000:
     # not really queues
     flower: {}
     beat: {}
@@ -92,13 +93,14 @@ celery_processes:
       pooling: gevent
       concurrency: 2
     submission_reprocessing_queue:
-        concurrency: 1
+      concurrency: 2
+      prefetch_multiplier: 1
     sumologic_logs_queue:
       pooling: gevent
       concurrency: 50
 
 pillows:
-  pillow_a000:
+  pillow_a1000:
     # case-sql partitions: 96
     case-pillow:
       num_processes: 25
@@ -131,7 +133,7 @@ pillows:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
-  pillow_b000:
+  pillow_b1000:
     xform-pillow:
       num_processes: 33
       dedicated_migration_process: True

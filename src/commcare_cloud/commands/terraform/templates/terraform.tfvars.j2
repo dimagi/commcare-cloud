@@ -1,6 +1,8 @@
 source = "./modules/commcarehq"
 region = {{ region|tojson }}
 environment = {{ environment|tojson }}
+username = {{ username|tojson }}
+password = {{ password|tojson }}
 azs = {{ azs|tojson }}
 az_codes = {{ az_codes|tojson }}
 vpc_begin_range = {{ vpc_begin_range|tojson }}
@@ -60,3 +62,4 @@ proxy_servers = [
 
 account_alias = {{ (account_alias or "")|tojson }}
 s3_blob_db_s3_bucket = {{ s3_blob_db_s3_bucket|tojson }}
+release_bucket = {{ release_bucket|tojson }}

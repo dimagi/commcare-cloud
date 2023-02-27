@@ -115,7 +115,7 @@ You check /serverup.txt?heartbeat (example: https://www.commcarehq.org/serverup.
 Resolution
 ^^^^^^^^^^
 
-To kill the workers that didn't shut down properly, you can use the ``commcare-cloud <env> fab kill_stale_celery_workers``. This will automatically figure out which ones to kill. If that still doesn't work, follow the steps below.
+To kill the workers that didn't shut down properly, you can use the ``commcare-cloud <env> kill-stale-celery-workers``. This will automatically figure out which ones to kill. If that still doesn't work, follow the steps below.
 
 Using the environments and inventory files to find which machine hosts flower, use your browser to hit port 5555 on that machine (example: http://hqcelery1.internal-va.commcarehq.org:5555/) to view flower.
 

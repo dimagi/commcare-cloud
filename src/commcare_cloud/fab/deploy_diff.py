@@ -1,9 +1,11 @@
 import os
 import re
 from collections import defaultdict
+from datetime import datetime, timedelta
 
 import jinja2
 from gevent.pool import Pool
+from github import Github
 from github.GithubException import GithubException
 from memoized import memoized, memoized_property
 
@@ -11,6 +13,7 @@ from commcare_cloud.colors import (
     color_warning, color_error, color_success,
     color_highlight, color_summary, color_code
 )
+from commcare_cloud.fab.utils import get_changelogs_in_date_range
 from commcare_cloud.user_utils import get_default_username
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'diff_templates')
@@ -23,7 +26,7 @@ LABELS_TO_EXPAND = [
 
 
 class DeployDiff:
-    def __init__(self, repo, current_commit, deploy_commit, new_version_details=None, generate_diff=True):
+    def __init__(self, repo, current_commit, deploy_commit, environment, new_version_details=None, generate_diff=True):
         """
         :param repo: github.Repository.Repository object
         :param current_commit: Commit SHA of the currently deployed code
@@ -34,6 +37,7 @@ class DeployDiff:
         self.repo = repo
         self.current_commit = current_commit
         self.deploy_commit = deploy_commit
+        self.environment = environment
         self.new_version_details = new_version_details
         self.generate_diff = generate_diff
         self.j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
@@ -51,6 +55,64 @@ class DeployDiff:
             return self.current_commit == self.deploy_commit or long.startswith(short)
         return False
 
+    def get_changelog_context(self):
+        def get_commit_date(commit):
+            return datetime.strptime(
+                self.repo.get_commit(commit).last_modified,
+                "%a, %d %b %Y %H:%M:%S GMT"
+            )
+        if not (self.current_commit and self.deploy_commit):
+            return {
+                "changelogs": [],
+                "error": True
+            }
+        try:
+            return {
+                "changelogs": get_changelogs_in_date_range(
+                    get_commit_date(self.current_commit),
+                    get_commit_date(self.deploy_commit)
+                ),
+                "error": False
+            }
+        except Exception as e:
+            print(color_error(
+                f"Error getting changelogs: {e}. "
+                "Please report this at https://forum.dimagi.com/c/developers/"
+            ))
+            return {
+                "changelogs": [],
+                "error": True
+            }
+
+    def get_maintenance_pr_context(self):
+        if not self.show_maintenance_updates_on_deploy:
+            return {
+                "maintenance_prs": [],
+                "error": False
+            }
+
+        sixweeks_ago = (datetime.now() - timedelta(days=6*7)).strftime( '%Y-%m-%d')
+        created = f">{sixweeks_ago}"
+        query = f"repo:dimagi/commcare-hq is:pr is:open created:{created} label:migration-maintenance,breaking-maintenance"
+
+        try:
+            return {
+                "maintenance_prs": [
+                    f"{pr.title} ({pr.html_url})"
+                    for pr in Github().search_issues(query)
+                ],
+                "error": False
+            }
+        except GithubException as e:
+            print(color_error(
+                f"Error getting maintenance_prs: {e}. "
+                "Please report this at https://forum.dimagi.com/c/developers/"
+            ))
+            return {
+                "maintenance_prs": [],
+                "error": True
+            }
+
     @memoized
     def get_diff_context(self):
         context = {
@@ -58,7 +120,9 @@ class DeployDiff:
             "user": get_default_username(),
             "LABELS_TO_EXPAND": LABELS_TO_EXPAND,
             "errors": [],
-            "warnings": []
+            "warnings": [],
+            "changelogs": self.get_changelog_context(),
+            "maintenance_prs": self.get_maintenance_pr_context(),
         }
 
         if self.deployed_commit_matches_latest_commit:
@@ -105,6 +169,13 @@ class DeployDiff:
         context["prs_by_label"] = prs_by_label
         return context
 
+    def show_maintenance_updates_on_deploy(self):
+        if not self.repo.name == 'commcare-hq':
+            return False
+        return self.environment.public_vars.get(
+            'show_maintenance_updates_on_deploy', True
+        )
+
     def print_deployer_diff(self):
         print(self.render_diff('console.txt.j2'))
 
@@ -114,7 +185,8 @@ class DeployDiff:
     def render_diff(self, template_name):
         template = self.j2.get_template(template_name)
         return template.render(
-            **self.get_diff_context()
+            **self.get_diff_context(),
+            show_maintenance_updates_on_deploy=self.show_maintenance_updates_on_deploy
         )
 
     @memoized_property

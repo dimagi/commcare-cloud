@@ -40,12 +40,11 @@ sudo apt --assume-yes -qq update
 sudo apt --assume-yes -qq install python3-pip sshpass
 sudo -H pip3 -q install --upgrade pip
 sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
-if [[ $CCHQ_VIRTUALENV == *3.10* ]]; then
-  sudo add-apt-repository -y ppa:deadsnakes/ppa
-  sudo apt update
-  sudo apt-get --assume-yes -q install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
-else
-  sudo -H pip -q install ansible virtualenv --ignore-installed six
+# install python 3.10 if on ubuntu 18.04 and not installed yet
+if ! hash python3.10 2>/dev/null && [[ $( source /etc/os-release; echo $VERSION_ID ) == 18.04 ]]; then
+    sudo add-apt-repository -y ppa:deadsnakes/ppa
+    sudo apt update
+    sudo apt-get --assume-yes -q install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
 fi
 
 printf "\n"
@@ -56,7 +55,7 @@ printf "\n"
 # install comcare-cloud
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
-echo y | source "$DIR/../control/init.sh"
+NO_INPUT=1 source "$DIR/../control/init.sh"
 sudo touch /var/log/ansible.log && sudo chmod 666 /var/log/ansible.log
 
 printf "\n"
@@ -65,9 +64,6 @@ printf "\nStep 3: Initializing environments directory for "
 printf "storing your CommCareHQ instance's configuration \n"
 printf "#################################################"
 printf "\n"
-# VENV should have been set by init.sh
-DEFAULT_VENV=~/.virtualenvs/cchq
-VENV=${VENV:-$DEFAULT_VENV}
 
 ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/bootstrap-env-playbook.yml"
 printf "\n Encrypting your environment's passwords file using ansible-vault.\n"

@@ -24,8 +24,34 @@ resource "aws_elasticache_replication_group" "redis-dev-cluster-0" {
   subnet_group_name             = aws_elasticache_subnet_group.redis-dev-subnet-group-0[count.index].name
   security_group_ids            = var.securitygroup_id
   multi_az_enabled              = var.multi_az
+  apply_immediately             = true
 
   tags = {
     Name = "${var.namespace}-cache"
   }
+#Redis Log Delivery enginelog configuration
+log_delivery_configuration {
+  destination      = "${var.namespace}-engine-logs"
+  destination_type = "cloudwatch-logs"
+  log_format       = "json"
+  log_type         = "engine-log"
+}
+#Redis Log Delivery slowlog configuration
+log_delivery_configuration {
+  destination      = "${var.namespace}-slow-logs"
+  destination_type = "cloudwatch-logs"
+  log_format       = "json"
+  log_type         = "slow-log"
+}
+
+}
+
+#log group creation for redis engine logs
+resource "aws_cloudwatch_log_group" "elasticache-engine-logs" {
+  name = "${var.namespace}-engine-logs"
+}
+
+#log group creation for redis slow logs
+resource "aws_cloudwatch_log_group" "elasticache-slow-logs" {
+  name = "${var.namespace}-slow-logs"
 }

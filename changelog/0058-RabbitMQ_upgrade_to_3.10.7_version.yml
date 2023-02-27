@@ -1,0 +1,16 @@
+title: RabbitMQ upgrade to 3.10.7 version
+key: RabbitMQ_upgrade_to_3.10.7_version
+date: 2022-10-30
+optional_per_env: yes 
+context: |
+  This change upgrade RabbitMQ 3.10.7 version. 
+  The current installed RabbitMQ version 3.8.5 is already End of Life. 
+  So, we strongly recommend applying this change. 
+
+details: |
+  As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and 
+  libraries we have updated RabbitMQ to 3.10.7 version. 
+
+update_steps: |
+  1. For users running RabbitMQ on Linux machines:
+     instructions: [RabbitMQ_upgrade](https://commcare-cloud.readthedocs.io/en/latest/services/rabbitmq/upgrade.html?highlight=rabbitmq)

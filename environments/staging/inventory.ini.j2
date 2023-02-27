@@ -3,29 +3,29 @@
 # As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
 # using the aws-fill-inventory command.
 
-{{ __proxy2__ }}
-{{ __proxy3__ }}
+{{ __proxy4__ }}
+{{ __proxy5__ }}
 
 [proxy:children]
 # Amazon EC2
-proxy2
-proxy3
+proxy4
+proxy5
 
 [logproxy:children]
 proxy
 
-{{ __web7__ }} swap_size=1G
+{{ __web9__ }} swap_size=1G
 
-{{ __web8__ }} swap_size=1G
+{{ __web10__ }} swap_size=1G
 
 [webworkers:children]
 # Amazon EC2
-web7
-web8
+web9
+web10
 
-{{ __pgproxy4__ }} pgbouncer_processes=2 swap_size=2G
+{{ __pgproxy5__ }} pgbouncer_processes=2 swap_size=2G
 
-{{ __pgbouncer0__ }}
+{{ __pgbouncer1__ }}
 
 {{ __rds_pg0__ }}
 
@@ -43,7 +43,7 @@ rds_pgformplayer0
 {{ __couch_alb__ }}
 
 [postgresql:children]
-pgproxy4
+pgproxy5
 remote_postgresql
 pgformplayer_nlb
 pgmain_nlb
@@ -52,18 +52,18 @@ pgsynclogs_nlb
 pgshard_nlb
 
 [pgbouncer:children]
-pgbouncer0
+pgbouncer1
 
-{{ __couch6__ }}
+{{ __couch18__ }}
 
-{{ __couch15__ }}
+{{ __couch19__ }}
 
-{{ __couch13__ }}
+{{ __couch20__ }}
 
 [couchdb2:children]
-couch6
-couch15
-couch13
+couch18
+couch19
+couch20
 
 [couchdb2_proxy:children]
 couch_alb
@@ -71,29 +71,29 @@ couch_alb
 [couchdb2_alb:children]
 couch_alb
 
-{{ __rabbit2__ }}
-{{ __rabbit4__ }}
+{{ __rabbit_a2__ }}
+{{ __rabbit_b1__ }}
 
 [rabbitmq:children]
 # Amazon EC2
-rabbit2
-rabbit4
+rabbit_a2
+rabbit_b1
 
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=1
-{{ __kafka5__ }} kafka_broker_id=4 zookeeper_server_id=4
-{{ __kafka6__ }} kafka_broker_id=5 zookeeper_server_id=5
+{{ __kafka7__ }} kafka_broker_id=6 zookeeper_server_id=6
+{{ __kafka8__ }} kafka_broker_id=7 zookeeper_server_id=7
 
 [zookeeper:children]
 # Amazon EC2
 kafka2
-kafka5
-kafka6
+kafka7
+kafka8
 
 [kafka:children]
 # Amazon EC2
 kafka2
-kafka5
-kafka6
+kafka7
+kafka8
 
 {{ __celery_a0__ }}
 
@@ -103,35 +103,38 @@ celery_a0
 [celery:vars]
 swap_size=2G
 
-{{ __pillow3__ }}
+{{ __pillow4__ }}
 
 [pillowtop:children]
 # Amazon EC2
-pillow3
+pillow4
 
-{{ __formplayer4__ }}
+{{ __formplayer7__ }}
 
-{{ __formplayer5__ }}
+{{ __formplayer8__ }}
 
 [formplayer:children]
 # Amazon EC2
-formplayer4
-formplayer5
+formplayer7
+formplayer8
 
 [formplayer:vars]
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
+formplayer_fsx_dns={{ aws_resources['fsx_staging-fsx'] }}:/fsx
+cchq_uid=2002
+cchq_gid=3002
 
-{{ __es6__ }} elasticsearch_node_name=es6-staging elasticsearch_node_zone=us-east-1a
+{{ __es12__ }} elasticsearch_node_name=es12-staging elasticsearch_node_zone=us-east-1b
 
-{{ __es7__ }} elasticsearch_node_name=es7-staging elasticsearch_node_zone=us-east-1a
+{{ __es13__ }} elasticsearch_node_name=es13-staging elasticsearch_node_zone=us-east-1a
 
-{{ __es8__ }} elasticsearch_node_name=es8-staging elasticsearch_node_zone=us-east-1a
+{{ __es14__ }} elasticsearch_node_name=es14-staging elasticsearch_node_zone=us-east-1b
 
-{{ __es9__ }} elasticsearch_node_name=es9-staging elasticsearch_node_zone=us-east-1b
+{{ __es15__ }} elasticsearch_node_name=es15-staging elasticsearch_node_zone=us-east-1a
 
-{{ __es10__ }} elasticsearch_node_name=es10-staging elasticsearch_node_zone=us-east-1b
+{{ __es16__ }} elasticsearch_node_name=es16-staging elasticsearch_node_zone=us-east-1b
 
-{{ __es11__ }} elasticsearch_node_name=es11-staging elasticsearch_node_zone=us-east-1b
+{{ __es17__ }} elasticsearch_node_name=es17-staging elasticsearch_node_zone=us-east-1c
 
 [elasticsearch:children]
 # Amazon EC2
@@ -140,20 +143,20 @@ es_data
 es_coordinator
 
 [es_master:children]
-es6
-es7
-es9
+es15
+es16
+es17
 
 [es_master:vars]
 elasticsearch_master=true
 elasticsearch_data=true
 
 [es_data:children]
-es8
-es10
+es13
+es14
 
 [es_coordinator:children]
-es11
+es12
 
 [es_coordinator:vars]
 elasticsearch_master=false
@@ -166,10 +169,13 @@ proxy
 pillowtop
 webworkers
 
-{{ __control1__ }}
+{{ __control2__ }}
 
 [control:children]
-control1
+control2
+
+[awsmq]
+{{ aws_resources['staging-mq-broker'] }}
 
 [ansible_skip:children]
 rds_pg0
@@ -180,8 +186,9 @@ pgucr_nlb
 pgsynclogs_nlb
 pgshard_nlb
 couch_alb
+awsmq
 
 
 [django_manage:children]
 # Amazon EC2
-web7
+web10

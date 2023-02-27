@@ -1,9 +1,9 @@
-DEFAULT_POSTGRESQL_HOST: rds_pgsynclog1
+DEFAULT_POSTGRESQL_HOST: rds_pgsynclog2
 
 postgres_override:
   allow_dump_from_pgstandby: yes
   postgresql_max_connections: 1000
-  postgresql_version: '10'
+  postgresql_version: '14'
   postgresql_checkpoint_completion_target: '0.7'
   postgresql_wal_buffers: 16MB
   postgresql_max_wal_size: 2GB
@@ -44,53 +44,63 @@ dbs:
     pgbouncer_pool_size: 36
     pgbouncer_reserve_pool_size: 0
     pgbouncer_hosts:
-      - pgbouncer5
-      - pgbouncer6
-      - pgbouncer7
-      - pgbouncer8
-      - pgbouncer9
+      - pgbouncer_a2
+      - pgbouncer_a3
+      - pgbouncer_b0
+      - pgbouncer_b1
+      - pgbouncer_c0
+      - pgbouncer10
+      - pgbouncer11
   formplayer:
-    host: rds_pgformplayer1
+    host: rds_pgformplayer2
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_pool_size: 100
     pgbouncer_hosts:
-      - pgbouncer5
-      - pgbouncer6
-      - pgbouncer7
-      - pgbouncer8
-      - pgbouncer9
+      - pgbouncer_a2
+      - pgbouncer_a3
+      - pgbouncer_b0
+      - pgbouncer_b1
+      - pgbouncer_c0
+      - pgbouncer10
+      - pgbouncer11
   ucr:
     host: rds_pgucr0
     pgbouncer_endpoint: pgucr_nlb
     pgbouncer_pool_size: 10
     pgbouncer_reserve_pool_size: 2
     pgbouncer_hosts:
-      - pgbouncer5
-      - pgbouncer6
-      - pgbouncer7
-      - pgbouncer8
-      - pgbouncer9
+      - pgbouncer_a2
+      - pgbouncer_a3
+      - pgbouncer_b0
+      - pgbouncer_b1
+      - pgbouncer_c0
+      - pgbouncer10
+      - pgbouncer11
     query_stats: True
   synclogs:
-    host: rds_pgsynclog1
+    host: rds_pgsynclog2
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
-      - pgbouncer5
-      - pgbouncer6
-      - pgbouncer7
-      - pgbouncer8
-      - pgbouncer9
+      - pgbouncer_a2
+      - pgbouncer_a3
+      - pgbouncer_b0
+      - pgbouncer_b1
+      - pgbouncer_c0
+      - pgbouncer10
+      - pgbouncer11
   auditcare:
-    host: rds_pgauditcare0
+    host: rds_pgauditcare1
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_pool_size: 6
     pgbouncer_reserve_pool_size: 2
     pgbouncer_hosts:
-      - pgbouncer5
-      - pgbouncer6
-      - pgbouncer7
-      - pgbouncer8
-      - pgbouncer9
+      - pgbouncer_a2
+      - pgbouncer_a3
+      - pgbouncer_b0
+      - pgbouncer_b1
+      - pgbouncer_c0
+      - pgbouncer10
+      - pgbouncer11
   form_processing:
     proxy:
       host: pgbouncer_a1
@@ -103,48 +113,58 @@ dbs:
         host: rds_pgshard1
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer5
-          - pgbouncer6
-          - pgbouncer7
-          - pgbouncer8
-          - pgbouncer9
+          - pgbouncer_a2
+          - pgbouncer_a3
+          - pgbouncer_b0
+          - pgbouncer_b1
+          - pgbouncer_c0
+          - pgbouncer10
+          - pgbouncer11
       p2:
         shards: [205, 409]
         host: rds_pgshard2
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer5
-          - pgbouncer6
-          - pgbouncer7
-          - pgbouncer8
-          - pgbouncer9
+          - pgbouncer_a2
+          - pgbouncer_a3
+          - pgbouncer_b0
+          - pgbouncer_b1
+          - pgbouncer_c0
+          - pgbouncer10
+          - pgbouncer11
       p3:
         shards: [410, 614]
         host: rds_pgshard3
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer5
-          - pgbouncer6
-          - pgbouncer7
-          - pgbouncer8
-          - pgbouncer9
+          - pgbouncer_a2
+          - pgbouncer_a3
+          - pgbouncer_b0
+          - pgbouncer_b1
+          - pgbouncer_c0
+          - pgbouncer10
+          - pgbouncer11
       p4:
         shards: [615, 819]
         host: rds_pgshard4
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer5
-          - pgbouncer6
-          - pgbouncer7
-          - pgbouncer8
-          - pgbouncer9
+          - pgbouncer_a2
+          - pgbouncer_a3
+          - pgbouncer_b0
+          - pgbouncer_b1
+          - pgbouncer_c0
+          - pgbouncer10
+          - pgbouncer11
       p5:
         shards: [820, 1023]
         host: rds_pgshard5
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer5
-          - pgbouncer6
-          - pgbouncer7
-          - pgbouncer8
-          - pgbouncer9
+          - pgbouncer_a2
+          - pgbouncer_a3
+          - pgbouncer_b0
+          - pgbouncer_b1
+          - pgbouncer_c0
+          - pgbouncer10
+          - pgbouncer11

@@ -50,3 +50,37 @@ def test_get_server_address(pattern, expected):
 def test_get_server_address_errors(pattern):
     with assert_raises(HostMatchException):
         get_server_address("2018-04-04-icds-new-snapshot", pattern)
+
+
+@patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENV_DIR)
+def test_get_server_address_with_groups():
+    address = get_server_address("2018-04-04-icds-new-snapshot", "postgresql", allow_multiple=True)
+    assert_equal(address, "\n".join([
+        "10.247.164.26 - pgmain, postgresql, all",
+        "10.247.164.20 - pgshard1, postgresql, all",
+        "10.247.164.21 - pgshard2, postgresql, all",
+        "10.247.164.64 - pgshard3, postgresql, all",
+        "10.247.164.65 - pgshard4, postgresql, all",
+        "10.247.164.66 - pgshard5, postgresql, all",
+        "10.247.164.70 - pgsynclog, postgresql, all",
+        "10.247.164.25 - pgucr, postgresql, all",
+        "10.247.164.56 - plproxy1, postgresql, all",
+    ]))
+
+
+@patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENV_DIR)
+def test_get_server_address_for_monolith_with_groups():
+    address = get_server_address("small_cluster", "all", allow_multiple=True)
+    assert_equal(address, "\n".join([
+        (
+            "172.19.3.0 - demo_server0, proxy, webworkers, couchdb2_proxy, "
+            "formplayer, shared_dir_host, control, mailrelay, django_manage, "
+            "kafka, elasticsearch, couchdb2, all"
+        ),
+        (
+            "172.19.3.1 - demo_server1, postgresql, redis, zookeeper, "
+            "rabbitmq, kafka, elasticsearch, couchdb2, all"
+        ),
+        "172.19.3.2 - demo_server2, celery, all",
+        "172.19.3.3 - demo_server3, pg_standby, pillowtop, couchdb2, all",
+    ]))

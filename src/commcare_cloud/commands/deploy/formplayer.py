@@ -114,7 +114,7 @@ def get_deploy_diff(environment, repo):
         new_version_details["Commit date"] = f"{latest_version.commit_time_ago} ({latest_version.time})"
         new_version_details["Build time"] = f"{latest_version.build_time_ago} ({latest_version.build_time})"
     diff = DeployDiff(
-        repo, current_commit, latest_version.commit,
+        repo, current_commit, latest_version.commit, environment,
         new_version_details=new_version_details,
         generate_diff=environment.fab_settings_config.generate_deploy_diffs
     )
@@ -124,9 +124,8 @@ def get_deploy_diff(environment, repo):
 def run_ansible_playbook_command(environment, args):
     skip_check = True
     environment.create_generated_yml()
-    ansible_context = AnsibleContext(args)
     return ansible_playbook.run_ansible_playbook(
-        environment, 'deploy_stack.yml', ansible_context,
+        'deploy_stack.yml', AnsibleContext(args, environment),
         skip_check=skip_check, quiet=skip_check, always_skip_check=skip_check, limit='formplayer',
         use_factory_auth=False, unknown_args=('--tags=formplayer_deploy',),
         respect_ansible_skip=True,
@@ -135,7 +134,7 @@ def run_ansible_playbook_command(environment, args):
 
 def record_deploy_in_datadog(environment, diff, tdelta):
     if environment.public_vars.get('DATADOG_ENABLED', False):
-        print(color_summary(f">> Recording deploy in Datadog"))
+        print(color_summary(">> Recording deploy in Datadog"))
         diff_url = f"\nDiff link: [Git Diff]({diff.url})"
         deploy_notification_text = (
             "Formplayer has been successfully deployed to "
@@ -154,6 +153,7 @@ def record_deploy_in_datadog(environment, diff, tdelta):
             '--alert_type', "success",
             show_command=False
         )
+
 
 def get_current_formplayer_version(environment):
     """Get version of currently deployed Formplayer by querying

@@ -3,6 +3,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import json
 import os
 import subprocess
+from collections import defaultdict
 from io import open
 
 from clint.textui import puts
@@ -169,6 +170,7 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
         'commcarehq_xml_post_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_POST_URLS_REGEX),
         'commcarehq_xml_querystring_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX),
         's3_blob_db_s3_bucket': environment.public_vars.get('s3_blob_db_s3_bucket'),
+        'release_bucket': environment.public_vars.get('release_bucket'),
     })
 
     context.update({
@@ -187,15 +189,59 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
             f.write(render_template(template_file, context, template_root))
 
 
-def compact_waf_regexes(patterns):
+def compact_waf_regexes(patterns, compactible_affixes=None, max_length=200):
     """
     Compact regexes into as few as possible regexes each of which is no longer
-    than 200 characters
+    than `max_length` characters
     """
+    compactible_affixes = COMPACTIBLE_AFFIXES if compactible_affixes is None else compactible_affixes
+    patterns_grouped_by_affix = defaultdict(list)
+    non_matching_patterns = []
+    for pattern in patterns:
+        for prefix, suffix in compactible_affixes:
+            if pattern.startswith(prefix) and pattern.endswith(suffix) and len(pattern) >= len(prefix + suffix):
+                patterns_grouped_by_affix[(prefix, suffix)].append(pattern[len(prefix):-len(suffix)])
+                break
+        else:
+            non_matching_patterns.append(pattern)
+
+    # compact patterns by common prefix/suffix
+    intermediate_compacted_regexes = [
+        f'{prefix}({regex}){suffix}'
+        for (prefix, suffix), patterns in patterns_grouped_by_affix.items()
+        for regex in compact_waf_regexes_simply(patterns, max_length=max_length-len(prefix + suffix) - 2)
+    ] + compact_waf_regexes_simply(non_matching_patterns, max_length=max_length)
+    # sort compacted patterns shortest to longest
+    intermediate_compacted_regexes.sort(key=lambda r: len(r))
+    # attempt to further compact where possible
+    final_compacted_regexes = []
+    while intermediate_compacted_regexes:
+        shortest = intermediate_compacted_regexes[0]
+        longest = intermediate_compacted_regexes[-1]
+        if len(shortest) + len(longest) + 1 > max_length or len(intermediate_compacted_regexes) == 1:
+            # the longest item can't get compacted any further
+            # (or there is only one left)
+            # so add it to the final list
+            final_compacted_regexes.append(intermediate_compacted_regexes.pop())
+        else:
+            # remove the shortest item and combine it with the longest item at the end of the list
+            intermediate_compacted_regexes.pop(0)
+            intermediate_compacted_regexes[-1] = f'{shortest}|{longest}'
+    return final_compacted_regexes
+
+
+COMPACTIBLE_AFFIXES = (
+    ('^/a/([\\w\\.:-]+)/', '$'),
+    ('^/formplayer/', '$'),
+    ('^/', '$'),
+)
+
+
+def compact_waf_regexes_simply(patterns, max_length=200):
     compacted_regexes = []
     regex_buffer = ''
     for pattern in patterns:
-        if len(regex_buffer) + len(pattern) + 1 <= 200:
+        if len(regex_buffer) + len(pattern) + 1 <= max_length:
             if regex_buffer:
                 regex_buffer += '|' + pattern
             else:

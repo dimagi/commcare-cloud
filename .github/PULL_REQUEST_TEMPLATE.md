@@ -1,4 +1,13 @@
 <!--- Provide a link to the ticket or document which prompted this change -->
 
-##### ENVIRONMENTS AFFECTED
+##### Environments Affected
 <!--- list which environments are affected by this change or None if this doesn't change any environment files -->
+
+##### Announce New Release
+<!-- 
+Review https://github.com/dimagi/commcare-cloud/tree/master/changelog#determining-whether-a-change-is-announce-worthy
+to determine if a changelog entry is necessary if not already created.
+-->
+<!-- Delete this section if the PR does not contain any new changelog entries -->
+- [ ] After merging, I will follow [these instructions](https://confluence.dimagi.com/display/saas/Announcing+changes+affecting+third+parties#Announcingchangesaffectingthirdparties-announcing)
+to announce a new commcare-cloud release. 

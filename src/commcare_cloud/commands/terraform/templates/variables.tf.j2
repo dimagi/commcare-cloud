@@ -28,7 +28,7 @@ data "aws_ami" "ubuntu_pro_bionic" {
 
   filter {
     name   = "name"
-    values = ["ubuntu-pro/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+    values = ["ubuntu-pro-server/images/hvm-ssd/ubuntu-bionic-18.04-amd64-pro-*"]
   }
 
   filter {
@@ -38,7 +38,6 @@ data "aws_ami" "ubuntu_pro_bionic" {
 
   owners = ["679593333241"] # Amazon Web Services
 }
-
 
 data "aws_ami" "ubuntu_bionic" {
   # Should match what is in
@@ -60,10 +59,24 @@ data "aws_ami" "ubuntu_bionic" {
   owners = ["099720109477"] # Canonical
 }
 
+data "aws_ami" "ubuntu_jammy" {
+  # Should match what is in
+  # https://cloud-images.ubuntu.com/locator/ec2/
+  # with search hvm:ebs-ssd jammy amd64
 
-variable "server_image" {
-  # Use 'hvm:ebs-ssd' AMIs from https://cloud-images.ubuntu.com/locator/ec2/
-  default = "{{ {'us-east-1': 'ami-07cf43e1798df5582', 'ap-south-1': 'ami-04242e05c1ebface0'}[region] }}"
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
 }
 
 variable "dns_zone_id" {}
@@ -109,3 +122,4 @@ variable "proxy_servers" {
 }
 
 variable "s3_blob_db_s3_bucket" {}
+variable "release_bucket" {}

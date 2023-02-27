@@ -16,19 +16,20 @@ resource aws_instance "server" {
     encrypted             = var.volume_encrypted
     volume_type           = var.volume_type
     delete_on_termination = true
+    tags = {
+      Name = "vol-${var.server_name}"
+      ServerName = var.server_name
+      Environment = var.environment
+      Group = var.group_tag
+      BackupPlan  = var.enable_cross_region_backup ? "BusinessContinuity" : null
+    }
   }
   lifecycle {
     ignore_changes = [user_data, key_name, root_block_device.0.delete_on_termination,
-      ebs_optimized, ami, volume_tags, iam_instance_profile]
+      ebs_optimized, ami, iam_instance_profile]
   }
   tags = {
     Name        = var.server_name
-    Environment = var.environment
-    Group = var.group_tag
-  }
-  volume_tags = {
-    Name = "vol-${var.server_name}"
-    ServerName = var.server_name
     Environment = var.environment
     Group = var.group_tag
   }
@@ -54,13 +55,7 @@ resource "aws_ebs_volume" "ebs_volume" {
     Group = var.group_tag
     VolumeType = "data"
     GroupDetail = "${var.group_tag}:data"
-  }
-   lifecycle {
-    ignore_changes = [
-      # temporarily ignore the "BackupPlan" tag until it's managed properly
-      tags,
-      tags.BackupPlan
-      ]
+    BackupPlan  = var.secondary_volume_enable_cross_region_backup ? "BusinessContinuity" : null
   }
 }
 

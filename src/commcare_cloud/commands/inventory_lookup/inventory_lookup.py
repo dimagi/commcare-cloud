@@ -7,9 +7,9 @@ import socket
 import subprocess
 import sys
 from inspect import isfunction
+from shlex import quote as shlex_quote
 
 from clint.textui import puts
-from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command, ask
 from commcare_cloud.commands.command_base import Argument, CommandBase
@@ -21,8 +21,7 @@ from ..terraform.aws import aws_sign_in, is_aws_env, is_ec2_instance_in_account,
 from ...alias import commcare_cloud
 
 from ...colors import color_error, color_notice, color_link
-from .getinventory import (get_monolith_address, get_server_address,
-                           split_host_group)
+from .getinventory import get_server_address, split_host_group
 
 
 class Lookup(CommandBase):
@@ -43,9 +42,9 @@ class Lookup(CommandBase):
         """),
     )
 
-    def lookup_server_address(self, args):
+    def lookup_server_address(self, args, allow_multiple=False):
         try:
-            return lookup_server_address(args.env_name, args.server)
+            return lookup_server_address(args.env_name, args.server, allow_multiple=allow_multiple)
         except Exception as e:
             self.parser.error("\n" + str(e))
 
@@ -54,13 +53,11 @@ class Lookup(CommandBase):
             sys.stderr.write(
                 "Ignoring extra argument(s): {}\n".format(unknown_args)
             )
-        print(self.lookup_server_address(args))
+        print(self.lookup_server_address(args, allow_multiple=True))
 
 
-def lookup_server_address(env_name, server):
-    if not server:
-        return get_monolith_address(env_name)
-    return get_server_address(env_name, server)
+def lookup_server_address(env_name, server, allow_multiple=False):
+    return get_server_address(env_name, server or "all", allow_multiple=allow_multiple)
 
 
 class _Ssh(Lookup):
@@ -90,7 +87,10 @@ class _Ssh(Lookup):
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         if not args.quiet:
             print_command(cmd)
-        return subprocess.call(cmd_parts, **({'env': env_vars} if env_vars else {}))
+        try:
+            return subprocess.call(cmd_parts, **({'env': env_vars} if env_vars else {}))
+        except KeyboardInterrupt:
+            return 1
 
     def get_address_tuple(self, args):
         address = self.lookup_server_address(args)

@@ -1,5 +1,5 @@
 account_alias: commcare-india
-terraform_version: '1.2'
+terraform_version: '1.3'
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "ap-south-1"
@@ -177,45 +177,45 @@ servers:
     group: elasticsearch
     os: bionic
 
-  - server_name: "es2-india"
+  - server_name: "es3-india"
     server_instance_type: "m5a.xlarge"
     network_tier: "db-private"
     az: "b"
     volume_size: 150
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: elasticsearch
-    os: ubuntu_pro_bionic
+    os: bionic
 
-  - server_name: "escoordinator1-india"
+  - server_name: "escoordinator4-india"
     server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "a"
     volume_size: 150
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: elasticsearch
-    os: ubuntu_pro_bionic
+    os: bionic
 
-  - server_name: "escoordinator2-india"
+  - server_name: "escoordinator5-india"
     server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "b"
     volume_size: 150
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: elasticsearch
-    os: ubuntu_pro_bionic
+    os: bionic
 
-  - server_name: "escoordinator3-india"
+  - server_name: "escoordinator6-india"
     server_instance_type: "t3.large"
     network_tier: "db-private"
     az: "c"
     volume_size: 150
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: elasticsearch
-    os: ubuntu_pro_bionic
+    os: bionic
 
   - server_name: "formplayer1-india"
     server_instance_type: "t3.xlarge"
@@ -278,17 +278,7 @@ servers:
     group: "postgresql"
     os: bionic
 
-  - server_name: "pgbouncer1-india"
-    server_instance_type: t3.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "postgresql"
-    os: ubuntu_pro_bionic
-
-  - server_name: "pgbouncer2-india"
+  - server_name: "pgbouncer3-india"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "b"
@@ -296,27 +286,37 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     group: "postgresql"
-    os: ubuntu_pro_bionic
+    os: bionic
 
-  - server_name: "rabbit_a3-india"
-    server_instance_type: t3.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: ubuntu_pro_bionic
-
-  - server_name: "rabbit_c4-india"
+  - server_name: "pgbouncer4-india"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "c"
     volume_size: 80
     volume_encrypted: yes
     volume_type: "gp3"
+    group: "postgresql"
+    os: bionic
+
+  - server_name: "rabbit_a5-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
     group: "rabbitmq"
-    os: ubuntu_pro_bionic
+    os: bionic
+
+  - server_name: "rabbit_c6-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "rabbitmq"
+    os: bionic
 
 proxy_servers:
   - server_name: "proxy_a0-india"
@@ -329,18 +329,28 @@ proxy_servers:
     group: proxy
     os: bionic
 
+  - server_name: "proxy_b0-india"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: proxy
+    os: bionic
+
 rds_instances:
   - identifier: "pgmain0-india"
     instance_type: "db.t3.large"
     storage: 500
     multi_az: true
-    engine_version: "10.17"
+    engine_version: "14.4"
 
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-india
     targets:
       - pgbouncer0-india
-      - pgbouncer1-india
+      - pgbouncer3-india
   - name: pgmain_nlb-india
     targets:
       - pgbouncer0-india
@@ -352,8 +362,8 @@ pgbouncer_nlbs:
       - pgbouncer0-india
   - name: pgshard_nlb-india
     targets:
-      - pgbouncer1-india
-      - pgbouncer2-india
+      - pgbouncer3-india
+      - pgbouncer4-india
 
 internal_albs:
   - name: "couch_alb-india"
@@ -366,9 +376,9 @@ internal_albs:
 
 elasticache_cluster:
   create: yes
-  cache_node_type: "cache.r5.large"
-  cache_engine_version: "6.x"
-  cache_prameter_group: "default.redis6.x"
+  cache_node_type: "cache.t4g.medium"
+  cache_engine_version: "7.0"
+  cache_prameter_group: "default.redis7"
   automatic_failover: true
   transit_encryption: false
   at_rest_encryption: true
@@ -378,6 +388,20 @@ elasticache_cluster:
   maintenance_window: "sun:00:30-sun:01:30"
   snapshot_retention: 7
   snapshot_window: "10:30-11:30"
+
+awsmq:
+  create: yes
+  broker_name: "india-mq-broker"
+  engine_type: "RabbitMQ"  
+  engine_version: "3.10.10"  
+  host_instance_type: "mq.m5.large"
+  deployment_mode: "CLUSTER_MULTI_AZ"  
+  apply_immediately: false
+  auto_minor_version_upgrade: false  
+  publicly_accessible: false
+  logs_general: true 
+  audit_log_enabled: false
+  encryption_enabled: false  
 
 r53_private_zone:
   create: yes

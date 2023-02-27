@@ -76,6 +76,11 @@
   stat: path="{{ code_home }}/localsettings.py"
   register: current_localsettings
 
+- name: allow git file transport
+  command: 'git config --global protocol.file.allow always'
+  become: yes
+  become_user: "{{ cchq_user }}"
+
 - name: Clone source repositories
   when: not current_localsettings.stat.exists
   block:
@@ -86,11 +91,6 @@
       - url: "{{ commcarehq_repository }}"
         version: "{{ commcarehq_version }}"
         requirements_path: "requirements/prod-requirements.txt"
-
-  - name: Clone additional source repositories
-    include_tasks: git_repository.yml
-    loop: "{{ git_repositories }}"
-    when: git_repositories
 
   - name: Link source to code_home
     become: true

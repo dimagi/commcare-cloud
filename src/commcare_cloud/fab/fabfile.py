@@ -33,13 +33,12 @@ import functools
 import os
 import pipes
 import posixpath
-from getpass import getpass
 
 from fabric import utils
 from fabric.api import env, execute, parallel, roles, sudo, task
 from fabric.colors import blue, magenta, red
 from fabric.context_managers import cd
-from fabric.contrib import console, files
+from fabric.contrib import console
 from fabric.operations import require
 from github import GithubException
 
@@ -47,9 +46,8 @@ from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
 from commcare_cloud.github import github_repo
 from .checks import check_servers
-from .const import ROLES_ALL_SERVICES, ROLES_ALL_SRC, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
-from .exceptions import PreindexNotFinished
-from .operations import airflow, db, formplayer
+from .const import ROLES_ALL_SERVICES, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
+from .operations import db
 from .operations import release, staticfiles, supervisor
 from .utils import (
     cache_deploy_state,
@@ -115,9 +113,6 @@ def _setup_path():
 
     env.services = posixpath.join(env.code_root, 'services')
     env.db = '%s_%s' % (env.project, env.deploy_env)
-    env.airflow_home = posixpath.join(env.home, 'airflow')
-    env.airflow_env = posixpath.join(env.airflow_home, 'env')
-    env.airflow_code_root = posixpath.join(env.airflow_home, 'pipes')
 
 
 def load_env():
@@ -173,7 +168,6 @@ def env_common():
     celery = servers['celery']
     # if no server specified, just don't run pillowtop
     pillowtop = servers.get('pillowtop', [])
-    airflow = servers.get('airflow', [])
 
     deploy = servers.get('deploy', servers['webworkers'])[:1]
 
@@ -197,13 +191,13 @@ def env_common():
         'staticfiles': staticfiles,
         'staticfiles_primary': [staticfiles[0]],
         'lb': [],
+        # 'deploy' contains a single server, one that commcare-hq is deployed to.
         # having deploy here makes it so that
         # we don't get prompted for a host or run deploy too many times
         'deploy': deploy,
         # fab complains if this doesn't exist
         'django_monolith': [],
         'control': servers.get('control')[:1],
-        'airflow': airflow
     }
     env.roles = ['deploy']
     env.hosts = env.roledefs['deploy']
@@ -246,16 +240,14 @@ def send_email(subject, message, use_current_release=False):
 
 @task
 def kill_stale_celery_workers():
-    """
-    Kills celery workers that failed to properly go into warm shutdown
-    """
-    execute(release.kill_stale_celery_workers)
+    """OBSOLETE use 'kill-stale-celery-workers' instead"""
+    print(kill_stale_celery_workers.__doc__)
 
 
 @task
 def rollback_formplayer():
-    execute(formplayer.rollback_formplayer)
-    execute(supervisor.restart_formplayer)
+    print(red("This command is now implemented with ansible:"))
+    print("cchq {} ansible-playbook rollback_formplayer.yml --tags=rollback".format(env.deploy_env))
 
 
 def parse_int_or_exit(val):
@@ -306,27 +298,10 @@ def _setup_release(keep_days=2, full_cluster=True):
     :param keep_days: The number of days to keep this release before it will be purged
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
-    for repo in env.ccc_environment.meta_config.git_repositories:
-        try:
-            repo.deploy_ref  # noqa
-        except GithubException as e:
-            utils.abort(
-                "\nUnable to access Git repository. Please check your authentication credentials.\n"
-                "Error: {}\n"
-                "Repository: {}\n".format(e.data["message"], repo.url)
-            )
-
     execute_with_timing(release.create_code_dir(full_cluster))
-
     update_code = release.update_code(full_cluster)
     execute_with_timing(update_code, env.deploy_ref)
-    for repo in env.ccc_environment.meta_config.git_repositories:
-        var_name = "{}_code_branch".format(repo.name)
-        repo_deploy_ref = repo.deploy_ref(getattr(env, var_name, None))
-        execute_with_timing(update_code, repo_deploy_ref, repo.relative_dest, repo.url, repo.deploy_key)
-
     execute_with_timing(release.update_virtualenv(full_cluster))
-
     execute_with_timing(copy_release_files, full_cluster)
 
     if keep_days > 0:
@@ -334,51 +309,6 @@ def _setup_release(keep_days=2, full_cluster=True):
 
     print(blue("Your private release is located here: "))
     print(blue(env.code_root))
-
-
-@task
-def apply_patch(patchfile=None):
-    """
-    Used to apply a git patch created via `git format-patch`. Usage:
-
-        fab <env> apply_patch:patchfile=/path/to/patch
-
-    Note: Only use this when absolutely necessary. Normally we should use regular
-    deploy. This is only used for patching when we do not have access to the Internet.
-    """
-    if not patchfile:
-        print(red("Must specify patch filepath"))
-        exit()
-    execute(release.apply_patch, patchfile)
-    silent_services_restart(use_current_release=True)
-
-
-@task
-def reverse_patch(patchfile=None):
-    """
-    Used to reverse a git patch created via `git format-patch`. Usage:
-
-        fab <env> reverse_patch:patchfile=/path/to/patch
-
-    Note: Only use this when absolutely necessary. Normally we should use regular
-    deploy. This is only used for patching when we do not have access to the Internet.
-    """
-    if not patchfile:
-        print(red("Must specify patch filepath"))
-        exit()
-    execute(release.reverse_patch, patchfile)
-    silent_services_restart(use_current_release=True)
-
-
-def conditionally_stop_pillows_and_celery_during_migrate():
-    """
-    Conditionally stops pillows and celery if any migrations exist
-    """
-    if all(execute(db.migrations_exist).values()):
-        execute_with_timing(supervisor.stop_pillows)
-        execute(db.set_in_progress_flag)
-        execute_with_timing(supervisor.stop_celery_tasks)
-    execute_with_timing(db.migrate)
 
 
 def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
@@ -396,14 +326,6 @@ def _deploy_without_asking(skip_record):
     try:
         for index, command in enumerate(ONLINE_DEPLOY_COMMANDS):
             deploy_checkpoint(index, command.__name__, execute_with_timing, command)
-    except PreindexNotFinished:
-        send_email(
-            " You can't deploy to {} yet. There's a preindex in process.".format(env.env_name),
-            ("Preindexing is taking a while, so hold tight "
-             "and wait for an email saying it's done. "
-             "Thank you for using AWESOME DEPLOY.")
-        )
-        raise
     except Exception:
         execute_with_timing(
             send_email,
@@ -411,8 +333,6 @@ def _deploy_without_asking(skip_record):
             "fab {environment} deploy:resume=yes.".format(environment=env.env_name),
             traceback_string()
         )
-        # hopefully bring the server back to life
-        silent_services_restart()
         raise
     else:
         execute(check_servers.perform_system_checks)
@@ -426,22 +346,6 @@ def _deploy_without_asking(skip_record):
 @task
 def update_current(release=None):
     execute(release.update_current, release)
-
-
-@task
-@roles(ROLES_ALL_SRC)
-@parallel
-def unlink_current():
-    """
-    Unlinks the current code directory. Use with caution.
-    """
-    message = 'Are you sure you want to unlink the current release of {env.deploy_env}?'.format(env=env)
-
-    if not console.confirm(message, default=False):
-        utils.abort('Deployment aborted.')
-
-    if files.exists(env.code_current, use_sudo=True):
-        sudo('unlink {}'.format(env.code_current))
 
 
 def copy_release_files(full_cluster=True):
@@ -503,23 +407,15 @@ def clean_releases(keep=3):
 
 @task
 @roles(['deploy'])
-def manage(cmd):
-    """
-    run a management command
-
-    usage:
-        fab <env> manage:<command>
-    e.g.
-        fab production manage:'prune_couch_views --noinput'
-    """
-    _require_target()
-    with cd(env.code_current):
-        sudo(f'{env.virtualenv_current}/bin/python manage.py {cmd}')
+def manage(cmd=None):
+    """OBSOLETE use 'django-manage' instead"""
+    exit(manage.__doc__)
 
 
 @task
 def deploy_commcare(resume='no', skip_record='no'):
-    """Preindex and deploy if it completes quickly enough, otherwise abort
+    """Deploy CommCare HQ
+
     fab <env> deploy_commcare:resume=yes  # resume from previous deploy
     fab <env> deploy_commcare:skip_record=yes  # skip record_successful_release
     """
@@ -607,18 +503,6 @@ def start_pillows():
     execute(supervisor.start_pillows, True)
 
 
-@task
-def reset_mvp_pillows():
-    _require_target()
-    _setup_release()
-    mvp_pillows = [
-        'MVPFormIndicatorPillow',
-        'MVPCaseIndicatorPillow',
-    ]
-    for pillow in mvp_pillows:
-        reset_pillow(pillow)
-
-
 @roles(ROLES_PILLOWTOP)
 def reset_pillow(pillow):
     _require_target()
@@ -637,17 +521,14 @@ def reset_pillow(pillow):
 
 ONLINE_DEPLOY_COMMANDS = [
     _setup_release,
-    db.preindex_views,
-    db.ensure_preindex_completion,
     db.ensure_checkpoints_safe,
     staticfiles.yarn_install,
     staticfiles.version_static,     # run after any new bower code has been installed
     staticfiles.collectstatic,
     staticfiles.compress,
     staticfiles.update_translations,
-    conditionally_stop_pillows_and_celery_during_migrate,
+    db.migrate,
     db.create_kafka_topics,
-    db.flip_es_aliases,
     staticfiles.pull_manifest,
     staticfiles.pull_staticfiles_cache,
     release.clean_releases,
@@ -656,23 +537,19 @@ ONLINE_DEPLOY_COMMANDS = [
 
 @task
 def check_status():
-    env.user = 'ansible'
-    env.sudo_user = 'root'
-    env.password = getpass('Enter the password for the ansbile user: ')
+    """OBSOLETE replaced by
 
-    execute(check_servers.ping)
-    execute(check_servers.postgresql)
-    execute(check_servers.elasticsearch)
+    commcare-cloud <env> ping all
+    commcare-cloud <env> service postgresql status
+    commcare-cloud <env> service elasticsearch status
+    """
+    exit(check_status.__doc__)
 
 
 @task
 def perform_system_checks():
-    execute(check_servers.perform_system_checks, True)
-
-
-@task
-def deploy_airflow():
-    execute(airflow.update_airflow)
+    """OBSOLETE use 'perform-system-checks' instead"""
+    exit(perform_system_checks.__doc__)
 
 
 def make_tasks_for_envs(available_envs):

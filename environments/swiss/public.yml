@@ -12,6 +12,18 @@ elastcsearch_backup_days: 2
 redis_engine_version: 6.2.4
 redis_maxmemory: 4gb
 
+
+kafka_version: 3.2.3
+kafka_scala_version: 2.13
+kafka_download_sha512: sha512:736A129823B058DC10788D0893BDE47B6F39B9E4972F9EAC2D5C9E85E51E477344C6F1E1EBD126CE34D5FD430EB07E55FDD60D60CB541F1D48655C0EBC0A4778
+kafka_inter_broker_protocol_version: 3.2
+kafka_log_message_format_version: 3.2
+
+zookeeper_version: 3.7.1
+zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
+
+formplayer_java_version: "{{ java_17_bin_path }}/java"
+
 ssh_allow_password: False
 
 backup_blobdb: True
@@ -100,7 +112,6 @@ localsettings:
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
-  CLOUDCARE_BASE_URL: http://localhost:9010
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"

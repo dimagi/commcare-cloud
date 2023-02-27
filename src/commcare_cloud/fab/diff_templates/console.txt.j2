@@ -16,6 +16,29 @@ New version details:
 {{ mgs|warning }}
 {%- endfor %}
 
+{%- if changelogs.error -%}
+Changelogs:
+    Please review any pending changelogs from https://commcare-cloud.readthedocs.io/en/latest/ and make sure that these are applied on your environment before deploying to avoid getting your environment into a broken state.
+
+{%- else -%}
+Changelogs:
+    There have been some changelogs since last deploy, you must make sure that these are applied on your environment before deploying to avoid getting your environment into a broken state.
+
+{% for log in changelogs.changelogs -%}
+        {{ log }}
+{% endfor %}
+{%- endif %}
+
+{%- if show_maintenance_updates_on_deploy and not maintenance_prs.error and maintenance_prs.maintenance_prs -%}
+Be prepared for next deploy cycle:
+
+    There are some maintenance changelogs that must be performed within next 3/6 weeks. Please review below Pull Requests and associated changelogs to be up to date.
+
+{% for pr in maintenance_prs.maintenance_prs -%}
+        {{ pr }}
+{% endfor %}
+{%- endif %}
+
 {%- if pr_infos -%}
 List of PRs since last deploy:
 {% for info in pr_infos -%}
@@ -27,6 +50,16 @@ List of PRs since last deploy:
 You are about to deploy the following PR(s), which will trigger a reindex or migration.
 Click the URL for additional context.
 {% for info in prs_by_label.get("reindex/migration") -%}
+{{ render_pr(info) }}
+{% endfor %}
+{%- endif %}
+
+{%- if show_maintenance_updates_on_deploy and prs_by_label and (prs_by_label.get("migration-maintenance") or prs_by_label.get("breaking-maintenance")) -%}
+Attention! Predeploy Maintenance Required:
+    You are about to deploy the following PR(s), which have manual maintenance that must be performed before proceeding with this deploy. Please review them and associated changelogs and make sure these are applied before deploying.
+
+    Click the URL for additional context.
+{% for info in prs_by_label.get("migration-maintenance", []) + prs_by_label.get("breaking-maintenance", []) -%}
 {{ render_pr(info) }}
 {% endfor %}
 {%- endif %}

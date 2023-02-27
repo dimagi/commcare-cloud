@@ -1,9 +1,9 @@
 How to Estimate Infrastructure Sizing
 =====================================
 
-CommCareHQ has a distributed architecture and each service can be scaled horizontally as more users are added to the project. Gradual scaling by adding resources as and when needed is the best way to scale a CommCareHQ project. This works well in cloud environments where resources can be procured instantaneously. But this doesn't work well when doing on-premise hosting where the infrastructure is bought one time exclusively for the project and there isn't a flexibility to gradually add resources. So, a way to estimate the infrastructure required for a given number of users becomes necessary.
+CommCare HQ has a distributed architecture and each service can be scaled horizontally as more users are added to the project. Gradual scaling by adding resources as and when needed is the best way to scale a CommCare HQ project. This works well in cloud environments where resources can be procured instantaneously. But this doesn't work well when doing on-premise hosting where the infrastructure is bought one time exclusively for the project and there isn't a flexibility to gradually add resources. So, a way to estimate the infrastructure required for a given number of users becomes necessary.
 
-Given that CommCareHQ is a complex distributed application, estimating infrastructure sizing for a given number of users is a complex task, and it's often more of an art than science as it requires keen observation of resource usage at different points of load for a given number of users.
+Given that CommCare HQ is a complex distributed application, estimating infrastructure sizing for a given number of users is a complex task, and it's often more of an art than science as it requires keen observation of resource usage at different points of load for a given number of users.
 
 commcare_resource_model
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,7 +21,7 @@ One limitation of this tool or more correctly the limitation of the sizing metho
 How to use commcare_resource_model
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Note that commcare_resource_model can be used to estimate sizing only when a baseline usage and load data is available after CommCareHQ has been used for a given number of users. It can't be used for estimating sizing for a new project. To understand what infrastructure you need for a new project please refer to :ref:`sizing-buckets`.
+Note that commcare_resource_model can be used to estimate sizing only when a baseline usage and load data is available after CommCare HQ has been used for a given number of users. It can't be used for estimating sizing for a new project. To understand what infrastructure you need for a new project please refer to :ref:`sizing-buckets`.
 
 The general process for using commcare_resource_model is below.
 

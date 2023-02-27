@@ -11,7 +11,7 @@ pgbouncer_override:
   pgbouncer_reserve_pool: 5
 
 postgres_override:
-  postgresql_version: '10'
+  postgresql_version: '14'
   postgresql_max_connections: 300
   postgresql_hba_entries:
     # required for backup
@@ -33,7 +33,7 @@ dbs:
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_hosts:
       - pgbouncer0
-      - pgbouncer1
+      - pgbouncer3
   ucr:
     pgbouncer_endpoint: pgucr_nlb
     pgbouncer_hosts:
@@ -54,43 +54,37 @@ dbs:
         shards: [0, 204]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer1
-          - pgbouncer2
+          - pgbouncer3
+          - pgbouncer4
       p2:
         shards: [205, 409]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer1
-          - pgbouncer2
+          - pgbouncer3
+          - pgbouncer4
       p3:
         shards: [410, 614]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer1
-          - pgbouncer2
+          - pgbouncer3
+          - pgbouncer4
       p4:
         shards: [615, 819]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer1
-          - pgbouncer2
+          - pgbouncer3
+          - pgbouncer4
       p5:
         shards: [820, 1023]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer1
-          - pgbouncer2
+          - pgbouncer3
+          - pgbouncer4
   custom:
     - django_alias: aaa-data
       name: aaa-data
       django_migrate: True  # AAA dashboard models are stored here
       pgbouncer_endpoint: pgshard_nlb
       pgbouncer_hosts:
-        - pgbouncer1
-        - pgbouncer2
-    - name: airflow
-      django_migrate: False
-      pgbouncer_endpoint: pgshard_nlb
-      pgbouncer_hosts:
-        - pgbouncer1
-        - pgbouncer2
+        - pgbouncer3
+        - pgbouncer4

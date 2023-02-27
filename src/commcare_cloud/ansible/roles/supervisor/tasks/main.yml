@@ -1,12 +1,6 @@
 ---
-
-- name: remove supervisor 3.0b
-  apt: name=supervisor state=absent
-  become: yes
-
-- name: install supervisor 4.0.4
-  pip: name=supervisor state=present version=4.0.4
-  become: yes
+- name: install supervisor
+  pip: name=supervisor state=present version=4.2.5
 
 - name: link supervisor
   file:
@@ -16,23 +10,12 @@
   with_items:
     - supervisord
     - supervisorctl
-  become: yes
-
-- name: find supervisord path
-  shell: 'which supervisord'
-  register: which_supervisord
-  changed_when: false
-  failed_when: which_supervisord.rc != 0 and which_supervisord.rc != 1
-  check_mode: no
-  tags:
-    - after-reboot
 
 - name: check for sysvinit conf
   stat: path=/etc/init.d/supervisor
   register: init_d_conf
 
 - name: service stop supervisor
-  become: yes
   service: name=supervisor state=stopped
   when: init_d_conf.stat.exists
 
@@ -53,27 +36,18 @@
 
 - name: configure supervisor
   template: src=supervisord.conf.j2 dest=/etc/supervisord.conf
-  become: yes
-
-- name: Add Upstart Conf
-  become: yes
-  template:
-    src: supervisord.upstart.conf.j2
-    dest: /etc/init/supervisord.conf
-  when: ansible_distribution_version == '14.04'
-  register: service_conf
 
 - name: Add Systemd Conf
-  become: yes
   template:
     src: supervisord.systemd.service.j2
     dest: /etc/systemd/system/supervisord.service
-  when: ansible_distribution_version == '18.04'
   register: service_conf
 
 - name: stop supervisor to pick up configuration changes
-  become: yes
   service: name=supervisord state=stopped
+  register: result
+  failed_when: result.get("rc", -1) > 1
+  changed_when: result.get("rc") == 0
   when: service_conf.changed
 
 - name: pkill supervisord if run by cchq
@@ -87,8 +61,6 @@
   when: service_conf.changed
 
 - name: start and enable supervisord
-  become: yes
   service: name=supervisord enabled=yes state=started
-  when: which_supervisord.stdout
   tags:
     - after-reboot

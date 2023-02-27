@@ -157,6 +157,10 @@ BIGCOUCH = '{{ localsettings.BIGCOUCH }}'
 BIGCOUCH_QUORUM_COUNT = '{{ localsettings.BIGCOUCH_QUORUM_COUNT }}'
 {% endif %}
 
+{% if 'COMMCARE_ANALYTICS_HOST' in localsettings %}
+COMMCARE_ANALYTICS_HOST = '{{ localsettings.COMMCARE_ANALYTICS_HOST }}'
+{% endif %}
+
 {% if 'COUCH_CACHE_DOCS' in localsettings %}
 COUCH_CACHE_DOCS = '{{ localsettings.COUCH_CACHE_DOCS }}'
 {% endif %}
@@ -261,10 +265,6 @@ RUN_CASE_SEARCH_PILLOW = {{ localsettings.RUN_CASE_SEARCH_PILLOW }}
 {% endif %}
 {% if 'RUN_UNKNOWN_USER_PILLOW' in localsettings %}
 RUN_UNKNOWN_USER_PILLOW = {{ localsettings.RUN_UNKNOWN_USER_PILLOW }}
-{% endif %}
-
-{% if 'CASE_ES_DROP_FORM_FIELDS' in localsettings %}
-CASE_ES_DROP_FORM_FIELDS = {{ localsettings.CASE_ES_DROP_FORM_FIELDS }}
 {% endif %}
 
 {% if BITLY_OAUTH_TOKEN %}
@@ -705,8 +705,6 @@ BASE_ADDRESS = '{{ SITE_HOST }}'
 J2ME_ADDRESS = '{{ localsettings.J2ME_ADDRESS }}'
 {% endif %}
 
-CLOUDCARE_BASE_URL = '{{ localsettings.get('CLOUDCARE_BASE_URL', '') }}'
-
 EMAIL_USE_TLS = {{ localsettings.EMAIL_USE_TLS }}
 
 BANK_ROUTING_NUMBER_ACH = '{{ BANK_ROUTING_NUMBER_ACH }}'
@@ -1013,11 +1011,6 @@ ES_XFORM_INDEX_NAME = '{{ localsettings.ES_XFORM_INDEX_NAME }}'
 {% if localsettings.ES_CASE_SEARCH_INDEX_NAME is defined %}
 ES_CASE_SEARCH_INDEX_NAME = '{{ localsettings.ES_CASE_SEARCH_INDEX_NAME }}'
 {% endif %}
-
-{% if localsettings.ES_XFORM_DISABLE_ALL is defined %}
-ES_XFORM_DISABLE_ALL = {{ localsettings.ES_XFORM_DISABLE_ALL }}
-{% endif %}
-
 
 {% if localsettings.USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER is defined %}
 USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER = {{ localsettings.USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER }}

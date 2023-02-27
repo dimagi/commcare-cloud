@@ -7,6 +7,119 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2023-01-10** [Configure Java 17 for Formplayer](0069-configure-java-17-for-formplayer.md)
+In preparation for the release of Formplayer Java 17 version, we have shipped a few infrastructure changes through Commcare Cloud. 
+At this point, the ask to those maintaining CommCare instances is to follow the steps below to configure Java 17 for Formplayer.
+
+
+---
+#### **2023-01-10** [Install Dart Sass as npm global dependency in preparation of Bootstrap upgrade](0068-install-dart-sass.md)
+Install Dart Sass as global NPM library. 
+
+
+---
+#### **2022-12-20** [Dropping support for 3.6](0067-dropping-3.6-support.md)
+Commcare-cloud will no longer attempt to support Python 3.6. We strongly
+encourage you to follow the steps below to upgrade to Python 3.10 if you have
+not done so already.
+
+
+---
+#### **2022-12-13** [remove-unused-elastic-settings](0066-remove-unused-elastic-settings.md)
+CommCareHQ has two settings (`CASE_ES_DROP_FORM_FIELDS` and
+`ES_XFORM_DISABLE_ALL`) that were created several years ago for tuning
+Elasticsearch in a specific environment which no longer exists. This change
+removes support for those settings and the application logic that existed for
+them. We do not expect this to impact any self-hosted environments, but it's
+prudent to confirm.
+
+
+---
+#### **2022-12-13** [Populate a new field for Data Forwarders](0065-Populate_repeater_names.md)
+Populate a new field for all Data Forwarders (repeaters).
+
+This is optional, but is recommended to do for all environments where Data Forwarders are being used. A migration
+will be added in the future, which will automatically apply these changes during a code deploy if they have not
+yet been applied. If there are many Data Forwarders, it will slow down the deploy process.
+
+
+---
+#### **2022-11-28** [New script added for virtualenv activation](0064-new-script-for-venv-activation.md)
+Instructions to resolve this issue connecting to remote machines:
+"/home/<user>/commcare-cloud/control/activate_venv.sh: No such file or directory"
+
+
+---
+#### **2022-11-11** [Backfill SMS event data for API performance](0063-backfill_sms_event_data_for_api_performance.md)
+Backfill data in the `sms_smssubevent` table to improve the performance of the 'messaging-event' API.
+
+This operation is only required if your environment is using SMS or Email workflows. Furthermore,
+an automatic migration will be added to CommCare in the future which will apply these changes
+during a code deploy if they have not already been applied.
+
+
+---
+#### **2022-11-08** [kafka-upgrade-to-3.2.3](0062-kafka-upgrade-to-3.2.3.md)
+Run command to upgrade Kafka version  to 3.2.3 
+Update Scala version to recommended version 2.13 
+
+
+---
+#### **2022-11-08** [Install Elasticsearch Phonetic Analysis Plugin](0061-install-elasticsearch-phonetic-analysis-plugin.md)
+The Elasticsearch 'case search' index now requires the [phonetic analysis][plugin docs] plugin
+to be install in Elasticsearch.
+
+[plugin docs]: https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/analysis-phonetic.html
+
+
+---
+#### **2022-11-07** [Upgrade to Python 3.10](0060-upgrade-to-python-3-10.md)
+Follow these steps to install and use Python 3.10 on your control machine(s) by December 19th, 2022.
+
+
+---
+#### **2022-11-01** [postgres-v14-upgrade](0059-postgres-v14-upgrade.md)
+Postgres upgrade is recommended to be upgraded in two steps,upgrade from v10 to v13 and then to v14. 
+This change upgrade PostgreSQL from 10 to 13 and then to 14 version.
+As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and libraries we have updated PostgreSQL from version 10 to version 14. 
+
+
+---
+#### **2022-10-30** [RabbitMQ upgrade to 3.10.7 version](0058-RabbitMQ_upgrade_to_3.10.7_version.md)
+This change upgrade RabbitMQ 3.10.7 version. 
+The current installed RabbitMQ version 3.8.5 is already End of Life. 
+So, we strongly recommend applying this change. 
+
+
+---
+#### **2022-09-15** [Update Prometheus variable](0057-update-prometheus-variable.md)
+If using prometheus, run `update-config` to apply changes to prometheus environment variable.
+
+
+---
+#### **2022-09-15** [upgrade-kafka_3.2.0](0056-upgrade-kafka_3.2.0.md)
+Run command to upgrade Kafka version which 2.6.1 to 3.2.0
+Update Scala version to recommended version 2.13
+
+
+---
+#### **2022-09-14** [bootstrap-userrole-auditing](0055-bootstrap-userrole-auditing.md)
+Run command to create bootstrap audit records for existing user role records.
+
+
+---
+#### **2022-09-05** [upgrade-zookeeper_3.7.1](0054-upgrade-zookeeper_3.7.1.md)
+Run command to upgrade Zookeeper version which 3.2.0 to 3.7.1
+
+
+---
+#### **2022-08-23** [upgrade-redis](0053-upgrade-redis.md)
+This change upgrade Redis from 4.0.8 to 6.x version.
+As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and
+libraries we have updated Redis from version 4.0.8 to version 6.2.
+
+
+---
 #### **2022-08-19** [upgrade-ansible](0052-upgrade-ansible.md)
 Run command to uninstall older ansible version which 2.9.26 and install 4.2.0
 

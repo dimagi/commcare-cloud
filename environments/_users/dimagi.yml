@@ -5,28 +5,33 @@ dev_users:
     - aphulera
     - biyeun
     - cellowitz
+    - chrissmit
     - csmit
     - ctsims
     - czue
     - dmiller
-    - dochoa
     - droberts
+    - dviggiano
+    - emapson
     - esoergel
     - gherceg
     - jmiller
     - jschweers
+    - jtang
     - matthewriley
     - mlee
     - mkangia
     - mperosa
     - nhooper
-    - rpietersen
+    - pverma
     - sgoyal
     - skelly
     - sravfeyn
     - schauhan
     - sherbers
     - rcostello
+    - zeng
+    - ayadav
   absent:
     - astone
     - wpride
@@ -44,5 +49,7 @@ dev_users:
     - dchung
     - cstahl
     - rnegi
+    - rpietersen
     - spokhriyal
     - frener
+    - dochoa

@@ -1,7 +1,7 @@
 Supporting Your Users
 ================
 
-The following guide explains how to set up processes/systems in order to provide support to various users who may interact with your CommCareHQ instance such as mobile users, application building teams and reporting teams etc.
+The following guide explains how to set up processes/systems in order to provide support to various users who may interact with your CommCare HQ instance such as mobile users, application building teams and reporting teams etc.
 
 ---------------------------
 Why set up a Support System
@@ -11,11 +11,11 @@ CommCare is a powerful technology that caters to programs of different nature fr
 
 Identifying stakeholders
 ~~~~~~~~~~~~~~~~~~~~~~~~
-Projects using CommCare often have stakeholders who use and interact with CommCareHQ in different ways and they often have varied levels of technical expertise. Some examples of the stakeholders are community health / frontline workers (CHWs / FLWs), supervisors who monitor the FLWs, Monitoring and Evaluation (M&E) staff and data teams that deal with the data analytics and reporting side of the program, project team that is managing the CommCareHQ project setup and high level program staff. These users interact with CommCare mobile and server in different ways and will need different types of support.
+Projects using CommCare often have stakeholders who use and interact with CommCare HQ in different ways and they often have varied levels of technical expertise. Some examples of the stakeholders are community health / frontline workers (CHWs / FLWs), supervisors who monitor the FLWs, Monitoring and Evaluation (M&E) staff and data teams that deal with the data analytics and reporting side of the program, project team that is managing the CommCare HQ project setup and high level program staff. These users interact with CommCare mobile and server in different ways and will need different types of support.
 
 Below are some example support issues that might come up from various stakeholders of the program
 
-* An FLW not being able to sync or submit data to CommCareHQ server
+* An FLW not being able to sync or submit data to CommCare HQ server
 * A project team member not seeing upto data on system
 
 When setting up a support system we recommend you to do an exercise of identifying the stakeholders in your program and think through the program/technical workflows that these stakeholders would be part of and the potential issues that they might encounter.
@@ -49,7 +49,7 @@ Support channels are required to enable communication between the end users faci
   * An FLW/CHW should be trained to use ‘Report an Issue’ in the CommCare mobile.
   * When not able to use the app CHW/FLW should have an offline mechanism of reporting issues to supervisors or higher level program staff for support.
 
-* ‘Report an Issue’ button on CommCareHQ Server
+* ‘Report an Issue’ button on CommCare HQ Server
 * Support Email: Higher level program staff should have access to a Direct support email address that auto creates tickets in a helpdesk app.
 * An issue tracker CommCare application that has ‘Raise an Issue’ module which tracks the issues for all FLWs for supervisor’s reference
 
@@ -75,7 +75,7 @@ Basic Support Process and Tools
 At a minimum, we recommend the below setup for handling support.
 
 * Set up a helpdesk app such as Jira, Zendesk or other open source helpdesk app. Or if you are already using a project management software, you could use that instead.
-* Set up a dedicated support email where all support queries can be sent to either via directly or via Report an Issue button on CommCareHQ. Configure this in your server using `support email <https://github.com/dimagi/commcare-cloud/blob/master/environments/staging/public.yml#L53/>`_ param in your environment.
+* Set up a dedicated support email where all support queries can be sent to either via directly or via Report an Issue button on CommCare HQ. Configure this in your server using `support email <https://github.com/dimagi/commcare-cloud/blob/master/environments/staging/public.yml#L53/>`_ param in your environment.
 * Integrate the helpdesk software with the support email such that all the incoming emails create individual tickets in the helpdesk software.
 * Helpdesk software should have below fields
 
@@ -148,7 +148,7 @@ Process for P1/P2
    d) Response manager or support lead announces the issue in the internal and external channels to let various stakeholders be informed about the issue. Various mechanisms exist to facilitate this
 
       i) Dedicated internal/external chat groups
-      ii) CommCareHQ Alerts Page (<yourhqserver.com>/alerts) has an alerts page where a new banner can be set up if the site is not down.
+      ii) CommCare HQ Alerts Page (<yourhqserver.com>/alerts) has an alerts page where a new banner can be set up if the site is not down.
       iii) Tools such as statuspage.io
 
 2. Manage the issue

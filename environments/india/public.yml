@@ -24,6 +24,7 @@ citus_postgresql_port: 5432
 
 aws_region: 'ap-south-1'
 
+formplayer_java_version: "{{ java_17_bin_path }}/java"
 formplayer_sensitive_data_logging: true
 
 nofile_limit: 65536
@@ -36,7 +37,7 @@ filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
     tags: nginx-timing
 
-kafka_version: 3.2.0
+kafka_version: 3.2.3
 kafka_scala_version: 2.13
 kafka_download_sha512: 36A129823B058DC10788D0893BDE47B6F39B9E4972F9EAC2D5C9E85E51E477344C6F1E1EBD126CE34D5FD430EB07E55FDD60D60CB541F1D48655C0EBC0A4778
 kafka_inter_broker_protocol_version: 3.2
@@ -48,8 +49,8 @@ zookeeper_version: 3.7.1
 zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
 zookeeper_cluster: True
 
-erlang: 1:23.0.2-2
-rabbitmq_version: 3.8.5-1
+erlang: 1:24.3.3-1
+rabbitmq_version: 3.10.13-1
 
 #RabbitMQ Broker URL
 BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
@@ -59,6 +60,8 @@ AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 control_machine_ip: 10.162.36.196
 
 run_websockets_wsgi: True
+
+show_maintenance_updates_on_deploy: False
 
 couch_dbs:
   default:
@@ -131,6 +134,7 @@ localsettings:
   ENABLE_SOFT_ASSERT_EMAILS: True
   ENFORCE_SSO_LOGIN: True
   ELASTICSEARCH_MAJOR_VERSION: 2
+  ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-14"
   IS_DIMAGI_ENVIRONMENT: True
   EULA_COMPLIANCE: True
   HQ_INSTANCE: 'india'

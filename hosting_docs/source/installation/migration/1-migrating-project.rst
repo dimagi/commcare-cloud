@@ -14,7 +14,7 @@ reach out to Dimagi or file a support request.
 There are two components to migrate an individual project.
 
 1. Migrating the project specific data to the new environment. This is done using export and import data functionalities
-   in CommCareHQ.
+   in CommCare HQ.
 2. Switching the mobile devices with CommCare apps to use the new environment. This is done using a interim proxy URL
    for mobile devices.
 
@@ -127,6 +127,10 @@ will be unable to submit forms or sync with the server.
 
 * Transfer these two files to the new environment.
 
+.. note::
+  If you are not able to use your own domain for a test run and would like dump data for a test domain for practising or testing, please contact us via https://forum.dimagi.com/c/developers/ with subject "Request for test domain dump data for migration testing" and mention this page. A dimagi developer will provide you above data for any test/QA domains (casesearch, ccqa, dataregistry, qateam, ben-test, qa-erm-v1-downstream1) from https://staging.commcarehq.org.
+
+
 3. Prepare the new environment to be populated
 ----------------------------------------------
 
@@ -136,7 +140,7 @@ will be unable to submit forms or sync with the server.
 
 If you have performed any tests on your new environment that has created test data, to delete 
 the data you can rebuild your environment using 
-:ref:`reference/howto/wipe_persistent_data:How To Rebuild a CommCareHQ environment` 
+:ref:`reference/howto/wipe_persistent_data:How To Rebuild a CommCare HQ environment`
 before importing data from the old environment.
 
 

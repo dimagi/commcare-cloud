@@ -2,6 +2,8 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 import re
+import shlex
+import sys
 from collections import Counter
 from datetime import datetime
 from io import open
@@ -12,7 +14,6 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.parsing.utils.yaml import from_yaml
 from ansible.vars.manager import VariableManager
 from memoized import memoized, memoized_property
-from six.moves import map
 
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import EnvironmentException
@@ -88,13 +89,8 @@ class Environment(object):
             if not re.search(r'\b{}\b'.format(sshable), known_hosts_contents)
         }
         if missing_hosts:
-            raise EnvironmentException(
-                'The following hosts are missing from known_hosts:\n{}'.format(
-                   '\n'.join(
-                       "{} ({})".format(sshable, hostname) for sshable, hostname in missing_hosts
-                   )
-                )
-            )
+            missing = '\n'.join(f"{sshable} ({hostname})" for sshable, hostname in missing_hosts)
+            raise EnvironmentException(f'The following hosts are missing from known_hosts:\n{missing}')
 
     def get_secret(self, var):
         return self.secrets_backend.get_secret(var)
@@ -131,9 +127,9 @@ class Environment(object):
 
     @memoized_property
     def _disallowed_public_variables(self):
-        return set(get_role_defaults('postgresql_base').keys()) | \
-               set(get_role_defaults('pgbouncer').keys()) | \
-               set(ProxyConfig.get_claimed_variables())
+        return set(get_role_defaults('postgresql_base').keys()) \
+            | set(get_role_defaults('pgbouncer').keys()) \
+            | set(ProxyConfig.get_claimed_variables())
 
     @memoized_property
     def meta_config(self):
@@ -221,9 +217,11 @@ class Environment(object):
     def check_user_group_absent_present_overlaps(self, absent_users, present_users):
         if not set(present_users).isdisjoint(absent_users):
             repeated_users = list((Counter(present_users) & Counter(absent_users)).elements())
-            raise EnvironmentException('The user(s) {} appear(s) in both the absent and present users list for '
-                                       'the environment {}. Please fix this and try again.'.format((', '.join(
-                                        map(str, repeated_users))), self.meta_config.deploy_env))
+            users = ', '.join(map(str, repeated_users))
+            raise EnvironmentException(
+                f'The user(s) {users} appear(s) in both the absent and present users list for '
+                f'the environment {self.name}. Please fix this and try again.'
+            )
 
     @memoized_property
     def _raw_app_processes_config(self):
@@ -375,7 +373,6 @@ class Environment(object):
                 if not self.meta_config.bare_non_cchq_environment else {}
             ),
             'new_release_name': self.new_release_name(),
-            'git_repositories': [repo.to_generated_variables() for repo in self.meta_config.git_repositories],
             'deploy_keys': dict(self.meta_config.deploy_keys.items()),
         }
         if not self.meta_config.bare_non_cchq_environment:
@@ -418,6 +415,49 @@ class Environment(object):
         if full and self.public_vars.get('internal_domain_name'):
             return "{}.{}".format(hostname, self.public_vars['internal_domain_name'])
         return hostname
+
+    def has_ansible_env_vars(self):
+        return os.environ.get("COMMCARE_CLOUD_PROXY_SSM")
+
+    def get_ansible_env_vars(self):
+        env = self.secrets_backend.get_extra_ansible_env_vars()
+        if "AWS_PROFILE" in env and os.environ.get("COMMCARE_CLOUD_PROXY_SSM"):
+            args = self._get_ssm_proxy()
+            if args:
+                env['ANSIBLE_SSH_EXTRA_ARGS'] = _opt_str(args)
+        return env
+
+    def _get_ssm_proxy(self):
+        """Get SSH arguments to connect via AWS SSM with 'control' as jump host
+
+        These options can be observed and debugged with environment variables:
+
+            ANSIBLE_VERBOSITY=3
+            VERBOSE_TO_STDERR=true
+        """
+        from commcare_cloud.commands.ansible.helpers import get_default_ssh_options_as_cmd_parts
+        if not self.public_vars.get("allow_aws_ssm_proxy"):
+            print(f"WARNING SSM proxy is not allowed for {self.name}. Use "
+                "--control and/or unset COMMCARE_CLOUD_PROXY_SSM.", file=sys.stderr)
+            return []
+        control = self.sshable_hostnames_by_group.get('control')
+        if not control:
+            print(f"cannot find {self.name} 'control' group", file=sys.stderr)
+            return []
+        control_addr = control[0]
+        control_ip = control_addr.partition(":")[0]
+        hostvars = self.get_host_vars(control_ip)
+        try:
+            control_id = hostvars['ec2_instance_id']
+        except KeyError:
+            print(f"{self.name} 'control' machine has no 'ec2_instance_id'", file=sys.stderr)
+            return []
+        ssm_proxy = get_default_ssh_options_as_cmd_parts(self, aws_ssm_target=control_id)
+        return ['-o', 'ProxyCommand=' + _opt_str(['ssh', '-W', "%h:%p"] + ssm_proxy + [control_addr])]
+
+
+def _opt_str(args):
+    return ' '.join(map(shlex.quote, args))
 
 
 @memoized
