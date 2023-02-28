@@ -174,8 +174,6 @@ webworkers
 [control:children]
 control2
 
-[awsmq]
-{{ aws_resources['staging-mq-broker'] }}
 
 [ansible_skip:children]
 rds_pg0
@@ -186,7 +184,6 @@ pgucr_nlb
 pgsynclogs_nlb
 pgshard_nlb
 couch_alb
-awsmq
 
 
 [django_manage:children]
