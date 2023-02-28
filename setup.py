@@ -38,6 +38,8 @@ test_deps = [
     'nose @ git+https://github.com/dimagi/nose.git@06dff28bbe661b9d032ce839ea0ec8e9eaf6f337',
     'parameterized>=0.6.1',
     'requests-mock',
+    'sh',
+    'testil',
 ]
 aws_deps = [
     'awscli',
