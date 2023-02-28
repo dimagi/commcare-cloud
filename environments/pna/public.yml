@@ -95,7 +95,7 @@ localsettings:
   IS_DIMAGI_ENVIRONMENT: False
   HQ_INSTANCE: 'pna'
   HUBSPOT_API_ID:
-  HUBSPOT_API_KEY:
+  HUBSPOT_ACCESS_TOKEN:
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
     'first_line': "585 Massachusetts Ave"
