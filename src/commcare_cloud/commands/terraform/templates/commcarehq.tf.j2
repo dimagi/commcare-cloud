@@ -397,6 +397,7 @@ module "fsx_file_system__{{ fsx_file_system.efs_name }}" {
 
 {% endif %}
 
+{% if environment == 'testing' %}
 module "awsmq" {
   source                	= "./modules/awsmq"
   broker_name             = {{ awsmq.broker_name|tojson }}  
@@ -416,4 +417,5 @@ module "awsmq" {
   publicly_accessible		= {{ awsmq.publicly_accessible|tojson }}
   encryption_enabled    = {{ awsmq.encryption_enabled|tojson }}
   logs_general          = {{ awsmq.logs_general|tojson }}
-}    
+}
+{% endif %}
