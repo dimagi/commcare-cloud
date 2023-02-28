@@ -1,2 +1,8 @@
 - name: Clone source code
-  debug: msg=TODO
+  git_setup_release:
+    repo: "{{ commcarehq_repository }}"
+    dest: "{{ code_source }}"
+    version: "{{ code_version }}"
+    reference: "{{ code_releases }}/src"
+    key_file: "{{ deploy_key | default(omit, true) }}"
+    previous_release: "{{ code_home }}"
