@@ -396,7 +396,7 @@ module "fsx_file_system__{{ fsx_file_system.efs_name }}" {
 {% endfor %}
 
 {% endif %}
-
+{% if environment == 'staging' %}
 module "awsmq" {
   source                	= "./modules/awsmq"
   broker_name             = {{ awsmq.broker_name|tojson }}  
@@ -417,3 +417,4 @@ module "awsmq" {
   encryption_enabled    = {{ awsmq.encryption_enabled|tojson }}
   logs_general          = {{ awsmq.logs_general|tojson }}
 }    
+{% endif %}
