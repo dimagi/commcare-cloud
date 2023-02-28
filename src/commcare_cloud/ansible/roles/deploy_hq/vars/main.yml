@@ -1,0 +1,4 @@
+code_releases: "{{ www_home }}/releases"
+# "release_name" comes from Environment.release_name, which is passed
+# to Ansible via .generated.yml (see Environment.create_generated_yml)
+code_source: "{{ code_releases }}/{{ release_name }}"

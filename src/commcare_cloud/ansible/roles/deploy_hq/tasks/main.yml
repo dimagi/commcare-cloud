@@ -1,0 +1,20 @@
+- name: 'Check if done: {{ if_not_done }}'
+  stat:
+    path: '{{ code_source }}/.{{ if_not_done }}-done'
+  register: done_marker
+
+- name: Run {{ if_not_done }}
+  when: not done_marker.stat.exists
+  become: true
+  become_user: '{{ cchq_user }}'
+  block:
+    - name: Run {{ if_not_done }}
+      include_role:
+        name: deploy_hq
+        tasks_from: '{{ if_not_done }}'
+
+    - name: 'Completed {{ if_not_done }}'
+      file:
+        path: '{{ code_source }}/.{{ if_not_done }}-done'
+        state: touch
+        mode: 0644
