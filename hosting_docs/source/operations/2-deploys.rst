@@ -192,7 +192,7 @@ To perform a pre-index:
 
 .. code-block:: bash
 
-   $ commcare-cloud <env> fab preindex_views
+   $ commcare-cloud <env> preindex-views
 
 Resume failed deploy
 --------------------

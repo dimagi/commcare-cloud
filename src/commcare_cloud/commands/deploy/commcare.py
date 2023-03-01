@@ -48,7 +48,9 @@ def deploy_commcare(environment, args, unknown_args):
 
     code_version = context.diff.deploy_commit if not args.resume else ''
     ansible_args = ["-e", f"code_version={code_version}"]
-    if args.setup_release:
+    if getattr(args, "preindex_views", False):
+        fab_command = "preindex_views"
+    elif args.setup_release:
         if args.limit:
             if args.limit == 'django_manage':
                 fab_command = "setup_limited_release"

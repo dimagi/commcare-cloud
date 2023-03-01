@@ -18,6 +18,7 @@ from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.deploy.command import Deploy
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
+from commcare_cloud.commands.preindex_views import PreindexViews
 from commcare_cloud.commands.secrets import Secrets, MigrateSecrets
 from commcare_cloud.commands.sentry import ExportSentryEvents
 from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory, AwsSignIn
@@ -83,6 +84,7 @@ COMMAND_GROUPS = OrderedDict([
         UpdateSupervisorConfs,
         Fab,
         Deploy,
+        PreindexViews,
         Service,
         MigrateCouchdb,
         Downtime,

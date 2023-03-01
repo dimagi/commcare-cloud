@@ -209,13 +209,10 @@ def pillowtop():
     env.supervisor_roles = ROLES_PILLOWTOP
 
 
-@task
+@incomplete_task("preindex-views")
 @roles(ROLES_PILLOWTOP)
 def preindex_views():
-    """
-    Creates a new release that runs preindex_everything. Clones code from
-    `current` release and updates it.
-    """
+    """OBSOLETE. Use 'preindex-views' instead"""
     _setup_release()
     db.preindex_views()
 
