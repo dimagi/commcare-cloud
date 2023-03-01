@@ -48,6 +48,18 @@ def deploy_commcare(environment, args, unknown_args):
 
     code_version = context.diff.deploy_commit if not args.resume else ''
     ansible_args = ["-e", f"code_version={code_version}"]
+    if args.setup_release:
+        if args.limit:
+            if args.limit == 'django_manage':
+                fab_command = "setup_limited_release"
+            else:
+                exit("--limit only supports 'django_manage' at this time")
+        else:
+            fab_command = "setup_release"
+    else:
+        if args.limit:
+            exit("--limit is not allowed except with --setup-release")
+        fab_command = "deploy_commcare"
     environment.create_generated_yml()
     rc = run_ansible_playbook(
         'deploy_hq.yml',
@@ -57,12 +69,13 @@ def deploy_commcare(environment, args, unknown_args):
         always_skip_check=True,
         respect_ansible_skip=True,
         use_factory_auth=False,
+        limit=args.limit,
         unknown_args=ansible_args,
     )
 
     if rc == 0:
         rc = commcare_cloud(
-            environment.name, 'fab', 'deploy_commcare{}'.format(fab_func_args),
+            environment.name, 'fab', f'{fab_command}{fab_func_args}',
             '--set', ','.join(fab_settings), branch=args.branch, *unknown_args
         )
     if rc != 0:
@@ -78,6 +91,9 @@ def deploy_commcare(environment, args, unknown_args):
 
 
 def confirm_deploy(environment, deploy_revs, diffs, args):
+    if args.setup_release:
+        return True
+
     if args.resume:
         print(f"Resuming {args.resume} release.\n")
         return _ask_to_deploy(environment.name, args.quiet)
@@ -238,6 +254,8 @@ def get_deploy_commcare_fab_func_args(args):
         fab_func_args.append('resume=yes')
     if args.skip_record:
         fab_func_args.append('skip_record=yes')
+    if args.keep_days is not None:
+        fab_func_args.append(f"keep_days={args.keep_days}")
 
     if fab_func_args:
         return ':{}'.format(','.join(fab_func_args))

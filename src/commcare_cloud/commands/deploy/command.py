@@ -35,6 +35,15 @@ class Deploy(CommandBase):
         Argument('--resume', metavar="RELEASE_NAME", help="""
             Rather than starting a new deploy, resume a previous release.
         """),
+        Argument('--setup-release', action='store_true', help="""
+            Set up a private release for running management commands.
+        """),
+        Argument('-l', '--limit', metavar='SUBSET', help="""
+            Limit selected hosts.
+        """),
+        Argument('--keep-days', type=int, help="""
+            The number of days to keep the release before it will be purged.
+        """),
         Argument('--skip-record', action='store_true', help="""
             Skip the steps involved in recording and announcing the fact of the deploy.
         """),

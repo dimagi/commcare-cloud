@@ -73,6 +73,81 @@ def test_resume_deploy_without_release_name_raises():
         _deploy_commcare("--resume")
 
 
+def test_deploy_limited_release():
+    def run_playbook(playbook, context, *args, unknown_args=None, **kw):
+        eq(unknown_args, ["-e", "code_version=def456"])
+        eq(context.environment.release_name, "GHOST")
+        eq(kw.get("limit"), "django_manage")
+        log.append(playbook)
+        return 0
+
+    def run_fab(env_name, fab, task, *args, **kw):
+        log.append(" ".join((f"{fab} {task}",) + args))
+        return 0
+
+    log = []
+    with (
+        patch.object(commcare, "run_ansible_playbook", run_playbook),
+        patch.object(commcare, "commcare_cloud", run_fab),
+    ):
+        _deploy_commcare("--setup-release", "--limit=django_manage")
+
+    eq(log, [
+        "deploy_hq.yml",
+        "fab setup_limited_release --set release_name=GHOST",
+    ])
+
+
+def test_deploy_setup_release():
+    def run_playbook(playbook, context, *args, unknown_args=None, **kw):
+        eq(unknown_args, ["-e", "code_version=def456"])
+        eq(context.environment.release_name, "GHOST")
+        eq(kw.get("limit"), None)
+        log.append(playbook)
+        return 0
+
+    def run_fab(env_name, fab, task, *args, **kw):
+        log.append(" ".join((f"{fab} {task}",) + args))
+        return 0
+
+    log = []
+    with (
+        patch.object(commcare, "run_ansible_playbook", run_playbook),
+        patch.object(commcare, "commcare_cloud", run_fab),
+    ):
+        _deploy_commcare("--setup-release")
+
+    eq(log, [
+        "deploy_hq.yml",
+        "fab setup_release --set release_name=GHOST",
+    ])
+
+
+def test_deploy_limited_release_with_keep_days():
+    def run_playbook(playbook, context, *args, unknown_args=None, **kw):
+        eq(unknown_args, ["-e", "code_version=def456"])
+        eq(context.environment.release_name, "GHOST")
+        eq(kw.get("limit"), "django_manage")
+        log.append(playbook)
+        return 0
+
+    def run_fab(env_name, fab, task, *args, **kw):
+        log.append(" ".join((f"{fab} {task}",) + args))
+        return 0
+
+    log = []
+    with (
+        patch.object(commcare, "run_ansible_playbook", run_playbook),
+        patch.object(commcare, "commcare_cloud", run_fab),
+    ):
+        _deploy_commcare("--setup-release", "--limit=django_manage", "--keep-days=10")
+
+    eq(log, [
+        "deploy_hq.yml",
+        "fab setup_limited_release:keep_days=10 --set release_name=GHOST",
+    ])
+
+
 def _deploy_commcare(*argv):
     envs = Path(__file__).parent.parent / "test_envs"
     diff = DeployDiff(None, "abc123", "def456", None)

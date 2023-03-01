@@ -66,7 +66,7 @@ fab <env> rollback
 
 The case may arise where you need to setup a new release, but do not want to do a full deploy. For example, this is often used when you would want to run a new management command that was just merged. To do this run:
 ```
-cchq <env> fab setup_release
+cchq <env> deploy commcare --setup-release [--limit=django_manage]
 ```
 
 This will create a release with the most recent master code and a new virtualenv. Just cd into the directory that
@@ -75,19 +75,13 @@ is printed on the screen and run your command, or use `django-manage` with the `
 To set up a release based on a non-master branch, run:
 
 ```
-cchq <env> fab setup_release --set code_branch=<HQ BRANCH>
+cchq <env> deploy commcare --setup-release [--limit=django_manage] --commcare-rev=<HQ BRANCH>
 ```
 
-The same can be applied to set the branch for any additional repositories that have been configured. Use the variable `<name>_code_branch` where `name` is the name given to the repository in `meta.yml`:
+Upon deploys, releases like these are cleaned up by the deploy process. If you know you have a long running command, you can ensure that the release does not get removed by using the `--keep-days` option:
 
 ```
-cchq <env> fab setup_release --set <NAME>_code_branch=<BRANCH NAME>
-```
-
-Upon deploys, releases like these are cleaned up by the deploy process. If you know you have a long running command, you can ensure that the release does not get removed by using the `keep_days` option:
-
-```
-cchq <env> fab setup_release:keep_days=10
+cchq <env> deploy commcare --setup-release [--limit=django_manage] --keep-days=10
 ```
 
 This will keep your release around for at least 10 days before it gets removed by a deploy.

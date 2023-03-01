@@ -252,28 +252,17 @@ def parse_int_or_exit(val):
 
 @task
 def setup_limited_release(keep_days=1):
-    """ Sets up a release on a single machine
-    defaults to webworkers:0
-
-    See :func:`_setup_release` for more info
-
-    Example:
-    fab <env> setup_limited_release:keep_days=10  # Makes a new release that will last for 10 days
-    fab <env> setup_limited_release --set code_branch=<HQ BRANCH>
+    """OBSOLETE. Use deploy commcare --setup-release --limit=django_manage
+                                     [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
     _setup_release(parse_int_or_exit(keep_days), full_cluster=False)
 
 
 @task
 def setup_release(keep_days=0):
-    """ Sets up a full release across the cluster
-
-    See :func:`_setup_release` for info
-
-    Example:
-    fab <env> setup_release:keep_days=10  # Makes a new release that will last for 10 days
+    """OBSOLETE. Use deploy commcare --setup-release
+                                     [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
-
     _setup_release(parse_int_or_exit(keep_days), full_cluster=True)
 
 
