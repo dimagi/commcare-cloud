@@ -53,6 +53,7 @@ from .utils import (
     cache_deploy_state,
     clear_cached_deploy,
     execute_with_timing,
+    incomplete_task,
     retrieve_cached_deploy_checkpoint,
     retrieve_cached_deploy_env,
     traceback_string,
@@ -250,7 +251,7 @@ def parse_int_or_exit(val):
         exit()
 
 
-@task
+@incomplete_task("deploy commcare --setup-release --limit=django_manage ...")
 def setup_limited_release(keep_days=1):
     """OBSOLETE. Use deploy commcare --setup-release --limit=django_manage
                                      [--keep-days=N] [--commcare-rev=HQ_BRANCH]
@@ -258,7 +259,7 @@ def setup_limited_release(keep_days=1):
     _setup_release(parse_int_or_exit(keep_days), full_cluster=False)
 
 
-@task
+@incomplete_task("deploy commcare --setup-release ...")
 def setup_release(keep_days=0):
     """OBSOLETE. Use deploy commcare --setup-release
                                      [--keep-days=N] [--commcare-rev=HQ_BRANCH]
@@ -389,7 +390,7 @@ def manage(cmd=None):
     exit(manage.__doc__)
 
 
-@task
+@incomplete_task("deploy commcare ...")
 def deploy_commcare(resume='no', skip_record='no'):
     """OBSOLETE: Use 'deploy commcare' instead"""
     _require_target()

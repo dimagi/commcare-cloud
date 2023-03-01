@@ -248,7 +248,7 @@ def get_deployed_version(environment):
 
 
 def get_deploy_commcare_fab_func_args(args):
-    fab_func_args = []
+    fab_func_args = ['run_incomplete=yes']
 
     if args.resume:
         fab_func_args.append('resume=yes')

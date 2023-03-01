@@ -30,7 +30,10 @@ def test_deploy_commcare_happy_path():
     ):
         _deploy_commcare()
 
-    eq(log, ["deploy_hq.yml", "fab deploy_commcare --set release_name=GHOST"])
+    eq(log, [
+        "deploy_hq.yml",
+        "fab deploy_commcare:run_incomplete=yes --set release_name=GHOST",
+    ])
 
 
 def test_resume_deploy_with_release_name():
@@ -53,7 +56,7 @@ def test_resume_deploy_with_release_name():
 
     eq(log, [
         "deploy_hq.yml",
-        "fab deploy_commcare:resume=yes --set release_name=FRANK"
+        "fab deploy_commcare:run_incomplete=yes,resume=yes --set release_name=FRANK"
     ])
 
 
@@ -94,7 +97,7 @@ def test_deploy_limited_release():
 
     eq(log, [
         "deploy_hq.yml",
-        "fab setup_limited_release --set release_name=GHOST",
+        "fab setup_limited_release:run_incomplete=yes --set release_name=GHOST",
     ])
 
 
@@ -119,7 +122,7 @@ def test_deploy_setup_release():
 
     eq(log, [
         "deploy_hq.yml",
-        "fab setup_release --set release_name=GHOST",
+        "fab setup_release:run_incomplete=yes --set release_name=GHOST",
     ])
 
 
@@ -144,7 +147,7 @@ def test_deploy_limited_release_with_keep_days():
 
     eq(log, [
         "deploy_hq.yml",
-        "fab setup_limited_release:keep_days=10 --set release_name=GHOST",
+        "fab setup_limited_release:run_incomplete=yes,keep_days=10 --set release_name=GHOST",
     ])
 
 
