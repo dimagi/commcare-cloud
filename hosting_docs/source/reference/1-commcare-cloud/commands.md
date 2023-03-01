@@ -1097,18 +1097,18 @@ Use `-l` instead of a command to see the full list of commands.
 
     check_status               OBSOLETE replaced by
     clean_releases             Cleans old and failed deploys from the ~/www/&lt;...
-    deploy_commcare            Deploy CommCare HQ
+    deploy_commcare            OBSOLETE: Use 'deploy commcare' instead
     kill_stale_celery_workers  OBSOLETE use 'kill-stale-celery-workers' inste...
     manage                     OBSOLETE use 'django-manage' instead
     perform_system_checks      OBSOLETE use 'perform-system-checks' instead
     pillowtop
-    preindex_views             Creates a new release that runs preindex_every...
+    preindex_views             OBSOLETE. Use 'preindex-views' instead
     restart_services
     restart_webworkers
     rollback                   Rolls back the servers to the previous release...
     rollback_formplayer
-    setup_limited_release      Sets up a release on a single machine
-    setup_release              Sets up a full release across the cluster
+    setup_limited_release      OBSOLETE. Use deploy commcare --setup-release ...
+    setup_release              OBSOLETE. Use deploy commcare --setup-release
     start_celery
     start_pillows
     stop_celery
@@ -1125,7 +1125,8 @@ Use `-l` instead of a command to see the full list of commands.
 Deploy CommCare
 
 ```
-commcare-cloud <env> deploy [--resume] [--skip-record] [--commcare-rev COMMCARE_REV] [--set FAB_SETTINGS]
+commcare-cloud <env> deploy [--resume RELEASE_NAME] [--setup-release] [-l SUBSET] [--keep-days KEEP_DAYS]
+                            [--skip-record] [--commcare-rev COMMCARE_REV] [--set FAB_SETTINGS]
                             [{commcare,formplayer} ...]
 ```
 
@@ -1138,13 +1139,46 @@ always_deploy_formplayer is set in meta.yml, 'commcare formplayer'
 
 ##### Options
 
-###### `--resume`
+###### `--resume RELEASE_NAME`
 
-Rather than starting a new deploy, start where you left off the last one.
+Rather than starting a new deploy, resume a previous release.
+
+###### `--setup-release`
+
+Set up a private release for running management commands.
+
+###### `-l SUBSET, --limit SUBSET`
+
+Limit selected hosts.
+
+###### `--keep-days KEEP_DAYS`
+
+The number of days to keep the release before it will be purged.
 
 ###### `--skip-record`
 
 Skip the steps involved in recording and announcing the fact of the deploy.
+
+###### `--commcare-rev COMMCARE_REV`
+
+The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
+
+###### `--set FAB_SETTINGS`
+
+fab settings in k1=v1,k2=v2 format to be passed down to fab
+
+---
+
+#### ``preindex-views`` Command
+
+```
+commcare-cloud <env> preindex-views [--commcare-rev COMMCARE_REV] [--set FAB_SETTINGS]
+```
+
+Set up a private release on the first pillowtop machine and run
+preindex_everything with that release.
+
+##### Options
 
 ###### `--commcare-rev COMMCARE_REV`
 
