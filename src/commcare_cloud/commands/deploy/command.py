@@ -32,8 +32,8 @@ class Deploy(CommandBase):
             Component(s) to deploy. Default is 'commcare', or if
             always_deploy_formplayer is set in meta.yml, 'commcare formplayer'
         """),
-        Argument('--resume', action='store_true', help="""
-            Rather than starting a new deploy, start where you left off the last one.
+        Argument('--resume', metavar="RELEASE_NAME", help="""
+            Rather than starting a new deploy, resume a previous release.
         """),
         Argument('--skip-record', action='store_true', help="""
             Skip the steps involved in recording and announcing the fact of the deploy.
@@ -55,8 +55,15 @@ class Deploy(CommandBase):
             try:
                 # use cached env to ensure consistency with last deploy
                 cached_fab_env = retrieve_cached_deploy_env(environment.name)
+                if cached_fab_env.ccc_environment.release_name != args.resume:
+                    raise ValueError("resume release mismatch")
+            except FileNotFoundError:
+                # this happens when resuming a deploy that failed before the
+                # Fabric portion, which populates the cache, had started
+                environment.release_name = args.resume
             except Exception:
-                print(color_error('Unable to resume deploy, please start anew'))
+                args.resume = None
+                print(color_error('Unable to resume deploy, starting anew...'))
             else:
                 environment = cached_fab_env.ccc_environment
 
