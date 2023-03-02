@@ -1,36 +1,59 @@
 pgbouncer_override:
-  pgbouncer_max_connections: 1500
+  pgbouncer_max_connections: 3500
   pgbouncer_default_pool: 290
-
 postgres_override:
-  postgresql_max_connections: 300
-  postgresql_work_mem: '8MB'
-  postgresql_shared_buffers: '8GB'
+  postgresql_version: '10'
+  postgresql_port: 5432
+  postgresql_max_connections: 3300
+  postgresql_work_mem: '32MB'
+#  maintenance_work_mem: '2048MB'
+#  effective_cache_size: '16384MB'
+  postgresql_shared_buffers: '48GB'
   postgresql_checkpoint_completion_target: '0.7'
-  postgresql_wal_buffers: '16MB'
+  postgresql_wal_buffers: '32MB'
   postgresql_default_statistics_target: '100'
   postgresql_hba_entries:
     - contype: host
       databases: replication
       users: hqrepl
       netmask: 0.0.0.0/0
-
 dbs:
+  auditcare:
+    host: echis_server28
+  main:
+    host: echis_server33
+  ucr:
+    host: echis_server28
+  formplayer:
+    host: echis_server33
+  synclogs:
+    host: echis_server33
   form_processing:
+    proxy:
+      host: echis_server33
     partitions:
       p1:
         shards: [0, 127]
+        host: echis_server33
       p2:
         shards: [128, 255]
+        host: echis_server33
       p3:
         shards: [256, 383]
+        host: echis_server33
       p4:
         shards: [384, 511]
+        host: echis_server33
       p5:
         shards: [512, 639]
+        host: echis_server33
       p6:
         shards: [640, 767]
+        host: echis_server33
       p7:
         shards: [768, 895]
+        host: echis_server33
       p8:
         shards: [896, 1023]
+        host: echis_server33
+
