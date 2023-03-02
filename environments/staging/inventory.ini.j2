@@ -18,13 +18,10 @@ proxy
 
 {{ __web10__ }} swap_size=1G
 
-{{ __testing__ }} swap_size=1G
-
 [webworkers:children]
 # Amazon EC2
 web9
 web10
-testing
 
 {{ __pgproxy5__ }} pgbouncer_processes=2 swap_size=2G
 
