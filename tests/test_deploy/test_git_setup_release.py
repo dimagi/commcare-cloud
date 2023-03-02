@@ -228,7 +228,11 @@ class TestGitSetupRelease(TestCase):
     @contextmanager
     def add_commit_to_src_repo(self):
         sh.git("clone", self.repos / "mock-hq.git", _cwd=self.repos)
-        git = sh.git.bake(_cwd=self.repos / "mock-hq")
+        git = sh.git.bake(_cwd=self.repos / "mock-hq", _env={
+            "EMAIL": "test@test.com",
+            "GIT_AUTHOR_NAME": "Test",
+            "GIT_COMMITTER_NAME": "Test",
+        })
         git("commit", "--allow-empty", "-m", "empty commit")
         git("push")
         try:
