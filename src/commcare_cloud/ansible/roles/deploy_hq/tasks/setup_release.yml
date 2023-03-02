@@ -6,3 +6,11 @@
     reference: "{{ code_releases }}/git_mirrors"
     key_file: "{{ deploy_key | default(omit, true) }}"
     previous_release: "{{ code_home }}"
+
+- name: Setup virtualenv
+  setup_virtualenv:
+    src: "{{ code_home }}"
+    dest: "{{ code_source }}"
+    python_version: "{{ python_version }}"
+    requirements_file: "requirements/prod-requirements.txt"
+    http_proxy: "{{ http_proxy | default(omit, true) }}"
