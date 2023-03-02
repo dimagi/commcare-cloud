@@ -19,7 +19,7 @@
       repo: "{{ item.url }}"
       dest: "{{ repo_dest }}"
       version: "{{ item.version }}"
-      reference: "{{ code_releases }}/src"
+      reference: "{{ code_releases }}/git_mirrors"
       key_file: "{{ deploy_key|default(omit, true) }}"
     tags:
       - git
