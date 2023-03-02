@@ -1,6 +1,7 @@
 SITE_HOST: 'www.echisethiopia.org'
+NO_WWW_SITE_HOST: 'www.echisethiopia.org'
 nginx_max_worker_connection: 1024
-nginx_worker_rlimit_nofile : 16384
+nginx_worker_rlimit_nofile : 131072 
 primary_ssl_env: "echis"
-
+#fake_ssl_cert: yes
 letsencrypt_cchq_ssl: True
