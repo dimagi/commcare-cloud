@@ -20,8 +20,9 @@ backup_plan:
   remote_vault_name: "BusinessContinuity_Production_West-1"
   remote_vault_region: us-west-1
   outside_account_id: '213307118311'
-  daily_retention: 7
-  monthly_retention: 90
+  daily_retention: 2
+  weekly_retention: 14
+  monthly_retention: 62
   quarterly_retention: 365
 
 servers:
