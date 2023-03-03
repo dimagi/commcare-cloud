@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+import os
 import signal
 from configparser import ConfigParser
 from os.path import basename
@@ -112,6 +113,7 @@ def main():
             if dest_tmp.exists():
                 return incomplete_release(dest_tmp, module, result)
         else:
+            prev_dir = os.getcwd()
             try:
                 dest_tmp.mkdir()
             except OSError:
@@ -135,6 +137,7 @@ def main():
                 release = Release(mirrors_path, module.run_command, diff, key_file)
                 release.setup(dest_tmp, params["repo"], params["version"], prev)
             except BaseException:
+                os.chdir(prev_dir)  # module.run_command does not reset cwd on error
                 dest_tmp.rename(get_fail_path(dest))
                 raise
             dest_tmp.rename(dest)
