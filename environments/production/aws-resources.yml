@@ -107,6 +107,8 @@ pgbouncer10-production: 10.202.40.47
 pgbouncer10-production.instance_id: i-0060bcb23d7941807
 pgbouncer11-production: 10.202.40.150
 pgbouncer11-production.instance_id: i-075036a3b3bed700b
+pgbouncer12-production: 10.202.41.217
+pgbouncer12-production.instance_id: i-03320b764f393ebc6
 pgbouncer_a1-production: 10.202.40.25
 pgbouncer_a1-production.instance_id: i-0aa5010ad7af8c5e0
 pgbouncer_a2-production: 10.202.40.146
