@@ -49,7 +49,6 @@ dbs:
       - pgbouncer_b0
       - pgbouncer_b1
       - pgbouncer_c0
-      - pgbouncer10
       - pgbouncer11
       - pgbouncer12
   formplayer:
@@ -62,7 +61,6 @@ dbs:
       - pgbouncer_b0
       - pgbouncer_b1
       - pgbouncer_c0
-      - pgbouncer10
       - pgbouncer11
       - pgbouncer12
   ucr:
@@ -76,7 +74,6 @@ dbs:
       - pgbouncer_b0
       - pgbouncer_b1
       - pgbouncer_c0
-      - pgbouncer10
       - pgbouncer11
       - pgbouncer12
     query_stats: True
@@ -89,7 +86,6 @@ dbs:
       - pgbouncer_b0
       - pgbouncer_b1
       - pgbouncer_c0
-      - pgbouncer10
       - pgbouncer11
       - pgbouncer12
   auditcare:
@@ -103,7 +99,6 @@ dbs:
       - pgbouncer_b0
       - pgbouncer_b1
       - pgbouncer_c0
-      - pgbouncer10
       - pgbouncer11
       - pgbouncer12
   form_processing:
@@ -123,7 +118,6 @@ dbs:
           - pgbouncer_b0
           - pgbouncer_b1
           - pgbouncer_c0
-          - pgbouncer10
           - pgbouncer11
           - pgbouncer12
       p2:
@@ -136,7 +130,6 @@ dbs:
           - pgbouncer_b0
           - pgbouncer_b1
           - pgbouncer_c0
-          - pgbouncer10
           - pgbouncer11
           - pgbouncer12
       p3:
@@ -149,7 +142,6 @@ dbs:
           - pgbouncer_b0
           - pgbouncer_b1
           - pgbouncer_c0
-          - pgbouncer10
           - pgbouncer11
           - pgbouncer12
       p4:
@@ -162,7 +154,6 @@ dbs:
           - pgbouncer_b0
           - pgbouncer_b1
           - pgbouncer_c0
-          - pgbouncer10
           - pgbouncer11
           - pgbouncer12
       p5:
@@ -175,6 +166,5 @@ dbs:
           - pgbouncer_b0
           - pgbouncer_b1
           - pgbouncer_c0
-          - pgbouncer10
           - pgbouncer11
           - pgbouncer12

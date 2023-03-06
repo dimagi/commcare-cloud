@@ -358,13 +358,6 @@ servers:
     volume_size: 80
     volume_encrypted: yes
     group: "postgresql"
-    os: bionic 
-  - server_name: "pgbouncer10-production" # pgbouncer_host for ucr dbs
-    server_instance_type: m5n.large
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    group: "postgresql"
     os: bionic
   - server_name: "pgbouncer11-production" # pgbouncer_host for ucr dbs
     server_instance_type: t3.large
@@ -596,7 +589,6 @@ pgbouncer_nlbs:
       - pgbouncer_c0-production
   - name: pgucr_nlb-production
     targets:
-      - pgbouncer10-production
       - pgbouncer11-production
       - pgbouncer12-production
   - name: pgsynclogs_nlb-production
