@@ -7,14 +7,19 @@
   register: gitdir
 
 - block:
+  - name: Create releses directory
+    file:
+      path: "{{ code_releases }}"
+      state: directory
+      mode: 0755
+    tags: git
+
   - name: Pull source repo ({{ item.url }})
-    git:
+    git_setup_release:
       repo: "{{ item.url }}"
       dest: "{{ repo_dest }}"
       version: "{{ item.version }}"
-      recursive: yes
-      accept_hostkey: yes
-      update: yes
+      reference: "{{ code_releases }}/git_mirrors"
       key_file: "{{ deploy_key|default(omit, true) }}"
     tags:
       - git

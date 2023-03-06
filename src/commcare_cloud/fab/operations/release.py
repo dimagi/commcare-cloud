@@ -3,13 +3,12 @@ from __future__ import absolute_import, print_function, unicode_literals
 import functools
 import os
 import posixpath
-from collections import namedtuple
 from datetime import datetime, timedelta
 
 from fabric import utils
-from fabric.api import env, parallel, roles, run, sudo
+from fabric.api import env, parallel, roles, sudo
 from fabric.colors import red
-from fabric.context_managers import cd, shell_env
+from fabric.context_managers import cd
 from fabric.contrib import files
 
 from commcare_cloud.environment.exceptions import EnvironmentException
@@ -21,120 +20,6 @@ from ..const import (
     ROLES_MANAGE,
     ROLES_STATIC,
 )
-
-GitConfig = namedtuple('GitConfig', 'key value')
-
-
-def update_code(full_cluster=True):
-    roles_to_use = _get_roles(full_cluster)
-
-    @roles(roles_to_use)
-    @parallel
-    def update(git_tag, subdir=None, code_repo=None, deploy_key=None):
-        git_env = {}
-        if deploy_key:
-            git_env["GIT_SSH_COMMAND"] = "ssh -i {} -o IdentitiesOnly=yes".format(
-                os.path.join(env.home, ".ssh", deploy_key)
-            )
-        code_repo = code_repo or env.code_repo
-        code_root = env.code_root
-        if subdir:
-            code_root = os.path.join(code_root, subdir)
-        _update_code_from_previous_release(code_repo, subdir, git_env)
-        with cd(code_root), shell_env(**git_env):
-            sudo('git remote prune origin')
-            # this can get into a state where running it once fails
-            # but primes it to succeed the next time it runs
-            sudo('git fetch origin --tags -q || git fetch origin --tags -q')
-            sudo('git checkout {}'.format(git_tag))
-            sudo('git reset --hard {}'.format(git_tag))
-            sudo('git submodule sync')
-            sudo('git submodule update --init --recursive -q')
-            # remove all untracked files, including submodules
-            sudo("git clean -ffd")
-            # remove all .pyc files in the project
-            sudo("find . -name '*.pyc' -delete")
-
-    return update
-
-
-def _update_code_from_previous_release(code_repo, subdir, git_env):
-    code_current = env.code_current
-    code_root = env.code_root
-    if subdir:
-        code_current = os.path.join(code_current, subdir)
-        code_root = os.path.join(code_root, subdir)
-
-    if files.exists(code_current, use_sudo=True):
-        with cd(code_current), shell_env(**git_env):
-            sudo('git submodule foreach "git fetch origin"')
-        _clone_code_from_local_path(code_current, code_root)
-        with cd(code_root):
-            sudo('git remote set-url origin {}'.format(code_repo))
-    else:
-        with shell_env(**git_env):
-            sudo('git clone {} {}'.format(code_repo, code_root))
-
-
-def _get_submodule_list(path):
-    if files.exists(path, use_sudo=True):
-        with cd(path):
-            return sudo("git submodule | awk '{ print $2 }'").split()
-    else:
-        return []
-
-
-def _get_local_submodule_urls(path):
-    local_submodule_config = []
-    for submodule in _get_submodule_list(path):
-        local_submodule_config.append(
-            GitConfig(
-                key='submodule.{submodule}.url'.format(submodule=submodule),
-                value='{path}/.git/modules/{submodule}'.format(
-                    path=path,
-                    submodule=submodule,
-                )
-            )
-        )
-    return local_submodule_config
-
-
-def _get_remote_submodule_urls(path):
-    submodule_list = _get_submodule_list(path)
-    with cd(path):
-        remote_submodule_config = [
-            GitConfig(
-                key='submodule.{}.url'.format(submodule),
-                value=sudo("git config submodule.{}.url".format(submodule))
-            )
-            for submodule in submodule_list]
-    return remote_submodule_config
-
-
-def _clone_code_from_local_path(from_path, to_path, run_as_sudo=True):
-    cmd_fn = sudo if run_as_sudo else run
-    git_local_submodule_config = [
-        'git config {} {}'.format(submodule_config.key, submodule_config.value)
-        for submodule_config in _get_local_submodule_urls(from_path)
-    ]
-    git_remote_submodule_config = [
-        'git config {} {}'.format(submodule_config.key, submodule_config.value)
-        for submodule_config in _get_remote_submodule_urls(from_path)
-    ]
-
-    with cd(from_path):
-        cmd_fn('git clone {}/.git {}'.format(
-            from_path,
-            to_path
-        ))
-
-    with cd(to_path):
-        cmd_fn('git config receive.denyCurrentBranch updateInstead')
-        if git_local_submodule_config:
-            cmd_fn(' && '.join(git_local_submodule_config))
-        cmd_fn('git submodule update --init --recursive')
-        if git_remote_submodule_config:
-            cmd_fn(' && '.join(git_remote_submodule_config))
 
 
 def update_virtualenv(full_cluster=True):
@@ -186,17 +71,6 @@ def _clone_virtualenv(env):
     sudo(f"ln -nfs {virtualenv_name} {python_env}")
 
 
-def create_code_dir(full_cluster=True):
-    roles_to_use = _get_roles(full_cluster)
-
-    @roles(roles_to_use)
-    @parallel
-    def create():
-        sudo('mkdir -p {}'.format(env.code_root))
-
-    return create
-
-
 @roles(ROLES_ALL_SRC)
 @parallel
 def record_successful_release():
@@ -241,6 +115,8 @@ def clean_releases(keep=3):
     valid_releases = 0
     with cd(env.root):
         for index, release in enumerate(reversed(releases)):
+            if release == 'git_mirrors':
+                continue  # do not delete reference repositories
             if release == current_release or release == os.path.basename(env.code_root):
                 valid_releases += 1
             elif files.contains(RELEASE_RECORD, release, use_sudo=True, shell=True):

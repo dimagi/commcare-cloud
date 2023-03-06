@@ -6,9 +6,10 @@ import pickle
 import re
 import sys
 import traceback
+from functools import wraps
 from io import open
 
-from fabric.api import env, execute
+from fabric.api import env, execute, task
 from fabric.operations import sudo
 from github import Github
 
@@ -26,6 +27,23 @@ def execute_with_timing(fn, *args, **kwargs):
         with open(env.timing_log, 'a', encoding='utf-8') as timing_log:
             duration = datetime.datetime.utcnow() - start_time
             timing_log.write('{}: {}\n'.format(fn.__name__, duration.seconds))
+
+
+def incomplete_task(replacement_command):
+    assert isinstance(replacement_command, str), \
+        f"@incomplete_task(...) expected a string, got {replacement_command}"
+    def decorator(task_func):
+        @task
+        @wraps(task_func)
+        def func(*args, run_incomplete=False, **kw):
+            if run_incomplete:
+                return task_func(*args, **kw)
+            sys.exit(
+                "This command has been replaced with\n\n"
+                f"  commcare-cloud {env.deploy_env} {replacement_command}\n"
+            )
+        return func
+    return decorator
 
 
 def get_pillow_env_config():

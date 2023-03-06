@@ -108,7 +108,7 @@ def get_deploy_diff(environment, repo):
     latest_version = get_latest_formplayer_version(environment.name)
     new_version_details = {}
     if latest_version:
-        new_version_details["Release Name"] = environment.new_release_name()
+        new_version_details["Release Name"] = environment.release_name
         new_version_details["Commit"] = latest_version.commit
         new_version_details["Commit message"] = latest_version.message
         new_version_details["Commit date"] = f"{latest_version.commit_time_ago} ({latest_version.time})"
@@ -142,7 +142,7 @@ def record_deploy_in_datadog(environment, diff, tdelta):
                 environment.name,
                 get_default_username(),
                 int(tdelta.total_seconds() / 60) or '?',
-                environment.new_release_name(),
+                environment.release_name,
                 diff_url
             )
         )
