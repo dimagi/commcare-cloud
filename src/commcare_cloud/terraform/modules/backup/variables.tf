@@ -14,6 +14,10 @@ variable "daily_retention" {
   type = number
 }
 
+variable "weekly_retention" {
+  type = number
+}
+
 variable "monthly_retention" {
   type = number
 }
