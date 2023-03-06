@@ -132,7 +132,7 @@ servers:
     enable_cross_region_backup: yes
 
   - server_name: "es_a1{i}-production"
-    server_instance_type: r5.4xlarge
+    server_instance_type: r6a.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
