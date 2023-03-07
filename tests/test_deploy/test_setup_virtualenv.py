@@ -1,3 +1,4 @@
+import os
 import shutil
 from pathlib import Path
 from unittest import TestCase
@@ -22,7 +23,7 @@ class TestSetupVirtualenv(TestCase):
         with open(cls.requires, mode="w"):
             pass
         fake_venv_bin = create_fake_virtualenv(prev / f"venv-{PYTHON_VERSION}")
-        test_context(cls, patch.dict('os.environ', {"PATH": str(fake_venv_bin)}))
+        test_context(cls, patch.dict('os.environ', {"PATH": f"{fake_venv_bin}:{os.environ['PATH']}"}))
 
     def setUp(self):
         self.release = self.tmp / "release"
