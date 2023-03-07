@@ -9,6 +9,14 @@ terraform {
   }
 }
 
+locals {
+    recovery_point_tags = {
+      "Environment" = ""
+      "Group"       = ""
+      "Name"        = ""
+    }
+}
+
 resource "aws_backup_plan" "business_continuity_plan" {
   name = "BusinessContinuity"
 
@@ -19,6 +27,7 @@ resource "aws_backup_plan" "business_continuity_plan" {
     schedule                 = "cron(0 13 ? * 2,3,4,5,6 *)"
     start_window             = 60
     target_vault_name        = aws_backup_vault.business_continuity_local_vault.name
+    recovery_point_tags      = local.recovery_point_tags
 
     copy_action {
       destination_vault_arn = aws_backup_vault.business_continuity_remote_vault.arn
@@ -39,6 +48,7 @@ resource "aws_backup_plan" "business_continuity_plan" {
     schedule                 = "cron(0 13 ? * 1 *)"
     start_window             = 60
     target_vault_name        = aws_backup_vault.business_continuity_local_vault.name
+    recovery_point_tags      = local.recovery_point_tags
 
     copy_action {
       destination_vault_arn = aws_backup_vault.business_continuity_remote_vault.arn
@@ -59,6 +69,7 @@ resource "aws_backup_plan" "business_continuity_plan" {
     schedule                 = "cron(0 13 ? FEB,MAR,MAY,JUN,AUG,SEP,NOV,DEC 1#1 *)"
     start_window             = 60
     target_vault_name        = aws_backup_vault.business_continuity_local_vault.name
+    recovery_point_tags      = local.recovery_point_tags
 
     copy_action {
       destination_vault_arn = aws_backup_vault.business_continuity_remote_vault.arn
@@ -79,6 +90,7 @@ resource "aws_backup_plan" "business_continuity_plan" {
     schedule                 = "cron(0 13 ? JAN,APR,JUL,OCT 1#1 *)"
     start_window             = 60
     target_vault_name        = aws_backup_vault.business_continuity_local_vault.name
+    recovery_point_tags      = local.recovery_point_tags
 
     copy_action {
       destination_vault_arn = aws_backup_vault.business_continuity_remote_vault.arn
