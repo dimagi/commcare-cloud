@@ -44,7 +44,9 @@ def deploy_commcare(environment, args, unknown_args):
         start_time=datetime.utcnow()
     )
 
-    record_deploy_start(environment, context)
+    should_record = not (args.skip_record or args.private or getattr(args, "preindex_views", False))
+    if should_record:
+        record_deploy_start(environment, context)
 
     code_version = context.diff.deploy_commit if not args.resume else ''
     ansible_args = ["-e", f"code_version={code_version}"]
@@ -83,10 +85,11 @@ def deploy_commcare(environment, args, unknown_args):
     if rc != 0:
         print(color_error("Deploy failed."))
         print(f"Add --resume={environment.release_name} to the deploy command to retry.")
-        record_deploy_failed(environment, context)
+        if should_record:
+            record_deploy_failed(environment, context)
         return rc
 
-    if not args.skip_record:
+    if should_record:
         record_successful_deploy(environment, context)
 
     return 0

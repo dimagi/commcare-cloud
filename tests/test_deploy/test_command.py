@@ -2,7 +2,7 @@
 # Way too many things are mocked here.
 import sys
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from testil import assert_raises, eq
 
@@ -25,9 +25,13 @@ def test_deploy_commcare_happy_path():
         return 0
 
     log = []
-    with (
-        patch.object(commcare, "run_ansible_playbook", run_playbook),
-        patch.object(commcare, "commcare_cloud", run_fab),
+    with patch.multiple(
+        commcare,
+        commcare_cloud=run_fab,
+        record_deploy_failed=Mock(),
+        record_deploy_start=Mock(),
+        record_successful_deploy=Mock(),
+        run_ansible_playbook=run_playbook,
     ):
         _deploy_commcare()
 
@@ -49,9 +53,13 @@ def test_resume_deploy_with_release_name():
         return 0
 
     log = []
-    with (
-        patch.object(commcare, "run_ansible_playbook", run_playbook),
-        patch.object(commcare, "commcare_cloud", run_fab),
+    with patch.multiple(
+        commcare,
+        commcare_cloud=run_fab,
+        record_deploy_failed=Mock(),
+        record_deploy_start=Mock(),
+        record_successful_deploy=Mock(),
+        run_ansible_playbook=run_playbook,
     ):
         _deploy_commcare("--resume=FRANK")
 
@@ -185,9 +193,6 @@ def _deploy_commcare(*argv, cmd=("deploy", "commcare")):
     with (
         patch("commcare_cloud.environment.paths.ENVIRONMENTS_DIR", envs),
         patch.object(command, "check_branch"),
-        patch.object(commcare, "record_deploy_start"),
-        patch.object(commcare, "record_deploy_failed"),
-        patch.object(commcare, "record_successful_deploy"),
         patch.object(commcare, "confirm_deploy", lambda *a: True),
         patch.object(commcare, "DEPLOY_DIFF", diff),
         patch.object(Environment, "create_generated_yml", lambda self:None),
