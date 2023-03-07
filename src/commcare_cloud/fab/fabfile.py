@@ -248,18 +248,17 @@ def parse_int_or_exit(val):
         exit()
 
 
-@incomplete_task("deploy commcare --setup-release --limit=django_manage ...")
+@incomplete_task("deploy commcare --private --limit=django_manage ...")
 def setup_limited_release(keep_days=1):
-    """OBSOLETE. Use deploy commcare --setup-release --limit=django_manage
+    """OBSOLETE. Use deploy commcare --private --limit=django_manage
                                      [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
     _setup_release(parse_int_or_exit(keep_days), full_cluster=False)
 
 
-@incomplete_task("deploy commcare --setup-release ...")
+@incomplete_task("deploy commcare --private ...")
 def setup_release(keep_days=0):
-    """OBSOLETE. Use deploy commcare --setup-release
-                                     [--keep-days=N] [--commcare-rev=HQ_BRANCH]
+    """OBSOLETE. Use deploy commcare --private [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
     _setup_release(parse_int_or_exit(keep_days), full_cluster=True)
 

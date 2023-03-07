@@ -25,7 +25,7 @@ Create a new release:
 
 .. code-block:: shell
 
-   commcare-cloud <env> deploy commcare --setup-release [--limit django_manage]
+   commcare-cloud <env> deploy commcare --private [--limit django_manage]
 
 Note down the release folder location: ``/home/cchq/www/<env>/releases/YYYY-MM-DD_HH.MM``
 

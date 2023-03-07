@@ -50,7 +50,7 @@ def deploy_commcare(environment, args, unknown_args):
     ansible_args = ["-e", f"code_version={code_version}"]
     if getattr(args, "preindex_views", False):
         fab_command = "preindex_views"
-    elif args.setup_release:
+    elif args.private:
         if args.limit:
             if args.limit == 'django_manage':
                 fab_command = "setup_limited_release"
@@ -60,7 +60,7 @@ def deploy_commcare(environment, args, unknown_args):
             fab_command = "setup_release"
     else:
         if args.limit:
-            exit("--limit is not allowed except with --setup-release")
+            exit("--limit is not allowed except with --private")
         fab_command = "deploy_commcare"
     environment.create_generated_yml()
     rc = run_ansible_playbook(
@@ -93,7 +93,7 @@ def deploy_commcare(environment, args, unknown_args):
 
 
 def confirm_deploy(environment, deploy_revs, diffs, args):
-    if args.setup_release:
+    if args.private:
         return True
 
     if args.resume:

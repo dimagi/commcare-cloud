@@ -1107,8 +1107,8 @@ Use `-l` instead of a command to see the full list of commands.
     restart_webworkers
     rollback                   Rolls back the servers to the previous release...
     rollback_formplayer
-    setup_limited_release      OBSOLETE. Use deploy commcare --setup-release ...
-    setup_release              OBSOLETE. Use deploy commcare --setup-release
+    setup_limited_release      OBSOLETE. Use deploy commcare --private ...
+    setup_release              OBSOLETE. Use deploy commcare --private
     start_celery
     start_pillows
     stop_celery
@@ -1125,7 +1125,7 @@ Use `-l` instead of a command to see the full list of commands.
 Deploy CommCare
 
 ```
-commcare-cloud <env> deploy [--resume RELEASE_NAME] [--setup-release] [-l SUBSET] [--keep-days KEEP_DAYS]
+commcare-cloud <env> deploy [--resume RELEASE_NAME] [--private] [-l SUBSET] [--keep-days KEEP_DAYS]
                             [--skip-record] [--commcare-rev COMMCARE_REV] [--set FAB_SETTINGS]
                             [{commcare,formplayer} ...]
 ```
@@ -1143,7 +1143,7 @@ always_deploy_formplayer is set in meta.yml, 'commcare formplayer'
 
 Rather than starting a new deploy, resume a previous release.
 
-###### `--setup-release`
+###### `--private`
 
 Set up a private release for running management commands.
 

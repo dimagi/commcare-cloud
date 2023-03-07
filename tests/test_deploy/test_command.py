@@ -94,7 +94,7 @@ def test_deploy_limited_release():
         patch.object(commcare, "run_ansible_playbook", run_playbook),
         patch.object(commcare, "commcare_cloud", run_fab),
     ):
-        _deploy_commcare("--setup-release", "--limit=django_manage")
+        _deploy_commcare("--private", "--limit=django_manage")
 
     eq(log, [
         "deploy_hq.yml",
@@ -102,7 +102,7 @@ def test_deploy_limited_release():
     ])
 
 
-def test_deploy_setup_release():
+def test_deploy_private():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
         eq(unknown_args, ["-e", "code_version=def456"])
         eq(context.environment.release_name, "GHOST")
@@ -119,7 +119,7 @@ def test_deploy_setup_release():
         patch.object(commcare, "run_ansible_playbook", run_playbook),
         patch.object(commcare, "commcare_cloud", run_fab),
     ):
-        _deploy_commcare("--setup-release")
+        _deploy_commcare("--private")
 
     eq(log, [
         "deploy_hq.yml",
@@ -144,7 +144,7 @@ def test_deploy_limited_release_with_keep_days():
         patch.object(commcare, "run_ansible_playbook", run_playbook),
         patch.object(commcare, "commcare_cloud", run_fab),
     ):
-        _deploy_commcare("--setup-release", "--limit=django_manage", "--keep-days=10")
+        _deploy_commcare("--private", "--limit=django_manage", "--keep-days=10")
 
     eq(log, [
         "deploy_hq.yml",
