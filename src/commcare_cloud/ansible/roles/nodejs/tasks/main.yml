@@ -33,7 +33,7 @@
     - npm
 
 - name: Update Node
-  command: 'n 14.19.1'
+  command: 'n 18.14.2'
   become: yes
   tags:
     - npm
@@ -42,6 +42,6 @@
   npm: name="{{ item.name }}" version="{{ item.version }}" state=present global=yes
   become: yes
   with_items:
-    - {name: 'npm', version: '7.24.2'}
+    - {name: 'npm', version: '9.5.0'}
   tags:
     - npm
