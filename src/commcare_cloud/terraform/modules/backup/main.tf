@@ -69,7 +69,10 @@ resource "aws_backup_plan" "business_continuity_plan" {
     }
 
     lifecycle {
-      delete_after = 1
+      // The schedule overlaps with Weekly.
+      // When there's an overlap, AWS Backup picks the one with longer (local) retention.
+      // Setting this higher than Weekly's is a hack to make it always pick this one when they overlap.
+      delete_after = 2
     }
   }
   rule {
@@ -89,7 +92,10 @@ resource "aws_backup_plan" "business_continuity_plan" {
     }
 
     lifecycle {
-      delete_after = 1
+      // The schedule overlaps with Weekly.
+      // When there's an overlap, AWS Backup picks the one with longer (local) retention.
+      // Setting this higher than Weekly's is a hack to make it always pick this one when they overlap.
+      delete_after = 2
     }
   }
 }
