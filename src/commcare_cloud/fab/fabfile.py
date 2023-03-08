@@ -54,6 +54,7 @@ from .utils import (
     clear_cached_deploy,
     execute_with_timing,
     incomplete_task,
+    obsolete_task,
     retrieve_cached_deploy_checkpoint,
     retrieve_cached_deploy_env,
     traceback_string,
@@ -209,11 +210,10 @@ def pillowtop():
     env.supervisor_roles = ROLES_PILLOWTOP
 
 
-@task
+@obsolete_task
 @roles(ROLES_PILLOWTOP)
 def preindex_views():
     """OBSOLETE. Use 'preindex-views' instead"""
-    print(preindex_views.__doc__)
 
 
 @roles(ROLES_DEPLOY)
@@ -227,10 +227,9 @@ def send_email(subject, message, use_current_release=False):
         )
 
 
-@task
+@obsolete_task
 def kill_stale_celery_workers():
     """OBSOLETE use 'kill-stale-celery-workers' instead"""
-    print(kill_stale_celery_workers.__doc__)
 
 
 @task
@@ -239,14 +238,14 @@ def rollback_formplayer():
     print("cchq {} ansible-playbook rollback_formplayer.yml --tags=rollback".format(env.deploy_env))
 
 
-@incomplete_task("deploy commcare --private --limit=django_manage ...")
+@obsolete_task
 def setup_limited_release():
     """OBSOLETE. Use deploy commcare --private --limit=django_manage
                                      [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
 
 
-@incomplete_task("deploy commcare --private ...")
+@obsolete_task
 def setup_release():
     """OBSOLETE. Use deploy commcare --private [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
@@ -337,11 +336,10 @@ def clean_releases(keep=3):
     execute(release.clean_releases, keep)
 
 
-@task
+@obsolete_task
 @roles(['deploy'])
 def manage(cmd=None):
     """OBSOLETE use 'django-manage' instead"""
-    exit(manage.__doc__)
 
 
 @incomplete_task("deploy commcare ...")
@@ -468,7 +466,7 @@ ONLINE_DEPLOY_COMMANDS = [
 ]
 
 
-@task
+@obsolete_task
 def check_status():
     """OBSOLETE replaced by
 
@@ -476,13 +474,11 @@ def check_status():
     commcare-cloud <env> service postgresql status
     commcare-cloud <env> service elasticsearch status
     """
-    exit(check_status.__doc__)
 
 
-@task
+@obsolete_task
 def perform_system_checks():
     """OBSOLETE use 'perform-system-checks' instead"""
-    exit(perform_system_checks.__doc__)
 
 
 def make_tasks_for_envs(available_envs):
