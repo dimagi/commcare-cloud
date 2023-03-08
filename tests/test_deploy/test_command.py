@@ -229,7 +229,10 @@ def _deploy_commcare(*argv, cmd=("deploy", "commcare")):
         patch.object(Environment, "release_name", "GHOST"),
     ):
         argv = ("cchq", "small_cluster") + cmd + argv
-        return call_commcare_cloud(argv)
+        try:
+            call_commcare_cloud(argv)
+        finally:
+            get_environment.reset_cache()
 
 
 class fakedatetime:
