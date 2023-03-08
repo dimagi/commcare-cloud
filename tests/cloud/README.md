@@ -30,3 +30,8 @@ Test environment configuration is located in ``tests/cloud/environments/test``.
 The ``tests/cloud`` directory can be copied to a directory outside of version
 control (and environment variables adjusted accordingly) for experimentation
 and customization.
+
+WARNING: a test cloud with multiple workers may use a significant amount of disk
+space. For example, operations like `deploy-stack` can use hundreds of MB per
+container. Deploying a new HQ release will use hundreds more. This can quickly
+add up to many GB.

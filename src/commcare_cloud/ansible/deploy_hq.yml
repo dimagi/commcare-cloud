@@ -1,0 +1,15 @@
+# NOTE this playbook can be used to deploy a new version of commcare-hq. The
+# similarly named deploy_commcarehq.yml playbook is used to configure machines
+# to run commcare-hq, and is expected to be run less frequently than this one.
+
+- name: Deploy CommCare HQ
+  hosts:
+    - webworkers
+    - celery
+    - pillowtop
+    - proxy
+    - django_manage
+  tasks:
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: setup_release

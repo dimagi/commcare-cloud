@@ -5,13 +5,14 @@ import pytz
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
-from commcare_cloud.colors import color_notice
+from commcare_cloud.colors import color_notice, color_error
 from commcare_cloud.commands.ansible.run_module import (
     AnsibleContext,
     BadAnsibleResult,
     ansible_json,
     run_ansible_module,
 )
+from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
 from commcare_cloud.commands.deploy.utils import (
     record_deploy_start,
@@ -34,9 +35,7 @@ def deploy_commcare(environment, args, unknown_args):
 
     fab_func_args = get_deploy_commcare_fab_func_args(args)
     fab_settings = [args.fab_settings] if args.fab_settings else []
-    for name, rev in deploy_revs.items():
-        var = 'code_branch' if name == 'commcare' else '{}_code_branch'.format(name)
-        fab_settings.append('{}={}'.format(var, rev))
+    fab_settings.append(f"release_name={environment.release_name}")
 
     context = DeployContext(
         service_name="CommCare HQ",
@@ -46,11 +45,44 @@ def deploy_commcare(environment, args, unknown_args):
     )
 
     record_deploy_start(environment, context)
-    rc = commcare_cloud(
-        environment.name, 'fab', 'deploy_commcare{}'.format(fab_func_args),
-        '--set', ','.join(fab_settings), branch=args.branch, *unknown_args
+
+    code_version = context.diff.deploy_commit if not args.resume else ''
+    ansible_args = ["-e", f"code_version={code_version}"]
+    if getattr(args, "preindex_views", False):
+        fab_command = "preindex_views"
+    elif args.setup_release:
+        if args.limit:
+            if args.limit == 'django_manage':
+                fab_command = "setup_limited_release"
+            else:
+                exit("--limit only supports 'django_manage' at this time")
+        else:
+            fab_command = "setup_release"
+    else:
+        if args.limit:
+            exit("--limit is not allowed except with --setup-release")
+        fab_command = "deploy_commcare"
+    environment.create_generated_yml()
+    rc = run_ansible_playbook(
+        'deploy_hq.yml',
+        AnsibleContext(args, environment),
+        quiet=True,
+        skip_check=True,
+        always_skip_check=True,
+        respect_ansible_skip=True,
+        use_factory_auth=False,
+        limit=args.limit,
+        unknown_args=ansible_args,
     )
+
+    if rc == 0:
+        rc = commcare_cloud(
+            environment.name, 'fab', f'{fab_command}{fab_func_args}',
+            '--set', ','.join(fab_settings), branch=args.branch, *unknown_args
+        )
     if rc != 0:
+        print(color_error("Deploy failed."))
+        print(f"Add --resume={environment.release_name} to the deploy command to retry.")
         record_deploy_failed(environment, context)
         return rc
 
@@ -61,6 +93,13 @@ def deploy_commcare(environment, args, unknown_args):
 
 
 def confirm_deploy(environment, deploy_revs, diffs, args):
+    if args.setup_release:
+        return True
+
+    if args.resume:
+        print(f"Resuming {args.resume} release.\n")
+        return _ask_to_deploy(environment.name, args.quiet)
+
     if diffs:
         message = (
             "Whoa there bud! You're deploying non-default. "
@@ -80,9 +119,11 @@ def confirm_deploy(environment, deploy_revs, diffs, args):
     diff.print_deployer_diff()
     if diff.deployed_commit_matches_latest_commit and not args.quiet:
         _print_same_code_warning(deploy_revs['commcare'])
-    return ask(
-        'Are you sure you want to preindex and deploy to '
-        '{env}?'.format(env=environment.name), quiet=args.quiet)
+    return _ask_to_deploy(environment.name, args.quiet)
+
+
+def _ask_to_deploy(env_name, quiet):
+    return ask(f'Are you sure you want to deploy to {env_name}?', quiet=quiet)
 
 
 DEPLOY_DIFF = None
@@ -209,12 +250,14 @@ def get_deployed_version(environment):
 
 
 def get_deploy_commcare_fab_func_args(args):
-    fab_func_args = []
+    fab_func_args = ['run_incomplete=yes']
 
     if args.resume:
         fab_func_args.append('resume=yes')
     if args.skip_record:
         fab_func_args.append('skip_record=yes')
+    if args.keep_days is not None:
+        fab_func_args.append(f"keep_days={args.keep_days}")
 
     if fab_func_args:
         return ':{}'.format(','.join(fab_func_args))

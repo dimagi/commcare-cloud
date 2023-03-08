@@ -34,6 +34,7 @@ commcare_cloud_strict_host_key_checking: no
 commcare_cloud_use_vault: no
 commcare_cloud_ssh_args:
 - -o UserKnownHostsFile=/dev/null
+- -o StrictHostKeyChecking=no
 - >-
   -o ProxyCommand=ssh
   -o UserKnownHostsFile=/dev/null

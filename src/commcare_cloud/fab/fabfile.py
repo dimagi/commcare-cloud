@@ -53,6 +53,7 @@ from .utils import (
     cache_deploy_state,
     clear_cached_deploy,
     execute_with_timing,
+    incomplete_task,
     retrieve_cached_deploy_checkpoint,
     retrieve_cached_deploy_env,
     traceback_string,
@@ -101,7 +102,7 @@ def _setup_path():
     env.log_dir = posixpath.join(env.home, 'www', env.deploy_env, 'log')
     env.releases = posixpath.join(env.root, 'releases')
     env.code_current = posixpath.join(env.root, 'current')
-    env.code_root = posixpath.join(env.releases, env.ccc_environment.new_release_name())
+    env.code_root = posixpath.join(env.releases, env.release_name)
     env.project_root = posixpath.join(env.code_root, env.project)
     env.project_media = posixpath.join(env.code_root, 'media')
 
@@ -117,6 +118,7 @@ def _setup_path():
 
 def load_env():
     env.ccc_environment = get_environment(env.env_name)
+    env.ccc_environment.release_name = env.release_name
     vars_not_to_overwrite = {key: value for key, value in env.items()
                              if key not in ('sudo_user', 'keepalive')}
 
@@ -127,8 +129,9 @@ def load_env():
     # except a short blacklist that we expect app-processes.yml vars to overwrite
     overlap = set(vars_not_to_overwrite) & set(vars)
     for key in overlap:
-        print(f'NOTE: ignoring app-processes.yml var {key}={vars[key]!r}. '
-              f'Using value {vars_not_to_overwrite[key]!r} instead.')
+        if vars[key] != vars_not_to_overwrite[key]:
+            print(f'NOTE: ignoring app-processes.yml var {key}={vars[key]!r}. '
+                  f'Using value {vars_not_to_overwrite[key]!r} instead.')
     vars.update(vars_not_to_overwrite)
     env.update(vars)
     env.deploy_env = env.ccc_environment.meta_config.deploy_env
@@ -137,23 +140,13 @@ def load_env():
 def _setup_env(env_name):
     env.env_name = env_name
     load_env()
-    _set_code_branch(env.default_branch)
     execute(env_common)
-
-
-def _set_code_branch(default_branch):
-    if not getattr(env, 'code_branch', None):
-        env.code_branch = default_branch
-    print("Using commcare-hq branch {}".format(env.code_branch))
 
 
 def env_common():
     servers = env.ccc_environment.sshable_hostnames_by_group
 
     env.is_monolith = len(set(servers['all']) - set(servers['control'])) < 2
-
-    # turn whatever `code_branch` is into a commit hash
-    env.deploy_ref = github_repo('dimagi/commcare-hq').get_commit(env.code_branch).sha
 
     _setup_path()
 
@@ -216,13 +209,10 @@ def pillowtop():
     env.supervisor_roles = ROLES_PILLOWTOP
 
 
-@task
+@incomplete_task("preindex-views")
 @roles(ROLES_PILLOWTOP)
 def preindex_views():
-    """
-    Creates a new release that runs preindex_everything. Clones code from
-    `current` release and updates it.
-    """
+    """OBSOLETE. Use 'preindex-views' instead"""
     _setup_release()
     db.preindex_views()
 
@@ -258,30 +248,19 @@ def parse_int_or_exit(val):
         exit()
 
 
-@task
+@incomplete_task("deploy commcare --setup-release --limit=django_manage ...")
 def setup_limited_release(keep_days=1):
-    """ Sets up a release on a single machine
-    defaults to webworkers:0
-
-    See :func:`_setup_release` for more info
-
-    Example:
-    fab <env> setup_limited_release:keep_days=10  # Makes a new release that will last for 10 days
-    fab <env> setup_limited_release --set code_branch=<HQ BRANCH>
+    """OBSOLETE. Use deploy commcare --setup-release --limit=django_manage
+                                     [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
     _setup_release(parse_int_or_exit(keep_days), full_cluster=False)
 
 
-@task
+@incomplete_task("deploy commcare --setup-release ...")
 def setup_release(keep_days=0):
-    """ Sets up a full release across the cluster
-
-    See :func:`_setup_release` for info
-
-    Example:
-    fab <env> setup_release:keep_days=10  # Makes a new release that will last for 10 days
+    """OBSOLETE. Use deploy commcare --setup-release
+                                     [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
-
     _setup_release(parse_int_or_exit(keep_days), full_cluster=True)
 
 
@@ -298,9 +277,6 @@ def _setup_release(keep_days=2, full_cluster=True):
     :param keep_days: The number of days to keep this release before it will be purged
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
-    execute_with_timing(release.create_code_dir(full_cluster))
-    update_code = release.update_code(full_cluster)
-    execute_with_timing(update_code, env.deploy_ref)
     execute_with_timing(release.update_virtualenv(full_cluster))
     execute_with_timing(copy_release_files, full_cluster)
 
@@ -329,9 +305,8 @@ def _deploy_without_asking(skip_record):
     except Exception:
         execute_with_timing(
             send_email,
-            "Deploy to {environment} failed. Try resuming with "
-            "fab {environment} deploy:resume=yes.".format(environment=env.env_name),
-            traceback_string()
+            f"Deploy to {env.env_name} failed.",
+            traceback_string(),
         )
         raise
     else:
@@ -412,13 +387,9 @@ def manage(cmd=None):
     exit(manage.__doc__)
 
 
-@task
+@incomplete_task("deploy commcare ...")
 def deploy_commcare(resume='no', skip_record='no'):
-    """Deploy CommCare HQ
-
-    fab <env> deploy_commcare:resume=yes  # resume from previous deploy
-    fab <env> deploy_commcare:skip_record=yes  # skip record_successful_release
-    """
+    """OBSOLETE: Use 'deploy commcare' instead"""
     _require_target()
 
     env.full_deploy = True
@@ -427,6 +398,12 @@ def deploy_commcare(resume='no', skip_record='no'):
         try:
             cached_payload = retrieve_cached_deploy_env(env.deploy_env)
             checkpoint_index = retrieve_cached_deploy_checkpoint()
+        except FileNotFoundError:
+            # this happens when resuming a deploy that failed before the
+            # Fabric portion, which populates the cache, had started
+            _setup_env(env.env_name)
+            cached_payload = {}
+            checkpoint_index = 0
         except Exception:
             print(red('Unable to resume deploy, please start anew'))
             raise

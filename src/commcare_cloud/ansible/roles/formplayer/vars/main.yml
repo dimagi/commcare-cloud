@@ -9,7 +9,7 @@ formplayer_build_url: "{{
   else 'https://s3.amazonaws.com/dimagi-formplayer-jars/latest-successful/formplayer.jar'
 }}"
 formplayer_current_dir: "{{ formplayer_build_dir }}/current"
-formplayer_release_dir: '{{ formplayer_build_dir }}/releases/{{ new_release_name }}'
+formplayer_release_dir: '{{ formplayer_build_dir }}/releases/{{ release_name }}'
 formplayer_releases_base_dir: '{{ formplayer_build_dir }}/releases'
 _formplayer_target_dir: "{{
   formplayer_current_dir
@@ -18,7 +18,7 @@ _formplayer_target_dir: "{{
 }}"
 formplayer_sensitive_data_logging: false
 # used by sentry - should match the sentry release created during deploy
-formplayer_release_name: '{{ new_release_name }}-{{ env_monitoring_id }}'
+formplayer_release_name: '{{ release_name }}-{{ env_monitoring_id }}'
 
 # Instructs Spring Boot to process X-FORWARDED-FOR headers. Should be set if behind a 
 # trusted load balancer which forwards the original IP in headers.

@@ -6,6 +6,7 @@ import shlex
 import sys
 from collections import Counter
 from datetime import datetime
+from functools import cached_property
 from io import open
 
 import yaml
@@ -372,7 +373,7 @@ class Environment(object):
                 self.elasticsearch_config.settings.to_json()
                 if not self.meta_config.bare_non_cchq_environment else {}
             ),
-            'new_release_name': self.new_release_name(),
+            'release_name': self.release_name,
             'deploy_keys': dict(self.meta_config.deploy_keys.items()),
         }
         if not self.meta_config.bare_non_cchq_environment:
@@ -392,8 +393,8 @@ class Environment(object):
         with open(self.paths.generated_yml, 'w', encoding='utf-8') as f:
             f.write(yaml.dump(generated_variables, Dumper=PreserveUnsafeDumper))
 
-    @memoized
-    def new_release_name(self):
+    @cached_property
+    def release_name(self):
         from commcare_cloud.fab.const import DATE_FMT
         return datetime.utcnow().strftime(DATE_FMT)
 
