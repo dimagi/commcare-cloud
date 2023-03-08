@@ -102,7 +102,7 @@ def _setup_path():
     env.log_dir = posixpath.join(env.home, 'www', env.deploy_env, 'log')
     env.releases = posixpath.join(env.root, 'releases')
     env.code_current = posixpath.join(env.root, 'current')
-    env.code_root = posixpath.join(env.releases, env.release_name)
+    env.code_root = posixpath.join(env.releases, env.ccc_environment.release_name)
     env.project_root = posixpath.join(env.code_root, env.project)
     env.project_media = posixpath.join(env.code_root, 'media')
 
@@ -118,7 +118,7 @@ def _setup_path():
 
 def load_env():
     env.ccc_environment = get_environment(env.env_name)
-    env.ccc_environment.release_name = env.release_name
+    env.ccc_environment.release_name = getattr(env, "release_name", "NO_RELEASE")
     vars_not_to_overwrite = {key: value for key, value in env.items()
                              if key not in ('sudo_user', 'keepalive')}
 
