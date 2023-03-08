@@ -11,7 +11,7 @@ This tutorial will walk you through the process on how to force fsck to perform 
  or force file system check for any desired number of system reboots on root mount point.
 
 1. View and modify PASS value in /etc/fstab
-----------------
+-----------------
 
 First, use the blkid command to figure out the UUID value of the file system you want to check.
 
@@ -39,7 +39,7 @@ Note: the above setting will apply a filesystem check on the root mount /
 
 
 2. Change "Maximum number of mounts" 
-----------------
+-----------------
 
 To ensure that your file system is checked on the next reboot, we need to manipulate the filesystem’s 
 “Maximum mount count” parameter. The following tune2fs command will ensure that filesystem /dev/sdX is 
@@ -51,7 +51,7 @@ sudo tune2fs -c 1 /dev/sdX
 Note: /dev/sdX device where / is mounted
 
 3. Fix Detected Errors Automatically during reboot
------------------
+-------------------
 
  To try to fix potential problems without getting any prompts, pass the -y option to fsck.
  	eg. sudo fsck -y /dev/sda2
