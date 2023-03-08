@@ -15,7 +15,6 @@ from ..const import (
     RELEASE_RECORD,
     ROLES_ALL_SRC,
     ROLES_MANAGE,
-    ROLES_STATIC,
 )
 
 
@@ -102,14 +101,6 @@ def clean_releases(keep=3):
 
     # as part of the clean up step, run gc in the 'current' directory
     git_gc_current()
-
-
-@parallel
-@roles(ROLES_STATIC)
-def copy_compressed_js_staticfiles():
-    if files.exists('{}/staticfiles/CACHE/js'.format(env.code_current), use_sudo=True):
-        sudo('mkdir -p {}/staticfiles/CACHE'.format(env.code_root))
-        sudo('cp -r {}/staticfiles/CACHE/js {}/staticfiles/CACHE/js'.format(env.code_current, env.code_root))
 
 
 @roles(ROLES_ALL_SRC)

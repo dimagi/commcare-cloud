@@ -276,8 +276,6 @@ def _setup_release(keep_days=2, full_cluster=True):
     :param keep_days: The number of days to keep this release before it will be purged
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
-    execute_with_timing(copy_release_files, full_cluster)
-
     if keep_days > 0:
         execute_with_timing(release.mark_keep_until(full_cluster), keep_days)
 
@@ -319,11 +317,6 @@ def _deploy_without_asking(skip_record):
 @task
 def update_current(release=None):
     execute(release.update_current, release)
-
-
-def copy_release_files(full_cluster=True):
-    if full_cluster:
-        execute(release.copy_compressed_js_staticfiles)
 
 
 @task
