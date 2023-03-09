@@ -9,7 +9,6 @@ from ..const import (
     ROLES_STATIC,
     ROLES_DJANGO,
     ROLES_ALL_SRC,
-    ROLES_CELERY,
     ROLES_STATIC_PRIMARY,
 )
 
@@ -25,13 +24,6 @@ def version_static():
     """
     with cd(env.code_root):
         sudo(f'{env.virtualenv_root}/bin/python manage.py resource_static')
-
-
-@parallel
-@roles(ROLES_STATIC + ROLES_DJANGO + ROLES_CELERY)
-def yarn_install():
-    with cd(env.code_root):
-        sudo('yarn install --production')
 
 
 @parallel

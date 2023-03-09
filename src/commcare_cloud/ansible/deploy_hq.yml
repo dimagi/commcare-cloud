@@ -26,3 +26,10 @@
       vars:
         if_not_done: copy_release_files
         item: staticfiles/CACHE/js
+
+- name: Install javascript dependencies
+  hosts: [webworkers, celery, proxy]
+  tasks:
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: yarn_install
