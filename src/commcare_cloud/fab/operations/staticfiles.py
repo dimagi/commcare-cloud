@@ -5,11 +5,7 @@ from __future__ import unicode_literals
 from fabric.api import roles, parallel, sudo, env
 from fabric.context_managers import cd
 
-from ..const import (
-    ROLES_STATIC,
-    ROLES_DJANGO,
-    ROLES_ALL_SRC,
-)
+from ..const import ROLES_DJANGO, ROLES_STATIC
 
 
 @roles(ROLES_DJANGO)
@@ -57,11 +53,3 @@ def update_manifest(save=False, soft=False, use_current_release=False):
         args = ' soft'
     with cd(withpath):
         sudo(f'{venv}/bin/python manage.py update_manifest{args}')
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def update_translations():
-    with cd(env.code_root):
-        sudo(f'{env.virtualenv_root}/bin/python manage.py update_django_locales')
-        sudo(f'{env.virtualenv_root}/bin/python manage.py compilemessages -v 0')

@@ -1,0 +1,9 @@
+- name: Update translations
+  command:
+    cmd: ./manage.py {{ item }}
+    chdir: '{{ code_source }}'
+  register: stop_loop_hack
+  when: not stop_loop_hack.failed | default(False)
+  loop:
+    - update_django_locales
+    - compilemessages -v 0
