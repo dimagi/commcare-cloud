@@ -322,10 +322,7 @@ def update_current(release=None):
 
 
 def copy_release_files(full_cluster=True):
-    execute(release.copy_localsettings(full_cluster))
     if full_cluster:
-        execute(release.copy_components)
-        execute(release.copy_node_modules)
         execute(release.copy_compressed_js_staticfiles)
 
 

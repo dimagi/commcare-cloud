@@ -13,3 +13,4 @@
     - import_role: {name: deploy_hq}
       vars:
         if_not_done: setup_release
+      tags: private_release

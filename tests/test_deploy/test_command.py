@@ -87,7 +87,7 @@ def test_resume_deploy_without_release_name_raises():
 
 def test_deploy_limited_release():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, ["-e", "code_version=def456"])
+        eq(unknown_args, ["-e", "code_version=def456", "--tags=private_release"])
         eq(context.environment.release_name, "GHOST")
         eq(kw.get("limit"), "django_manage")
         log.append(playbook)
@@ -112,7 +112,7 @@ def test_deploy_limited_release():
 
 def test_deploy_private():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, ["-e", "code_version=def456"])
+        eq(unknown_args, ["-e", "code_version=def456", "--tags=private_release"])
         eq(context.environment.release_name, "GHOST")
         eq(kw.get("limit"), None)
         log.append(playbook)
@@ -137,7 +137,7 @@ def test_deploy_private():
 
 def test_deploy_limited_release_with_keep_days():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, ["-e", "code_version=def456"])
+        eq(unknown_args, ["-e", "code_version=def456", "--tags=private_release"])
         eq(context.environment.release_name, "GHOST")
         eq(kw.get("limit"), "django_manage")
         log.append(playbook)
@@ -162,7 +162,7 @@ def test_deploy_limited_release_with_keep_days():
 
 def test_preindex_views():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, ["-e", "code_version=def456"])
+        eq(unknown_args, ["-e", "code_version=def456", "--tags=private_release"])
         eq(context.environment.release_name, "GHOST")
         eq(kw.get("limit"), "pillowtop[0]")
         log.append(playbook)

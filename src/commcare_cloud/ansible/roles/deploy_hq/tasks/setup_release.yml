@@ -1,3 +1,11 @@
+# Negated tag checks for "private_release" are used instead of normal
+# tags because the "private_release" tag is inherited from deploy_hq.yml
+# to all tasks in this file. Tag inheritance is required because of the
+# "include_role" task in main.yml. In other words, the tasks in this
+# file would not run if they were tagged "private_release" unless the
+# "include_role" statement that loads them was also tagged, and that is
+# not desirable because main.yml is generic.
+
 - name: Clone source code
   git_setup_release:
     repo: "{{ commcarehq_repository }}"
@@ -14,3 +22,17 @@
     python_version: "{{ python_version }}"
     requirements_file: "requirements/prod-requirements.txt"
     http_proxy: "{{ http_proxy | default(omit, true) }}"
+
+- name: Copy localsettings.py
+  copy:
+    src: "{{ code_home }}/localsettings.py"
+    dest: "{{ code_source }}/localsettings.py"
+    remote_src: true
+    mode: preserve
+
+- name: Copy release files
+  include_tasks: copy_release_files.yml
+  when: '"private_release" not in ansible_run_tags'
+  loop:
+    - node_modules
+    - bower_components
