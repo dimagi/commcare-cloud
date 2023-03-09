@@ -1,20 +1,10 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-from fabric.context_managers import cd, settings, hide
+from fabric.context_managers import cd
 from fabric.api import roles, sudo, env
-from fabric.decorators import runs_once
 
-from ..const import ROLES_PILLOWTOP, ROLES_DEPLOY
-
-
-@roles(ROLES_PILLOWTOP)
-@runs_once
-def preindex_views():
-    with cd(env.code_root):
-        command = f'{env.virtualenv_root}/bin/python {env.code_root}/manage.py preindex_everything 8 {env.user}'
-        mail_flag = '--mail' if env.email_enabled else ''
-        sudo(f'echo "{command}" {mail_flag} | at -t `date -d "5 seconds" +%m%d%H%M.%S`')
+from ..const import ROLES_DEPLOY
 
 
 @roles(ROLES_DEPLOY)

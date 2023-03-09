@@ -186,27 +186,33 @@ def test_deploy_limited_release_with_keep_days():
 
 def test_preindex_views():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, ["-e", "code_version=def456", "--tags=private_release"])
+        eq(unknown_args, [
+            "-e", "code_version=def456",
+            "-e", "keep_until=2020-01-03_03.04",
+            "--tags=private_release",
+        ])
         eq(context.environment.release_name, "GHOST")
         eq(kw.get("limit"), "pillowtop[0]")
         log.append(playbook)
         return 0
 
-    def run_fab(env_name, fab, task, *args, **kw):
-        log.append(" ".join((f"{fab} {task}",) + args))
+    def run_command(env_name, cmd, *args, **kw):
+        assert not kw, kw
+        log.append(" ".join((cmd,) + args))
         return 0
 
     log = []
     with (
         patch.object(preindex_views, "check_branch"),
+        patch.object(preindex_views, "commcare_cloud", run_command),
         patch.object(commcare, "run_ansible_playbook", run_playbook),
-        patch.object(commcare, "commcare_cloud", run_fab),
+        patch.object(commcare, "datetime", fakedatetime),
     ):
         _deploy_commcare(cmd=("preindex-views",))
 
     eq(log, [
         "deploy_hq.yml",
-        "fab preindex_views:run_incomplete=yes --set release_name=GHOST",
+        "django-manage preindex_everything --server=pillowtop[0] --release=GHOST --tmux --mail",
     ])
 
 

@@ -209,11 +209,11 @@ def pillowtop():
     env.supervisor_roles = ROLES_PILLOWTOP
 
 
-@incomplete_task("preindex-views")
+@task
 @roles(ROLES_PILLOWTOP)
 def preindex_views():
     """OBSOLETE. Use 'preindex-views' instead"""
-    db.preindex_views()
+    print(preindex_views.__doc__)
 
 
 @roles(ROLES_DEPLOY)

@@ -45,7 +45,7 @@ def deploy_commcare(environment, args, unknown_args):
         start_time=datetime.utcnow()
     )
 
-    should_record = not (args.skip_record or args.private or getattr(args, "preindex_views", False))
+    should_record = not (args.skip_record or args.private)
     if should_record:
         record_deploy_start(environment, context)
 
@@ -56,10 +56,7 @@ def deploy_commcare(environment, args, unknown_args):
     if args.keep_days:
         until = (datetime.utcnow() + timedelta(days=args.keep_days)).strftime(DATE_FMT)
         ansible_args.extend(["-e", f"keep_until={until}"])
-    if getattr(args, "preindex_views", False):
-        fab_command = "preindex_views"
-        ansible_args.append("--tags=private_release")
-    elif args.private:
+    if args.private:
         fab_command = None
         ansible_args.append("--tags=private_release")
         ansible_args.extend(unknown_args)

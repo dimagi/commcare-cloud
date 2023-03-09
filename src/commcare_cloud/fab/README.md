@@ -96,7 +96,7 @@ deploy                 OBSOLETE. Use 'deploy commcare ...' instead.
 force_update_static
 hotfix_deploy          deploy ONLY the code with no extra cleanup or syncing
 manage                 OBSOLETE. Use 'django-manage' instead.
-preindex_views         Creates a new release that runs preindex_everything. Clones code from
+preindex_views         OBSOLETE. Use 'preindex-views' instead.
 restart_services
 rollback               Rolls back the servers to the previous release if it exists and is same
 setup_release          OBSOLETE. Use deploy commcare --private
