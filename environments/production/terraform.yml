@@ -145,7 +145,7 @@ servers:
     count: 7
 
   - server_name: "es_b1{i}-production"
-    server_instance_type: r5.4xlarge
+    server_instance_type: r6a.4xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 30
