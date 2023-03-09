@@ -98,23 +98,38 @@ def test_deploy_limited_release():
         log.append(playbook)
         return 0
 
-    def run_fab(env_name, fab, task, *args, **kw):
-        log.append(" ".join((f"{fab} {task}",) + args))
-        return 0
-
     log = []
     with patch.multiple(
         commcare,
-        commcare_cloud=run_fab,
         datetime=fakedatetime,
         run_ansible_playbook=run_playbook,
     ):
         _deploy_commcare("--private", "--limit=django_manage")
 
-    eq(log, [
-        "deploy_hq.yml",
-        "fab setup_limited_release:run_incomplete=yes --set release_name=GHOST",
-    ])
+    eq(log, ["deploy_hq.yml"])
+
+
+def test_deploy_limited_release_to_webworker():
+    def run_playbook(playbook, context, *args, unknown_args=None, **kw):
+        eq(unknown_args, [
+            "-e", "code_version=def456",
+            "-e", "keep_until=2020-01-03_03.04",
+            "--tags=private_release",
+        ])
+        eq(context.environment.release_name, "GHOST")
+        eq(kw.get("limit"), "webworkers[0]")
+        log.append(playbook)
+        return 0
+
+    log = []
+    with patch.multiple(
+        commcare,
+        datetime=fakedatetime,
+        run_ansible_playbook=run_playbook,
+    ):
+        _deploy_commcare("--private", "--limit=webworkers[0]")
+
+    eq(log, ["deploy_hq.yml"])
 
 
 def test_deploy_private():
@@ -129,25 +144,17 @@ def test_deploy_private():
         log.append(playbook)
         return 0
 
-    def run_fab(env_name, fab, task, *args, **kw):
-        log.append(" ".join((f"{fab} {task}",) + args))
-        return 0
-
     log = []
     summary = []
     with patch.multiple(
         commcare,
         color_summary=summary.append,
-        commcare_cloud=run_fab,
         datetime=fakedatetime,
         run_ansible_playbook=run_playbook,
     ):
         _deploy_commcare("--private")
 
-    eq(log, [
-        "deploy_hq.yml",
-        "fab setup_release:run_incomplete=yes --set release_name=GHOST",
-    ])
+    eq(log, ["deploy_hq.yml"])
     eq(summary, [
         "Your private release is located here:",
         "/home/cchq/www/small_cluster/releases/GHOST",
@@ -166,23 +173,15 @@ def test_deploy_limited_release_with_keep_days():
         log.append(playbook)
         return 0
 
-    def run_fab(env_name, fab, task, *args, **kw):
-        log.append(" ".join((f"{fab} {task}",) + args))
-        return 0
-
     log = []
     with patch.multiple(
         commcare,
-        commcare_cloud=run_fab,
         datetime=fakedatetime,
         run_ansible_playbook=run_playbook,
     ):
         _deploy_commcare("--private", "--limit=django_manage", "--keep-days=10")
 
-    eq(log, [
-        "deploy_hq.yml",
-        "fab setup_limited_release:run_incomplete=yes --set release_name=GHOST",
-    ])
+    eq(log, ["deploy_hq.yml"])
 
 
 def test_preindex_views():

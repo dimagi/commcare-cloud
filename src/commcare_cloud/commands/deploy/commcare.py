@@ -60,14 +60,9 @@ def deploy_commcare(environment, args, unknown_args):
         fab_command = "preindex_views"
         ansible_args.append("--tags=private_release")
     elif args.private:
-        if args.limit:
-            if args.limit == 'django_manage':
-                fab_command = "setup_limited_release"
-            else:
-                exit("--limit only supports 'django_manage' at this time")
-        else:
-            fab_command = "setup_release"
+        fab_command = None
         ansible_args.append("--tags=private_release")
+        ansible_args.extend(unknown_args)
     else:
         if args.limit:
             exit("--limit is not allowed except with --private")
@@ -85,7 +80,7 @@ def deploy_commcare(environment, args, unknown_args):
         unknown_args=ansible_args,
     )
 
-    if rc == 0:
+    if fab_command and rc == 0:
         rc = commcare_cloud(
             environment.name, 'fab', f'{fab_command}{fab_func_args}',
             '--set', ','.join(fab_settings), branch=args.branch, *unknown_args

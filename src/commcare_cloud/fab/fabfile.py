@@ -213,7 +213,6 @@ def pillowtop():
 @roles(ROLES_PILLOWTOP)
 def preindex_views():
     """OBSOLETE. Use 'preindex-views' instead"""
-    _setup_release()
     db.preindex_views()
 
 
@@ -245,26 +244,11 @@ def setup_limited_release():
     """OBSOLETE. Use deploy commcare --private --limit=django_manage
                                      [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
-    _setup_release(full_cluster=False)
 
 
 @incomplete_task("deploy commcare --private ...")
 def setup_release():
     """OBSOLETE. Use deploy commcare --private [--keep-days=N] [--commcare-rev=HQ_BRANCH]
-    """
-    _setup_release(full_cluster=True)
-
-
-def _setup_release(full_cluster=True):
-    """
-    Setup a release in the releases directory with the most recent code.
-    Useful for running management commands. These releases will automatically
-    be cleaned up at the finish of each deploy.
-
-    More options at
-    https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/fab/README.md#private-releases
-
-    :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
 
 
@@ -470,7 +454,6 @@ def reset_pillow(pillow):
 
 
 ONLINE_DEPLOY_COMMANDS = [
-    _setup_release,
     db.ensure_checkpoints_safe,
     staticfiles.yarn_install,
     staticfiles.version_static,     # run after any new bower code has been installed
