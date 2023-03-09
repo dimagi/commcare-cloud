@@ -46,7 +46,7 @@ class TestSetupVirtualenv(TestCase):
 
     def test_setup_virtualenv_with_wrong_python_version(self):
         py36_release = self.tmp / "py36"
-        create_fake_virtualenv(py36_release / f"venv-3.6")
+        create_fake_virtualenv(py36_release / "venv-3.6")
         with self.assertRaisesRegex(ansible.Fail, "virtualenv not found: "):
             ansible.run("setup_virtualenv", {
                 "src": str(py36_release),

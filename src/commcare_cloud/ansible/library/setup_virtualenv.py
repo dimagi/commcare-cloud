@@ -38,7 +38,9 @@ options:
         default: 'python_env'
         type: str
     python_version:
-        description: Python version.
+        description: Python version. Included in the virtualenv name to
+            allow multiple virtualenvs to exist when upgrading to a new
+            version of Python.
         required: true
         type: str
     requirements_file:
