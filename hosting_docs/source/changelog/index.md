@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2023-03-09** [update-node-to-v16](0070-update-node-to-v16.md)
+Node.js 14.x LTS is reaching its end of life 30th April 2023, so node and npm must be upgraded on all machines.
+
+
+---
 #### **2023-01-10** [Configure Java 17 for Formplayer](0069-configure-java-17-for-formplayer.md)
 In preparation for the release of Formplayer Java 17 version, we have shipped a few infrastructure changes through Commcare Cloud. 
 At this point, the ask to those maintaining CommCare instances is to follow the steps below to configure Java 17 for Formplayer.
