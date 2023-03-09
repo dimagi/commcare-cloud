@@ -134,8 +134,10 @@ def test_deploy_private():
         return 0
 
     log = []
+    summary = []
     with patch.multiple(
         commcare,
+        color_summary=summary.append,
         commcare_cloud=run_fab,
         datetime=fakedatetime,
         run_ansible_playbook=run_playbook,
@@ -145,6 +147,10 @@ def test_deploy_private():
     eq(log, [
         "deploy_hq.yml",
         "fab setup_release:run_incomplete=yes --set release_name=GHOST",
+    ])
+    eq(summary, [
+        "Your private release is located here:",
+        "/home/cchq/www/small_cluster/releases/GHOST",
     ])
 
 

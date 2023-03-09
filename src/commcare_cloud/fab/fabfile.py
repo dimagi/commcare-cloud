@@ -266,8 +266,6 @@ def _setup_release(full_cluster=True):
 
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
-    print(blue("Your private release is located here: "))
-    print(blue(env.code_root))
 
 
 def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
