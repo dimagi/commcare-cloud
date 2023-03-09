@@ -449,8 +449,6 @@ def reset_pillow(pillow):
 
 
 ONLINE_DEPLOY_COMMANDS = [
-    staticfiles.version_static,     # run after any new bower code has been installed
-    staticfiles.collectstatic,
     staticfiles.compress,
     staticfiles.update_translations,
     db.migrate,

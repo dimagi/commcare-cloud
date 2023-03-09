@@ -13,36 +13,6 @@ from ..const import (
 )
 
 
-@roles(set(ROLES_STATIC + ROLES_DJANGO))
-@parallel
-def version_static():
-    """
-    Put refs on all static references to prevent stale browser cache hits when things change.
-    This needs to be run on the WEB WORKER since the web worker governs the actual static
-    reference.
-
-    """
-    with cd(env.code_root):
-        sudo(f'{env.virtualenv_root}/bin/python manage.py resource_static')
-
-
-@parallel
-@roles(set(ROLES_STATIC + ROLES_DJANGO))
-def collectstatic(use_current_release=False):
-    """
-    Collect static after a code update
-    Must run on web workers for same reasons as version_static.
-    """
-    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
-    with cd(env.code_root if not use_current_release else env.code_current):
-        if not use_current_release:
-            sudo('rm -rf staticfiles')
-        sudo(f'{venv}/bin/python manage.py collectstatic --noinput -v 0')
-        sudo(f'{venv}/bin/python manage.py fix_less_imports_collectstatic')
-        sudo(f'{venv}/bin/python manage.py compilejsi18n')
-        sudo(f'{venv}/bin/python manage.py build_requirejs')
-
-
 @parallel
 @roles(ROLES_STATIC_PRIMARY)
 def compress(use_current_release=False):

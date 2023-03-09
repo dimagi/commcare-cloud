@@ -33,3 +33,10 @@
     - import_role: {name: deploy_hq}
       vars:
         if_not_done: yarn_install
+
+- name: Collect static files
+  hosts: [webworkers, proxy]
+  tasks:
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: staticfiles_collect
