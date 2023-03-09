@@ -1107,8 +1107,8 @@ Use `-l` instead of a command to see the full list of commands.
     restart_webworkers
     rollback                   Rolls back the servers to the previous release...
     rollback_formplayer
-    setup_limited_release      OBSOLETE. Use deploy commcare --private ...
-    setup_release              OBSOLETE. Use deploy commcare --private
+    setup_limited_release      OBSOLETE. Use deploy commcare --private --limi...
+    setup_release              OBSOLETE. Use deploy commcare --private [--kee...
     start_celery
     start_pillows
     stop_celery
@@ -1125,8 +1125,8 @@ Use `-l` instead of a command to see the full list of commands.
 Deploy CommCare
 
 ```
-commcare-cloud <env> deploy [--resume RELEASE_NAME] [--private] [-l SUBSET] [--keep-days KEEP_DAYS]
-                            [--skip-record] [--commcare-rev COMMCARE_REV] [--set FAB_SETTINGS]
+commcare-cloud <env> deploy [--resume RELEASE_NAME] [--private] [-l SUBSET] [--keep-days KEEP_DAYS] [--skip-record]
+                            [--commcare-rev COMMCARE_REV] [--ignore-kafka-checkpoint-warning] [--set FAB_SETTINGS]
                             [{commcare,formplayer} ...]
 ```
 
@@ -1163,6 +1163,10 @@ Skip the steps involved in recording and announcing the fact of the deploy.
 
 The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
 
+###### `--ignore-kafka-checkpoint-warning`
+
+Do not block deploy if Kafka checkpoints are unavailable.
+
 ###### `--set FAB_SETTINGS`
 
 fab settings in k1=v1,k2=v2 format to be passed down to fab
@@ -1172,7 +1176,7 @@ fab settings in k1=v1,k2=v2 format to be passed down to fab
 #### ``preindex-views`` Command
 
 ```
-commcare-cloud <env> preindex-views [--commcare-rev COMMCARE_REV] [--set FAB_SETTINGS]
+commcare-cloud <env> preindex-views [--commcare-rev COMMCARE_REV] [--release RELEASE_NAME]
 ```
 
 Set up a private release on the first pillowtop machine and run
@@ -1184,9 +1188,9 @@ preindex_everything with that release.
 
 The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
 
-###### `--set FAB_SETTINGS`
+###### `--release RELEASE_NAME`
 
-fab settings in k1=v1,k2=v2 format to be passed down to fab
+Use/resume an existing release rather than creating a new one.
 
 ---
 
