@@ -1,9 +1,9 @@
 dev_users:
   present:
   - pviswa
-  - bmohanty
   absent:
   - schinthala
   - rganne
   - lravula
   - pkasha
+  - bmohanty
