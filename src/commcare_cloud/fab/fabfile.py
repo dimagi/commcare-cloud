@@ -240,45 +240,32 @@ def rollback_formplayer():
     print("cchq {} ansible-playbook rollback_formplayer.yml --tags=rollback".format(env.deploy_env))
 
 
-def parse_int_or_exit(val):
-    try:
-        return int(val)
-    except (ValueError, TypeError):
-        print(red("Unable to parse '{}' into an integer".format(val)))
-        exit()
-
-
 @incomplete_task("deploy commcare --private --limit=django_manage ...")
-def setup_limited_release(keep_days=1):
+def setup_limited_release():
     """OBSOLETE. Use deploy commcare --private --limit=django_manage
                                      [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
-    _setup_release(parse_int_or_exit(keep_days), full_cluster=False)
+    _setup_release(full_cluster=False)
 
 
 @incomplete_task("deploy commcare --private ...")
-def setup_release(keep_days=0):
+def setup_release():
     """OBSOLETE. Use deploy commcare --private [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
-    _setup_release(parse_int_or_exit(keep_days), full_cluster=True)
+    _setup_release(full_cluster=True)
 
 
-def _setup_release(keep_days=2, full_cluster=True):
+def _setup_release(full_cluster=True):
     """
     Setup a release in the releases directory with the most recent code.
     Useful for running management commands. These releases will automatically
-    be cleaned up at the finish of each deploy. To ensure that a release will
-    last past a deploy use the `keep_days` param.
+    be cleaned up at the finish of each deploy.
 
     More options at
     https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/fab/README.md#private-releases
 
-    :param keep_days: The number of days to keep this release before it will be purged
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
-    if keep_days > 0:
-        execute_with_timing(release.mark_keep_until(full_cluster), keep_days)
-
     print(blue("Your private release is located here: "))
     print(blue(env.code_root))
 

@@ -1,7 +1,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from fabric import utils
 from fabric.api import env, parallel, roles, sudo
@@ -122,16 +122,3 @@ def get_number_of_releases():
 @parallel
 def ensure_release_exists(release):
     return files.exists(release, use_sudo=True)
-
-
-def mark_keep_until(full_cluster=True):
-    roles_to_use = _get_roles(full_cluster)
-
-    @roles(roles_to_use)
-    @parallel
-    def mark(keep_days):
-        until_date = (datetime.utcnow() + timedelta(days=keep_days)).strftime(DATE_FMT)
-        with cd(env.code_root):
-            sudo('touch {}{}'.format(KEEP_UNTIL_PREFIX, until_date))
-
-    return mark

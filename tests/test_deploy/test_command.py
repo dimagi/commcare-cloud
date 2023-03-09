@@ -1,6 +1,7 @@
 # Tests for commcare_cloud.commands.deploy.command.Deploy
 # Way too many things are mocked here.
 import sys
+from datetime import datetime
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -87,7 +88,11 @@ def test_resume_deploy_without_release_name_raises():
 
 def test_deploy_limited_release():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, ["-e", "code_version=def456", "--tags=private_release"])
+        eq(unknown_args, [
+            "-e", "code_version=def456",
+            "-e", "keep_until=2020-01-03_03.04",
+            "--tags=private_release",
+        ])
         eq(context.environment.release_name, "GHOST")
         eq(kw.get("limit"), "django_manage")
         log.append(playbook)
@@ -98,9 +103,11 @@ def test_deploy_limited_release():
         return 0
 
     log = []
-    with (
-        patch.object(commcare, "run_ansible_playbook", run_playbook),
-        patch.object(commcare, "commcare_cloud", run_fab),
+    with patch.multiple(
+        commcare,
+        commcare_cloud=run_fab,
+        datetime=fakedatetime,
+        run_ansible_playbook=run_playbook,
     ):
         _deploy_commcare("--private", "--limit=django_manage")
 
@@ -112,7 +119,11 @@ def test_deploy_limited_release():
 
 def test_deploy_private():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, ["-e", "code_version=def456", "--tags=private_release"])
+        eq(unknown_args, [
+            "-e", "code_version=def456",
+            "-e", "keep_until=2020-01-03_03.04",
+            "--tags=private_release",
+        ])
         eq(context.environment.release_name, "GHOST")
         eq(kw.get("limit"), None)
         log.append(playbook)
@@ -123,9 +134,11 @@ def test_deploy_private():
         return 0
 
     log = []
-    with (
-        patch.object(commcare, "run_ansible_playbook", run_playbook),
-        patch.object(commcare, "commcare_cloud", run_fab),
+    with patch.multiple(
+        commcare,
+        commcare_cloud=run_fab,
+        datetime=fakedatetime,
+        run_ansible_playbook=run_playbook,
     ):
         _deploy_commcare("--private")
 
@@ -137,7 +150,11 @@ def test_deploy_private():
 
 def test_deploy_limited_release_with_keep_days():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, ["-e", "code_version=def456", "--tags=private_release"])
+        eq(unknown_args, [
+            "-e", "code_version=def456",
+            "-e", "keep_until=2020-01-12_03.04",
+            "--tags=private_release",
+        ])
         eq(context.environment.release_name, "GHOST")
         eq(kw.get("limit"), "django_manage")
         log.append(playbook)
@@ -148,15 +165,17 @@ def test_deploy_limited_release_with_keep_days():
         return 0
 
     log = []
-    with (
-        patch.object(commcare, "run_ansible_playbook", run_playbook),
-        patch.object(commcare, "commcare_cloud", run_fab),
+    with patch.multiple(
+        commcare,
+        commcare_cloud=run_fab,
+        datetime=fakedatetime,
+        run_ansible_playbook=run_playbook,
     ):
         _deploy_commcare("--private", "--limit=django_manage", "--keep-days=10")
 
     eq(log, [
         "deploy_hq.yml",
-        "fab setup_limited_release:run_incomplete=yes,keep_days=10 --set release_name=GHOST",
+        "fab setup_limited_release:run_incomplete=yes --set release_name=GHOST",
     ])
 
 
@@ -200,3 +219,8 @@ def _deploy_commcare(*argv, cmd=("deploy", "commcare")):
     ):
         argv = ("cchq", "small_cluster") + cmd + argv
         return call_commcare_cloud(argv)
+
+
+class fakedatetime:
+    def utcnow():
+        return datetime(2020, 1, 2, 3, 4)

@@ -36,3 +36,10 @@
   loop:
     - node_modules
     - bower_components
+
+- name: Mark keep until
+  file:
+    path: "{{ code_source }}/KEEP_UNTIL__{{ keep_until }}"
+    mode: 0644
+    state: touch
+  when: keep_until | default(None)

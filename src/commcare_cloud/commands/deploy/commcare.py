@@ -1,5 +1,5 @@
 import shlex
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytz
 
@@ -23,6 +23,7 @@ from commcare_cloud.commands.deploy.utils import (
     record_deploy_failed,
 )
 from commcare_cloud.events import publish_deploy_event
+from commcare_cloud.fab.const import DATE_FMT
 from commcare_cloud.fab.deploy_diff import DeployDiff
 from commcare_cloud.github import github_repo
 
@@ -50,6 +51,11 @@ def deploy_commcare(environment, args, unknown_args):
 
     code_version = context.diff.deploy_commit if not args.resume else ''
     ansible_args = ["-e", f"code_version={code_version}"]
+    if args.private and not args.keep_days:
+        args.keep_days = 1
+    if args.keep_days:
+        until = (datetime.utcnow() + timedelta(days=args.keep_days)).strftime(DATE_FMT)
+        ansible_args.extend(["-e", f"keep_until={until}"])
     if getattr(args, "preindex_views", False):
         fab_command = "preindex_views"
         ansible_args.append("--tags=private_release")
@@ -261,8 +267,6 @@ def get_deploy_commcare_fab_func_args(args):
         fab_func_args.append('resume=yes')
     if args.skip_record:
         fab_func_args.append('skip_record=yes')
-    if args.keep_days is not None:
-        fab_func_args.append(f"keep_days={args.keep_days}")
 
     if fab_func_args:
         return ':{}'.format(','.join(fab_func_args))
