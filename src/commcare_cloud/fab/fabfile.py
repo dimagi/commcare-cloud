@@ -277,7 +277,6 @@ def _setup_release(keep_days=2, full_cluster=True):
     :param keep_days: The number of days to keep this release before it will be purged
     :param full_cluster: If False, only setup on webworkers[0] where the command will be run
     """
-    execute_with_timing(release.update_virtualenv(full_cluster))
     execute_with_timing(copy_release_files, full_cluster)
 
     if keep_days > 0:
