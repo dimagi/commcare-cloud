@@ -50,7 +50,7 @@
   apt:
     name:
       - build-essential
-      - python-psycopg2
+      - python3-psycopg2
       - postgresql-client-common
       - postgresql-client-{{ postgresql_version }}
       - libxml2-dev
