@@ -9,33 +9,7 @@ from ..const import (
     ROLES_STATIC,
     ROLES_DJANGO,
     ROLES_ALL_SRC,
-    ROLES_STATIC_PRIMARY,
 )
-
-
-@parallel
-@roles(ROLES_STATIC_PRIMARY)
-def compress(use_current_release=False):
-    """Run Django Compressor after a code update"""
-    venv = env.virtualenv_root if not use_current_release else env.virtualenv_current
-    with cd(env.code_root if not use_current_release else env.code_current):
-        sudo(f'{venv}/bin/python manage.py compress --force -v 0')
-        sudo(f'{venv}/bin/python manage.py purge_compressed_files')
-
-    push_manifest(use_current_release=use_current_release)
-
-
-def push_manifest(use_current_release=False):
-    if env.use_shared_dir_for_staticfiles:
-        with cd(env.code_root if not use_current_release else env.code_current):
-            shared_path = f"{env.shared_dir_for_staticfiles}/{_get_git_hash()}"
-            sudo(f'mkdir -p {shared_path}')
-            # copy staticfiles/CACHE/** to {shared_path}/staticfiles/CACHE/**
-            sudo("rsync -r --delete"
-                 " --include='staticfiles/' --include='CACHE/' --include='staticfiles/CACHE/**' --exclude='*'"
-                 f" . {shared_path}")
-    else:
-        update_manifest(save=True, use_current_release=use_current_release)
 
 
 @roles(ROLES_DJANGO)

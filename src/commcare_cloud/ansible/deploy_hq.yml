@@ -47,3 +47,10 @@
     - import_role: {name: deploy_hq}
       vars:
         if_not_done: staticfiles_collect
+
+- name: Compress static files
+  hosts: proxy[0]
+  tasks:
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: staticfiles_compress
