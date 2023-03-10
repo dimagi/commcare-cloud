@@ -37,6 +37,8 @@ class Deploy(CommandBase):
         """),
         Argument('--private', action='store_true', help="""
             Set up a private release for running management commands.
+            This option implies --limit=django_manage. Use --limit=all
+            to set up a private release on all applicable hosts.
         """),
         Argument('-l', '--limit', metavar='SUBSET', help="""
             Limit selected hosts.

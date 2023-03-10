@@ -238,14 +238,13 @@ def rollback_formplayer():
 
 @obsolete_task
 def setup_limited_release():
-    """OBSOLETE. Use deploy commcare --private --limit=django_manage
-                                     [--keep-days=N] [--commcare-rev=HQ_BRANCH]
+    """OBSOLETE. Use deploy commcare --private [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
 
 
 @obsolete_task
 def setup_release():
-    """OBSOLETE. Use deploy commcare --private [--keep-days=N] [--commcare-rev=HQ_BRANCH]
+    """OBSOLETE. Use deploy commcare --private --limit=all [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
 
 

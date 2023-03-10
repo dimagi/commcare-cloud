@@ -1107,8 +1107,8 @@ Use `-l` instead of a command to see the full list of commands.
     restart_webworkers
     rollback                   Rolls back the servers to the previous release...
     rollback_formplayer
-    setup_limited_release      OBSOLETE. Use deploy commcare --private --limi...
-    setup_release              OBSOLETE. Use deploy commcare --private [--kee...
+    setup_limited_release      OBSOLETE. Use deploy commcare --private [--kee...
+    setup_release              OBSOLETE. Use deploy commcare --private --limi...
     start_celery
     start_pillows
     stop_celery
@@ -1146,6 +1146,8 @@ Rather than starting a new deploy, resume a previous release.
 ###### `--private`
 
 Set up a private release for running management commands.
+This option implies --limit=django_manage. Use --limit=all
+to set up a private release on all applicable hosts.
 
 ###### `-l SUBSET, --limit SUBSET`
 

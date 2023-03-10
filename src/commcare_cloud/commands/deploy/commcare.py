@@ -57,6 +57,8 @@ def deploy_commcare(environment, args, unknown_args):
         until = (datetime.utcnow() + timedelta(days=args.keep_days)).strftime(DATE_FMT)
         ansible_args.extend(["-e", f"keep_until={until}"])
     if args.private:
+        if not args.limit:
+            args.limit = "django_manage"
         fab_command = None
         ansible_args.append("--tags=private_release")
         ansible_args.extend(unknown_args)

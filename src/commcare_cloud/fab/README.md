@@ -66,7 +66,7 @@ fab <env> rollback
 
 The case may arise where you need to setup a new release, but do not want to do a full deploy. For example, this is often used when you would want to run a new management command that was just merged. To do this run:
 ```
-cchq <env> deploy commcare --private [--limit=django_manage]
+cchq <env> deploy commcare --private
 ```
 
 This will create a release with the most recent master code and a new virtualenv. Just cd into the directory that
@@ -75,13 +75,13 @@ is printed on the screen and run your command, or use `django-manage` with the `
 To set up a release based on a non-master branch, run:
 
 ```
-cchq <env> deploy commcare --private [--limit=django_manage] --commcare-rev=<HQ BRANCH>
+cchq <env> deploy commcare --private --commcare-rev=<HQ BRANCH>
 ```
 
 Upon deploys, releases like these are cleaned up by the deploy process. If you know you have a long running command, you can ensure that the release does not get removed by using the `--keep-days` option:
 
 ```
-cchq <env> deploy commcare --private [--limit=django_manage] --keep-days=10
+cchq <env> deploy commcare --private --keep-days=10
 ```
 
 This will keep your release around for at least 10 days before it gets removed by a deploy.

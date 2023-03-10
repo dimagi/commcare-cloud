@@ -104,7 +104,7 @@ def test_deploy_limited_release():
         datetime=fakedatetime,
         run_ansible_playbook=run_playbook,
     ):
-        _deploy_commcare("--private", "--limit=django_manage")
+        _deploy_commcare("--private")
 
     eq(log, ["deploy_hq.yml"])
 
@@ -132,7 +132,7 @@ def test_deploy_limited_release_to_webworker():
     eq(log, ["deploy_hq.yml"])
 
 
-def test_deploy_private():
+def test_deploy_private_release_to_all_applicable_hosts():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
         eq(unknown_args, [
             "-e", "code_version=def456",
@@ -140,7 +140,7 @@ def test_deploy_private():
             "--tags=private_release",
         ])
         eq(context.environment.release_name, "GHOST")
-        eq(kw.get("limit"), None)
+        eq(kw.get("limit"), "all")
         log.append(playbook)
         return 0
 
@@ -152,7 +152,7 @@ def test_deploy_private():
         datetime=fakedatetime,
         run_ansible_playbook=run_playbook,
     ):
-        _deploy_commcare("--private")
+        _deploy_commcare("--private", "--limit=all")
 
     eq(log, ["deploy_hq.yml"])
     eq(summary, [
@@ -179,7 +179,7 @@ def test_deploy_limited_release_with_keep_days():
         datetime=fakedatetime,
         run_ansible_playbook=run_playbook,
     ):
-        _deploy_commcare("--private", "--limit=django_manage", "--keep-days=10")
+        _deploy_commcare("--private", "--keep-days=10")
 
     eq(log, ["deploy_hq.yml"])
 
