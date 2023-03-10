@@ -164,26 +164,6 @@ class Ssh(_Ssh):
         )
 
 
-class Mosh(_Ssh):
-    command = 'mosh'
-    help = """
-    Connect to a remote host with mosh.
-
-    This will also automatically switch to using ssh with `-A`
-    when `<server>` is `control` (because `mosh` doesn't support `-A`).
-
-    All trailing arguments are passed directly to `mosh`
-    (or `ssh` in the edge case described above).
-    """
-
-    def run(self, args, ssh_args):
-        if args.server == 'control' or '-A' in ssh_args:
-            print("! mosh does not support ssh agent forwarding, using ssh instead.",
-                  file=sys.stderr)
-            Ssh(self.parser).run(args, ssh_args)
-        return super(Mosh, self).run(args, ssh_args)
-
-
 class Tmux(_Ssh):
     command = 'tmux'
     help = """

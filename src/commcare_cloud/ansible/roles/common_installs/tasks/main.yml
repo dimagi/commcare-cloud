@@ -1,9 +1,5 @@
 ---
 
-- name: Add mosh apt repo
-  apt_repository: repo='ppa:keithw/mosh' state=present
-  register: add_mosh_repo
-
 - name: Add PostgreSQL apt key
   apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
 
@@ -22,7 +18,6 @@
 - name: Update package list
   apt: update_cache=yes
   when: |
-    add_mosh_repo is defined and add_mosh_repo is changed or
     add_postgres_repo is defined and add_postgres_repo is changed or
     add_pango_repo is defined and add_pango_repo is changed or
     add_deadsnakes_ppa is defined and add_deadsnakes_ppa is changed or
