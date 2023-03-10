@@ -111,9 +111,15 @@
   become: yes
   apt:
     name:
-      - software-properties-common
       - python-minimal
       - python3-pip
+  when: ansible_distribution_version == '18.04'
+
+- name: Install common packages
+  become: yes
+  apt:
+    name:
+      - software-properties-common
       - ufw
 
 - name: Install pip packages
