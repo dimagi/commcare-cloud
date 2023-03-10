@@ -1,9 +1,3 @@
-# For 12.04 Ubuntu, upgrade OpenSSL version
-- name: "Install libssl1.0.0"
-  apt: name="libssl1.0.0" state=present
-  tags:
-    - upgrade_openssl
-
 - name: Hard file limits
   become: yes
   pam_limits:
