@@ -1,3 +1,5 @@
+2204_test-staging: 10.201.10.161
+2204_test-staging.instance_id: i-062f01c788b417654
 celery_a0-staging: 10.201.10.232
 celery_a0-staging.instance_id: i-0b026baa6469e2354
 control2-staging: 10.201.10.17
@@ -52,11 +54,14 @@ proxy4-staging: 10.201.10.38
 proxy4-staging.instance_id: i-023a8c825401fd149
 proxy5-staging: 10.201.11.200
 proxy5-staging.instance_id: i-022175194bcb24508
+proxy_alb-staging: internal-proxy-alb-staging-1025146289.us-east-1.elb.amazonaws.com
 rabbit_a2-staging: 10.201.10.20
 rabbit_a2-staging.instance_id: i-07edbe70562292516
 rabbit_b1-staging: 10.201.11.184
 rabbit_b1-staging.instance_id: i-0f25d0640d6f32c11
 web10-staging: 10.201.11.25
 web10-staging.instance_id: i-03fb01724d1dfd3cf
+web11-staging: 10.201.11.220
+web11-staging.instance_id: i-08ada8836da7169b1
 web9-staging: 10.201.10.135
 web9-staging.instance_id: i-0a7254dc9652698e3
