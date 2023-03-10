@@ -75,13 +75,11 @@
 
 - name: Install Zookeeper systemd script
   template: src=zookeeper-server.service.j2 dest=/etc/systemd/system/zookeeper-server.service mode=0755
-  when: ansible_distribution_version == '18.04'
 
 - name: Reload Systemd Daemon
   become: yes
   systemd:
     daemon_reload: yes
-  when: ansible_distribution_version == '18.04'
 
 # Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
 - shell: /bin/true

@@ -107,8 +107,14 @@
   notify: restart chrony
   when: use_chrony
 
-- include: bionic_apt_installs.yml
-  when: ansible_distribution_version == '18.04'
+- name: Install common packages (Bionic)
+  become: yes
+  apt:
+    name:
+      - software-properties-common
+      - python-minimal
+      - python3-pip
+      - ufw
 
 - name: Install pip packages
   pip:

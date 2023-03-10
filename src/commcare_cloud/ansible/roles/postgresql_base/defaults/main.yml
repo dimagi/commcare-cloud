@@ -5,7 +5,7 @@ postgresql_ssl_enabled: False
 postgresql_user_home: /var/lib/postgresql
 postgresql_bin_path: "/usr/lib/postgresql/{{ postgresql_version }}/bin"
 postgresql_dir_path: "{{ encrypted_root }}/postgresql"
-postgresql_process_path: "{{ '/var/run/postgresql' if ansible_distribution_version == '18.04' else postgresql_dir_path }}"
+postgresql_process_path: '/var/run/postgresql'
 postgresql_backup_dir: "{{ encrypted_root }}/backups/postgresql"
 postgresql_data_dir: "{{ postgresql_dir_path }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
 postgresql_config_home: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"

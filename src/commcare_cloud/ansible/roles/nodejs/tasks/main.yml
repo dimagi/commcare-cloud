@@ -1,7 +1,6 @@
 - name: Add nodejs apt key
   apt_key:
     url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
-  when: ansible_distribution_version == '18.04'
   become: yes
 
 - name: Add git nodejs repo
@@ -9,7 +8,6 @@
     repo: 'deb http://deb.nodesource.com/node_16.x bionic main'
     state: present
   become: yes
-  when: ansible_distribution_version == '18.04'
 
 - name: Install nodejs packages
   apt: name="nodejs" state=present
