@@ -163,11 +163,11 @@ def env_common():
 
     deploy = servers.get('deploy', servers['webworkers'])[:1]
 
-    if len(staticfiles) > 1 and not env.use_shared_dir_for_staticfiles:
+    if len(staticfiles) > 1 and not env.shared_dir_for_staticfiles:
         utils.abort(
             "There should be only one 'staticfiles' host. "
             "Ensure that only one host is assigned to the 'staticfiles' group, "
-            "or enable use_shared_dir_for_staticfiles."
+            "or set shared_dir_for_staticfiles."
         )
 
     env.roledefs = {

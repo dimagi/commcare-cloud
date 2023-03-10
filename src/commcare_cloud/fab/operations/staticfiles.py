@@ -79,7 +79,7 @@ def push_manifest(use_current_release=False):
 @roles(ROLES_DJANGO)
 @parallel
 def pull_manifest(use_current_release=False):
-    if env.use_shared_dir_for_staticfiles:
+    if env.shared_dir_for_staticfiles:
         with cd(env.code_root if not use_current_release else env.code_current):
             shared_path = f"{env.shared_dir_for_staticfiles}/{_get_git_hash()}"
             sudo('mkdir -p staticfiles/CACHE/')
@@ -91,7 +91,7 @@ def pull_manifest(use_current_release=False):
 @roles(ROLES_STATIC)
 @parallel
 def pull_staticfiles_cache(use_current_release=False):
-    if env.use_shared_dir_for_staticfiles:
+    if env.shared_dir_for_staticfiles:
         with cd(env.code_root if not use_current_release else env.code_current):
             shared_path = f"{env.shared_dir_for_staticfiles}/{_get_git_hash()}"
             sudo('mkdir -p staticfiles/CACHE/')
