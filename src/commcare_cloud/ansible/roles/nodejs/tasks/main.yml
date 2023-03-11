@@ -3,9 +3,9 @@
     url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
   become: yes
 
-- name: Add git nodejs repo
+- name: Add nodejs repo
   apt_repository:
-    repo: 'deb http://deb.nodesource.com/node_16.x bionic main'
+    repo: 'deb http://deb.nodesource.com/node_16.x {{ ansible_distribution_release }} main'
     state: present
   become: yes
 
