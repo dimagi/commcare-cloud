@@ -113,14 +113,18 @@
     name:
       - python-minimal
       - python3-pip
+      - software-properties-common
+      - ufw
   when: ansible_distribution_version == '18.04'
 
-- name: Install common packages
+- name: Install common packages (Jammy)
   become: yes
   apt:
     name:
+      - acl
       - software-properties-common
       - ufw
+  when: ansible_distribution_version == '22.04'
 
 - name: Install pip packages
   pip:
