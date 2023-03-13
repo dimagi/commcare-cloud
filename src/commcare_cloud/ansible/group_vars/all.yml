@@ -129,6 +129,8 @@ AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 AMQP_NAME: commcarehq
 OLD_AMQP_HOST: null
 OLD_AMQP_NAME: commcarehq
+BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
+OLD_BROKER_URL: "{{ ('amqp://' + OLD_AMQP_USER + ':' + OLD_AMQP_PASSWORD + '@' + OLD_AMQP_HOST + ':5672/' + OLD_AMQP_NAME) if OLD_AMQP_HOST else None }}"
 DROPBOX_APP_NAME: 'CommCareHQFiles'
 ELASTICSEARCH_PORT: 9200
 JAR_KEY_ALIAS: javarosakey
