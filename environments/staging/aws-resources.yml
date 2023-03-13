@@ -54,6 +54,10 @@ proxy4-staging: 10.201.10.38
 proxy4-staging.instance_id: i-023a8c825401fd149
 proxy5-staging: 10.201.11.200
 proxy5-staging.instance_id: i-022175194bcb24508
+proxy6-staging: 10.201.11.133
+proxy6-staging.instance_id: i-03426413ed3c925f1
+proxy7-staging: 10.201.11.156
+proxy7-staging.instance_id: i-08099947ab1629484
 proxy_alb-staging: internal-proxy-alb-staging-1025146289.us-east-1.elb.amazonaws.com
 rabbit_a2-staging: 10.201.10.20
 rabbit_a2-staging.instance_id: i-07edbe70562292516
