@@ -72,4 +72,4 @@
           Deploy failed, likely because kafka checkpoints were not available.
           You can rerun with --ignore-kafka-checkpoint-warning to prevent this
           error from blocking the deploy.
-      when: checkpoints_result.rc'
+      when: checkpoints_result.rc
