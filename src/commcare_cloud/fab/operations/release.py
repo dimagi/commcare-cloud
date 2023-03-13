@@ -1,7 +1,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from fabric import utils
 from fabric.api import env, parallel, roles, sudo
@@ -15,7 +15,6 @@ from ..const import (
     RELEASE_RECORD,
     ROLES_ALL_SRC,
     ROLES_MANAGE,
-    ROLES_STATIC,
 )
 
 
@@ -104,43 +103,6 @@ def clean_releases(keep=3):
     git_gc_current()
 
 
-def copy_localsettings(full_cluster=True):
-    roles_to_use = _get_roles(full_cluster)
-
-    @parallel
-    @roles(roles_to_use)
-    def copy():
-        sudo('cp {}/localsettings.py {}/localsettings.py'.format(env.code_current, env.code_root))
-
-    return copy
-
-
-@parallel
-@roles(ROLES_ALL_SRC)
-def copy_components():
-    if files.exists('{}/bower_components'.format(env.code_current), use_sudo=True):
-        sudo('cp -r {}/bower_components {}/bower_components'.format(env.code_current, env.code_root))
-    else:
-        sudo('mkdir {}/bower_components'.format(env.code_root))
-
-
-@parallel
-@roles(ROLES_ALL_SRC)
-def copy_node_modules():
-    if files.exists('{}/node_modules'.format(env.code_current), use_sudo=True):
-        sudo('cp -r {}/node_modules {}/node_modules'.format(env.code_current, env.code_root))
-    else:
-        sudo('mkdir {}/node_modules'.format(env.code_root))
-
-
-@parallel
-@roles(ROLES_STATIC)
-def copy_compressed_js_staticfiles():
-    if files.exists('{}/staticfiles/CACHE/js'.format(env.code_current), use_sudo=True):
-        sudo('mkdir -p {}/staticfiles/CACHE'.format(env.code_root))
-        sudo('cp -r {}/staticfiles/CACHE/js {}/staticfiles/CACHE/js'.format(env.code_current, env.code_root))
-
-
 @roles(ROLES_ALL_SRC)
 @parallel
 def get_previous_release():
@@ -160,20 +122,3 @@ def get_number_of_releases():
 @parallel
 def ensure_release_exists(release):
     return files.exists(release, use_sudo=True)
-
-
-def mark_keep_until(full_cluster=True):
-    roles_to_use = _get_roles(full_cluster)
-
-    @roles(roles_to_use)
-    @parallel
-    def mark(keep_days):
-        until_date = (datetime.utcnow() + timedelta(days=keep_days)).strftime(DATE_FMT)
-        with cd(env.code_root):
-            sudo('touch {}{}'.format(KEEP_UNTIL_PREFIX, until_date))
-
-    return mark
-
-
-def _get_roles(full_cluster):
-    return ROLES_ALL_SRC if full_cluster else ROLES_MANAGE

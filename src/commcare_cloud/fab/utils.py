@@ -29,6 +29,15 @@ def execute_with_timing(fn, *args, **kwargs):
             timing_log.write('{}: {}\n'.format(fn.__name__, duration.seconds))
 
 
+def obsolete_task(fn):
+    assert callable(fn), f"expected a function, got {fn!r}"
+    @task
+    @wraps(fn)
+    def obsolete(*args, **kw):
+        sys.exit(fn.__doc__)
+    return obsolete
+
+
 def incomplete_task(replacement_command):
     assert isinstance(replacement_command, str), \
         f"@incomplete_task(...) expected a string, got {replacement_command}"

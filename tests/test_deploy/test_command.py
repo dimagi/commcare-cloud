@@ -1,8 +1,9 @@
 # Tests for commcare_cloud.commands.deploy.command.Deploy
 # Way too many things are mocked here.
 import sys
+from datetime import datetime
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from testil import assert_raises, eq
 
@@ -25,9 +26,13 @@ def test_deploy_commcare_happy_path():
         return 0
 
     log = []
-    with (
-        patch.object(commcare, "run_ansible_playbook", run_playbook),
-        patch.object(commcare, "commcare_cloud", run_fab),
+    with patch.multiple(
+        commcare,
+        commcare_cloud=run_fab,
+        record_deploy_failed=Mock(),
+        record_deploy_start=Mock(),
+        record_successful_deploy=Mock(),
+        run_ansible_playbook=run_playbook,
     ):
         _deploy_commcare()
 
@@ -49,9 +54,13 @@ def test_resume_deploy_with_release_name():
         return 0
 
     log = []
-    with (
-        patch.object(commcare, "run_ansible_playbook", run_playbook),
-        patch.object(commcare, "commcare_cloud", run_fab),
+    with patch.multiple(
+        commcare,
+        commcare_cloud=run_fab,
+        record_deploy_failed=Mock(),
+        record_deploy_start=Mock(),
+        record_successful_deploy=Mock(),
+        run_ansible_playbook=run_playbook,
     ):
         _deploy_commcare("--resume=FRANK")
 
@@ -79,102 +88,131 @@ def test_resume_deploy_without_release_name_raises():
 
 def test_deploy_limited_release():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, ["-e", "code_version=def456"])
+        eq(unknown_args, [
+            "-e", "code_version=def456",
+            "-e", "keep_until=2020-01-03_03.04",
+            "--tags=private_release",
+        ])
         eq(context.environment.release_name, "GHOST")
         eq(kw.get("limit"), "django_manage")
         log.append(playbook)
         return 0
 
-    def run_fab(env_name, fab, task, *args, **kw):
-        log.append(" ".join((f"{fab} {task}",) + args))
-        return 0
-
     log = []
-    with (
-        patch.object(commcare, "run_ansible_playbook", run_playbook),
-        patch.object(commcare, "commcare_cloud", run_fab),
+    with patch.multiple(
+        commcare,
+        datetime=fakedatetime,
+        run_ansible_playbook=run_playbook,
     ):
-        _deploy_commcare("--setup-release", "--limit=django_manage")
+        _deploy_commcare("--private")
 
-    eq(log, [
-        "deploy_hq.yml",
-        "fab setup_limited_release:run_incomplete=yes --set release_name=GHOST",
-    ])
+    eq(log, ["deploy_hq.yml"])
 
 
-def test_deploy_setup_release():
+def test_deploy_limited_release_to_webworker():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, ["-e", "code_version=def456"])
+        eq(unknown_args, [
+            "-e", "code_version=def456",
+            "-e", "keep_until=2020-01-03_03.04",
+            "--tags=private_release",
+        ])
         eq(context.environment.release_name, "GHOST")
-        eq(kw.get("limit"), None)
+        eq(kw.get("limit"), "webworkers[0]")
         log.append(playbook)
         return 0
 
-    def run_fab(env_name, fab, task, *args, **kw):
-        log.append(" ".join((f"{fab} {task}",) + args))
+    log = []
+    with patch.multiple(
+        commcare,
+        datetime=fakedatetime,
+        run_ansible_playbook=run_playbook,
+    ):
+        _deploy_commcare("--private", "--limit=webworkers[0]")
+
+    eq(log, ["deploy_hq.yml"])
+
+
+def test_deploy_private_release_to_all_applicable_hosts():
+    def run_playbook(playbook, context, *args, unknown_args=None, **kw):
+        eq(unknown_args, [
+            "-e", "code_version=def456",
+            "-e", "keep_until=2020-01-03_03.04",
+            "--tags=private_release",
+        ])
+        eq(context.environment.release_name, "GHOST")
+        eq(kw.get("limit"), "all")
+        log.append(playbook)
         return 0
 
     log = []
-    with (
-        patch.object(commcare, "run_ansible_playbook", run_playbook),
-        patch.object(commcare, "commcare_cloud", run_fab),
+    summary = []
+    with patch.multiple(
+        commcare,
+        color_summary=summary.append,
+        datetime=fakedatetime,
+        run_ansible_playbook=run_playbook,
     ):
-        _deploy_commcare("--setup-release")
+        _deploy_commcare("--private", "--limit=all")
 
-    eq(log, [
-        "deploy_hq.yml",
-        "fab setup_release:run_incomplete=yes --set release_name=GHOST",
+    eq(log, ["deploy_hq.yml"])
+    eq(summary, [
+        "Your private release is located here:",
+        "/home/cchq/www/small_cluster/releases/GHOST",
     ])
 
 
 def test_deploy_limited_release_with_keep_days():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, ["-e", "code_version=def456"])
+        eq(unknown_args, [
+            "-e", "code_version=def456",
+            "-e", "keep_until=2020-01-12_03.04",
+            "--tags=private_release",
+        ])
         eq(context.environment.release_name, "GHOST")
         eq(kw.get("limit"), "django_manage")
         log.append(playbook)
         return 0
 
-    def run_fab(env_name, fab, task, *args, **kw):
-        log.append(" ".join((f"{fab} {task}",) + args))
-        return 0
-
     log = []
-    with (
-        patch.object(commcare, "run_ansible_playbook", run_playbook),
-        patch.object(commcare, "commcare_cloud", run_fab),
+    with patch.multiple(
+        commcare,
+        datetime=fakedatetime,
+        run_ansible_playbook=run_playbook,
     ):
-        _deploy_commcare("--setup-release", "--limit=django_manage", "--keep-days=10")
+        _deploy_commcare("--private", "--keep-days=10")
 
-    eq(log, [
-        "deploy_hq.yml",
-        "fab setup_limited_release:run_incomplete=yes,keep_days=10 --set release_name=GHOST",
-    ])
+    eq(log, ["deploy_hq.yml"])
 
 
 def test_preindex_views():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, ["-e", "code_version=def456"])
+        eq(unknown_args, [
+            "-e", "code_version=def456",
+            "-e", "keep_until=2020-01-03_03.04",
+            "--tags=private_release",
+        ])
         eq(context.environment.release_name, "GHOST")
         eq(kw.get("limit"), "pillowtop[0]")
         log.append(playbook)
         return 0
 
-    def run_fab(env_name, fab, task, *args, **kw):
-        log.append(" ".join((f"{fab} {task}",) + args))
+    def run_command(env_name, cmd, *args, **kw):
+        assert not kw, kw
+        log.append(" ".join((cmd,) + args))
         return 0
 
     log = []
     with (
         patch.object(preindex_views, "check_branch"),
+        patch.object(preindex_views, "commcare_cloud", run_command),
         patch.object(commcare, "run_ansible_playbook", run_playbook),
-        patch.object(commcare, "commcare_cloud", run_fab),
+        patch.object(commcare, "datetime", fakedatetime),
     ):
         _deploy_commcare(cmd=("preindex-views",))
 
     eq(log, [
         "deploy_hq.yml",
-        "fab preindex_views:run_incomplete=yes --set release_name=GHOST",
+        "django-manage preindex_everything --server=pillowtop[0] --release=GHOST --tmux --mail",
     ])
 
 
@@ -185,13 +223,18 @@ def _deploy_commcare(*argv, cmd=("deploy", "commcare")):
     with (
         patch("commcare_cloud.environment.paths.ENVIRONMENTS_DIR", envs),
         patch.object(command, "check_branch"),
-        patch.object(commcare, "record_deploy_start"),
-        patch.object(commcare, "record_deploy_failed"),
-        patch.object(commcare, "record_successful_deploy"),
         patch.object(commcare, "confirm_deploy", lambda *a: True),
         patch.object(commcare, "DEPLOY_DIFF", diff),
         patch.object(Environment, "create_generated_yml", lambda self:None),
         patch.object(Environment, "release_name", "GHOST"),
     ):
         argv = ("cchq", "small_cluster") + cmd + argv
-        return call_commcare_cloud(argv)
+        try:
+            call_commcare_cloud(argv)
+        finally:
+            get_environment.reset_cache()
+
+
+class fakedatetime:
+    def utcnow():
+        return datetime(2020, 1, 2, 3, 4)

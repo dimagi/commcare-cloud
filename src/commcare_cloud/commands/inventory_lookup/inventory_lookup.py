@@ -294,7 +294,8 @@ class DjangoManage(CommandBase):
     def run(self, args, manage_args):
         environment = get_environment(args.env_name)
         if args.release:
-            code_dir = environment.remote_conf.release(args.release)
+            environment.release_name = args.release
+            code_dir = environment.remote_conf.code_source
         else:
             code_dir = environment.remote_conf.code_current
 

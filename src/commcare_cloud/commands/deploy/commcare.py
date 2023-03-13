@@ -1,11 +1,11 @@
 import shlex
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytz
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
-from commcare_cloud.colors import color_notice, color_error
+from commcare_cloud.colors import color_notice, color_error, color_summary
 from commcare_cloud.commands.ansible.run_module import (
     AnsibleContext,
     BadAnsibleResult,
@@ -23,6 +23,7 @@ from commcare_cloud.commands.deploy.utils import (
     record_deploy_failed,
 )
 from commcare_cloud.events import publish_deploy_event
+from commcare_cloud.fab.const import DATE_FMT
 from commcare_cloud.fab.deploy_diff import DeployDiff
 from commcare_cloud.github import github_repo
 
@@ -44,24 +45,29 @@ def deploy_commcare(environment, args, unknown_args):
         start_time=datetime.utcnow()
     )
 
-    record_deploy_start(environment, context)
+    should_record = not (args.skip_record or args.private)
+    if should_record:
+        record_deploy_start(environment, context)
 
     code_version = context.diff.deploy_commit if not args.resume else ''
     ansible_args = ["-e", f"code_version={code_version}"]
-    if getattr(args, "preindex_views", False):
-        fab_command = "preindex_views"
-    elif args.setup_release:
-        if args.limit:
-            if args.limit == 'django_manage':
-                fab_command = "setup_limited_release"
-            else:
-                exit("--limit only supports 'django_manage' at this time")
-        else:
-            fab_command = "setup_release"
+    if args.private and not args.keep_days:
+        args.keep_days = 1
+    if args.keep_days:
+        until = (datetime.utcnow() + timedelta(days=args.keep_days)).strftime(DATE_FMT)
+        ansible_args.extend(["-e", f"keep_until={until}"])
+    if args.private:
+        if not args.limit:
+            args.limit = "django_manage"
+        fab_command = None
+        ansible_args.append("--tags=private_release")
+        ansible_args.extend(unknown_args)
     else:
         if args.limit:
-            exit("--limit is not allowed except with --setup-release")
+            exit("--limit is not allowed except with --private")
         fab_command = "deploy_commcare"
+    if args.ignore_kafka_checkpoint_warning:
+        ansible_args.extend(["-e", "ignore_kafka_checkpoint_warning=true"])
     environment.create_generated_yml()
     rc = run_ansible_playbook(
         'deploy_hq.yml',
@@ -75,7 +81,7 @@ def deploy_commcare(environment, args, unknown_args):
         unknown_args=ansible_args,
     )
 
-    if rc == 0:
+    if fab_command and rc == 0:
         rc = commcare_cloud(
             environment.name, 'fab', f'{fab_command}{fab_func_args}',
             '--set', ','.join(fab_settings), branch=args.branch, *unknown_args
@@ -83,17 +89,21 @@ def deploy_commcare(environment, args, unknown_args):
     if rc != 0:
         print(color_error("Deploy failed."))
         print(f"Add --resume={environment.release_name} to the deploy command to retry.")
-        record_deploy_failed(environment, context)
+        if should_record:
+            record_deploy_failed(environment, context)
         return rc
 
-    if not args.skip_record:
+    if should_record:
         record_successful_deploy(environment, context)
+    if args.private:
+        print(color_summary("Your private release is located here:"))
+        print(color_summary(environment.remote_conf.code_source))
 
     return 0
 
 
 def confirm_deploy(environment, deploy_revs, diffs, args):
-    if args.setup_release:
+    if args.private:
         return True
 
     if args.resume:
@@ -256,8 +266,6 @@ def get_deploy_commcare_fab_func_args(args):
         fab_func_args.append('resume=yes')
     if args.skip_record:
         fab_func_args.append('skip_record=yes')
-    if args.keep_days is not None:
-        fab_func_args.append(f"keep_days={args.keep_days}")
 
     if fab_func_args:
         return ':{}'.format(','.join(fab_func_args))

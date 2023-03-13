@@ -1,0 +1,19 @@
+- name: Check if {{ item }} directory exists in previous release
+  stat:
+    path: '{{ code_home }}/{{ item }}'
+  register: src_directory
+
+- name: Create {{ item }} directory
+  file:
+    path: "{{ code_source }}/{{ item }}"
+    state: directory
+    mode: 0755
+
+- name: Copy {{ item }} from previous release
+  copy:
+    src: "{{ code_home }}/{{ item }}/"
+    dest: "{{ code_source }}/{{ item }}/"
+    remote_src: true
+    local_follow: false
+    mode: preserve
+  when: src_directory.stat.exists

@@ -25,7 +25,7 @@ Create a new release:
 
 .. code-block:: shell
 
-   commcare-cloud <env> deploy commcare --setup-release [--limit django_manage]
+   commcare-cloud <env> deploy commcare --private [--limit ...]
 
 Note down the release folder location: ``/home/cchq/www/<env>/releases/YYYY-MM-DD_HH.MM``
 
@@ -42,5 +42,5 @@ This will override the default value of the ``code_home`` variable which normall
 Choosing a value for ``LIMIT``\ :
 
 
-* If you did not use ``--limit``\ , set ``LIMIT`` to ``'!formplayer'``
-* If you did use ``--limit``\ , set ``LIMIT`` to ``django_manage``
+* If you did not use ``--limit``\ , set ``LIMIT`` to ``django_manage``
+* If you did use ``--limit``\ , set ``LIMIT`` to the same value as used before.

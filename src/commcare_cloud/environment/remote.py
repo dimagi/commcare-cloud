@@ -15,5 +15,6 @@ class RemoteConf:
     def code_current(self):
         return f'/home/{self.cchq_user}/www/{self.deploy_env}/current'
 
-    def release(self, release_name):
-        return f'/home/{self.cchq_user}/www/{self.deploy_env}/releases/{release_name}'
+    @property
+    def code_source(self):
+        return f'/home/{self.cchq_user}/www/{self.deploy_env}/releases/{self.environment.release_name}'

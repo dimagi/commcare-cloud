@@ -40,11 +40,9 @@ from fabric.colors import blue, magenta, red
 from fabric.context_managers import cd
 from fabric.contrib import console
 from fabric.operations import require
-from github import GithubException
 
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
-from commcare_cloud.github import github_repo
 from .checks import check_servers
 from .const import ROLES_ALL_SERVICES, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .operations import db
@@ -54,6 +52,7 @@ from .utils import (
     clear_cached_deploy,
     execute_with_timing,
     incomplete_task,
+    obsolete_task,
     retrieve_cached_deploy_checkpoint,
     retrieve_cached_deploy_env,
     traceback_string,
@@ -209,12 +208,10 @@ def pillowtop():
     env.supervisor_roles = ROLES_PILLOWTOP
 
 
-@incomplete_task("preindex-views")
+@obsolete_task
 @roles(ROLES_PILLOWTOP)
 def preindex_views():
     """OBSOLETE. Use 'preindex-views' instead"""
-    _setup_release()
-    db.preindex_views()
 
 
 @roles(ROLES_DEPLOY)
@@ -228,10 +225,9 @@ def send_email(subject, message, use_current_release=False):
         )
 
 
-@task
+@obsolete_task
 def kill_stale_celery_workers():
     """OBSOLETE use 'kill-stale-celery-workers' instead"""
-    print(kill_stale_celery_workers.__doc__)
 
 
 @task
@@ -240,50 +236,16 @@ def rollback_formplayer():
     print("cchq {} ansible-playbook rollback_formplayer.yml --tags=rollback".format(env.deploy_env))
 
 
-def parse_int_or_exit(val):
-    try:
-        return int(val)
-    except (ValueError, TypeError):
-        print(red("Unable to parse '{}' into an integer".format(val)))
-        exit()
-
-
-@incomplete_task("deploy commcare --setup-release --limit=django_manage ...")
-def setup_limited_release(keep_days=1):
-    """OBSOLETE. Use deploy commcare --setup-release --limit=django_manage
-                                     [--keep-days=N] [--commcare-rev=HQ_BRANCH]
+@obsolete_task
+def setup_limited_release():
+    """OBSOLETE. Use deploy commcare --private [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
-    _setup_release(parse_int_or_exit(keep_days), full_cluster=False)
 
 
-@incomplete_task("deploy commcare --setup-release ...")
-def setup_release(keep_days=0):
-    """OBSOLETE. Use deploy commcare --setup-release
-                                     [--keep-days=N] [--commcare-rev=HQ_BRANCH]
+@obsolete_task
+def setup_release():
+    """OBSOLETE. Use deploy commcare --private --limit=all [--keep-days=N] [--commcare-rev=HQ_BRANCH]
     """
-    _setup_release(parse_int_or_exit(keep_days), full_cluster=True)
-
-
-def _setup_release(keep_days=2, full_cluster=True):
-    """
-    Setup a release in the releases directory with the most recent code.
-    Useful for running management commands. These releases will automatically
-    be cleaned up at the finish of each deploy. To ensure that a release will
-    last past a deploy use the `keep_days` param.
-
-    More options at
-    https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/fab/README.md#private-releases
-
-    :param keep_days: The number of days to keep this release before it will be purged
-    :param full_cluster: If False, only setup on webworkers[0] where the command will be run
-    """
-    execute_with_timing(copy_release_files, full_cluster)
-
-    if keep_days > 0:
-        execute_with_timing(release.mark_keep_until(full_cluster), keep_days)
-
-    print(blue("Your private release is located here: "))
-    print(blue(env.code_root))
 
 
 def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
@@ -320,14 +282,6 @@ def _deploy_without_asking(skip_record):
 @task
 def update_current(release=None):
     execute(release.update_current, release)
-
-
-def copy_release_files(full_cluster=True):
-    execute(release.copy_localsettings(full_cluster))
-    if full_cluster:
-        execute(release.copy_components)
-        execute(release.copy_node_modules)
-        execute(release.copy_compressed_js_staticfiles)
 
 
 @task
@@ -379,11 +333,10 @@ def clean_releases(keep=3):
     execute(release.clean_releases, keep)
 
 
-@task
+@obsolete_task
 @roles(['deploy'])
 def manage(cmd=None):
     """OBSOLETE use 'django-manage' instead"""
-    exit(manage.__doc__)
 
 
 @incomplete_task("deploy commcare ...")
@@ -496,8 +449,6 @@ def reset_pillow(pillow):
 
 
 ONLINE_DEPLOY_COMMANDS = [
-    _setup_release,
-    db.ensure_checkpoints_safe,
     staticfiles.yarn_install,
     staticfiles.version_static,     # run after any new bower code has been installed
     staticfiles.collectstatic,
@@ -511,7 +462,7 @@ ONLINE_DEPLOY_COMMANDS = [
 ]
 
 
-@task
+@obsolete_task
 def check_status():
     """OBSOLETE replaced by
 
@@ -519,13 +470,11 @@ def check_status():
     commcare-cloud <env> service postgresql status
     commcare-cloud <env> service elasticsearch status
     """
-    exit(check_status.__doc__)
 
 
-@task
+@obsolete_task
 def perform_system_checks():
     """OBSOLETE use 'perform-system-checks' instead"""
-    exit(perform_system_checks.__doc__)
 
 
 def make_tasks_for_envs(available_envs):
