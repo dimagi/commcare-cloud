@@ -61,7 +61,9 @@ rabbit_b1-staging: 10.201.11.184
 rabbit_b1-staging.instance_id: i-0f25d0640d6f32c11
 web10-staging: 10.201.11.25
 web10-staging.instance_id: i-03fb01724d1dfd3cf
-web11-staging: 10.201.11.47
-web11-staging.instance_id: i-031850bc3beb77149
+web11-staging: 10.201.11.229
+web11-staging.instance_id: i-0079c73e58802d6af
+web12-staging: 10.201.11.161
+web12-staging.instance_id: i-0499315b539bb8f83
 web9-staging: 10.201.10.135
 web9-staging.instance_id: i-0a7254dc9652698e3
