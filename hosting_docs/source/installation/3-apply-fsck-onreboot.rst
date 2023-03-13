@@ -1,6 +1,5 @@
-.. _cchq-manual-install:
 
-applying file system check for every reboot 
+Applying file system check for every reboot 
 ====================================================
 
 Checking the file system for errors is an important part of Linux system administration. It is a good troubleshooting 
