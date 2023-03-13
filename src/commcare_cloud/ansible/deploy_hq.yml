@@ -10,6 +10,13 @@
     - proxy
     - django_manage
   tasks:
+    - name: Get code version
+      include_role:
+        name: deploy_hq
+        tasks_from: get_code_version
+      tags: private_release
+      when: code_version is not defined
+
     - import_role: {name: deploy_hq}
       vars:
         if_not_done: setup_private_release

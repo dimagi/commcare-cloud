@@ -1,0 +1,33 @@
+- name: Get code version
+  become: true
+  become_user: cchq
+  tags: private_release
+  block:
+    - name: Get code version from git repo
+      command:
+        cmd: git rev-parse HEAD
+        chdir: '{{ code_source }}'
+      register: git_code_version
+      changed_when: false
+      failed_when: false
+
+    - set_fact:
+        code_versions: >-
+          {{
+          ansible_play_hosts
+          | map('extract', hostvars, 'git_code_version')
+          | selectattr('rc', '==', 0)
+          | map(attribute='stdout')
+          | unique
+          }}
+
+    - name: Set code_version={{ code_versions[0] }}
+      # Set code version to the single unique version found among
+      # selected play hosts (when such version exists). Allows
+      # --resume=RELEASE_NAME where the git clone previously failed on
+      # some hosts or where --limit was changed to include additional
+      # hosts. A private release can be converted to a full release
+      # using --resume=RELEASE_NAME without --private.
+      set_fact:
+        code_version: '{{ code_versions[0] }}'
+      when: code_versions | length == 1
