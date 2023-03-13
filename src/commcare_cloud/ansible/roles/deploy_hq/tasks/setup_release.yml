@@ -15,12 +15,14 @@
     requirements_file: "requirements/prod-requirements.txt"
     http_proxy: "{{ http_proxy | default(omit, true) }}"
 
-- name: Copy localsettings.py
-  copy:
-    src: "{{ code_home }}/localsettings.py"
+- name: Generate localsettings.py
+  template:
+    src: roles/commcarehq/templates/localsettings.py.j2
     dest: "{{ code_source }}/localsettings.py"
-    remote_src: true
-    mode: preserve
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0600
+  no_log: true
 
 - name: Mark keep until
   file:
