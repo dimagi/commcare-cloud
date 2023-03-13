@@ -35,8 +35,10 @@ class Deploy(CommandBase):
         Argument('--resume', metavar="RELEASE_NAME", help="""
             Rather than starting a new deploy, resume a previous release.
         """),
-        Argument('--setup-release', action='store_true', help="""
+        Argument('--private', action='store_true', help="""
             Set up a private release for running management commands.
+            This option implies --limit=django_manage. Use --limit=all
+            to set up a private release on all applicable hosts.
         """),
         Argument('-l', '--limit', metavar='SUBSET', help="""
             Limit selected hosts.
@@ -50,6 +52,9 @@ class Deploy(CommandBase):
         Argument('--commcare-rev', help="""
             The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
         """, default=None),
+        Argument('--ignore-kafka-checkpoint-warning', action='store_true', help="""
+            Do not block deploy if Kafka checkpoints are unavailable.
+        """),
         Argument('--set', dest='fab_settings', help="""
             fab settings in k1=v1,k2=v2 format to be passed down to fab
         """, default=None),

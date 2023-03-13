@@ -369,6 +369,7 @@ class Environment(object):
                 self.fab_settings_config.code_repo
                 if not self.meta_config.bare_non_cchq_environment else {}
             ),
+            'ignore_kafka_checkpoint_warning': self.fab_settings_config.ignore_kafka_checkpoint_warning,
             'ES_SETTINGS': (
                 self.elasticsearch_config.settings.to_json()
                 if not self.meta_config.bare_non_cchq_environment else {}

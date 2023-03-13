@@ -599,6 +599,8 @@ ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE = {{ localsettings.ALLOW_PHONE_AS_DEFAU
 
 RATE_LIMIT_SUBMISSIONS = {{ localsettings.RATE_LIMIT_SUBMISSIONS | default(False) }}
 
+DATA_UPLOAD_MAX_NUMBER_FILES = {{ localsettings.DATA_UPLOAD_MAX_NUMBER_FILES | default('None') }}
+
 {% if 'SAVED_EXPORT_ACCESS_CUTOFF' in localsettings %}
 SAVED_EXPORT_ACCESS_CUTOFF = {{ localsettings.SAVED_EXPORT_ACCESS_CUTOFF }}
 {% endif %}
