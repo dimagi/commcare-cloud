@@ -22,7 +22,6 @@ Once you have understood what deployment option is most suitable for you using :
 
    /installation/1-quick-monolith-install
    /installation/2-manual-install
-   /installation/3-apply-fsck-onreboot
    /installation/troubleshooting
    /installation/new_environment_qa
    /installation/migration/index
