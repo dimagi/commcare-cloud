@@ -13,7 +13,7 @@
     chdir: '{{ code_source }}'
   register: checkpoints_result
   changed_when: checkpoints_result.rc
-  failed_when: '"rc" not in checkpoints_result'
+  failed_when: ignore_kafka_checkpoint_warning | default(False) and checkpoints_result.get("rc", 1)
   run_once: true
 
 - name: Unsafe checkpoints error
