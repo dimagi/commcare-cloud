@@ -5,6 +5,17 @@
   register: result
   check_mode: no
   failed_when: "result.rc != 0"
+  changed_when: no
+
+- name: check for nginx PID
+  stat:
+    path: "/var/run/nginx.pid"
+  register: pid_file
+
+- name: restart nginx if pid file empty
+  become: yes
+  service: name=nginx state=restarted enabled=yes
+  when: "pid_file.stat.size == 0"
 
 - name: reload the nginx service
   become: yes

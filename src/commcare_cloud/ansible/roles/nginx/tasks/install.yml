@@ -11,11 +11,11 @@
 
 - name: Remove nginx mainline repository
   become: yes
-  apt_repository: repo='deb http://nginx.org/packages/mainline/ubuntu/ bionic nginx' state=absent
+  apt_repository: repo='deb http://nginx.org/packages/mainline/ubuntu/ {{ ansible_distribution_release }} nginx' state=absent
 
 - name: Add nginx stable repository
   become: yes
-  apt_repository: repo='deb http://nginx.org/packages/ubuntu bionic nginx' state=present
+  apt_repository: repo='deb http://nginx.org/packages/ubuntu {{ ansible_distribution_release }} nginx' state=present
 
 - name: Install nginx
   become: yes
