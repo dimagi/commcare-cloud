@@ -12,8 +12,12 @@
   tasks:
     - import_role: {name: deploy_hq}
       vars:
-        if_not_done: setup_release
+        if_not_done: setup_private_release
       tags: private_release
+
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: setup_release
 
 - name: Copy static JS
   hosts: proxy
