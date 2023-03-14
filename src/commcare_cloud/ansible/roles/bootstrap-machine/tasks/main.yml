@@ -19,6 +19,14 @@
   tags:
     - umask
 
+# To account for the default of 0750 on Jammy
+# which is too strict for us
+- name: Set DIR_MODE for adduser
+  replace:
+    path: /etc/adduser.conf
+    regexp: '^DIR_MODE=0750'
+    replace: 'DIR_MODE=0755'
+
 - name: reset ssh connection to allow umask changes to take affect
   meta: reset_connection
 
