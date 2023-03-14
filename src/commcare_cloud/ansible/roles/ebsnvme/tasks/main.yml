@@ -1,24 +1,32 @@
-- name: Install nvme-cli
-  become: yes
-  apt: name=nvme-cli state=present
-  notify: "Reload udev rules"
+- block:
+  - name: Install nvme-cli
+    become: yes
+    apt: name=nvme-cli state=present
+    notify: "Reload udev rules"
 
-- name: Copy ebsnvme-id
-  become: yes
-  copy:
-    src: "_vendor/ebsnvme-id"
-    dest: "/sbin/ebsnvme-id"
-    owner: root
-    group: root
-    mode: 0755
-  notify: "Reload udev rules"
+  - name: Copy ebsnvme-id
+    become: yes
+    copy:
+      src: "_vendor/ebsnvme-id"
+      dest: "/sbin/ebsnvme-id"
+      owner: root
+      group: root
+      mode: 0755
+    notify: "Reload udev rules"
 
-- name: Add udev rule to map to standard /dev/sd* naming
+  - name: Add udev rule to map to standard /dev/sd* naming
+    become: yes
+    template:
+      src: 70-ec2-nvme-devices.rules.j2
+      dest: /etc/udev/rules.d/70-ec2-nvme-devices.rules
+      owner: root
+      group: root
+      mode: 0644
+    notify: "Reload udev rules"
+  when: ansible_distribution_version == '18.04'
+
+- name: "Set up nvme mapping automatically"
   become: yes
-  template:
-    src: 70-ec2-nvme-devices.rules.j2
-    dest: /etc/udev/rules.d/70-ec2-nvme-devices.rules
-    owner: root
-    group: root
-    mode: 0644
+  apt: name=amazon-ec2-utils state=present
   notify: "Reload udev rules"
+  when: ansible_distribution_version == '22.04'
