@@ -1,3 +1,5 @@
+.. _backups:
+
 Backup and Restore
 ==================
 
@@ -66,7 +68,7 @@ You can check for the presence of that file and its last modified date when look
 PostgreSQL Backups
 ------------------
 
-PostgreSQL backups are made daily and weekly. Old backups are deleted from the local system.
+PostgreSQL backups are made daily and weekly by default and can be made hourly optionally. Old backups are deleted from the local system.
 
 
 * `postgresql_backup_dir`: The directory to write the PostgreSQL backups to. (Default: ``/opt/data/backups/postgresql``\ )
@@ -77,6 +79,9 @@ PostgreSQL backups are made daily and weekly. Old backups are deleted from the l
 
 * `postgresql_backup_days`: The number of days to keep daily backups (Default: 1)
 * `postgresql_backup_weeks`: The number of weeks to keep weekly backups (Default: 1)
+* `postgres_backup_hourly`: Boolean value to enable or disable hourly backups. (Default: false)
+* `postgresql_backup_hours`: The number of hours to keep hourly backups (Default: 1).
+
 
 Enabling S3 backups for PostgreSQL
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -213,7 +218,7 @@ You can follow `these instructions <https://www.postgresql.org/docs/9.6/backup-d
 CouchDB backups
 ---------------
 
-CouchDB backups are made daily and weekly. Old backups are deleted from the system.
+CouchDB backups are made daily and weekly and optionally hourly. Old backups are deleted from the system.
 
 
 * ``backup_couch: True`` to enable couchdb backups (Default: ``False``\ )
@@ -221,6 +226,9 @@ CouchDB backups are made daily and weekly. Old backups are deleted from the syst
 * `couch_backup_dir`: the directory to save backups in (Default: ``/opt/data/backups/couchdb2``\ )
 * `couchdb_backup_days`: The number of days to keep daily backups (Default: 1)
 * `couchdb_backup_weeks`: The number of weeks to keep weekly backups (Default: 1)
+* `couch_backup_hourly`: Boolean value to enable or disable hourly backups. (Default: false)
+* `couchdb_backup_hours`: The number of hours to keep hourly backups (Default: 1).
+
 
 CouchDB backups create a compressed version of the couchdb data directory.
 
@@ -279,6 +287,8 @@ The ``blobdb`` is our binary data store.
 * `blobdb_backup_dir`: the directory to write blobdb backups to (Default: ``/opt/data/backups/blobdb``\ )
 * `blobdb_backup_days`: the number of days to keep daily backups (Default: 2)
 * `blobdb_backup_weeks`: the number of weeks to keep weekly backups (Default: 2)
+* `blobdb_backup_hourly`: Boolean value to enable or disable hourly backups. (Default: false)
+* `blobdb_backup_hours`: The number of hours to keep hourly backups (Default: 1).
 
 BlobDB backups create a compressed version of the blobdb data directory.
 
