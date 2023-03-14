@@ -1,0 +1,22 @@
+- name: Copy staticfiles cache from proxy to webworker
+  when: shared_dir_for_staticfiles
+  block:
+    - name: Create cache directory
+      file:
+        path: '{{ code_source }}/staticfiles/CACHE'
+        state: directory
+        mode: 0755
+
+    - name: Copy manifest.json from shared dir into staticfiles/CACHE
+      copy:
+        src: '{{ shared_dir_for_staticfiles }}/{{ code_version }}/staticfiles/CACHE/manifest.json'
+        dest: '{{ code_source }}/staticfiles/CACHE/'
+        remote_src: true
+        mode: 0644
+      no_log: true
+
+- name: Fetch manifest from redis
+  command:
+    cmd: ./manage.py update_manifest
+    chdir: '{{ code_source }}'
+  when: not shared_dir_for_staticfiles

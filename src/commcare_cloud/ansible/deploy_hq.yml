@@ -73,3 +73,10 @@
     - import_role: {name: deploy_hq}
       vars:
         if_not_done: run_migrations
+
+- name: Pull staticfiles manifest
+  hosts: webworkers
+  tasks:
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: staticfiles_pull_manifest

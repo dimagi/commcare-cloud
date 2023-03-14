@@ -449,7 +449,6 @@ def reset_pillow(pillow):
 
 
 ONLINE_DEPLOY_COMMANDS = [
-    staticfiles.pull_manifest,
     staticfiles.pull_staticfiles_cache,
     release.clean_releases,
 ]
