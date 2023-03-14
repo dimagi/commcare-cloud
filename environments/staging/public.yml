@@ -206,7 +206,7 @@ shared_dir_gid: 1500
 use_chrony: True
 
 python_version: '3.9'
-use_deadsnakes: '{{ ansible_distribution_version <= "18.04" }}'
+use_deadsnakes: yes
 
 allow_aws_ssm_proxy: true
 

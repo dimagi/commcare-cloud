@@ -239,41 +239,6 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
-#### ``mosh`` Command
-
-Connect to a remote host with mosh.
-
-```
-commcare-cloud <env> mosh [--quiet] [server]
-```
-
-This will also automatically switch to using ssh with `-A`
-when `<server>` is `control` (because `mosh` doesn't support `-A`).
-
-All trailing arguments are passed directly to `mosh`
-(or `ssh` in the edge case described above).
-
-##### Positional Arguments
-
-###### `server`
-
-Server name/group: postgresql, proxy, webworkers, ... The server
-name/group may be prefixed with 'username@' to login as a
-specific user and may be terminated with '[<n>]' to choose one of
-multiple servers if there is more than one in the group. For
-example: webworkers[0] will pick the first webworker. May also be
-omitted for environments with only a single server.
-
-Use '-' for default (django_manage[0])
-
-##### Options
-
-###### `--quiet`
-
-Don't output the command to be run.
-
----
-
 #### ``run-module`` Command
 
 Run an arbitrary Ansible module.

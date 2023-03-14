@@ -1,4 +1,5 @@
 - name: 'Check if done: {{ if_not_done }}'
+  become: true
   stat:
     path: '{{ code_source }}/.{{ if_not_done }}-done'
   register: done_marker

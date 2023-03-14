@@ -21,4 +21,3 @@
   become: yes
   systemd:
     daemon_reload: yes
-  when: ansible_distribution_version == '18.04'

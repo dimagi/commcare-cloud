@@ -32,12 +32,6 @@
         state: absent
   tags: services
 
-- name: Ensure python_env symlink
-  hosts: commcarehq
-  tasks:
-  - import_tasks: roles/commcarehq/tasks/python_env_symlink.yml
-    tags: services
-
 - name: Celery Supervisor Config
   hosts:
     - celery
@@ -116,11 +110,14 @@
           - "{{ mgmt_cmd_managed_files|default([]) }}"
           - "{{ prometheus_managed_files|default([]) }}"
           - "{{ prometheus_django_runner_managed_files|default([]) }}"
-    - shell: find {{ service_home|quote }} -type f
+    - name: "Find supervisor config files"
+      become: true
+      shell: find {{ service_home|quote }} -type f
       register: contents
       check_mode: no
       changed_when: no
     - name: "Remove supervisor configs that are no longer needed"
+      become: true
       file:
         path: "{{ item }}"
         state: absent
