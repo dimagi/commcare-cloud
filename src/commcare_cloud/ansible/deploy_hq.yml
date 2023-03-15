@@ -19,7 +19,7 @@
 
     - import_role: {name: deploy_hq}
       vars:
-        if_not_done: setup_private_release
+        if_not_done: setup_release_common
       tags: private_release
 
     - import_role: {name: deploy_hq}
