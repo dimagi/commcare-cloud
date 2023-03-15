@@ -46,7 +46,7 @@ from commcare_cloud.environment.paths import get_available_envs
 from .checks import check_servers
 from .const import ROLES_ALL_SERVICES, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .operations import db
-from .operations import release, staticfiles, supervisor
+from .operations import release, supervisor
 from .utils import (
     cache_deploy_state,
     clear_cached_deploy,
@@ -162,13 +162,6 @@ def env_common():
     pillowtop = servers.get('pillowtop', [])
 
     deploy = servers.get('deploy', servers['webworkers'])[:1]
-
-    if len(staticfiles) > 1 and not env.shared_dir_for_staticfiles:
-        utils.abort(
-            "There should be only one 'staticfiles' host. "
-            "Ensure that only one host is assigned to the 'staticfiles' group, "
-            "or set shared_dir_for_staticfiles."
-        )
 
     env.roledefs = {
         'all': all,
@@ -449,7 +442,6 @@ def reset_pillow(pillow):
 
 
 ONLINE_DEPLOY_COMMANDS = [
-    staticfiles.pull_staticfiles_cache,
     release.clean_releases,
 ]
 

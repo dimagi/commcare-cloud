@@ -1,0 +1,17 @@
+- name: Copy staticfiles cache
+  when: shared_dir_for_staticfiles
+  block:
+    - name: Create staticfiles/CACHE
+      file:
+        path: '{{ code_source }}/staticfiles/CACHE'
+        state: directory
+        mode: 0755
+
+    - name: Copy shared staticfiles/CACHE to local
+      synchronize:
+        src: '{{ shared_dir_for_staticfiles }}/{{ code_version }}/staticfiles/CACHE/'
+        dest: '{{ code_source }}/staticfiles/CACHE/'
+        recursive: true
+        delete: true
+      delegate_to: '{{ inventory_hostname }}'
+      no_log: true

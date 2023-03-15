@@ -80,3 +80,17 @@
     - import_role: {name: deploy_hq}
       vars:
         if_not_done: staticfiles_pull_manifest
+
+- name: Pull staticfiles cache
+  hosts: proxy[1:]
+  tasks:
+    - name: Assert single proxy host
+      fail:
+        msg: >-
+          There should be only one 'proxy' host. Ensure that only one host is
+          assigned to the 'proxy' group, or set 'shared_dir_for_staticfiles'.
+      when: not shared_dir_for_staticfiles
+
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: staticfiles_pull_cache
