@@ -286,12 +286,9 @@ def rollback():
         exit()
 
 
-@task
+@obsolete_task
 def clean_releases(keep=3):
-    """
-    Cleans old and failed deploys from the ~/www/<environment>/releases/ directory
-    """
-    execute(release.clean_releases, keep)
+    """OBSOLETE. Use 'clean-releases [--keep=N]' instead"""
 
 
 @obsolete_task
