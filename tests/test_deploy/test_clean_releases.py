@@ -1,4 +1,6 @@
+import os
 from datetime import datetime, timedelta
+from hashlib import sha1
 from pathlib import Path
 from unittest import TestCase
 
@@ -104,11 +106,73 @@ class TestCleanReleases(TestCase):
         self.assertTrue(result.get("changed"), result)
         self.assertEqual(listdir(self.releases), {"r2", "r3"})
 
+    def test_clean_releases_with_shared_dir(self):
+        shared_dir = Path(test_context(self, tempdir()))
+        shares = {}
+        for i in range(4):
+            name = f"r{i}"
+            shares[name] = self.add_shared(name, shared_dir)
+        self.assertEqual(listdir(shared_dir), set(shares.values()))
+        (shared_dir / "other").touch()
+        result = ansible.run("clean_releases", {
+            "path": str(self.releases),
+            "shared_dir_for_staticfiles": str(shared_dir)
+        })
+        self.assertTrue(result.get("changed"), result)
+        self.assertEqual(listdir(self.releases), {"r2", "r3"})
+        self.assertEqual(listdir(shared_dir), {shares["r2"], shares["r3"], "other"})
+
+    def test_clean_releases_with_shared_dir_and_missing_code_version(self):
+        shared_dir = Path(test_context(self, tempdir()))
+        shares = {}
+        for i in range(4):
+            name = f"r{i}"
+            shares[name] = self.add_shared(name, shared_dir)
+            if i < 3:
+                os.remove(self.releases / name / ".staticfiles-version")
+        (shared_dir / "other").touch()
+        result = ansible.run("clean_releases", {
+            "path": str(self.releases),
+            "shared_dir_for_staticfiles": str(shared_dir)
+        })
+        self.assertTrue(result.get("changed"), result)
+        self.assertEqual(listdir(self.releases), {"r2", "r3"})
+        self.assertEqual(listdir(shared_dir), set(shares.values()) | {"other"})
+
+    def test_clean_releases_with_shared_dir_and_multi_referenced_code_version(self):
+        shared_dir = Path(test_context(self, tempdir()))
+        shares = {}
+        SHARED_VERSION = "abc123"
+        for i in range(4):
+            name = f"r{i}"
+            code_version = SHARED_VERSION if i in [1, 2] else None
+            shares[name] = self.add_shared(name, shared_dir, code_version)
+        assert shares["r1"] == SHARED_VERSION, shares  # validate setup
+        assert shares["r2"] == SHARED_VERSION, shares  # validate setup
+        self.assertEqual(listdir(shared_dir), set(shares.values()))
+        (shared_dir / "other").touch()
+        result = ansible.run("clean_releases", {
+            "path": str(self.releases),
+            "shared_dir_for_staticfiles": str(shared_dir)
+        })
+        self.assertTrue(result.get("changed"), result)
+        self.assertEqual(listdir(self.releases), {"r2", "r3"})
+        self.assertEqual(listdir(shared_dir), {SHARED_VERSION, shares["r3"], "other"})
+
     def make_release(self, name, keep_until=None):
         (self.releases / name).mkdir()
         (self.releases / name / ".build-complete").touch()
         if keep_until is not None:
             self.keep_release(name, keep_until)
+
+    def add_shared(self, release_name, shared_dir, code_version=None):
+        if not code_version:
+            code_version = sha1(release_name.encode("utf-8")).hexdigest()
+        with open(self.releases / release_name / ".staticfiles-version", "w") as fh:
+            fh.write(code_version)
+        (shared_dir / code_version / "staticfiles/CACHE").mkdir(parents=True, exist_ok=True)
+        (shared_dir / code_version / "staticfiles/CACHE/manifest.json").touch()
+        return code_version
 
     def keep_release(self, name, until):
         (self.releases / name / f"KEEP_UNTIL__{until:%Y-%m-%d_%H.%M}").touch()

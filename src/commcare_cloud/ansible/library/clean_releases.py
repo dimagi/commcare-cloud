@@ -32,6 +32,10 @@ options:
         description: The releases directory path.
         required: true
         type: str
+    shared_dir_for_staticfiles:
+        description: Shared directory containing staticfiles caches.
+        required: false
+        type: str
     keep:
         description: The number of releases to keep. Default: 2
         required: false
@@ -75,6 +79,7 @@ def main():
     module_args = {
         'path': {'type': 'str', 'required': True},
         'keep': {'type': 'int', 'default': 2},
+        'shared_dir_for_staticfiles': {'type': 'str'},
         'exclude': {'type': 'list', 'default': [], 'elements': 'str'},
     }
     module = AnsibleModule(
@@ -83,6 +88,8 @@ def main():
     )
     params = module.params
     releases_path = Path(params["path"])
+    _shared_dir = params["shared_dir_for_staticfiles"]
+    shared_dir = Path(_shared_dir) if _shared_dir else None
     keep = params["keep"]
     current_release = (releases_path / "current").resolve()
     exclude = set(params["exclude"]) | {"current"}
@@ -107,7 +114,11 @@ def main():
         diff["after"]['releases'] = after = sorted(before - set(to_remove))
         assert len(after) >= params["keep"], (diff, params["keep"])
         if not module.check_mode:
+            keep_shares = {get_code_version(releases_path / k) for k in before - set(to_remove)}
+            keep_shares.add(None) # None prevents rm when get_code_version(...) returns None
             for name in to_remove:
+                if shared_dir:
+                    delete_shared(releases_path / name, shared_dir, keep_shares, module)
                 module.run_command(["rm", "-rf", releases_path / name])
 
     module.exit_json(**result)
@@ -129,7 +140,33 @@ def get_until_date(filename):
         return None
 
 
+def delete_shared(release_path, shared_dir, keep_shares, module):
+    # It's possible for multiple processes on different hosts to
+    # execute this concurrently, which could cause errors like
+    #
+    #   rm: cannot remove file ... : No such file or directory
+    #
+    # To avoid that, the parent directory is renamed (an atomic
+    # operation that will only succeed on one host) before it is
+    # removed.
+    code_version = get_code_version(release_path)
+    if code_version not in keep_shares and (shared_dir / code_version).exists():
+        path = shared_dir / code_version
+        path_to_remove = path.with_suffix(".obsolete")
+        rc = module.run_command(["mv", path, path_to_remove])[0]
+        if rc == 0:
+            module.run_command(["rm", "-rf", path_to_remove])
+
+
+def get_code_version(release_path):
+    if not (release_path / STATICFILES_VERSION).exists():
+        return None
+    with open(release_path / STATICFILES_VERSION) as fh:
+        return fh.read().rstrip() or None
+
+
 BUILD_COMPLETE = '.build-complete'
+STATICFILES_VERSION = '.staticfiles-version'
 KEEP_UNTIL_PREFIX = 'KEEP_UNTIL__'
 DATE_FMT = '%Y-%m-%d_%H.%M'
 
