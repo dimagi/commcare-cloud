@@ -94,3 +94,15 @@
     - import_role: {name: deploy_hq}
       vars:
         if_not_done: staticfiles_pull_cache
+
+- name: Clean releases
+  hosts:
+    - webworkers
+    - celery
+    - pillowtop
+    - proxy
+    - django_manage
+  tasks:
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: clean_releases

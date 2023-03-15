@@ -1,0 +1,13 @@
+- name: Mark completed release build
+  file:
+    path: '{{ code_source }}/.build-complete'
+    state: touch
+    mode: 0644
+  no_log: true
+
+- name: Clean releases
+  clean_releases:
+    path: '{{ www_home }}/releases'
+    exclude:
+      - git_mirrors
+      - '{{ release_name }}'

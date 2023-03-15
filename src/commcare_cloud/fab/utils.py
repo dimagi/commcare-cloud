@@ -5,7 +5,6 @@ import os
 import pickle
 import re
 import sys
-import traceback
 from functools import wraps
 from io import open
 
@@ -99,16 +98,6 @@ def retrieve_cached_deploy_checkpoint():
 def _retrieve_cached(filename):
     with open(filename, 'rb') as f:
         return pickle.load(f)
-
-
-def traceback_string():
-    exc_type, exc, tb = sys.exc_info()
-    trace = "".join(traceback.format_tb(tb))
-    return "Traceback:\n{trace}{type}: {exc}".format(
-        trace=trace,
-        type=exc_type.__name__,
-        exc=exc,
-    )
 
 
 def pip_install(cmd_prefix, requirements, timeout=None, quiet=False, proxy=None, no_index=False,
