@@ -26,6 +26,9 @@
     path: /etc/adduser.conf
     regexp: '^DIR_MODE=0750'
     replace: 'DIR_MODE=0755'
+  tags:
+    - users
+    - bootstrap-users
 
 - name: reset ssh connection to allow umask changes to take affect
   meta: reset_connection
