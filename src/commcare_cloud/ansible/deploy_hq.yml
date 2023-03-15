@@ -10,10 +10,21 @@
     - proxy
     - django_manage
   tasks:
+    - name: Get code version
+      include_role:
+        name: deploy_hq
+        tasks_from: get_code_version
+      tags: private_release
+      when: code_version is not defined
+
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: setup_release_common
+      tags: private_release
+
     - import_role: {name: deploy_hq}
       vars:
         if_not_done: setup_release
-      tags: private_release
 
 - name: Copy static JS
   hosts: proxy
@@ -22,3 +33,36 @@
       vars:
         if_not_done: copy_release_files
         item: staticfiles/CACHE/js
+
+- name: Install javascript dependencies
+  hosts: [webworkers, celery, proxy]
+  tasks:
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: yarn_install
+
+- name: Collect static files
+  hosts: [webworkers, proxy]
+  tasks:
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: staticfiles_collect
+
+- name: Compress static files
+  hosts: proxy[0]
+  tasks:
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: staticfiles_compress
+
+- name: Update translations
+  hosts:
+    - webworkers
+    - celery
+    - pillowtop
+    - proxy
+    - django_manage
+  tasks:
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: update_translations

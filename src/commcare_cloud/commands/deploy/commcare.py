@@ -49,8 +49,9 @@ def deploy_commcare(environment, args, unknown_args):
     if should_record:
         record_deploy_start(environment, context)
 
-    code_version = context.diff.deploy_commit if not args.resume else ''
-    ansible_args = ["-e", f"code_version={code_version}"]
+    ansible_args = []
+    if not args.resume:
+        ansible_args.extend(["-e", f"code_version={context.diff.deploy_commit}"])
     if args.private and not args.keep_days:
         args.keep_days = 1
     if args.keep_days:

@@ -1,0 +1,31 @@
+- name: Version static files
+  # Run after any new bower code has been installed.
+  # Put refs on all static references to prevent stale browser cache
+  # hits when things change. This needs to be run on the WEB WORKER
+  # since the web worker governs the actual static reference.
+  command:
+    cmd: ./manage.py resource_static
+    chdir: '{{ code_source }}'
+
+- name: Remove staticfiles
+  file:
+    path: '{{ code_source }}/staticfiles'
+    state: absent
+  no_log: true
+
+- name: Collect static files
+  # Must run on web workers for the same reasons as _Version static files_.
+  command:
+    cmd: ./manage.py {{ item }}
+    chdir: '{{ code_source }}'
+  register: stop_loop_hack
+  when: not stop_loop_hack.failed | default(False)
+  # It was observed in testing that Ansible continues to execute
+  # subsequent loop tasks after one fails (on the same host where the
+  # task failed). This is a bit surprising since task execution normally
+  # stops after a task fails on a given host.
+  loop:
+    - collectstatic --noinput -v 0
+    - fix_less_imports_collectstatic
+    - compilejsi18n
+    - build_requirejs

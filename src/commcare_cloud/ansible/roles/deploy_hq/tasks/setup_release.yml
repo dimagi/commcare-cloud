@@ -1,75 +1,25 @@
-- name: Clone source code
-  git_setup_release:
-    repo: "{{ commcarehq_repository }}"
-    dest: "{{ code_source }}"
-    version: "{{ code_version }}"
-    reference: "{{ code_releases }}/git_mirrors"
-    key_file: "{{ deploy_key | default(omit, true) }}"
-    previous_release: "{{ code_home }}"
-
-- name: Setup virtualenv
-  setup_virtualenv:
-    src: "{{ code_home }}"
-    dest: "{{ code_source }}"
-    python_version: "{{ python_version }}"
-    requirements_file: "requirements/prod-requirements.txt"
-    http_proxy: "{{ http_proxy | default(omit, true) }}"
-
-- name: Copy localsettings.py
-  copy:
-    src: "{{ code_home }}/localsettings.py"
-    dest: "{{ code_source }}/localsettings.py"
-    remote_src: true
-    mode: preserve
-
-- name: Mark keep until
-  file:
-    path: "{{ code_source }}/KEEP_UNTIL__{{ keep_until }}"
-    mode: 0644
-    state: touch
-  when: keep_until | default(None)
-
-- name: Set manage.py shebang
-  # Convenience for running management commands without activating virtualenv.
-  lineinfile:
-    path: "{{ code_source }}/manage.py"
-    line: "#! {{ code_source }}/python_env/bin/python"
-    regexp: "^#!"
-    firstmatch: true
-    state: present
-
-- name: Full release tasks
+- name: Copy release files
+  include_tasks: copy_release_files.yml
   when: '"private_release" not in ansible_run_tags'
-  # Negated tag check instead of normal tags on other tasks because the
-  # "private_release" tag is inherited from deploy_hq.yml to all tasks
-  # in this file. Tag inheritance is required because of the
-  # "include_role" task in main.yml. In other words, the tasks in this
-  # file would not run if they were tagged "private_release" unless the
-  # "include_role" statement that loads them was also tagged, and that
-  # is not desirable because main.yml is generic.
-  block:
-    - name: Copy release files
-      include_tasks: copy_release_files.yml
-      when: '"private_release" not in ansible_run_tags'
-      loop:
-        - node_modules
-        - bower_components
+  loop:
+    - node_modules
+    - bower_components
 
-    - name: Ensure checkpoints safe
-      command:
-        cmd: >-
-          ./manage.py validate_kafka_pillow_checkpoints
-          {{ "--print-only" if ignore_kafka_checkpoint_warning | default(False) else "" }}
-        chdir: '{{ code_source }}'
-      register: checkpoints_result
-      changed_when: checkpoints_result.rc
-      failed_when: '"rc" not in checkpoints_result'
-      run_once: true
+- name: Ensure checkpoints safe
+  command:
+    cmd: >-
+      ./manage.py validate_kafka_pillow_checkpoints
+      {{ "--print-only" if ignore_kafka_checkpoint_warning | default(False) else "" }}
+    chdir: '{{ code_source }}'
+  register: checkpoints_result
+  changed_when: checkpoints_result.rc
+  failed_when: ignore_kafka_checkpoint_warning | default(False) and checkpoints_result.get("rc", 1)
+  run_once: true
 
-    - name: Unsafe checkpoints error
-      fail:
-        msg: >-
-          Deploy failed, likely because kafka checkpoints were not available.
-          You can rerun with --ignore-kafka-checkpoint-warning to prevent this
-          error from blocking the deploy.
-      when: checkpoints_result.rc
+- name: Unsafe checkpoints error
+  fail:
+    msg: >-
+      Deploy failed, likely because kafka checkpoints were not available.
+      You can rerun with --ignore-kafka-checkpoint-warning to prevent this
+      error from blocking the deploy.
+  when: checkpoints_result.rc
