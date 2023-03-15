@@ -25,8 +25,16 @@
     notify: "Reload udev rules"
   when: ansible_distribution_version == '18.04'
 
-- name: "Set up nvme mapping automatically"
-  become: yes
-  apt: name=amazon-ec2-utils state=present
-  notify: "Reload udev rules"
+- block:
+  - name: "Set up nvme mapping automatically"
+    become: yes
+    apt: name=amazon-ec2-utils state=present
+    notify: "Reload udev rules"
+  - name: "Modify amazon-ec2-utils udev roles"
+    become: yes
+    replace:
+      dest: /lib/udev/rules.d/70-ec2-nvme-devices.rules
+      regexp: '^ACTION=="add", '
+      replace: ''
+    notify: "Reload udev rules"
   when: ansible_distribution_version == '22.04'
