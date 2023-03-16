@@ -1,14 +1,16 @@
 formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.java.org.javarosa.enableOpenTracing=true'
 management_commands:
   celery_a0:
+  pillow4:
+  celerypillow0:
     handle_survey_actions:
     queue_schedule_instances:
     run_sms_queue:
     run_submission_reprocessing_queue:
-  pillow4:
     run_pillow_retry_queue:
 celery_processes:
   celery_a0:
+  celerypillow0:
     analytics_queue,sms_queue,sumologic_logs_queue:
       pooling: gevent
       concurrency: 4
@@ -52,6 +54,7 @@ celery_processes:
     flower: {}
 pillows:
   'pillow4':
+  'celerypillow0':
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:
