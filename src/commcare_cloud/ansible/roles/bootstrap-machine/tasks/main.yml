@@ -1,36 +1,6 @@
+---
 - name: Install packages we would want on any machine ever
   apt:
     name:
       - htop
     state: present
-  become: yes
-
-- name: Set proper umask
-  lineinfile:
-    dest: /etc/login.defs
-    state: present
-    regexp: "^UMASK"
-    line: "UMASK\t\t022"
-  tags:
-    - umask
-
-- name: Set proper umask for this session
-  shell: umask 022
-  tags:
-    - umask
-
-# To account for the default of 0750 on Jammy
-# which is too strict for us
-- name: Set DIR_MODE for adduser
-  replace:
-    path: /etc/adduser.conf
-    regexp: '^DIR_MODE=0750'
-    replace: 'DIR_MODE=0755'
-  tags:
-    - users
-    - bootstrap-users
-
-- name: reset ssh connection to allow umask changes to take affect
-  meta: reset_connection
-
-- meta: flush_handlers
