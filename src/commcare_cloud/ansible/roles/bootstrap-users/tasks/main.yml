@@ -1,6 +1,5 @@
 ---
 - name: Set bash prompt in bash.bashrc
-  become: yes
   lineinfile:
     dest: "/etc/bash.bashrc"
     regexp: "^PS1=.*"
@@ -8,7 +7,6 @@
     state: present
 
 - name: Set bash prompt in bashrc skeleton
-  become: yes
   lineinfile:
     dest: "/etc/skel/.bashrc"
     regexp: "^PS1=.*"
@@ -30,7 +28,6 @@
     replace: 'HOME_MODE\t0755'
 
 - name: Add ansible group
-  become: yes
   group:
     name: ansible
     state: present
@@ -40,7 +37,6 @@
   when: "ansible_gid is not none and 'update_users' not in ansible_run_tags"
 
 - name: Add cchq group
-  become: yes
   group:
     name: "{{ cchq_group }}"
     state: present
@@ -49,7 +45,6 @@
   when: "cchq_gid is not none and 'update_users' not in ansible_run_tags"
 
 - name: Add dev group
-  become: yes
   group:
     name: "{{ dev_group }}"
     state: present
@@ -69,7 +64,6 @@
     - new_ansible_sudo_pass
 
 - name: Add cchq user
-  become: yes
   user:
     name: "{{ cchq_user }}"
     state: present
@@ -81,7 +75,6 @@
   tags: commcarehq
 
 - name: Add users for current devs
-  become: yes
   user:
     name: "{{ item }}"
     state: present
@@ -90,7 +83,6 @@
   with_items: '{{ dev_users.present }}'
 
 - name: Add public keys for current devs
-  become: yes
   authorized_key:
     user: "{{ item }}"
     state: present
@@ -103,7 +95,6 @@
 
 - name: Remove public key for cchq user
   # todo: remove after applied to all envs
-  become: yes
   authorized_key:
     user: "{{ cchq_user }}"
     key: ''
@@ -136,7 +127,6 @@
     - pubkey
 
 - name: Authorize current devs to login as ansible
-  become: yes
   authorized_key:
     user: ansible
     state: present
@@ -149,14 +139,12 @@
   when: dev_users.absent
 
 - name: check users password valid time
-  become: yes
   shell: getent shadow "{{ item }}" | cut -d':' -f5
   register: users_pw_valid
   loop: "{{ dev_users.present }} + ['ansible', '{{ cchq_user }}']"
   changed_when: False
 
 - name: clear users password valid time
-  become: yes
   shell: chage -M -1 "{{ item['item'] }}"
   loop: "{{ users_pw_valid.results }}"
   when: item.stdout is defined and item.stdout != ''
@@ -166,7 +154,6 @@
 # It disables factory auth (e.g. root user with password login)
 # and this role has to be able to finish entirely using factory auth (to bootstrap the users)
 - name: Copy sudoers file
-  become: yes
   template:
     src: sudoers.j2
     dest: /etc/sudoers.d/cchq
