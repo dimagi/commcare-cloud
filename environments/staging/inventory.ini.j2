@@ -108,9 +108,11 @@ kafka7
 kafka8
 
 {{ __celery_a0__ }}
+{{ __celerypillow0__ }}
 
 [celery:children]
 celery_a0
+celerypillow0
 
 [celery:vars]
 swap_size=2G
@@ -120,6 +122,7 @@ swap_size=2G
 [pillowtop:children]
 # Amazon EC2
 pillow4
+celerypillow0
 
 {{ __formplayer7__ }}
 {{ __formplayer8__ }}
