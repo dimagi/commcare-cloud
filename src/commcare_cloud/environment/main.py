@@ -370,6 +370,7 @@ class Environment(object):
                 if not self.meta_config.bare_non_cchq_environment else {}
             ),
             'ignore_kafka_checkpoint_warning': self.fab_settings_config.ignore_kafka_checkpoint_warning,
+            'shared_dir_for_staticfiles': self.fab_settings_config.shared_dir_for_staticfiles,
             'ES_SETTINGS': (
                 self.elasticsearch_config.settings.to_json()
                 if not self.meta_config.bare_non_cchq_environment else {}

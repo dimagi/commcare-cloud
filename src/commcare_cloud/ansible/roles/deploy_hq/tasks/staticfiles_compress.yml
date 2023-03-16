@@ -1,0 +1,37 @@
+- name: Compress static files
+  command:
+    cmd: ./manage.py {{ item }}
+    chdir: '{{ code_source }}'
+  register: stop_loop_hack
+  when: not stop_loop_hack.failed | default(False)
+  loop:
+    - compress --force -v 0
+    - purge_compressed_files
+
+- name: Push shared staticfiles cache
+  when: shared_dir_for_staticfiles
+  block:
+    - name: Create shared directory
+      become: true
+      become_user: root
+      file:
+        path: '{{ shared_dir_for_staticfiles }}/{{ code_version }}/staticfiles/CACHE'
+        state: directory
+        owner: '{{ cchq_user }}'
+        group: '{{ cchq_user }}'
+        mode: 0755
+
+    - name: Copy staticfiles/CACHE to shared dir
+      synchronize:
+        src: '{{ code_source }}/staticfiles/CACHE/'
+        dest: '{{ shared_dir_for_staticfiles }}/{{ code_version }}/staticfiles/CACHE/'
+        recursive: true
+        delete: true
+      delegate_to: '{{ inventory_hostname }}'
+      no_log: true
+
+- name: Push manifest to redis
+  command:
+    cmd: ./manage.py update_manifest save
+    chdir: '{{ code_source }}'
+  when: not shared_dir_for_staticfiles

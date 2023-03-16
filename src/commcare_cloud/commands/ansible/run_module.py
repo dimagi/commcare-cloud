@@ -137,6 +137,7 @@ def run_ansible_module(ansible_context, inventory_group, module, module_args,
 
     env_vars = ansible_context.build_env(need_secrets=become)
     if run_command is ansible_json:
+        env_vars["ANSIBLE_VERBOSITY"] = "0"
         env_vars["ANSIBLE_LOAD_CALLBACK_PLUGINS"] = "1"
         env_vars["ANSIBLE_STDOUT_CALLBACK"] = "json"
 

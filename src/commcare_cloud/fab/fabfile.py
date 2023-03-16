@@ -163,11 +163,11 @@ def env_common():
 
     deploy = servers.get('deploy', servers['webworkers'])[:1]
 
-    if len(staticfiles) > 1 and not env.use_shared_dir_for_staticfiles:
+    if len(staticfiles) > 1 and not env.shared_dir_for_staticfiles:
         utils.abort(
             "There should be only one 'staticfiles' host. "
             "Ensure that only one host is assigned to the 'staticfiles' group, "
-            "or enable use_shared_dir_for_staticfiles."
+            "or set shared_dir_for_staticfiles."
         )
 
     env.roledefs = {
@@ -449,11 +449,6 @@ def reset_pillow(pillow):
 
 
 ONLINE_DEPLOY_COMMANDS = [
-    staticfiles.yarn_install,
-    staticfiles.version_static,     # run after any new bower code has been installed
-    staticfiles.collectstatic,
-    staticfiles.compress,
-    staticfiles.update_translations,
     db.migrate,
     db.create_kafka_topics,
     staticfiles.pull_manifest,

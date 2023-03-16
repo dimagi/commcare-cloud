@@ -1,1 +1,2 @@
 email_enabled: False
+shared_dir_for_staticfiles: /mnt

@@ -1,0 +1,4 @@
+- name: Yarn install
+  yarn:
+    path: '{{ code_source }}'
+    production: true

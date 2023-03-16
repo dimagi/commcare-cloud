@@ -22,7 +22,6 @@ class FabSettingsConfig(jsonobject.JsonObject):
     acceptable_maintenance_window = jsonobject.ObjectProperty(lambda: AcceptableMaintenanceWindow)
     email_enabled = jsonobject.BooleanProperty()
     tag_deploy_commits = jsonobject.BooleanProperty(default=False)
-    use_shared_dir_for_staticfiles = jsonobject.BooleanProperty(default=False)
     shared_dir_for_staticfiles = jsonobject.StringProperty(default=None)
     deploy_event_url = jsonobject.StringProperty(default=None)
     generate_deploy_diffs = jsonobject.BooleanProperty(default=True)
@@ -40,11 +39,10 @@ class FabSettingsConfig(jsonobject.JsonObject):
                 print(color_notice("Feel free to remove it from your fab-settings.yml."))
                 del data[deprecated_property]
 
-        obj = super(FabSettingsConfig, cls).wrap(data)
-        if obj.use_shared_dir_for_staticfiles:
-            assert obj.shared_dir_for_staticfiles, \
-                "Cannot have use_shared_dir_for_staticfiles without shared_dir_for_staticfiles"
-        return obj
+        if not data.pop("use_shared_dir_for_staticfiles", True):
+            data.pop("shared_dir_for_staticfiles", None)
+
+        return super(FabSettingsConfig, cls).wrap(data)
 
 
 class AcceptableMaintenanceWindow(jsonobject.JsonObject):

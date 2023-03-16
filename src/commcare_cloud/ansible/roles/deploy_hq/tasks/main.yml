@@ -19,3 +19,4 @@
         path: '{{ code_source }}/.{{ if_not_done }}-done'
         state: touch
         mode: 0644
+      no_log: true
