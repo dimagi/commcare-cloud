@@ -15,6 +15,20 @@
     line: "PS1={{ bash_PS1 }}"
     state: present
 
+# To account for the default of 0750 on Jammy
+# which is too strict for us
+- name: Set DIR_MODE for adduser
+  replace:
+    path: /etc/adduser.conf
+    regexp: '^DIR_MODE=0750'
+    replace: 'DIR_MODE=0755'
+
+- name: Set HOME_MODE for useradd
+  replace:
+    path: /etc/login.defs
+    regexp: '^HOME_MODE\t0750'
+    replace: 'HOME_MODE\t0755'
+
 - name: Add ansible group
   become: yes
   group:
