@@ -2,6 +2,8 @@
 2204_test-staging.instance_id: i-062f01c788b417654
 celery_a0-staging: 10.201.10.232
 celery_a0-staging.instance_id: i-0b026baa6469e2354
+celerypillow0-staging: 10.201.10.132
+celerypillow0-staging.instance_id: i-0569bacccba921df5
 control2-staging: 10.201.10.17
 control2-staging.instance_id: i-029e59cea6b6485dc
 couch18-staging: 10.201.42.139
@@ -25,10 +27,14 @@ es16-staging.instance_id: i-00d78a1af22d513bf
 es17-staging: 10.201.42.199
 es17-staging.instance_id: i-06a3ab9509dd41abe
 formplayer-efs: fs-ba70cd39.efs.us-east-1.amazonaws.com
+formplayer10-staging: 10.201.10.6
+formplayer10-staging.instance_id: i-069075799c95ae10d
 formplayer7-staging: 10.201.11.10
 formplayer7-staging.instance_id: i-0ec364ea0016b5afb
 formplayer8-staging: 10.201.10.12
 formplayer8-staging.instance_id: i-09b94e86d86038850
+formplayer9-staging: 10.201.11.71
+formplayer9-staging.instance_id: i-039f848c98b6bac65
 frontend_alb-staging: internal-frontend-alb-staging-383875913.us-east-1.elb.amazonaws.com
 fsx_staging-fsx: fs-0ffde07db112793e4.fsx.us-east-1.amazonaws.com
 kafka2-staging: 10.201.40.170
@@ -50,8 +56,6 @@ pgsynclogs_nlb-staging: pgsynclogs-nlb-staging-1102365451f68242.elb.us-east-1.am
 pgucr_nlb-staging: pgucr-nlb-staging-b32586fcc9999b2d.elb.us-east-1.amazonaws.com
 pillow4-staging: 10.201.10.90
 pillow4-staging.instance_id: i-0bc1af8fcf6e5e300
-proxy4-staging: 10.201.10.38
-proxy4-staging.instance_id: i-023a8c825401fd149
 proxy5-staging: 10.201.11.200
 proxy5-staging.instance_id: i-022175194bcb24508
 proxy6-staging: 10.201.11.133
