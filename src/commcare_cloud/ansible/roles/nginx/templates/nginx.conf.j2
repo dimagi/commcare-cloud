@@ -23,6 +23,8 @@ http {
                     '"$request" $status $request_length $body_bytes_sent '
                     '"$http_referer" "$http_user_agent"';
 
+        server_names_hash_bucket_size: 128
+
 {% for k,v in nginx_http_params.items() %}
         {{ k }}  {{ v }};
 {% endfor %}
