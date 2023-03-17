@@ -1,8 +1,8 @@
 ---
 elasticsearch_version: 2.4.6
 # https://www.elastic.co/guide/en/elasticsearch/guide/current/heap-sizing.html#_give_half_your_memory_to_lucene
-# Either half the machines RAM or 30 GB. Never want to go over 30 GB
-elasticsearch_memory: "{{ [ansible_memory_mb.real.total // 2, 30000] | min }}m"
+# Either half the machines RAM or 24 GB. If changing in the future, never want to go over 30 GB
+elasticsearch_memory: "{{ [ansible_memory_mb.real.total // 2, 24576] | min }}m"
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 elasticsearch_home: "/opt/elasticsearch-{{ elasticsearch_version }}"
 elasticsearch_conf_dir: "/etc/elasticsearch-{{ elasticsearch_version }}"
