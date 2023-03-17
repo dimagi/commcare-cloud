@@ -1,27 +1,36 @@
 ---
-- name: Install Erlang Solutions PGP key
-  apt_key:
-    url: http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
-    state: present
+- name: Install Erlang dependencies (Bionic)
+  block:
+    - name: Install Erlang Solutions PGP key
+      apt_key:
+        url: http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
+        state: present
 
-- name: Add Erlang Solutions repository
-  apt_repository:
-    repo: 'deb http://packages.erlang-solutions.com/ubuntu {{ ansible_distribution_release|lower }} contrib'
-    state: present
+    - name: Add Erlang Solutions repository
+      apt_repository:
+        repo: 'deb http://packages.erlang-solutions.com/ubuntu {{ ansible_distribution_release|lower }} contrib'
+        state: present
 
-- name: Install Erlang packages
+    - name: Install Erlang packages
+      apt:
+        name: "esl-erlang={{ erlang }}"
+        update_cache: yes
+        force: yes
+      register: rabbitmq_erlang_apt_install_result
+      ignore_errors: true
+
+    - name: Install Erlang dependencies (alternate method)
+      apt:
+        deb: "https://packages.erlang-solutions.com/ubuntu/pool/esl-erlang_{{ erlang | regex_replace('^[0-9]+:(.*)$', '\\1') }}~ubuntu~bionic_amd64.deb"
+        force: yes
+      when: rabbitmq_erlang_apt_install_result is failed
+  when: ansible_distribution_version == '18.04'
+
+- name: Install Erlang dependencies (Jammy)
   apt:
-    name: "esl-erlang={{ erlang }}"
-    update_cache: yes
-    force: yes
-  register: rabbitmq_erlang_apt_install_result
-  ignore_errors: true
-
-- name: Install Erlang dependencies (alternate method)
-  apt:
-    deb: "https://packages.erlang-solutions.com/ubuntu/pool/esl-erlang_{{ erlang | regex_replace('^[0-9]+:(.*)$', '\\1') }}~ubuntu~bionic_amd64.deb"
-    force: yes
-  when: rabbitmq_erlang_apt_install_result is failed
+    name: erlang
+    state: present
+  when: ansible_distribution_version == '22.04'
 
 - name: Add trusted key
   apt_key:
