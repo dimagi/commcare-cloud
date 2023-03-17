@@ -41,6 +41,10 @@ kafka7-staging: 10.201.41.86
 kafka7-staging.instance_id: i-04f10b9cf0b98c6a3
 kafka8-staging: 10.201.42.194
 kafka8-staging.instance_id: i-001ac227a7e8d37b3
+monolith_test_bionic-staging: 10.201.40.136
+monolith_test_bionic-staging.instance_id: i-0494a4b2719e9b1e9
+monolith_test_jammy-staging: 10.201.40.43
+monolith_test_jammy-staging.instance_id: i-01805133b745a56dd
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgbouncer1-staging: 10.201.40.36
 pgbouncer1-staging.instance_id: i-0081f23981fbc09e0
