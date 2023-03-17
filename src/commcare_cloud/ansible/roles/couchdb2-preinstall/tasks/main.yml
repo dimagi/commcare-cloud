@@ -1,12 +1,26 @@
 ---
-- name: Get current couchdb path
-  stat:
-    path: /usr/local/couchdb2/couchdb
-  register: couchdb_current_path
+- name: Get current couchdb version (Bionic)
+  block:
+    - name: Get current couchdb path
+      stat:
+        path: "{{ couchdb_dir }}"
+      register: couchdb_current_path
 
-- name: Set current couchdb version
-  set_fact:
-    couchdb_version_current: "{{ couchdb_current_path.stat.lnk_target | regex_search('apache-couchdb-(\\d\\.\\d\\.\\d)$', '\\1') | first if couchdb_current_path.stat.lnk_target is defined else 'none' }}"
+    - name: Set current couchdb version
+      set_fact:
+        couchdb_version_current: "{{ couchdb_current_path.stat.lnk_target | regex_search('apache-couchdb-(\\d\\.\\d\\.\\d)$', '\\1') | first if couchdb_current_path.stat.lnk_target is defined else 'none' }}"
+  when: ansible_distribution_version == '18.04'
+
+- name: Get current couchdb version (Jammy)
+  block:
+    - name: Gather packages facts
+      package_facts:
+        manager: apt
+
+    - name: Set current couchdb version
+      set_fact:
+        couchdb_version_current: "{{ ansible_facts.packages['couchdb'][0].version | regex_search('^([0-9]\\.?)+') if ansible_facts.packages['couchdb'] is defined else 'none' }}"
+  when: ansible_distribution_version == '22.04'
 
 - name: Print current couchdb version
   debug:
@@ -16,6 +30,7 @@
   pip:
     name:
       - ndg-httpsclient
+  when: ansible_distribution_version == '18.04'
 
 - name: Create couchdb dirs
   file:
@@ -24,6 +39,7 @@
     mode: 0755
   with_items:
     - "{{ couchdb_parent_srcs_dir }}"
+  when: ansible_distribution_version == '18.04'
 
 - name: Install spidermonkey dependency (Bionic)
   block:
@@ -64,4 +80,30 @@
   apt:
     name: erlang
     state: present
+  when: ansible_distribution_version == '22.04'
+
+- name: Install couchdb (Jammy)
+  block:
+    - name: Add couchdb apt key
+      copy:
+        src: 390EF70BB1EA12B2773962950EE62FB37A00258D.gpg
+        dest: /etc/apt/keyrings/
+        owner: root
+        group: root
+
+    - name: Add couchdb apt repository
+      apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/390EF70BB1EA12B2773962950EE62FB37A00258D.gpg] https://apache.jfrog.io/artifactory/couchdb-deb/ {{ ansible_distribution_release }} main"
+        state: present
+
+    - name: pre-seed couchdb conf
+      debconf:
+        name: couchdb
+        question: couchdb/mode
+        value: none
+        vtype: select
+
+    - name: Install couchdb
+      apt:
+        name: "couchdb={{ couchdb_version }}~{{ ansible_distribution_release }}"
   when: ansible_distribution_version == '22.04'

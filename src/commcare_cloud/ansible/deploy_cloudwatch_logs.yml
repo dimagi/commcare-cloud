@@ -58,11 +58,11 @@
             log_stream_name_suffix: "nginx_error"
             should_include: "{{ 'couchdb2_proxy' in group_names }}"
           # couchdb2
-          - file_path: "/usr/local/couchdb2/couchdb/var/log/couchdb.stderr*"
+          - file_path: "{{ couchdb_dir }}/var/log/couchdb.stderr*"
             log_group_name_suffix: "couchdb2"
             log_stream_name_suffix: "stderr"
             should_include: "{{ 'couchdb2' in group_names }}"
-          - file_path: "/usr/local/couchdb2/couchdb/var/log/couchdb.log*"
+          - file_path: "{{ couchdb_dir }}/var/log/couchdb.log*"
             log_group_name_suffix: "couchdb2"
             log_stream_name_suffix: "log"
             should_include: "{{ 'couchdb2' in group_names }}"
