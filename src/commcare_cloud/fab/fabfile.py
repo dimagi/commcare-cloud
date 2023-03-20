@@ -47,13 +47,7 @@ from .checks import check_servers
 from .const import ROLES_ALL_SERVICES, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .operations import db
 from .operations import release, supervisor
-from .utils import (
-    execute_with_timing,
-    incomplete_task,
-    obsolete_task,
-    retrieve_cached_deploy_checkpoint,
-    retrieve_cached_deploy_env,
-)
+from .utils import execute_with_timing, incomplete_task, obsolete_task
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
     env.use_ssh_config = True
@@ -314,21 +308,8 @@ def deploy_commcare(resume='no', skip_record='no'):
     env.full_deploy = True
 
     if resume == 'yes':
-        try:
-            cached_payload = retrieve_cached_deploy_env(env.deploy_env)
-            checkpoint_index = retrieve_cached_deploy_checkpoint()
-        except FileNotFoundError:
-            # this happens when resuming a deploy that failed before the
-            # Fabric portion, which populates the cache, had started
-            _setup_env(env.env_name)
-            cached_payload = {}
-            checkpoint_index = 0
-        except Exception:
-            print(red('Unable to resume deploy, please start anew'))
-            raise
-        env.update(cached_payload)
+        _setup_env(env.env_name)
         env.resume = True
-        env.checkpoint_index = checkpoint_index or 0
         print(magenta('You are about to resume the deploy in {}'.format(env.code_root)))
 
     _deploy_without_asking(skip_record)

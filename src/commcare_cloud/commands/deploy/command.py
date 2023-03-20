@@ -11,7 +11,6 @@ from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.deploy.commcare import deploy_commcare
 from commcare_cloud.commands.deploy.formplayer import deploy_formplayer
 from commcare_cloud.environment.main import get_environment
-from commcare_cloud.fab.utils import retrieve_cached_deploy_env
 
 
 class ZeroOrMore(list):
@@ -66,20 +65,7 @@ class Deploy(CommandBase):
         check_branch(args)
         environment = get_environment(args.env_name)
         if args.resume:
-            try:
-                # use cached env to ensure consistency with last deploy
-                cached_fab_env = retrieve_cached_deploy_env(environment.name)
-                if cached_fab_env.ccc_environment.release_name != args.resume:
-                    raise ValueError("resume release mismatch")
-            except FileNotFoundError:
-                # this happens when resuming a deploy that failed before the
-                # Fabric portion, which populates the cache, had started
-                environment.release_name = args.resume
-            except Exception:
-                args.resume = None
-                print(color_error('Unable to resume deploy, starting anew...'))
-            else:
-                environment = cached_fab_env.ccc_environment
+            environment.release_name = args.resume
 
         deploy_component = args.component
         if not deploy_component:
