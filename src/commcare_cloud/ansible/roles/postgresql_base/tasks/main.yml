@@ -24,11 +24,8 @@
       - "postgresql-{{ postgresql_version }}-plproxy"
       - "postgresql-contrib-{{ postgresql_version }}"
       - "postgresql-server-dev-{{ postgresql_version }}"
-      - python-docutils  # required for building pghashlib
       - libpq-dev
-      - python-psycopg2
       - unzip
-      - libreadline-dev 
 
 - name: Install PostgreSQL & dependencies
   apt:
