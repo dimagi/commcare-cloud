@@ -41,6 +41,10 @@ kafka7-staging: 10.201.41.86
 kafka7-staging.instance_id: i-04f10b9cf0b98c6a3
 kafka8-staging: 10.201.42.194
 kafka8-staging.instance_id: i-001ac227a7e8d37b3
+monolith_test_bionic-staging: 10.201.40.136
+monolith_test_bionic-staging.instance_id: i-0494a4b2719e9b1e9
+monolith_test_jammy-staging: 10.201.40.43
+monolith_test_jammy-staging.instance_id: i-01805133b745a56dd
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgbouncer1-staging: 10.201.40.36
 pgbouncer1-staging.instance_id: i-0081f23981fbc09e0
@@ -65,15 +69,7 @@ rabbit_a2-staging: 10.201.10.20
 rabbit_a2-staging.instance_id: i-07edbe70562292516
 rabbit_b1-staging: 10.201.11.184
 rabbit_b1-staging.instance_id: i-0f25d0640d6f32c11
-web10-staging: 10.201.11.25
-web10-staging.instance_id: i-03fb01724d1dfd3cf
-web11-staging: 10.201.11.212
-web11-staging.instance_id: i-030b79f763b9c3ff5
-web12-staging: 10.201.11.18
-web12-staging.instance_id: i-043497c69eab2fd1e
 web13-staging: 10.201.10.244
 web13-staging.instance_id: i-0fb86252d8c3490e9
 web14-staging: 10.201.11.231
 web14-staging.instance_id: i-07e90679fb2045342
-web9-staging: 10.201.10.135
-web9-staging.instance_id: i-0a7254dc9652698e3
