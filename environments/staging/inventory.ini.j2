@@ -16,20 +16,11 @@ proxy7
 [logproxy:children]
 proxy
 
-{{ __web9__ }} swap_size=1G
-
-{{ __web10__ }} swap_size=1G
-{{ __web11__ }} swap_size=1G
-{{ __web12__ }} swap_size=1G
 {{ __web13__ }} swap_size=1G
 {{ __web14__ }} swap_size=1G
 
 [webworkers:children]
 # Amazon EC2
-web9
-web10
-web11
-web12
 web13
 web14
 
@@ -204,4 +195,4 @@ awsmq
 
 [django_manage:children]
 # Amazon EC2
-web10
+web13
