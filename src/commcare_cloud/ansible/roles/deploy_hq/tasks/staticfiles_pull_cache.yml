@@ -1,6 +1,12 @@
 - name: Copy staticfiles cache
   when: shared_dir_for_staticfiles
   block:
+    - name: Require staticfiles cache
+      stat:
+        path: '{{ shared_dir_for_staticfiles }}/{{ code_version }}/staticfiles/CACHE'
+      register: result
+      failed_when: not result.stat.isdir | default(False)
+
     - name: Create staticfiles/CACHE
       file:
         path: '{{ code_source }}/staticfiles/CACHE'
