@@ -20,4 +20,4 @@
         recursive: true
         delete: true
       delegate_to: '{{ inventory_hostname }}'
-      no_log: true
+      diff: false
