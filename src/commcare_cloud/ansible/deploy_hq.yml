@@ -104,15 +104,38 @@
       vars:
         if_not_done: staticfiles_pull_cache
 
-- name: Clean releases
+- name: Pre-restart tasks
   hosts:
     - webworkers
     - celery
     - pillowtop
     - proxy
     - django_manage
+  vars_files:
+    - roles/deploy_hq/vars/main.yml
+  become: true
+  become_user: '{{ cchq_user }}'
   any_errors_fatal: true
   tasks:
     - import_role: {name: deploy_hq}
       vars:
         if_not_done: clean_releases
+
+    - name: 'Check if done: restart_services'
+      stat:
+        path: '{{ code_source }}/.restart_services-done'
+      register: restart_services_marker
+
+    - name: Run pre-restart tasks
+      when: not restart_services_marker.stat.exists
+      block:
+        - name: "Check release"
+          command:
+            cmd: ./manage.py check {{ item }}
+            chdir: '{{ code_source }}'
+          register: stop_loop_hack
+          when: not stop_loop_hack.failed | default(False)
+          run_once: true
+          loop:
+            - '--deploy'
+            - '--deploy -t database'

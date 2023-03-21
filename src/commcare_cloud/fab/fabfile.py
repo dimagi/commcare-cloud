@@ -43,7 +43,6 @@ from fabric.operations import require
 
 from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
-from .checks import check_servers
 from .const import ROLES_ALL_SERVICES, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .operations import db
 from .operations import release, supervisor
@@ -233,7 +232,6 @@ def setup_release():
 
 
 def _deploy_without_asking(skip_record):
-    execute(check_servers.perform_system_checks)
     execute_with_timing(release.update_current)
     silent_services_restart()
     if skip_record == 'no':
