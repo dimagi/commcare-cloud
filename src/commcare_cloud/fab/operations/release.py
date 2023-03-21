@@ -17,19 +17,6 @@ def record_successful_release():
 
 @roles(ROLES_ALL_SRC)
 @parallel
-def update_current(release=None):
-    """
-    Updates the current release to the one specified or to the code_root
-    """
-    if ((not release and not files.exists(env.code_root, use_sudo=True)) or
-            (release and not files.exists(release, use_sudo=True))):
-        utils.abort('About to update current to non-existant release')
-
-    sudo('ln -nfs {} {}'.format(release or env.code_root, env.code_current))
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
 def mark_last_release_unsuccessful():
     # Removes last line from RELEASE_RECORD file
     with cd(env.root):

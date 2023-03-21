@@ -297,6 +297,29 @@ class UpdateConfig(CommandBase):
             return rc
 
 
+class UpdateCurrent(CommandBase):
+    command = 'update-current'
+    help = 'Point the "current" symlink at a different release.'
+
+    arguments = (
+        Argument('release_name', help="Name of the release to become current"),
+        shared_args.QUIET_ARG,
+        shared_args.SKIP_CHECK_ARG,
+    )
+
+    def run(self, args, unknown_args):
+        context = AnsibleContext(args)
+        context.environment.release_name = args.release_name
+        context.environment.create_generated_yml()
+        return run_ansible_playbook(
+            "update_current.yml",
+            context,
+            quiet=args.quiet,
+            skip_check=args.skip_check,
+            unknown_args=unknown_args,
+        )
+
+
 class AfterReboot(_AnsiblePlaybookAlias):
     command = 'after-reboot'
     help = """

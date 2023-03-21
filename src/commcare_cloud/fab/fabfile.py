@@ -232,15 +232,14 @@ def setup_release():
 
 
 def _deploy_without_asking(skip_record):
-    execute_with_timing(release.update_current)
     silent_services_restart()
     if skip_record == 'no':
         execute_with_timing(release.record_successful_release)
 
 
-@task
+@obsolete_task
 def update_current(release=None):
-    execute(release.update_current, release)
+    """OBSOLETE: Use 'update-current RELEASE_NAME'"""
 
 
 @task

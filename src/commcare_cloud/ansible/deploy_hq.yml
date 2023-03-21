@@ -139,3 +139,7 @@
           loop:
             - '--deploy'
             - '--deploy -t database'
+
+        - import_role:
+            name: deploy_hq
+            tasks_from: update_current
