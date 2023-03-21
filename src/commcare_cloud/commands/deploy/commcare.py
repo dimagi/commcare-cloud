@@ -34,10 +34,6 @@ def deploy_commcare(environment, args, unknown_args):
         print(color_notice("Aborted by user"))
         return 1
 
-    fab_func_args = get_deploy_commcare_fab_func_args(args)
-    fab_settings = [args.fab_settings] if args.fab_settings else []
-    fab_settings.append(f"release_name={environment.release_name}")
-
     context = DeployContext(
         service_name="CommCare HQ",
         revision=args.commcare_rev,
@@ -60,7 +56,6 @@ def deploy_commcare(environment, args, unknown_args):
     if args.private:
         if not args.limit:
             args.limit = "django_manage"
-        fab_command = None
         ansible_args.append("--tags=private_release")
         ansible_args.extend(unknown_args)
     else:
@@ -68,7 +63,6 @@ def deploy_commcare(environment, args, unknown_args):
             exit("--limit is not allowed except with --private")
         if args.skip_record:
             ansible_args.extend(["-e", "record_success="])
-        fab_command = "deploy_commcare"
     if args.ignore_kafka_checkpoint_warning:
         ansible_args.extend(["-e", "ignore_kafka_checkpoint_warning=true"])
     environment.create_generated_yml()
@@ -84,11 +78,6 @@ def deploy_commcare(environment, args, unknown_args):
         unknown_args=ansible_args,
     )
 
-    if fab_command and rc == 0:
-        rc = commcare_cloud(
-            environment.name, 'fab', f'{fab_command}{fab_func_args}',
-            '--set', ','.join(fab_settings), branch=args.branch, *unknown_args
-        )
     if rc != 0:
         resume_option = color_notice(f"--resume={environment.release_name}")
         print(color_error("Deploy failed."))
@@ -261,20 +250,6 @@ def get_deployed_version(environment):
     if "rc" in result:
         error += f"\n\nreturn code: {result['rc']}"
     raise BadAnsibleResult(error)
-
-
-def get_deploy_commcare_fab_func_args(args):
-    fab_func_args = ['run_incomplete=yes']
-
-    if args.resume:
-        fab_func_args.append('resume=yes')
-    if args.skip_record:
-        fab_func_args.append('skip_record=yes')
-
-    if fab_func_args:
-        return ':{}'.format(','.join(fab_func_args))
-    else:
-        return ''
 
 
 def get_deploy_revs_and_diffs(environment, args):

@@ -21,14 +21,9 @@ def test_deploy_commcare_happy_path():
         log.append(playbook)
         return 0
 
-    def run_fab(env_name, fab, task, *args, **kw):
-        log.append(" ".join((f"{fab} {task}",) + args))
-        return 0
-
     log = []
     with patch.multiple(
         commcare,
-        commcare_cloud=run_fab,
         record_deploy_failed=Mock(),
         record_deploy_start=Mock(),
         record_successful_deploy=Mock(),
@@ -36,10 +31,7 @@ def test_deploy_commcare_happy_path():
     ):
         _deploy_commcare()
 
-    eq(log, [
-        "deploy_hq.yml",
-        "fab deploy_commcare:run_incomplete=yes --set release_name=GHOST",
-    ])
+    eq(log, ["deploy_hq.yml"])
 
 
 def test_resume_deploy_with_release_name():
@@ -49,14 +41,9 @@ def test_resume_deploy_with_release_name():
         log.append(playbook)
         return 0
 
-    def run_fab(env_name, fab, task, *args, **kw):
-        log.append(" ".join((f"{fab} {task}",) + args))
-        return 0
-
     log = []
     with patch.multiple(
         commcare,
-        commcare_cloud=run_fab,
         record_deploy_failed=Mock(),
         record_deploy_start=Mock(),
         record_successful_deploy=Mock(),
@@ -64,22 +51,15 @@ def test_resume_deploy_with_release_name():
     ):
         _deploy_commcare("--resume=FRANK")
 
-    eq(log, [
-        "deploy_hq.yml",
-        "fab deploy_commcare:run_incomplete=yes,resume=yes --set release_name=FRANK"
-    ])
+    eq(log, ["deploy_hq.yml"])
 
 
 def test_resume_deploy_without_release_name_raises():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
         raise Exception("unexpected")
 
-    def run_fab(env_name, fab, task, *args, **kw):
-        raise Exception("unexpected")
-
     with (
         patch.object(commcare, "run_ansible_playbook", run_playbook),
-        patch.object(commcare, "commcare_cloud", run_fab),
         assert_raises(SystemExit),
         patch("sys.stderr", sys.stdout)
     ):

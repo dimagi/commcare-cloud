@@ -36,7 +36,7 @@ import posixpath
 
 from fabric import utils
 from fabric.api import env, execute, parallel, roles, sudo, task
-from fabric.colors import blue, magenta, red
+from fabric.colors import blue, red
 from fabric.context_managers import cd
 from fabric.contrib import console
 from fabric.operations import require
@@ -46,7 +46,7 @@ from commcare_cloud.environment.paths import get_available_envs
 from .const import ROLES_ALL_SERVICES, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .operations import db
 from .operations import release, supervisor
-from .utils import execute_with_timing, incomplete_task, obsolete_task
+from .utils import obsolete_task
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
     env.use_ssh_config = True
@@ -288,17 +288,9 @@ def manage(cmd=None):
     """OBSOLETE use 'django-manage' instead"""
 
 
-@incomplete_task("deploy commcare ...")
+@obsolete_task
 def deploy_commcare(resume='no', skip_record='no'):
     """OBSOLETE: Use 'deploy commcare' instead"""
-    _require_target()
-
-    env.full_deploy = True
-
-    if resume == 'yes':
-        _setup_env(env.env_name)
-        env.resume = True
-        print(magenta('You are about to resume the deploy in {}'.format(env.code_root)))
 
 
 @task
