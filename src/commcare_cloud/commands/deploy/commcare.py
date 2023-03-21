@@ -66,6 +66,8 @@ def deploy_commcare(environment, args, unknown_args):
     else:
         if args.limit:
             exit("--limit is not allowed except with --private")
+        if args.skip_record:
+            ansible_args.extend(["-e", "record_success="])
         fab_command = "deploy_commcare"
     if args.ignore_kafka_checkpoint_warning:
         ansible_args.extend(["-e", "ignore_kafka_checkpoint_warning=true"])

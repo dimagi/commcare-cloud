@@ -231,11 +231,6 @@ def setup_release():
     """
 
 
-def _deploy_without_asking(skip_record):
-    if skip_record == 'no':
-        execute_with_timing(release.record_successful_release)
-
-
 @obsolete_task
 def update_current(release=None):
     """OBSOLETE: Use 'update-current RELEASE_NAME'"""
@@ -304,8 +299,6 @@ def deploy_commcare(resume='no', skip_record='no'):
         _setup_env(env.env_name)
         env.resume = True
         print(magenta('You are about to resume the deploy in {}'.format(env.code_root)))
-
-    _deploy_without_asking(skip_record)
 
 
 @task

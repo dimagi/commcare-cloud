@@ -10,13 +10,6 @@ from ..const import RELEASE_RECORD, ROLES_ALL_SRC
 
 @roles(ROLES_ALL_SRC)
 @parallel
-def record_successful_release():
-    with cd(env.root):
-        files.append(RELEASE_RECORD, str(env.code_root), use_sudo=True)
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
 def mark_last_release_unsuccessful():
     # Removes last line from RELEASE_RECORD file
     with cd(env.root):
