@@ -16,7 +16,7 @@ resource "aws_backup_plan" "business_continuity_plan" {
     completion_window        = 10080
     enable_continuous_backup = false
     rule_name                = "Daily"
-    schedule                 = "cron(0 13 ? * 2,3,4,5,6 *)"
+    schedule                 = "cron(0 13 ? * 2,3,4,5,6,7 *)"
     start_window             = 60
     target_vault_name        = aws_backup_vault.business_continuity_local_vault.name
 
@@ -69,7 +69,10 @@ resource "aws_backup_plan" "business_continuity_plan" {
     }
 
     lifecycle {
-      delete_after = 1
+      // The schedule overlaps with Weekly.
+      // When there's an overlap, AWS Backup picks the one with longer (local) retention.
+      // Setting this higher than Weekly's is a hack to make it always pick this one when they overlap.
+      delete_after = 2
     }
   }
   rule {
@@ -89,7 +92,10 @@ resource "aws_backup_plan" "business_continuity_plan" {
     }
 
     lifecycle {
-      delete_after = 1
+      // The schedule overlaps with Weekly.
+      // When there's an overlap, AWS Backup picks the one with longer (local) retention.
+      // Setting this higher than Weekly's is a hack to make it always pick this one when they overlap.
+      delete_after = 2
     }
   }
 }
