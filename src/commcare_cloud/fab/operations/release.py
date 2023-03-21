@@ -1,6 +1,5 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
-from fabric import utils
 from fabric.api import env, parallel, roles, sudo
 from fabric.context_managers import cd
 from fabric.contrib import files
@@ -14,12 +13,6 @@ def mark_last_release_unsuccessful():
     # Removes last line from RELEASE_RECORD file
     with cd(env.root):
         sudo("sed -i '$d' {}".format(RELEASE_RECORD))
-
-
-def git_gc_current():
-    with cd(env.code_current):
-        sudo('echo "git gc" | at -t `date -d "5 seconds" +%m%d%H%M.%S`')
-        sudo('echo "git submodule foreach \'git gc\'" | at -t `date -d "5 seconds" +%m%d%H%M.%S`')
 
 
 @roles(ROLES_ALL_SRC)
