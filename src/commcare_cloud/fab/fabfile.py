@@ -232,7 +232,6 @@ def setup_release():
 
 
 def _deploy_without_asking(skip_record):
-    silent_services_restart()
     if skip_record == 'no':
         execute_with_timing(release.record_successful_release)
 

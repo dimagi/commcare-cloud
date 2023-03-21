@@ -143,3 +143,43 @@
         - import_role:
             name: deploy_hq
             tasks_from: update_current
+
+        - name: Set in-progress flag
+          command:
+            cmd: './manage.py deploy_in_progress'
+            chdir: '{{ code_source }}'
+          run_once: true
+
+- name: Restart non-webworker services
+  hosts:
+    - celery
+    - pillowtop
+    - proxy
+  become: true
+  any_errors_fatal: true
+  tasks:
+    - name: Restart services
+      command: supervisorctl {{ item }}
+      loop:
+        - stop all
+        - reread
+        - update
+        - start all
+      when: >-
+        not restart_services_marker.stat.exists
+        and inventory_hostname not in groups.webworkers
+
+- name: Rolling restart webworkers services
+  hosts: webworkers
+  serial: ["10%", "40%", "100%"]
+  become: true
+  any_errors_fatal: true
+  tasks:
+    - name: Restart
+      command: supervisorctl {{ item }}
+      loop:
+        - stop all
+        - reread
+        - update
+        - start all
+      when: not restart_services_marker.stat.exists
