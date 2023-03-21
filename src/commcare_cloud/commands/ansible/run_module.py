@@ -117,7 +117,7 @@ def run_ansible_module(ansible_context, inventory_group, module, module_args,
         '-m', module,
         '-i', environment.paths.inventory_source,
         '-a', module_args,
-    ) + extra_args
+    )
 
     environment.create_generated_yml()
     public_vars = environment.public_vars
@@ -142,7 +142,7 @@ def run_ansible_module(ansible_context, inventory_group, module, module_args,
         env_vars["ANSIBLE_STDOUT_CALLBACK"] = "json"
 
     cmd_parts_with_common_ssh_args = get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
-    cmd_parts += cmd_parts_with_common_ssh_args
+    cmd_parts += cmd_parts_with_common_ssh_args + extra_args
     cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
     if not quiet:
         print_command(cmd)
