@@ -10,7 +10,9 @@
   become_user: cchq
   gather_facts: no
   tasks:
-  - shell: 'cd {{ code_home }}; {{ virtualenv_home }}/bin/python manage.py check --deploy'
+  - command:
+      cmd: ./manage.py check --deploy
+      chdir: '{{ code_home }}'
     register: deploy_check
     failed_when: false
     changed_when: deploy_check.rc
@@ -22,7 +24,9 @@
     when: deploy_check.rc or deploy_check.stderr_lines
     failed_when: deploy_check.rc
 
-  - shell: 'cd {{ code_home }}; {{ virtualenv_home }}/bin/python manage.py check --deploy -t database'
+  - command:
+      cmd: ./manage.py check --deploy -t database
+      chdir: '{{ code_home }}'
     register: database_check
     failed_when: false
     changed_when: database_check.rc
