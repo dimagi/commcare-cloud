@@ -39,6 +39,7 @@ from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import (
     Ping,
     KillStaleCeleryWorkers,
+    ListReleases,
     RunAnsibleModule,
     RunShellCommand,
     SendDatadogEvent,
@@ -84,6 +85,7 @@ COMMAND_GROUPS = OrderedDict([
         UpdateSupervisorConfs,
         Fab,
         Deploy,
+        ListReleases,
         CleanReleases,
         PreindexViews,
         UpdateCurrent,

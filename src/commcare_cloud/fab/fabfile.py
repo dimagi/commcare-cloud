@@ -213,10 +213,9 @@ def kill_stale_celery_workers():
     """OBSOLETE use 'kill-stale-celery-workers' instead"""
 
 
-@task
+@obsolete_task
 def rollback_formplayer():
-    print(red("This command is now implemented with ansible:"))
-    print("cchq {} ansible-playbook rollback_formplayer.yml --tags=rollback".format(env.deploy_env))
+    """OBSOLETE. Use ansible-playbook rollback_formplayer.yml --tags=rollback"""
 
 
 @obsolete_task
@@ -236,11 +235,11 @@ def update_current(release=None):
     """OBSOLETE: Use 'update-current RELEASE_NAME'"""
 
 
-@task
+@obsolete_task
 def rollback():
-    """
-    Rolls back the servers to the previous release if it exists and is same
-    across servers.
+    """OBSOLETE. Use 'deploy commcare --resume=PREVIOUS_RELEASE'
+
+    Use the 'list-releases' command to get valid release names.
     """
     number_of_releases = execute(release.get_number_of_releases)
     if not all(n > 1 for n in number_of_releases):

@@ -98,7 +98,7 @@ hotfix_deploy          deploy ONLY the code with no extra cleanup or syncing
 manage                 OBSOLETE. Use 'django-manage' instead.
 preindex_views         OBSOLETE. Use 'preindex-views' instead.
 restart_services
-rollback               Rolls back the servers to the previous release if it exists and is same
+rollback               OBSOLETE. Use 'deploy commcare --resume=PREVIOUS_RELEASE'
 setup_release          OBSOLETE. Use deploy commcare --private
 start_pillows
 stop_pillows

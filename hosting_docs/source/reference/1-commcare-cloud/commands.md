@@ -1070,8 +1070,8 @@ Use `-l` instead of a command to see the full list of commands.
     preindex_views             OBSOLETE. Use 'preindex-views' instead
     restart_services
     restart_webworkers
-    rollback                   Rolls back the servers to the previous release...
-    rollback_formplayer
+    rollback                   OBSOLETE. Use 'deploy commcare --resume=PREVIO...
+    rollback_formplayer        OBSOLETE. Use ansible-playbook rollback_formpl...
     setup_limited_release      OBSOLETE. Use deploy commcare --private [--kee...
     setup_release              OBSOLETE. Use deploy commcare --private --limi...
     start_celery
@@ -1107,6 +1107,8 @@ always_deploy_formplayer is set in meta.yml, 'commcare formplayer'
 ###### `--resume RELEASE_NAME`
 
 Rather than starting a new deploy, resume a previous release.
+This option can be used to "rollback" to a previous release.
+Use the 'list-releases' command to get valid release names.
 
 ###### `--private`
 
@@ -1133,6 +1135,22 @@ The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
 ###### `--ignore-kafka-checkpoint-warning`
 
 Do not block deploy if Kafka checkpoints are unavailable.
+
+---
+
+#### ``list-releases`` Command
+
+List names that can be passed to `deploy --resume=RELEASE_NAME`
+
+```
+commcare-cloud <env> list-releases [--limit LIMIT]
+```
+
+##### Options
+
+###### `--limit LIMIT`
+
+Run command on limited host(s). Default: webworkers[0]
 
 ---
 
