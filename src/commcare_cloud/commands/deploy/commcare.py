@@ -5,7 +5,7 @@ import pytz
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
-from commcare_cloud.colors import color_notice, color_error, color_success, color_summary
+from commcare_cloud.colors import color_notice, color_error, color_notice, color_summary
 from commcare_cloud.commands.ansible.run_module import (
     AnsibleContext,
     BadAnsibleResult,
@@ -88,7 +88,7 @@ def deploy_commcare(environment, args, unknown_args):
             '--set', ','.join(fab_settings), branch=args.branch, *unknown_args
         )
     if rc != 0:
-        resume_option = color_success(f"--resume={environment.release_name}")
+        resume_option = color_notice(f"--resume={environment.release_name}")
         print(color_error("Deploy failed."))
         print(f"Add {resume_option} to the deploy command to retry.")
         if should_record:
