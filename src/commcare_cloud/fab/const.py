@@ -35,7 +35,6 @@ ROLES_DEPLOY = ['deploy', 'django_monolith']
 ROLES_MANAGE = ['django_manage']
 ROLES_CONTROL = ['control']
 
-RELEASE_RECORD = 'RELEASES.txt'
 KEEP_UNTIL_PREFIX = 'KEEP_UNTIL__'
 DATE_FMT = '%Y-%m-%d_%H.%M'
 

@@ -45,7 +45,7 @@ from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
 from .const import ROLES_ALL_SERVICES, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .operations import db
-from .operations import release, supervisor
+from .operations import supervisor
 from .utils import obsolete_task
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
@@ -241,39 +241,6 @@ def rollback():
 
     Use the 'list-releases' command to get valid release names.
     """
-    number_of_releases = execute(release.get_number_of_releases)
-    if not all(n > 1 for n in number_of_releases):
-        print(red('Aborting because there are not enough previous releases.'))
-        exit()
-
-    releases = execute(release.get_previous_release)
-
-    unique_releases = set(releases.values())
-    if len(unique_releases) != 1:
-        print(red('Aborting because not all hosts would rollback to same release'))
-        exit()
-
-    unique_release = unique_releases.pop()
-
-    if not unique_release:
-        print(red('Aborting because release path is empty. '
-                  'This probably means there are no releases to rollback to.'))
-        exit()
-
-    if not console.confirm('Do you wish to rollback to release: {}'.format(unique_release), default=False):
-        print(blue('Exiting.'))
-        exit()
-
-    exists = execute(release.ensure_release_exists, unique_release)
-
-    if all(exists.values()):
-        print(blue('Updating current and restarting services'))
-        execute(release.update_current, unique_release)
-        silent_services_restart(use_current_release=True)
-        execute(release.mark_last_release_unsuccessful)
-    else:
-        print(red('Aborting because not all hosts have release'))
-        exit()
 
 
 @obsolete_task
