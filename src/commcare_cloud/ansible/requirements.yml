@@ -5,7 +5,10 @@ roles:
     name: andrewrothstein.couchdb
   - src: git+https://github.com/dimagi/ansible-couchdb-cluster.git
     version: 7b4891860844b02243491cd501cc934626369783
-    name: andrewrothstein.couchdb-cluster
+    name: andrewrothstein.couchdb-cluster-src
+  - src: git+https://github.com/dimagi/ansible-couchdb-cluster.git
+    version: e14d144fcc59593c6d33fc9abdc6bf3c05bf619f
+    name: andrewrothstein.couchdb-cluster-apt
   - src: git+https://github.com/ANXS/tmpreaper.git
     version: 46f8e0b8b8f5732eecc68b08b5e0c392c418e3f3
     name: tmpreaper

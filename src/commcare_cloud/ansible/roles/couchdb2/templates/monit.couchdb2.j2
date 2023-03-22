@@ -1,5 +1,5 @@
- check process couchdb2 with pidfile {{ couchdb_dir }}/var/run/couchdb2.pid
+ check process couchdb2 matching "beam.smp"
    group database
    group couchdb2
-   restart program = "/bin/systemctl restart couchdb2"
+   restart program = "/bin/systemctl restart {{ couchdb_service_name }}"
    if failed host {{ inventory_hostname }} port {{ couchdb2_port }} then restart

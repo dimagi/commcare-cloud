@@ -1,11 +1,10 @@
 ---
-
 - name: Prepare for upgrade/downgrade
   block:
     - name: Stop monit
       service: name=monit state=stopped
     - name: Stop couchdb2
-      service: name=couchdb2 state=stopped
+      service: name={{ couchdb_service_name }} state=stopped
     - name: Kill pending couchdb2 processes
       shell: |
         pkill beam.smp
@@ -20,10 +19,10 @@
 - name: Copy extra config
   template:
     src: extras.ini.j2
-    dest: "{{ couchdb_etc_local_dir }}/extras.ini"
+    dest: "{{couchdb_dir}}/etc/local.d/extras.ini"
     owner: '{{ couchdb_user }}'
     group: '{{ couchdb_group }}'
-    mode: 0644
+    mode: 0640
   notify:
     - restart couchdb2
     - config changes
@@ -32,7 +31,7 @@
 
 - name: Add placement zone config
   lineinfile:
-    path: /usr/local/couchdb2/couchdb/etc/default.ini
+    path: "{{couchdb_dir}}/etc/default.ini"
     regexp: '^placement='
     line: "{{ couchdb_placement }}"
     insertafter: '^\[cluster\]'
@@ -108,28 +107,11 @@
    - _replicator
    - _global_changes
 
-- name: Copy couch restart script (cleanup)
-  file:
-    dest: "/usr/local/sbin/couch2-restarter.sh"
-    state: absent
-  tags:
-    - cron
-
-- name: Create Cron job (cleanup)
-  cron:
-    name: "Reboot Couch"
-    job: "/usr/local/sbin/couch2-restarter.sh > /dev/null"
-    user: root
-    cron_file: couch2-restarter
-    state: absent
-  tags:
-    - cron
-
 - name: Create couch backup dir
   file:
     path: "{{ couch_backup_dir }}"
     state: directory
-    mode: 0700
+    mode: 0750
     group: couchdb
     owner: couchdb
   when: backup_couch|bool
@@ -143,7 +125,7 @@
     dest: "/usr/local/sbin/create_couchdb_backup.sh"
     group: couchdb
     owner: couchdb
-    mode: 0700
+    mode: 0750
     backup: yes
   when: backup_couch|bool
   tags:
@@ -156,7 +138,7 @@
     dest: "/usr/local/sbin/restore_couchdb_backup.sh"
     group: couchdb
     owner: couchdb
-    mode: 0700
+    mode: 0750
     backup: yes
   when: backup_couch|bool
   tags:

@@ -2,7 +2,7 @@
 
 couchdb_port : "{{ couchdb2_port }}"
 couchdb_node_port : "{{ couchdb2_local_port }}"
-couchdb_dir: /usr/local/couchdb2/couchdb
+couchdb_dir: "{{ '/usr/local/couchdb2/couchdb' if ansible_distribution_version == '18.04' else '/opt/couchdb' }}"
 couchdb_data_dir: '{{ encrypted_root }}/couchdb2'
 couchdb_secure: False
 couchdb_bind:
@@ -24,3 +24,4 @@ couchdb_require_valid_user: false
 couchdb_require_valid_user_node_local: false
 couchdb_httpd_auth_secret: "{{ couchdb2.password|hash('sha256') }}"
 
+couchdb_service_name: "{{ 'couchdb2' if ansible_distribution_version == '18.04' else 'couchdb' }}"
