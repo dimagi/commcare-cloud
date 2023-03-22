@@ -9,45 +9,11 @@ from fabric.context_managers import cd
 from fabric.contrib import files
 
 from ..const import (
-    ROLES_CELERY,
     ROLES_DJANGO,
     ROLES_FORMPLAYER,
-    ROLES_PILLOWTOP,
     ROLES_STATIC,
     ROLES_ALL_SERVICES,
 )
-
-
-@roles(ROLES_PILLOWTOP)
-@parallel
-def stop_pillows(current=False):
-    code_root = env.code_current if current else env.code_root
-    with cd(code_root):
-        sudo('scripts/supervisor-group-ctl stop pillowtop')
-
-
-@roles(ROLES_PILLOWTOP)
-@parallel
-def start_pillows(current=False):
-    code_root = env.code_current if current else env.code_root
-    with cd(code_root):
-        sudo('scripts/supervisor-group-ctl start pillowtop')
-
-
-@roles(ROLES_CELERY)
-@parallel
-def stop_celery_tasks(current=False):
-    code_root = env.code_current if current else env.code_root
-    with cd(code_root):
-        sudo('scripts/supervisor-group-ctl stop celery')
-
-
-@roles(ROLES_CELERY)
-@parallel
-def start_celery_tasks(current=False):
-    code_root = env.code_current if current else env.code_root
-    with cd(code_root):
-        sudo('scripts/supervisor-group-ctl start celery')
 
 
 @roles(set(ROLES_ALL_SERVICES) - set(ROLES_DJANGO) - set(ROLES_FORMPLAYER))

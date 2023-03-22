@@ -1074,11 +1074,11 @@ Use `-l` instead of a command to see the full list of commands.
     rollback_formplayer        OBSOLETE. Use ansible-playbook rollback_formpl...
     setup_limited_release      OBSOLETE. Use deploy commcare --private [--kee...
     setup_release              OBSOLETE. Use deploy commcare --private --limi...
-    start_celery
-    start_pillows
-    stop_celery
-    stop_pillows
-    supervisorctl
+    start_celery               OBSOLETE. Use 'service celery start'
+    start_pillows              OBSOLETE. Use 'service pillowtop start'
+    stop_celery                OBSOLETE. Use 'service celery stop'
+    stop_pillows               OBSOLETE. Use 'service pillowtop stop'
+    supervisorctl              OBSOLETE. Use 'service NAME ACTION'
     update_current             OBSOLETE: Use 'deploy commcare --resume=RELEAS...
     webworkers
 ```

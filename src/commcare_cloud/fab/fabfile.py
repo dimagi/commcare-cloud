@@ -259,17 +259,10 @@ def deploy_commcare(resume='no', skip_record='no'):
     """OBSOLETE: Use 'deploy commcare' instead"""
 
 
-@task
+@obsolete_task
 @parallel
 def supervisorctl(command):
-    require('supervisor_roles',
-            provided_by=('staging', 'production', 'softlayer'))
-
-    @roles(env.supervisor_roles)
-    def _inner():
-        supervisor.supervisor_command(command)
-
-    execute(_inner)
+    """OBSOLETE. Use 'service NAME ACTION'"""
 
 
 @roles(ROLES_ALL_SERVICES)
@@ -299,14 +292,14 @@ def silent_services_restart(use_current_release=False):
     execute(supervisor.restart_webworkers)
 
 
-@task
+@obsolete_task
 def stop_celery():
-    execute(supervisor.stop_celery_tasks, True)
+    """OBSOLETE. Use 'service celery stop'"""
 
 
-@task
+@obsolete_task
 def start_celery():
-    execute(supervisor.start_celery_tasks, True)
+    """OBSOLETE. Use 'service celery start'"""
 
 
 @task
@@ -314,14 +307,14 @@ def restart_webworkers():
     execute(supervisor.restart_webworkers)
 
 
-@task
+@obsolete_task
 def stop_pillows():
-    execute(supervisor.stop_pillows, True)
+    """OBSOLETE. Use 'service pillowtop stop'"""
 
 
-@task
+@obsolete_task
 def start_pillows():
-    execute(supervisor.start_pillows, True)
+    """OBSOLETE. Use 'service pillowtop start'"""
 
 
 @roles(ROLES_PILLOWTOP)
