@@ -1,4 +1,4 @@
-- name: Commission hosts
+- name: (De/Re)commission hosts
   replace:
     path: /etc/nginx/sites-available/{{ deploy_env }}_commcare
     regexp: ^{{ "" if comment else "#" }}([ ]*server[ ]+(?:{{ ansible_play_batch | join("|") }})[:;])
@@ -9,13 +9,28 @@
   loop: '{{ groups.proxy }}'
   when: groups.webworkers | length > 1
 
-- name: Check and reload nginx configuration
-  command: nginx {{ item.1 }}
-  become: true
-  become_user: root
-  delegate_to: '{{ item.0 }}'
-  loop: '{{ groups.proxy | product(["-t", "-s reload"]) | list }}'
-  register: stop_loop_hack
-  when: >-
-    groups.webworkers | length > 1
-    and not stop_loop_hack.failed | default(False)
+- block:
+    - name: Check and reload nginx configuration
+      command: nginx {{ item.1 }}
+      become: true
+      become_user: root
+      delegate_to: '{{ item.0 }}'
+      loop: '{{ groups.proxy | product(["-t", "-s reload"]) | list }}'
+      register: stop_loop_hack
+      when: >-
+        groups.webworkers | length > 1
+        and not stop_loop_hack.failed | default(False)
+  rescue:
+    - name: Commission hosts
+      replace:
+        path: /etc/nginx/sites-available/{{ deploy_env }}_commcare
+        regexp: ^{{ "#" if comment else "" }}([ ]*server[ ]+(?:{{ ansible_play_batch | join("|") }})[:;])
+        replace: '{{ "" if comment else "#" }}\1'
+      become: true
+      become_user: '{{ cchq_user }}'
+      delegate_to: '{{ item }}'
+      loop: '{{ groups.proxy }}'
+      when: groups.webworkers | length > 1
+
+    - fail:
+        msg: Nginx reload failed. See previous errors for details.
