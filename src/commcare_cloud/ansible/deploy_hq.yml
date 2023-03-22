@@ -132,9 +132,14 @@
         - '--deploy'
         - '--deploy -t database'
 
-    - import_role:
-        name: deploy_hq
-        tasks_from: update_current
+    - name: Update current symlink
+      become: true
+      become_user: '{{ cchq_user }}'
+      file:
+        src: '{{ code_source }}'
+        path: '{{ code_home }}'
+        state: link
+        force: true
 
     - name: Set in-progress flag
       command:

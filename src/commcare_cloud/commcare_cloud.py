@@ -31,7 +31,7 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
-    UpdateConfig, UpdateCurrent, AfterReboot, BootstrapUsers, DeployStack,
+    UpdateConfig, AfterReboot, BootstrapUsers, DeployStack,
     UpdateUsers, UpdateUserPublicKey, UpdateSupervisorConfs,
     PerformSystemChecks,
 )
@@ -88,7 +88,6 @@ COMMAND_GROUPS = OrderedDict([
         ListReleases,
         CleanReleases,
         PreindexViews,
-        UpdateCurrent,
         Service,
         MigrateCouchdb,
         Downtime,

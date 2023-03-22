@@ -232,7 +232,7 @@ def setup_release():
 
 @obsolete_task
 def update_current(release=None):
-    """OBSOLETE: Use 'update-current RELEASE_NAME'"""
+    """OBSOLETE: Use 'deploy commcare --resume=RELEASE_NAME'"""
 
 
 @obsolete_task
