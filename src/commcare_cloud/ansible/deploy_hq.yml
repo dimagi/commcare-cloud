@@ -121,34 +121,26 @@
       vars:
         if_not_done: clean_releases
 
-    - name: 'Check if done: restart_services'
-      stat:
-        path: '{{ code_source }}/.restart_services-done'
-      register: restart_services_marker
+    - name: Check release
+      command:
+        cmd: ./manage.py check {{ item }}
+        chdir: '{{ code_source }}'
+      register: stop_loop_hack
+      when: not stop_loop_hack.failed | default(False)
+      run_once: true
+      loop:
+        - '--deploy'
+        - '--deploy -t database'
 
-    - name: Run pre-restart tasks
-      when: not restart_services_marker.stat.exists
-      block:
-        - name: "Check release"
-          command:
-            cmd: ./manage.py check {{ item }}
-            chdir: '{{ code_source }}'
-          register: stop_loop_hack
-          when: not stop_loop_hack.failed | default(False)
-          run_once: true
-          loop:
-            - '--deploy'
-            - '--deploy -t database'
+    - import_role:
+        name: deploy_hq
+        tasks_from: update_current
 
-        - import_role:
-            name: deploy_hq
-            tasks_from: update_current
-
-        - name: Set in-progress flag
-          command:
-            cmd: './manage.py deploy_in_progress'
-            chdir: '{{ code_source }}'
-          run_once: true
+    - name: Set in-progress flag
+      command:
+        cmd: ./manage.py deploy_in_progress
+        chdir: '{{ code_source }}'
+      run_once: true
 
 - name: Restart non-webworker services
   hosts:
@@ -165,9 +157,7 @@
         - reread
         - update
         - start all
-      when: >-
-        not restart_services_marker.stat.exists
-        and inventory_hostname not in groups.webworkers
+      when: inventory_hostname not in groups.webworkers
 
 - name: Rolling restart webworker services
   hosts: webworkers
@@ -196,7 +186,6 @@
         - reread
         - update
         - start all
-      when: not restart_services_marker.stat.exists
 
 - name: Record successful release
   hosts:
@@ -216,14 +205,4 @@
         line: '{{ code_source }}'
         create: true
         mode: 0644
-      when: >-
-        not restart_services_marker.stat.exists
-        and record_success | default(True)
-
-    - name: 'Completed restart_services'
-      file:
-        path: '{{ code_source }}/.restart_services-done'
-        state: touch
-        mode: 0644
-      no_log: true
-      when: not restart_services_marker.stat.exists
+      when: record_success | default(True)
