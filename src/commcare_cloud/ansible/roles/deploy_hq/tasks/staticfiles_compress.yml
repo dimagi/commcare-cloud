@@ -11,6 +11,14 @@
 - name: Push shared staticfiles cache
   when: shared_dir_for_staticfiles
   block:
+    - name: Write code version for clean_releases
+      # Unlike `git rev-parse HEAD` this will not change if a git operation is
+      # performed that checks out a different commit after deploy completion.
+      copy:
+        dest: '{{ code_source }}/.staticfiles-version'
+        content: '{{ code_version }}'
+        mode: 0644
+
     - name: Create shared directory
       become: true
       become_user: root
@@ -28,7 +36,7 @@
         recursive: true
         delete: true
       delegate_to: '{{ inventory_hostname }}'
-      no_log: true
+      diff: false
 
 - name: Push manifest to redis
   command:

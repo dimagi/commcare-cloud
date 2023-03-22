@@ -47,9 +47,6 @@ RSYNC_EXCLUDE = (
     '*.db',
 )
 
-CACHED_DEPLOY_ENV_FILENAME = 'cached_deploy_env.pickle'
-CACHED_DEPLOY_CHECKPOINT_FILENAME = 'cached_deploy_checkpoint.pickle'
-
 FORMPLAYER_BUILD_DIR = 'formplayer_build'
 
 BOWER_ZIP_NAME = 'bower.tar.gz'

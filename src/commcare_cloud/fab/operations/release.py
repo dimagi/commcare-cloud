@@ -1,21 +1,11 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
-import os
-from datetime import datetime
-
 from fabric import utils
 from fabric.api import env, parallel, roles, sudo
-from fabric.colors import red
 from fabric.context_managers import cd
 from fabric.contrib import files
 
-from ..const import (
-    DATE_FMT,
-    KEEP_UNTIL_PREFIX,
-    RELEASE_RECORD,
-    ROLES_ALL_SRC,
-    ROLES_MANAGE,
-)
+from ..const import RELEASE_RECORD, ROLES_ALL_SRC
 
 
 @roles(ROLES_ALL_SRC)
@@ -50,57 +40,6 @@ def git_gc_current():
     with cd(env.code_current):
         sudo('echo "git gc" | at -t `date -d "5 seconds" +%m%d%H%M.%S`')
         sudo('echo "git submodule foreach \'git gc\'" | at -t `date -d "5 seconds" +%m%d%H%M.%S`')
-
-
-@roles(ROLES_ALL_SRC)
-@parallel
-def clean_releases(keep=3):
-    releases = sudo('ls {}'.format(env.releases)).split()
-    current_release = os.path.basename(sudo('readlink {}'.format(env.code_current)))
-
-    to_remove = []
-    valid_releases = 0
-    with cd(env.root):
-        for index, release in enumerate(reversed(releases)):
-            if release == 'git_mirrors':
-                continue  # do not delete reference repositories
-            if release == current_release or release == os.path.basename(env.code_root):
-                valid_releases += 1
-            elif files.contains(RELEASE_RECORD, release, use_sudo=True, shell=True):
-                valid_releases += 1
-                if valid_releases > keep:
-                    to_remove.append(release)
-            elif files.exists(os.path.join(env.releases, release, KEEP_UNTIL_PREFIX + '*'), use_sudo=True):
-                # This has a KEEP_UNTIL file, so let's not delete until time is up
-                with cd(os.path.join(env.releases, release)):
-                    filepath = sudo('find . -name {}*'.format(KEEP_UNTIL_PREFIX))
-                filename = os.path.basename(filepath)
-                _, date_to_delete_string = filename.split(KEEP_UNTIL_PREFIX)
-                date_to_delete = datetime.strptime(date_to_delete_string, DATE_FMT)
-                if date_to_delete < datetime.utcnow():
-                    to_remove.append(release)
-            else:
-                # cleans all releases that were not successful deploys
-                to_remove.append(release)
-
-    if len(to_remove) == len(releases):
-        print(red('Aborting clean_releases, about to remove every release'))
-        return
-
-    if os.path.basename(env.code_root) in to_remove:
-        print(red('Aborting clean_releases, about to remove current release'))
-        return
-
-    if valid_releases < keep:
-        print(red('\n\nAborting clean_releases, {}/{} valid '
-                  'releases were found\n\n'.format(valid_releases, keep)))
-        return
-
-    for release in to_remove:
-        sudo('rm -rf {}/{}'.format(env.releases, release))
-
-    # as part of the clean up step, run gc in the 'current' directory
-    git_gc_current()
 
 
 @roles(ROLES_ALL_SRC)

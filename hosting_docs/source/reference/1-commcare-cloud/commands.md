@@ -1061,7 +1061,7 @@ Use `-l` instead of a command to see the full list of commands.
 ```
 
     check_status               OBSOLETE replaced by
-    clean_releases             Cleans old and failed deploys from the ~/www/&lt;...
+    clean_releases             OBSOLETE. Use 'clean-releases [--keep=N]' inst...
     deploy_commcare            OBSOLETE: Use 'deploy commcare' instead
     kill_stale_celery_workers  OBSOLETE use 'kill-stale-celery-workers' inste...
     manage                     OBSOLETE use 'django-manage' instead
@@ -1137,6 +1137,27 @@ Do not block deploy if Kafka checkpoints are unavailable.
 ###### `--set FAB_SETTINGS`
 
 fab settings in k1=v1,k2=v2 format to be passed down to fab
+
+---
+
+#### ``clean-releases`` Command
+
+Cleans old and failed deploys from the ~/www/ENV/releases/ directory.
+
+```
+commcare-cloud <env> clean-releases [-k N] [-x [EXCLUDE ...]]
+```
+
+##### Options
+
+###### `-k N, --keep N`
+
+The number of releases to retain. Default: 3
+
+###### `-x [EXCLUDE ...], --exclude [EXCLUDE ...]`
+
+Extra release names to exclude from cleanup, in addition to
+the automatic exclusions such as the current release.
 
 ---
 

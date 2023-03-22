@@ -47,16 +47,7 @@ from .checks import check_servers
 from .const import ROLES_ALL_SERVICES, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .operations import db
 from .operations import release, supervisor
-from .utils import (
-    cache_deploy_state,
-    clear_cached_deploy,
-    execute_with_timing,
-    incomplete_task,
-    obsolete_task,
-    retrieve_cached_deploy_checkpoint,
-    retrieve_cached_deploy_env,
-    traceback_string,
-)
+from .utils import execute_with_timing, incomplete_task, obsolete_task
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
     env.use_ssh_config = True
@@ -241,35 +232,12 @@ def setup_release():
     """
 
 
-def deploy_checkpoint(command_index, command_name, fn, *args, **kwargs):
-    """
-    Stores fabric env in redis and then runs the function if it shouldn't be skipped
-    """
-    if env.resume and command_index < env.checkpoint_index:
-        print(blue("Skipping command: '{}'".format(command_name)))
-        return
-    fn(*args, **kwargs)
-    cache_deploy_state(command_index + 1)
-
-
 def _deploy_without_asking(skip_record):
-    try:
-        for index, command in enumerate(ONLINE_DEPLOY_COMMANDS):
-            deploy_checkpoint(index, command.__name__, execute_with_timing, command)
-    except Exception:
-        execute_with_timing(
-            send_email,
-            f"Deploy to {env.env_name} failed.",
-            traceback_string(),
-        )
-        raise
-    else:
-        execute(check_servers.perform_system_checks)
-        execute_with_timing(release.update_current)
-        silent_services_restart()
-        if skip_record == 'no':
-            execute_with_timing(release.record_successful_release)
-        clear_cached_deploy()
+    execute(check_servers.perform_system_checks)
+    execute_with_timing(release.update_current)
+    silent_services_restart()
+    if skip_record == 'no':
+        execute_with_timing(release.record_successful_release)
 
 
 @task
@@ -318,12 +286,9 @@ def rollback():
         exit()
 
 
-@task
+@obsolete_task
 def clean_releases(keep=3):
-    """
-    Cleans old and failed deploys from the ~/www/<environment>/releases/ directory
-    """
-    execute(release.clean_releases, keep)
+    """OBSOLETE. Use 'clean-releases [--keep=N]' instead"""
 
 
 @obsolete_task
@@ -340,21 +305,8 @@ def deploy_commcare(resume='no', skip_record='no'):
     env.full_deploy = True
 
     if resume == 'yes':
-        try:
-            cached_payload = retrieve_cached_deploy_env(env.deploy_env)
-            checkpoint_index = retrieve_cached_deploy_checkpoint()
-        except FileNotFoundError:
-            # this happens when resuming a deploy that failed before the
-            # Fabric portion, which populates the cache, had started
-            _setup_env(env.env_name)
-            cached_payload = {}
-            checkpoint_index = 0
-        except Exception:
-            print(red('Unable to resume deploy, please start anew'))
-            raise
-        env.update(cached_payload)
+        _setup_env(env.env_name)
         env.resume = True
-        env.checkpoint_index = checkpoint_index or 0
         print(magenta('You are about to resume the deploy in {}'.format(env.code_root)))
 
     _deploy_without_asking(skip_record)
@@ -439,11 +391,6 @@ def reset_pillow(pillow):
         prefix=prefix,
         pillow=pillow
     ))
-
-
-ONLINE_DEPLOY_COMMANDS = [
-    release.clean_releases,
-]
 
 
 @obsolete_task

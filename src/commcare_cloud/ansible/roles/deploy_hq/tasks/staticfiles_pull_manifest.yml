@@ -13,7 +13,7 @@
         dest: '{{ code_source }}/staticfiles/CACHE/'
         remote_src: true
         mode: 0644
-      no_log: true
+      diff: false
 
 - name: Fetch manifest from redis
   command:

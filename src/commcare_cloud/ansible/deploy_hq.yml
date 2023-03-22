@@ -9,6 +9,7 @@
     - pillowtop
     - proxy
     - django_manage
+  any_errors_fatal: true
   tasks:
     - name: Get code version
       include_role:
@@ -28,6 +29,7 @@
 
 - name: Copy static JS
   hosts: proxy
+  any_errors_fatal: true
   tasks:
     - include_role: {name: deploy_hq}
       vars:
@@ -36,6 +38,7 @@
 
 - name: Install javascript dependencies
   hosts: [webworkers, celery, proxy]
+  any_errors_fatal: true
   tasks:
     - import_role: {name: deploy_hq}
       vars:
@@ -43,6 +46,7 @@
 
 - name: Collect static files
   hosts: [webworkers, proxy]
+  any_errors_fatal: true
   tasks:
     - import_role: {name: deploy_hq}
       vars:
@@ -50,6 +54,7 @@
 
 - name: Compress static files
   hosts: proxy[0]
+  any_errors_fatal: true
   tasks:
     - import_role: {name: deploy_hq}
       vars:
@@ -62,6 +67,7 @@
     - pillowtop
     - proxy
     - django_manage
+  any_errors_fatal: true
   tasks:
     - import_role: {name: deploy_hq}
       vars:
@@ -69,6 +75,7 @@
 
 - name: Run migrations
   hosts: webworkers[0]
+  any_errors_fatal: true
   tasks:
     - import_role: {name: deploy_hq}
       vars:
@@ -76,6 +83,7 @@
 
 - name: Pull staticfiles manifest
   hosts: webworkers
+  any_errors_fatal: true
   tasks:
     - import_role: {name: deploy_hq}
       vars:
@@ -83,6 +91,7 @@
 
 - name: Pull staticfiles cache
   hosts: proxy[1:]
+  any_errors_fatal: true
   tasks:
     - name: Assert single proxy host
       fail:
@@ -94,3 +103,16 @@
     - import_role: {name: deploy_hq}
       vars:
         if_not_done: staticfiles_pull_cache
+
+- name: Clean releases
+  hosts:
+    - webworkers
+    - celery
+    - pillowtop
+    - proxy
+    - django_manage
+  any_errors_fatal: true
+  tasks:
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: clean_releases
