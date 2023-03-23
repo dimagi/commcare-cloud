@@ -1,37 +1,26 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import unicode_literals
-import os
-import re
-import subprocess
 
 from memoized import memoized
 
-from commcare_cloud.cli_utils import print_command, check_branch
-from commcare_cloud.colors import color_summary, color_highlight, color_link
-from commcare_cloud.environment.main import get_environment
-from commcare_cloud.commands import shared_args
+from commcare_cloud.colors import color_error, color_summary, color_highlight, color_link
 from .command_base import CommandBase, Argument
-from ..environment.paths import FABFILE, get_available_envs
-from six.moves import shlex_quote
 
 
 class Fab(CommandBase):
     command = 'fab'
     help = (
-        "Run a fab command as you would with fab"
+        "Placeholder for obsolete fab commands"
     )
 
     arguments = (
         Argument(dest='fab_command', help="""
-        The name of the fab task to run. It and all following arguments
-        will be passed on without modification to `fab`, so all normal `fab`
-        syntax rules apply.
+        The name of the obsolete fab command.
         """, default=None, nargs="?"),
-        Argument('-l', action='store_true', help="""
+        Argument('-l', dest="list", action='store_true', help="""
         Use `-l` instead of a command to see the full list of commands.
         """),
-        shared_args.BRANCH_ARG,
     )
 
     def modify_parser(self):
@@ -39,46 +28,36 @@ class Fab(CommandBase):
         class _Parser(self.parser.__class__):
             @property
             @memoized
-            def epilog(self):
-                lines = subprocess.check_output(
-                    ['patched-fab', '-f', FABFILE, '-l'],
-                    universal_newlines=True,
-                ).splitlines()
-                return '\n'.join(
-                    line for line in lines
-                    if not re.match(r'^\s+({})'.format('|'.join(get_available_envs())), line)
-                )
+            def epilog(self_):
+                return '\n'.join(_format_commands()).replace("<env>", "ENV")
 
         self.parser.__class__ = _Parser
 
     def run(self, args, unknown_args):
-
-        if args.fab_command in ('deploy', 'awesome_deploy'):
-            self.print_deploy_deprecation()
-            return -1
-
-        check_branch(args)
-        fab_args = []
-        if args.fab_command:
-            fab_args.append(args.fab_command)
-        fab_args.extend(unknown_args)
-        env = get_environment(args.env_name)
-        if args.l:
-            fab_args.append('-l')
+        if args.list or not args.fab_command:
+            lines = _format_commands()
         else:
-            fab_args.extend(['--disable-known-hosts',
-                             '--system-known-hosts', env.paths.known_hosts])
-        # Create known_hosts file if it doesn't exist
-        known_hosts_file = env.paths.known_hosts
-        if not os.path.isfile(known_hosts_file):
-            open(known_hosts_file, 'a').close()
-        return exec_fab_command(args.env_name, *fab_args)
+            if args.fab_command in ('deploy', 'awesome_deploy'):
+                self.print_deploy_deprecation()
+                return -1
+
+            try:
+                new_command = COMMANDS[args.fab_command]
+            except KeyError:
+                print(f"unknown command: {args.fab_command}")
+                return -1
+
+            lines = [color_error("This command is obsolete.") + " It has been replaced by", ""]
+            lines.append(_format_command(new_command).lstrip('\n'))
+
+        print("\n".join(lines))
+        return -1
 
     @staticmethod
     def print_deploy_deprecation():
         print(color_summary('Hi. Things have changed.'))
         print()
-        print('The `commcare-cloud <env> fab deploy` command has been deprecated.')
+        print('The `commcare-cloud <env> fab deploy` command has moved.')
         print('Instead, please use')
         print()
         print(color_highlight('  commcare-cloud <env> deploy'))
@@ -96,11 +75,48 @@ class Fab(CommandBase):
         print()
 
 
-def exec_fab_command(env_name, *extra_args):
-    cmd_parts = (
-        'patched-fab', '-f', FABFILE,
-        env_name,
-    ) + tuple(extra_args)
-    cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
-    print_command(cmd)
-    return subprocess.call(cmd_parts)
+def _format_commands():
+    lines = [
+        str(color_error("Obsolete fab commands:")),
+        "",
+        "Obsolete fab command       Replaced by 'commcare-cloud <env> ...'",
+        "--------------------       --------------------------------------"
+    ]
+    lines.extend(sorted(f"{k:<25}  {v}" for k, v in COMMANDS.items()))
+    return lines
+
+
+def _format_command(cmd):
+    return (
+        f"  commcare-cloud <env> {cmd}"
+        .replace("                           ", "  commcare-cloud <env> ")
+    )
+
+
+COMMANDS = {
+    "preindex_views": "preindex-views",
+    "kill_stale_celery_workers": "kill-stale-celery-workers",
+    "rollback_formplayer": "ansible-playbook rollback_formplayer.yml --tags=rollback",
+    "setup_limited_release": "deploy commcare --private [--keep-days=N] [--commcare-rev=HQ_BRANCH]",
+    "setup_release": "deploy commcare --private --limit=all [--keep-days=N] [--commcare-rev=HQ_BRANCH]",
+    "update_current": "deploy commcare --resume=RELEASE_NAME",
+    "rollback": """deploy commcare --resume=PREVIOUS_RELEASE
+
+Use the 'list-releases' command to get valid release names.
+    """,
+    "clean_releases": "clean-releases [--keep=N]",
+    "manage": "django-manage",
+    "deploy_commcare": "deploy commcare",
+    "supervisorctl": "service NAME ACTION",
+    "restart_services": "service commcare restart",
+    "stop_celery": "service celery stop",
+    "start_celery": "service celery start",
+    "restart_webworkers": "service webworker restart",
+    "stop_pillows": "service pillowtop stop",
+    "start_pillows": "service pillowtop start",
+    "check_status": """ping all
+                           service postgresql status
+                           service elasticsearch status
+    """,
+    "perform_system_checks": "perform-system-checks",
+}
