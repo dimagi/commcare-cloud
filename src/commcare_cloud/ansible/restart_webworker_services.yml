@@ -1,0 +1,27 @@
+- name: Rolling restart webworker services
+  hosts: webworkers
+  serial: ["10%", "40%", "100%"]
+  become: true
+  any_errors_fatal: true
+  pre_tasks:
+    - name: Decommission hosts
+      import_role:
+        name: deploy_hq
+        tasks_from: commission_hosts
+      vars:
+        comment: true
+  post_tasks:
+    - name: Recommission hosts
+      import_role:
+        name: deploy_hq
+        tasks_from: commission_hosts
+      vars:
+        comment: false
+  tasks:
+    - name: Restart
+      command: supervisorctl {{ item }}
+      loop:
+        - stop all
+        - reread
+        - update
+        - start all

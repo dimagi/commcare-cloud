@@ -483,13 +483,20 @@ class Webworker(SingleSupervisorService):
 
     def run(self, action, host_pattern=None, process_pattern=None):
         if action == 'restart':
-            puts(color_warning("The 'webworker' service command rejects the 'restart' action"))
-            puts(color_warning("in order to protect against accidental downtime."))
-            puts(color_notice("For a no-downtime restart of webworkers, please use"))
-            puts(color_code(f"  cchq {self.environment.name} fab restart_webworkers"))
-            puts(color_error("Refusing to run webworkers service command with action 'restart'."))
-            return 1
+            if process_pattern:
+                raise NotImplementedError("restart --only=... is not supported")
+            return self._rolling_restart(limit=host_pattern)
         return super().run(action, host_pattern=host_pattern, process_pattern=process_pattern)
+
+    def _rolling_restart(self, limit):
+        from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
+        return run_ansible_playbook(
+            playbook='restart_webworker_services.yml',
+            ansible_context=AnsibleContext(None, self.environment),
+            limit=limit,
+            skip_check=True,
+            quiet=True
+        )
 
 
 class Formplayer(SingleSupervisorService):

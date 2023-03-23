@@ -302,9 +302,9 @@ def start_celery():
     """OBSOLETE. Use 'service celery start'"""
 
 
-@task
+@obsolete_task
 def restart_webworkers():
-    execute(supervisor.restart_webworkers)
+    """OBSOLETE. Use 'service webworker restart'"""
 
 
 @obsolete_task
