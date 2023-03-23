@@ -53,13 +53,13 @@ cchq <env> [--control] deploy
 Sometimes deploys fail intermittently. If a deploy fails, you can resume a deploy by running the following command:
 
 ```
-cchq <env> [--control] deploy:resume=yes
+cchq <env> [--control] deploy --resume=RELEASE_NAME
 ```
 
 In the event that a deploy completes successfully and many errors start appearing, you can rollback the release to the previous version:
 
 ```
-fab <env> rollback
+cchq <env> deploy --resume=PREVIOUS_RELEASE
 ```
 
 ### Private releases
