@@ -15,7 +15,10 @@
 
     - name: Restart services
       command: supervisorctl {{ item }}
-      when: inventory_hostname not in groups.webworkers
+      register: stop_loop_hack
+      when: >-
+        inventory_hostname not in groups.webworkers
+        and not stop_loop_hack.failed | default(False)
       loop:
         - stop all
         - reread

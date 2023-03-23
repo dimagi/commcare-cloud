@@ -20,6 +20,8 @@
   tasks:
     - name: Restart
       command: supervisorctl {{ item }}
+      register: stop_loop_hack
+      when: not stop_loop_hack.failed | default(False)
       loop:
         - stop all
         - reread
