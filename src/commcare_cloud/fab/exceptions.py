@@ -1,3 +1,0 @@
-
-class NoHostsMatch(Exception):
-    pass
