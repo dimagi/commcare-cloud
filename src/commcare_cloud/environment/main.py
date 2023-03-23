@@ -397,7 +397,7 @@ class Environment(object):
 
     @cached_property
     def release_name(self):
-        from commcare_cloud.fab.const import DATE_FMT
+        from commcare_cloud.const import DATE_FMT
         return datetime.utcnow().strftime(DATE_FMT)
 
     def translate_host(self, host, filename_for_error):

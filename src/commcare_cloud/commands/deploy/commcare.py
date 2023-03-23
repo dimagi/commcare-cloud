@@ -24,7 +24,7 @@ from commcare_cloud.commands.deploy.utils import (
     record_deploy_failed,
 )
 from commcare_cloud.events import publish_deploy_event
-from commcare_cloud.fab.const import DATE_FMT
+from commcare_cloud.const import DATE_FMT
 from commcare_cloud.github import github_repo
 
 
