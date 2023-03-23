@@ -1,0 +1,8 @@
+- name: Update current symlink
+  become: true
+  become_user: '{{ cchq_user }}'
+  file:
+    src: '{{ code_source }}'
+    path: '{{ code_home }}'
+    state: link
+    force: true

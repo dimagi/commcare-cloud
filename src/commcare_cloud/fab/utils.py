@@ -29,23 +29,6 @@ def obsolete_task(fn):
     return obsolete
 
 
-def incomplete_task(replacement_command):
-    assert isinstance(replacement_command, str), \
-        f"@incomplete_task(...) expected a string, got {replacement_command}"
-    def decorator(task_func):
-        @task
-        @wraps(task_func)
-        def func(*args, run_incomplete=False, **kw):
-            if run_incomplete:
-                return task_func(*args, **kw)
-            sys.exit(
-                "This command has been replaced with\n\n"
-                f"  commcare-cloud {env.deploy_env} {replacement_command}\n"
-            )
-        return func
-    return decorator
-
-
 def get_pillow_env_config():
     full_host = env.get('host_string')
     if full_host and '.' in full_host:

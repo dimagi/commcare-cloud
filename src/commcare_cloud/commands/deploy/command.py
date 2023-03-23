@@ -54,9 +54,6 @@ class Deploy(CommandBase):
         Argument('--ignore-kafka-checkpoint-warning', action='store_true', help="""
             Do not block deploy if Kafka checkpoints are unavailable.
         """),
-        Argument('--set', dest='fab_settings', help="""
-            fab settings in k1=v1,k2=v2 format to be passed down to fab
-        """, default=None),
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
     )

@@ -1079,7 +1079,7 @@ Use `-l` instead of a command to see the full list of commands.
     stop_celery
     stop_pillows
     supervisorctl
-    update_current
+    update_current             OBSOLETE: Use 'update-current RELEASE_NAME'
     webworkers
 ```
 
@@ -1091,7 +1091,7 @@ Deploy CommCare
 
 ```
 commcare-cloud <env> deploy [--resume RELEASE_NAME] [--private] [-l SUBSET] [--keep-days KEEP_DAYS] [--skip-record]
-                            [--commcare-rev COMMCARE_REV] [--ignore-kafka-checkpoint-warning] [--set FAB_SETTINGS]
+                            [--commcare-rev COMMCARE_REV] [--ignore-kafka-checkpoint-warning]
                             [{commcare,formplayer} ...]
 ```
 
@@ -1134,10 +1134,6 @@ The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
 
 Do not block deploy if Kafka checkpoints are unavailable.
 
-###### `--set FAB_SETTINGS`
-
-fab settings in k1=v1,k2=v2 format to be passed down to fab
-
 ---
 
 #### ``clean-releases`` Command
@@ -1179,6 +1175,22 @@ The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
 ###### `--release RELEASE_NAME`
 
 Use/resume an existing release rather than creating a new one.
+
+---
+
+#### ``update-current`` Command
+
+Point the "current" symlink at a different release.
+
+```
+commcare-cloud <env> update-current release_name
+```
+
+##### Positional Arguments
+
+###### `release_name`
+
+Name of the release to become current
 
 ---
 

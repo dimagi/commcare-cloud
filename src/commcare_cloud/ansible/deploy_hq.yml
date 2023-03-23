@@ -104,15 +104,105 @@
       vars:
         if_not_done: staticfiles_pull_cache
 
-- name: Clean releases
+- name: Pre-restart tasks
   hosts:
     - webworkers
     - celery
     - pillowtop
     - proxy
     - django_manage
+  vars_files:
+    - roles/deploy_hq/vars/main.yml
+  become: true
+  become_user: '{{ cchq_user }}'
   any_errors_fatal: true
   tasks:
     - import_role: {name: deploy_hq}
       vars:
         if_not_done: clean_releases
+
+    - name: Check release
+      command:
+        cmd: ./manage.py check {{ item }}
+        chdir: '{{ code_source }}'
+      register: stop_loop_hack
+      when: not stop_loop_hack.failed | default(False)
+      run_once: true
+      loop:
+        - '--deploy'
+        - '--deploy -t database'
+
+    - import_role:
+        name: deploy_hq
+        tasks_from: update_current
+
+    - name: Set in-progress flag
+      command:
+        cmd: ./manage.py deploy_in_progress
+        chdir: '{{ code_source }}'
+      run_once: true
+
+- name: Restart non-webworker services
+  hosts:
+    - celery
+    - pillowtop
+    - proxy
+  become: true
+  any_errors_fatal: true
+  tasks:
+    - name: Restart services
+      command: supervisorctl {{ item }}
+      loop:
+        - stop all
+        - reread
+        - update
+        - start all
+      when: inventory_hostname not in groups.webworkers
+
+- name: Rolling restart webworker services
+  hosts: webworkers
+  serial: ["10%", "40%", "100%"]
+  become: true
+  any_errors_fatal: true
+  pre_tasks:
+    - name: Decommission hosts
+      import_role:
+        name: deploy_hq
+        tasks_from: commission_hosts
+      vars:
+        comment: true
+  post_tasks:
+    - name: Recommission hosts
+      import_role:
+        name: deploy_hq
+        tasks_from: commission_hosts
+      vars:
+        comment: false
+  tasks:
+    - name: Restart
+      command: supervisorctl {{ item }}
+      loop:
+        - stop all
+        - reread
+        - update
+        - start all
+
+- name: Record successful release
+  hosts:
+    - webworkers
+    - celery
+    - pillowtop
+    - proxy
+    - django_manage
+  vars_files:
+    - roles/deploy_hq/vars/main.yml
+  become: true
+  become_user: '{{ cchq_user }}'
+  tasks:
+    - name: Record successful release
+      lineinfile:
+        path: '{{ www_home }}/RELEASES.txt'
+        line: '{{ code_source }}'
+        create: true
+        mode: 0644
+      when: record_success | default(True)
