@@ -141,27 +141,4 @@
         state: link
         force: true
 
-    - name: Set in-progress flag
-      command:
-        cmd: ./manage.py deploy_in_progress
-        chdir: '{{ code_source }}'
-      run_once: true
-
-- name: Restart non-webworker services
-  hosts:
-    - celery
-    - pillowtop
-    - proxy
-  become: true
-  any_errors_fatal: true
-  tasks:
-    - name: Restart services
-      command: supervisorctl {{ item }}
-      loop:
-        - stop all
-        - reread
-        - update
-        - start all
-      when: inventory_hostname not in groups.webworkers
-
-- import_playbook: restart_webworker_services.yml
+- import_playbook: restart_commcare_services.yml

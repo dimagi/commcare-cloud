@@ -1068,7 +1068,7 @@ Use `-l` instead of a command to see the full list of commands.
     perform_system_checks      OBSOLETE use 'perform-system-checks' instead
     pillowtop
     preindex_views             OBSOLETE. Use 'preindex-views' instead
-    restart_services
+    restart_services           OBSOLETE. Use 'service commcare restart'
     restart_webworkers         OBSOLETE. Use 'service webworker restart'
     rollback                   OBSOLETE. Use 'deploy commcare --resume=PREVIO...
     rollback_formplayer        OBSOLETE. Use ansible-playbook rollback_formpl...

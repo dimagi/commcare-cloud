@@ -12,14 +12,14 @@
 #
 #     cchq <env> ap hq_rolling_restart.yml [--tags <webworkers|formplayer>] [--limit <pattern>] [-e batch_size=N]
 #
-# Note on compatibility with fabric tasks:
+# Note on compatibility with 'service webworker ...' and 'service commcare ...':
 #
-#   The fabric tasks restart ALL supervisor processes on the host and in addition to the restart they
-#   also reload and reread the supervisor configuration. The fabric tasks also do not check that the
+#   The "service" commands restart ALL supervisor processes on the host and in addition to the restart they
+#   also reload and reread the supervisor configuration. They also do not check that the
 #   process is up and rely on the return code from supervisor to determine success.
 #
-#   restart_webworkers: In addition to the difference above, the fabric task task will remove the host
-#                       from the loadbalancer prior to restarting the processes and re-add it afterwards.
+#   service webworker restart: In addition to the difference above, the service command will remove the host
+#                              from the loadbalancer prior to restarting the processes and re-add it afterwards.
 #
 ---
 - name: Webworkers

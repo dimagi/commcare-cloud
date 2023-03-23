@@ -1,0 +1,25 @@
+- name: Restart non-webworker services
+  hosts:
+    - celery
+    - pillowtop
+    - proxy
+  become: true
+  vars_files: [roles/deploy_hq/vars/main.yml]
+  any_errors_fatal: true
+  tasks:
+    - name: Set in-progress flag
+      command:
+        cmd: ./manage.py deploy_in_progress
+        chdir: '{{ code_home }}'
+      run_once: true
+
+    - name: Restart services
+      command: supervisorctl {{ item }}
+      when: inventory_hostname not in groups.webworkers
+      loop:
+        - stop all
+        - reread
+        - update
+        - start all
+
+- import_playbook: restart_webworker_services.yml

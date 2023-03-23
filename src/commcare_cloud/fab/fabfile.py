@@ -272,24 +272,9 @@ def services_stop():
     supervisor.supervisor_command('stop all')
 
 
-@task
+@obsolete_task
 def restart_services():
-    _require_target()
-    if not console.confirm('Are you sure you want to restart the services on '
-                           '{env.deploy_env}?'.format(env=env), default=False):
-        utils.abort('Task aborted.')
-
-    silent_services_restart(use_current_release=True)
-
-
-def silent_services_restart(use_current_release=False):
-    """
-    Restarts services and sets the in progress flag so that pingdom doesn't yell falsely
-    """
-    execute(db.set_in_progress_flag, use_current_release)
-    if not env.is_monolith:
-        execute(supervisor.restart_all_except_webworkers)
-    execute(supervisor.restart_webworkers)
+    """OBSOLETE. Use 'service commcare restart'"""
 
 
 @obsolete_task
