@@ -80,8 +80,6 @@ class Deploy(CommandBase):
                 if args.commcare_rev:
                     print(color_warning(
                         '--commcare-rev does not apply to a formplayer deploy and will be ignored'))
-                if args.fab_settings:
-                    print(color_warning('--set does not apply to a formplayer deploy and will be ignored'))
             if rc:
                 print(color_error("Skipping formplayer because commcare failed"))
             else:
