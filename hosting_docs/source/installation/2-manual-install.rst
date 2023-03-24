@@ -532,7 +532,7 @@ Install CommCare Cloud
 
        $ source ~/.commcare-cloud/load_config.sh
 
-    Copy the example fab config file:
+    Copy the example config file:
 
     ::
 

@@ -88,27 +88,31 @@ This will keep your release around for at least 10 days before it gets removed b
 
 ### Task list
 
-To get a list of possible tasks to run, use `cchq <env> fab -l`. Here is an abbreviated list of useful commands you can run:
+The `fab` command is now obsolete. Many of its sub-commands have been replaced with new commands:
 
 ```
-clean_releases         Cleans old and failed deploys from the ~/www/<environment>/releases/ directory
-deploy                 OBSOLETE. Use 'deploy commcare ...' instead.
-force_update_static
-hotfix_deploy          deploy ONLY the code with no extra cleanup or syncing
-manage                 OBSOLETE. Use 'django-manage' instead.
-preindex_views         OBSOLETE. Use 'preindex-views' instead.
-restart_services
-rollback               OBSOLETE. Use 'deploy commcare --resume=PREVIOUS_RELEASE'
-setup_release          OBSOLETE. Use deploy commcare --private
-start_pillows
-stop_pillows
-supervisorctl
+Obsolete fab command        Replaced by 'commcare-cloud <env> ...'
+--------------------        --------------------------------------
+check_status                ping all
+                            service postgresql status
+                            service elasticsearch status
+
+clean_releases              clean-releases [--keep=N]
+deploy_commcare             deploy commcare
+kill_stale_celery_workers   kill-stale-celery-workers
+manage                      django-manage
+perform_system_checks       perform-system-checks
+preindex_views              preindex-views
+restart_services            service commcare restart
+restart_webworkers          service webworker restart
+rollback                    deploy commcare --resume=PREVIOUS_RELEASE
+rollback_formplayer         ansible-playbook rollback_formplayer.yml --tags=rollback
+setup_limited_release       deploy commcare --private [--keep-days=N] [--commcare-rev=HQ_BRANCH]
+setup_release               deploy commcare --private --limit=all [--keep-days=N] [--commcare-rev=HQ_BRANCH]
+start_celery                service celery start
+start_pillows               service pillowtop start
+stop_celery                 service celery stop
+stop_pillows                service pillowtop stop
+supervisorctl               service NAME ACTION
+update_current              deploy commcare --resume=RELEASE_NAME
 ```
-
-## Code architecture
-
-The deploy code attempts to adhere to the following philosophies when adding tasks/functionality to it.
-
-`fab/operations` - These files will include "operations" which are sets of commands to be run on certain machines. You should see `@roles` in these files, but no `@task` decorators.
-
-`fab/fabfile.py` - These should just be tasks. Tasks will be made up of a composition of "operations". Ideally, tasks should never call other tasks.

@@ -57,7 +57,6 @@ You will also need some familiarity with the following sysadmin tools:
 -  Monit
 -  Supervisor
 -  Ansible
--  Fabric
 -  EcryptFS
 -  `LVM <https://en.wikipedia.org/wiki/Logical_Volume_Manager_%28Linux%29>`__
    (optional)

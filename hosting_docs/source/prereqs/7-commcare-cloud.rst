@@ -5,7 +5,7 @@ What is commcare-cloud?
 -----------------------
 
 ``commcare-cloud`` is a python-based command line tool that uses
-the open source technologies Ansible and Fabric to automate everything
+the open source technology Ansible to automate everything
 you need in order to run a production CommCare cluster.
 
 While it is possible to install on a laptop with a linux-like command line interface,

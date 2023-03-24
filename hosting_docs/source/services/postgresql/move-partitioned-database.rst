@@ -64,7 +64,7 @@ This will bring the CommCare HQ site down.
 
 .. code-block:: bash
 
-   commcare-cloud <env> fab supervisorctl:"stop all"
+   commcare-cloud <env> service commcare stop
 
 You may have to wait for any long running celery tasks to complete. You can list any
 celery workers that are still running using the following commands:
@@ -187,7 +187,7 @@ Re-run command from step 5 to verify that the document counts are the same.
 
 .. code-block:: bash
 
-   commcare-cloud <env> fab supervisorctl:"start all"
+   commcare-cloud <env> service commcare start
 
 10. Validate the setup
 ^^^^^^^^^^^^^^^^^^^^^^
