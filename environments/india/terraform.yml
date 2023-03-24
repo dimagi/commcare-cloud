@@ -43,28 +43,6 @@ servers:
     group: control
     os: bionic
 
-  - server_name: "web2-india"
-    server_instance_type: "r5a.xlarge"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 500
-    volume_encrypted: no
-    volume_type: "gp3"
-    group: control
-    os: bionic
-    server_auto_recovery: true
-
-  - server_name: "web3-india"
-    server_instance_type: "r5a.xlarge"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 80
-    volume_encrypted: no
-    volume_type: "gp3"
-    group: control
-    os: bionic
-    server_auto_recovery: true
-
   - server_name: "web4-india"
     server_instance_type: "r5a.xlarge"
     network_tier: "app-private"
