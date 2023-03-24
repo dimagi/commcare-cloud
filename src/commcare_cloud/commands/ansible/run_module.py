@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import json
 import shlex
 import subprocess
-from os.path import basename
+from os.path import basename, dirname
 
 from clint.textui import puts
 from commcare_cloud.cli_utils import ask, print_command
@@ -315,7 +315,13 @@ class ListReleases(CommandBase):
             context,
             args.limit,
             'shell',
-            'readlink {{ www_home }}/current; echo ---; ls {{ www_home }}/releases | grep -v git_mirrors',
+            (
+                'readlink {{ www_home }}/current;'
+                'echo ---;'
+                'ls {{ www_home }}/releases/*/.build-complete;'
+                'echo ---;'
+                'ls {{ www_home }}/releases | grep -v git_mirrors;'
+            ),
             become=True,
             become_user='cchq',
             quiet=True,
@@ -323,13 +329,20 @@ class ListReleases(CommandBase):
             run_command=ansible_json,
         )
         for host, result in results.items():
-            output = result.get("stdout_lines", ["---"])
-            if output[-1] == "---":
+            output = result.get("stdout", "---\n---\n")
+            current, complete, releases = output.split("---\n", 2)
+            current = basename(current.rstrip('\n'))
+            complete = [basename(dirname(v)) for v in complete.split('\n') if v]
+            releases = [r for r in releases.split('\n') if r]
+            if not releases:
                 print(color_error(f"{host} - no releases found"))
             else:
-                current = basename(output.pop(0)) if output[0] != "---" else None
-                assert output[0] == "---", (host, output)
                 print(host)
-                for release in sorted(output[1:]):
-                    print(" ", release, "(current)" if release == current else "")
+                for release in sorted(releases):
+                    print(" ", release, end="")
+                    if release == current:
+                        print(" (current)", end="")
+                    if release not in complete:
+                        print(" (incomplete)", end="")
+                    print()
         return 0
