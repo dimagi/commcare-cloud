@@ -4,9 +4,11 @@ from __future__ import unicode_literals
 import json
 import shlex
 import subprocess
+from os.path import basename
+
 from clint.textui import puts
 from commcare_cloud.cli_utils import ask, print_command
-from commcare_cloud.colors import color_notice
+from commcare_cloud.colors import color_notice, color_error
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext,
@@ -104,9 +106,7 @@ def run_ansible_module(ansible_context, inventory_group, module, module_args,
                        become=True, become_user=None, use_factory_auth=False, quiet=False,
                        extra_args=(), run_command=subprocess.call):
     extra_args = tuple(extra_args)
-    if run_command is ansible_json:
-        assert not quiet, "quiet=True has no effect with run_command=ansible_json"
-    elif not quiet:
+    if run_command is ansible_json or not quiet:
         extra_args = ("--diff",) + extra_args
     else:
         extra_args = ("--one-line",) + extra_args
@@ -296,3 +296,40 @@ class KillStaleCeleryWorkers(CommandBase):
             become_user='cchq',
             extra_args=['-e', f'@{group_vars}'] + unknown_args,
         )
+
+
+class ListReleases(CommandBase):
+    command = 'list-releases'
+    help = 'List names that can be passed to `deploy --resume=RELEASE_NAME`'
+
+    arguments = (
+        Argument('--limit', default='webworkers[0]', help="""
+            Run command on limited host(s). Default: webworkers[0]
+        """),
+    )
+
+    def run(self, args, unknown_args):
+        context = AnsibleContext(args)
+        group_vars = context.environment.paths.group_vars_all_yml
+        results = run_ansible_module(
+            context,
+            args.limit,
+            'shell',
+            'readlink {{ www_home }}/current; echo ---; ls {{ www_home }}/releases | grep -v git_mirrors',
+            become=True,
+            become_user='cchq',
+            quiet=True,
+            extra_args=['-e', f'@{group_vars}'] + unknown_args,
+            run_command=ansible_json,
+        )
+        for host, result in results.items():
+            output = result.get("stdout_lines", ["---"])
+            if output[-1] == "---":
+                print(color_error(f"{host} - no releases found"))
+            else:
+                current = basename(output.pop(0)) if output[0] != "---" else None
+                assert output[0] == "---", (host, output)
+                print(host)
+                for release in sorted(output[1:]):
+                    print(" ", release, "(current)" if release == current else "")
+        return 0

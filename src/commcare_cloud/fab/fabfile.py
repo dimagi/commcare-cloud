@@ -45,7 +45,7 @@ from commcare_cloud.environment.main import get_environment
 from commcare_cloud.environment.paths import get_available_envs
 from .const import ROLES_ALL_SERVICES, ROLES_DEPLOY, ROLES_DJANGO, ROLES_PILLOWTOP
 from .operations import db
-from .operations import release, supervisor
+from .operations import supervisor
 from .utils import obsolete_task
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
@@ -213,10 +213,9 @@ def kill_stale_celery_workers():
     """OBSOLETE use 'kill-stale-celery-workers' instead"""
 
 
-@task
+@obsolete_task
 def rollback_formplayer():
-    print(red("This command is now implemented with ansible:"))
-    print("cchq {} ansible-playbook rollback_formplayer.yml --tags=rollback".format(env.deploy_env))
+    """OBSOLETE. Use ansible-playbook rollback_formplayer.yml --tags=rollback"""
 
 
 @obsolete_task
@@ -233,48 +232,15 @@ def setup_release():
 
 @obsolete_task
 def update_current(release=None):
-    """OBSOLETE: Use 'update-current RELEASE_NAME'"""
+    """OBSOLETE: Use 'deploy commcare --resume=RELEASE_NAME'"""
 
 
-@task
+@obsolete_task
 def rollback():
+    """OBSOLETE. Use 'deploy commcare --resume=PREVIOUS_RELEASE'
+
+    Use the 'list-releases' command to get valid release names.
     """
-    Rolls back the servers to the previous release if it exists and is same
-    across servers.
-    """
-    number_of_releases = execute(release.get_number_of_releases)
-    if not all(n > 1 for n in number_of_releases):
-        print(red('Aborting because there are not enough previous releases.'))
-        exit()
-
-    releases = execute(release.get_previous_release)
-
-    unique_releases = set(releases.values())
-    if len(unique_releases) != 1:
-        print(red('Aborting because not all hosts would rollback to same release'))
-        exit()
-
-    unique_release = unique_releases.pop()
-
-    if not unique_release:
-        print(red('Aborting because release path is empty. '
-                  'This probably means there are no releases to rollback to.'))
-        exit()
-
-    if not console.confirm('Do you wish to rollback to release: {}'.format(unique_release), default=False):
-        print(blue('Exiting.'))
-        exit()
-
-    exists = execute(release.ensure_release_exists, unique_release)
-
-    if all(exists.values()):
-        print(blue('Updating current and restarting services'))
-        execute(release.update_current, unique_release)
-        silent_services_restart(use_current_release=True)
-        execute(release.mark_last_release_unsuccessful)
-    else:
-        print(red('Aborting because not all hosts have release'))
-        exit()
 
 
 @obsolete_task
@@ -293,17 +259,10 @@ def deploy_commcare(resume='no', skip_record='no'):
     """OBSOLETE: Use 'deploy commcare' instead"""
 
 
-@task
+@obsolete_task
 @parallel
 def supervisorctl(command):
-    require('supervisor_roles',
-            provided_by=('staging', 'production', 'softlayer'))
-
-    @roles(env.supervisor_roles)
-    def _inner():
-        supervisor.supervisor_command(command)
-
-    execute(_inner)
+    """OBSOLETE. Use 'service NAME ACTION'"""
 
 
 @roles(ROLES_ALL_SERVICES)
@@ -313,49 +272,34 @@ def services_stop():
     supervisor.supervisor_command('stop all')
 
 
-@task
+@obsolete_task
 def restart_services():
-    _require_target()
-    if not console.confirm('Are you sure you want to restart the services on '
-                           '{env.deploy_env}?'.format(env=env), default=False):
-        utils.abort('Task aborted.')
-
-    silent_services_restart(use_current_release=True)
+    """OBSOLETE. Use 'service commcare restart'"""
 
 
-def silent_services_restart(use_current_release=False):
-    """
-    Restarts services and sets the in progress flag so that pingdom doesn't yell falsely
-    """
-    execute(db.set_in_progress_flag, use_current_release)
-    if not env.is_monolith:
-        execute(supervisor.restart_all_except_webworkers)
-    execute(supervisor.restart_webworkers)
-
-
-@task
+@obsolete_task
 def stop_celery():
-    execute(supervisor.stop_celery_tasks, True)
+    """OBSOLETE. Use 'service celery stop'"""
 
 
-@task
+@obsolete_task
 def start_celery():
-    execute(supervisor.start_celery_tasks, True)
+    """OBSOLETE. Use 'service celery start'"""
 
 
-@task
+@obsolete_task
 def restart_webworkers():
-    execute(supervisor.restart_webworkers)
+    """OBSOLETE. Use 'service webworker restart'"""
 
 
-@task
+@obsolete_task
 def stop_pillows():
-    execute(supervisor.stop_pillows, True)
+    """OBSOLETE. Use 'service pillowtop stop'"""
 
 
-@task
+@obsolete_task
 def start_pillows():
-    execute(supervisor.start_pillows, True)
+    """OBSOLETE. Use 'service pillowtop start'"""
 
 
 @roles(ROLES_PILLOWTOP)

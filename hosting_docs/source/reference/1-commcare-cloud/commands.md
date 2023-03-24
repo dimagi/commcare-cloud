@@ -1068,18 +1068,18 @@ Use `-l` instead of a command to see the full list of commands.
     perform_system_checks      OBSOLETE use 'perform-system-checks' instead
     pillowtop
     preindex_views             OBSOLETE. Use 'preindex-views' instead
-    restart_services
-    restart_webworkers
-    rollback                   Rolls back the servers to the previous release...
-    rollback_formplayer
+    restart_services           OBSOLETE. Use 'service commcare restart'
+    restart_webworkers         OBSOLETE. Use 'service webworker restart'
+    rollback                   OBSOLETE. Use 'deploy commcare --resume=PREVIO...
+    rollback_formplayer        OBSOLETE. Use ansible-playbook rollback_formpl...
     setup_limited_release      OBSOLETE. Use deploy commcare --private [--kee...
     setup_release              OBSOLETE. Use deploy commcare --private --limi...
-    start_celery
-    start_pillows
-    stop_celery
-    stop_pillows
-    supervisorctl
-    update_current             OBSOLETE: Use 'update-current RELEASE_NAME'
+    start_celery               OBSOLETE. Use 'service celery start'
+    start_pillows              OBSOLETE. Use 'service pillowtop start'
+    stop_celery                OBSOLETE. Use 'service celery stop'
+    stop_pillows               OBSOLETE. Use 'service pillowtop stop'
+    supervisorctl              OBSOLETE. Use 'service NAME ACTION'
+    update_current             OBSOLETE: Use 'deploy commcare --resume=RELEAS...
     webworkers
 ```
 
@@ -1107,6 +1107,8 @@ always_deploy_formplayer is set in meta.yml, 'commcare formplayer'
 ###### `--resume RELEASE_NAME`
 
 Rather than starting a new deploy, resume a previous release.
+This option can be used to "rollback" to a previous release.
+Use the 'list-releases' command to get valid release names.
 
 ###### `--private`
 
@@ -1133,6 +1135,22 @@ The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
 ###### `--ignore-kafka-checkpoint-warning`
 
 Do not block deploy if Kafka checkpoints are unavailable.
+
+---
+
+#### ``list-releases`` Command
+
+List names that can be passed to `deploy --resume=RELEASE_NAME`
+
+```
+commcare-cloud <env> list-releases [--limit LIMIT]
+```
+
+##### Options
+
+###### `--limit LIMIT`
+
+Run command on limited host(s). Default: webworkers[0]
 
 ---
 
@@ -1175,22 +1193,6 @@ The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
 ###### `--release RELEASE_NAME`
 
 Use/resume an existing release rather than creating a new one.
-
----
-
-#### ``update-current`` Command
-
-Point the "current" symlink at a different release.
-
-```
-commcare-cloud <env> update-current release_name
-```
-
-##### Positional Arguments
-
-###### `release_name`
-
-Name of the release to become current
 
 ---
 

@@ -33,6 +33,8 @@ class Deploy(CommandBase):
         """),
         Argument('--resume', metavar="RELEASE_NAME", help="""
             Rather than starting a new deploy, resume a previous release.
+            This option can be used to "rollback" to a previous release.
+            Use the 'list-releases' command to get valid release names.
         """),
         Argument('--private', action='store_true', help="""
             Set up a private release for running management commands.

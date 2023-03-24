@@ -31,7 +31,7 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 
 from .commands.ansible.ansible_playbook import (
     AnsiblePlaybook,
-    UpdateConfig, UpdateCurrent, AfterReboot, BootstrapUsers, DeployStack,
+    UpdateConfig, AfterReboot, BootstrapUsers, DeployStack,
     UpdateUsers, UpdateUserPublicKey, UpdateSupervisorConfs,
     PerformSystemChecks,
 )
@@ -39,6 +39,7 @@ from commcare_cloud.commands.ansible.service import Service
 from .commands.ansible.run_module import (
     Ping,
     KillStaleCeleryWorkers,
+    ListReleases,
     RunAnsibleModule,
     RunShellCommand,
     SendDatadogEvent,
@@ -84,9 +85,9 @@ COMMAND_GROUPS = OrderedDict([
         UpdateSupervisorConfs,
         Fab,
         Deploy,
+        ListReleases,
         CleanReleases,
         PreindexViews,
-        UpdateCurrent,
         Service,
         MigrateCouchdb,
         Downtime,
