@@ -78,15 +78,29 @@ class Deploy(CommandBase):
                 _warn_no_formplayer()
             rc = deploy_commcare(environment, args, unknown_args)
         if 'formplayer' in deploy_component:
-            if 'commcare' not in deploy_component:
-                if args.commcare_rev:
-                    print(color_warning(
-                        '--commcare-rev does not apply to a formplayer deploy and will be ignored'))
+            _warn_about_non_formplayer_args(args)
             if rc:
                 print(color_error("Skipping formplayer because commcare failed"))
             else:
                 rc = deploy_formplayer(environment, args)
         return rc
+
+
+def _warn_about_non_formplayer_args(args):
+    if args.resume:
+        exit(color_error("Cannot --resume formplayer deploy. Remove that option and try again."))
+    for arg in [
+        '--private',
+        '--limit',
+        '--keep-days',
+        '--skip-record',
+        '--commcare-rev',
+        '--ignore-kafka-checkpoint-warning',
+    ]:
+        dest = arg.lstrip("-").replace("-", "_")
+        if getattr(args, dest) not in [None, False]:
+            msg = f'{arg} does not apply to a formplayer deploy and will be ignored'
+            print(color_warning(msg))
 
 
 def _warn_no_formplayer():
