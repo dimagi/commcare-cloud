@@ -147,7 +147,7 @@ our example cluster, the control machine is named “control1”.
     ::
 
         $ sudo apt update
-        $ sudo apt install python3-pip sshpass net-tools
+        $ sudo apt install python3-pip python3.10-venv sshpass net-tools
 
 3.  Check your default Python version for Python 3.x:
 
