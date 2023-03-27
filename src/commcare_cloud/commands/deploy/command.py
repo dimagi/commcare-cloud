@@ -2,10 +2,12 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from datetime import datetime
 from textwrap import dedent
 
 from commcare_cloud.cli_utils import check_branch
 from commcare_cloud.colors import color_notice, color_warning, color_error
+from commcare_cloud.const import DATE_FMT
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.deploy.commcare import deploy_commcare
@@ -63,8 +65,7 @@ class Deploy(CommandBase):
     def run(self, args, unknown_args):
         check_branch(args)
         environment = get_environment(args.env_name)
-        if args.resume:
-            environment.release_name = args.resume
+        environment.release_name = args.resume or datetime.utcnow().strftime(DATE_FMT)
 
         deploy_component = args.component
         if not deploy_component:

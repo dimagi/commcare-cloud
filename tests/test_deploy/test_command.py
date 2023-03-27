@@ -17,7 +17,7 @@ from commcare_cloud.environment.main import Environment, get_environment
 def test_deploy_commcare_happy_path():
     def run_playbook(playbook, context, *args, unknown_args={}, **kw):
         eq(unknown_args, ["-e", "code_version=def456"])
-        eq(context.environment.release_name, "GHOST")
+        eq(context.environment.release_name, "2020-01-02_03.04")
         log.append(playbook)
         return 0
 
@@ -73,7 +73,7 @@ def test_deploy_limited_release():
             "-e", "keep_until=2020-01-03_03.04",
             "--tags=private_release",
         ])
-        eq(context.environment.release_name, "GHOST")
+        eq(context.environment.release_name, "2020-01-02_03.04")
         eq(kw.get("limit"), "django_manage")
         log.append(playbook)
         return 0
@@ -96,7 +96,7 @@ def test_deploy_limited_release_to_webworker():
             "-e", "keep_until=2020-01-03_03.04",
             "--tags=private_release",
         ])
-        eq(context.environment.release_name, "GHOST")
+        eq(context.environment.release_name, "2020-01-02_03.04")
         eq(kw.get("limit"), "webworkers[0]")
         log.append(playbook)
         return 0
@@ -119,7 +119,7 @@ def test_deploy_private_release_to_all_applicable_hosts():
             "-e", "keep_until=2020-01-03_03.04",
             "--tags=private_release",
         ])
-        eq(context.environment.release_name, "GHOST")
+        eq(context.environment.release_name, "2020-01-02_03.04")
         eq(kw.get("limit"), "all")
         log.append(playbook)
         return 0
@@ -137,7 +137,7 @@ def test_deploy_private_release_to_all_applicable_hosts():
     eq(log, ["deploy_hq.yml"])
     eq(summary, [
         "Your private release is located here:",
-        "/home/cchq/www/small_cluster/releases/GHOST",
+        "/home/cchq/www/small_cluster/releases/2020-01-02_03.04",
     ])
 
 
@@ -148,7 +148,7 @@ def test_deploy_limited_release_with_keep_days():
             "-e", "keep_until=2020-01-12_03.04",
             "--tags=private_release",
         ])
-        eq(context.environment.release_name, "GHOST")
+        eq(context.environment.release_name, "2020-01-02_03.04")
         eq(kw.get("limit"), "django_manage")
         log.append(playbook)
         return 0
@@ -171,7 +171,7 @@ def test_preindex_views():
             "-e", "keep_until=2020-01-03_03.04",
             "--tags=private_release",
         ])
-        eq(context.environment.release_name, "GHOST")
+        eq(context.environment.release_name, "2020-01-02_03.04")
         eq(kw.get("limit"), "pillowtop[0]")
         log.append(playbook)
         return 0
@@ -185,6 +185,7 @@ def test_preindex_views():
     with (
         patch.object(preindex_views, "check_branch"),
         patch.object(preindex_views, "commcare_cloud", run_command),
+        patch.object(preindex_views, "datetime", fakedatetime),
         patch.object(commcare, "run_ansible_playbook", run_playbook),
         patch.object(commcare, "datetime", fakedatetime),
     ):
@@ -192,7 +193,7 @@ def test_preindex_views():
 
     eq(log, [
         "deploy_hq.yml",
-        "django-manage preindex_everything --server=pillowtop[0] --release=GHOST --tmux --mail",
+        "django-manage preindex_everything --server=pillowtop[0] --release=2020-01-02_03.04 --tmux --mail",
     ])
 
 
@@ -203,10 +204,10 @@ def _deploy_commcare(*argv, cmd=("deploy", "commcare")):
     with (
         patch("commcare_cloud.environment.paths.ENVIRONMENTS_DIR", envs),
         patch.object(command, "check_branch"),
+        patch.object(command, "datetime", fakedatetime),
         patch.object(commcare, "confirm_deploy", lambda *a: True),
         patch.object(commcare, "DEPLOY_DIFF", diff),
         patch.object(Environment, "create_generated_yml", lambda self:None),
-        patch.object(Environment, "release_name", "GHOST"),
     ):
         argv = ("cchq", "small_cluster") + cmd + argv
         try:

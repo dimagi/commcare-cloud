@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import check_branch
+from commcare_cloud.const import DATE_FMT
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.commands.deploy.command import Deploy
@@ -31,8 +34,9 @@ class PreindexViews(CommandBase):
         args.private = True
         args.limit = "pillowtop[0]"
         environment = get_environment(args.env_name)
+        environment.release_name = args.release or datetime.utcnow().strftime(DATE_FMT)
         if args.release:
-            environment.release_name = args.resume = args.release
+            args.resume = args.release
         rc = deploy_commcare(environment, args, ())
         if rc == 0:
             rc = commcare_cloud(
