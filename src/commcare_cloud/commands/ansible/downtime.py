@@ -40,8 +40,6 @@ class Downtime(CommandBase):
 
     def run(self, args, unknown_args):
         ansible_context = AnsibleContext(args)
-        ansible_context.environment.create_generated_yml()
-
         if args.action == 'start':
             start_downtime(ansible_context, args)
 

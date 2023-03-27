@@ -207,7 +207,7 @@ def _deploy_commcare(*argv, cmd=("deploy", "commcare")):
         patch.object(command, "datetime", fakedatetime),
         patch.object(commcare, "confirm_deploy", lambda *a: True),
         patch.object(commcare, "DEPLOY_DIFF", diff),
-        patch.object(Environment, "create_generated_yml", lambda self:None),
+        patch.object(Environment, "_create_generated_yml", lambda self:None),
     ):
         argv = ("cchq", "small_cluster") + cmd + argv
         try:

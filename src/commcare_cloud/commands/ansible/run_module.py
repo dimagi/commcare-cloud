@@ -119,7 +119,6 @@ def run_ansible_module(ansible_context, inventory_group, module, module_args,
         '-a', module_args,
     )
 
-    environment.create_generated_yml()
     public_vars = environment.public_vars
     cmd_parts += get_user_arg(public_vars, extra_args, use_factory_auth=use_factory_auth)
     become = become or bool(become_user)
@@ -146,7 +145,8 @@ def run_ansible_module(ansible_context, inventory_group, module, module_args,
     cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
     if not quiet:
         print_command(cmd)
-    return run_command(cmd_parts, env=env_vars)
+    with environment.generated_yml():
+        return run_command(cmd_parts, env=env_vars)
 
 
 def ansible_json(*args, **kw):

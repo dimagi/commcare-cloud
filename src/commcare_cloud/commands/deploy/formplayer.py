@@ -123,7 +123,6 @@ def get_deploy_diff(environment, repo):
 
 def run_ansible_playbook_command(environment, args):
     skip_check = True
-    environment.create_generated_yml()
     return ansible_playbook.run_ansible_playbook(
         'deploy_stack.yml', AnsibleContext(args, environment),
         skip_check=skip_check, quiet=skip_check, always_skip_check=skip_check, limit='formplayer',

@@ -107,7 +107,6 @@ class CopyFiles(CommandBase):
     def run(self, args, unknown_args):
         ansible_context = AnsibleContext(args)
         environment = ansible_context.environment
-        environment.create_generated_yml()
 
         plan = read_plan(args.plan_path, environment, args.limit)
         working_directory = _get_working_dir(args.plan_path, environment)

@@ -5,6 +5,7 @@ import re
 import shlex
 import sys
 from collections import Counter
+from contextlib import contextmanager
 from io import open
 
 import yaml
@@ -63,7 +64,7 @@ class Environment(object):
             self.fab_settings_config
             self.postgresql_config
             self.proxy_config
-        self.create_generated_yml()
+        self._create_generated_yml(save=False)
 
     def check_known_hosts(self):
         if not os.path.exists(self.paths.known_hosts):
@@ -355,7 +356,16 @@ class Environment(object):
 
         return mapping
 
-    def create_generated_yml(self):
+    @contextmanager
+    def generated_yml(self):
+        self._create_generated_yml()
+        try:
+            yield
+        finally:
+            if not os.environ.get("COMMCARE_CLOUD_KEEP_GENERATED_YML"):
+                os.remove(self.paths.generated_yml)
+
+    def _create_generated_yml(self, save=True):
         generated_variables = {
             'deploy_env': self.meta_config.deploy_env,
             'env_monitoring_id': self.meta_config.env_monitoring_id,
@@ -393,8 +403,10 @@ class Environment(object):
 
         generated_variables.update(self.secrets_backend.get_generated_variables())
 
-        with open(self.paths.generated_yml, 'w', encoding='utf-8') as f:
-            f.write(yaml.dump(generated_variables, Dumper=PreserveUnsafeDumper))
+        data = yaml.dump(generated_variables, Dumper=PreserveUnsafeDumper)
+        if save:
+            with open(self.paths.generated_yml, 'w', encoding='utf-8') as f:
+                f.write(data)
 
     def translate_host(self, host, filename_for_error):
         if host == 'None' or host in self.inventory_manager.hosts:
