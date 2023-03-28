@@ -159,6 +159,16 @@ class TestCleanReleases(TestCase):
         self.assertEqual(listdir(self.releases), {"r2", "r3"})
         self.assertEqual(listdir(shared_dir), {SHARED_VERSION, shares["r3"], "other"})
 
+    def test_clean_releases_does_not_delete_hidden_directories(self):
+        hidden_dir = self.releases / ".git_mirrors"
+        hidden_dir.mkdir()
+        result = ansible.run("clean_releases", {"path": str(self.releases)})
+        self.assertTrue(result.get("changed"), result)
+        self.assertNotIn(".git_mirrors", result["diff"]["before"]["releases"])
+        self.assertNotIn(".git_mirrors", result["diff"]["after"]["releases"])
+        self.assertEqual(listdir(self.releases), {"r2", "r3", ".git_mirrors"})
+        self.assertTrue(hidden_dir.is_dir())
+
     def make_release(self, name, keep_until=None):
         (self.releases / name).mkdir()
         (self.releases / name / ".build-complete").touch()
