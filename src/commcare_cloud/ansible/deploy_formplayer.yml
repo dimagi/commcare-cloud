@@ -19,7 +19,7 @@
   roles:
     - role: aws-fsx
       vars:
-        fsx_mount_dir: /opt/data
+        fsx_mount_dir: /opt/formplayer_data
         fsx_mount_uid: "{{ cchq_uid|default(None) }}"
         fsx_mount_gid: "{{ cchq_gid|default(None) }}"
       when: "formplayer_fsx_dns|default(False)"
@@ -32,7 +32,7 @@
   roles:
     - role: formplayer
       vars:
-        formplayer_data_dir: "{{ '/opt/formplayer_data' if use_formplayer_efs|default(False) else (encrypted_root + '/formplayer') }}"
+        formplayer_data_dir: "{{ '/opt/formplayer_data' if (use_formplayer_efs or use_formplayer_fsx)|default(False) else (encrypted_root + '/formplayer') }}"
       tags: formplayer
     - role: kinesis_agent
       tags: kinesis-agent
