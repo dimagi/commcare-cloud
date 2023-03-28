@@ -1,7 +1,7 @@
 from datetime import datetime
 from nose.tools import assert_equal
 
-from commcare_cloud.fab.utils import get_changelogs_in_date_range
+from commcare_cloud.commands.deploy.deploy_diff import get_changelogs_in_date_range
 
 
 def test_get_changelogs():

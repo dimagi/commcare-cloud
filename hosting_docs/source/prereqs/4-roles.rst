@@ -137,7 +137,6 @@ these tools*:
   + Distributed Configuration management (Zookeeper)
 * Familiarity with the frameworks relied upon by our operations tools
   + Ansible
-  + Fabric
   + Monit
   + Supervisor
   + EncryptFS

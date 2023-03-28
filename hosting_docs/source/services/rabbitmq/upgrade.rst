@@ -113,7 +113,7 @@ with the target version and gracefully drain the old one while directing traffic
 #. Restart services with
    .. code-block::
 
-       cchq <env> fab restart_services
+       cchq <env> service commcare restart
     to pick up the changes from 4 & 5. All machines will now read from and write to the new machine,
     except for the "bridge celery machines" you chose, which will now read from the old and write to the new.
 #. Watch the "watch" command on the old machine until all of the queues are fully drained. 

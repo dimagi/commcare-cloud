@@ -13,7 +13,6 @@ from commcare_cloud.colors import (
     color_warning, color_error, color_success,
     color_highlight, color_summary, color_code
 )
-from commcare_cloud.fab.utils import get_changelogs_in_date_range
 from commcare_cloud.user_utils import get_default_username
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'diff_templates')
@@ -245,3 +244,34 @@ def register_console_filters(env):
 
     for name, filter_ in filters.items():
         env.filters[name] = filter_
+
+
+def get_changelogs_in_date_range(since, until, get_file_fn=None):
+    """
+    This generates the list of changelogs in a given daterange
+        from the changelog index file in commacare-cloud github repo.
+
+    This relies on the fact that 'hosting_docs/source/changelog/index.md'
+        contains below style header for each dated changelog and its docs link.
+        #### **2022-11-08** [kafka-upgrade-to-3.2.3](0062-kafka-upgrade.md)
+
+    A bit hacky since we don't have an actual changelog feed
+    """
+    def _get_file_content_as_lines():
+        repo = Github().get_repo("dimagi/commcare-cloud")
+        CHANGELOG_INDEX = "hosting_docs/source/changelog/index.md"
+        return str(repo.get_contents(CHANGELOG_INDEX).decoded_content).split("\\n")
+
+    file_content = _get_file_content_as_lines() if not get_file_fn  else get_file_fn()
+    search_dates = [
+        (since + timedelta(day)).strftime('%Y-%m-%d')
+        for day in range((until - since).days + 1)
+    ]
+    regex = r"({}).*\((.*)\.md\)".format("|".join(search_dates))
+    base_url = "https://commcare-cloud.readthedocs.io/en/latest/changelog"
+    changelogs = []
+    for line in file_content:
+        matches = re.findall(regex, line)
+        if matches:
+            changelogs.append("{}/{}.html".format(base_url, matches[0][1]))
+    return changelogs

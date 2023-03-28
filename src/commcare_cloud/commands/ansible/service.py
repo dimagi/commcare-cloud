@@ -22,7 +22,6 @@ from commcare_cloud.cli_utils import ask
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import CommandBase, Argument
 from commcare_cloud.environment.paths import get_role_defaults
-from commcare_cloud.fab.exceptions import NoHostsMatch
 
 ACTIONS = ['start', 'stop', 'restart', 'status', 'logs', 'help']
 
@@ -298,6 +297,10 @@ class MultiAnsibleService(SubServicesMixin, AnsibleService):
         else:
             service_groups = list(self.service_process_mapping.values())
         return service_groups
+
+
+class NoHostsMatch(Exception):
+    pass
 
 
 class Nginx(AnsibleService):

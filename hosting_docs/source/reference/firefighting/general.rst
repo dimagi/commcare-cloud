@@ -1170,7 +1170,7 @@ Clean Releases
 
 Each release / copy of our commcare-hq git repo can be 500M - 2.7G (variation can depend on how efficiently git is storing the history, etc.). It's always safe to run
 
-``$ cchq <env> fab clean_releases``
+``$ cchq <env> clean-releases``
 and sometimes that alone can clean up space. This is run on every deploy, so if you just deployed successfully, don't bother.
 
 Move logs to another drive

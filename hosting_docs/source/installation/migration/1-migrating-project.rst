@@ -57,7 +57,7 @@ To do this, follow the below steps.
 
       $ cchq <env> ansible-playbook deploy_proxy.yml
       $ cchq <env> update-config
-      $ cchq <env> fab restart_services
+      $ cchq <env> service commcare restart
 
 #. Set up SSL certificate for the domain name.
 #. Enable the feature flag ``CUSTOM_APP_BASE_URL`` for the project. This will need
