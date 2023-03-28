@@ -1,5 +1,4 @@
 - name: Version static files
-  # Run after any new bower (javascript?) code has been installed.
   # Put refs on all static references to prevent stale browser cache
   # hits when things change. This needs to be run on the WEB WORKER
   # since the web worker governs the actual static reference.
