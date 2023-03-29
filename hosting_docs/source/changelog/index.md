@@ -7,7 +7,7 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2023-03-23** [upgrade_to_ubuntu_22.04](0071-upgrade_to_ubuntu_22.04.md)
+#### **2023-03-23** [Upgrade to Ubuntu 22.04](0071-upgrade_to_ubuntu_22.04.md)
 On April 1, 2023, the operating system that commcare-cloud has supported for the last 4-5 years,
 Ubuntu 18.04 "Bionic Beaver", will reach its end of life for support from its maintainer.
 
@@ -25,7 +25,7 @@ in case issues arise during the first attempt.
 
 
 ---
-#### **2023-03-09** [update-node-to-v16](0070-update-node-to-v16.md)
+#### **2023-03-09** [Update Node to v16](0070-update-node-to-v16.md)
 Node.js 14.x LTS is reaching its end of life 30th April 2023, so node and npm must be upgraded on all machines.
 
 
