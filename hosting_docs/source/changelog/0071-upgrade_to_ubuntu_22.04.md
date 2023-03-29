@@ -28,8 +28,8 @@ For example, you may want to set an early date in April, with backup dates in Ma
 in case issues arise during the first attempt.
 
 ## Details
-As per the recent announcement,
-https://forum.dimagi.com/t/action-required-preparing-to-upgrade-to-ubuntu-22-04-lts-jammy-jellyfish/9709,
+As per the [recent announcement](
+https://forum.dimagi.com/t/action-required-preparing-to-upgrade-to-ubuntu-22-04-lts-jammy-jellyfish/9709),
 the upgrade will require taking a full backup of the data, setting up CommCare HQ from scratch on fresh
 Ubuntu 22.04 install, and restoring the data into this new instance.
 
@@ -102,7 +102,7 @@ Because method 1 is the safest, the steps here appear in that order.
 5. If you will be setting up on a new machine, update the address of the machine in your `inventory.ini`.
 6. Commit these changes permanently to your environment configuration.
 7. Determine ahead of time what backup and restore method you will use.
-    https://commcare-cloud.readthedocs.io/en/latest/backups_dr/2-backups-guide.html
+    The [Backups Guide](https://commcare-cloud.readthedocs.io/en/latest/backups_dr/2-backups-guide.html)
     describes methods you can use for backup and restore of each data service.
     Local backup will of course be insufficient if you will be wiping the machine,
     so if you will be going with this less recommended method, make sure you have a plan for an external backup.
@@ -115,7 +115,8 @@ Because method 1 is the safest, the steps here appear in that order.
 
 - Provision the new machine with Ubuntu 22.04.
   There may be multiple ways to do this, but step-by-step instructions are out of the scope of this document.
-- Run through the steps in https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html,
+- Run through the steps in [Manual Install](
+  https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html),
   with the following modifications:
     - Skip the parts about creating environment files, and use your existing ones instead
     - Skip the part about setting up SSL certificates.
@@ -143,7 +144,7 @@ commcare-cloud <env> check_services
 ```
 and make sure they are all reporting `SUCCESS`.
 
-Run through the SSL steps here:
-https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#set-up-valid-ssl-certificates.
+Run through the SSL steps under [Set up valid SSL certificates](
+https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#set-up-valid-ssl-certificates).
 
 If the IP address has changed, update your DNS entry to point to the new IP address.
