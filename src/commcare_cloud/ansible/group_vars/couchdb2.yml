@@ -1,1 +1,0 @@
-couchdb_dir: "{{ '/usr/local/couchdb2/couchdb' if ansible_distribution_version == '18.04' else '/opt/couchdb' }}"
