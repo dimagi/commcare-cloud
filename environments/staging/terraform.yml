@@ -350,6 +350,26 @@ proxy_servers:
     group: "proxy"
     os: bionic
 
+  - server_name: "proxy8-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_type: "gp3"
+    volume_encrypted: yes
+    group: "proxy"
+    os: jammy
+
+  - server_name: "proxy9-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "app-private"
+    az: "c"
+    volume_size: 80
+    volume_type: "gp3"
+    volume_encrypted: yes
+    group: "proxy"
+    os: jammy
+
 rds_instances:
   - identifier: "pg0-staging"
     instance_type: "db.t3.small"
