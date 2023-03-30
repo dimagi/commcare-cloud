@@ -50,12 +50,8 @@ pgsynclogs_nlb-staging: pgsynclogs-nlb-staging-1102365451f68242.elb.us-east-1.am
 pgucr_nlb-staging: pgucr-nlb-staging-b32586fcc9999b2d.elb.us-east-1.amazonaws.com
 pillow4-staging: 10.201.10.90
 pillow4-staging.instance_id: i-0bc1af8fcf6e5e300
-proxy5-staging: 10.201.11.200
-proxy5-staging.instance_id: i-022175194bcb24508
 proxy6-staging: 10.201.11.133
 proxy6-staging.instance_id: i-03426413ed3c925f1
-proxy7-staging: 10.201.11.156
-proxy7-staging.instance_id: i-08099947ab1629484
 proxy8-staging: 10.201.10.72
 proxy8-staging.instance_id: i-053e8c3dd100eb276
 proxy9-staging: 10.201.12.240
