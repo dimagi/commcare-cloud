@@ -65,6 +65,12 @@ class SlackClient:
         blocks = self._get_message_blocks("*Deploy Started*", context)
         response = self._post_message(message, blocks)
         context.set_meta_value('slack_thread_ts', response["ts"])
+        if self.environment.fab_settings_config.generate_deploy_diffs:
+            diff_blocks = [{
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": context.diff.get_slack_diff()}
+            }]
+            self._post_message("Deploy diff", diff_blocks, thread_ts=response["ts"])
 
     def send_deploy_end_message(self, context, is_success):
         thread_ts = context.get_meta_value('slack_thread_ts')

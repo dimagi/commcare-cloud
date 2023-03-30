@@ -181,6 +181,9 @@ class DeployDiff:
     def get_email_diff(self):
         return self.render_diff("email.html.j2")
 
+    def get_slack_diff(self):
+        return self.render_diff("slack.md.j2")
+
     def render_diff(self, template_name):
         template = self.j2.get_template(template_name)
         return template.render(
