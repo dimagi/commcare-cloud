@@ -43,36 +43,6 @@ servers:
     group: "django_manage"
     os: bionic
 
-  - server_name: "web_a1{i}-production"
-    server_instance_type: m6a.xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    group: "hq_webworkers"
-    os: bionic
-    count: 6
-    server_auto_recovery: true
-
-  - server_name: "web_b1{i}-production"
-    server_instance_type: m6a.xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-    group: "hq_webworkers"
-    os: bionic 
-    count: 6
-    server_auto_recovery: true
-
-  - server_name: "web_c1{i}-production"
-    server_instance_type: m6a.xlarge
-    network_tier: "app-private"
-    az: "c"
-    volume_size: 40
-    group: "hq_webworkers"
-    os: bionic
-    count: 6
-    server_auto_recovery: true
-
   - server_name: "web_a2{i}-production"
     server_instance_type: m6a.xlarge
     network_tier: "app-private"
@@ -104,36 +74,6 @@ servers:
     group: "hq_webworkers"
     os: jammy
     count: 5
-    server_auto_recovery: true
-
-  - server_name: "web_m_a1{i}-production"
-    server_instance_type: m6a.xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    group: "mobile_webworkers"
-    os: bionic
-    count: 3
-    server_auto_recovery: true
-
-  - server_name: "web_m_b1{i}-production"
-    server_instance_type: m6a.xlarge
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 40
-    group: "mobile_webworkers"
-    os: bionic
-    count: 3
-    server_auto_recovery: true
-
-  - server_name: "web_m_c1{i}-production"
-    server_instance_type: m6a.xlarge
-    network_tier: "app-private"
-    az: "c"
-    volume_size: 40
-    group: "mobile_webworkers"
-    os: bionic 
-    count: 3
     server_auto_recovery: true
 
   - server_name: "web_m_a2{i}-production"
