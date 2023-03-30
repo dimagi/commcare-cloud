@@ -160,36 +160,6 @@ servers:
     group: celery
     os: bionic
 
-  - server_name: "formplayer7-staging"
-    server_instance_type: "t3.large"
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    block_device:
-      volume_size: 80
-      encrypted: true
-      volume_type: "gp3"
-    group: formplayer
-    os: bionic
-    server_auto_recovery: true
-
-  - server_name: "formplayer8-staging"
-    server_instance_type: "t3.large"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    block_device:
-      volume_size: 80
-      encrypted: true
-      volume_type: "gp3"
-    group: formplayer
-    os: bionic
-    server_auto_recovery: true
-
   - server_name: "formplayer9-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
@@ -203,21 +173,6 @@ servers:
       volume_type: "gp3"
     group: formplayer
     os: jammy
-    server_auto_recovery: true
-
-  - server_name: "formplayer10-staging"
-    server_instance_type: "t3.large"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    block_device:
-      volume_size: 80
-      encrypted: true
-      volume_type: "gp3"
-    group: formplayer
-    os: bionic
     server_auto_recovery: true
 
   - server_name: "formplayer11-staging"
