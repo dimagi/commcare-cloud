@@ -104,7 +104,6 @@ class MigrateCouchdb(CommandBase):
         assert args.action == 'migrate' or not args.no_stop, \
             "You can only use --no-stop with migrate"
         target_context = AnsibleContext(args)
-        target_context.environment.create_generated_yml()
 
         migration = CouchMigration(target_context.environment, args.migration_plan)
         check_connection(migration.target_couch_config.get_control_node())

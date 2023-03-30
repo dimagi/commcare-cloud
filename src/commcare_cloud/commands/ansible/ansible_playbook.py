@@ -77,7 +77,6 @@ class AnsiblePlaybook(CommandBase):
 
     def run(self, args, unknown_args, always_skip_check=False, respect_ansible_skip=True):
         ansible_context = AnsibleContext(args)
-        ansible_context.environment.create_generated_yml()
         check_branch(args)
         use_factory_auth = getattr(args, 'use_factory_auth', False)
         return run_ansible_playbook(
@@ -156,7 +155,8 @@ def run_ansible_playbook(
         cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command(cmd)
         try:
-            return subprocess.call(cmd_parts, env=env_vars)
+            with environment.generated_yml():
+                return subprocess.call(cmd_parts, env=env_vars)
         except KeyboardInterrupt:
             return 1
 
