@@ -1,7 +1,7 @@
 import json
 
 import requests
-from fabric.colors import red
+from commcare_cloud.colors import color_error
 
 
 def publish_deploy_event(name, component, environment):
@@ -10,7 +10,7 @@ def publish_deploy_event(name, component, environment):
         return
     token = environment.get_secret("deploy_event_token")
     if not token:
-        print(red(f"skipping {name} event: deploy_event_token secret not set"))
+        print(color_error(f"skipping {name} event: deploy_event_token secret not set"))
         return
     headers = {
         "Authorization": f"token {token}",
@@ -27,4 +27,4 @@ def publish_deploy_event(name, component, environment):
     if 200 <= response.status_code < 300:
         print(f"triggered {name} event")
     else:
-        print(red(f"{name} event status: {response.status_code}"))
+        print(color_error(f"{name} event status: {response.status_code}"))

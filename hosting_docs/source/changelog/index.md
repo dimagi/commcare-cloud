@@ -7,7 +7,25 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2023-03-09** [update-node-to-v16](0070-update-node-to-v16.md)
+#### **2023-03-23** [Upgrade to Ubuntu 22.04](0071-upgrade_to_ubuntu_22.04.md)
+On April 1, 2023, the operating system that commcare-cloud has supported for the last 4-5 years,
+Ubuntu 18.04 "Bionic Beaver", will reach its end of life for support from its maintainer.
+
+We are requiring that all CommCare HQ instances be upgraded to Ubuntu 22.04 "Jammy Jellyfish"
+by July 1, 2023, in order to continue using commcare-cloud.
+**Failure to update by this date will result in increasingly unexpected
+behavior possibly including downtime and data loss.**
+
+Schedule maintenance for a time well before July 1, 2023,
+during which you should expect a downtime of up to many hours.
+We also recommend making contingency plans
+in case issues arise during the first attempt at applying this maintenance.
+For example, you may want to set an early date in April, with backup dates in May and June
+in case issues arise during the first attempt.
+
+
+---
+#### **2023-03-09** [Update Node to v16](0070-update-node-to-v16.md)
 Node.js 14.x LTS is reaching its end of life 30th April 2023, so node and npm must be upgraded on all machines.
 
 

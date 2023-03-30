@@ -3,7 +3,6 @@
   when: '"private_release" not in ansible_run_tags'
   loop:
     - node_modules
-    - bower_components
 
 - name: Ensure checkpoints safe
   command:

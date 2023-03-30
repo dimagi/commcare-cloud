@@ -73,7 +73,7 @@ cchq <env> <command> <args...>
 
 The `commcare-cloud` command line tool is by and large a relatively
 thin wrapper around the other tools it uses: `ansible`, `ansible-playbook`,
-`ssh`, `fab`, etc. For every command you run using `commcare-cloud`,
+`ssh`, etc. For every command you run using `commcare-cloud`,
 it will print out the underlying command that it is running,
 a faint blue / cyan color.
 In each case, if you copy and paste the printed command directly,
@@ -1037,7 +1037,7 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 #### ``fab`` Command
 
-Run a fab command as you would with fab
+Placeholder for obsolete fab commands
 
 ```
 commcare-cloud <env> fab [-l] [fab_command]
@@ -1047,9 +1047,7 @@ commcare-cloud <env> fab [-l] [fab_command]
 
 ###### `fab_command`
 
-The name of the fab task to run. It and all following arguments
-will be passed on without modification to `fab`, so all normal `fab`
-syntax rules apply.
+The name of the obsolete fab command.
 
 ##### Options
 
@@ -1057,30 +1055,36 @@ syntax rules apply.
 
 Use `-l` instead of a command to see the full list of commands.
 
-##### Available commands
+##### Obsolete fab commands
 ```
 
-    check_status               OBSOLETE replaced by
-    clean_releases             OBSOLETE. Use 'clean-releases [--keep=N]' inst...
-    deploy_commcare            OBSOLETE: Use 'deploy commcare' instead
-    kill_stale_celery_workers  OBSOLETE use 'kill-stale-celery-workers' inste...
-    manage                     OBSOLETE use 'django-manage' instead
-    perform_system_checks      OBSOLETE use 'perform-system-checks' instead
-    pillowtop
-    preindex_views             OBSOLETE. Use 'preindex-views' instead
-    restart_services           OBSOLETE. Use 'service commcare restart'
-    restart_webworkers         OBSOLETE. Use 'service webworker restart'
-    rollback                   OBSOLETE. Use 'deploy commcare --resume=PREVIO...
-    rollback_formplayer        OBSOLETE. Use ansible-playbook rollback_formpl...
-    setup_limited_release      OBSOLETE. Use deploy commcare --private [--kee...
-    setup_release              OBSOLETE. Use deploy commcare --private --limi...
-    start_celery               OBSOLETE. Use 'service celery start'
-    start_pillows              OBSOLETE. Use 'service pillowtop start'
-    stop_celery                OBSOLETE. Use 'service celery stop'
-    stop_pillows               OBSOLETE. Use 'service pillowtop stop'
-    supervisorctl              OBSOLETE. Use 'service NAME ACTION'
-    update_current             OBSOLETE: Use 'deploy commcare --resume=RELEAS...
-    webworkers
+Obsolete fab command       Replaced by 'commcare-cloud ENV ...'
+--------------------       --------------------------------------
+check_status               ping all
+                           service postgresql status
+                           service elasticsearch status
+    
+clean_releases             clean-releases [--keep=N]
+deploy_commcare            deploy commcare
+kill_stale_celery_workers  kill-stale-celery-workers
+manage                     django-manage
+perform_system_checks      perform-system-checks
+preindex_views             preindex-views
+restart_services           service commcare restart
+restart_webworkers         service webworker restart
+rollback                   deploy commcare --resume=PREVIOUS_RELEASE
+
+Use the 'list-releases' command to get valid release names.
+    
+rollback_formplayer        ansible-playbook rollback_formplayer.yml --tags=rollback
+setup_limited_release      deploy commcare --private [--keep-days=N] [--commcare-rev=HQ_BRANCH]
+setup_release              deploy commcare --private --limit=all [--keep-days=N] [--commcare-rev=HQ_BRANCH]
+start_celery               service celery start
+start_pillows              service pillowtop start
+stop_celery                service celery stop
+stop_pillows               service pillowtop stop
+supervisorctl              service NAME ACTION
+update_current             deploy commcare --resume=RELEASE_NAME
 ```
 
 ---

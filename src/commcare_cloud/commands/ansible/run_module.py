@@ -320,7 +320,7 @@ class ListReleases(CommandBase):
                 'echo ---;'
                 'ls {{ www_home }}/releases/*/.build-complete;'
                 'echo ---;'
-                'ls {{ www_home }}/releases | grep -v git_mirrors;'
+                'ls {{ www_home }}/releases;'
             ),
             become=True,
             become_user='cchq',

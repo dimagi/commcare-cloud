@@ -60,7 +60,6 @@ EXAMPLES = """
   clean_releases:
     path: "/path/to/releases"
     exclude:
-      - git_mirrors
       - 2023-03-07_13.16
 """
 
@@ -97,7 +96,7 @@ def main():
         exclude.add(current_release.name)
         keep -= 1
 
-    before = {p.name for p in releases_path.iterdir() if p.is_dir()}
+    before = {p.name for p in releases_path.iterdir() if p.is_dir() and not p.name.startswith('.')}
     before_list = sorted(before)
     diff = {'before': {'releases': before_list}, 'after': {'releases': before_list}}
     result = {'changed': False, 'diff': diff}

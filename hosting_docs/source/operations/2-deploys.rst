@@ -133,7 +133,7 @@ This command will update the ``commcare-cloud`` command from GitHub and apply an
 Step 2: Deploy new CommCare HQ code to all machines
 ---------------------------------------------------
 
-CommCare HQ is deployed using `fabric <http://www.fabfile.org/>`_ , which ensures only the necessary code is deployed to each machine.
+CommCare HQ is deployed using `ansible <https://www.ansible.com/>`_ , which ensures only the necessary code is deployed to each machine.
 
 Envoke the ``deploy`` command by running:
 
@@ -210,7 +210,7 @@ You may also wish to revert to a previous version of the CommCare HQ code if the
 
 .. code-block:: bash
 
-   $ commcare-cloud <env> fab rollback
+   $ commcare-cloud <env> deploy commcare --resume=PREVIOUS_RELEASE
 
 Deploy static settings files
 ----------------------------

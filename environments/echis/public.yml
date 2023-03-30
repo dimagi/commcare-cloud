@@ -1,34 +1,64 @@
 internal_domain_name: moh.gov.et
 
-DATADOG_ENABLED: False
+#old_s3_blob_db_enabled: yes
+#old_s3_blob_db_url: "http://172.19.4.46"
+#old_s3_blob_db_s3_bucket: 'echis'
+#old_s3_bulk_delete_chunksize: '200'
+LimitNOFILE: 5265535
+kafka_version: 3.2.0
+kafka_scala_version: 2.13
+kafka_inter_broker_protocol_version: 3.2
+kafka_log_message_format_version: 3.2
 
+couchdb2_client_max_body_size: 100M
+zookeeper_version: 3.7.1
+zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
+zookeeper_cluster: True
+
+rabbitmq_version: 3.10.7-1
+erlang: 1:25.0.4-1
+amqp: True
+AMQP_HOST: 172.19.3.34
+#OLD_AMQP_HOST: 172.19.4.33
+
+formplayer_java_version: "{{ java_17_bin_path }}/java"
+
+s3_blob_db_enabled: yes
+s3_blob_db_url: "http://172.19.4.37"
+s3_blob_db_s3_bucket: 'echis'
+s3_bulk_delete_chunksize: '200'
+
+DATADOG_ENABLED: True
+DATADOG_INTEGRATIONS_ENABLED: True
+
+elasticsearch_memory: '5120m'
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'echis-es'
 elastcsearch_backup_days: 3
-elasticsearch_version: 1.7.6
-elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
-
+elasticsearch_version: 2.4.6
+elasticsearch_fielddata_cache_size: 40%
+ELASTICSEARCH_MAJOR_VERSION: 2
+elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 redis_maxmemory: 4gb
-
+redis_engine_version: 6.2.4
 default_from_email: echismoh@moh.gov.et
 server_email: echismoh@moh.gov.et
 server_admin_email: echis_server_admin@moh.gov.et
 
-nofile_limit: 65536
+nofile_limit: 131072
 ssh_allow_password: True
 
-backup_blobdb: False
-backup_postgres: False
+backup_blobdb: True
+backup_postgres: plain
 backup_es_s3: False
-backup_couch: False
+backup_couch: True
 postgres_s3: False
 blobdb_s3: False
 couch_s3: False
 
 KSPLICE_ACTIVE: no
 
-shared_drive_enabled: False
+shared_drive_enabled: True
 
 etc_hosts_lines:
   - "{{ groups.proxy.0 }}		{{ SITE_HOST }}"
@@ -41,7 +71,7 @@ couchdb_cluster_settings:
   q: 8
   r: 2
   w: 2
-  n: 2
+  n: 4
 
 couch_dbs:
   default:
@@ -51,14 +81,53 @@ couch_dbs:
     username: "{{ COUCH_USERNAME }}"
     password: "{{ COUCH_PASSWORD }}"
     is_https: False
-
+nameservers:
+  - 172.19.3.2
+  - 8.8.8.8
 localsettings:
+  LOCAL_CUSTOM_DB_ROUTING:
+    auditcare: auditcare
   ALLOWED_HOSTS:
-    - 172.19.0.160
-    - 172.19.0.161
     - 172.19.3.40
     - 172.19.3.41
-  COMMCARE_HQ_NAME: 'eCHIS Server'
+    - 172.19.4.33
+    - 172.19.4.35
+    - 172.19.4.36
+    - 172.19.4.37
+    - 172.19.4.40
+    - 172.19.4.41
+    - 172.19.4.42
+    - 172.19.4.43
+    - 172.19.4.45
+    - 172.19.4.46
+    - 172.19.4.47
+    - 172.19.4.48
+    - 172.19.4.49
+    - 172.19.4.50
+    - 172.19.4.51
+    - 172.19.4.52
+    - 172.19.4.53
+    - 172.19.4.54
+    - 172.19.4.55
+    - 172.19.4.56
+    - 172.19.4.57
+    - 172.19.4.59
+    - 172.19.4.60
+    - 172.19.4.61
+    - 172.19.4.62
+    - 172.19.4.63
+    - 172.19.3.31
+    - 172.19.3.32
+    - 172.19.3.33
+    - 172.19.3.34
+    - 172.19.3.35
+    - 172.19.3.36
+    - 172.19.3.37
+  ES_CASE_SEARCH_INDEX_NAME: case_search_2022-11-03
+  SENTRY_ORGANIZATION_SLUG: 'org slug'
+  SENTRY_PROJECT_SLUG: 'project slug'
+  SENTRY_REPOSITORY: 'fmoh'
+  COMMCARE_HQ_NAME: 'eCHIS Portal'
   COMMCARE_NAME: 'eCHIS'
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
@@ -76,11 +145,16 @@ localsettings:
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: True
   SMS_QUEUE_ENABLED: True
+  #bug_report_email: echismoh@moh.gov.et
   STATIC_ROOT:
   WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   ENABLE_PRELOGIN_SITE: False
   ENTERPRISE_MODE: True
   RESTRICT_DOMAIN_CREATION: True
+  minio_server_datadirs:
+   - /usr/local/share/minio
+  minio_server_cluster_nodes: "{{ ['http://'] | product(groups['minio']) | map('join', '') | product(['/usr/local/share/minio']) | map('join', '') | list }}"
+  #minio_server_cluster_nodes: "{{ groups['minio']|map('string_prefix', '/usr/local/share/minio')|map('string_postfix', 'http://')|list }}"
   STATIC_TOGGLE_STATES:
     mobile_ucr_linked_domain:
       always_enabled:

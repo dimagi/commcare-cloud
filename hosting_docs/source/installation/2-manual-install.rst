@@ -147,7 +147,7 @@ our example cluster, the control machine is named “control1”.
     ::
 
         $ sudo apt update
-        $ sudo apt install python3-pip sshpass net-tools
+        $ sudo apt install python3-pip python3-venv sshpass net-tools
 
 3.  Check your default Python version for Python 3.x:
 
@@ -163,23 +163,9 @@ our example cluster, the control machine is named “control1”.
 
         $ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 
-5.  Now update pip; you might encounter installation issues otherwise.
 
-    ::
-
-        $ sudo -H pip install --upgrade pip
-
-6.  Lastly, install the following:
-
-    ::
-
-         $ sudo -H pip install ansible virtualenv --ignore-installed six
-
-    .. note ::
-        We no longer depend on virtualenvwrapper, but you are welcome to install and manage it manually.
-
-Upgrade to Python 3.10
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Upgrade to Python 3.10 (Ubuntu 18.04 "Bionic Beaver" only)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We recommend using Python 3.10 with commcare-cloud. Follow the steps below to properly install it.
 
@@ -532,7 +518,7 @@ Install CommCare Cloud
 
        $ source ~/.commcare-cloud/load_config.sh
 
-    Copy the example fab config file:
+    Copy the example config file:
 
     ::
 

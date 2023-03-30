@@ -29,11 +29,9 @@ class CleanReleases(CommandBase):
         context = AnsibleContext(args)
         environment = context.environment
         extra_args = (f"--playbook-dir={environment.paths.ansible_path}",) + tuple(unknown_args)
-        module_args = [
-            "path={{www_home}}/releases",
-            f"keep={args.keep}",
-            "exclude={{%s}}" % json.dumps(["git_mirrors"] + args.exclude),
-        ]
+        module_args = ["path={{www_home}}/releases", f"keep={args.keep}"]
+        if args.exclude:
+            module_args.append("exclude={{%s}}" % json.dumps(args.exclude))
         shared_dir = environment.fab_settings_config.shared_dir_for_staticfiles
         if shared_dir:
             module_args.append(f"shared_dir_for_staticfiles={shared_dir}")

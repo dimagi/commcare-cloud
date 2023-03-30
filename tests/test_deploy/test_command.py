@@ -8,10 +8,10 @@ from unittest.mock import Mock, patch
 from testil import assert_raises, eq
 
 from commcare_cloud.commands.deploy import command, commcare
+from commcare_cloud.commands.deploy.deploy_diff import DeployDiff
 from commcare_cloud.commands import preindex_views
 from commcare_cloud.commcare_cloud import call_commcare_cloud
 from commcare_cloud.environment.main import Environment, get_environment
-from commcare_cloud.fab.deploy_diff import DeployDiff
 
 
 def test_deploy_commcare_happy_path():

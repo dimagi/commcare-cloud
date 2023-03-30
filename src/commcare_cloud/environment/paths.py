@@ -32,7 +32,6 @@ TERRAFORM_DIR = os.path.join(PACKAGE_BASE, 'terraform')
 # only works with egg install (`pip install -e .`)
 DIMAGI_ENVIRONMENTS_DIR = os.path.realpath(os.path.join(PACKAGE_BASE, '..', '..', 'environments'))
 ENVIRONMENTS_DIR = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS', DIMAGI_ENVIRONMENTS_DIR)
-FABFILE = os.path.join(PACKAGE_BASE, 'fabfile.py')
 
 
 lazy_immutable_property = memoized_property

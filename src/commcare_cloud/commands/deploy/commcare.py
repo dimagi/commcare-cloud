@@ -13,6 +13,7 @@ from commcare_cloud.commands.ansible.run_module import (
     run_ansible_module,
 )
 from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
+from commcare_cloud.commands.deploy.deploy_diff import DeployDiff
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
 from commcare_cloud.commands.deploy.utils import (
     record_deploy_start,
@@ -23,8 +24,7 @@ from commcare_cloud.commands.deploy.utils import (
     record_deploy_failed,
 )
 from commcare_cloud.events import publish_deploy_event
-from commcare_cloud.fab.const import DATE_FMT
-from commcare_cloud.fab.deploy_diff import DeployDiff
+from commcare_cloud.const import DATE_FMT
 from commcare_cloud.github import github_repo
 
 

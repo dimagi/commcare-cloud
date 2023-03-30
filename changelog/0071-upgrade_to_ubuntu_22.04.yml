@@ -1,0 +1,143 @@
+title: Upgrade to Ubuntu 22.04
+key: upgrade_to_ubuntu_22.04
+date: 2023-03-23
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  On April 1, 2023, the operating system that commcare-cloud has supported for the last 4-5 years,
+  Ubuntu 18.04 "Bionic Beaver", will reach its end of life for support from its maintainer.
+
+  We are requiring that all CommCare HQ instances be upgraded to Ubuntu 22.04 "Jammy Jellyfish"
+  by July 1, 2023, in order to continue using commcare-cloud.
+  **Failure to update by this date will result in increasingly unexpected
+  behavior possibly including downtime and data loss.**
+
+  Schedule maintenance for a time well before July 1, 2023,
+  during which you should expect a downtime of up to many hours.
+  We also recommend making contingency plans
+  in case issues arise during the first attempt at applying this maintenance.
+  For example, you may want to set an early date in April, with backup dates in May and June
+  in case issues arise during the first attempt.
+
+details: |
+  As per the [recent announcement](
+  https://forum.dimagi.com/t/action-required-preparing-to-upgrade-to-ubuntu-22-04-lts-jammy-jellyfish/9709),
+  the upgrade will require taking a full backup of the data, setting up CommCare HQ from scratch on fresh
+  Ubuntu 22.04 install, and restoring the data into this new instance.
+
+  This could be achieved by backing up and then completely wiping the existing physical machine and installing
+  Ubuntu 22.04 on it, or it could be achieved by setting up an entirely separate new machine (or virtual machine)
+  with Ubuntu 22.04 installed. However, simply applying an operating system upgrade to the existing machine
+  is **not** supported; backing up the data and restoring it into a new clean environment is required.
+
+update_steps: |
+
+  ### Outline
+
+  This is a more difficult and involved piece of maintenance than the typical maintenance item.
+  It is important that you prepare ahead of time to make sure you have a plan
+  that will work for your individualized circumstance.
+
+  Most maintenance can be done "in place"; that is, it can be done by applying changes to the existing system.
+  Because of the significant changes between Ubuntu 18.04 and Ubuntu 22.04,
+  there is no supported path to upgrade in place.
+
+  In contrast, this maintenance requires setting up a brand new CommCare instance,
+  and then copying your site data into it.
+
+  Here are three representative ways to achieve this:
+
+  1. The safest and most flexible way of doing this will involve provisioning new hardware for the new environment,
+      as this allows you plenty of time to do the setup.
+      and limits downtime only to the amount of time it takes to copy data from the old to new hardware.
+      - Prepare
+      - Set up
+      - Backup & Restore
+      - Finalize
+  2. The riskier way to do this is to stop all services on your instance,
+      take a full backup of the data to an external location,
+      then wipe the machine clean, install the new OS, set up the CommCare instance,
+      and then restore the data into it from the external location.
+      You can expect many hours or even days or weeks of downtime using this method,
+      as you won't be able to even begin testing the upgrade until you've brought the site down,
+      and if it takes longer than expected your only choice is to work through the issues until the end.
+      You will want to do plenty of due diligence ahead of time,
+      including making sure that the Ubuntu 22.04 is compatible with the server model that you are using.
+      - Prepare
+      - Backup
+      - Set up
+      - Restore
+      - Finalize
+  3. The compromise option is to borrow hardware to test the upgrade on,
+    and then once you've validated that the procedure works from beginning to end without issues,
+    proceed with the backup-wipe-reinstall option (method #2).
+
+  Keep in mind that the steps below will happen in a different order depending on the method you choose.
+  Because method 1 is the safest, the steps here appear in that order.
+
+  ### Prepare
+
+  1. Apply all changelogs up to this one on your existing environment, and deploy the latest code.
+      This is to make sure that your CommCare HQ environment is all the way up to date before
+      undergoing this upgrade.
+  2. In `public.yml`, update the `couchdb_version` variable (or add it if it's not there) to be as follows:
+      ```
+      couchdb_version: 3.3.1
+      ```
+  3. Determine whether your CouchDB is set to use haproxy.
+      To do this, check for the variable `couchdb_use_haproxy` in your `public.yml`.
+  4. If your CouchDB is set to use haproxy, then in `public.yml`, update the `haproxy_version`
+      (or add it if it's not there) to be as follows:
+      ```
+      haproxy_version: 2.4
+      ```
+  5. If you will be setting up on a new machine, update the address of the machine in your `inventory.ini`.
+  6. Commit these changes permanently to your environment configuration.
+  7. Determine ahead of time what backup and restore method you will use.
+      The [Backups Guide](https://commcare-cloud.readthedocs.io/en/latest/backups_dr/2-backups-guide.html)
+      describes methods you can use for backup and restore of each data service.
+      Local backup will of course be insufficient if you will be wiping the machine,
+      so if you will be going with this less recommended method, make sure you have a plan for an external backup.
+      Additionally, it is a good idea to take a full backup of everything on the disk,
+      in case you later find that there are any issues with your other backups.
+  8. Determine ahead of time which method (#1, #2, or #3 above) you will be using,
+      and research how to install Ubuntu 22.04 on your server model.
+
+  ### Set up
+
+  - Provision the new machine with Ubuntu 22.04.
+    There may be multiple ways to do this, but step-by-step instructions are out of the scope of this document.
+  - Run through the steps in [Manual Install](
+    https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html),
+    with the following modifications:
+      - Skip the parts about creating environment files, and use your existing ones instead
+      - Skip the part about setting up SSL certificates.
+        You will eventually do this, but only after you're ready to go live.
+        This is because these steps require the DNS entry to point to this instance for them to work.
+
+  ### Backup & Restore
+
+  For there to be no data loss, you need to bring down your live instance using e.g.
+  ```
+  commcare-cloud <env> downtime start
+  ```
+  before taking the backup.
+
+  Then, backup & restore data into the newly set up machine as per your backup/restore strategy.
+  (Note that is if you are using method #3 above,
+  then your backup step and your restore step will be separated in time,
+  with the setup step coming in between them.)
+
+  ### Finalize
+
+  Run
+  ```
+  commcare-cloud <env> check_services
+  ```
+  and make sure they are all reporting `SUCCESS`.
+
+  Run through the SSL steps under [Set up valid SSL certificates](
+  https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#set-up-valid-ssl-certificates).
+
+  If the IP address has changed, update your DNS entry to point to the new IP address.
