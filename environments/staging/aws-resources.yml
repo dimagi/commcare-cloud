@@ -27,6 +27,8 @@ es17-staging.instance_id: i-06a3ab9509dd41abe
 formplayer-efs: fs-ba70cd39.efs.us-east-1.amazonaws.com
 formplayer10-staging: 10.201.10.6
 formplayer10-staging.instance_id: i-069075799c95ae10d
+formplayer11-staging: 10.201.10.202
+formplayer11-staging.instance_id: i-04ea09168ac760aab
 formplayer7-staging: 10.201.11.10
 formplayer7-staging.instance_id: i-0ec364ea0016b5afb
 formplayer8-staging: 10.201.10.12
