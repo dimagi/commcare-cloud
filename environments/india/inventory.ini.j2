@@ -5,6 +5,9 @@
 {{ __celery4__ }} swap_size=4G
 {{ __celery5__ }} swap_size=4G
 {{ __celery6__ }} swap_size=4G
+{{ __celery7__ }} swap_size=4G
+{{ __celery8__ }} swap_size=4G
+{{ __celery9__ }} swap_size=4G
 {{ __couch5__ }} swap_size=8G
 {{ __couch8__ }} swap_size=8G
 {{ __couch9__ }} swap_size=8G
@@ -46,6 +49,7 @@ elasticsearch_data=false
 
 {{ __formplayer1__ }}
 {{ __pillow3__ }}
+{{ __pillow4__ }}
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=2
 {{ __kafka3__ }} kafka_broker_id=2 zookeeper_server_id=3
 {{ __kafka_a0__ }} kafka_broker_id=3 zookeeper_server_id=4
@@ -56,6 +60,8 @@ elasticsearch_data=false
 {{ __pgbouncer4__ }} pgbouncer_processes=2
 {{ __proxy_a0__ }}
 {{ __proxy_b0__ }}
+{{ __proxy_a1__ }}
+{{ __proxy_b1__ }}
 {{ __rds_pgmain0__ }}
 {{ __pgformplayer_nlb__ }}
 {{ __pgmain_nlb__ }}
@@ -111,9 +117,13 @@ kafka_a0
 celery4
 celery5
 celery6
+celery7
+celery8
+celery9
 
 [pillowtop:children]
 pillow3
+pillow4
 
 [formplayer:children]
 formplayer1
