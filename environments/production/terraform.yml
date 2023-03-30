@@ -291,7 +291,7 @@ servers:
     volume_size: 80
     volume_encrypted: yes
     group: "formplayer"
-    os: bionic
+    os: jammy
     count: 14
     server_auto_recovery: true
 
