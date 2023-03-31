@@ -63,7 +63,6 @@ def deploy_commcare(environment, args, unknown_args):
             exit("--limit is not allowed except with --private")
     if args.ignore_kafka_checkpoint_warning:
         ansible_args.extend(["-e", "ignore_kafka_checkpoint_warning=true"])
-    environment.create_generated_yml()
     rc = run_ansible_playbook(
         'deploy_hq.yml',
         AnsibleContext(args, environment),

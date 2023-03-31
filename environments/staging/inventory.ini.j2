@@ -3,15 +3,15 @@
 # As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
 # using the aws-fill-inventory command.
 
-{{ __proxy5__ }}
 {{ __proxy6__ }}
-{{ __proxy7__ }}
+{{ __proxy8__ }}
+{{ __proxy9__ }}
 
 [proxy:children]
 # Amazon EC2
-proxy5
 proxy6
-proxy7
+proxy8
+proxy9
 
 [logproxy:children]
 proxy
@@ -98,30 +98,30 @@ kafka8
 
 {{ __celery_a0__ }}
 
+{{ __celery_a1__ }}
+
 [celery:children]
 celery_a0
+celery_a1
 
 [celery:vars]
 swap_size=2G
 
 {{ __pillow4__ }}
 
+{{ __pillow5__ }}
+
 [pillowtop:children]
 # Amazon EC2
 pillow4
+pillow5
 
-{{ __formplayer7__ }}
-{{ __formplayer8__ }}
 {{ __formplayer9__ }}
-{{ __formplayer10__ }}
 {{ __formplayer11__ }}
 
 [formplayer:children]
 # Amazon EC2
-formplayer7
-formplayer8
 formplayer9
-formplayer10
 formplayer11
 
 [formplayer:vars]

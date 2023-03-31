@@ -7,30 +7,30 @@ proxy_a2
 proxy_b2
 proxy_c2
 
-{{ __web_a1__ }}
+{{ __web_a2__ }}
 
-{{ __web_b1__ }}
+{{ __web_b2__ }}
 
-{{ __web_c1__ }}
+{{ __web_c2__ }}
 
-{{ __web_m_a1__ }}
+{{ __web_m_a2__ }}
 
-{{ __web_m_b1__ }}
+{{ __web_m_b2__ }}
 
-{{ __web_m_c1__ }}
+{{ __web_m_c2__ }}
 
 [logproxy:children]
 proxy
 
 [hq_webworkers:children]
-web_a1
-web_b1
-web_c1
+web_a2
+web_b2
+web_c2
 
 [mobile_webworkers:children]
-web_m_a1
-web_m_b1
-web_m_c1
+web_m_a2
+web_m_b2
+web_m_c2
 
 [webworkers:children]
 hq_webworkers
