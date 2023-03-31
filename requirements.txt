@@ -121,7 +121,7 @@ pyyaml==5.4.1
     # via
     #   ansible-core
     #   couchdb-cluster-admin
-redis==4.3.4
+redis==4.4.4
     # via ansible-inventory
 requests==2.26.0
     # via
