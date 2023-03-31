@@ -45,6 +45,7 @@ elasticsearch_master=false
 elasticsearch_data=false
 
 {{ __formplayer1__ }}
+{{ __formplayer2__ }}
 {{ __pillow3__ }}
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=2
 {{ __kafka3__ }} kafka_broker_id=2 zookeeper_server_id=3
@@ -117,6 +118,7 @@ pillow3
 
 [formplayer:children]
 formplayer1
+formplayer2
 
 [elasticsearch:children]
 es0
