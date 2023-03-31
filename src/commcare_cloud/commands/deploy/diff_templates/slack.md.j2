@@ -1,0 +1,28 @@
+{% macro render_pr(info) -%}
+    - <{{ info.url }}|{{ info.title }}> (`{{ info.labels|map(attribute='name')|join("`, `") }}`)
+{%- endmacro %}
+
+{%- if new_version_details -%}
+New version details:
+{%- for key, val in new_version_details.items() %}
+    {{ "%-20s"|format(key) }}: {{ val }}
+{%- endfor %}
+{% endif %}
+
+{% for msg in errors -%}
+- [ERR] {{ msg }}
+{%- endfor %}
+{% for msg in warnings -%}
+- [WARN] {{ mgs }}
+{%- endfor %}
+
+{%- if pr_infos -%}
+List of PRs since last deploy:
+{% for info in pr_infos -%}
+{{ render_pr(info) }}
+{% endfor %}
+{%- endif %}
+
+{% if compare_url -%}
+Here's the complete diff on github: {{ compare_url }}
+{%- endif %}
