@@ -11,3 +11,7 @@ formplayer_purge_time_spec: '2d'
 _should_update_formplayer_in_place: no
 formplayer_data_dir: "{{ encrypted_root }}/formplayer"
 use_monit_for_formplayer: false
+# Default release name for cases like deploy-stack where it is not
+# explicitly set. This is overridden by environment.release_name (from
+# Python via .generated.yml) on formplayer deploy.
+release_name: "{{ ansible_date_time.date }}_{{ ansible_date_time.hour }}.{{ ansible_date_time.minute }}"
