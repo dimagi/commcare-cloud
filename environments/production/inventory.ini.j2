@@ -160,11 +160,9 @@ swap_size=2G
 pillow_a1
 pillow_b1
 
-{{ __formplayer_a__ }}
 {{ __formplayer_c1__ }}
 
 [formplayer:children]
-formplayer_a
 formplayer_c1
 
 [formplayer:vars]
@@ -176,8 +174,6 @@ cchq_gid=1026
 use_formplayer_debug_options=true
 
 [formplayer_debug:children]
-formplayer_a005
-formplayer_a009
 formplayer_c1005
 formplayer_c1009
 
@@ -185,7 +181,6 @@ formplayer_c1009
 use_monit_for_formplayer=true
 
 [formplayer_with_monit:children]
-formplayer_a009
 formplayer_c1009
 
 [shared_efs_client_host:children]
