@@ -1,7 +1,5 @@
 2204_test-staging: 10.201.10.161
 2204_test-staging.instance_id: i-062f01c788b417654
-celery_a0-staging: 10.201.10.232
-celery_a0-staging.instance_id: i-0b026baa6469e2354
 celery_a1-staging: 10.201.10.31
 celery_a1-staging.instance_id: i-0e15f23fcc71fd3c9
 control2-staging: 10.201.10.17
@@ -50,8 +48,6 @@ pgproxy5-staging.instance_id: i-05e4c2414380586b8
 pgshard_nlb-staging: pgshard-nlb-staging-e8ef6b4c55f3618d.elb.us-east-1.amazonaws.com
 pgsynclogs_nlb-staging: pgsynclogs-nlb-staging-1102365451f68242.elb.us-east-1.amazonaws.com
 pgucr_nlb-staging: pgucr-nlb-staging-b32586fcc9999b2d.elb.us-east-1.amazonaws.com
-pillow4-staging: 10.201.10.90
-pillow4-staging.instance_id: i-0bc1af8fcf6e5e300
 pillow5-staging: 10.201.10.194
 pillow5-staging.instance_id: i-024e31574a4e10811
 proxy6-staging: 10.201.11.133
