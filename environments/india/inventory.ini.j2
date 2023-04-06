@@ -2,9 +2,6 @@
 {{ __djangomanage1__ }}
 {{ __web4__ }}
 {{ __web5__ }}
-{{ __celery4__ }} swap_size=4G
-{{ __celery5__ }} swap_size=4G
-{{ __celery6__ }} swap_size=4G
 {{ __celery7__ }} swap_size=4G
 {{ __celery8__ }} swap_size=4G
 {{ __celery9__ }} swap_size=4G
@@ -49,7 +46,6 @@ elasticsearch_data=false
 
 {{ __formplayer1__ }}
 {{ __formplayer2__ }}
-{{ __pillow3__ }}
 {{ __pillow4__ }}
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=2
 {{ __kafka3__ }} kafka_broker_id=2 zookeeper_server_id=3
@@ -59,8 +55,6 @@ elasticsearch_data=false
 {{ __pgbouncer0__ }}
 {{ __pgbouncer3__ }} pgbouncer_processes=2
 {{ __pgbouncer4__ }} pgbouncer_processes=2
-{{ __proxy_a0__ }}
-{{ __proxy_b0__ }}
 {{ __proxy_a1__ }}
 {{ __proxy_b1__ }}
 {{ __rds_pgmain0__ }}
@@ -76,14 +70,10 @@ elasticsearch_data=false
 # empty
 
 [proxy:children]
-proxy_a0
-proxy_b0
 proxy_a1
 proxy_b1
 
 [logproxy:children]
-proxy_a0
-proxy_b0
 proxy_a1
 proxy_b1
 
@@ -119,15 +109,11 @@ kafka3
 kafka_a0
 
 [celery:children]
-celery4
-celery5
-celery6
 celery7
 celery8
 celery9
 
 [pillowtop:children]
-pillow3
 pillow4
 
 [formplayer:children]

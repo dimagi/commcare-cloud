@@ -65,36 +65,6 @@ servers:
     os: jammy
     server_auto_recovery: true
 
-  - server_name: "celery4-india"
-    server_instance_type: "t3.large"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 60
-    volume_encrypted: no
-    volume_type: "gp3"
-    group: celery
-    os: bionic
-
-  - server_name: "celery5-india"
-    server_instance_type: "t3.xlarge"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 60
-    volume_encrypted: no
-    volume_type: "gp3"
-    group: celery
-    os: bionic
-
-  - server_name: "celery6-india"
-    server_instance_type: "t3.xlarge"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 60
-    volume_encrypted: no
-    volume_type: "gp3"
-    group: celery
-    os: bionic
-
   - server_name: "celery7-india"
     server_instance_type: "t3.large"
     network_tier: "app-private"
@@ -269,16 +239,6 @@ servers:
     os: jammy
     server_auto_recovery: true
 
-  - server_name: "pillow3-india"
-    server_instance_type: "t3.xlarge"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 60
-    volume_encrypted: no
-    volume_type: "gp3"
-    group: pillowtop
-    os: bionic
-
   - server_name: "pillow4-india"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
@@ -370,26 +330,6 @@ servers:
     os: bionic
 
 proxy_servers:
-  - server_name: "proxy_a0-india"
-    server_instance_type: "t3.medium"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 80
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: proxy
-    os: bionic
-
-  - server_name: "proxy_b0-india"
-    server_instance_type: "t3.medium"
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 80
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: proxy
-    os: bionic
-
   - server_name: "proxy_a1-india"
     server_instance_type: "t3.medium"
     network_tier: "app-private"

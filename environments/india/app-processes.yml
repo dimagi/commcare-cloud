@@ -12,7 +12,6 @@ celery_processes:
   celery7:
     beat: {}
     flower: {}
-  celery4,celery5,celery6:
   celery8,celery9:
     reminder_queue:
       pooling: gevent
@@ -38,7 +37,6 @@ celery_processes:
     background_queue,dashboard_comparison_queue:
       concurrency: 2
 pillows:
-  pillow3:
   pillow4:
     AppDbChangeFeedPillow:
       num_processes: 1
