@@ -246,7 +246,7 @@ servers:
     group: "couchdb2"
     os: bionic
 
-  - server_name: "rabbit_a2-staging"
+  - server_name: "rabbit_a3-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "a"
@@ -254,9 +254,9 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     group: "rabbitmq"
-    os: bionic
+    os: jammy
 
-  - server_name: "rabbit_b1-staging"
+  - server_name: "rabbit_b2-staging"
     server_instance_type: "t3.large"
     network_tier: "app-private"
     az: "b"
@@ -264,7 +264,7 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     group: "rabbitmq"
-    os: bionic
+    os: jammy
 
   - server_name: "kafka2-staging"
     server_instance_type: t3.medium
