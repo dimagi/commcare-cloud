@@ -141,6 +141,19 @@ servers:
     group: "elasticsearch"
     os: bionic
 
+  - server_name: "es18-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      volume_type: "gp3"
+    group: "elasticsearch"
+    os: jammy
+
   - server_name: "pillow5-staging"
     server_instance_type: "t3.xlarge"
     network_tier: "app-private"
