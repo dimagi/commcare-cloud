@@ -59,10 +59,10 @@ proxy8-staging.instance_id: i-053e8c3dd100eb276
 proxy9-staging: 10.201.12.240
 proxy9-staging.instance_id: i-0c3cb040c9f019980
 proxy_alb-staging: internal-proxy-alb-staging-1025146289.us-east-1.elb.amazonaws.com
-rabbit_a2-staging: 10.201.10.20
-rabbit_a2-staging.instance_id: i-07edbe70562292516
-rabbit_b1-staging: 10.201.11.184
-rabbit_b1-staging.instance_id: i-0f25d0640d6f32c11
+rabbit_a3-staging: 10.201.10.231
+rabbit_a3-staging.instance_id: i-0054851ab37af66d6
+rabbit_b2-staging: 10.201.11.253
+rabbit_b2-staging.instance_id: i-0ab4cfe0c9ddc9c70
 web13-staging: 10.201.10.244
 web13-staging.instance_id: i-0fb86252d8c3490e9
 web14-staging: 10.201.11.231
