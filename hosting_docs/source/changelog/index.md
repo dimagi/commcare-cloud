@@ -7,6 +7,12 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2023-04-10** [upgrade-redis-to-v7](0072-upgrade-redis-to-v7.md)
+This change upgrade Redis from 6.x to 7.0 version.
+As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and libraries we have updated Redis from version 6.2 to version 7.0.
+
+
+---
 #### **2023-03-23** [Upgrade to Ubuntu 22.04](0071-upgrade_to_ubuntu_22.04.md)
 On April 1, 2023, the operating system that commcare-cloud has supported for the last 4-5 years,
 Ubuntu 18.04 "Bionic Beaver", will reach its end of life for support from its maintainer.
