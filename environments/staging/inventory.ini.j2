@@ -124,8 +124,6 @@ formplayer_fsx_dns={{ aws_resources['fsx_staging-fsx'] }}:/fsx
 cchq_uid=2002
 cchq_gid=3002
 
-{{ __es12__ }} elasticsearch_node_name=es12-staging elasticsearch_node_zone=us-east-1b
-
 {{ __es13__ }} elasticsearch_node_name=es13-staging elasticsearch_node_zone=us-east-1a
 
 {{ __es14__ }} elasticsearch_node_name=es14-staging elasticsearch_node_zone=us-east-1b
@@ -158,7 +156,6 @@ es13
 es14
 
 [es_coordinator:children]
-es12
 es18
 
 [es_coordinator:vars]
