@@ -9,7 +9,6 @@ elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a7
 #elasticsearch_node_name: '??'
 elastcsearch_backup_days: 2
 
-redis_engine_version: 6.2.4
 redis_maxmemory: 4gb
 
 

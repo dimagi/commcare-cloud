@@ -1,5 +1,5 @@
 datadog_integration_redisdb: true
-redis_version: "{{ redis_engine_version | default('4.0.8')}}"
+redis_version: "{{ redis_engine_version | default('7.0.10')}}"
 redis_install_dir: "/opt/redis/{{ redis_version}}"
 redis_dir: "{{ encrypted_root }}/redis"
 redis_local_facts: false
