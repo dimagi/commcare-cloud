@@ -239,6 +239,24 @@ servers:
     group: "rabbitmq"
     os: bionic
 
+  - server_name: "rabbit12-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "rabbitmq"
+    os: jammy 
+  
+  - server_name: "rabbit13-production"
+    server_instance_type: m5.2xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    group: "rabbitmq"
+    os: jammy 
+
   - server_name: "celery_b2{i}-production"
     server_instance_type: r5.2xlarge
     network_tier: "app-private"
