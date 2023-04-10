@@ -12,8 +12,6 @@ couch20-staging: 10.201.40.61
 couch20-staging.instance_id: i-075638c994c8eb44f
 couch_alb-staging: internal-couch-alb-staging-546646078.us-east-1.elb.amazonaws.com
 efs_staging-efs: fs-9e8f8369.efs.us-east-1.amazonaws.com
-es12-staging: 10.201.41.120
-es12-staging.instance_id: i-0af798b05d79c2507
 es13-staging: 10.201.40.41
 es13-staging.instance_id: i-08dcdb8b280c8ccc2
 es14-staging: 10.201.41.187
