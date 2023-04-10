@@ -329,6 +329,26 @@ servers:
     group: "rabbitmq"
     os: bionic
 
+  - server_name: "rabbit_a6-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "rabbitmq"
+    os: jammy 
+  
+  - server_name: "rabbit_c7-india"
+    server_instance_type: t3.small
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "rabbitmq"
+    os: jammy 
+
 proxy_servers:
   - server_name: "proxy_a1-india"
     server_instance_type: "t3.medium"
