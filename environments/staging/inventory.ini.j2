@@ -140,6 +140,12 @@ cchq_gid=3002
 
 {{ __es20__ }} elasticsearch_node_name=es20-staging elasticsearch_node_zone=us-east-1b
 
+{{ __es21__ }} elasticsearch_node_name=es21-staging elasticsearch_node_zone=us-east-1a
+
+{{ __es22__ }} elasticsearch_node_name=es22-staging elasticsearch_node_zone=us-east-1b
+
+{{ __es23__ }} elasticsearch_node_name=es23-staging elasticsearch_node_zone=us-east-1c
+
 [elasticsearch:children]
 # Amazon EC2
 es_master
@@ -150,6 +156,9 @@ es_coordinator
 es15
 es16
 es17
+es21
+es22
+es23
 
 [es_master:vars]
 elasticsearch_master=true
