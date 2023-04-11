@@ -22,6 +22,7 @@ resource aws_instance "server" {
       Environment = var.environment
       Group = var.group_tag
       BackupPlan  = var.enable_cross_region_backup ? "BusinessContinuity" : null
+      Protected  = var.protect_against_deletion ? "true" : null
     }
   }
   lifecycle {
@@ -56,6 +57,7 @@ resource "aws_ebs_volume" "ebs_volume" {
     VolumeType = "data"
     GroupDetail = "${var.group_tag}:data"
     BackupPlan  = var.secondary_volume_enable_cross_region_backup ? "BusinessContinuity" : null
+    Protected  = var.secondary_volume_protect_against_deletion ? "true" : null
   }
 }
 

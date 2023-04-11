@@ -33,6 +33,9 @@ variable "secondary_volume_encrypted" {
 variable "secondary_volume_enable_cross_region_backup" {
   type        = bool
 }
+variable "secondary_volume_protect_against_deletion" {
+  type        = bool
+}
 variable "az" {}
 variable "group_tag" {}
 variable "metadata_tokens" {
@@ -44,6 +47,10 @@ variable "server_auto_recovery" {
 }
 
 variable "enable_cross_region_backup" {
+  type        = bool
+}
+
+variable "protect_against_deletion" {
   type        = bool
 }
 

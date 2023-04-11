@@ -120,6 +120,7 @@ class ServerConfig(jsonobject.JsonObject):
     os = jsonobject.StringProperty(required=True, choices=['bionic', 'ubuntu_pro_bionic', 'jammy'])
     server_auto_recovery = jsonobject.BooleanProperty(default=False)
     enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
+    protect_against_deletion = jsonobject.BooleanProperty(default=False)
     count = jsonobject.IntegerProperty(default=None)
 
     @classmethod
@@ -166,6 +167,7 @@ class BlockDevice(jsonobject.JsonObject):
     volume_size = jsonobject.IntegerProperty(required=True)
     encrypted = jsonobject.BooleanProperty(default=True, required=True)
     enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
+    protect_against_deletion = jsonobject.BooleanProperty(default=False)
 
 
 class RdsInstanceConfig(jsonobject.JsonObject):
@@ -183,6 +185,7 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     backup_retention = jsonobject.IntegerProperty(default=30)
     monitoring_interval = jsonobject.IntegerProperty(default=60)
     enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
+    protect_against_deletion = jsonobject.BooleanProperty(default=False)
     maintenance_window = "sat:08:27-sat:08:57"
     port = 5432
     params = jsonobject.DictProperty()
