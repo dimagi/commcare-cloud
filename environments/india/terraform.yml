@@ -318,7 +318,7 @@ servers:
     volume_type: "gp3"
     group: "rabbitmq"
     os: jammy 
-  
+
   - server_name: "rabbit_c7-india"
     server_instance_type: t3.small
     network_tier: "db-private"
