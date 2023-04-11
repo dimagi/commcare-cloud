@@ -64,8 +64,12 @@ proxy_b1-india: 10.203.11.254
 proxy_b1-india.instance_id: i-0d3e983176e778c23
 rabbit_a5-india: 10.203.40.207
 rabbit_a5-india.instance_id: i-0535ddbc783c3ad90
+rabbit_a6-india: 10.203.40.210
+rabbit_a6-india.instance_id: i-043877f32d6705105
 rabbit_c6-india: 10.203.42.250
 rabbit_c6-india.instance_id: i-07c1de4430db00154
+rabbit_c7-india: 10.203.42.241
+rabbit_c7-india.instance_id: i-05ed3ca10cfbceb67
 web4-india: 10.203.10.219
 web4-india.instance_id: i-0cde1facc3a39611e
 web5-india: 10.203.11.134
