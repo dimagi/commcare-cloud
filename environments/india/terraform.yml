@@ -309,7 +309,7 @@ servers:
     group: "postgresql"
     os: bionic
 
-  - server_name: "rabbit_a5-india"
+  - server_name: "rabbit_a6-india"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "a"
@@ -317,9 +317,9 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     group: "rabbitmq"
-    os: bionic
+    os: jammy 
 
-  - server_name: "rabbit_c6-india"
+  - server_name: "rabbit_c7-india"
     server_instance_type: t3.small
     network_tier: "db-private"
     az: "c"
@@ -327,7 +327,7 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     group: "rabbitmq"
-    os: bionic
+    os: jammy 
 
 proxy_servers:
   - server_name: "proxy_a1-india"
