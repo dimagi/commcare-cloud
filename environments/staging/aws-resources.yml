@@ -1,5 +1,3 @@
-2204_test-staging: 10.201.10.161
-2204_test-staging.instance_id: i-062f01c788b417654
 celery_a1-staging: 10.201.10.31
 celery_a1-staging.instance_id: i-0e15f23fcc71fd3c9
 control2-staging: 10.201.10.17
@@ -24,6 +22,16 @@ es17-staging: 10.201.42.199
 es17-staging.instance_id: i-06a3ab9509dd41abe
 es18-staging: 10.201.41.168
 es18-staging.instance_id: i-0904ccfba6eaed16f
+es19-staging: 10.201.40.228
+es19-staging.instance_id: i-0efd33ef8e82292c4
+es20-staging: 10.201.41.254
+es20-staging.instance_id: i-0acf18d9eafc42268
+es21-staging: 10.201.40.13
+es21-staging.instance_id: i-0c5137e706cc30e8b
+es22-staging: 10.201.41.68
+es22-staging.instance_id: i-08eed79af34c48103
+es23-staging: 10.201.42.104
+es23-staging.instance_id: i-02a5ef51bc2a6cdb3
 formplayer-efs: fs-ba70cd39.efs.us-east-1.amazonaws.com
 formplayer11-staging: 10.201.10.202
 formplayer11-staging.instance_id: i-04ea09168ac760aab
