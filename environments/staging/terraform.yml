@@ -35,7 +35,7 @@ servers:
     os: bionic
 
   - server_name: "web13-staging"
-    server_instance_type: "t3.xlarge"
+    server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -46,7 +46,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web14-staging"
-    server_instance_type: "t3.xlarge"
+    server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
@@ -57,7 +57,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "es18-staging"
-    server_instance_type: "t3.medium"
+    server_instance_type: "t3a.medium"
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -83,7 +83,7 @@ servers:
     os: jammy
 
   - server_name: "es20-staging"
-    server_instance_type: "t3.medium"
+    server_instance_type: "t3a.medium"
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -96,7 +96,7 @@ servers:
     os: jammy
 
   - server_name: "es21-staging"
-    server_instance_type: "t3.medium"
+    server_instance_type: "t3a.medium"
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -109,7 +109,7 @@ servers:
     os: jammy
 
   - server_name: "es22-staging"
-    server_instance_type: "t3.medium"
+    server_instance_type: "t3a.medium"
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -122,7 +122,7 @@ servers:
     os: jammy
 
   - server_name: "es23-staging"
-    server_instance_type: "t3.medium"
+    server_instance_type: "t3a.medium"
     network_tier: "db-private"
     az: "c"
     volume_size: 30
@@ -135,7 +135,7 @@ servers:
     os: jammy
 
   - server_name: "pillow5-staging"
-    server_instance_type: "t3.xlarge"
+    server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -154,7 +154,7 @@ servers:
     os: jammy 
 
   - server_name: "formplayer9-staging"
-    server_instance_type: "t3.large"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "b"
     volume_size: 30
@@ -169,7 +169,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "formplayer11-staging"
-    server_instance_type: "t3.large"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 30
@@ -227,7 +227,7 @@ servers:
     os: bionic
 
   - server_name: "rabbit_a3-staging"
-    server_instance_type: "t3.large"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -237,7 +237,7 @@ servers:
     os: jammy
 
   - server_name: "rabbit_b2-staging"
-    server_instance_type: "t3.large"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
@@ -314,7 +314,7 @@ servers:
 
 proxy_servers:
   - server_name: "proxy6-staging"
-    server_instance_type: "t3.medium"
+    server_instance_type: "t3a.medium"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
@@ -324,7 +324,7 @@ proxy_servers:
     os: jammy
 
   - server_name: "proxy8-staging"
-    server_instance_type: "t3.medium"
+    server_instance_type: "t3a.medium"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -334,7 +334,7 @@ proxy_servers:
     os: jammy
 
   - server_name: "proxy9-staging"
-    server_instance_type: "t3.medium"
+    server_instance_type: "t3a.medium"
     network_tier: "app-private"
     az: "c"
     volume_size: 80
