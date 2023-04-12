@@ -221,23 +221,23 @@ servers:
     group: "couchdb2"
     os: bionic
 
-  - server_name: "rabbit10-production"
-    server_instance_type: m5.2xlarge
+  - server_name: "rabbit14-production"
+    server_instance_type: t3a.2xlarge
     network_tier: "db-private"
     az: "b"
-    volume_size: 80
+    volume_size: 30
     volume_encrypted: yes
     group: "rabbitmq"
-    os: bionic
+    os: jammy
 
-  - server_name: "rabbit11-production"
-    server_instance_type: m5.2xlarge
+  - server_name: "rabbit15-production"
+    server_instance_type: t3a.2xlarge
     network_tier: "db-private"
     az: "a"
-    volume_size: 80
+    volume_size: 30
     volume_encrypted: yes
     group: "rabbitmq"
-    os: bionic
+    os: jammy
 
   - server_name: "celery_b2{i}-production"
     server_instance_type: r5.2xlarge

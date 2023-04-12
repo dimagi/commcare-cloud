@@ -143,10 +143,10 @@ proxy_b3-production: 10.202.11.130
 proxy_b3-production.instance_id: i-0ba85e1154eb3a317
 proxy_c3-production: 10.202.12.63
 proxy_c3-production.instance_id: i-0fff53fa84ed91364
-rabbit10-production: 10.202.41.18
-rabbit10-production.instance_id: i-08b0e930a246fee4e
-rabbit11-production: 10.202.40.162
-rabbit11-production.instance_id: i-00d47546d05e5a018
+rabbit14-production: 10.202.41.89
+rabbit14-production.instance_id: i-0776b2cdaf927e811
+rabbit15-production: 10.202.40.145
+rabbit15-production.instance_id: i-03190b8c695696693
 web_a2000-production: 10.202.10.119
 web_a2000-production.instance_id: i-000a47cf1e488301b
 web_a2001-production: 10.202.10.74
