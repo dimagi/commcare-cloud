@@ -289,7 +289,7 @@ servers:
     os: bionic
 
   - server_name: "kafka9-staging"
-    server_instance_type: t3.medium
+    server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -303,7 +303,7 @@ servers:
     os: jammy 
 
   - server_name: "kafka10-staging"
-    server_instance_type: t3.medium
+    server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -317,7 +317,7 @@ servers:
     os: jammy
 
   - server_name: "kafka11-staging"
-    server_instance_type: t3.medium
+    server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "c"
     volume_size: 30
