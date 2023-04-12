@@ -8,27 +8,27 @@
 {{ __couch5__ }} swap_size=8G
 {{ __couch8__ }} swap_size=8G
 {{ __couch9__ }} swap_size=8G
-{{ __esmaster2__ }} elasticsearch_node_name=esmaster2 elasticsearch_node_zone=ap-south-1b
-{{ __esmaster3__ }} elasticsearch_node_name=esmaster3 elasticsearch_node_zone=ap-south-1b
-{{ __esmaster4__ }} elasticsearch_node_name=esmaster4 elasticsearch_node_zone=ap-south-1a
-{{ __es0__ }} elasticsearch_node_name=es0 elasticsearch_node_zone=ap-south-1a
-{{ __es3__ }} elasticsearch_node_name=es3 elasticsearch_node_zone=ap-south-1b
-{{ __escoordinator4__ }} elasticsearch_node_name=escoordinator4 elasticsearch_node_zone=ap-south-1a
-{{ __escoordinator5__ }} elasticsearch_node_name=escoordinator5 elasticsearch_node_zone=ap-south-1b
-{{ __escoordinator6__ }} elasticsearch_node_name=escoordinator6 elasticsearch_node_zone=ap-south-1c
+{{ __esmaster5__ }} elasticsearch_node_name=esmaster5 elasticsearch_node_zone=ap-south-1a
+{{ __esmaster6__ }} elasticsearch_node_name=esmaster6 elasticsearch_node_zone=ap-south-1b
+{{ __esmaster7__ }} elasticsearch_node_name=esmaster7 elasticsearch_node_zone=ap-south-1c
+{{ __es4__ }} elasticsearch_node_name=es4 elasticsearch_node_zone=ap-south-1a
+{{ __es5__ }} elasticsearch_node_name=es5 elasticsearch_node_zone=ap-south-1b
+{{ __escoordinator7__ }} elasticsearch_node_name=escoordinator7 elasticsearch_node_zone=ap-south-1a
+{{ __escoordinator8__ }} elasticsearch_node_name=escoordinator8 elasticsearch_node_zone=ap-south-1b
+{{ __escoordinator9__ }} elasticsearch_node_name=escoordinator9 elasticsearch_node_zone=ap-south-1c
 
 [es_master:children]
-esmaster2
-esmaster3
-esmaster4
+esmaster5
+esmaster6
+esmaster7
 
 [es_master:vars]
 elasticsearch_master=true
 elasticsearch_data=false
 
 [es_data:children]
-es0
-es3
+es4
+es5
 
 [elasticsearch:children]
 es_master
@@ -36,9 +36,9 @@ es_data
 es_coordinator
 
 [es_coordinator:children]
-escoordinator4
-escoordinator5
-escoordinator6
+escoordinator7
+escoordinator8
+escoordinator9
 
 [es_coordinator:vars]
 elasticsearch_master=false
