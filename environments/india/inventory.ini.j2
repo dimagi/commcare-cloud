@@ -44,7 +44,6 @@ escoordinator9
 elasticsearch_master=false
 elasticsearch_data=false
 
-{{ __formplayer1__ }}
 {{ __formplayer2__ }}
 {{ __pillow4__ }}
 {{ __kafka2__ }} kafka_broker_id=1 zookeeper_server_id=2
@@ -117,12 +116,11 @@ celery9
 pillow4
 
 [formplayer:children]
-formplayer1
 formplayer2
 
 [elasticsearch:children]
-es0
-es3
+es4
+es5
 
 [shared_efs_client_host:children]
 celery
