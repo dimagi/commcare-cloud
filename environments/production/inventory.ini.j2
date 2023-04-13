@@ -194,11 +194,21 @@ webworkers
 
 {{ __es_b1__ }}
 
+{{ __es_a2__ }}
+
+{{ __es_b2__ }}
+
 {{ __esmaster_a0__ }} elasticsearch_node_name=esmaster_a0
 
 {{ __esmaster_b0__ }} elasticsearch_node_name=esmaster_b0
 
 {{ __esmaster_c0__ }} elasticsearch_node_name=esmaster_c0
+
+{{ __esmaster_a1__ }} elasticsearch_node_name=esmaster_a1
+
+{{ __esmaster_b1__ }} elasticsearch_node_name=esmaster_b1
+
+{{ __esmaster_c1__ }} elasticsearch_node_name=esmaster_c1
 
 {{ __escoordinator_a0__ }} elasticsearch_node_name=escoordinator_a0 elasticsearch_node_zone=us-east-1a
 
@@ -206,10 +216,19 @@ webworkers
 
 {{ __escoordinator_c0__ }} elasticsearch_node_name=escoordinator_c0 elasticsearch_node_zone=us-east-1c
 
+{{ __escoordinator_a1__ }} elasticsearch_node_name=escoordinator_a1 elasticsearch_node_zone=us-east-1a
+
+{{ __escoordinator_b1__ }} elasticsearch_node_name=escoordinator_b1 elasticsearch_node_zone=us-east-1b
+
+{{ __escoordinator_c1__ }} elasticsearch_node_name=escoordinator_c1 elasticsearch_node_zone=us-east-1c
+
 [es_master:children]
 esmaster_a0
 esmaster_b0
 esmaster_c0
+esmaster_a1
+esmaster_b1
+esmaster_c1
 
 [es_master:vars]
 elasticsearch_master=true
@@ -218,6 +237,8 @@ elasticsearch_data=false
 [es_data:children]
 es_a1
 es_b1
+es_a2
+es_b2
 
 [es_a1:vars]
 elasticsearch_node_zone=us-east-1a
@@ -234,6 +255,9 @@ es_coordinator
 escoordinator_a0
 escoordinator_b0
 escoordinator_c0
+escoordinator_a1
+escoordinator_b1
+escoordinator_c1
 
 [es_coordinator:vars]
 elasticsearch_master=false
