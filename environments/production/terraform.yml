@@ -291,7 +291,7 @@ servers:
     server_instance_type: r6a.2xlarge
     network_tier: "app-private"
     az: "c"
-    volume_size: 80
+    volume_size: 50
     volume_encrypted: yes
     group: "formplayer"
     os: jammy
