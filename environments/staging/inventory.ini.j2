@@ -80,21 +80,21 @@ couch_alb
 rabbit_a3
 rabbit_b2
 
-{{ __kafka9__ }} kafka_broker_id=9 zookeeper_server_id=9
-{{ __kafka10__ }} kafka_broker_id=10 zookeeper_server_id=10
-{{ __kafka11__ }} kafka_broker_id=11 zookeeper_server_id=11
+{{ __kafka12__ }} kafka_broker_id=12 zookeeper_server_id=12
+{{ __kafka13__ }} kafka_broker_id=13 zookeeper_server_id=13
+{{ __kafka14__ }} kafka_broker_id=14 zookeeper_server_id=14
 
 [zookeeper:children]
 # Amazon EC2
-kafka9
-kafka10
-kafka11
+kafka12
+kafka13
+kafka14
 
 [kafka:children]
 # Amazon EC2
-kafka9
-kafka10
-kafka11
+kafka12
+kafka13
+kafka14
 
 {{ __celery_a1__ }}
 
