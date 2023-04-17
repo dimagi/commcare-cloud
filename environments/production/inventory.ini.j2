@@ -161,11 +161,9 @@ pillow_a2
 pillow_b2
 
 {{ __formplayer_c1__ }}
-{{ __formplayer_c2__ }}
 
 [formplayer:children]
 formplayer_c1
-formplayer_c2
 
 [formplayer:vars]
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
@@ -178,15 +176,12 @@ use_formplayer_debug_options=true
 [formplayer_debug:children]
 formplayer_c1005
 formplayer_c1009
-formplayer_c2005
-formplayer_c2009
 
 [formplayer_with_monit:vars]
 use_monit_for_formplayer=true
 
 [formplayer_with_monit:children]
 formplayer_c1009
-formplayer_c2009
 
 [shared_efs_client_host:children]
 celery
