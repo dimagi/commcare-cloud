@@ -33,6 +33,12 @@ kafka10-staging: 10.201.41.77
 kafka10-staging.instance_id: i-0c30dcdf61f281470
 kafka11-staging: 10.201.42.32
 kafka11-staging.instance_id: i-0cf577b80a04ee415
+kafka12-staging: 10.201.40.225
+kafka12-staging.instance_id: i-02bc98d4090368185
+kafka13-staging: 10.201.41.147
+kafka13-staging.instance_id: i-0fe4b1a6b075a2eaf
+kafka14-staging: 10.201.42.13
+kafka14-staging.instance_id: i-0fa8500930b6362c2
 kafka9-staging: 10.201.40.156
 kafka9-staging.instance_id: i-0d93721b385e5d288
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
