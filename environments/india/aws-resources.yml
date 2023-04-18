@@ -42,6 +42,12 @@ kafka3-india: 10.203.41.123
 kafka3-india.instance_id: i-0fe5fd2b7f41a0d75
 kafka_a0-india: 10.203.40.96
 kafka_a0-india.instance_id: i-0c1bfff982cea3e57
+kafka_a1-india: 10.203.40.149
+kafka_a1-india.instance_id: i-07bdba807888017f5
+kafka_b1-india: 10.203.41.244
+kafka_b1-india.instance_id: i-0f38a519b27e8ca97
+kafka_c1-india: 10.203.42.251
+kafka_c1-india.instance_id: i-0776ffddfcd0717f7
 pgbouncer0-india: 10.203.40.199
 pgbouncer0-india.instance_id: i-05aabe9136e92475c
 pgbouncer3-india: 10.203.41.75
