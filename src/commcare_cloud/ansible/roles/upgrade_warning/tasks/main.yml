@@ -10,11 +10,17 @@
   ansible.builtin.group_by:
     key: ubuntu_{{ ansible_distribution_version | replace(".", "_") }}
 
+- name: Create group for non 22.04 hosts
+  add_host:
+    name: '{{ item }}'
+    groups: non_2204_hosts
+  with_inventory_hostnames:
+    - all:!ansible_skip:!ubuntu_22_04
+
 - name: Show 'distribution_version' for non 22.04 hosts
   debug:
-    msg: "{{ item }}"
-  register: warning_present
-  loop: "{% if 'ubuntu_22_04' not in group_names %}{{ warning_host_message }}{% else %}[]{% endif %}"
+    msg: "WARNING: Host {{ inventory_hostname }} is running Ubuntu {{ ansible_distribution_version }}"
+  loop: "{% if 'non_2204_hosts' in group_names %}['{{ inventory_hostname }}']{% else %}[]{% endif %}"
 
 - name: Show warning if non 22.04 hosts are present
   pause:
@@ -31,4 +37,4 @@
        - https://commcare-cloud.readthedocs.io/en/latest/changelog/0071-upgrade_to_ubuntu_22.04.html
 
       Press Enter to acknowledge and continue
-  when: warning_present.msg is defined
+  when: groups.get('non_2204_hosts')

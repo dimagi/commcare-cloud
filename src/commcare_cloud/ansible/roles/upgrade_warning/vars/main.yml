@@ -1,3 +1,0 @@
----
-warning_host_message:
- - "WARNING: Host {{ inventory_hostname }} is running Ubuntu {{ ansible_distribution_version }}"
