@@ -36,12 +36,6 @@ formplayer-efs: fs-9d4fdd4c.efs.ap-south-1.amazonaws.com
 formplayer2-india: 10.203.10.12
 formplayer2-india.instance_id: i-099df0d3c49c81b3d
 frontend_alb-india: internal-frontend-alb-india-500199263.ap-south-1.elb.amazonaws.com
-kafka2-india: 10.203.42.242
-kafka2-india.instance_id: i-0d2c2b6f9bee98fea
-kafka3-india: 10.203.41.123
-kafka3-india.instance_id: i-0fe5fd2b7f41a0d75
-kafka_a0-india: 10.203.40.96
-kafka_a0-india.instance_id: i-0c1bfff982cea3e57
 kafka_a1-india: 10.203.40.149
 kafka_a1-india.instance_id: i-07bdba807888017f5
 kafka_b1-india: 10.203.41.244
