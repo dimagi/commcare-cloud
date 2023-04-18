@@ -246,7 +246,7 @@ servers:
     group: "rabbitmq"
     os: jammy
 
-  - server_name: "kafka9-staging"
+  - server_name: "kafka12-staging"
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "a"
@@ -259,8 +259,8 @@ servers:
       volume_type: "gp3"
     group: "kafka"
     os: jammy 
-
-  - server_name: "kafka10-staging"
+    
+  - server_name: "kafka13-staging"
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "b"
@@ -274,7 +274,7 @@ servers:
     group: "kafka"
     os: jammy
 
-  - server_name: "kafka11-staging"
+  - server_name: "kafka14-staging"
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "c"
