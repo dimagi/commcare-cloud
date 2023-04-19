@@ -4,6 +4,7 @@
     gather_subset:
       - '!all'
       - '!min'
+      - 'distribution'
       - 'distribution_version'
 
 - name: Create groups based on 'distribution_version'
@@ -19,15 +20,15 @@
 
 - name: Show 'distribution_version' for non 22.04 hosts
   debug:
-    msg: "WARNING: Host {{ inventory_hostname }} is running Ubuntu {{ ansible_distribution_version }}"
+    msg: "WARNING: Host {{ inventory_hostname }} is running {{ ansible_distribution }} {{ ansible_distribution_version }}"
   loop: "{% if 'non_2204_hosts' in group_names %}['{{ inventory_hostname }}']{% else %}[]{% endif %}"
 
 - name: Show warning if non 22.04 hosts are present
   pause:
     prompt: |-
 
-      The hosts listed above are running a version of Ubuntu which
-      we will no longer support after July 1, 2023.
+      The hosts listed above are running an unsupported OS version.
+      We will only support Ubuntu 22.04 after July 1, 2023.
 
       Failure to upgrade to Ubuntu 22.04 by July 1 may result in
       irreparable harm to the site and its data.
@@ -35,6 +36,13 @@
       Please follow the instructions here:
        - https://forum.dimagi.com/t/commcare-cloud-release-notes-2023-03-29/9739
        - https://commcare-cloud.readthedocs.io/en/latest/changelog/0071-upgrade_to_ubuntu_22.04.html
+
+      If you really know what you're doing, you can silence this
+      warning by adding
+
+      --skip-tags "upgrade_warning"
+
+      to your command.
 
       Press Enter to acknowledge and continue
   when: groups.get('non_2204_hosts')

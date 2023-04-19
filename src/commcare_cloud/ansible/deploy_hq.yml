@@ -7,6 +7,7 @@
     - all
   tasks:
     - import_role: {name: upgrade_warning}
+      tags: upgrade_warning
 
 - name: Deploy CommCare HQ
   hosts:
