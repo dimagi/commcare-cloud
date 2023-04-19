@@ -297,7 +297,7 @@ servers:
     volume_encrypted: yes
     group: "kafka"
     os: jammy 
-    
+
   - server_name: "kafka_b1-production"
     server_instance_type: t3a.medium
     network_tier: "db-private"
@@ -306,7 +306,7 @@ servers:
     volume_encrypted: yes
     group: "kafka"
     os: jammy 
-    
+
   - server_name: "kafka_c1-production"
     server_instance_type: t3a.medium
     network_tier: "db-private"
