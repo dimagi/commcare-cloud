@@ -226,6 +226,49 @@ servers:
     group: "couchdb2"
     os: bionic
 
+  - server_name: "couch21-staging"
+    server_instance_type: "t3a.large"
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 30
+      encrypted: true
+      volume_type: "gp3"
+      enable_cross_region_backup: yes
+    group: "couchdb2"
+    os: jammy 
+    
+  - server_name: "couch22-staging"
+    server_instance_type: "t3a.large"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 30
+      volume_type: "gp3"
+      encrypted: true
+    group: "couchdb2"
+    os: jammy 
+
+  - server_name: "couch23-staging"
+    server_instance_type: "t3a.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 30
+      volume_type: "gp3"
+      encrypted: true
+    group: "couchdb2"
+    os: jammy 
+
   - server_name: "rabbit_a3-staging"
     server_instance_type: "t3a.medium"
     network_tier: "app-private"
