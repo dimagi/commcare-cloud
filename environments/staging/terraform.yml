@@ -250,7 +250,7 @@ servers:
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "a"
-    volume_size: 30
+    volume_size: 35
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
@@ -264,7 +264,7 @@ servers:
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "b"
-    volume_size: 30
+    volume_size: 35
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
@@ -278,7 +278,7 @@ servers:
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "c"
-    volume_size: 30
+    volume_size: 35
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
