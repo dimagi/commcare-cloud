@@ -2,6 +2,13 @@
 # similarly named deploy_commcarehq.yml playbook is used to configure machines
 # to run commcare-hq, and is expected to be run less frequently than this one.
 
+- name: Check hosts Ubuntu version
+  hosts:
+    - all
+  tasks:
+    - import_role: {name: upgrade_warning}
+      tags: upgrade_warning
+
 - name: Deploy CommCare HQ
   hosts:
     - webworkers
