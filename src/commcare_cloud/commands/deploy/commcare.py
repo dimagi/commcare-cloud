@@ -57,12 +57,12 @@ def deploy_commcare(environment, args, unknown_args):
         if not args.limit:
             args.limit = "django_manage"
         ansible_args.append("--tags=private_release")
-        ansible_args.extend(unknown_args)
     else:
         if args.limit:
             exit("--limit is not allowed except with --private")
     if args.ignore_kafka_checkpoint_warning:
         ansible_args.extend(["-e", "ignore_kafka_checkpoint_warning=true"])
+    ansible_args.extend(unknown_args)
     rc = run_ansible_playbook(
         'deploy_hq.yml',
         AnsibleContext(args, environment),
