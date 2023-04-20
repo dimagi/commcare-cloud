@@ -250,11 +250,11 @@ servers:
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "a"
-    volume_size: 35
+    volume_size: 30
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
-      volume_size: 1
+      volume_size: 5
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
@@ -264,11 +264,11 @@ servers:
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "b"
-    volume_size: 35
+    volume_size: 30
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
-      volume_size: 1
+      volume_size: 5
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
@@ -278,11 +278,11 @@ servers:
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "c"
-    volume_size: 35
+    volume_size: 30
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
-      volume_size: 1
+      volume_size: 5
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
