@@ -302,16 +302,6 @@ servers:
     group: postgresql
     os: bionic
 
-  - server_name: "pgbouncer1-staging"
-    server_instance_type: t3.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: postgresql
-    os: bionic
-
   - server_name: "pgbouncer2-staging"
     server_instance_type: t3a.small
     network_tier: "db-private"
@@ -378,7 +368,6 @@ rds_instances:
 pgbouncer_nlbs:
   - name: "pgformplayer_nlb-staging"
     targets:
-      - pgbouncer1-staging
       - pgbouncer2-staging
       - pgproxy5-staging
   - name: "pgmain_nlb-staging"
@@ -392,7 +381,6 @@ pgbouncer_nlbs:
       - pgproxy5-staging
   - name: "pgshard_nlb-staging"
     targets:
-      - pgbouncer1-staging
       - pgbouncer2-staging
 
 internal_albs:
