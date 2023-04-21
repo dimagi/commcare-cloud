@@ -12,6 +12,8 @@ couch22-staging: 10.201.41.225
 couch22-staging.instance_id: i-0e26f67f66c0fdaf9
 couch23-staging: 10.201.40.251
 couch23-staging.instance_id: i-05a61d2f1a24f1ca6
+couch24-staging: 10.201.42.45
+couch24-staging.instance_id: i-0caec26b9cfd45ee5
 couch_alb-staging: internal-couch-alb-staging-546646078.us-east-1.elb.amazonaws.com
 efs_staging-efs: fs-9e8f8369.efs.us-east-1.amazonaws.com
 es18-staging: 10.201.41.168
