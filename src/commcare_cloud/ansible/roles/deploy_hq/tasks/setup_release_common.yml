@@ -22,6 +22,15 @@
     remote_src: true
     mode: preserve
 
+- name: Update localsettings.py
+  template:
+    src: roles/commcarehq/templates/localsettings.py.j2
+    dest: "{{ code_source }}/localsettings.py"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: 0600
+  when: update_config | default(False)
+
 - name: Mark keep until
   file:
     path: "{{ code_source }}/KEEP_UNTIL__{{ keep_until }}"
