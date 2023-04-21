@@ -40,8 +40,8 @@ kafka13-staging.instance_id: i-0fe4b1a6b075a2eaf
 kafka14-staging: 10.201.42.13
 kafka14-staging.instance_id: i-0fa8500930b6362c2
 pg0-staging: pg0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
-pgbouncer1-staging: 10.201.40.36
-pgbouncer1-staging.instance_id: i-0081f23981fbc09e0
+pgbouncer2-staging: 10.201.40.250
+pgbouncer2-staging.instance_id: i-0fa48da862fff6dfb
 pgformplayer0-staging: pgformplayer0-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgformplayer_nlb-staging: pgformplayer-nlb-staging-98b68467f6f5717b.elb.us-east-1.amazonaws.com
 pgmain_nlb-staging: pgmain-nlb-staging-fe77ab2d143eedbb.elb.us-east-1.amazonaws.com
