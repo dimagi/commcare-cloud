@@ -12,6 +12,8 @@ dbs:
     host: pgsynclog
   auditcare:
     host: hqdb0
+  repeaters:
+    host: hqdb0
   form_processing:
     proxy:
       host: hqdb1
