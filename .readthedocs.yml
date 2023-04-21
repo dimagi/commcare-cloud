@@ -2,11 +2,11 @@
 
 version: 2
 sphinx:
-  configuration: hosting_docs/source/conf.py
+  configuration: docs/source/conf.py
 formats: all
 python:
   install:
-    - requirements: hosting_docs/requirements.txt
+    - requirements: docs/requirements.txt
 submodules:
   include: all
 
