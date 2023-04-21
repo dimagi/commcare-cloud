@@ -49,6 +49,8 @@ pgformplayer_nlb-staging: pgformplayer-nlb-staging-98b68467f6f5717b.elb.us-east-
 pgmain_nlb-staging: pgmain-nlb-staging-fe77ab2d143eedbb.elb.us-east-1.amazonaws.com
 pgproxy5-staging: 10.201.41.14
 pgproxy5-staging.instance_id: i-05e4c2414380586b8
+pgproxy6-staging: 10.201.41.151
+pgproxy6-staging.instance_id: i-073f7e3a3e2eceb72
 pgshard_nlb-staging: pgshard-nlb-staging-e8ef6b4c55f3618d.elb.us-east-1.amazonaws.com
 pgsynclogs_nlb-staging: pgsynclogs-nlb-staging-1102365451f68242.elb.us-east-1.amazonaws.com
 pgucr_nlb-staging: pgucr-nlb-staging-b32586fcc9999b2d.elb.us-east-1.amazonaws.com
