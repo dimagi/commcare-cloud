@@ -58,6 +58,10 @@ class Deploy(CommandBase):
         Argument('--ignore-kafka-checkpoint-warning', action='store_true', help="""
             Do not block deploy if Kafka checkpoints are unavailable.
         """),
+        Argument('--update-config', action='store_true', help="""
+            Generate new localsettings.py rather than copying from the previous
+            release.
+        """),
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
     )
@@ -97,6 +101,7 @@ def _warn_about_non_formplayer_args(args):
         '--skip-record',
         '--commcare-rev',
         '--ignore-kafka-checkpoint-warning',
+        '--update-config',
     ]:
         dest = arg.lstrip("-").replace("-", "_")
         if getattr(args, dest) not in [None, False]:

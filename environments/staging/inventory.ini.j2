@@ -57,16 +57,16 @@ pgshard_nlb
 [pgbouncer:children]
 pgbouncer2
 
-{{ __couch18__ }}
+{{ __couch22__ }}
 
-{{ __couch19__ }}
+{{ __couch23__ }}
 
-{{ __couch20__ }}
+{{ __couch24__ }}
 
 [couchdb2:children]
-couch18
-couch19
-couch20
+couch22
+couch23
+couch24
 
 [couchdb2_proxy:children]
 couch_alb

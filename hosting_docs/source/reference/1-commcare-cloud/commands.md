@@ -1095,7 +1095,7 @@ Deploy CommCare
 
 ```
 commcare-cloud <env> deploy [--resume RELEASE_NAME] [--private] [-l SUBSET] [--keep-days KEEP_DAYS] [--skip-record]
-                            [--commcare-rev COMMCARE_REV] [--ignore-kafka-checkpoint-warning]
+                            [--commcare-rev COMMCARE_REV] [--ignore-kafka-checkpoint-warning] [--update-config]
                             [{commcare,formplayer} ...]
 ```
 
@@ -1139,6 +1139,11 @@ The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
 ###### `--ignore-kafka-checkpoint-warning`
 
 Do not block deploy if Kafka checkpoints are unavailable.
+
+###### `--update-config`
+
+Generate new localsettings.py rather than copying from the previous
+release.
 
 ---
 
