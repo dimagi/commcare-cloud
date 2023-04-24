@@ -28,3 +28,4 @@
     - fix_less_imports_collectstatic
     - compilejsi18n
     - build_requirejs
+    - build_requirejs --bootstrap_version bootstrap5
