@@ -24,7 +24,6 @@ proxy
 web13
 web14
 
-{{ __pgproxy5__ }} pgbouncer_processes=2 swap_size=2G
 {{ __pgproxy6__ }} pgbouncer_processes=2 swap_size=2G
 
 {{ __pgbouncer2__ }}
@@ -45,7 +44,6 @@ rds_pgformplayer0
 {{ __couch_alb__ }}
 
 [postgresql:children]
-pgproxy5
 pgproxy6
 remote_postgresql
 pgformplayer_nlb
