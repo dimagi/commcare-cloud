@@ -415,6 +415,9 @@ internal_albs:
       - couch5-india
       - couch8-india
       - couch9-india
+      - couch10-india
+      - couch11-india
+      - couch12-india
 
 elasticache_cluster:
   create: yes
