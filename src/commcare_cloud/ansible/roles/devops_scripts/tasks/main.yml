@@ -15,6 +15,7 @@
     owner: ansible
     group: ansible
     mode: "u=rwx,g=rwx,o=r"
+  when: "'formplayer' in group_names or 'webworkers' in group_names"
 
 - name: Copy intruder.sh script to /usr/local/sbin
   copy:
