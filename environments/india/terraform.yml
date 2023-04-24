@@ -94,49 +94,7 @@ servers:
     volume_type: "gp3"
     group: celery
     os: jammy
-
-  - server_name: "couch5-india"
-    server_instance_type: "r5.xlarge"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 60
-    volume_encrypted: no
-    volume_type: "gp3"
-    block_device:
-      volume_size: 270
-      encrypted: yes
-      volume_type: "gp3"
-    group: couchdb2
-    os: bionic
-  
-  - server_name: "couch8-india"
-    server_instance_type: "r5.xlarge"
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 60
-    volume_encrypted: no
-    volume_type: "gp3"
-    block_device:
-      volume_size: 250
-      encrypted: yes
-      volume_type: "gp3"
-    group: couchdb2
-    os: bionic
-
-  - server_name: "couch9-india"
-    server_instance_type: "r5.xlarge"
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 60
-    volume_encrypted: no
-    volume_type: "gp3"
-    block_device:
-      volume_size: 250
-      encrypted: yes
-      volume_type: "gp3"
-    group: couchdb2
-    os: bionic
-  
+ 
   - server_name: "couch10-india"
     server_instance_type: "r5a.xlarge"
     network_tier: "db-private"
@@ -412,9 +370,6 @@ internal_albs:
     listener_port: 25984
     target_port: 15984
     targets:
-      - couch5-india
-      - couch8-india
-      - couch9-india
       - couch10-india
       - couch11-india
       - couch12-india
