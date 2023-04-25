@@ -54,6 +54,8 @@ elasticsearch_data=false
 {{ __pgbouncer0__ }}
 {{ __pgbouncer3__ }} pgbouncer_processes=2
 {{ __pgbouncer4__ }} pgbouncer_processes=2
+{{ __pgbouncer5__ }} pgbouncer_processes=2
+{{ __pgbouncer6__ }} pgbouncer_processes=2
 {{ __proxy_a1__ }}
 {{ __proxy_b1__ }}
 {{ __rds_pgmain0__ }}
@@ -87,6 +89,8 @@ pgbouncer0
 [pgbouncer:children]
 pgbouncer3
 pgbouncer4
+pgbouncer5
+pgbouncer6
 pgformplayer_nlb
 pgmain_nlb
 pgucr_nlb
