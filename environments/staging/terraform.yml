@@ -34,6 +34,16 @@ servers:
     group: "control"
     os: bionic
 
+  - server_name: "control3-staging"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 100
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "control"
+    os: jammy 
+
   - server_name: "web13-staging"
     server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
