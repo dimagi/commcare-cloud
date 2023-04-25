@@ -652,6 +652,9 @@ internal_albs:
       - couch11-production
       - couch12-production
       - couch13-production
+      - couch14-production
+      - couch15-production
+      - couch16-production
 
 elasticache:
   create: no
