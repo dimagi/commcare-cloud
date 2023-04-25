@@ -214,6 +214,27 @@
   notify: reload monit
   tags: monit
 
+- name: Elasticsearch log rolling configurations
+  include_role:
+    name: ansible-logrotate
+  vars:
+    logrotate_scripts:
+      - name: "{{ deploy_env }}_elasticsearch" 
+        path: "{{ elasticsearch_data_dir }}/logs/*.log" 
+        options:
+          - daily
+          - size 1000M
+          - rotate 10
+          - missingok
+          - compress
+          - delaycompress
+          - copytruncate
+          - nocreate
+          - notifempty
+  tags:
+    - logging
+    - elasticsearch 
+
 - name: Copy elasticsearch log_retention file
   template:
     src: "delete_older_es_logs.sh.j2"
