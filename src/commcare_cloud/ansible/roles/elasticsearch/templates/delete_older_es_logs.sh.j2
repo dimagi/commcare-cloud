@@ -14,7 +14,7 @@ LC_ALL=C find {{ elasticsearch_data_dir }}/logs ! -name *.gz -type f -size +"$((
 
 #Delete log files if disk usages cross 85% levels
 # find the percentage used of the partition
-PARTITION_USAGE_PERCENT="$(df -h {{ elasticsearch_data_dir }} | awk '{print $5}' | sed s/%//g)"
+PARTITION_USAGE_PERCENT="$(df -h {{ elasticsearch_data_dir }} | awk '{print $5}'|tail -1| sed s/%//g)"
 
 # if partition too full...
 if [[ "$PARTITION_USAGE_PERCENT" -gt 85 ]]; then
