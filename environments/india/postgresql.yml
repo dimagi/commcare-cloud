@@ -33,7 +33,6 @@ dbs:
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_hosts:
       - pgbouncer0
-      - pgbouncer3
       - pgbouncer5
   ucr:
     pgbouncer_endpoint: pgucr_nlb
