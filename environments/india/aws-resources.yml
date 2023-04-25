@@ -4,8 +4,6 @@ celery8-india: 10.203.11.217
 celery8-india.instance_id: i-020a7b12a72c7f789
 celery9-india: 10.203.12.242
 celery9-india.instance_id: i-0fde22628ba1450e4
-control0-india: 10.203.10.246
-control0-india.instance_id: i-0e0fc5019d73f5e4d
 control1-india: 10.203.10.6
 control1-india.instance_id: i-003b683fbdef4a881
 couch10-india: 10.203.40.6
