@@ -17,7 +17,9 @@ LC_ALL=C find {{ elasticsearch_data_dir }}/logs ! -name *.gz -type f -size +"$((
 PARTITION_USAGE_PERCENT="$(df -h {{ elasticsearch_data_dir }} | awk '{print $5}'|tail -1| sed s/%//g)"
 
 # if partition too full...
-if [[ "$PARTITION_USAGE_PERCENT" -gt 85 ]]; then
+if [ "$PARTITION_USAGE_PERCENT" -gt 85 ]; then
     # run command to delete extra files
+    find {{ elasticsearch_data_dir }}/logs -type f -mmin +15 -name "{{ elasticsearch_cluster_name }}.log.*" -delete 
+    find {{ elasticsearch_data_dir }}/logs -type f -mmin +15 -name "{{ elasticsearch_cluster_name }}_index_search_slowlog.log.*" -delete 
     find {{ elasticsearch_data_dir }}/logs -type f -mmin +15 -name "{{ elasticsearch_cluster_name }}_index_indexing_slowlog.log.*" -delete 
 fi
