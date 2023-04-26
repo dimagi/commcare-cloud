@@ -222,12 +222,11 @@
       - name: "{{ deploy_env }}_elasticsearch" 
         path: "{{ elasticsearch_data_dir }}/logs/*.log" 
         options:
-          - daily
+          - hourly 
           - size 1000M
           - rotate 10
           - missingok
           - compress
-          - delaycompress
           - copytruncate
           - nocreate
           - notifempty
