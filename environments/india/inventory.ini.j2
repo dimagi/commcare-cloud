@@ -52,8 +52,6 @@ elasticsearch_data=false
 {{ __rabbit_a6__ }}
 {{ __rabbit_c7__ }}
 {{ __pgbouncer0__ }}
-{{ __pgbouncer3__ }} pgbouncer_processes=2
-{{ __pgbouncer4__ }} pgbouncer_processes=2
 {{ __pgbouncer5__ }} pgbouncer_processes=2
 {{ __pgbouncer6__ }} pgbouncer_processes=2
 {{ __proxy_a1__ }}
@@ -87,8 +85,6 @@ remote_postgresql
 pgbouncer0
 
 [pgbouncer:children]
-pgbouncer3
-pgbouncer4
 pgbouncer5
 pgbouncer6
 pgformplayer_nlb
