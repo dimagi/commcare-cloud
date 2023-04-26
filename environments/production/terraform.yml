@@ -223,7 +223,7 @@ servers:
     group: "couchdb2"
     os: bionic
 
-  - server_name: "couch14-production"
+  - server_name: "couch17-production"
     server_instance_type: c6a.8xlarge
     network_tier: "db-private"
     az: "a"
@@ -235,7 +235,7 @@ servers:
     group: "couchdb2"
     os: jammy 
 
-  - server_name: "couch15-production"
+  - server_name: "couch18-production"
     server_instance_type: c6a.8xlarge
     network_tier: "db-private"
     az: "b"
@@ -248,7 +248,7 @@ servers:
     group: "couchdb2"
     os: jammy 
     
-  - server_name: "couch16-production"
+  - server_name: "couch19-production"
     server_instance_type: c6a.8xlarge
     network_tier: "db-private"
     az: "c"
@@ -652,9 +652,9 @@ internal_albs:
       - couch11-production
       - couch12-production
       - couch13-production
-      - couch14-production
-      - couch15-production
-      - couch16-production
+      - couch17-production
+      - couch18-production
+      - couch19-production
 
 elasticache:
   create: no
