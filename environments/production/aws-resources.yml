@@ -14,8 +14,8 @@ celery_c2002-production: 10.202.12.227
 celery_c2002-production.instance_id: i-00ca3cfaa4a0689f1
 celery_c2003-production: 10.202.12.41
 celery_c2003-production.instance_id: i-0215d5ce40c7490bb
-control4-production: 10.202.10.11
-control4-production.instance_id: i-05a9ed9fd13fabd55
+control3-production: 10.202.10.185
+control3-production.instance_id: i-04adcdf2dc9efe9dc
 couch11-production: 10.202.42.190
 couch11-production.instance_id: i-0aef627c2e6abe669
 couch12-production: 10.202.40.52
@@ -23,8 +23,8 @@ couch12-production.instance_id: i-0e9aaeea3a117206e
 couch13-production: 10.202.40.154
 couch13-production.instance_id: i-00a287226e9555670
 couch_alb-production: internal-couch-alb-production-4251727.us-east-1.elb.amazonaws.com
-djangomanage_a1-production: 10.202.10.13
-djangomanage_a1-production.instance_id: i-05287a83c6f4dfc10
+djangomanage_a0-production: 10.202.10.140
+djangomanage_a0-production.instance_id: i-00447f0d296ffa239
 efs_production-efs: fs-99495a6e.efs.us-east-1.amazonaws.com
 es_a2000-production: 10.202.40.108
 es_a2000-production.instance_id: i-095549e890d71642f
