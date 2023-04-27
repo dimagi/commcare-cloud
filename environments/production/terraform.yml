@@ -26,22 +26,22 @@ backup_plan:
   quarterly_retention: 365
 
 servers:
-  - server_name: "control3-production"
+  - server_name: "control4-production"
     server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 60
     volume_encrypted: yes
     group: "control"
-    os: bionic
+    os: jammy 
 
-  - server_name: "djangomanage_a0-production"
+  - server_name: "djangomanage_a1-production"
     server_instance_type: m6a.xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 60
     group: "django_manage"
-    os: bionic
+    os: jammy 
 
   - server_name: "web_a2{i}-production"
     server_instance_type: m6a.xlarge
