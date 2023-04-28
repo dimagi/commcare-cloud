@@ -37,18 +37,11 @@ hq_webworkers
 mobile_webworkers
 
 {{ __pgbouncer_a1__ }} pgbouncer_processes=2
-{{ __pgbouncer_a2__ }} pgbouncer_processes=2
-{{ __pgbouncer_a3__ }} pgbouncer_processes=2
 {{ __pgbouncer_a4__ }} pgbouncer_processes=2
 {{ __pgbouncer_a5__ }} pgbouncer_processes=2
-{{ __pgbouncer_b0__ }} pgbouncer_processes=2
-{{ __pgbouncer_b1__ }} pgbouncer_processes=2
 {{ __pgbouncer_b2__ }} pgbouncer_processes=2
 {{ __pgbouncer_b3__ }} pgbouncer_processes=2
-{{ __pgbouncer_c0__ }} pgbouncer_processes=2
 {{ __pgbouncer_c1__ }} pgbouncer_processes=2
-{{ __pgbouncer11__ }} pgbouncer_processes=2
-{{ __pgbouncer12__ }} pgbouncer_processes=2
 {{ __pgbouncer13__ }} pgbouncer_processes=2
 {{ __pgbouncer14__ }} pgbouncer_processes=2
 
@@ -102,18 +95,11 @@ remote_postgresql
 
 [pgbouncer:children]
 pgbouncer_a1
-pgbouncer_a2
-pgbouncer_a3
 pgbouncer_a4
 pgbouncer_a5
-pgbouncer_b0
-pgbouncer_b1
 pgbouncer_b2
 pgbouncer_b3
-pgbouncer_c0
 pgbouncer_c1
-pgbouncer11
-pgbouncer12
 pgbouncer13
 pgbouncer14
 pgformplayer_nlb
