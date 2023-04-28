@@ -6,7 +6,7 @@ from commcare_cloud.commands.deploy.deploy_diff import get_changelogs_in_date_ra
 
 def test_get_changelogs():
     def _get_file_content():
-        return open("hosting_docs/source/changelog/index.md").read().split("\n")
+        return open("docs/source/changelog/index.md").read().split("\n")
     assert_equal(
         set(get_changelogs_in_date_range(datetime(2022, 11, 1), datetime(2022, 11, 11), _get_file_content)),
         {
