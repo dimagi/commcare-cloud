@@ -44,18 +44,11 @@ dbs:
     pgbouncer_pool_size: 36
     pgbouncer_reserve_pool_size: 0
     pgbouncer_hosts:
-      - pgbouncer_a2
-      - pgbouncer_a3
       - pgbouncer_a4
       - pgbouncer_a5
-      - pgbouncer_b0
-      - pgbouncer_b1
       - pgbouncer_b2
       - pgbouncer_b3
-      - pgbouncer_c0
       - pgbouncer_c1
-      - pgbouncer11
-      - pgbouncer12
       - pgbouncer13
       - pgbouncer14
   formplayer:
@@ -63,18 +56,11 @@ dbs:
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_pool_size: 100
     pgbouncer_hosts:
-      - pgbouncer_a2
-      - pgbouncer_a3
       - pgbouncer_a4
       - pgbouncer_a5
-      - pgbouncer_b0
-      - pgbouncer_b1
       - pgbouncer_b2
       - pgbouncer_b3
-      - pgbouncer_c0
       - pgbouncer_c1
-      - pgbouncer11
-      - pgbouncer12
       - pgbouncer13
       - pgbouncer14
   ucr:
@@ -83,18 +69,11 @@ dbs:
     pgbouncer_pool_size: 10
     pgbouncer_reserve_pool_size: 2
     pgbouncer_hosts:
-      - pgbouncer_a2
-      - pgbouncer_a3
       - pgbouncer_a4
       - pgbouncer_a5
-      - pgbouncer_b0
-      - pgbouncer_b1
       - pgbouncer_b2
       - pgbouncer_b3
-      - pgbouncer_c0
       - pgbouncer_c1
-      - pgbouncer11
-      - pgbouncer12
       - pgbouncer13
       - pgbouncer14
     query_stats: True
@@ -102,18 +81,11 @@ dbs:
     host: rds_pgsynclog2
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
-      - pgbouncer_a2
-      - pgbouncer_a3
       - pgbouncer_a4
       - pgbouncer_a5
-      - pgbouncer_b0
-      - pgbouncer_b1
       - pgbouncer_b2
       - pgbouncer_b3
-      - pgbouncer_c0
       - pgbouncer_c1
-      - pgbouncer11
-      - pgbouncer12
       - pgbouncer13
       - pgbouncer14
   auditcare:
@@ -122,18 +94,11 @@ dbs:
     pgbouncer_pool_size: 6
     pgbouncer_reserve_pool_size: 2
     pgbouncer_hosts:
-      - pgbouncer_a2
-      - pgbouncer_a3
       - pgbouncer_a4
       - pgbouncer_a5
-      - pgbouncer_b0
-      - pgbouncer_b1
       - pgbouncer_b2
       - pgbouncer_b3
-      - pgbouncer_c0
       - pgbouncer_c1
-      - pgbouncer11
-      - pgbouncer12
       - pgbouncer13
       - pgbouncer14
   form_processing:
@@ -148,18 +113,11 @@ dbs:
         host: rds_pgshard1
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer_a2
-          - pgbouncer_a3
           - pgbouncer_a4
           - pgbouncer_a5
-          - pgbouncer_b0
-          - pgbouncer_b1
           - pgbouncer_b2
           - pgbouncer_b3
-          - pgbouncer_c0
           - pgbouncer_c1
-          - pgbouncer11
-          - pgbouncer12
           - pgbouncer13
           - pgbouncer14
       p2:
@@ -167,18 +125,11 @@ dbs:
         host: rds_pgshard2
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer_a2
-          - pgbouncer_a3
           - pgbouncer_a4
           - pgbouncer_a5
-          - pgbouncer_b0
-          - pgbouncer_b1
           - pgbouncer_b2
           - pgbouncer_b3
-          - pgbouncer_c0
           - pgbouncer_c1
-          - pgbouncer11
-          - pgbouncer12
           - pgbouncer13
           - pgbouncer14
       p3:
@@ -186,18 +137,11 @@ dbs:
         host: rds_pgshard3
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer_a2
-          - pgbouncer_a3
           - pgbouncer_a4
           - pgbouncer_a5
-          - pgbouncer_b0
-          - pgbouncer_b1
           - pgbouncer_b2
           - pgbouncer_b3
-          - pgbouncer_c0
           - pgbouncer_c1
-          - pgbouncer11
-          - pgbouncer12
           - pgbouncer13
           - pgbouncer14
       p4:
@@ -205,18 +149,11 @@ dbs:
         host: rds_pgshard4
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer_a2
-          - pgbouncer_a3
           - pgbouncer_a4
           - pgbouncer_a5
-          - pgbouncer_b0
-          - pgbouncer_b1
           - pgbouncer_b2
           - pgbouncer_b3
-          - pgbouncer_c0
           - pgbouncer_c1
-          - pgbouncer11
-          - pgbouncer12
           - pgbouncer13
           - pgbouncer14
       p5:
@@ -224,17 +161,10 @@ dbs:
         host: rds_pgshard5
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer_a2
-          - pgbouncer_a3
           - pgbouncer_a4
           - pgbouncer_a5
-          - pgbouncer_b0
-          - pgbouncer_b1
           - pgbouncer_b2
           - pgbouncer_b3
-          - pgbouncer_c0
           - pgbouncer_c1
-          - pgbouncer11
-          - pgbouncer12
           - pgbouncer13
           - pgbouncer14
