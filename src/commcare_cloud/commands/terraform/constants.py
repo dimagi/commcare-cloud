@@ -20,6 +20,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/apps/view/([\w-]+)/languages/bulk_app_translations/upload/$
 ^/a/([\w\.:-]+)/cloudcare/api/readable_questions/$
 ^/a/([\w\.:-]+)/cloudcare/apps/report_formplayer_error
+^/a/([\w\.:-]+)/cloudcare/apps/report_sentry_error
 ^/a/([\w\.:-]+)/data/export/custom/download_data_files/$
 ^/a/([\w\.:-]+)/data_dictionary/import$
 ^/a/([\w\.:-]+)/dhis2/map/(\w+)/$
@@ -39,6 +40,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/settings/users/commcare/upload/$
 ^/a/([\w\.:-]+)/settings/users/join/([ \w-]+)/$
 ^/a/([\w\.:-]+)/settings/users/web/upload/$
+^/formplayer/answer_media$
 ^/formplayer/new-form$
 ^/formplayer/validate_form$
 ^/gvi/api/sms/$

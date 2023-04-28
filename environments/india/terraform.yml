@@ -23,15 +23,15 @@ external_routes: []
 
 ec2_metadata_tokens_required: yes
 servers:
-  - server_name: "control0-india"
-    server_instance_type: "t3.medium"
+  - server_name: "control1-india"
+    server_instance_type: "t3a.medium"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
     volume_encrypted: no
     volume_type: "gp3"
     group: control
-    os: bionic
+    os: jammy 
 
   - server_name: "djangomanage1-india"
     server_instance_type: "t3.small"
@@ -94,49 +94,49 @@ servers:
     volume_type: "gp3"
     group: celery
     os: jammy
-
-  - server_name: "couch5-india"
-    server_instance_type: "r5.xlarge"
+ 
+  - server_name: "couch10-india"
+    server_instance_type: "r5a.xlarge"
     network_tier: "db-private"
     az: "a"
     volume_size: 60
     volume_encrypted: no
     volume_type: "gp3"
     block_device:
-      volume_size: 270
+      volume_size: 80
       encrypted: yes
       volume_type: "gp3"
     group: couchdb2
-    os: bionic
-  
-  - server_name: "couch8-india"
-    server_instance_type: "r5.xlarge"
+    os: jammy 
+    
+  - server_name: "couch11-india"
+    server_instance_type: "r5a.xlarge"
     network_tier: "db-private"
     az: "b"
     volume_size: 60
     volume_encrypted: no
     volume_type: "gp3"
-    block_device:
-      volume_size: 250
+    block_device: 
+      volume_size: 80
       encrypted: yes
       volume_type: "gp3"
     group: couchdb2
-    os: bionic
+    os: jammy 
 
-  - server_name: "couch9-india"
-    server_instance_type: "r5.xlarge"
+  - server_name: "couch12-india"
+    server_instance_type: "r5a.xlarge"
     network_tier: "db-private"
     az: "c"
     volume_size: 60
     volume_encrypted: no
     volume_type: "gp3"
     block_device:
-      volume_size: 250
+      volume_size: 80
       encrypted: yes
       volume_type: "gp3"
     group: couchdb2
-    os: bionic
-   
+    os: jammy 
+
   - server_name: "esmaster5-india"
     server_instance_type: t3a.medium
     network_tier: "db-private"
@@ -278,25 +278,25 @@ servers:
     group: "postgresql"
     os: bionic
 
-  - server_name: "pgbouncer3-india"
-    server_instance_type: t3.small
+  - server_name: "pgbouncer5-india"
+    server_instance_type: t3a.small
     network_tier: "db-private"
     az: "b"
     volume_size: 80
     volume_encrypted: yes
     volume_type: "gp3"
     group: "postgresql"
-    os: bionic
+    os: jammy
 
-  - server_name: "pgbouncer4-india"
-    server_instance_type: t3.small
+  - server_name: "pgbouncer6-india"
+    server_instance_type: t3a.small
     network_tier: "db-private"
     az: "c"
     volume_size: 80
     volume_encrypted: yes
     volume_type: "gp3"
     group: "postgresql"
-    os: bionic
+    os: jammy
 
   - server_name: "rabbit_a6-india"
     server_instance_type: t3a.small
@@ -350,7 +350,7 @@ pgbouncer_nlbs:
   - name: pgformplayer_nlb-india
     targets:
       - pgbouncer0-india
-      - pgbouncer3-india
+      - pgbouncer5-india
   - name: pgmain_nlb-india
     targets:
       - pgbouncer0-india
@@ -362,17 +362,17 @@ pgbouncer_nlbs:
       - pgbouncer0-india
   - name: pgshard_nlb-india
     targets:
-      - pgbouncer3-india
-      - pgbouncer4-india
+      - pgbouncer5-india
+      - pgbouncer6-india
 
 internal_albs:
   - name: "couch_alb-india"
     listener_port: 25984
     target_port: 15984
     targets:
-      - couch5-india
-      - couch8-india
-      - couch9-india
+      - couch10-india
+      - couch11-india
+      - couch12-india
 
 elasticache_cluster:
   create: yes
