@@ -24,15 +24,15 @@ backup_plan:
   quarterly_retention: 365
 
 servers:
-  - server_name: "control2-staging"
-    server_instance_type: "t3.medium"
+  - server_name: "control3-staging"
+    server_instance_type: "t3a.medium"
     network_tier: "app-private"
     az: "a"
     volume_size: 100
     volume_encrypted: yes
     volume_type: "gp3"
     group: "control"
-    os: bionic
+    os: jammy 
 
   - server_name: "web13-staging"
     server_instance_type: "t3a.xlarge"
@@ -183,48 +183,47 @@ servers:
     os: jammy
     server_auto_recovery: true
 
-  - server_name: "couch18-staging"
-    server_instance_type: "t3.large"
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    block_device:
-      volume_size: 80
-      encrypted: true
-      volume_type: "gp3"
-      enable_cross_region_backup: yes
-    group: "couchdb2"
-    os: bionic
-
-  - server_name: "couch19-staging"
-    server_instance_type: "t3.large"
+  - server_name: "couch22-staging"
+    server_instance_type: "t3a.large"
     network_tier: "db-private"
     az: "b"
     volume_size: 30
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 80
+      volume_size: 30
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
-    os: bionic
+    os: jammy 
 
-  - server_name: "couch20-staging"
-    server_instance_type: "t3.large"
+  - server_name: "couch23-staging"
+    server_instance_type: "t3a.large"
     network_tier: "db-private"
     az: "a"
     volume_size: 30
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 80
+      volume_size: 30
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
-    os: bionic
+    os: jammy 
+
+  - server_name: "couch24-staging"
+    server_instance_type: "t3a.large"
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 30
+      volume_type: "gp3"
+      encrypted: true
+    group: "couchdb2"
+    os: jammy
 
   - server_name: "rabbit_a3-staging"
     server_instance_type: "t3a.medium"
@@ -288,8 +287,8 @@ servers:
     group: "kafka"
     os: jammy
 
-  - server_name: "pgproxy5-staging"
-    server_instance_type: t3.small
+  - server_name: "pgproxy6-staging"
+    server_instance_type: t3a.small
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -300,7 +299,7 @@ servers:
       encrypted: true
       volume_type: "gp3"
     group: postgresql
-    os: bionic
+    os: jammy
 
   - server_name: "pgbouncer2-staging"
     server_instance_type: t3a.small
@@ -369,16 +368,16 @@ pgbouncer_nlbs:
   - name: "pgformplayer_nlb-staging"
     targets:
       - pgbouncer2-staging
-      - pgproxy5-staging
+      - pgproxy6-staging
   - name: "pgmain_nlb-staging"
     targets:
-      - pgproxy5-staging
+      - pgproxy6-staging
   - name: "pgucr_nlb-staging"
     targets:
-      - pgproxy5-staging
+      - pgproxy6-staging
   - name: "pgsynclogs_nlb-staging"
     targets:
-      - pgproxy5-staging
+      - pgproxy6-staging
   - name: "pgshard_nlb-staging"
     targets:
       - pgbouncer2-staging
@@ -388,9 +387,9 @@ internal_albs:
     listener_port: 25984
     target_port: 15984
     targets:
-      - couch18-staging
-      - couch19-staging
-      - couch20-staging
+      - couch22-staging
+      - couch23-staging
+      - couch24-staging
       
 elasticache:
   create: no

@@ -33,7 +33,7 @@ dbs:
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_hosts:
       - pgbouncer0
-      - pgbouncer3
+      - pgbouncer5
   ucr:
     pgbouncer_endpoint: pgucr_nlb
     pgbouncer_hosts:
@@ -54,37 +54,37 @@ dbs:
         shards: [0, 204]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer3
-          - pgbouncer4
+          - pgbouncer5
+          - pgbouncer6
       p2:
         shards: [205, 409]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer3
-          - pgbouncer4
+          - pgbouncer5
+          - pgbouncer6
       p3:
         shards: [410, 614]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer3
-          - pgbouncer4
+          - pgbouncer5
+          - pgbouncer6
       p4:
         shards: [615, 819]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer3
-          - pgbouncer4
+          - pgbouncer5
+          - pgbouncer6
       p5:
         shards: [820, 1023]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer3
-          - pgbouncer4
+          - pgbouncer5
+          - pgbouncer6
   custom:
     - django_alias: aaa-data
       name: aaa-data
       django_migrate: True  # AAA dashboard models are stored here
       pgbouncer_endpoint: pgshard_nlb
       pgbouncer_hosts:
-        - pgbouncer3
-        - pgbouncer4
+        - pgbouncer5
+        - pgbouncer6
