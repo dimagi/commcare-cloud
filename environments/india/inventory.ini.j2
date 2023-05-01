@@ -54,6 +54,7 @@ elasticsearch_data=false
 {{ __pgbouncer0__ }}
 {{ __pgbouncer5__ }} pgbouncer_processes=2
 {{ __pgbouncer6__ }} pgbouncer_processes=2
+{{ __pgbouncer7__ }}
 {{ __proxy_a1__ }}
 {{ __proxy_b1__ }}
 {{ __rds_pgmain0__ }}
@@ -83,6 +84,7 @@ web5
 [postgresql:children]
 remote_postgresql
 pgbouncer0
+pgbouncer7
 
 [pgbouncer:children]
 pgbouncer5
