@@ -42,8 +42,6 @@ localsettings_private:
   GOOGLE_ANALYTICS_API_ID: ''
   HUBSPOT_API_ID: ''
   HUBSPOT_ACCESS_TOKEN: ''
-  JAR_KEY_PASS: ''
-  JAR_STORE_PASS: ''
   SECRET_KEY: "JHX1y7iG0bQaVICcBXrQYw1fcJcomC24p6lxAfKMG0B5g7D4"
 
 ansible_sudo_pass: test
