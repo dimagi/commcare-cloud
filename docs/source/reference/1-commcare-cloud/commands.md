@@ -1,7 +1,7 @@
 <!---
 This file should not be manually edited.
 
-This file is auto-generated via `manage-commcare-cloud make-docs > hosting_docs/source/reference/1-commcare-cloud/commands.md`
+This file is auto-generated via `manage-commcare-cloud make-docs > docs/source/reference/1-commcare-cloud/commands.md`
 
 The above command and the command that generates the changelog files are included in the commcare-cloud root Makefile. So if you
 run make, this file should automatically get updated.

@@ -324,60 +324,60 @@ servers:
     volume_encrypted: yes
     group: "postgresql"
     os: bionic
-  - server_name: "pgbouncer_a2-production"  # pgbouncer_host for pgmain,  formplayer
-    server_instance_type: t3.large
+  - server_name: "pgbouncer_a4-production"  # pgbouncer_host for pgmain,  formplayer
+    server_instance_type: t3a.large
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     volume_encrypted: yes
     group: "postgresql"
-    os: bionic
-  - server_name: "pgbouncer_a3-production" # pgbouncer_host for synclogs, pgsahrds
-    server_instance_type: t3.large
+    os: jammy
+  - server_name: "pgbouncer_a5-production" # pgbouncer_host for synclogs, pgsahrds
+    server_instance_type: t3a.large
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     volume_encrypted: yes
     group: "postgresql"
-    os: bionic
-  - server_name: "pgbouncer_b0-production"  # pgbouncer_host for pgmain, formplayer
-    server_instance_type: t3.large
+    os: jammy
+  - server_name: "pgbouncer_b2-production"  # pgbouncer_host for pgmain, formplayer
+    server_instance_type: t3a.large
     network_tier: "db-private"
     az: "b"
     volume_size: 80
     volume_encrypted: yes
     group: "postgresql"
-    os: bionic
-  - server_name: "pgbouncer_b1-production"  # pgbouncer_host for synclogs, pgshards
-    server_instance_type: t3.large
+    os: jammy
+  - server_name: "pgbouncer_b3-production"  # pgbouncer_host for synclogs, pgshards
+    server_instance_type: t3a.large
     network_tier: "db-private"
     az: "b"
     volume_size: 80
     volume_encrypted: yes
     group: "postgresql"
-    os: bionic
-  - server_name: "pgbouncer_c0-production"  # pgbouncer_host for pgmain, formplayer
-    server_instance_type: t3.large
+    os: jammy
+  - server_name: "pgbouncer_c1-production"  # pgbouncer_host for pgmain, formplayer
+    server_instance_type: t3a.large
     network_tier: "db-private"
     az: "c"
     volume_size: 80
     volume_encrypted: yes
     group: "postgresql"
-    os: bionic
-  - server_name: "pgbouncer11-production" # pgbouncer_host for ucr dbs
-    server_instance_type: t3.large
+    os: jammy
+  - server_name: "pgbouncer13-production" # pgbouncer_host for ucr dbs
+    server_instance_type: t3a.large
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     group: "postgresql"
-    os: bionic
-  - server_name: "pgbouncer12-production" # pgbouncer_host for ucr dbs
-    server_instance_type: t3.large
+    os: jammy
+  - server_name: "pgbouncer14-production" # pgbouncer_host for ucr dbs
+    server_instance_type: t3a.large
     network_tier: "db-private"
     az: "b"
     volume_size: 80
     group: "postgresql"
-    os: bionic
+    os: jammy
 
 proxy_servers:
   - server_name: "proxy_a3-production"
@@ -584,26 +584,26 @@ rds_instances:
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-production
     targets:
-      - pgbouncer_a2-production
-      - pgbouncer_b0-production
-      - pgbouncer_c0-production
+      - pgbouncer_a4-production
+      - pgbouncer_b2-production
+      - pgbouncer_c1-production
   - name: pgmain_nlb-production
     targets:
-      - pgbouncer_a2-production
-      - pgbouncer_b0-production
-      - pgbouncer_c0-production
+      - pgbouncer_a4-production
+      - pgbouncer_b2-production
+      - pgbouncer_c1-production
   - name: pgucr_nlb-production
     targets:
-      - pgbouncer11-production
-      - pgbouncer12-production
+      - pgbouncer13-production
+      - pgbouncer14-production
   - name: pgsynclogs_nlb-production
     targets:
-      - pgbouncer_a3-production
-      - pgbouncer_b1-production
+      - pgbouncer_a5-production
+      - pgbouncer_b3-production
   - name: pgshard_nlb-production
     targets:
-      - pgbouncer_a3-production
-      - pgbouncer_b1-production
+      - pgbouncer_a5-production
+      - pgbouncer_b3-production
 
 
 internal_albs:
