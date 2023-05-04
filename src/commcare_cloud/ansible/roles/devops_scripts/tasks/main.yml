@@ -17,6 +17,18 @@
     mode: "u=rwx,g=rwx,o=r"
   when: "'formplayer' in group_names or 'webworkers' in group_names"
 
+- name: Creates a cron to check the uptime details
+  cron:
+    name: Run uptime for every 24 hours
+    minute: "00"
+    hour: "0"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    user: root
+    job: "/usr/local/sbin/uptime.sh"
+    cron_file: uptime.sh
+
 - name: Copy intruder.sh script to /usr/local/sbin
   copy:
     src: intruder.sh
