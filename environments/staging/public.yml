@@ -213,3 +213,6 @@ allow_aws_ssm_proxy: true
 release_bucket: dimagi-commcare-staging-release
 
 formplayer_java_version: "{{ java_17_bin_path }}/java"
+
+# formplayer & web_worker
+maintenance_time: 7:30:00
