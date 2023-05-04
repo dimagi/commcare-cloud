@@ -19,9 +19,9 @@
 
 - name: Creates a cron to check the uptime details
   cron:
-    name: Run uptime for every 24 hours
-    minute: "00"
-    hour: "0"
+    name: Run uptime for every minute
+    minute: "01"
+    hour: "*"
     day: "*"
     month: "*"
     weekday: "*"
