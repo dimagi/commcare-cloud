@@ -139,7 +139,7 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
         data = self._get_vault_variables() or {}
         data[var] = value
         vault = Vault(self._get_ansible_vault_password())
-        with open(self.vault_file_path, 'wb') as vf:
+        with open(self.vault_file_path, 'w') as vf:
             vault.dump(data, vf)
         self._get_vault_variables.reset_cache(self)
 
