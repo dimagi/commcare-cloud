@@ -214,6 +214,40 @@
   notify: reload monit
   tags: monit
 
+#check logrotate.timer.d directory presence
+- name: logrotate.timer.d directory presence
+  stat:
+    path: /etc/systemd/system/logrotate.timer.d
+  register: timer_dir
+
+# file module will create a directory if missing
+- name: Create logrotate.timer.d directory
+  file:
+    path: /etc/systemd/system/logrotate.timer.d/
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: timer_dir.stat.exists == false
+
+# template module will create a file
+- name: Copy logrotate.timer.d drop-in for hourly log rotation
+  template:
+    src: logrotate.timer.j2
+    dest: /etc/systemd/system/logrotate.timer.d/override.conf
+    owner: root
+    group: root
+    mode: 0644
+  register: copy_logrotate_timer_result
+
+- name: Reload Systemd Daemon if logrotate timer config changed.
+  become: yes
+  systemd:
+    state: restarted
+    daemon-reload: yes
+    name: logrotate.timer 
+  when: copy_logrotate_timer_result.changed
+
 - name: Elasticsearch log rolling configurations
   include_role:
     name: ansible-logrotate
@@ -222,7 +256,7 @@
       - name: "{{ deploy_env }}_elasticsearch" 
         path: "{{ elasticsearch_data_dir }}/logs/*.log" 
         options:
-          - hourly 
+          - hourly
           - size 1000M
           - rotate 10
           - missingok
@@ -233,28 +267,3 @@
   tags:
     - logging
     - elasticsearch 
-
-- name: Copy elasticsearch log_retention file
-  template:
-    src: "delete_older_es_logs.sh.j2"
-    dest: "/usr/local/sbin/delete_older_es_logs.sh"
-    group: root
-    owner: root
-    mode: 0700
-    backup: yes
-  when: elasticsearch_delete_old_logs|bool
-  tags:
-    - cron
-
-- name: Create Daily Cron job to delete elasticsearch_logs
-  cron:
-    name: "delete older elasticsearch logs"
-    job: "/usr/local/sbin/delete_older_es_logs.sh {{ elasticsearch_log_retention_days }}"
-    minute: 20
-    hour: "{{ nadir_hour|default(0) }}"
-    weekday: "1,2,3,4,5,6"
-    user: root
-    cron_file: delete_older_es_logs
-    state: '{{ "present" if elasticsearch_delete_old_logs else "absent"}}'
-  tags:
-    - cron
