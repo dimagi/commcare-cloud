@@ -29,15 +29,15 @@ from commcare_cloud.github import github_repo
 
 
 def deploy_commcare(environment, args, unknown_args):
-    deploy_revs, diffs = get_deploy_revs_and_diffs(environment, args)
-    if not confirm_deploy(environment, deploy_revs, diffs, args):
+    deploy_revs, rev_diffs = get_deploy_revs_and_diffs_from_defaults(environment, args)
+    if not confirm_deploy(environment, deploy_revs, rev_diffs, args):
         print(color_notice("Aborted by user"))
         return 1
 
     context = DeployContext(
         service_name="CommCare HQ",
         revision=args.commcare_rev,
-        diff=_get_diff(environment, deploy_revs, args.resume),
+        diff=_get_code_diff(environment, deploy_revs, args.resume),
         start_time=datetime.utcnow(),
         resume=args.resume
     )
@@ -94,22 +94,22 @@ def deploy_commcare(environment, args, unknown_args):
     return 0
 
 
-def confirm_deploy(environment, deploy_revs, diffs, args):
+def confirm_deploy(environment, deploy_revs, rev_diffs, args):
     if args.private:
         return True
 
     if args.resume:
         print(f"Resuming {args.resume} release.\n")
         # call this here to make sure we can get the 'version' to resume
-        _get_diff(environment, deploy_revs, args.resume)
+        _get_code_diff(environment, deploy_revs, args.resume)
         return _ask_to_deploy(environment.name, args.quiet)
 
-    if diffs:
+    if rev_diffs:
         message = (
             "Whoa there bud! You're deploying non-default. "
             "\n{}\n"
             "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
-        ).format('/n'.join(diffs))
+        ).format('/n'.join(rev_diffs))
         if not ask(message, quiet=args.quiet):
             return False
 
@@ -119,9 +119,9 @@ def confirm_deploy(environment, deploy_revs, diffs, args):
     ):
         return False
 
-    diff = _get_diff(environment, deploy_revs, args.resume)
-    diff.print_deployer_diff()
-    if diff.deployed_commit_matches_latest_commit and not args.quiet:
+    code_diff = _get_code_diff(environment, deploy_revs, args.resume)
+    code_diff.print_deployer_diff()
+    if code_diff.deployed_commit_matches_latest_commit and not args.quiet:
         _print_same_code_warning(deploy_revs['commcare'])
     return _ask_to_deploy(environment.name, args.quiet)
 
@@ -133,7 +133,7 @@ def _ask_to_deploy(env_name, quiet):
 DEPLOY_DIFF = None
 
 
-def _get_diff(environment, deploy_revs, is_resume):
+def _get_code_diff(environment, deploy_revs, is_resume):
     global DEPLOY_DIFF
     if DEPLOY_DIFF is not None:
         return DEPLOY_DIFF
@@ -259,7 +259,7 @@ def get_deployed_version(environment, from_source=False):
     return list(versions)[0]
 
 
-def get_deploy_revs_and_diffs(environment, args):
+def get_deploy_revs_and_diffs_from_defaults(environment, args):
     """Check the revisions to deploy from the arguments against the
     defaults configured for the environment and return the final
     revisions to deploy and whether they are different from the defaults.
