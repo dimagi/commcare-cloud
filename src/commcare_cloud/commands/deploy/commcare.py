@@ -239,24 +239,23 @@ def call_record_deploy_success(environment, context, end_time):
 def get_deployed_version(environment, from_source=False):
     if from_source:
         release = environment.remote_conf.code_source
+        hosts = "webworkers,celery,proxy,pillowtop,django_manage"
     else:
         release = environment.remote_conf.code_current
+        hosts = "django_manage"
     code_current = shlex.quote(release)
     res = run_ansible_module(
         AnsibleContext(None, environment),
-        "django_manage",
+        hosts,
         "shell",
         f"sudo -iu cchq bash -c 'git --git-dir={code_current}/.git rev-parse HEAD'",
         become=False,
         run_command=ansible_json,
     )
-    result = next(iter(res.values()), {"stderr": "no result for host"})
-    if "stdout" in result:
-        return result["stdout"]
-    error = result["stderr"] if "stderr" in result else repr(result)
-    if "rc" in result:
-        error += f"\n\nreturn code: {result['rc']}"
-    raise BadAnsibleResult(error)
+    versions = {host_result.get('stdout') for host_result in res.values() if host_result.get('stdout')}
+    if not versions or len(versions) > 1:
+        raise BadAnsibleResult("Unable to get version from hosts")
+    return list(versions)[0]
 
 
 def get_deploy_revs_and_diffs(environment, args):
