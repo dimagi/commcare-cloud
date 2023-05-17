@@ -101,6 +101,8 @@ def confirm_deploy(environment, deploy_revs, diffs, args):
 
     if args.resume:
         print(f"Resuming {args.resume} release.\n")
+        # call this here to make sure we can get the 'version' to resume
+        _get_diff(environment, deploy_revs, args.resume)
         return _ask_to_deploy(environment.name, args.quiet)
 
     if diffs:
