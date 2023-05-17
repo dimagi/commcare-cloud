@@ -5,7 +5,7 @@ import pytz
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
-from commcare_cloud.colors import color_notice, color_error, color_notice, color_summary
+from commcare_cloud.colors import color_error, color_notice, color_summary
 from commcare_cloud.commands.ansible.run_module import (
     AnsibleContext,
     BadAnsibleResult,
@@ -38,7 +38,8 @@ def deploy_commcare(environment, args, unknown_args):
         service_name="CommCare HQ",
         revision=args.commcare_rev,
         diff=_get_diff(environment, deploy_revs, args.resume),
-        start_time=datetime.utcnow()
+        start_time=datetime.utcnow(),
+        resume=args.resume
     )
 
     should_record = not (args.skip_record or args.private)

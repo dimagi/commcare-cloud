@@ -19,6 +19,7 @@ class DeployContext:
     revision = attr.ib()
     diff = attr.ib()
     start_time = attr.ib()
+    resume = attr.ib(default=False)
     metadata = attr.ib(factory=dict)
 
     @property

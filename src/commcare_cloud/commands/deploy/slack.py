@@ -61,7 +61,8 @@ class SlackClient:
         self._post("https://slack.com/api/conversations.join", {"channel": self.channel})
 
     def send_deploy_start_message(self, context):
-        message = f"Deploy of '{context.service_name}' to '{self.environment.meta_config.deploy_env}' started"
+        action = "resumed" if context.resume else "started"
+        message = f"Deploy of '{context.service_name}' to '{self.environment.meta_config.deploy_env}' {action}"
         blocks = self._get_message_blocks("*Deploy Started*", context)
         response = self._post_message(message, blocks)
         context.set_meta_value('slack_thread_ts', response["ts"])
