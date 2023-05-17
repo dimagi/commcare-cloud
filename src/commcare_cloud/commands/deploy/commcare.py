@@ -143,7 +143,10 @@ def _get_code_diff(environment, deploy_revs, is_resume):
 
     deployed_version = get_deployed_version(environment)
     if is_resume:
-        version_being_deployed = get_deployed_version(environment, from_source=True)
+        try:
+            version_being_deployed = get_deployed_version(environment, from_source=True)
+        except BadAnsibleResult:
+            raise BadAnsibleResult("Unable to get code version for 'resume'. Try a fresh deploy.")
     else:
         version_being_deployed = repo.get_commit(deploy_revs['commcare']).sha if repo else None
 
