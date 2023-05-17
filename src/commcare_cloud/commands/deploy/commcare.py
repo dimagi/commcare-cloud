@@ -118,7 +118,7 @@ def confirm_deploy(environment, deploy_revs, diffs, args):
     ):
         return False
 
-    diff = _get_diff(environment, deploy_revs)
+    diff = _get_diff(environment, deploy_revs, args.resume)
     diff.print_deployer_diff()
     if diff.deployed_commit_matches_latest_commit and not args.quiet:
         _print_same_code_warning(deploy_revs['commcare'])
