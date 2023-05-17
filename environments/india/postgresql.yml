@@ -28,27 +28,27 @@ dbs:
   main:
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_hosts:
-      - pgbouncer0
+      - pgbouncer7
   formplayer:
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_hosts:
-      - pgbouncer0
       - pgbouncer5
+      - pgbouncer7
   ucr:
     pgbouncer_endpoint: pgucr_nlb
     pgbouncer_hosts:
-      - pgbouncer0
+      - pgbouncer7
   synclogs:
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
-      - pgbouncer0
+      - pgbouncer7
   auditcare:
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_hosts:
-      - pgbouncer0
+      - pgbouncer7
   form_processing:
     proxy:
-      host: pgbouncer0
+      host: pgbouncer7
     partitions:
       p1:
         shards: [0, 204]
