@@ -37,7 +37,7 @@ def deploy_commcare(environment, args, unknown_args):
     context = DeployContext(
         service_name="CommCare HQ",
         revision=args.commcare_rev,
-        diff=_get_diff(environment, deploy_revs),
+        diff=_get_diff(environment, deploy_revs, args.resume),
         start_time=datetime.utcnow()
     )
 
@@ -131,7 +131,7 @@ def _ask_to_deploy(env_name, quiet):
 DEPLOY_DIFF = None
 
 
-def _get_diff(environment, deploy_revs):
+def _get_diff(environment, deploy_revs, is_resume):
     global DEPLOY_DIFF
     if DEPLOY_DIFF is not None:
         return DEPLOY_DIFF
@@ -140,7 +140,10 @@ def _get_diff(environment, deploy_revs):
     repo = github_repo('dimagi/commcare-hq', require_write_permissions=tag_commits)
 
     deployed_version = get_deployed_version(environment)
-    latest_version = repo.get_commit(deploy_revs['commcare']).sha if repo else None
+    if is_resume:
+        version_being_deployed = get_deployed_version(environment, from_source=True)
+    else:
+        version_being_deployed = repo.get_commit(deploy_revs['commcare']).sha if repo else None
 
     new_version_details = {
         'Branch deployed': ', '.join([f'{repo}: {ref}' for repo, ref in deploy_revs.items()])
@@ -148,7 +151,7 @@ def _get_diff(environment, deploy_revs):
     if environment.fab_settings_config.custom_deploy_details:
         new_version_details.update(environment.fab_settings_config.custom_deploy_details)
     DEPLOY_DIFF = DeployDiff(
-        repo, deployed_version, latest_version, environment,
+        repo, deployed_version, version_being_deployed, environment,
         new_version_details=new_version_details,
         generate_diff=environment.fab_settings_config.generate_deploy_diffs
     )
@@ -232,8 +235,12 @@ def call_record_deploy_success(environment, context, end_time):
     commcare_cloud(environment.name, 'django-manage', 'record_deploy_success', *args)
 
 
-def get_deployed_version(environment):
-    code_current = shlex.quote(environment.remote_conf.code_current)
+def get_deployed_version(environment, from_source=False):
+    if from_source:
+        release = environment.remote_conf.code_source
+    else:
+        release = environment.remote_conf.code_current
+    code_current = shlex.quote(release)
     res = run_ansible_module(
         AnsibleContext(None, environment),
         "django_manage",
