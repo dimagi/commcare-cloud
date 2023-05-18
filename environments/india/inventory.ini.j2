@@ -51,7 +51,6 @@ elasticsearch_data=false
 {{ __kafka_c1__ }} kafka_broker_id=7 zookeeper_server_id=7
 {{ __rabbit_a6__ }}
 {{ __rabbit_c7__ }}
-{{ __pgbouncer0__ }}
 {{ __pgbouncer5__ }} pgbouncer_processes=2
 {{ __pgbouncer6__ }} pgbouncer_processes=2
 {{ __pgbouncer7__ }}
@@ -83,7 +82,6 @@ web5
 
 [postgresql:children]
 remote_postgresql
-pgbouncer0
 pgbouncer7
 
 [pgbouncer:children]
