@@ -22,7 +22,7 @@ postgres_override:
     - contype: host
       database: all
       users: all
-      netmask: pgbouncer0/32
+      netmask: pgbouncer7/32
 
 dbs:
   main:
