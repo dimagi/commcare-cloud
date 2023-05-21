@@ -39,6 +39,7 @@ mobile_webworkers
 {{ __pgbouncer_a1__ }} pgbouncer_processes=2
 {{ __pgbouncer_a4__ }} pgbouncer_processes=2
 {{ __pgbouncer_a5__ }} pgbouncer_processes=2
+{{ __pgbouncer_a6__ }} pgbouncer_processes=2
 {{ __pgbouncer_b2__ }} pgbouncer_processes=2
 {{ __pgbouncer_b3__ }} pgbouncer_processes=2
 {{ __pgbouncer_c1__ }} pgbouncer_processes=2
@@ -91,12 +92,14 @@ rds_pgauditcare1
 
 [postgresql:children]
 pgbouncer_a1
+pgbouncer_a6
 remote_postgresql
 
 [pgbouncer:children]
 pgbouncer_a1
 pgbouncer_a4
 pgbouncer_a5
+pgbouncer_a6
 pgbouncer_b2
 pgbouncer_b3
 pgbouncer_c1
