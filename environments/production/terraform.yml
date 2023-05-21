@@ -230,7 +230,7 @@ servers:
     volume_size: 90
     volume_encrypted: yes
     block_device:
-      volume_size: 3500
+      volume_size: 3000
       encrypted: yes
     group: "couchdb2"
     os: jammy 
@@ -627,6 +627,7 @@ internal_albs:
       - couch11-production
       - couch12-production
       - couch13-production
+      - couch17-production
 
 elasticache:
   create: no
