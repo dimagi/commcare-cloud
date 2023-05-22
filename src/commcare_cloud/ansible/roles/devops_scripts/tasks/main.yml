@@ -9,8 +9,8 @@
   when: "'postgresql' in group_names or 'citusdb' in group_names or 'pg_standby' in group_names"
 
 - name: Copy uptime.sh script to /usr/local/sbin
-  copy:
-    src: uptime.sh
+  template:
+    src: uptime.sh.j2
     dest: /usr/local/sbin/uptime.sh
     owner: ansible
     group: ansible
