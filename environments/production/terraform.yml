@@ -23,7 +23,7 @@ backup_plan:
   daily_retention: 2
   weekly_retention: 14
   monthly_retention: 62
-  quarterly_retention: 365
+  quarterly_retention: 180
 
 servers:
   - server_name: "control3-production"
