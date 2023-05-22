@@ -316,14 +316,6 @@ servers:
     group: "kafka"
     os: jammy 
 
-  - server_name: "pgbouncer_a1-production" # host and pgbouncer_host for pl/proxys
-    server_instance_type: r5a.2xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 200
-    volume_encrypted: yes
-    group: "postgresql"
-    os: bionic
   - server_name: "pgbouncer_a4-production"  # pgbouncer_host for pgmain,  formplayer
     server_instance_type: t3a.large
     network_tier: "db-private"
