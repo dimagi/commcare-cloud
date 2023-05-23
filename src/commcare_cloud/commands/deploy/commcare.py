@@ -256,6 +256,12 @@ def get_deployed_version(environment, from_source=False):
         become=False,
         run_command=ansible_json,
     )
+    # Set code version to the single unique version found among
+    # selected play hosts (when such version exists). Allows
+    # --resume=RELEASE_NAME where the git clone previously failed on
+    # some hosts or where --limit was changed to include additional
+    # hosts. A private release can be converted to a full release
+    # using --resume=RELEASE_NAME without --private.
     versions = {host_result.get('stdout') for host_result in res.values() if host_result.get('rc') == 0}
     if not versions or len(versions) > 1:
         raise BadAnsibleResult("Unable to get version from hosts")
