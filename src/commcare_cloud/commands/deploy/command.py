@@ -7,6 +7,7 @@ from textwrap import dedent
 
 from commcare_cloud.cli_utils import check_branch
 from commcare_cloud.colors import color_notice, color_warning, color_error
+from commcare_cloud.commands.ansible.run_module import BadAnsibleResult
 from commcare_cloud.const import DATE_FMT
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.command_base import Argument, CommandBase
@@ -81,7 +82,11 @@ class Deploy(CommandBase):
         if 'commcare' in deploy_component:
             if 'formplayer' not in deploy_component:
                 _warn_no_formplayer()
-            rc = deploy_commcare(environment, args, unknown_args)
+            try:
+                rc = deploy_commcare(environment, args, unknown_args)
+            except BadAnsibleResult as e:
+                print(color_error(str(e)))
+                rc = 1
         if 'formplayer' in deploy_component:
             _warn_about_non_formplayer_args(args)
             if rc:

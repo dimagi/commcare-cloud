@@ -36,7 +36,7 @@ def test_deploy_commcare_happy_path():
 
 def test_resume_deploy_with_release_name():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, [])
+        eq(unknown_args, ["-e", "code_version=def456"])
         eq(context.environment.release_name, "FRANK")
         log.append(playbook)
         return 0
