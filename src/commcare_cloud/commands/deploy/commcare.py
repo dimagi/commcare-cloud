@@ -5,7 +5,7 @@ import pytz
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
-from commcare_cloud.colors import color_notice, color_error, color_notice, color_summary
+from commcare_cloud.colors import color_error, color_notice, color_summary
 from commcare_cloud.commands.ansible.run_module import (
     AnsibleContext,
     BadAnsibleResult,
@@ -29,16 +29,17 @@ from commcare_cloud.github import github_repo
 
 
 def deploy_commcare(environment, args, unknown_args):
-    deploy_revs, diffs = get_deploy_revs_and_diffs(environment, args)
-    if not confirm_deploy(environment, deploy_revs, diffs, args):
+    deploy_revs, rev_diffs = get_deploy_revs_and_diffs_from_defaults(environment, args)
+    if not confirm_deploy(environment, deploy_revs, rev_diffs, args):
         print(color_notice("Aborted by user"))
         return 1
 
     context = DeployContext(
         service_name="CommCare HQ",
         revision=args.commcare_rev,
-        diff=_get_diff(environment, deploy_revs),
-        start_time=datetime.utcnow()
+        diff=_get_code_diff(environment, deploy_revs, args.resume),
+        start_time=datetime.utcnow(),
+        resume=args.resume
     )
 
     should_record = not (args.skip_record or args.private)
@@ -46,8 +47,7 @@ def deploy_commcare(environment, args, unknown_args):
         record_deploy_start(environment, context)
 
     ansible_args = []
-    if not args.resume:
-        ansible_args.extend(["-e", f"code_version={context.diff.deploy_commit}"])
+    ansible_args.extend(["-e", f"code_version={context.diff.deploy_commit}"])
     if args.private and not args.keep_days:
         args.keep_days = 1
     if args.keep_days:
@@ -62,6 +62,8 @@ def deploy_commcare(environment, args, unknown_args):
             exit("--limit is not allowed except with --private")
     if args.ignore_kafka_checkpoint_warning:
         ansible_args.extend(["-e", "ignore_kafka_checkpoint_warning=true"])
+    if args.update_config:
+        ansible_args.extend(["-e", "update_config=true"])
     ansible_args.extend(unknown_args)
     rc = run_ansible_playbook(
         'deploy_hq.yml',
@@ -92,20 +94,22 @@ def deploy_commcare(environment, args, unknown_args):
     return 0
 
 
-def confirm_deploy(environment, deploy_revs, diffs, args):
+def confirm_deploy(environment, deploy_revs, rev_diffs, args):
     if args.private:
         return True
 
     if args.resume:
         print(f"Resuming {args.resume} release.\n")
+        # call this here to make sure we can get the 'version' to resume
+        _get_code_diff(environment, deploy_revs, args.resume)
         return _ask_to_deploy(environment.name, args.quiet)
 
-    if diffs:
+    if rev_diffs:
         message = (
             "Whoa there bud! You're deploying non-default. "
             "\n{}\n"
             "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
-        ).format('/n'.join(diffs))
+        ).format('/n'.join(rev_diffs))
         if not ask(message, quiet=args.quiet):
             return False
 
@@ -115,9 +119,9 @@ def confirm_deploy(environment, deploy_revs, diffs, args):
     ):
         return False
 
-    diff = _get_diff(environment, deploy_revs)
-    diff.print_deployer_diff()
-    if diff.deployed_commit_matches_latest_commit and not args.quiet:
+    code_diff = _get_code_diff(environment, deploy_revs, args.resume)
+    code_diff.print_deployer_diff()
+    if code_diff.deployed_commit_matches_latest_commit and not args.quiet:
         _print_same_code_warning(deploy_revs['commcare'])
     return _ask_to_deploy(environment.name, args.quiet)
 
@@ -129,7 +133,7 @@ def _ask_to_deploy(env_name, quiet):
 DEPLOY_DIFF = None
 
 
-def _get_diff(environment, deploy_revs):
+def _get_code_diff(environment, deploy_revs, is_resume):
     global DEPLOY_DIFF
     if DEPLOY_DIFF is not None:
         return DEPLOY_DIFF
@@ -138,7 +142,13 @@ def _get_diff(environment, deploy_revs):
     repo = github_repo('dimagi/commcare-hq', require_write_permissions=tag_commits)
 
     deployed_version = get_deployed_version(environment)
-    latest_version = repo.get_commit(deploy_revs['commcare']).sha if repo else None
+    if is_resume:
+        try:
+            version_being_deployed = get_deployed_version(environment, from_source=True)
+        except BadAnsibleResult:
+            raise BadAnsibleResult("Unable to get code version for 'resume'. Try a fresh deploy.")
+    else:
+        version_being_deployed = repo.get_commit(deploy_revs['commcare']).sha if repo else None
 
     new_version_details = {
         'Branch deployed': ', '.join([f'{repo}: {ref}' for repo, ref in deploy_revs.items()])
@@ -146,7 +156,7 @@ def _get_diff(environment, deploy_revs):
     if environment.fab_settings_config.custom_deploy_details:
         new_version_details.update(environment.fab_settings_config.custom_deploy_details)
     DEPLOY_DIFF = DeployDiff(
-        repo, deployed_version, latest_version, environment,
+        repo, deployed_version, version_being_deployed, environment,
         new_version_details=new_version_details,
         generate_diff=environment.fab_settings_config.generate_deploy_diffs
     )
@@ -230,26 +240,35 @@ def call_record_deploy_success(environment, context, end_time):
     commcare_cloud(environment.name, 'django-manage', 'record_deploy_success', *args)
 
 
-def get_deployed_version(environment):
-    code_current = shlex.quote(environment.remote_conf.code_current)
+def get_deployed_version(environment, from_source=False):
+    if from_source:
+        release = environment.remote_conf.code_source
+        hosts = "webworkers,celery,proxy,pillowtop,django_manage"
+    else:
+        release = environment.remote_conf.code_current
+        hosts = "django_manage"
+    code_current = shlex.quote(release)
     res = run_ansible_module(
         AnsibleContext(None, environment),
-        "django_manage",
+        hosts,
         "shell",
         f"sudo -iu cchq bash -c 'git --git-dir={code_current}/.git rev-parse HEAD'",
         become=False,
         run_command=ansible_json,
     )
-    result = next(iter(res.values()), {"stderr": "no result for host"})
-    if "stdout" in result:
-        return result["stdout"]
-    error = result["stderr"] if "stderr" in result else repr(result)
-    if "rc" in result:
-        error += f"\n\nreturn code: {result['rc']}"
-    raise BadAnsibleResult(error)
+    # Set code version to the single unique version found among
+    # selected play hosts (when such version exists). Allows
+    # --resume=RELEASE_NAME where the git clone previously failed on
+    # some hosts or where --limit was changed to include additional
+    # hosts. A private release can be converted to a full release
+    # using --resume=RELEASE_NAME without --private.
+    versions = {host_result.get('stdout') for host_result in res.values() if host_result.get('rc') == 0}
+    if not versions or len(versions) > 1:
+        raise BadAnsibleResult("Unable to get version from hosts")
+    return list(versions)[0]
 
 
-def get_deploy_revs_and_diffs(environment, args):
+def get_deploy_revs_and_diffs_from_defaults(environment, args):
     """Check the revisions to deploy from the arguments against the
     defaults configured for the environment and return the final
     revisions to deploy and whether they are different from the defaults.

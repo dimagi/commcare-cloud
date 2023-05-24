@@ -15,7 +15,7 @@ pgbouncer_override:
   pgbouncer_default_pool: 290
 
 pg_repack:
-  pgproxy5:
+  pgproxy6:
     - database: commcarehq_synclogs
       host: "{{ DEFAULT_POSTGRESQL_HOST }}"
       username: "{{ postgres_users.root.username }}"
@@ -27,60 +27,60 @@ dbs:
   main:
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_hosts:
-      - pgproxy5
+      - pgproxy6
     query_stats: True
   ucr:
     pgbouncer_endpoint: pgucr_nlb
     pgbouncer_hosts:
-      - pgproxy5
+      - pgproxy6
     query_stats: True
   synclogs:
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
-      - pgproxy5
+      - pgproxy6
   formplayer:
     host: rds_pgformplayer0
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_hosts:
-      - pgproxy5
-      - pgbouncer1
+      - pgproxy6
+      - pgbouncer2
   auditcare:
-    pgbouncer_host: pgproxy5
+    pgbouncer_host: pgproxy6
     pgbouncer_reserve_pool_size: 2
   repeaters:
     pgbouncer_host: pgproxy5
     pgbouncer_reserve_pool_size: 2
   form_processing:
     proxy:
-      host: pgproxy5
+      host: pgproxy6
     partitions:
       p1:
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer1
+          - pgbouncer2
         shards: [0, 99]
         query_stats: True
       p2:
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer1
+          - pgbouncer2
         shards: [100, 199]
         query_stats: True
       p3:
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer1
+          - pgbouncer2
         shards: [200, 299]
         query_stats: True
       p4:
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer1
+          - pgbouncer2
         shards: [300, 399]
         query_stats: True
       p5:
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer1
+          - pgbouncer2
         shards: [400, 511]
         query_stats: True

@@ -1,7 +1,7 @@
 <!---
 This file should not be manually edited.
 
-This file is auto-generated via `manage-commcare-cloud make-docs > hosting_docs/source/reference/1-commcare-cloud/commands.md`
+This file is auto-generated via `manage-commcare-cloud make-docs > docs/source/reference/1-commcare-cloud/commands.md`
 
 The above command and the command that generates the changelog files are included in the commcare-cloud root Makefile. So if you
 run make, this file should automatically get updated.
@@ -1095,7 +1095,7 @@ Deploy CommCare
 
 ```
 commcare-cloud <env> deploy [--resume RELEASE_NAME] [--private] [-l SUBSET] [--keep-days KEEP_DAYS] [--skip-record]
-                            [--commcare-rev COMMCARE_REV] [--ignore-kafka-checkpoint-warning]
+                            [--commcare-rev COMMCARE_REV] [--ignore-kafka-checkpoint-warning] [--update-config]
                             [{commcare,formplayer} ...]
 ```
 
@@ -1139,6 +1139,11 @@ The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
 ###### `--ignore-kafka-checkpoint-warning`
 
 Do not block deploy if Kafka checkpoints are unavailable.
+
+###### `--update-config`
+
+Generate new localsettings.py rather than copying from the previous
+release.
 
 ---
 

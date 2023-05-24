@@ -7,7 +7,7 @@ CommCare-Cloud is a suite of tools for standing up and managing a production
 
 For documentation and installation instructions, visit
 [https://commcare-cloud.readthedocs.io/](https://commcare-cloud.readthedocs.io/)
-or the `hosting_docs/source` directory of this repository.
+or the `docs/source` directory of this repository.
 
 
 # More Information

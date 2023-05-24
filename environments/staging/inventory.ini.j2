@@ -24,9 +24,9 @@ proxy
 web13
 web14
 
-{{ __pgproxy5__ }} pgbouncer_processes=2 swap_size=2G
+{{ __pgproxy6__ }} pgbouncer_processes=2 swap_size=2G
 
-{{ __pgbouncer1__ }}
+{{ __pgbouncer2__ }}
 
 {{ __rds_pg0__ }}
 
@@ -44,7 +44,7 @@ rds_pgformplayer0
 {{ __couch_alb__ }}
 
 [postgresql:children]
-pgproxy5
+pgproxy6
 remote_postgresql
 pgformplayer_nlb
 pgmain_nlb
@@ -53,18 +53,18 @@ pgsynclogs_nlb
 pgshard_nlb
 
 [pgbouncer:children]
-pgbouncer1
+pgbouncer2
 
-{{ __couch18__ }}
+{{ __couch23__ }}
 
-{{ __couch19__ }}
+{{ __couch24__ }}
 
-{{ __couch20__ }}
+{{ __couch25__ }}
 
 [couchdb2:children]
-couch18
-couch19
-couch20
+couch23
+couch24
+couch25
 
 [couchdb2_proxy:children]
 couch_alb
@@ -169,10 +169,10 @@ proxy
 pillowtop
 webworkers
 
-{{ __control2__ }}
+{{ __control3__ }}
 
 [control:children]
-control2
+control3
 
 [awsmq]
 {{ aws_resources['staging-mq-broker'] }}

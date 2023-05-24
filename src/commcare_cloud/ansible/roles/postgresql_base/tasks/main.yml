@@ -33,6 +33,7 @@
       - python3-docutils  # required for building pghashlib
       - python3-psycopg2
       - libreadline-dev
+      - liblz4-dev
 
 - name: Install pglogical
   apt:

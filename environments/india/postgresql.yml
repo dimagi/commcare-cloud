@@ -22,69 +22,69 @@ postgres_override:
     - contype: host
       database: all
       users: all
-      netmask: pgbouncer0/32
+      netmask: pgbouncer7/32
 
 dbs:
   main:
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_hosts:
-      - pgbouncer0
+      - pgbouncer7
   formplayer:
     pgbouncer_endpoint: pgformplayer_nlb
     pgbouncer_hosts:
-      - pgbouncer0
-      - pgbouncer3
+      - pgbouncer5
+      - pgbouncer7
   ucr:
     pgbouncer_endpoint: pgucr_nlb
     pgbouncer_hosts:
-      - pgbouncer0
+      - pgbouncer7
   synclogs:
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
-      - pgbouncer0
+      - pgbouncer7
   auditcare:
     pgbouncer_endpoint: pgmain_nlb
     pgbouncer_hosts:
-      - pgbouncer0
+      - pgbouncer7
   form_processing:
     proxy:
-      host: pgbouncer0
+      host: pgbouncer7
     partitions:
       p1:
         shards: [0, 204]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer3
-          - pgbouncer4
+          - pgbouncer5
+          - pgbouncer6
       p2:
         shards: [205, 409]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer3
-          - pgbouncer4
+          - pgbouncer5
+          - pgbouncer6
       p3:
         shards: [410, 614]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer3
-          - pgbouncer4
+          - pgbouncer5
+          - pgbouncer6
       p4:
         shards: [615, 819]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer3
-          - pgbouncer4
+          - pgbouncer5
+          - pgbouncer6
       p5:
         shards: [820, 1023]
         pgbouncer_endpoint: pgshard_nlb
         pgbouncer_hosts:
-          - pgbouncer3
-          - pgbouncer4
+          - pgbouncer5
+          - pgbouncer6
   custom:
     - django_alias: aaa-data
       name: aaa-data
       django_migrate: True  # AAA dashboard models are stored here
       pgbouncer_endpoint: pgshard_nlb
       pgbouncer_hosts:
-        - pgbouncer3
-        - pgbouncer4
+        - pgbouncer5
+        - pgbouncer6
