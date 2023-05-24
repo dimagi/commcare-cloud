@@ -48,7 +48,7 @@ dbs:
     pgbouncer_host: pgproxy6
     pgbouncer_reserve_pool_size: 2
   repeaters:
-    pgbouncer_host: pgproxy5
+    pgbouncer_host: pgproxy6
     pgbouncer_reserve_pool_size: 2
   form_processing:
     proxy:
