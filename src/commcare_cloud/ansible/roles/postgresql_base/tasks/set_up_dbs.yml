@@ -117,3 +117,17 @@
     login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
   loop: "{{ postgresql_dbs.all | subelements('pg_config', 'skip_missing=True') }}"
   when: item.0.create and ((item.0.host == postgresql_host) or is_monolith|bool)
+
+- name: Enable postgres_fdw extension in the main db
+  become: yes
+  become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
+  community.postgresql.postgresql_query:
+    db: '{{ postgresql_dbs.main.name }}'
+    port: "{{ postgresql_port }}"
+    login_host: "{{ db_is_remote and postgresql_host or omit }}"
+    login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+    login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
+    query: |
+      CREATE EXTENSION IF NOT EXISTS postgres_fdw;
+      GRANT USAGE ON FOREIGN DATA WRAPPER postgres_fdw TO {{ postgres_users.commcare.username }};
+  when: postgresql_host == postgresql_dbs.main.host

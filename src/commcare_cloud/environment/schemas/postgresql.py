@@ -236,6 +236,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
             self.dbs.ucr,
             self.dbs.formplayer,
             self.dbs.auditcare,
+            self.dbs.repeaters,
         ] + self.dbs.custom + self.dbs.standby if _f]
 
     def _check_reporting_databases(self):
@@ -299,6 +300,7 @@ class SmartDBConfig(jsonobject.JsonObject):
     synclogs = jsonobject.ObjectProperty(lambda: SynclogsDBOptions, required=False)
     form_processing = jsonobject.ObjectProperty(lambda: FormProcessingConfig, required=False)
     auditcare = jsonobject.ObjectProperty(lambda: AuditcareDBOptions, required=False, default=None)
+    repeaters = jsonobject.ObjectProperty(lambda: RepeatersDBOptions, required=False, default=None)
 
     custom = jsonobject.ListProperty(lambda: CustomDBOptions)
     standby = jsonobject.ListProperty(lambda: StandbyDBOptions)
@@ -367,6 +369,11 @@ class SynclogsDBOptions(DBOptions):
 class AuditcareDBOptions(DBOptions):
     name = constants.auditcare_db_name
     django_alias = 'auditcare'
+
+
+class RepeatersDBOptions(DBOptions):
+    name = constants.repeaters_db_name
+    django_alias = 'repeaters'
 
 
 class FormProcessingConfig(jsonobject.JsonObject):

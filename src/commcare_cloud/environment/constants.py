@@ -9,6 +9,7 @@ class _Constants(jsonobject.JsonObject):
     ucr_db_name = jsonobject.StringProperty(default='commcarehq_ucr')
     synclogs_db_name = jsonobject.StringProperty(default='commcarehq_synclogs')
     auditcare_db_name = jsonobject.StringProperty(default='commcarehq_auditcare')
+    repeaters_db_name = jsonobject.StringProperty(default='commcarehq_repeaters')
     form_processing_proxy_db_name = jsonobject.StringProperty(default='commcarehq_proxy')
     form_processing_proxy_standby_db_name = jsonobject.StringProperty(default='commcarehq_proxy_standby')
 

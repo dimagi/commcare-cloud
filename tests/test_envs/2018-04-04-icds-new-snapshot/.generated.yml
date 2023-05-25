@@ -641,6 +641,7 @@ postgresql_dbs:
     port: 6432
     query_stats: false
     user: '{{ postgres_users.commcare.username }}'
+  repeaters: null
   standby:
   - acceptable_replication_delay: 30
     create: false
