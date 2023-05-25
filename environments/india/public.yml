@@ -173,11 +173,6 @@ localsettings:
 #  STATIC_ROOT:
   WS4REDIS_CONNECTION_HOST: "redis.india.commcare.local"
   USER_REPORTING_METADATA_BATCH_ENABLED: True
-  UCR_COMPARISONS:
-    static-mpr_1_person_cases:
-    static-mpr_2a_3_child_delivery_forms:
-    static-mpr_2ci_child_birth_list:
-    static-asr_2_pregnancies:
   STATIC_TOGGLE_STATES:
     ucr_sum_when_templates:
       always_enabled:
