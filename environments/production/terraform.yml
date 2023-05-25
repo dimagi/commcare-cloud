@@ -114,7 +114,6 @@ servers:
     os: jammy 
     volume_size: 40
     volume_encrypted: yes
-    enable_cross_region_backup: yes
 
   - server_name: "esmaster_b1-production"
     server_instance_type: r6a.large
@@ -124,7 +123,6 @@ servers:
     os: jammy 
     volume_size: 40
     volume_encrypted: yes
-    enable_cross_region_backup: yes
 
   - server_name: "esmaster_c1-production"
     server_instance_type: r6a.large
@@ -134,7 +132,6 @@ servers:
     os: jammy
     volume_size: 40
     volume_encrypted: yes 
-    enable_cross_region_backup: yes
 
   - server_name: "es_a2{i}-production"
     server_instance_type: r6a.4xlarge
@@ -157,7 +154,6 @@ servers:
     volume_encrypted: yes
     block_device:
       volume_size: 2100
-      enable_cross_region_backup: yes
     group: "elasticsearch"
     os: jammy 
     count: 7
