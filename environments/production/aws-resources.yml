@@ -58,8 +58,6 @@ escoordinator_a1-production: 10.202.40.159
 escoordinator_a1-production.instance_id: i-07757f1f451725bf0
 escoordinator_b1-production: 10.202.41.10
 escoordinator_b1-production.instance_id: i-07abf0d3adde3cb4e
-escoordinator_c1-production: 10.202.42.218
-escoordinator_c1-production.instance_id: i-00e6bdb826e9fccac
 esmaster_a1-production: 10.202.40.93
 esmaster_a1-production.instance_id: i-0ef9b6a5a762418bf
 esmaster_b1-production: 10.202.41.187
