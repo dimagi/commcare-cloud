@@ -15,8 +15,8 @@ openvpn_image: ami-5e73b923
 
 backup_plan:
   local_vault_name: "BusinessContinuity_Staging_East-1"
-  remote_vault_name: "BusinessContinuity_Staging_West-1"
-  remote_vault_region: us-west-1
+  remote_vault_name: "BusinessContinuity_Staging_East-2"
+  remote_vault_region: us-east-2
   outside_account_id: '767699164629'
   daily_retention: 2
   weekly_retention: 14

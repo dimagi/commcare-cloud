@@ -17,8 +17,8 @@ ec2_metadata_tokens_required: yes
 
 backup_plan:
   local_vault_name: "BusinessContinuity_Production_East-1"
-  remote_vault_name: "BusinessContinuity_Production_West-1"
-  remote_vault_region: us-west-1
+  remote_vault_name: "BusinessContinuity_Production_East-2"
+  remote_vault_region: us-east-2
   outside_account_id: '213307118311'
   daily_retention: 2
   weekly_retention: 14
