@@ -27,6 +27,25 @@ resource "aws_s3_bucket_acl" "log_bucket" {
   acl    = "private"
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "log_bucket" {
+  bucket = aws_s3_bucket.log_bucket.id
+
+  rule {
+    id     = "Intelligent-Tiering"
+    status = "Enabled"
+
+    noncurrent_version_transition {
+      noncurrent_days = 0
+      storage_class   = "INTELLIGENT_TIERING"
+    }
+
+    transition {
+      days          = 0
+      storage_class = "INTELLIGENT_TIERING"
+    }
+  }
+}
+
 module "formplayer_request_response_logs_firehose_stream" {
   source = "./firehose_stream"
   environment = var.environment
