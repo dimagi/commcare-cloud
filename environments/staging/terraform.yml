@@ -387,9 +387,9 @@ internal_albs:
     listener_port: 25984
     target_port: 15984
     targets:
-      - couch22-staging
       - couch23-staging
       - couch24-staging
+      - couch25-staging
       
 elasticache:
   create: no
