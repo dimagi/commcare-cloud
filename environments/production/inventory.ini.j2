@@ -204,8 +204,6 @@ webworkers
 
 {{ __escoordinator_b1__ }} elasticsearch_node_name=escoordinator_b1 elasticsearch_node_zone=us-east-1b
 
-{{ __escoordinator_c1__ }} elasticsearch_node_name=escoordinator_c1 elasticsearch_node_zone=us-east-1c
-
 [es_master:children]
 esmaster_a1
 esmaster_b1
@@ -233,7 +231,6 @@ es_coordinator
 [es_coordinator:children]
 escoordinator_a1
 escoordinator_b1
-escoordinator_c1
 
 [es_coordinator:vars]
 elasticsearch_master=false
