@@ -343,6 +343,7 @@ rds_instances:
   - identifier: "pgmain0-india"
     instance_type: "db.t3.large"
     storage: 500
+    storage_type: gp3
     multi_az: true
     engine_version: "14.4"
 
