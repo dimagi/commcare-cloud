@@ -144,7 +144,7 @@ servers:
       enable_cross_region_backup: yes
     group: "elasticsearch"
     os: jammy 
-    count: 7
+    count: 5
 
   - server_name: "es_b2{i}-production"
     server_instance_type: r6a.4xlarge
@@ -156,7 +156,7 @@ servers:
       volume_size: 2100
     group: "elasticsearch"
     os: jammy 
-    count: 7
+    count: 5
 
   - server_name: "escoordinator_a1-production"
     server_instance_type: r6a.2xlarge
