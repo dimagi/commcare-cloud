@@ -127,8 +127,6 @@ proxy_a3-production: 10.202.10.83
 proxy_a3-production.instance_id: i-0fd1068f6f0431574
 proxy_b3-production: 10.202.11.130
 proxy_b3-production.instance_id: i-0ba85e1154eb3a317
-proxy_c3-production: 10.202.12.63
-proxy_c3-production.instance_id: i-0fff53fa84ed91364
 rabbit14-production: 10.202.41.89
 rabbit14-production.instance_id: i-0776b2cdaf927e811
 rabbit15-production: 10.202.40.145
