@@ -11,7 +11,7 @@ install_deps = [
     'boto3>=1.9.131',
     'clint',
     'couchdb-cluster-admin',
-    'cryptography~=39.0',
+    'cryptography>=39,<42',
     'datadog>=0.2.0',
     'dimagi-memoized>=1.1.0',
     'dnspython',
