@@ -360,16 +360,18 @@ pgbouncer_nlbs:
   - name: pgformplayer_nlb-india
     targets:
       - pgbouncer5-india
-      - pgbouncer7-india
+      - pgbouncer6-india
   - name: pgmain_nlb-india
     targets:
-      - pgbouncer7-india
+      - pgbouncer5-india
+      - pgbouncer6-india
   - name: pgucr_nlb-india
     targets:
       - pgbouncer7-india
   - name: pgsynclogs_nlb-india
     targets:
-      - pgbouncer7-india
+      - pgbouncer5-india
+      - pgbouncer6-india
   - name: pgshard_nlb-india
     targets:
       - pgbouncer5-india
