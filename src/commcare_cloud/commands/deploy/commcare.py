@@ -246,7 +246,7 @@ def get_deployed_version(environment, from_source=False):
         hosts = "webworkers,celery,proxy,pillowtop,django_manage"
     else:
         release = environment.remote_conf.code_current
-        hosts = "django_manage"
+        hosts = "django_manage[0]"
     code_current = shlex.quote(release)
     res = run_ansible_module(
         AnsibleContext(None, environment),
