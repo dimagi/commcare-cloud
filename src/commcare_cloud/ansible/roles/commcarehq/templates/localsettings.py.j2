@@ -1003,6 +1003,62 @@ ES_XFORM_INDEX_NAME = '{{ localsettings.ES_XFORM_INDEX_NAME }}'
 ES_CASE_SEARCH_INDEX_NAME = '{{ localsettings.ES_CASE_SEARCH_INDEX_NAME }}'
 {% endif %}
 
+{# Elasticsearch Multiplexer Settings, would be used while reindexing #}
+{% if localsettings.ES_APPS_INDEX_MULTIPLEXED is defined %}
+ES_APPS_INDEX_MULTIPLEXED = {{ localsettings.ES_APPS_INDEX_MULTIPLEXED }}
+{% endif %}
+{% if localsettings.ES_APPS_INDEX_SWAPPED is defined %}
+ES_APPS_INDEX_SWAPPED = {{ localsettings.ES_APPS_INDEX_SWAPPED }}
+{% endif %}
+
+{% if localsettings.ES_CASE_SEARCH_INDEX_MULTIPLEXED is defined %}
+ES_CASE_SEARCH_INDEX_MULTIPLEXED = {{ localsettings.ES_CASE_SEARCH_INDEX_MULTIPLEXED }}
+{% endif %}
+{% if localsettings.ES_CASE_SEARCH_INDEX_SWAPPED is defined %}
+ES_CASE_SEARCH_INDEX_SWAPPED = {{ localsettings.ES_CASE_SEARCH_INDEX_SWAPPED }}
+{% endif %}
+
+
+{% if localsettings.ES_CASES_INDEX_MULTIPLEXED is defined %}
+ES_CASES_INDEX_MULTIPLEXED = {{ localsettings.ES_CASES_INDEX_MULTIPLEXED }}
+{% endif %}
+{% if localsettings.ES_CASES_INDEX_SWAPPED is defined %}
+ES_CASES_INDEX_SWAPPED = {{ localsettings.ES_CASES_INDEX_SWAPPED }}
+{% endif %}
+
+
+{% if localsettings.ES_DOMAINS_INDEX_MULTIPLEXED is defined %}
+ES_DOMAINS_INDEX_MULTIPLEXED = {{ localsettings.ES_DOMAINS_INDEX_MULTIPLEXED }}
+{% endif %}
+{% if localsettings.ES_DOMAINS_INDEX_SWAPPED is defined %}
+ES_DOMAINS_INDEX_SWAPPED = {{ localsettings.ES_DOMAINS_INDEX_SWAPPED }}
+{% endif %}
+
+{% if localsettings.ES_FORMS_INDEX_MULTIPLEXED is defined %}
+ES_FORMS_INDEX_MULTIPLEXED = {{ localsettings.ES_FORMS_INDEX_MULTIPLEXED }}
+{% endif %}
+{% if localsettings.ES_FORMS_INDEX_SWAPPED is defined %}
+ES_FORMS_INDEX_SWAPPED = {{ localsettings.ES_FORMS_INDEX_SWAPPED }}
+{% endif %}
+
+{% if localsettings.ES_GROUPS_INDEX_MULTIPLEXED is defined %}
+ES_GROUPS_INDEX_MULTIPLEXED = {{ localsettings.ES_GROUPS_INDEX_MULTIPLEXED }}
+{% endif %}
+{% if localsettings.ES_GROUPS_INDEX_SWAPPED is defined %}
+ES_GROUPS_INDEX_SWAPPED = {{ localsettings.ES_GROUPS_INDEX_SWAPPED }}
+{% endif %}
+
+{% if localsettings.ES_SMS_INDEX_MULTIPLEXED is defined %}
+ES_SMS_INDEX_MULTIPLEXED = {{ localsettings.ES_SMS_INDEX_MULTIPLEXED }}
+{% endif %}
+
+{% if localsettings.ES_USERS_INDEX_MULTIPLEXED is defined %}
+ES_USERS_INDEX_MULTIPLEXED = {{ localsettings.ES_USERS_INDEX_MULTIPLEXED }}
+{% endif %}
+{% if localsettings.ES_USERS_INDEX_SWAPPED is defined %}
+ES_USERS_INDEX_SWAPPED = {{ localsettings.ES_USERS_INDEX_SWAPPED }}
+{% endif %}
+
 {% if localsettings.USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER is defined %}
 USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER = {{ localsettings.USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER }}
 {% endif %}
