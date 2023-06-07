@@ -13,8 +13,6 @@ couch11-india.instance_id: i-08fcbc213c37ed0f5
 couch12-india: 10.203.42.47
 couch12-india.instance_id: i-08fb45acf51d11510
 couch_alb-india: internal-couch-alb-india-410194548.ap-south-1.elb.amazonaws.com
-djangomanage1-india: 10.203.10.24
-djangomanage1-india.instance_id: i-01ef3bc15f7729941
 djangomanage2-india: 10.203.10.57
 djangomanage2-india.instance_id: i-0184891aeb63f6c91
 efs_india-efs: fs-0c280ddd.efs.ap-south-1.amazonaws.com
