@@ -155,6 +155,16 @@ resource "aws_backup_vault_policy" "business_continuity_remote_vault_policy" {
             },
             "Action": "backup:CopyIntoBackupVault",
             "Resource": "*"
+        },
+        {
+            "Sid": "Deny anyone the ability to delete the Vault Lock Configuration",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": [
+                "backup:DeleteBackupVaultLockConfiguration",
+                "backup:PutBackupVaultLockConfiguration"
+            ],
+            "Resource": "*"
         }
     ]
 }
