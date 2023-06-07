@@ -79,6 +79,26 @@ data "aws_ami" "ubuntu_jammy" {
   owners = ["099720109477"] # Canonical
 }
 
+data "aws_ami" "ubuntu_jammy_arm64" {
+  # Should match what is in
+  # https://cloud-images.ubuntu.com/locator/ec2/
+  # with search hvm:ebs-ssd jammy arm64
+
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-arm64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
+
 variable "dns_zone_id" {}
 variable "dns_domain" {}
 variable "internal_ssl_cert_arn" {}

@@ -134,6 +134,8 @@ module "server__{{ server_name }}" {
   server_image = data.aws_ami.ubuntu_pro_bionic.id
 {% elif server_spec.os == 'bionic' %}
   server_image = data.aws_ami.ubuntu_bionic.id
+{% elif server_spec.os == 'jammy' and server_spec.get_arch == 'arm64' %}
+  server_image = data.aws_ami.ubuntu_jammy_arm64.id
 {% elif server_spec.os == 'jammy' %}
   server_image = data.aws_ami.ubuntu_jammy.id
 {% else %}

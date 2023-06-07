@@ -30,3 +30,15 @@ def test_multi_server():
     assert server_spec.get_host_group_name() == 'server_a'
     assert server_spec.get_all_server_names() == ['server_a000-test', 'server_a001-test']
     assert server_spec.get_all_host_names() == ['server_a000', 'server_a001']
+
+
+def test_get_instance_type_modifier_letters():
+    for instance_type, expected_output in [
+        ('t3.xlarge', ''),
+        ('r6a.xlarge', 'a'),
+        ('t4g.xlarge', 'g'),
+        ('m6gd.xlarge', 'gd'),
+    ]:
+        actual_output = ServerConfig._get_instance_type_modifier_letters(instance_type)
+        assert actual_output == expected_output, \
+            f"Expected {expected_output!r} for {instance_type!r}, got {actual_output!r}"

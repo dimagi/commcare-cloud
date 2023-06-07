@@ -157,8 +157,26 @@ class ServerConfig(jsonobject.JsonObject):
     def to_generated_json(self):
         obj = self.to_json()
         obj['get_all_server_names'] = self.get_all_server_names()
+        obj['get_arch'] = self.get_arch()
         return obj
 
+    def get_arch(self):
+        """
+        Returns the CPU architecture associated with the instance class
+
+        Currently can only return either arm64 (for ARM/graviton) or amd64 (for AMD/intel)
+        """
+        return 'arm64' if 'g' in self._get_instance_type_modifier_letters(self.server_instance_type) else 'amd64'
+
+    @classmethod
+    def _get_instance_type_modifier_letters(cls, server_instance_type):
+        """
+        From an instance type, pull out just the 'modifier letters' after the number but before the '.':
+
+        e.g. the 'gd' in 'm6gd.xlarge'
+
+        """
+        return re.match(r'.*\d+([a-z]*)\..*', server_instance_type).groups()[0]
 
 class BlockDevice(jsonobject.JsonObject):
     _allow_dynamic_properties = False
