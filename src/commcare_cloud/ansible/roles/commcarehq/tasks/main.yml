@@ -18,6 +18,7 @@
       - libxmlsec1-dev
       - libxmlsec1-openssl
       - pkg-config
+      - libgdal-dev  # for fiona, dependency of geopandas
   tags:
     - hq-apt-requirements
 
