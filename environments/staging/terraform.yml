@@ -56,6 +56,17 @@ servers:
     os: jammy
     server_auto_recovery: true
 
+  - server_name: "web15-staging"
+    server_instance_type: "t4g.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    group: webworkers
+    os: jammy
+    server_auto_recovery: true
+
   - server_name: "es18-staging"
     server_instance_type: "t3a.medium"
     network_tier: "db-private"
