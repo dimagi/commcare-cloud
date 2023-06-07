@@ -61,3 +61,5 @@ web13-staging: 10.201.10.244
 web13-staging.instance_id: i-0fb86252d8c3490e9
 web14-staging: 10.201.11.231
 web14-staging.instance_id: i-07e90679fb2045342
+web15-staging: 10.201.10.250
+web15-staging.instance_id: i-043c8777e5327c32c

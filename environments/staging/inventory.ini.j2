@@ -16,11 +16,13 @@ proxy
 
 {{ __web13__ }} swap_size=1G
 {{ __web14__ }} swap_size=1G
+{{ __web15__ }} swap_size=1G
 
 [webworkers:children]
 # Amazon EC2
 web13
 web14
+web15
 
 {{ __pgproxy6__ }} pgbouncer_processes=2 swap_size=2G
 
