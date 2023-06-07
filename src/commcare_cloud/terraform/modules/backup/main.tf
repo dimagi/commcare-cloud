@@ -171,6 +171,11 @@ resource "aws_backup_vault_policy" "business_continuity_remote_vault_policy" {
 POLICY
 }
 
+resource "aws_backup_vault_lock_configuration" "business_continuity_remote_vault_lock" {
+  provider = aws.remote_region
+  backup_vault_name = aws_backup_vault.business_continuity_remote_vault.name
+}
+
 resource "aws_backup_selection" "business_continuity_plan_selection" {
   iam_role_arn = "arn:aws:iam::${var.account_id}:role/service-role/AWSBackupDefaultServiceRole"
   name         = "BusinessContinuity"
