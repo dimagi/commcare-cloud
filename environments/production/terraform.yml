@@ -390,6 +390,7 @@ rds_instances:
   - identifier: "pgmain1-production"
     instance_type: "db.m5.4xlarge"
     storage: 2000
+    storage_type: gp3
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -412,6 +413,7 @@ rds_instances:
     instance_type: "db.m5.2xlarge"
     storage: 850
     max_storage: 5000
+    storage_type: gp3
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -498,6 +500,7 @@ rds_instances:
   - identifier: "pgsynclog2-production"
     instance_type: "db.m5.xlarge"
     storage: 1000
+    storage_type: gp3
     multi_az: true
     engine_version: "14"
     backup_retention: 7
@@ -519,6 +522,7 @@ rds_instances:
   - identifier: "pgformplayer2-production"
     instance_type: "db.m5.large"
     storage: 200
+    storage_type: gp3
     multi_az: true
     engine_version: "14"
     backup_retention: 7
@@ -540,6 +544,7 @@ rds_instances:
   - identifier: "pgauditcare1-production"
     instance_type: "db.m5.xlarge"
     storage: 7000
+    storage_type: gp3
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
