@@ -160,7 +160,6 @@ localsettings:
     - {name: 'ddtrace.contrib.django', host: webworkers}
   LOCAL_CUSTOM_DB_ROUTING:
     auditcare: auditcare
-    repeaters: repeaters
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
   PILLOWTOP_MACHINE_ID: staging-hqdb0-ubuntu

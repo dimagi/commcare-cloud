@@ -47,9 +47,6 @@ dbs:
   auditcare:
     pgbouncer_host: pgproxy6
     pgbouncer_reserve_pool_size: 2
-  repeaters:
-    pgbouncer_host: pgproxy6
-    pgbouncer_reserve_pool_size: 2
   form_processing:
     proxy:
       host: pgproxy6
