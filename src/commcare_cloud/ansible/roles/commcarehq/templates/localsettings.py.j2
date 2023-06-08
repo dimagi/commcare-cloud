@@ -1102,5 +1102,5 @@ ABDM_CLIENT_SECRET = {{ ABDM_CLIENT_SECRET }}
 {% endif %}
 
 {% if FCM_CREDS %}
-FCM_CREDS = json.loads('{{ FCM_CREDS|to_json }}')
+FCM_CREDS = json.loads({{ FCM_CREDS }})
 {% endif %}
