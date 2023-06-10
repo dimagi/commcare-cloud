@@ -21,4 +21,3 @@
     insertafter: '^/var/log/messages'
     line: '/var/log/commands.log'
     state: present
-
