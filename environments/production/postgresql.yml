@@ -101,6 +101,19 @@ dbs:
       - pgbouncer_c1
       - pgbouncer13
       - pgbouncer14
+  repeaters:
+    host: rds_pgmain1
+    pgbouncer_endpoint: pgmain_nlb
+    pgbouncer_pool_size: 6
+    pgbouncer_reserve_pool_size: 0
+    pgbouncer_hosts:
+      - pgbouncer_a4
+      - pgbouncer_a5
+      - pgbouncer_b2
+      - pgbouncer_b3
+      - pgbouncer_c1
+      - pgbouncer13
+      - pgbouncer14
   form_processing:
     proxy:
       host: pgbouncer_a6
