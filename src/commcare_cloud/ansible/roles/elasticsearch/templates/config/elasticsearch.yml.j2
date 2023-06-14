@@ -10,7 +10,7 @@ node.name: "{{ elasticsearch_node_name }}"
 {% if elasticsearch_node_zone is defined %}
 # Used for shard allocation awareness
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/allocation-awareness.html
-{% if elasticsearch_version == '2.4.6'%}
+{% if (elasticsearch_version == '2.4.6') or (elasticsearch_version == '5.6.16')%}
 node.zone: "{{ elasticsearch_node_zone }}"
 {% endif %}
 {% if elasticsearch_version is version('7.0.0', '>=') %}
@@ -31,7 +31,7 @@ http.max_content_length: 200mb
 path.data: {{ elasticsearch_data_dir }}/data
 path.logs: {{ elasticsearch_data_dir }}/logs
 
-{% if elasticsearch_version == '2.4.6'%}
+{% if (elasticsearch_version == '2.4.6') or (elasticsearch_version == '5.6.16')%}
 # discovery.zen.minimum_master_nodes is the minimum number of
 # MASTER ELIGIBLE nodes that must be reachable before a master may be elected
 # Best practice is to set it to M/2 + 1 where M is the number of master-eligible nodes,
@@ -44,7 +44,7 @@ discovery.zen.fd.ping_retries: 20
 discovery.zen.ping.multicast.enabled: false
 {% endif %}
 
-{% if elasticsearch_version == '2.4.6' %}
+{% if (elasticsearch_version == '2.4.6') or (elasticsearch_version == '5.6.16')%}
 discovery.zen.ping.unicast.hosts: [
 {% endif %}
 {% if elasticsearch_version is version('7.0.0', '>=') %}
@@ -65,7 +65,7 @@ network.host: "{{ inventory_hostname }}"
 network.host: "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}"
 {% endif %}
 
-{% if elasticsearch_version == '2.4.6'%}
+{% if (elasticsearch_version == '2.4.6') or (elasticsearch_version == '5.6.16')%}
 index.search.slowlog.threshold.query.warn: 10s
 index.search.slowlog.threshold.query.info: 5s
 index.search.slowlog.threshold.query.debug: 2s
@@ -78,7 +78,7 @@ indices.fielddata.cache.size:  {{ elasticsearch_fielddata_cache_size }}
 {% endif %}
 
 {% if elasticsearch_enable_inline_groovy_scripts %}
-{% if elasticsearch_version == '2.4.6'%}
+{% if (elasticsearch_version == '2.4.6') or (elasticsearch_version == '5.6.16')%}
 # somewhat of a security risk but required by pact custom reports
 script.engine.groovy.inline.aggs: true
 script.engine.groovy.inline.search: true
@@ -98,7 +98,7 @@ cloud:
 {% endif %}
 
 # Only allow indices to be created by an explicit "create" command
-{% if elasticsearch_version == '2.4.6'%}
+{% if (elasticsearch_version == '2.4.6') or (elasticsearch_version == '5.6.16')%}
 action.auto_create_index: false
 {% endif %}
 {% if elasticsearch_version is version('7.0.0', '>=') %}
@@ -126,7 +126,7 @@ cluster.initial_master_nodes:
 {% endif %}
 
 
-{% if elasticsearch_version == '2.4.6'%}
+{% if (elasticsearch_version == '2.4.6') or (elasticsearch_version == '5.6.16')%}
 # see also discovery.zen.minimum_master_nodes above for how a master gets elected
 {# only include master eligibility if it is set on at least one node in the cluster #}
 {% if groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master_value')|select()|list %}
