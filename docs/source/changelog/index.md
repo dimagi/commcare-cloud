@@ -7,6 +7,12 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2023-06-14** [Prepare project spaces for Case List Explorer report release](0073-prepare-for-cle-ga.md)
+We have created a management command to assist with syncing data to the Case Search Index so that legacy projects 
+may access data in a new report that will be made generally available.
+
+
+---
 #### **2023-04-10** [upgrade-redis-to-v7](0072-upgrade-redis-to-v7.md)
 This change upgrade Redis from 6.x to 7.0 version.
 As part of our ongoing effort to keep CommCare HQ up to date with the latest tools and libraries we have updated Redis from version 6.2 to version 7.0.
