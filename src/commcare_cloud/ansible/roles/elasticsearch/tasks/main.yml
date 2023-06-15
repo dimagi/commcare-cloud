@@ -87,6 +87,9 @@
 - include: misc_v2.yml
   when: elasticsearch_version == '2.4.6'
 
+- include: misc_v5.yml
+  when: elasticsearch_version == '5.6.16'
+
 - include: misc_v7.yml
   when: elasticsearch_version is version('7.0.0', '>=')
 
