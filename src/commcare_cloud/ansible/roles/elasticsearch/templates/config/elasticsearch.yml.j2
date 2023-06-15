@@ -65,7 +65,7 @@ network.host: "{{ inventory_hostname }}"
 network.host: "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}"
 {% endif %}
 
-{% if elasticsearch_version is version('5.6.16', '<=') %}
+{% if elasticsearch_version == '2.4.6' %}
 index.search.slowlog.threshold.query.warn: 10s
 index.search.slowlog.threshold.query.info: 5s
 index.search.slowlog.threshold.query.debug: 2s
