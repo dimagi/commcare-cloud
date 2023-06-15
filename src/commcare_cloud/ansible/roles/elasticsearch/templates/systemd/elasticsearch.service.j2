@@ -9,7 +9,7 @@ Type=simple
 Environment=ES_HOME={{ elasticsearch_home }}
 Environment=CONF_DIR={{ elasticsearch_conf_dir}}
 Environment=ES_PATH_CONF={{ elasticsearch_conf_dir}}
-{% if (elasticsearch_version == '2.4.6') or (elasticsearch_version == '5.6.16')%}
+{% if (elasticsearch_version == '2.4.6') %}
 Environment=ES_HEAP_SIZE={{ elasticsearch_memory }}
 {% endif %}
 WorkingDirectory={{ elasticsearch_home }}
@@ -39,7 +39,7 @@ RestartSec=10
 StandardError=inherit
 
 # Specifies the maximum file descriptor number that can be opened by this process
-LimitNOFILE=65535
+LimitNOFILE=65536
 
 # Disable timeout logic and wait until process is stopped
 TimeoutStopSec=0
