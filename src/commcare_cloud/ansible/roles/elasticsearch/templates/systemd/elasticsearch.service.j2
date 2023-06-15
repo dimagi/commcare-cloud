@@ -22,7 +22,7 @@ ExecStart={{ elasticsearch_home }}/bin/elasticsearch  --path.conf=${CONF_DIR} --
 {% endif %}
 
 {% if elasticsearch_version == '5.6.16'%}
-ExecStart={{ elasticsearch_home }}/bin/elasticsearch  --Epath.conf=${CONF_DIR}
+ExecStart={{ elasticsearch_home }}/bin/elasticsearch -Epath.conf=${CONF_DIR}
 {% endif %}
 
 Restart=always
