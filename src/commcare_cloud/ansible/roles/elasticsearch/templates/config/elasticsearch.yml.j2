@@ -37,11 +37,16 @@ path.logs: {{ elasticsearch_data_dir }}/logs
 # Best practice is to set it to M/2 + 1 where M is the number of master-eligible nodes,
 # but (todo) we DO NOT follow best practice.
 discovery.zen.minimum_master_nodes: {{ [2, groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master_value')|select()|list | length] | min }}
-discovery.zen.ping.timeout: 90s
 discovery.zen.fd.ping_timeout: 90s
 discovery.zen.fd.ping_interval: 10s
 discovery.zen.fd.ping_retries: 20
+{% if elasticsearch_version == '2.4.6' %}
 discovery.zen.ping.multicast.enabled: false
+discovery.zen.ping.timeout: 90s
+{% endif %}
+{% if elasticsearch_version == '5.6.16' %}
+discovery.zen.ping_timeout: 90s
+{% endif %}
 {% endif %}
 
 {% if elasticsearch_version is version('5.6.16', '<=') %}
