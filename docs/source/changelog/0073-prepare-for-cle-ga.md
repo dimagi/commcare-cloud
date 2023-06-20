@@ -25,7 +25,7 @@ multiplexer like screen or tmux to avoid disruptions from broken ssh tunnels.
 ## Steps to update
 1) Deploy the latest version of commcare-hq.
 
-2) Start a new tmux (recommended) session using
+2) Recommended: start a new tmux session
 ```bash
 commcare-cloud <env> django-manage --tmux
 ```
