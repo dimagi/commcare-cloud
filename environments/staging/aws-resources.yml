@@ -29,12 +29,6 @@ formplayer9-staging: 10.201.11.71
 formplayer9-staging.instance_id: i-039f848c98b6bac65
 frontend_alb-staging: internal-frontend-alb-staging-383875913.us-east-1.elb.amazonaws.com
 fsx_staging-fsx: fs-0ffde07db112793e4.fsx.us-east-1.amazonaws.com
-kafka12-staging: 10.201.40.225
-kafka12-staging.instance_id: i-02bc98d4090368185
-kafka13-staging: 10.201.41.147
-kafka13-staging.instance_id: i-0fe4b1a6b075a2eaf
-kafka14-staging: 10.201.42.13
-kafka14-staging.instance_id: i-0fa8500930b6362c2
 kafka15-staging: 10.201.42.91
 kafka15-staging.instance_id: i-02b1111b949791b87
 kafka16-staging: 10.201.40.77
