@@ -2,10 +2,10 @@ formplayer_memory: "1024m"
 formplayer_g1heapregionsize: "1m"
 
 management_commands:
-  swiss0:
+  swiss01:
     run_pillow_retry_queue:
 celery_processes:
-  swiss0:
+  swiss01:
     repeat_record_queue:
       concurrency: 1  
     export_download_queue:
@@ -25,7 +25,7 @@ celery_processes:
       concurrency: 1
     flower: {}
 pillows:
-  swiss0:
+  swiss01:
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:
