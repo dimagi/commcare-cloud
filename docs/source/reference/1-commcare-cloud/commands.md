@@ -239,6 +239,65 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
+#### ``scp`` Command
+
+Copy file(s) over SSH.
+
+```
+commcare-cloud <env> scp [--quiet] source target
+```
+
+If a remote host is not specified in either the `source` or
+`target`, the `source` host defaults to `django_manage[0]`.
+
+Examples:
+
+Copy remote `django_manage` file to local current directory
+```
+cchq <env> scp /tmp/file.txt .
+```
+
+Copy remote .txt files to local /texts/ directory
+```
+cchq <env> scp webworkers[0]:'/tmp/*.txt' /texts/
+```
+
+Copy local file to remote path
+```
+cchq <env> scp file.txt control:/tmp/other.txt
+```
+
+Limitations:
+
+- Multiple `source` arguments are not supported.
+- File paths do not auto-complete.
+- Unlike normal `scp`, options with values are most easily passed
+  after the `target` argument.
+- `scp://` URIs are not supported.
+- Copy from remote to remote is not supported.
+- Probably many more.
+
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
+
+##### Positional Arguments
+
+###### `source`
+
+Local pathname or remote host with optional path in the form [user@]host:[path].
+
+###### `target`
+
+Local pathname or remote host with optional path in the form [user@]host:[path].
+
+##### Options
+
+###### `--quiet`
+
+Don't output the command to be run.
+
+---
+
 #### ``run-module`` Command
 
 Run an arbitrary Ansible module.

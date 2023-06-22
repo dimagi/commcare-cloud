@@ -83,7 +83,7 @@ class _Ssh(Lookup):
         address = f"{user}@{host}"
         if port:
             ssh_args = ['-p', port] + ssh_args
-        cmd_parts = [self.command, address, '-t'] + ssh_args
+        cmd_parts = self.assemble_command(address, args, ssh_args)
         cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
         if not args.quiet:
             print_command(cmd)
@@ -105,6 +105,9 @@ class _Ssh(Lookup):
             host = address
         user = get_ssh_username(host, args.env_name, requested_username=username)
         return user, host, port
+
+    def assemble_command(self, address, args, ssh_args):
+        return [self.command, address, '-t'] + ssh_args
 
 
 class Ssh(_Ssh):
@@ -162,6 +165,75 @@ class Ssh(_Ssh):
             is_aws_env(environment)
             and not is_ec2_instance_in_account(environment.aws_config.sso_config.sso_account_id)
         )
+
+
+class Scp(Ssh):
+    command = 'scp'
+    help = """
+    Copy file(s) over SSH.
+
+    If a remote host is not specified in either the `source` or
+    `target`, the `source` host defaults to `django_manage[0]`.
+
+    Examples:
+
+    Copy remote `django_manage` file to local current directory
+    ```
+    cchq <env> scp /tmp/file.txt .
+    ```
+
+    Copy remote .txt files to local /texts/ directory
+    ```
+    cchq <env> scp webworkers[0]:'/tmp/*.txt' /texts/
+    ```
+
+    Copy local file to remote path
+    ```
+    cchq <env> scp file.txt control:/tmp/other.txt
+    ```
+
+    Limitations:
+
+    - Multiple `source` arguments are not supported.
+    - File paths do not auto-complete.
+    - Unlike normal `scp`, options with values are most easily passed
+      after the `target` argument.
+    - `scp://` URIs are not supported.
+    - Copy from remote to remote is not supported.
+    - Probably many more.
+    """
+
+    arguments = (
+        Argument("source", help="""
+            Local pathname or remote host with optional path in the form [user@]host:[path].
+        """),
+        Argument("target", help="""
+            Local pathname or remote host with optional path in the form [user@]host:[path].
+        """),
+        Argument("--quiet", action='store_true', default=False, help="""
+            Don't output the command to be run.
+        """),
+    )
+
+    def run(self, args, ssh_args, env_vars=None):
+        if ":" in args.source and ":" in args.target:
+            sys.exit("Remote to remote copy not implemented")
+        self.remote_source = True
+        if ":" in args.source:
+            args.server, args.source = args.source.split(":", 1)
+        elif ":" in args.target:
+            self.remote_source = False
+            args.server, args.target = args.target.split(":", 1)
+        else:
+            args.server = 'django_manage[0]'
+        return super().run(args, ssh_args)
+
+    def assemble_command(self, address, args, ssh_args):
+        if self.remote_source:
+            scp_args = [address + ":" + args.source, args.target]
+        else:
+            scp_args = [args.source, address + ":" + args.target]
+        return [self.command] + ssh_args + scp_args
 
 
 class Tmux(_Ssh):
