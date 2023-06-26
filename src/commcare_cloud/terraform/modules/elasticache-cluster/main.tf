@@ -56,10 +56,15 @@ resource "aws_cloudwatch_log_group" "elasticache-engine-logs" {
 resource "aws_cloudwatch_log_group" "elasticache-slow-logs" {
   name = "${var.namespace}-slow-logs"
 }
-
+locals {
+  version_to_family_map = {
+    "7.x" = "redis7"
+    "7.0" = "redis7"
+  }
+}
 resource "aws_elasticache_parameter_group" "custom_parameter_group" {
   name   = "${var.namespace}-cache-params"
-  family = var.cache_prameter_group
+  family = lookup(local.version_to_family_map, var.cache_engine_version)
 
   dynamic "parameter" {
     for_each = var.params
