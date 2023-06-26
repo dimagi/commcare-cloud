@@ -86,6 +86,6 @@ variable "port_number" {
   type = number
 }
 
-variable "replication_group_des" {
+variable "description" {
   description = "Replication Group Description"
 }
