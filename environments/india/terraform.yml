@@ -168,7 +168,7 @@ servers:
     os: jammy 
 
   - server_name: "es4-india"
-    server_instance_type: "t3a.2xlarge"
+    server_instance_type: "r6a.xlarge"
     network_tier: "db-private"
     az: "a"
     volume_size: 150
@@ -178,7 +178,7 @@ servers:
     os: jammy 
 
   - server_name: "es5-india"
-    server_instance_type: "t3a.2xlarge"
+    server_instance_type: "r6a.xlarge"
     network_tier: "db-private"
     az: "b"
     volume_size: 150
