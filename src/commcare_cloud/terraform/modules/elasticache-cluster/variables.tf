@@ -38,6 +38,11 @@ variable "cache_prameter_group" {
   description = "The parameter group of the Cluster"
 }
 
+variable "params" {
+  description = "Parameters to override"
+  type = map(string)
+}
+
 variable "automatic_failover" {
   description = "Status of Automatic Failover. If enabled, in case of primary node loss, failover to a read replica will happen automatically"
   type        = bool

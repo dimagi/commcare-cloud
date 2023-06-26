@@ -12,7 +12,7 @@ resource "aws_elasticache_replication_group" "redis-dev-cluster-0" {
   description                   = var.description
   replication_group_id          = var.cluster_id
   num_cache_clusters            = var.cluster_size
-  parameter_group_name          = var.cache_prameter_group
+  parameter_group_name          = aws_elasticache_parameter_group.custom_parameter_group.name
   port                          = var.port_number
   automatic_failover_enabled    = var.automatic_failover
   transit_encryption_enabled    = var.transit_encryption
@@ -55,4 +55,17 @@ resource "aws_cloudwatch_log_group" "elasticache-engine-logs" {
 # log group for redis slow logs
 resource "aws_cloudwatch_log_group" "elasticache-slow-logs" {
   name = "${var.namespace}-slow-logs"
+}
+
+resource "aws_elasticache_parameter_group" "custom_parameter_group" {
+  name   = "${var.namespace}-cache-params"
+  family = var.cache_prameter_group
+
+  dynamic "parameter" {
+    for_each = var.params
+    content {
+      name = parameter.key
+      value = parameter.value
+    }
+  }
 }

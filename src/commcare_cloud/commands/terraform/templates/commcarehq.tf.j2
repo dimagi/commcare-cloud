@@ -196,6 +196,7 @@ module "elasticache-module-base" {
   cache_engine_version  = {{ elasticache_cluster.cache_engine_version|tojson }}
   cache_node_type       = {{ elasticache_cluster.cache_node_type|tojson }}
   cache_prameter_group  = {{ elasticache_cluster.cache_prameter_group|tojson }}
+  params                = {{ elasticache_cluster.params|tojson }}
   automatic_failover    = {{ elasticache_cluster.automatic_failover|tojson }}
   transit_encryption    = {{ elasticache_cluster.transit_encryption|tojson }}
   at_rest_encryption    = {{ elasticache_cluster.at_rest_encryption|tojson }}
