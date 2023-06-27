@@ -600,9 +600,6 @@ internal_albs:
       - couch12-production
       - couch13-production
 
-elasticache:
-  create: no
-
 elasticache_cluster:
   create: yes
   cache_node_type: "cache.r6g.2xlarge"

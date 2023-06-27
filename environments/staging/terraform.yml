@@ -381,9 +381,6 @@ internal_albs:
       - couch24-staging
       - couch25-staging
       
-elasticache:
-  create: no
-
 elasticache_cluster:
   create: yes
   cache_node_type: "cache.t4g.micro"
