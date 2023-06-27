@@ -5,8 +5,6 @@ import json
 import re
 
 import jsonobject
-from clint.textui import puts
-from commcare_cloud.colors import color_warning
 from six.moves import range
 
 
@@ -16,7 +14,8 @@ class TerraformConfig(jsonobject.JsonObject):
     account_alias = jsonobject.StringProperty()
     username = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
-    terraform_version = jsonobject.StringProperty(choices=['0.12', '0.13', '0.14', '0.15', '1.0', '1.1', '1.2', '1.3'])
+    terraform_version = jsonobject.StringProperty(
+        choices=['0.12', '0.13', '0.14', '0.15', '1.0', '1.1', '1.2', '1.3'])
     manage_users = jsonobject.BooleanProperty(default=True)
     state_bucket = jsonobject.StringProperty()
     state_bucket_region = jsonobject.StringProperty()
@@ -216,8 +215,10 @@ class PgbouncerNlbs(jsonobject.JsonObject):
         if not self.identifier:
             self.identifier = self.name.replace('_', '-')
         if not re.match('[a-z]+-nlb-[a-z]+', self.identifier):
-            raise ValueError("commcare-cloud requires pgbouncer nlb identifier to be of the form 'pg{name}-nlb-{environment}'")
+            raise ValueError("commcare-cloud requires pgbouncer nlb identifier to be "
+                             "of the form 'pg{name}-nlb-{environment}'")
         return self
+
 
 class InternalAlbs(jsonobject.JsonObject):
     _allow_dynamic_properties = False
@@ -227,14 +228,17 @@ class InternalAlbs(jsonobject.JsonObject):
     target_port = jsonobject.IntegerProperty(required=True)
     listener_port = jsonobject.IntegerProperty(required=True)
     health_check_interval = jsonobject.IntegerProperty(default=30)
+
     @classmethod
     def wrap(cls, data):
         self = super(InternalAlbs, cls).wrap(data)
         if not self.identifier:
             self.identifier = self.name.replace('_', '-')
         if not re.match('[a-z]+-alb-[a-z]+', self.identifier):
-            raise ValueError("commcare-cloud requires internal alb identifier to be of the form 'internal{name}-alb-{environment}'")
+            raise ValueError("commcare-cloud requires internal alb identifier to be "
+                             "of the form 'internal{name}-alb-{environment}'")
         return self
+
 
 class ElasticacheConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
@@ -243,6 +247,7 @@ class ElasticacheConfig(jsonobject.JsonObject):
     num_cache_nodes = jsonobject.IntegerProperty(default=1)
     engine_version = jsonobject.StringProperty(default="4.0.10")
     parameter_group_name = jsonobject.StringProperty(default="default.redis4.0")
+
 
 class ElasticacheClusterConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
@@ -261,6 +266,7 @@ class ElasticacheClusterConfig(jsonobject.JsonObject):
     snapshot_retention = jsonobject.IntegerProperty(default=5)
     snapshot_window = jsonobject.StringProperty(default="07:30-08:30")
 
+
 class awsmqConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     create = jsonobject.BooleanProperty(default=True)
@@ -270,11 +276,12 @@ class awsmqConfig(jsonobject.JsonObject):
     deployment_mode = jsonobject.StringProperty(default="CLUSTER_MULTI_AZ")
     engine_type = jsonobject.StringProperty(default="RabbitMQ")
     engine_version = jsonobject.StringProperty(default="3.10.10")
-    host_instance_type = jsonobject.StringProperty(default="mq.m5.large")   
+    host_instance_type = jsonobject.StringProperty(default="mq.m5.large")
     publicly_accessible = jsonobject.BooleanProperty(default=False)
     logs_general = jsonobject.BooleanProperty(default=True)
-    audit_log_enabled = jsonobject.BooleanProperty(default=False) 
-    encryption_enabled = jsonobject.BooleanProperty(default=False)     
+    audit_log_enabled = jsonobject.BooleanProperty(default=False)
+    encryption_enabled = jsonobject.BooleanProperty(default=False)
+
 
 class RoutePrivateZoneConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
@@ -282,6 +289,7 @@ class RoutePrivateZoneConfig(jsonobject.JsonObject):
     domain_name = jsonobject.StringProperty()
     create_record = jsonobject.BooleanProperty(default=True)
     route_names = jsonobject.StringProperty()
+
 
 class EfsFileSystem(jsonobject.JsonObject):
     _allow_dynamic_properties = False
@@ -295,10 +303,12 @@ class EfsFileSystem(jsonobject.JsonObject):
     record_type = jsonobject.StringProperty(default="CNAME")
     route_names = jsonobject.StringProperty(required=True)
 
+
 class Ec2AutoRecovery(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     targets = jsonobject.ListProperty(str)
     name_prefix = jsonobject.StringProperty(required=True)
+
 
 class FsxFileSystem(jsonobject.JsonObject):
     _allow_dynamic_properties = False
