@@ -372,6 +372,8 @@ elasticache_cluster:
   cache_node_type: "cache.t4g.medium"
   cache_engine_version: "7.0"
   cache_prameter_group: "default.redis7"
+  params:
+    maxmemory-policy: 'allkeys-lru'
   automatic_failover: true
   transit_encryption: false
   at_rest_encryption: true
