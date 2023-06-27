@@ -255,7 +255,6 @@ class ElasticacheClusterConfig(jsonobject.JsonObject):
     cache_node_type = jsonobject.StringProperty(default="cache.t3.micro")
     cache_engine = jsonobject.StringProperty(default="redis")
     cache_engine_version = jsonobject.StringProperty(default="4.0.10")
-    cache_prameter_group = jsonobject.StringProperty(default="default.redis4.0")
     params = jsonobject.DictProperty()
     automatic_failover = jsonobject.BooleanProperty(default=True)
     transit_encryption = jsonobject.BooleanProperty(default=False)

@@ -388,7 +388,6 @@ elasticache_cluster:
   create: yes
   cache_node_type: "cache.t4g.micro"
   cache_engine_version: "7.0"
-  cache_prameter_group: "default.redis7"
   params:
     maxmemory-policy: 'allkeys-lru'
   automatic_failover: true
