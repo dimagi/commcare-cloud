@@ -608,6 +608,8 @@ elasticache_cluster:
   cache_node_type: "cache.r6g.2xlarge"
   cache_engine_version: "7.x"
   cache_prameter_group: "default.redis7"
+  params:
+    maxmemory-policy: 'allkeys-lru'
   automatic_failover: true
   transit_encryption: false
   at_rest_encryption: true
