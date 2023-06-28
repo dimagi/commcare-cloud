@@ -34,10 +34,6 @@ variable "cache_node_type" {
   description = "Type of node in your cluster Example: cache.t2.micro"
 }
 
-variable "cache_prameter_group" {
-  description = "The parameter group of the Cluster"
-}
-
 variable "params" {
   description = "Parameters to override"
   type = map(string)
