@@ -600,14 +600,10 @@ internal_albs:
       - couch12-production
       - couch13-production
 
-elasticache:
-  create: no
-
 elasticache_cluster:
   create: yes
   cache_node_type: "cache.r6g.xlarge"
   cache_engine_version: "7.x"
-  cache_prameter_group: "default.redis7"
   params:
     maxmemory-policy: 'allkeys-lru'
   automatic_failover: true
