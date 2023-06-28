@@ -605,7 +605,7 @@ elasticache:
 
 elasticache_cluster:
   create: yes
-  cache_node_type: "cache.r6g.2xlarge"
+  cache_node_type: "cache.r6g.xlarge"
   cache_engine_version: "7.x"
   cache_prameter_group: "default.redis7"
   params:
