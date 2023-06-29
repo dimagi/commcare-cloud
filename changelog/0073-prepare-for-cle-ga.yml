@@ -1,0 +1,32 @@
+title: Prepare project spaces for Case List Explorer report release
+key: prepare-for-cle-ga
+date: 2023-06-14
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  We have created a management command to assist with syncing data to the Case Search Index so that legacy projects 
+  may access data in a new report that will be made generally available.
+
+details: |
+  We will be releasing a new report in the next couple of months that will access case data from the Case Search 
+  Index rather than the default Case Index in Elasticsearch.
+  
+  In order to prepare for this change, we recommend that you run the management command below inside a terminal 
+  multiplexer like screen or tmux to avoid disruptions from broken ssh tunnels.
+
+update_steps: |
+  1) Deploy the latest version of commcare-hq.
+  
+  2) Recommended: start a new tmux session
+  ```bash
+  commcare-cloud <env> django-manage --tmux
+  ```
+  
+  3) Run the management command from within the tmux session inside the commcare-hq python virtualenv
+  ```bash
+  python manage.py prepare_projects_for_case_list_explorer
+  ```
+  
+  Note: that if you have a lot of data to sync, there is a possibility that the command might time out. In that case, 
+  please re-run the command until the initial sync and data integrity checks are complete.

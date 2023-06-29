@@ -34,8 +34,9 @@ variable "cache_node_type" {
   description = "Type of node in your cluster Example: cache.t2.micro"
 }
 
-variable "cache_prameter_group" {
-  description = "The parameter group of the Cluster"
+variable "params" {
+  description = "Parameters to override"
+  type = map(string)
 }
 
 variable "automatic_failover" {
@@ -86,6 +87,6 @@ variable "port_number" {
   type = number
 }
 
-variable "replication_group_des" {
+variable "description" {
   description = "Replication Group Description"
 }

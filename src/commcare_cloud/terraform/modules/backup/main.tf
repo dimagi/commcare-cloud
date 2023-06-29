@@ -155,10 +155,25 @@ resource "aws_backup_vault_policy" "business_continuity_remote_vault_policy" {
             },
             "Action": "backup:CopyIntoBackupVault",
             "Resource": "*"
+        },
+        {
+            "Sid": "Deny anyone the ability to delete the Vault Lock Configuration",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": [
+                "backup:DeleteBackupVaultLockConfiguration",
+                "backup:PutBackupVaultLockConfiguration"
+            ],
+            "Resource": "*"
         }
     ]
 }
 POLICY
+}
+
+resource "aws_backup_vault_lock_configuration" "business_continuity_remote_vault_lock" {
+  provider = aws.remote_region
+  backup_vault_name = aws_backup_vault.business_continuity_remote_vault.name
 }
 
 resource "aws_backup_selection" "business_continuity_plan_selection" {
