@@ -121,7 +121,7 @@
 - name: Enable postgres_fdw extension in the main db
   become: yes
   become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
-  community.postgresql.postgresql_query:
+  postgresql_query:
     db: '{{ postgresql_dbs.main.name }}'
     port: "{{ postgresql_port }}"
     login_host: "{{ db_is_remote and postgresql_host or omit }}"
@@ -130,4 +130,25 @@
     query: |
       CREATE EXTENSION IF NOT EXISTS postgres_fdw;
       GRANT USAGE ON FOREIGN DATA WRAPPER postgres_fdw TO {{ postgres_users.commcare.username }};
-  when: postgresql_host == postgresql_dbs.main.host
+  when: postgresql_dbs.repeaters and postgresql_host == postgresql_dbs.main.host
+
+- name: Create repeaters_fdw_user in repeaters database
+  # for postgres_fdw because it changes session settings like
+  # search_path that interfere with other pgbouncer clients
+  become: yes
+  become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
+  postgresql_query:
+    db: '{{ postgresql_dbs.main.name }}'
+    port: "{{ postgresql_port }}"
+    login_host: "{{ db_is_remote and postgresql_host or omit }}"
+    login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+    login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
+    query: |
+      DO $$ BEGIN
+        IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'repeaters_fdw_user') THEN
+          CREATE USER repeaters_fdw_user
+            WITH PASSWORD '{{ postgres_users.commcare.password }}'
+            IN ROLE "{{ postgres_users.commcare.username }}";
+        END IF;
+      END $$;
+  when: postgresql_dbs.repeaters and postgresql_host == postgresql_dbs.repeaters.host

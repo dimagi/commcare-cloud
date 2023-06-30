@@ -3,8 +3,8 @@ monitor_celery_heartbeat: False
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
-elasticsearch_version: 2.4.6
-elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
+elasticsearch_version: 5.6.16
+elasticsearch_download_sha256: 6b035a59337d571ab70cea72cc55225c027ad142fbb07fd8984e54261657c77f.
 elasticsearch_delete_old_logs: True
 
 kafka_version: 3.2.3
@@ -133,7 +133,7 @@ localsettings:
   COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
   COUCH_USERNAME: "{{ COUCH_USERNAME }}"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  ELASTICSEARCH_MAJOR_VERSION: 2
+  ELASTICSEARCH_MAJOR_VERSION: 5
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
@@ -179,6 +179,23 @@ localsettings:
   STATIC_ROOT:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-08-23"
+  ES_APPS_INDEX_MULTIPLEXED: False
+  ES_CASE_SEARCH_INDEX_MULTIPLEXED: False
+  ES_CASES_INDEX_MULTIPLEXED: False
+  ES_FORMS_INDEX_MULTIPLEXED: False
+  ES_SMS_INDEX_MULTIPLEXED: False
+  ES_USERS_INDEX_MULTIPLEXED: False
+  ES_GROUPS_INDEX_MULTIPLEXED: False
+  ES_DOMAINS_INDEX_MULTIPLEXED: False
+  ES_APPS_INDEX_SWAPPED: True
+  ES_CASE_SEARCH_INDEX_SWAPPED: True
+  ES_CASES_INDEX_SWAPPED: True
+  ES_DOMAINS_INDEX_SWAPPED: True
+  ES_FORMS_INDEX_SWAPPED: True
+  ES_GROUPS_INDEX_SWAPPED: True
+  ES_SMS_INDEX_SWAPPED: True
+  ES_USERS_INDEX_SWAPPED: True
+
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu

@@ -245,7 +245,21 @@ servers:
     group: "rabbitmq"
     os: jammy
 
-  - server_name: "kafka12-staging"
+  - server_name: "kafka15-staging"
+    server_instance_type: t3a.medium
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 5
+      encrypted: true
+      volume_type: "gp3"
+    group: "kafka"
+    os: jammy
+
+  - server_name: "kafka16-staging"
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "a"
@@ -257,26 +271,12 @@ servers:
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
-    os: jammy 
-    
-  - server_name: "kafka13-staging"
-    server_instance_type: t3a.medium
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    block_device:
-      volume_size: 5
-      encrypted: true
-      volume_type: "gp3"
-    group: "kafka"
     os: jammy
 
-  - server_name: "kafka14-staging"
+  - server_name: "kafka17-staging"
     server_instance_type: t3a.medium
     network_tier: "db-private"
-    az: "c"
+    az: "a"
     volume_size: 30
     volume_encrypted: yes
     volume_type: "gp3"
@@ -381,14 +381,12 @@ internal_albs:
       - couch24-staging
       - couch25-staging
       
-elasticache:
-  create: no
-
 elasticache_cluster:
   create: yes
-  cache_node_type: "cache.t3.small"
+  cache_node_type: "cache.t4g.micro"
   cache_engine_version: "7.0"
-  cache_prameter_group: "default.redis7"
+  params:
+    maxmemory-policy: 'allkeys-lru'
   automatic_failover: true
   transit_encryption: false
   at_rest_encryption: true

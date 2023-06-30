@@ -195,7 +195,7 @@ module "elasticache-module-base" {
   cache_engine          = {{ elasticache_cluster.cache_engine|tojson }}
   cache_engine_version  = {{ elasticache_cluster.cache_engine_version|tojson }}
   cache_node_type       = {{ elasticache_cluster.cache_node_type|tojson }}
-  cache_prameter_group  = {{ elasticache_cluster.cache_prameter_group|tojson }}
+  params                = {{ elasticache_cluster.params|tojson }}
   automatic_failover    = {{ elasticache_cluster.automatic_failover|tojson }}
   transit_encryption    = {{ elasticache_cluster.transit_encryption|tojson }}
   at_rest_encryption    = {{ elasticache_cluster.at_rest_encryption|tojson }}
@@ -206,7 +206,7 @@ module "elasticache-module-base" {
   snapshot_window       = {{ elasticache_cluster.snapshot_window|tojson }}
   port_number           = 6379
   cluster_size          = {{ elasticache_cluster.cluster_size|tojson }}
-  replication_group_des = "${var.environment}-redis-cluster"
+  description           = "${var.environment}-redis-cluster"
 }
 {% endif %}
 

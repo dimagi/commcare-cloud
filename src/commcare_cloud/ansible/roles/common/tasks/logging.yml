@@ -18,3 +18,19 @@
   include_role:
     name: ansible-logrotate
   when: "logrotate_scripts | length > 0"
+
+- name: Configure logrotate size limit in rsyslog (replacing weekly)
+  lineinfile:
+    path: /etc/logrotate.d/rsyslog
+    regexp: '^	weekly'
+    insertbefore: 'missingok'
+    line: '	size 750M'
+    state: present
+
+- name: Configure logrotate timer (hourly instead of daily)
+  lineinfile:
+    path: /etc/systemd/system/timers.target.wants/logrotate.timer
+    regexp: '^OnCalendar='
+    line: 'OnCalendar=hourly'
+    insertafter: '^\[Timer\]'
+    state: present

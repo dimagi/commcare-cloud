@@ -15,12 +15,12 @@ dev_users:
     - emapson
     - esoergel
     - gherceg
+    - jingcheng
     - jschweers
     - jtang
     - matthewriley
     - mlee
     - mkangia
-    - mperosa
     - mriese
     - nhooper
     - pverma
@@ -54,3 +54,4 @@ dev_users:
     - frener
     - dochoa
     - jmiller
+    - mperosa

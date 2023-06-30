@@ -13,8 +13,6 @@ couch11-india.instance_id: i-08fcbc213c37ed0f5
 couch12-india: 10.203.42.47
 couch12-india.instance_id: i-08fb45acf51d11510
 couch_alb-india: internal-couch-alb-india-410194548.ap-south-1.elb.amazonaws.com
-djangomanage1-india: 10.203.10.24
-djangomanage1-india.instance_id: i-01ef3bc15f7729941
 djangomanage2-india: 10.203.10.57
 djangomanage2-india.instance_id: i-0184891aeb63f6c91
 efs_india-efs: fs-0c280ddd.efs.ap-south-1.amazonaws.com
@@ -26,8 +24,6 @@ escoordinator7-india: 10.203.40.26
 escoordinator7-india.instance_id: i-09847b1e99b12a2c0
 escoordinator8-india: 10.203.41.15
 escoordinator8-india.instance_id: i-0a00fdbea0fd89fb1
-escoordinator9-india: 10.203.42.144
-escoordinator9-india.instance_id: i-0807fc546185d04df
 esmaster5-india: 10.203.40.160
 esmaster5-india.instance_id: i-05eb67236fe4c7a47
 esmaster6-india: 10.203.41.183

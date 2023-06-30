@@ -1,5 +1,4 @@
 {{ __control1__ }}
-{{ __djangomanage1__ }}
 {{ __djangomanage2__ }}
 {{ __web4__ }}
 {{ __web5__ }}
@@ -16,7 +15,6 @@
 {{ __es5__ }} elasticsearch_node_name=es5 elasticsearch_node_zone=ap-south-1b
 {{ __escoordinator7__ }} elasticsearch_node_name=escoordinator7 elasticsearch_node_zone=ap-south-1a
 {{ __escoordinator8__ }} elasticsearch_node_name=escoordinator8 elasticsearch_node_zone=ap-south-1b
-{{ __escoordinator9__ }} elasticsearch_node_name=escoordinator9 elasticsearch_node_zone=ap-south-1c
 
 [es_master:children]
 esmaster5
@@ -39,7 +37,6 @@ es_coordinator
 [es_coordinator:children]
 escoordinator7
 escoordinator8
-escoordinator9
 
 [es_coordinator:vars]
 elasticsearch_master=false
@@ -145,7 +142,6 @@ couch_alb
 control1
 
 [django_manage:children]
-djangomanage1
 djangomanage2
 
 [remote_postgresql:children]

@@ -13,7 +13,7 @@ node.name: "{{ elasticsearch_node_name }}"
 {% if elasticsearch_version == '2.4.6'%}
 node.zone: "{{ elasticsearch_node_zone }}"
 {% endif %}
-{% if elasticsearch_version is version('7.0.0', '>=') %}
+{% if elasticsearch_version is version('5.0.0', '>=') %}
 node.attr.zone: "{{ elasticsearch_node_zone }}"
 {% endif %}
 {% endif %}
@@ -31,20 +31,25 @@ http.max_content_length: 200mb
 path.data: {{ elasticsearch_data_dir }}/data
 path.logs: {{ elasticsearch_data_dir }}/logs
 
-{% if elasticsearch_version == '2.4.6'%}
+{% if elasticsearch_version is version('5.6.16', '<=') %}
 # discovery.zen.minimum_master_nodes is the minimum number of
 # MASTER ELIGIBLE nodes that must be reachable before a master may be elected
 # Best practice is to set it to M/2 + 1 where M is the number of master-eligible nodes,
 # but (todo) we DO NOT follow best practice.
 discovery.zen.minimum_master_nodes: {{ [2, groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master_value')|select()|list | length] | min }}
-discovery.zen.ping.timeout: 90s
 discovery.zen.fd.ping_timeout: 90s
 discovery.zen.fd.ping_interval: 10s
 discovery.zen.fd.ping_retries: 20
+{% if elasticsearch_version == '2.4.6' %}
 discovery.zen.ping.multicast.enabled: false
+discovery.zen.ping.timeout: 90s
+{% endif %}
+{% if elasticsearch_version == '5.6.16' %}
+discovery.zen.ping_timeout: 90s
+{% endif %}
 {% endif %}
 
-{% if elasticsearch_version == '2.4.6' %}
+{% if elasticsearch_version is version('5.6.16', '<=') %}
 discovery.zen.ping.unicast.hosts: [
 {% endif %}
 {% if elasticsearch_version is version('7.0.0', '>=') %}
@@ -78,10 +83,11 @@ indices.fielddata.cache.size:  {{ elasticsearch_fielddata_cache_size }}
 {% endif %}
 
 {% if elasticsearch_enable_inline_groovy_scripts %}
-{% if elasticsearch_version == '2.4.6'%}
+{% if elasticsearch_version is version('5.6.16', '<=') %}
 # somewhat of a security risk but required by pact custom reports
 script.engine.groovy.inline.aggs: true
 script.engine.groovy.inline.search: true
+script.engine.groovy.inline.update: true
 {% endif %}
 {% endif %}
 
@@ -101,7 +107,7 @@ cloud:
 {% if elasticsearch_version == '2.4.6'%}
 action.auto_create_index: false
 {% endif %}
-{% if elasticsearch_version is version('7.0.0', '>=') %}
+{% if elasticsearch_version is version('5.0.0', '>=') %}
 action.auto_create_index: .watches,.triggered_watches,.watcher-history-*
 {% endif %}
 
@@ -126,7 +132,7 @@ cluster.initial_master_nodes:
 {% endif %}
 
 
-{% if elasticsearch_version == '2.4.6'%}
+{% if elasticsearch_version is version('5.6.16', '<=') %}
 # see also discovery.zen.minimum_master_nodes above for how a master gets elected
 {# only include master eligibility if it is set on at least one node in the cluster #}
 {% if groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master_value')|select()|list %}
