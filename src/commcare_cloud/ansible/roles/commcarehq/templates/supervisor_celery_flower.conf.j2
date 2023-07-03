@@ -1,5 +1,6 @@
 #jinja2: trim_blocks: True, lstrip_blocks: True
 [program:{{ project }}-{{ deploy_env }}-celery_flower]
+environment=FLOWER_UNAUTHENTICATED_API="true"
 command={{ virtualenv_home }}/bin/celery
     -A corehq flower
     --address=0.0.0.0
