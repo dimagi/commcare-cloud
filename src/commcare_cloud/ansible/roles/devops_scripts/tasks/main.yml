@@ -28,6 +28,7 @@
     user: root
     job: "/usr/local/sbin/uptime.sh"
     cron_file: uptime.sh
+  when: maintenance_time is defined
 
 - name: Copy intruder.sh script to /usr/local/sbin
   copy:
