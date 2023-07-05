@@ -31,7 +31,7 @@ show_maintenance_updates_on_deploy: False
 DATADOG_ENABLED: True
 
 DATADOG_TRACE:
-  TAGS:
+  DD_TAGS:
     env: production
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
