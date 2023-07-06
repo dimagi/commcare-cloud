@@ -101,11 +101,8 @@ celery_processes:
 
 pillows:
   pillow_a2000:
-    # case-sql partitions: 96
-    case-pillow:
-      num_processes: 25
-      total_processes: 49
-      start_process: 0
+    xform-pillow:
+      num_processes: 33
       dedicated_migration_process: True
     user-pillow:
       num_processes: 1
@@ -134,11 +131,8 @@ pillows:
     UserGroupsDbKafkaPillow:
       num_processes: 1
   pillow_b2000:
-    xform-pillow:
-      num_processes: 33
-      dedicated_migration_process: True
+  # case-sql partitions: 96
     case-pillow:
-      num_processes: 24
+      num_processes: 49
       total_processes: 49
-      start_process: 25
       dedicated_migration_process: True
