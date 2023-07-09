@@ -35,8 +35,8 @@
 
 - name: Download Elasticsearch 5
   become: yes
-  get_url:
-    url: "elasticsearch-5.6.16.tar.gz"
+  copy:
+    src: "elasticsearch-5.6.16.tar.gz"
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
   when: elasticsearch_version == "5.6.16"
 
