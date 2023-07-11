@@ -602,7 +602,7 @@ internal_albs:
 
 elasticache_cluster:
   create: yes
-  cache_node_type: "cache.r6g.xlarge"
+  cache_node_type: "cache.r6g.large"
   cache_engine_version: "7.x"
   params:
     maxmemory-policy: 'allkeys-lru'
