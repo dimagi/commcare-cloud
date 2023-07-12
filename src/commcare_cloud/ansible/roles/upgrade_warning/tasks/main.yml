@@ -24,7 +24,7 @@
   loop: "{% if 'non_2204_hosts' in group_names %}['{{ inventory_hostname }}']{% else %}[]{% endif %}"
 
 - name: Show warning if non 22.04 hosts are present
-  fail:
+  debug:
     msg: |-
 
       The hosts listed above are running an unsupported OS version.
@@ -46,4 +46,9 @@
       --skip-tags "upgrade_warning"
 
       to your command.
+  when: groups.get('non_2204_hosts')
+
+- name: Fail if non 22.04 hosts are present
+  fail:
+    msg: "Refusing to deploy"
   when: groups.get('non_2204_hosts')
