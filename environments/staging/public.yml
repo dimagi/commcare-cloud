@@ -215,4 +215,4 @@ release_bucket: dimagi-commcare-staging-release
 formplayer_java_version: "{{ java_17_bin_path }}/java"
 
 # formplayer & web_worker
-maintenance_time: 6:00
+maintenance_time: '06:30'
