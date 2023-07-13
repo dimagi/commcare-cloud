@@ -18,17 +18,18 @@
   when: "'formplayer' in group_names or 'webworkers' in group_names"
 
 - name: Creates a cron to check the uptime details
+  become: yes
   cron:
     name: Run uptime for every minute
-    minute: "01"
+    minute: "*"
     hour: "*"
     day: "*"
     month: "*"
     weekday: "*"
     user: root
     job: "/usr/local/sbin/uptime.sh"
-    cron_file: uptime.sh
-  when: maintenance_time is defined
+    cron_file: uptime_sh
+  when: maintenance_time is defined & "'formplayer' in group_names or 'webworkers' in group_names"
 
 - name: Copy intruder.sh script to /usr/local/sbin
   copy:
