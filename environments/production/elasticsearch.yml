@@ -3,3 +3,5 @@ settings:
     number_of_shards: 96
   xforms:
     number_of_shards: 64
+  hqcases:
+    number_of_shards: 32
