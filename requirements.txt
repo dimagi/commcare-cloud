@@ -42,7 +42,7 @@ clint==0.5.1
     # via commcare-cloud (setup.py)
 couchdb-cluster-admin==0.7.2
     # via commcare-cloud (setup.py)
-cryptography==39.0.2
+cryptography==41.0.2
     # via
     #   ansible-core
     #   commcare-cloud (setup.py)
@@ -109,7 +109,7 @@ pyjwt==2.4.0
     # via pygithub
 pynacl==1.4.0
     # via pygithub
-pyopenssl==23.0.0
+pyopenssl==23.2.0
     # via commcare-cloud (setup.py)
 pyparsing==3.0.9
     # via packaging
