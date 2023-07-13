@@ -15,10 +15,7 @@ install_deps = [
     'datadog>=0.2.0',
     'dimagi-memoized>=1.1.0',
     'dnspython',
-    # can remove once requests bumps its version requirement
-    # https://github.com/requests/requests/issues/4681
     'gitpython',
-    'idna==2.6',
     'importlib-metadata==3.1.0',
     'jinja2-cli',
     'jsonobject',
