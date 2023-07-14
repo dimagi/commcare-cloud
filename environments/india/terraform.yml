@@ -44,7 +44,7 @@ servers:
     os: jammy
 
   - server_name: "web4-india"
-    server_instance_type: "r5a.xlarge"
+    server_instance_type: "r6a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -55,7 +55,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web5-india"
-    server_instance_type: "r5a.xlarge"
+    server_instance_type: "r6a.large"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
