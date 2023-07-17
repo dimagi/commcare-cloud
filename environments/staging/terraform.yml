@@ -183,20 +183,6 @@ servers:
     os: jammy
     server_auto_recovery: true
 
-  - server_name: "couch23-staging"
-    server_instance_type: "t3a.large"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_type: "gp3"
-    volume_encrypted: yes
-    block_device:
-      volume_size: 30
-      volume_type: "gp3"
-      encrypted: true
-    group: "couchdb2"
-    os: jammy 
-
   - server_name: "couch24-staging"
     server_instance_type: "t3a.large"
     network_tier: "db-private"
@@ -215,6 +201,20 @@ servers:
     server_instance_type: "t3a.large"
     network_tier: "db-private"
     az: "c"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 30
+      volume_type: "gp3"
+      encrypted: true
+    group: "couchdb2"
+    os: jammy
+
+  - server_name: "couch26-staging"
+    server_instance_type: "t3a.large"
+    network_tier: "db-private"
+    az: "a"
     volume_size: 30
     volume_type: "gp3"
     volume_encrypted: yes
@@ -377,9 +377,9 @@ internal_albs:
     listener_port: 25984
     target_port: 15984
     targets:
-      - couch23-staging
       - couch24-staging
       - couch25-staging
+      - couch26-staging
       
 elasticache_cluster:
   create: yes
