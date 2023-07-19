@@ -11,14 +11,11 @@ install_deps = [
     'boto3>=1.9.131',
     'clint',
     'couchdb-cluster-admin',
-    'cryptography~=39.0',
+    'cryptography~=41.0',
     'datadog>=0.2.0',
     'dimagi-memoized>=1.1.0',
     'dnspython',
-    # can remove once requests bumps its version requirement
-    # https://github.com/requests/requests/issues/4681
     'gitpython',
-    'idna==2.6',
     'importlib-metadata==3.1.0',
     'jinja2-cli',
     'jsonobject',
@@ -26,7 +23,7 @@ install_deps = [
     'passlib',
     'pycryptodome>=3.6.6',  # security update
     'PyGithub>=1.43.3',
-    'pyOpenSSL~=23.0',
+    'pyOpenSSL~=23.2',
     'pytz',
     'simplejson',
     'six',
