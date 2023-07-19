@@ -3,3 +3,9 @@ settings:
     number_of_shards: 96
   xforms:
     number_of_shards: 64
+  hqdomains:
+    number_of_shards: 1
+    number_of_replicas: 1
+  hqgroups:
+    number_of_shards: 1
+    number_of_replicas: 1
