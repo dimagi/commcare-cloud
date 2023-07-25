@@ -96,16 +96,6 @@ servers:
     count: 2
     server_auto_recovery: true
 
-  - server_name: "web_m_c2{i}-production"
-    server_instance_type: m6a.xlarge
-    network_tier: "app-private"
-    az: "c"
-    volume_size: 40
-    group: "mobile_webworkers"
-    os: jammy
-    count: 3
-    server_auto_recovery: true
-
   - server_name: "esmaster_a1-production"
     server_instance_type: r6a.large
     network_tier: "db-private"

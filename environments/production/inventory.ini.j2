@@ -15,8 +15,6 @@ proxy_b3
 
 {{ __web_m_b2__ }}
 
-{{ __web_m_c2__ }}
-
 [logproxy:children]
 proxy
 
@@ -28,7 +26,6 @@ web_c2
 [mobile_webworkers:children]
 web_m_a2
 web_m_b2
-web_m_c2
 
 [webworkers:children]
 hq_webworkers
