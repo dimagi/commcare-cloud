@@ -26,6 +26,7 @@ new_domain_email: inquiries@dimagi.com
 ALTERNATE_HOSTS:
   - rec-mobile.sante.gov.bf
   - onse-iss.commcarehq.org
+  - sic.snis-sante.mg
 show_maintenance_updates_on_deploy: False
 
 DATADOG_ENABLED: True
