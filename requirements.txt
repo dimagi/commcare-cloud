@@ -111,7 +111,7 @@ python-dateutil==2.8.2
     # via botocore
 pytz==2022.1
     # via commcare-cloud (setup.py)
-pyyaml==5.4.1
+pyyaml==6.0.1
     # via
     #   ansible-core
     #   couchdb-cluster-admin
