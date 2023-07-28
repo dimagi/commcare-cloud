@@ -44,36 +44,25 @@ servers:
     os: jammy 
 
   - server_name: "web_a2{i}-production"
-    server_instance_type: m6a.xlarge
+    server_instance_type: m6a.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
     volume_encrypted: yes
     group: "hq_webworkers"
     os: jammy
-    count: 5
+    count: 3
     server_auto_recovery: true
 
   - server_name: "web_b2{i}-production"
-    server_instance_type: m6a.xlarge
+    server_instance_type: m6a.2xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
     volume_encrypted: yes
     group: "hq_webworkers"
     os: jammy
-    count: 5
-    server_auto_recovery: true
-
-  - server_name: "web_c2{i}-production"
-    server_instance_type: m6a.xlarge
-    network_tier: "app-private"
-    az: "c"
-    volume_size: 40
-    volume_encrypted: yes
-    group: "hq_webworkers"
-    os: jammy
-    count: 5
+    count: 3
     server_auto_recovery: true
 
   - server_name: "web_m_a2{i}-production"
