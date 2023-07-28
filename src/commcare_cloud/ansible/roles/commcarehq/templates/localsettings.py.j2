@@ -1160,6 +1160,6 @@ ABDM_CLIENT_SECRET = {{ ABDM_CLIENT_SECRET }}
 FCM_CREDS = json.loads({{ FCM_CREDS }})
 {% endif %}
 
-{% if CONNECTID_URL is defined %}
-CONNECTID_USERINFO_URL = {{ localsettings.CONNECTID_URL }}
+{% if localsettings.CONNECTID_URL is defined %}
+CONNECTID_USERINFO_URL = "{{ localsettings.CONNECTID_URL }}"
 {% endif %}
