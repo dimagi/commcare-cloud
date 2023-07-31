@@ -253,7 +253,7 @@ servers:
     volume_encrypted: yes
     group: "formplayer"
     os: jammy
-    count: 12
+    count: 10
     server_auto_recovery: true
 
   - server_name: "kafka_a1-production"
