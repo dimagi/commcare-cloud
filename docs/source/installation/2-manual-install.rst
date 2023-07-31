@@ -54,7 +54,7 @@ databases, and another for a shared NFS volume.
 All environments
 ~~~~~~~~~~~~~~~~
 
-CommCare HQ environments run on Ubuntu Server 18.04 (64-bit).
+CommCare HQ environments run on Ubuntu Server 22.04 (64-bit).
 
 During the installation of Ubuntu you will be prompted for the details
 of the first user, who will have sudo access. It is convenient to name
@@ -162,40 +162,6 @@ our example cluster, the control machine is named “control1”.
     ::
 
         $ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
-
-
-Upgrade to Python 3.10 (Ubuntu 18.04 "Bionic Beaver" only)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-We recommend using Python 3.10 with commcare-cloud. Follow the steps below to properly install it.
-
-
-::
-
-        $ sudo add-apt-repository -y ppa:deadsnakes/ppa
-        $ sudo apt update
-        $ sudo apt-get -y install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
-
-**The remaining steps for installing Python 3.10 are only relevant if you have already installed commcare-cloud.
-If commcare-cloud has not been installed on this machine yet, please skip to the next section.**
-
-Run the following to pull the latest version of commcare-cloud and trigger the creation and activation of a Python 3.10 virtual environment.
-
-::
-
-        $ update-code
-
-Confirm the active virtual environment is using Python 3.10
-
-::
-
-        $ python --version
-
-Finally, run:
-
-::
-
-        $ manage-commcare-cloud configure
 
 
 Create a user for yourself
