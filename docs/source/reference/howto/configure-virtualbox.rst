@@ -12,7 +12,7 @@ Step 2: Download, Install, and Configure Ubuntu
 -----------------------------------------------
 
 
-#. Download the latest `Ubuntu 18.04 Server Edition ISO <https://ubuntu.com/download/server/thank-you?version=18.04.2&architecture=amd64>`_.
+#. Download the latest `Ubuntu 22.04 Server Edition ISO <https://ubuntu.com/download/server/thank-you?version=22.04.2&architecture=amd64>`_.
 #. Configure VirtualBox
 
    * Open VirtualBox and create a new Virtual Machine.
