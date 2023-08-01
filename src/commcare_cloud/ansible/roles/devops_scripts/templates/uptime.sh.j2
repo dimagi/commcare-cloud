@@ -1,0 +1,12 @@
+#!/bin/bash
+
+maintenance_time={{ maintenance_time }}
+current_time=$(date +%R;)
+uptime_days=`uptime | awk '/days?/ {print $3; next}; {print 0}'`
+
+  if [ $uptime_days -ge "90" ] && [ $current_time = $maintenance_time ]
+  then
+  x=logger '[Maintenance]  Rebooting server as uptime is greater than or equal to ninety days'
+  echo "starting reboot"
+  shutdown -r +1
+  fi
