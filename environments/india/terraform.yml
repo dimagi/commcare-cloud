@@ -258,6 +258,36 @@ servers:
     group: kafka
     os: jammy 
 
+  - server_name: "kafka_a2-india"
+    server_instance_type: "t3a.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: kafka
+    os: jammy 
+    
+  - server_name: "kafka_b2-india"
+    server_instance_type: "t3a.medium"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: kafka
+    os: jammy 
+    
+  - server_name: "kafka_b3-india"
+    server_instance_type: "t3a.medium"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: kafka
+    os: jammy
+
   - server_name: "pgbouncer5-india"
     server_instance_type: t3a.small
     network_tier: "db-private"
