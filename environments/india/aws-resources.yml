@@ -36,8 +36,14 @@ formplayer2-india.instance_id: i-099df0d3c49c81b3d
 frontend_alb-india: internal-frontend-alb-india-500199263.ap-south-1.elb.amazonaws.com
 kafka_a1-india: 10.203.40.149
 kafka_a1-india.instance_id: i-07bdba807888017f5
+kafka_a2-india: 10.203.40.86
+kafka_a2-india.instance_id: i-09d14c26c3e892738
 kafka_b1-india: 10.203.41.244
 kafka_b1-india.instance_id: i-0f38a519b27e8ca97
+kafka_b2-india: 10.203.41.195
+kafka_b2-india.instance_id: i-0bff65c947a152c7e
+kafka_b3-india: 10.203.41.89
+kafka_b3-india.instance_id: i-0e8210b2eb0021ef7
 kafka_c1-india: 10.203.42.251
 kafka_c1-india.instance_id: i-0776ffddfcd0717f7
 pgbouncer5-india: 10.203.41.132
