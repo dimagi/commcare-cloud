@@ -44,9 +44,9 @@ elasticsearch_data=false
 
 {{ __formplayer2__ }}
 {{ __pillow4__ }}
-{{ __kafka_a1__ }} kafka_broker_id=5 zookeeper_server_id=5
-{{ __kafka_b1__ }} kafka_broker_id=6 zookeeper_server_id=6
-{{ __kafka_c1__ }} kafka_broker_id=7 zookeeper_server_id=7
+{{ __kafka_a2__ }} kafka_broker_id=8 zookeeper_server_id=8
+{{ __kafka_b2__ }} kafka_broker_id=9 zookeeper_server_id=9
+{{ __kafka_b3__ }} kafka_broker_id=10 zookeeper_server_id=10
 {{ __rabbit_a6__ }}
 {{ __rabbit_c7__ }}
 {{ __pgbouncer5__ }} pgbouncer_processes=2
@@ -96,14 +96,14 @@ rabbit_a6
 rabbit_c7
 
 [zookeeper:children]
-kafka_a1
-kafka_b1
-kafka_c1
+kafka_a2
+kafka_b2
+kafka_b3
 
 [kafka:children]
-kafka_a1
-kafka_b1
-kafka_c1
+kafka_a2
+kafka_b2
+kafka_b3
 
 [celery:children]
 celery7
