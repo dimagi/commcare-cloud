@@ -228,6 +228,7 @@ localsettings:
         - 'ils-gateway-train'
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   WS4REDIS_CONNECTION_HOST: "redis.production.commcare.local"
+  CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
