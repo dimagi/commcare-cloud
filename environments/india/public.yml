@@ -124,6 +124,7 @@ localsettings:
   BANK_SWIFT_CODE: 'CTZIUS33'
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
+  CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
   COUCH_USERNAME: "{{ COUCH_USERNAME }}"
   COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
