@@ -196,6 +196,9 @@ localsettings:
   ES_SMS_INDEX_SWAPPED: True
   ES_USERS_INDEX_SWAPPED: True
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
+  ABDM_ABHA_URL: 'https://healthidsbx.abdm.gov.in/api/'
+  ABDM_GATEWAY_URL: 'https://dev.abdm.gov.in/gateway'
+  ABDM_X_CM_ID: 'sbx'
 
 
 # comment these two lines out to make a new rackspace machine
