@@ -20,8 +20,8 @@
 - name: Creates a cron to check the uptime details
   become: yes
   cron:
-    name: Run uptime for every hour
-    minute: "0"
+    name: Run uptime for every 0th minute and 30th minute
+    minute: "0,30"
     hour: "*"
     day: "*"
     month: "*"
