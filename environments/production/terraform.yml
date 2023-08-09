@@ -209,23 +209,23 @@ servers:
     os: jammy
 
   - server_name: "celery_b2{i}-production"
-    server_instance_type: r6a.2xlarge
+    server_instance_type: r6a.4xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 80
     volume_encrypted: yes
     group: "celery"
     os: jammy
-    count: 4
+    count: 2
 
   - server_name: "celery_c2{i}-production"
-    server_instance_type: r6a.2xlarge
+    server_instance_type: r6a.4xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 83
     group: "celery"
     os: jammy
-    count: 4
+    count: 2
 
   - server_name: "pillow_a2{i}-production"
     server_instance_type: r6a.4xlarge

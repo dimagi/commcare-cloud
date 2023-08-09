@@ -122,16 +122,25 @@ swap_size=2G
 {{ __kafka_a1__ }} kafka_broker_id=10 zookeeper_server_id=10
 {{ __kafka_b1__ }} kafka_broker_id=11 zookeeper_server_id=11
 {{ __kafka_c1__ }} kafka_broker_id=12 zookeeper_server_id=12
+{{ __kafka_a2__ }} kafka_broker_id=13 zookeeper_server_id=13
+{{ __kafka_b2__ }} kafka_broker_id=14 zookeeper_server_id=14
+{{ __kafka_b3__ }} kafka_broker_id=15 zookeeper_server_id=15
 
 [zookeeper:children]
 kafka_a1
 kafka_b1
 kafka_c1
+kafka_a2
+kafka_b2
+kafka_b3
 
 [kafka:children]
 kafka_a1
 kafka_b1
 kafka_c1
+kafka_a2
+kafka_b2
+kafka_b3
 
 {{ __celery_b2__ }}
 
