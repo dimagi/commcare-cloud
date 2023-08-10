@@ -14,63 +14,63 @@ management_commands:
   pillow_a2000:
     run_pillow_retry_queue:
 celery_processes:
-  celery_b2000,celery_b2001,celery_c2000,celery_c2001:
+  celery_b2000,celery_b2001,celery_b2002,celery_b2003:
     analytics_queue:
       pooling: gevent
-      concurrency: 4
-    async_restore_queue:
       concurrency: 8
+    async_restore_queue:
+      concurrency: 16
     background_queue:
-      concurrency: 3
+      concurrency: 6
     case_import_queue:
-      concurrency: 3
-      prefetch_multiplier: 1
-    case_rule_queue:
-      concurrency: 3
-      prefetch_multiplier: 1
-    celery:
-      concurrency: 4
-    celery_periodic:
-      concurrency: 4
-    email_queue:
-      pooling: gevent
-      concurrency: 134
-    export_download_queue:
-      concurrency: 4
-      prefetch_multiplier: 1
-    linked_domain_queue:
-      concurrency: 3
-    reminder_case_update_queue:
-      pooling: gevent
-      concurrency: 24
-      num_workers: 5
-    reminder_case_update_bulk_queue:
-      concurrency: 1
-    reminder_queue:
-      pooling: gevent
-      concurrency: 40
-    reminder_rule_queue:
-      concurrency: 1
-    repeat_record_queue:
-      pooling: gevent
       concurrency: 6
       prefetch_multiplier: 1
+    case_rule_queue:
+      concurrency: 6
+      prefetch_multiplier: 1
+    celery:
+      concurrency: 8
+    celery_periodic:
+      concurrency: 8
+    email_queue:
+      pooling: gevent
+      concurrency: 268
+    export_download_queue:
+      concurrency: 8
+      prefetch_multiplier: 1
+    linked_domain_queue:
+      concurrency: 6
+    reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 48
+      num_workers: 5
+    reminder_case_update_bulk_queue:
+      concurrency: 2
+    reminder_queue:
+      pooling: gevent
+      concurrency: 80
+    reminder_rule_queue:
+      concurrency: 2
+    repeat_record_queue:
+      pooling: gevent
+      concurrency: 12
+      prefetch_multiplier: 1
     saved_exports_queue:
-      concurrency: 3
+      concurrency: 6
       prefetch_multiplier: 1
     sms_queue:
       pooling: gevent
-      concurrency: 20
+      concurrency: 40
     ucr_indicator_queue:
-      concurrency: 1
+      concurrency: 2
     ucr_queue:
-      concurrency: 9
+      concurrency: 18
       prefetch_multiplier: 1
     user_import_queue:
-      concurrency: 5
+      concurrency: 10
       prefetch_multiplier: 1
     ush_background_tasks:
-      concurrency: 8
+      concurrency: 16
 
   celery_c2000:
     # not really queues
