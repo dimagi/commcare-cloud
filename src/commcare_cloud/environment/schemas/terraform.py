@@ -70,7 +70,6 @@ class TerraformConfig(jsonobject.JsonObject):
             '1.3': "~> 1.3, < 1.4",
             '1.4': "~> 1.4, < 1.5",
             '1.5': "~> 1.5, < 1.6",
-
         }[self.terraform_version]
         # Using the |tojson jinja2 filter replaces < and > with their \u-style escape code.
         # As a workaround, we use `"{{ terraform_version_range_string }}"`,
