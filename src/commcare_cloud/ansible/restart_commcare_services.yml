@@ -30,6 +30,7 @@
   import_playbook: restart_webworker_services.yml
   vars:
     webworker_hosts: 'webworkers'
+    host_type: "Mobile WebWorkers and HQ Webworkers"
   when: "'hq_webworkers' not in groups"
 
 - name: "Restart hq_webworkers (if split)"
@@ -37,6 +38,7 @@
   import_playbook: restart_webworker_services.yml
   vars:
     webworker_hosts: 'hq_webworkers'
+    host_type: "HQ Web Workers"
   when: "'hq_webworkers' in groups"
 
 - name: "Restart mobile_webworkers (if split)"
@@ -44,4 +46,5 @@
   import_playbook: restart_webworker_services.yml
   vars:
     webworker_hosts: 'mobile_webworkers'
+    host_type: "Mobile Web Workers"
   when: "'mobile_webworkers' in groups"
