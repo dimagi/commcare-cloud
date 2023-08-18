@@ -1,5 +1,5 @@
-- name: Rolling restart webworker services
-  hosts: webworkers
+- name: Rolling restart webworker services - ({{ webworker_hosts }})
+  hosts: "{{ webworker_hosts }}"
   serial: ["10%", "30%", "50%", "100%"]
   become: true
   any_errors_fatal: true
