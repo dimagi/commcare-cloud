@@ -97,7 +97,7 @@ pycryptodome==3.10.4
     # via commcare-cloud (setup.py)
 pygithub==1.55
     # via commcare-cloud (setup.py)
-pygments==2.13.0
+pygments==2.15.0
     # via ansible-inventory
 pyjwt==2.4.0
     # via pygithub
