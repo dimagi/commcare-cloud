@@ -1,6 +1,6 @@
 - name: Rolling restart webworker services - ({{ webworker_hosts }})
   hosts: "{{ webworker_hosts }}"
-  serial: ["10%", "30%", "50%", "100%"]
+  serial: ["10%", "40%", "100%"]
   become: true
   any_errors_fatal: true
   pre_tasks:
