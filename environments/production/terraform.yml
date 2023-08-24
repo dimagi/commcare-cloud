@@ -218,7 +218,6 @@ servers:
     os: jammy
     count: 2
 
-
   - server_name: "celery_b2{i}-production"
     server_instance_type: r6a.2xlarge
     network_tier: "app-private"
