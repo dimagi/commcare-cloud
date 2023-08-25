@@ -66,6 +66,13 @@
   notify: restart couchdb2
   when: couchdb_version is version('3.0.0', '>=')
 
+- name: Bind not just to localhost
+  lineinfile:
+    dest: "/etc/default/couchdb"
+    line: "ERL_EPMD_ADDRESS=127.0.0.1"
+    state: absent
+  notify: restart couchdb2
+
 - name: Start couchdb2
   shell: /bin/true
   notify: start couchdb2

@@ -1,5 +1,5 @@
 account_alias: commcare-staging
-terraform_version: '1.3'
+terraform_version: '1.5'
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-1"
@@ -211,10 +211,10 @@ servers:
     group: "couchdb2"
     os: jammy
 
-  - server_name: "couch26-staging"
+  - server_name: "couch27-staging"
     server_instance_type: "t3a.large"
     network_tier: "db-private"
-    az: "a"
+    az: "b"
     volume_size: 30
     volume_type: "gp3"
     volume_encrypted: yes
@@ -379,7 +379,7 @@ internal_albs:
     targets:
       - couch24-staging
       - couch25-staging
-      - couch26-staging
+      - couch27-staging
       
 elasticache_cluster:
   create: yes
@@ -413,8 +413,3 @@ efs_file_systems:
     domain_name: "staging.commcare.local"
     route_names: "shared-efs"
 
-fsx_file_systems:
-  - fsx_name: "fsx_staging"
-    create: yes
-    storage_capacity: 64
-    throughput_capacity: 128

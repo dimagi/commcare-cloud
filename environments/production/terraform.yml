@@ -1,5 +1,5 @@
 account_alias: commcare-production
-terraform_version: '1.3'
+terraform_version: '1.5'
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-1"
@@ -237,7 +237,7 @@ servers:
     count: 1
 
   - server_name: "pillow_b2{i}-production"
-    server_instance_type: r5a.12xlarge
+    server_instance_type: r6a.8xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 50
