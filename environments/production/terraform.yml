@@ -226,9 +226,9 @@ servers:
     volume_encrypted: yes
     group: "celery"
     os: jammy
-    count: 2
+    count: 4
 
-  - server_name: "celery_c2000-production"
+  - server_name: "celery_c2{i}-production"
     server_instance_type: r6a.2xlarge
     network_tier: "app-private"
     az: "c"
@@ -236,6 +236,7 @@ servers:
     volume_encrypted: yes
     group: "celery"
     os: jammy
+    count: 4
 
   - server_name: "pillow_a2{i}-production"
     server_instance_type: r6a.4xlarge
