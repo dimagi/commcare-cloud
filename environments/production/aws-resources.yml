@@ -1,3 +1,7 @@
+celery_a2000-production: 10.202.10.253
+celery_a2000-production.instance_id: i-08351f36e5fe2a53c
+celery_a2001-production: 10.202.10.84
+celery_a2001-production.instance_id: i-006f5ff9356c4640a
 celery_b2000-production: 10.202.11.13
 celery_b2000-production.instance_id: i-06eb74c681e6db76c
 celery_b2001-production: 10.202.11.134
