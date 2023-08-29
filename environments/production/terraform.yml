@@ -226,17 +226,17 @@ servers:
     volume_encrypted: yes
     group: "celery"
     os: jammy
-    count: 4
+    count: 2
 
-  - server_name: "celery_c2{i}-production"
-    server_instance_type: r6a.2xlarge
+  # celery beat machine (singleton)
+  - server_name: "celery_c2000-production"
+    server_instance_type: r6a.xlarge
     network_tier: "app-private"
     az: "c"
     volume_size: 83
     volume_encrypted: yes
     group: "celery"
     os: jammy
-    count: 4
 
   - server_name: "pillow_a2{i}-production"
     server_instance_type: r6a.4xlarge
