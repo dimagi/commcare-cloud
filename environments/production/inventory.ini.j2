@@ -133,6 +133,8 @@ kafka_a1
 kafka_b1
 kafka_c1
 
+{{ __celerybeat_a0__ }}
+
 {{ __celery_a2__ }}
 
 {{ __celery_b2__ }}
@@ -140,6 +142,7 @@ kafka_c1
 {{ __celery_c2000__ }}
 
 [celery:children]
+celerybeat_a0
 celery_a2
 celery_b2
 celery_c2000
