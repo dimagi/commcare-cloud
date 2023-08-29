@@ -72,7 +72,7 @@ celery_processes:
     ush_background_tasks:
       concurrency: 8
 
-  celery_c2000:
+  celery_a2000:
     # not really queues
     flower: {}
     beat: {}
