@@ -133,13 +133,16 @@ kafka_a1
 kafka_b1
 kafka_c1
 
+{{ __celery_a2__ }}
+
 {{ __celery_b2__ }}
 
-{{ __celery_c2__ }}
+{{ __celery_c2000__ }}
 
 [celery:children]
+celery_a2
 celery_b2
-celery_c2
+celery_c2000
 
 [celery:vars]
 swap_size=2G
