@@ -18,6 +18,8 @@ celery_c2002-production: 10.202.12.227
 celery_c2002-production.instance_id: i-00ca3cfaa4a0689f1
 celery_c2003-production: 10.202.12.41
 celery_c2003-production.instance_id: i-0215d5ce40c7490bb
+celerybeat_a0-production: 10.202.10.254
+celerybeat_a0-production.instance_id: i-01f0c88bdcd6cd42e
 control4-production: 10.202.10.11
 control4-production.instance_id: i-05a9ed9fd13fabd55
 couch11-production: 10.202.42.190
