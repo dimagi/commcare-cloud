@@ -25,4 +25,20 @@
         - update
         - start all
 
-- import_playbook: restart_webworker_services.yml
+- name: "Restart all webworkers (if not split)"
+  import_playbook: restart_webworker_services.yml
+  vars:
+    webworker_hosts: 'webworkers'
+  when: "'hq_webworkers' not in groups"
+
+- name: "Restart hq_webworkers (if split)"
+  import_playbook: restart_webworker_services.yml
+  vars:
+    webworker_hosts: 'hq_webworkers'
+  when: "'hq_webworkers' in groups"
+
+- name: "Restart mobile_webworkers (if split)"
+  import_playbook: restart_webworker_services.yml
+  vars:
+    webworker_hosts: 'mobile_webworkers'
+  when: "'mobile_webworkers' in groups"
