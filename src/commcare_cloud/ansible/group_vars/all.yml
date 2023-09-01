@@ -186,3 +186,7 @@ supervisor_service_files:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
     template: ../templates/supervisor_django.conf.j2
     should_exist: "{{ inventory_hostname in groups['webworkers'] }}"
+  celery_beat:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_beat.conf"
+    template: ../templates/supervisor_celery_beat.conf.j2
+    should_exist: "{{ app_processes_config.celery_processes.get(inventory_hostname).beat is defined }}"

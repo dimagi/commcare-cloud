@@ -3,14 +3,13 @@
 - set_fact:
     celery_bash_runner: "{{ service_home }}/{{ deploy_env }}_celery_bash_runner.sh"
     supervisor_celery_flower: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_flower.conf"
-    supervisor_celery_beat: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_beat.conf"
     supervisor_celery_workers: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_workers.conf"
 
 - set_fact:
     celery_managed_files:
       - "{{celery_bash_runner}}"
       - "{{supervisor_celery_flower}}"
-      - "{{supervisor_celery_beat}}"
+      - "{{ supervisor_service_files.celery_beat.file_path }}"
       - "{{supervisor_celery_workers}}"
 
 - name: Add celery_bash_runner files
@@ -26,18 +25,16 @@
 - name: define special celery services
   template:
     src: "{{ item.template }}"
-    dest: "{{ item.file_name }}"
+    dest: "{{ item.file_path }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0600
-  when: item.should_apply
+  when: item.should_exist
   with_items:
     - template: ../templates/supervisor_celery_flower.conf.j2
-      file_name: "{{supervisor_celery_flower}}"
-      should_apply: "{{ app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"
-    - template: ../templates/supervisor_celery_beat.conf.j2
-      file_name: "{{supervisor_celery_beat}}"
-      should_apply: "{{ app_processes_config.celery_processes.get(inventory_hostname).beat is defined }}"
+      file_path: "{{supervisor_celery_flower}}"
+      should_exist: "{{ app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"
+    - "{{ supervisor_service_files.celery_beat }}"
 
 - name: define celery workers
   template:
