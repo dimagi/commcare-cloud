@@ -212,3 +212,7 @@ supervisor_service_files:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_management_commands.conf"
     template: ../templates/supervisor_management_commands.conf.j2
     should_exist: "{{ app_processes_config.management_commands.get(inventory_hostname, {}) }}"
+  pillowtop:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
+    template: ../templates/supervisor_pillowtop.conf.j2
+    should_exist: "{{ inventory_hostname in groups['pillowtop'] }}"
