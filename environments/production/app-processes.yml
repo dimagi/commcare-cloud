@@ -38,8 +38,6 @@ celery_processes:
     export_download_queue:
       concurrency: 4
       prefetch_multiplier: 1
-    linked_domain_queue:
-      concurrency: 3
     reminder_case_update_queue:
       pooling: gevent
       concurrency: 24
@@ -76,6 +74,8 @@ celery_processes:
     # not really queues
     flower: {}
     beat: {}
+    linked_domain_queue:
+      concurrency: 3
     logistics_background_queue:
       concurrency: 2
     logistics_reminder_queue:
