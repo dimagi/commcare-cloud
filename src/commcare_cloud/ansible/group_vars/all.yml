@@ -220,3 +220,7 @@ supervisor_service_files:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_websockets.conf"
     template: ../templates/supervisor_websockets.conf
     should_exist: "{{ inventory_hostname in groups['proxy'] and run_websockets_wsgi }}"
+  prometheus:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_prometheus.conf"
+    template: ../templates/supervisor_prometheus.conf.j2
+    should_exist: "{{ prometheus_monitoring_enabled|default(False) }}"
