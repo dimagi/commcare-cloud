@@ -182,7 +182,7 @@ java_17_bin_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64/bin
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_management_commands.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_flower.conf.j2
 #
-# The only one not matching this pattern is celery_bash_runner
+# The only ones not matching this pattern is celery_bash_runner and django_bash_runner
 supervisor_service_files:
   django:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
@@ -223,4 +223,9 @@ supervisor_service_files:
   prometheus:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_prometheus.conf"
     template: ../templates/supervisor_prometheus.conf.j2
+    should_exist: "{{ prometheus_monitoring_enabled|default(False) }}"
+  # only used with prometheus
+  django_bash_runner:
+    file_path: "{{ service_home }}/{{ deploy_env }}_django_bash_runner.sh"
+    template: ../templates/django_bash_runner.sh.j2
     should_exist: "{{ prometheus_monitoring_enabled|default(False) }}"
