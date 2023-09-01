@@ -208,3 +208,7 @@ supervisor_service_files:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_formplayer_spring.conf"
     template: ../templates/supervisor_formplayer_spring.conf.j2
     should_exist: "{{ inventory_hostname in groups['formplayer'] }}"
+  management_commands:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_management_commands.conf"
+    template: ../templates/supervisor_management_commands.conf.j2
+    should_exist: "{{ app_processes_config.management_commands.get(inventory_hostname, {}) }}"
