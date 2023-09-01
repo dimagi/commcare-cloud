@@ -1,18 +1,16 @@
 - set_fact:
-    supervisor_django: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
-
-- set_fact:
     webworker_managed_files:
-      - "{{ supervisor_django }}"
+      - "{{ supervisor_service_files.django.file_path }}"
 
 - name: define django worker service
   become: yes
   template:
-    src: "../templates/supervisor_django.conf.j2"
-    dest: "{{ supervisor_django }}"
+    src: "{{ supervisor_service_files.django.template }}"
+    dest: "{{ supervisor_service_files.django.file_path }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
+  when: supervisor_service_files.django.should_exist
   with_items:
     - env_vars:
         http_proxy: "{% if http_proxy_address is defined %}http://{{ http_proxy_address }}:{{ http_proxy_port }}{% endif %}"

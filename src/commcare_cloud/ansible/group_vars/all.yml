@@ -182,3 +182,7 @@ java_17_bin_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64/bin
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_management_commands.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_flower.conf.j2
 supervisor_service_files:
+  django:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
+    template: ../templates/supervisor_django.conf.j2
+    should_exist: "{{ inventory_hostname in groups['webworkers'] }}"
