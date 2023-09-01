@@ -169,3 +169,16 @@ ansible_become_password: "{{ ansible_sudo_pass }}"
 
 # Java version for Formplayer
 java_17_bin_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64/bin
+
+#  To find this complete list, you can run:
+#  $ find . -type f | grep templates/supervisor_
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_django.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_beat.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_prometheus.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_pillowtop.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_workers.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_websockets.conf
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_formplayer_spring.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_management_commands.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_flower.conf.j2
+supervisor_service_files:
