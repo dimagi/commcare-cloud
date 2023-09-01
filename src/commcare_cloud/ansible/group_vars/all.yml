@@ -216,3 +216,7 @@ supervisor_service_files:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
     template: ../templates/supervisor_pillowtop.conf.j2
     should_exist: "{{ inventory_hostname in groups['pillowtop'] }}"
+  websockets:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_websockets.conf"
+    template: ../templates/supervisor_websockets.conf
+    should_exist: "{{ inventory_hostname in groups['proxy'] and run_websockets_wsgi }}"
