@@ -194,3 +194,7 @@ supervisor_service_files:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_flower.conf"
     template: ../templates/supervisor_celery_flower.conf.j2
     should_exist: "{{ app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"
+  celery_workers:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_workers.conf"
+    template: ../templates/supervisor_celery_workers.conf.j2
+    should_exist: "{{ app_processes_config.celery_processes.get(inventory_hostname) is defined }}"

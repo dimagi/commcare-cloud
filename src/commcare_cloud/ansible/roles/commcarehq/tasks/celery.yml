@@ -2,14 +2,13 @@
 # validate_app_processes_config(), in app_processes.py, so they don't share a process with another queue.
 - set_fact:
     celery_bash_runner: "{{ service_home }}/{{ deploy_env }}_celery_bash_runner.sh"
-    supervisor_celery_workers: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_workers.conf"
 
 - set_fact:
     celery_managed_files:
       - "{{celery_bash_runner}}"
       - "{{ supervisor_service_files.celery_flower.file_path }}"
       - "{{ supervisor_service_files.celery_beat.file_path }}"
-      - "{{supervisor_celery_workers}}"
+      - "{{ supervisor_service_files.celery_workers.file_path }}"
 
 - name: Add celery_bash_runner files
   template:
@@ -35,12 +34,12 @@
 
 - name: define celery workers
   template:
-    src: "../templates/supervisor_celery_workers.conf.j2"
-    dest: "{{ supervisor_celery_workers }}"
+    src: "{{ supervisor_service_files.celery_workers.template }}"
+    dest: "{{ supervisor_service_files.celery_workers.file_path }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
-  when: app_processes_config.celery_processes.get(inventory_hostname) is defined
+  when: supervisor_service_files.celery_workers.should_exist
   with_items:
     - env_vars:
         http_proxy: "{% if http_proxy_address is defined %}http://{{ http_proxy_address }}:{{ http_proxy_port }}{% endif %}"
