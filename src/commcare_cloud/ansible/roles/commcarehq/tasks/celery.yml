@@ -1,13 +1,6 @@
 # Note: Make sure to add queues with associated tasks to the solo_queues list in
 # validate_app_processes_config(), in app_processes.py, so they don't share a process with another queue.
 
-- set_fact:
-    celery_managed_files:
-      - "{{ supervisor_service_files.celery_bash_runner.file_path }}"
-      - "{{ supervisor_service_files.celery_flower.file_path }}"
-      - "{{ supervisor_service_files.celery_beat.file_path }}"
-      - "{{ supervisor_service_files.celery_workers.file_path }}"
-
 - name: Add celery_bash_runner files
   template:
     src: "{{ supervisor_service_files.celery_bash_runner.template }}"

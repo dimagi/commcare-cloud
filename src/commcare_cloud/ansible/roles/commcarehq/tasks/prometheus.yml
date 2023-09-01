@@ -1,7 +1,3 @@
-- set_fact:
-    prometheus_managed_files:
-      - "{{ supervisor_service_files.prometheus.file_path }}"
-
 - name: Creates Prometheus Metrics directory
   become: yes
   file:

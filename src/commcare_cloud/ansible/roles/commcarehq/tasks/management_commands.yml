@@ -1,7 +1,3 @@
-- set_fact:
-    mgmt_cmd_managed_files:
-      - "{{ supervisor_service_files.management_commands.file_path }}"
-
 - name: define management command services
   become: yes
   template:

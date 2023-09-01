@@ -1,7 +1,3 @@
-- set_fact:
-    proxy_managed_files:
-      - "{{ supervisor_service_files.websockets.file_path }}"
-
 - name: define websockets services
   become: yes
   template:

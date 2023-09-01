@@ -1,7 +1,3 @@
-- set_fact:
-    prometheus_django_runner_managed_files:
-      - "{{ supervisor_service_files.django_bash_runner.file_path }}"
-
 - name: Add django_bash_runner
   become: yes
   template:
