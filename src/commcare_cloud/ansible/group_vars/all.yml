@@ -204,3 +204,7 @@ supervisor_service_files:
     file_path: "{{ service_home }}/{{ deploy_env }}_celery_bash_runner.sh"
     template: ../templates/celery_bash_runner.sh.j2
     should_exist: "{{ app_processes_config.celery_processes.get(inventory_hostname) is defined }}"
+  formplayer_spring:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_formplayer_spring.conf"
+    template: ../templates/supervisor_formplayer_spring.conf.j2
+    should_exist: "{{ inventory_hostname in groups['formplayer'] }}"

@@ -1,11 +1,6 @@
 - set_fact:
-    supervisor_formplayer_spring: "{{ service_home }}/{{ deploy_env }}_supervisor_formplayer_spring.conf"
-  tags:
-    - formplayer_deploy
-
-- set_fact:
     formplayer_managed_files:
-      - "{{ supervisor_formplayer_spring }}"
+      - "{{ supervisor_service_files.formplayer_spring.file_path }}"
   tags:
     - formplayer_deploy
 
@@ -23,11 +18,12 @@
 - name: define formplayer spring services
   become: yes
   template:
-    src: "../templates/supervisor_formplayer_spring.conf.j2"
-    dest: "{{ supervisor_formplayer_spring }}"
+    src: "{{ supervisor_service_files.formplayer_spring.template }}"
+    dest: "{{ supervisor_service_files.formplayer_spring.file_path }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
+  when: supervisor_service_files.formplayer_spring.should_exist
   with_items:
     - env_vars:
         http_proxy: "{% if http_proxy_address is defined %}http://{{ http_proxy_address }}:{{ http_proxy_port }}{% endif %}"
