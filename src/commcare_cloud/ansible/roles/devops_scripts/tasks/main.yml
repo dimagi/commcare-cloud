@@ -8,27 +8,27 @@
     mode: "u=rwx,g=rwx,o=r"
   when: "'postgresql' in group_names or 'citusdb' in group_names or 'pg_standby' in group_names"
 
-- name: Copy uptime.sh script to /usr/local/sbin
+- name: Copy autoreboot.sh script to /usr/local/sbin
   template:
-    src: uptime.sh.j2
-    dest: /usr/local/sbin/uptime.sh
+    src: autoreboot.sh.j2
+    dest: /usr/local/sbin/autoreboot.sh
     owner: ansible
     group: ansible
     mode: "u=rwx,g=rwx,o=r"
   when: "'formplayer' in group_names or 'webworkers' in group_names"
 
-- name: Creates a cron to check the uptime details
+- name: Creates a cron to check the autoreboot details
   become: yes
   cron:
-    name: Run uptime for every 0th minute and 30th minute
+    name: Run autoreboot.sh for every 0th minute and 30th minute
     minute: "0,30"
     hour: "*"
     day: "*"
     month: "*"
     weekday: "*"
     user: root
-    job: "/usr/local/sbin/uptime.sh"
-    cron_file: uptime_sh
+    job: "/usr/local/sbin/autoreboot.sh"
+    cron_file: autoreboot_sh
   when: maintenance_time is defined and ("'formplayer' in group_names or 'webworkers' in group_names")
 
 - name: Copy intruder.sh script to /usr/local/sbin
