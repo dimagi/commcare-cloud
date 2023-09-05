@@ -169,3 +169,63 @@ ansible_become_password: "{{ ansible_sudo_pass }}"
 
 # Java version for Formplayer
 java_17_bin_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64/bin
+
+#  To find this complete list, you can run:
+#  $ find . -type f | grep templates/supervisor_
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_django.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_beat.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_prometheus.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_pillowtop.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_workers.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_websockets.conf
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_formplayer_spring.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_management_commands.conf.j2
+#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_flower.conf.j2
+#
+# The only ones not matching this pattern are celery_bash_runner and django_bash_runner
+supervisor_service_files:
+  django:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_django.conf"
+    template: ../templates/supervisor_django.conf.j2
+    should_exist: "{{ inventory_hostname in groups['webworkers'] }}"
+  celery_beat:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_beat.conf"
+    template: ../templates/supervisor_celery_beat.conf.j2
+    should_exist: "{{ app_processes_config.celery_processes.get(inventory_hostname).beat is defined }}"
+  celery_flower:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_flower.conf"
+    template: ../templates/supervisor_celery_flower.conf.j2
+    should_exist: "{{ app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"
+  celery_workers:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_celery_workers.conf"
+    template: ../templates/supervisor_celery_workers.conf.j2
+    should_exist: "{{ app_processes_config.celery_processes.get(inventory_hostname) is defined }}"
+  celery_bash_runner:
+    file_path: "{{ service_home }}/{{ deploy_env }}_celery_bash_runner.sh"
+    template: ../templates/celery_bash_runner.sh.j2
+    should_exist: "{{ app_processes_config.celery_processes.get(inventory_hostname) is defined }}"
+  formplayer_spring:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_formplayer_spring.conf"
+    template: ../templates/supervisor_formplayer_spring.conf.j2
+    should_exist: "{{ inventory_hostname in groups['formplayer'] }}"
+  management_commands:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_management_commands.conf"
+    template: ../templates/supervisor_management_commands.conf.j2
+    should_exist: "{{ app_processes_config.management_commands.get(inventory_hostname, {}) }}"
+  pillowtop:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
+    template: ../templates/supervisor_pillowtop.conf.j2
+    should_exist: "{{ inventory_hostname in groups['pillowtop'] }}"
+  websockets:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_websockets.conf"
+    template: ../templates/supervisor_websockets.conf
+    should_exist: "{{ inventory_hostname in groups['proxy'] and run_websockets_wsgi }}"
+  prometheus:
+    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_prometheus.conf"
+    template: ../templates/supervisor_prometheus.conf.j2
+    should_exist: "{{ prometheus_monitoring_enabled|default(False) }}"
+  # only used with prometheus
+  django_bash_runner:
+    file_path: "{{ service_home }}/{{ deploy_env }}_django_bash_runner.sh"
+    template: ../templates/django_bash_runner.sh.j2
+    should_exist: "{{ prometheus_monitoring_enabled|default(False) }}"

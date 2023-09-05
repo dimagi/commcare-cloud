@@ -1,19 +1,12 @@
-- set_fact:
-    supervisor_management_commands: "{{ service_home }}/{{ deploy_env }}_supervisor_management_commands.conf"
-
-- set_fact:
-    mgmt_cmd_managed_files:
-      - "{{ supervisor_management_commands }}"
-
 - name: define management command services
   become: yes
   template:
-    src: "../templates/supervisor_management_commands.conf.j2"
-    dest: "{{ supervisor_management_commands }}"
+    src: "{{ supervisor_service_files.management_commands.template }}"
+    dest: "{{ supervisor_service_files.management_commands.file_path }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
-  when: app_processes_config.management_commands.get(inventory_hostname, {})
+  when: supervisor_service_files.management_commands.should_exist
   with_items:
     - env_vars:
         TMPDIR: '{{ encrypted_tmp }}'

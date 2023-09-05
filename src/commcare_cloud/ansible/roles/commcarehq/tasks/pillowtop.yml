@@ -1,18 +1,12 @@
-- set_fact:
-    supervisor_pillowtop: "{{ service_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
-
-- set_fact:
-    pillowtop_managed_files:
-      - "{{ supervisor_pillowtop }}"
-
 - name: define pillowtop services
   become: yes
   template:
-    src: "../templates/supervisor_pillowtop.conf.j2"
-    dest: "{{ supervisor_pillowtop }}"
+    src: "{{ supervisor_service_files.pillowtop.template }}"
+    dest: "{{ supervisor_service_files.pillowtop.file_path }}"
     owner: "{{ cchq_user }}"
     group: "{{ cchq_user }}"
     mode: 0644
+  when: supervisor_service_files.pillowtop.should_exist
   with_items:
     - env_vars:
         TMPDIR: '{{ encrypted_tmp }}'
