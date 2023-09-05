@@ -5,7 +5,7 @@ maintenance_time={{ maintenance_time }}
 current_time=$(date +%R)
 uptime_days=$(uptime | awk '/days?/ {print $3; next}; {print 0}')
 
-if [ $uptime_days -ge 90 ] && [[ $current_time > $maintenance_start_time ]] && [[ $current_time < $maintenance_last_time ]]; then
+if [ $uptime_days -ge 90 ] && [[ $current_time > $maintenance_start_time ]] && [[ $current_time < $maintenance_end_time ]]; then
   if [ "$current_availability_zone" == "1a" ]; then
     logger '[Maintenance] Rebooting server as uptime is greater than or equal to ninety days in az:A'
     echo "Starting reboot"
