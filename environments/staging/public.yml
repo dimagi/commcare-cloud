@@ -233,4 +233,5 @@ formplayer_java_version: "{{ java_17_bin_path }}/java"
 
 # formplayer & web_worker
 maintenance_start_time= '06:00'
+
 maintenance_end_time= '08:00'
