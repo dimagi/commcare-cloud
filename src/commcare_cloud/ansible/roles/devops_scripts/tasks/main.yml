@@ -29,7 +29,7 @@
     user: root
     job: "/usr/local/sbin/autoreboot.sh"
     cron_file: autoreboot_sh
-  when: maintenance_start_time is defined and maintenance_end_time is defined and ('formplayer' in group_names or 'webworkers' in group_names)
+  when: maintenance_start_time is defined is defined and ("'formplayer' in group_names or 'webworkers' in group_names")
 
 - name: Copy intruder.sh script to /usr/local/sbin
   copy:
