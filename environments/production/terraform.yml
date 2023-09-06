@@ -191,17 +191,13 @@ servers:
     os: jammy
 
   - server_name: "couch_b0-production"
-    ## Increase once ready for migration
-    # server_instance_type: c6a.8xlarge
-    server_instance_type: c6a.large
+    server_instance_type: c6a.8xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 80
     volume_encrypted: yes
     block_device:
-      ## Increase once ready for migration
-      # volume_size: 3150
-      volume_size: 1
+      volume_size: 3150
       encrypted: yes
     group: "couchdb2"
     os: jammy
@@ -601,9 +597,9 @@ internal_albs:
     target_port: 15984
     health_check_interval: 30
     targets:
-      - couch11-production
       - couch_a0-production
       - couch_a1-production
+      - couch_b0-production
 
 elasticache_cluster:
   create: yes
