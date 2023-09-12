@@ -187,8 +187,7 @@ servers:
     block_device:
       volume_size: 3150
       encrypted: yes
-      ## Enable once migration is complete
-      # enable_cross_region_backup: yes
+      enable_cross_region_backup: yes
     group: "couchdb2"
     os: jammy
 
