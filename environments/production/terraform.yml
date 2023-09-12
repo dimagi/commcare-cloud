@@ -191,17 +191,13 @@ servers:
     os: bionic
 
   - server_name: "couch_a0-production"
-    ## Increase once ready for migration
-    # server_instance_type: c6a.8xlarge
-    server_instance_type: c6a.large
+    server_instance_type: c6a.8xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     volume_encrypted: yes
     block_device:
-      ## Increase once ready for migration
-      # volume_size: 3150
-      volume_size: 1
+      volume_size: 3150
       encrypted: yes
       ## Enable once migration is complete
       # enable_cross_region_backup: yes
@@ -637,7 +633,7 @@ internal_albs:
     targets:
       - couch11-production
       - couch12-production
-      - couch13-production
+      - couch_a0-production
 
 elasticache_cluster:
   create: yes
