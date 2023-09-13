@@ -1,6 +1,6 @@
 #!/bin/bash
 
-current_availability_zone=$(ec2metadata --availability-zone | awk -F'-' '{print $3}')
+current_availability_zone=$(ec2metadata --availability-zone | awk -F'-' '{print $3}' | cut -c2-)
 maintenance_start_time={{ maintenance_start_time }}
 maintenance_end_time={{ maintenance_end_time }}
 current_time=$(date +%R)
