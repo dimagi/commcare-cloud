@@ -29,3 +29,4 @@ Performing these steps will ensure that that those CVEs don't affect your enviro
 3. Restart services:
  ```bash
  cchq <env> service commcare restart
+ ```
