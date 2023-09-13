@@ -7,15 +7,15 @@ current_time=$(date +%R)
 uptime_days=$(uptime | awk '/days?/ {print $3; next}; {print 0}')
 
 if [ $uptime_days -ge 90 ] && [[ $current_time > $maintenance_start_time ]] && [[ $current_time < $maintenance_end_time ]]; then
-  if [ "$current_availability_zone" == "1a" ]; then
+  if [ "$current_availability_zone" == "a" ]; then
     logger '[Maintenance] Rebooting server as uptime is greater than or equal to ninety days in az:A'
     echo "Starting reboot"
     shutdown -r +1
-  elif [ "$current_availability_zone" == "1b" ]; then
+  elif [ "$current_availability_zone" == "b" ]; then
     logger '[Maintenance] Rebooting server as uptime is greater than or equal to ninety days in az:B'
     echo "Starting reboot"
     shutdown -r +30
-  elif [ "$current_availability_zone" == "1c" ]; then
+  elif [ "$current_availability_zone" == "c" ]; then
     logger '[Maintenance] Rebooting server as uptime is greater than or equal to ninety days in az:C'
     echo "Starting reboot"
     shutdown -r +60
