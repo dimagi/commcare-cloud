@@ -40,6 +40,19 @@ def check_output(cmd_parts, env, silent=False):
     return subprocess.check_output(cmd_parts, env=env_vars)
 
 
+def run(cmd_parts, env, silent=False):
+
+    env_vars = os.environ.copy()
+    env_vars.update(env)
+    if not silent:
+        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        print_command('{} {}'.format(
+            ' '.join('{}={}'.format(key, value) for key, value in env.items()),
+            cmd,
+        ))
+    return subprocess.run(cmd_parts, env=env_vars)
+
+
 def aws_cli(environment, cmd_parts):
 
     return json.loads(
@@ -627,7 +640,7 @@ def _has_valid_session_credentials_for_sso():
 
 
 def _refresh_sso_credentials(aws_session_profile):
-    check_output(['aws', 'sso', 'login'], env={'AWS_PROFILE': aws_session_profile})
+    run(['aws', 'sso', 'login'], env={'AWS_PROFILE': aws_session_profile})
 
 
 def _has_valid_v1_session_credentials(aws_profile):
