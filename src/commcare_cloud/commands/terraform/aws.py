@@ -4,7 +4,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 import json
 import os
 import subprocess
-import textwrap
 from datetime import datetime
 from dateutil import parser
 import pytz
@@ -103,7 +102,6 @@ def get_aws_resources(environment):
         "--output", "json",
         "--region", config.region,
     ])]
-
 
     nlb_endpoints = aws_cli(environment, [
         'aws', 'elbv2', 'describe-load-balancers',
@@ -428,7 +426,10 @@ def _aws_sign_in_with_sso(environment):
     aws_session_profile = '{}:session'.format(environment.terraform_config.aws_profile)
     # todo: add `... or if _date_modified(AWS_CONFIG_PATH) > _date_modified(AWS_CREDENTIALS_PATH)`
     if not _has_profile_for_sso(aws_session_profile):
-        puts(color_notice("Configuring SSO. To further customize, run `aws configure sso --profile {}`".format(aws_session_profile)))
+        puts(color_notice(
+            "Configuring SSO. To further customize, run `aws configure sso "
+            "--profile {}`".format(
+                aws_session_profile)))
         _write_profile_for_sso(
             aws_session_profile,
             sso_start_url=environment.aws_config.sso_config.sso_start_url,
