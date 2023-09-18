@@ -50,7 +50,8 @@ def run(cmd_parts, env, silent=False):
             ' '.join('{}={}'.format(key, value) for key, value in env.items()),
             cmd,
         ))
-    return subprocess.run(cmd_parts, env=env_vars)
+    # check=True to raise error if results in non-zero exit status
+    return subprocess.run(cmd_parts, env=env_vars, check=True)
 
 
 def aws_cli(environment, cmd_parts):
