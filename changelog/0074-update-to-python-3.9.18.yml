@@ -1,0 +1,27 @@
+title: update-to-python-3.9.18
+key: update-to-python-3.9.18
+date: 2023-09-12
+optional_per_env: no
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version:
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  Installs python 3.9.18 and build a new virutalenv for CommCare HQ
+
+details: |
+  Python 3.9.18 applies some security patches to the known CVEs in earlier versions of Python 3.9.
+  Performing these steps will ensure that that those CVEs don't affect your environment
+
+update_steps: |
+  1. Update to the latest commcare-cloud
+  2. Install Python 3.9.18, update supervisor configs and sudoers file, and create
+   virtualenv for CommCare HQ:
+   ```bash
+   cchq <env> deploy-stack --tags=python
+   ```
+   It will do a dry run, after which you can review the changes and enter 'y' to apply.
+  3. Restart services:
+   ```bash
+   cchq <env> service commcare restart
+   ```

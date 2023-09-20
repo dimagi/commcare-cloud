@@ -4,7 +4,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 import json
 import os
 import subprocess
-import textwrap
 from datetime import datetime
 from dateutil import parser
 import pytz
@@ -38,6 +37,20 @@ def check_output(cmd_parts, env, silent=False):
             cmd,
         ))
     return subprocess.check_output(cmd_parts, env=env_vars)
+
+
+def run(cmd_parts, env, silent=False):
+
+    env_vars = os.environ.copy()
+    env_vars.update(env)
+    if not silent:
+        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        print_command('{} {}'.format(
+            ' '.join('{}={}'.format(key, value) for key, value in env.items()),
+            cmd,
+        ))
+    # check=True to raise error if results in non-zero exit status
+    return subprocess.run(cmd_parts, env=env_vars, check=True)
 
 
 def aws_cli(environment, cmd_parts):
@@ -89,7 +102,6 @@ def get_aws_resources(environment):
         "--output", "json",
         "--region", config.region,
     ])]
-
 
     nlb_endpoints = aws_cli(environment, [
         'aws', 'elbv2', 'describe-load-balancers',
@@ -414,7 +426,10 @@ def _aws_sign_in_with_sso(environment):
     aws_session_profile = '{}:session'.format(environment.terraform_config.aws_profile)
     # todo: add `... or if _date_modified(AWS_CONFIG_PATH) > _date_modified(AWS_CREDENTIALS_PATH)`
     if not _has_profile_for_sso(aws_session_profile):
-        puts(color_notice("Configuring SSO. To further customize, run `aws configure sso --profile {}`".format(aws_session_profile)))
+        puts(color_notice(
+            "Configuring SSO. To further customize, run `aws configure sso "
+            "--profile {}`".format(
+                aws_session_profile)))
         _write_profile_for_sso(
             aws_session_profile,
             sso_start_url=environment.aws_config.sso_config.sso_start_url,
@@ -627,7 +642,7 @@ def _has_valid_session_credentials_for_sso():
 
 
 def _refresh_sso_credentials(aws_session_profile):
-    check_output(['aws', 'sso', 'login'], env={'AWS_PROFILE': aws_session_profile})
+    run(['aws', 'sso', 'login'], env={'AWS_PROFILE': aws_session_profile})
 
 
 def _has_valid_v1_session_credentials(aws_profile):

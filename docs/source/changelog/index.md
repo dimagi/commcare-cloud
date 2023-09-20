@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2023-09-12** [update-to-python-3.9.18](0074-update-to-python-3.9.18.md)
+Installs python 3.9.18 and build a new virutalenv for CommCare HQ
+
+
+---
 #### **2023-06-14** [Prepare project spaces for Case List Explorer report release](0073-prepare-for-cle-ga.md)
 We have created a management command to assist with syncing data to the Case Search Index so that legacy projects 
 may access data in a new report that will be made generally available.
