@@ -108,6 +108,8 @@
     daemon-reload: yes
     name: elasticsearch
   when: copy_elasticsearch_systemd_result.changed
+  tags:
+    - es_conf
 
 - debug: msg="If you're just updating the ES conf then you sill need to restart the cluster. Use  the 'es_rolling_restart' playbook."
   when: copy_elasticsearch_conf_result.changed
