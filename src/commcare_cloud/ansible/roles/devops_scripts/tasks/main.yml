@@ -20,12 +20,12 @@
 - name: Creates a cron to check the autoreboot details
   become: yes
   cron:
-    name: Run autoreboot.sh for every 0th minute and 30th minute
+    name: Run autoreboot.sh at minute 0 and 30 on Tuesday, Wednesday, and Thursday
     minute: "0,30"
     hour: "*"
     day: "*"
     month: "*"
-    weekday: "*"
+    weekday: "2-4" # Tuesday (2) through Thursday (4)
     user: root
     job: "/usr/local/sbin/autoreboot.sh"
     cron_file: autoreboot_sh
