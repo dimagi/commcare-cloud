@@ -67,6 +67,7 @@ filebeat_inputs:
     tags: nginx-error
 
 formplayer_java_version: "{{ java_17_bin_path }}/java"
+formplayer_archive_time_spec: '3d'
 formplayer_purge_time_spec: '10d'
 formplayer_sensitive_data_logging: true
 formplayer_forward_ip_proxy: true
