@@ -178,6 +178,18 @@ servers:
     group: "couchdb2"
     os: bionic
 
+  - server_name: "couch13-production"
+    server_instance_type: c6a.8xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 90
+    volume_encrypted: yes
+    block_device:
+      volume_size: 3500
+      encrypted: yes
+    group: "couchdb2"
+    os: bionic
+
   - server_name: "couch_a0-production"
     server_instance_type: c6a.8xlarge
     network_tier: "db-private"
@@ -187,18 +199,23 @@ servers:
     block_device:
       volume_size: 3150
       encrypted: yes
-      enable_cross_region_backup: yes
+      ## Enable once migration is complete
+      # enable_cross_region_backup: yes
     group: "couchdb2"
     os: jammy
 
   - server_name: "couch_a1-production"
-    server_instance_type: c6a.8xlarge
+    ## Increase once ready for migration
+    # server_instance_type: c6a.8xlarge
+    server_instance_type: c6a.large
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     volume_encrypted: yes
     block_device:
-      volume_size: 3150
+      ## Increase once ready for migration
+      # volume_size: 3150
+      volume_size: 1
       encrypted: yes
     group: "couchdb2"
     os: jammy
@@ -615,8 +632,8 @@ internal_albs:
     health_check_interval: 30
     targets:
       - couch11-production
+      - couch12-production
       - couch_a0-production
-      - couch_a1-production
 
 elasticache_cluster:
   create: yes
