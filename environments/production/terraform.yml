@@ -615,8 +615,8 @@ internal_albs:
     health_check_interval: 30
     targets:
       - couch11-production
+      - couch12-production
       - couch_a0-production
-      - couch_a1-production
 
 elasticache_cluster:
   create: yes
