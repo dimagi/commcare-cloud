@@ -3,8 +3,8 @@ DATADOG_ENABLED: True
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '4096m'
 elasticsearch_cluster_name: 'deves'
-elasticsearch_version: 2.4.6
-elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
+elasticsearch_version: 5.6.16
+elasticsearch_download_sha256: 6b035a59337d571ab70cea72cc55225c027ad142fbb07fd8984e54261657c77f.
 
 #elasticsearch_node_name: '??'
 elastcsearch_backup_days: 2
@@ -123,7 +123,7 @@ localsettings:
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
-  ELASTICSEARCH_MAJOR_VERSION: 2
+  ELASTICSEARCH_MAJOR_VERSION: 5
   # Index Multiplexer Settings  
   ES_APPS_INDEX_MULTIPLEXED: False # Swapped 
   ES_CASE_SEARCH_INDEX_MULTIPLEXED: False # Swapped
