@@ -192,13 +192,17 @@ servers:
     os: jammy
 
   - server_name: "couch_a1-production"
-    server_instance_type: c6a.8xlarge
+    ## Increase once ready for migration
+    # server_instance_type: c6a.8xlarge
+    server_instance_type: c6a.large
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     volume_encrypted: yes
     block_device:
-      volume_size: 3150
+      ## Increase once ready for migration
+      # volume_size: 3150
+      volume_size: 1
       encrypted: yes
     group: "couchdb2"
     os: jammy
