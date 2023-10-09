@@ -366,14 +366,6 @@ servers:
     volume_encrypted: yes
     group: "postgresql"
     os: jammy
-  - server_name: "pgbouncer_c1-production"  # pgbouncer_host for pgmain, formplayer
-    server_instance_type: t3a.large
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 80
-    volume_encrypted: yes
-    group: "postgresql"
-    os: jammy
   - server_name: "pgbouncer13-production" # pgbouncer_host for ucr dbs
     server_instance_type: t3a.large
     network_tier: "db-private"
@@ -592,12 +584,10 @@ pgbouncer_nlbs:
     targets:
       - pgbouncer_a4-production
       - pgbouncer_b2-production
-      - pgbouncer_c1-production
   - name: pgmain_nlb-production
     targets:
       - pgbouncer_a4-production
       - pgbouncer_b2-production
-      - pgbouncer_c1-production
   - name: pgucr_nlb-production
     targets:
       - pgbouncer13-production

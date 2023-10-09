@@ -48,7 +48,6 @@ dbs:
       - pgbouncer_a5
       - pgbouncer_b2
       - pgbouncer_b3
-      - pgbouncer_c1
       - pgbouncer13
       - pgbouncer14
   formplayer:
@@ -60,7 +59,6 @@ dbs:
       - pgbouncer_a5
       - pgbouncer_b2
       - pgbouncer_b3
-      - pgbouncer_c1
       - pgbouncer13
       - pgbouncer14
   ucr:
@@ -73,7 +71,6 @@ dbs:
       - pgbouncer_a5
       - pgbouncer_b2
       - pgbouncer_b3
-      - pgbouncer_c1
       - pgbouncer13
       - pgbouncer14
     query_stats: True
@@ -85,7 +82,6 @@ dbs:
       - pgbouncer_a5
       - pgbouncer_b2
       - pgbouncer_b3
-      - pgbouncer_c1
       - pgbouncer13
       - pgbouncer14
   auditcare:
@@ -98,7 +94,6 @@ dbs:
       - pgbouncer_a5
       - pgbouncer_b2
       - pgbouncer_b3
-      - pgbouncer_c1
       - pgbouncer13
       - pgbouncer14
   repeaters:
@@ -111,7 +106,6 @@ dbs:
       - pgbouncer_a5
       - pgbouncer_b2
       - pgbouncer_b3
-      - pgbouncer_c1
       - pgbouncer13
       - pgbouncer14
   form_processing:
@@ -130,7 +124,6 @@ dbs:
           - pgbouncer_a5
           - pgbouncer_b2
           - pgbouncer_b3
-          - pgbouncer_c1
           - pgbouncer13
           - pgbouncer14
       p2:
@@ -142,7 +135,6 @@ dbs:
           - pgbouncer_a5
           - pgbouncer_b2
           - pgbouncer_b3
-          - pgbouncer_c1
           - pgbouncer13
           - pgbouncer14
       p3:
@@ -154,7 +146,6 @@ dbs:
           - pgbouncer_a5
           - pgbouncer_b2
           - pgbouncer_b3
-          - pgbouncer_c1
           - pgbouncer13
           - pgbouncer14
       p4:
@@ -166,7 +157,6 @@ dbs:
           - pgbouncer_a5
           - pgbouncer_b2
           - pgbouncer_b3
-          - pgbouncer_c1
           - pgbouncer13
           - pgbouncer14
       p5:
@@ -178,6 +168,5 @@ dbs:
           - pgbouncer_a5
           - pgbouncer_b2
           - pgbouncer_b3
-          - pgbouncer_c1
           - pgbouncer13
           - pgbouncer14
