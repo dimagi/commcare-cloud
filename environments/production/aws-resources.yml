@@ -97,8 +97,6 @@ pgbouncer_b2-production: 10.202.41.209
 pgbouncer_b2-production.instance_id: i-0401d2bda17749fb5
 pgbouncer_b3-production: 10.202.41.227
 pgbouncer_b3-production.instance_id: i-06b0e8333a5597559
-pgbouncer_c1-production: 10.202.42.16
-pgbouncer_c1-production.instance_id: i-079250a517f8cf507
 pgformplayer2-production: pgformplayer2-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
 pgformplayer_nlb-production: pgformplayer-nlb-production-ec7390b942368541.elb.us-east-1.amazonaws.com
 pgmain1-production: pgmain1-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
