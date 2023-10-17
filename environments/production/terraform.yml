@@ -343,7 +343,7 @@ servers:
     group: "postgresql"
     os: jammy
   - server_name: "pgbouncer_a6-production" # host and pgbouncer_host for pl/proxys
-    server_instance_type: r5a.2xlarge
+    server_instance_type: r6a.xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 200
