@@ -113,7 +113,7 @@ data_email: datatree@example.com
 subscription_change_email: accounts+subchange@example.com
 internal_subscription_change_email: accounts+subchange+internal@example.com
 billing_email: sales@example.com
-invoicing_contact_email: billing-support@example.com
+invoicing_contact_email: accounts@example.com
 growth_email: growth@example.com
 saas_ops_email: saas-ops@example.com
 saas_reporting_email: null
