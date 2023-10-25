@@ -31,7 +31,7 @@ cchq <env> django-manage elastic_sync_multiplexed estimated_size_for_reindex
     ```
   - If you don't have separate data nodes, check disk usage on ES nodes.
     ```sh
-    cchq <env>  run-shell-command es_data "df -h /opt/data" -b
+    cchq <env>  run-shell-command elasticsearch "df -h /opt/data" -b
     ```
   This will return disk usage for each node. You can check if the cumulative available space across all nodes is greater than the total recommended space from the `estimated_size_for_reindex` output.
 
