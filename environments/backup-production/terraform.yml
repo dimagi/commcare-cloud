@@ -1,13 +1,13 @@
 account_alias: commcare-backup-production
 terraform_version: '1.2'
 state_bucket: dimagi-terraform-backup
-state_bucket_region: "us-west-1"
-region: "us-west-1"
+state_bucket_region: "us-east-2"
+region: "us-east-2"
 environment: "bk-production"
 ssl_policy: 'ELBSecurityPolicy-FS-1-2-Res-2020-10'
 azs:
-  - "us-west-1b"
-  - "us-west-1c"
+  - "us-east-2b"
+  - "us-east-2c"
 az_codes:
   - b
   - c

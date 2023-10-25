@@ -53,7 +53,7 @@ nadir_hour: 16
 # pg_repack
 pg_repack_version: 1.4.7
 
-aws_region: 'us-west-1'
+aws_region: 'us-east-2'
 
 filebeat_inputs:
   - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
