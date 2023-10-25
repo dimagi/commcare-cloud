@@ -133,6 +133,6 @@ pillows:
   pillow_b2000:
   # case-sql partitions: 96
     case-pillow:
-      num_processes: 17
-      total_processes: 17
+      num_processes: 13
+      total_processes: 13
       dedicated_migration_process: True
