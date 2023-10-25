@@ -51,9 +51,9 @@ update_steps: |
     ```
     Note down the Task Number that is displayed by the command. It should be a numeric ID and will be required to verify the reindex process.
 
-    3. Verify reindex is completed by querying the logs and ensuring that doc count matches between primary and secondary indices. The commands in this step should be run from control machine.
+    3. Verify reindex is completed by querying the logs and ensuring that doc count matches between primary and secondary indices. The commands in this step should be run from the control machine.
 
-      1. In a new shell login to control machine.
+      1. Login to the control machine in a new shell.
         ```
         cchq <env> ssh control
         ``` 
@@ -78,8 +78,8 @@ update_steps: |
 
               This command will display the document counts for both the primary and secondary indices for a given index. If the doc count matches between the two and there are no errors in the reindex logs, then reindexing is complete for that index.
 
-              Please note that for high frequency indices like case_search, cases, and forms the counts may not match perfectly. In such cases, ensure the difference in counts is small (within one hundred) and there are no errors in reindex logs.
+              Please note that the counts may not match perfectly for high frequency indices like case_search, cases, and forms. In such cases, ensure the difference in counts is small (within one hundred) and there are no errors in reindex logs.
 
               If reindex fails for any index, please refer to the docs [here](https://github.com/dimagi/commcare-hq/blob/56682492f20c60cdef0ccde6049b9945b3658493/corehq/apps/es/REINDEX_PROCESS.md#common-issues-resolutions-during-reindex) for troubleshooting steps.
 
-    4. If doc counts match and there are no errors present in Reindex logs, the reindex for the current index is completee. You can continue reindexing for the next index by repeating steps 5.1-5.3 for `${INDEX_CNAME}` set to 'cases', 'case_search' and so on for all indices.
+    4. If doc counts match and there are no errors present in the reindex logs, the reindex for the current index is complete. You can continue reindexing for the next index by repeating steps 5.1-5.3 with `${INDEX_CNAME}` set to 'cases', 'case_search' and so on for all indices.
