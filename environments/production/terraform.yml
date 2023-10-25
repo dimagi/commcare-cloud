@@ -36,7 +36,7 @@ servers:
     os: jammy 
 
   - server_name: "djangomanage_a1-production"
-    server_instance_type: m6a.xlarge
+    server_instance_type: r6a.large
     network_tier: "app-private"
     az: "a"
     volume_size: 60
