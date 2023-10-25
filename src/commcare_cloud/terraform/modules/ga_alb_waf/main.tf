@@ -1,11 +1,12 @@
 locals {
   // Used in bucket policy. See
-  // https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions
+  // https://docs.aws.amazon.com/elasticloadbalancing/latest/application/enable-access-logging.html#attach-bucket-policy
   // for more regions
   aws_elb_account_map = {
     us-east-1 = "127311923021"
     us-west-1 = "027434742980"
     ap-south-1 = "718504428378"
+    us-east-2 = "033677994240"
   }
 
   hive_prefix = "year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}"
