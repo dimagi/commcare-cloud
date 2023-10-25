@@ -8,7 +8,8 @@
 
 
 ## CommCare Version Dependency
-This change is not known to be dependent on any particular version of CommCare.
+The following version of CommCare must be deployed before rolling out this change:
+[045d45fa](https://github.com/dimagi/commcare-hq/commit/045d45fa69b6dd83f870ed185c0d73adeef14350)
 
 
 ## Change Context
@@ -21,63 +22,64 @@ Currently Commcare HQ is running with Elasticsearch 2.4. Reindexing is required 
 1. Deploy latest version of Commcare HQ.
 2. Ensure that there is enough free space available in your cluster. The command to estimate disk space required for reindexing is:
 
-```sh
-cchq <env> django-manage elastic_sync_multiplexed estimated_size_for_reindex
-```
+    ```sh
+    cchq <env> django-manage elastic_sync_multiplexed estimated_size_for_reindex
+    ```
 3. Check disk usage on each node
-  - If you have sepearate data nodes, check disk usage on data nodes
-    ```sh
-    cchq <env>  run-shell-command es_data "df -h /opt/data" -b
-    ```
-  - If you don't have separate data nodes, check disk usage on ES nodes.
-    ```sh
-    cchq <env>  run-shell-command elasticsearch "df -h /opt/data" -b
-    ```
-  This will return disk usage for each node. You can check if the cumulative available space across all nodes is greater than the total recommended space from the `estimated_size_for_reindex` output.
+    - If you have sepearate data nodes, check disk usage on data nodes
+        ```sh
+        cchq <env>  run-shell-command es_data "df -h /opt/data" -b
+        ```
+    - If you don't have separate data nodes, check disk usage on ES nodes.
+        ```sh
+        cchq <env>  run-shell-command elasticsearch "df -h /opt/data" -b
+        ```
+    This will return disk usage for each node. You can check if the cumulative available space across all nodes is greater than the total recommended space from the `estimated_size_for_reindex` output.
 
 4. It is advised to run the following steps in a tmux session as they might take a long time and can be detached/re-attached as needed for monitoring progress.
-  - To start a tmux session in your django-manage machine, following steps can be followed, change `<env_name>` with your actual environment name:
-    ```bash
-    cchq <env> tmux django_manage
-    sudo -iu cchq
-    cd /home/cchq/www/<env>/current
-    source python_env/bin/activate
-    ```
+    - To start a tmux session in your django-manage machine, following steps can be followed, change `<env_name>` with your actual environment name:
+
+      ```bash
+      cchq <env> tmux django_manage
+      sudo -iu cchq
+      cd /home/cchq/www/<env>/current
+      source python_env/bin/activate
+      ```
 
 5. The following steps should be repeated for `${INDEX_CNAME}` serially set to following `['apps', 'cases', 'case_search', 'domains', 'forms', 'groups', 'sms', 'users']`
 
-  1. Set the `${INDEX_CNAME}` environment variable, for the first run it should be like
-  ```bash
-  INDEX_CNAME='apps'
-  ```
-
-  2. Start the reindex process
-
-  ```bash
-  ./manage.py elastic_sync_multiplexed start ${INDEX_CNAME}
-  ```
-  Note down the Task Number that is displayed by the command. It should be a numeric ID and will be required to verify the reindex process.
-
-  3. Verify reindex is completed by querying the logs and ensuring that doc count matches between primary and secondary indices. The commands in this step should be run from control machine.
-
-    1. In a new shell login to control machine.
-      ```
-      cchq <env> ssh control
-      ``` 
-    2. From control machine, run the following command to query the reindex logs.
+    1. Set the `${INDEX_CNAME}` environment variable, for the first run it should be like
+        ```bash
+        INDEX_CNAME='apps'
         ```
-        cchq <env> run-shell-command elasticsearch "grep '<Task Number>.*ReindexResponse' /opt/data/elasticsearch*/logs/*.log"
+  
+    2. Start the reindex process
+
+        ```bash
+        ./manage.py elastic_sync_multiplexed start ${INDEX_CNAME}
         ```
+        Note down the Task Number that is displayed by the command. It should be a numeric ID and will be required to verify the reindex process.
 
-        This command will query the Elasticsearch nodes to find any log entries containing the `ReindexResponse` for the given Task Number. The log should look something like:
+    3. Verify reindex is completed by querying the logs and ensuring that doc count matches between primary and secondary indices. The commands in this step should be run from the control machine.
 
-        ```
-        [2023-10-25 08:59:37,648][INFO] [tasks] 29216 finished with response ReindexResponse[took=1.8s,updated=0,created=1111,batches=2,versionConflicts=0,noops=0,retries=0,throttledUntil=0s,indexing_failures=[],search_failures=[]]
-        ```
+        1. Login to the control machine in a new shell.
+            ```
+            cchq <env> ssh control
+            ```
+        2. From control machine, run the following command to query the reindex logs.
+            ```
+            cchq <env> run-shell-command elasticsearch "grep '<Task Number>.*ReindexResponse' /opt/data/elasticsearch*/logs/*.log"
+            ```
 
-        Ensure that `search_failures` and `indexing_failures` are empty lists.
+            This command will query the Elasticsearch nodes to find any log entries containing the `ReindexResponse` for the given Task Number. The log should look something like:
 
-    3. Then check doc counts between primary and secondary indices using:
+            ```
+            [2023-10-25 08:59:37,648][INFO] [tasks] 29216 finished with response ReindexResponse[took=1.8s,updated=0,created=1111,batches=2,versionConflicts=0,noops=0,retries=0,throttledUntil=0s,indexing_failures=[],search_failures=[]]
+            ```
+
+            Ensure that `search_failures` and `indexing_failures` are empty lists.
+
+        3. Then check doc counts between primary and secondary indices using:
 
             ```
             cchq <env> django-manage elastic_sync_multiplexed display_doc_counts <index_cname>
@@ -85,8 +87,8 @@ cchq <env> django-manage elastic_sync_multiplexed estimated_size_for_reindex
 
             This command will display the document counts for both the primary and secondary indices for a given index. If the doc count matches between the two and there are no errors in the reindex logs, then reindexing is complete for that index.
 
-            Please note that for high frequency indices like case_search, cases, and forms the counts may not match perfectly. In such cases, ensure the difference in counts is small (within one hundred) and there are no errors in reindex logs.
+            Please note that the counts may not match perfectly for high frequency indices like case_search, cases, and forms. In such cases, ensure the difference in counts is small (within one hundred) and there are no errors in reindex logs.
 
             If reindex fails for any index, please refer to the docs [here](https://github.com/dimagi/commcare-hq/blob/56682492f20c60cdef0ccde6049b9945b3658493/corehq/apps/es/REINDEX_PROCESS.md#common-issues-resolutions-during-reindex) for troubleshooting steps.
 
-  4. If doc counts match and there are no errors present in Reindex logs, the reindex for the current index is completee. You can continue reindexing for the next index by repeating steps 5.1-5.3 for `${INDEX_CNAME}` set to 'cases', 'case_search' and so on for all indices.
+  4. If doc counts match and there are no errors present in the reindex logs, the reindex for the current index is complete. You can continue reindexing for the next index by repeating steps 5.1-5.3 with `${INDEX_CNAME}` set to 'cases', 'case_search' and so on for all indices.
