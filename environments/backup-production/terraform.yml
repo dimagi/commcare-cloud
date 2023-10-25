@@ -263,9 +263,6 @@ internal_albs:
     targets:
       - couch_a0-bk-production
 
-elasticache:
-  create: no
-
 elasticache_cluster:
   create: yes
   cache_node_type: "cache.t3.micro"
