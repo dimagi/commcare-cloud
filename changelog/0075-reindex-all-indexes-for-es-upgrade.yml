@@ -3,8 +3,7 @@ key: reindex-all-indexes-for-es-upgrade
 date: 2023-10-25
 optional_per_env: no
 # (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
-min_commcare_version:
-# I will add it after the PR is merged
+min_commcare_version: 045d45fa69b6dd83f870ed185c0d73adeef14350
 max_commcare_version:
 context: |
   Reindex Elasticsearch Indices for upcoming ES Upgrade.
