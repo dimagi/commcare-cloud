@@ -27,6 +27,8 @@ update_steps: |
           ```
       This will return disk usage for each node. You can check if the cumulative available space across all nodes is greater than the total recommended space from the `estimated_size_for_reindex` output.
 
+      If you don't have enough space available in your elasticsearch cluster, it is recommended to add more storage capacity before reindexing. If you don't have the option to add more storage, you will need to reindex one index at a time. You should follow the process described in [Reindexing One Index at A Time](https://github.com/dimagi/commcare-hq/blob/56682492f20c60cdef0ccde6049b9945b3658493/corehq/apps/es/REINDEX_PROCESS.md#reindexing-one-index-at-a-time)
+
   4. It is advised to run the following steps in a tmux session as they might take a long time and can be detached/re-attached as needed for monitoring progress.
       - To start a tmux session in your django-manage machine, use the following steps, changing `<env>` to your environment name where needed:
 
