@@ -8,16 +8,16 @@ max_commcare_version:
 context: |
   Reindex Elasticsearch Indices for upcoming ES Upgrade.
 details: |
-  Currently Commcare HQ is running with Elasticsearch 2.4. Reindexing is required before upgrading to a newer version of Elasticsearch 5.6.16
+  Currently CommCare HQ is running with Elasticsearch 2.4. Reindexing is required before upgrading Elasticsearch to version 5.6.16.
 update_steps: |
-  1. Deploy latest version of Commcare HQ.
+  1. Deploy latest version of CommCare HQ.
   2. Ensure that there is enough free space available in your cluster. The command to estimate disk space required for reindexing is:
 
       ```sh
       cchq <env> django-manage elastic_sync_multiplexed estimated_size_for_reindex
       ```
   3. Check disk usage on each node
-      - If you have sepearate data nodes, check disk usage on data nodes
+      - If you have separate data nodes, check disk usage on data nodes
           ```sh
           cchq <env>  run-shell-command es_data "df -h /opt/data" -b
           ```
@@ -28,7 +28,7 @@ update_steps: |
       This will return disk usage for each node. You can check if the cumulative available space across all nodes is greater than the total recommended space from the `estimated_size_for_reindex` output.
 
   4. It is advised to run the following steps in a tmux session as they might take a long time and can be detached/re-attached as needed for monitoring progress.
-      - To start a tmux session in your django-manage machine, following steps can be followed, change `<env_name>` with your actual environment name:
+      - To start a tmux session in your django-manage machine, use the following steps, changing `<env>` to your environment name where needed:
 
         ```bash
         cchq <env> tmux django_manage
@@ -37,9 +37,9 @@ update_steps: |
         source python_env/bin/activate
         ```
   
-  5. The following steps should be repeated for `${INDEX_CNAME}` serially set to following `['apps', 'cases', 'case_search', 'domains', 'forms', 'groups', 'sms', 'users']`
+  5. The following steps should be performed serially for each canonical index name, replacing `${INDEX_CNAME}` with each of the following values `['apps', 'cases', 'case_search', 'domains', 'forms', 'groups', 'sms', 'users']`
 
-      1. Set the `${INDEX_CNAME}` environment variable, for the first run it should be like
+      1. Set the `${INDEX_CNAME}` environment variable. For example, the first run should be:
           ```bash
           INDEX_CNAME='apps'
           ```
@@ -51,7 +51,7 @@ update_steps: |
           ```
           Note down the Task Number that is displayed by the command. It should be a numeric ID and will be required to verify the reindex process.
 
-      3. Verify reindex is completed by querying the logs and ensuring that doc count matches between primary and secondary indices. The commands in this step should be run from the control machine.
+      3. Verify the reindex is completed by querying the logs and ensuring that the doc count matches between primary and secondary indices. The commands in this step should be run from the control machine.
 
           1. Login to the control machine in a new shell.
               ```
@@ -70,7 +70,7 @@ update_steps: |
 
               Ensure that `search_failures` and `indexing_failures` are empty lists.
 
-          3. Then check doc counts between primary and secondary indices using:
+          3. Then verify doc counts match between primary and secondary indices using:
 
               ```
               cchq <env> django-manage elastic_sync_multiplexed display_doc_counts <index_cname>
