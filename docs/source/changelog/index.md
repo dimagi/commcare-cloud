@@ -7,7 +7,7 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2023-10-25** [reindex-all-indexes-for-es-upgrade](0075-reindex-all-indexes-for-es-upgrade.md)
+#### **2023-10-25** [Reindex All Indices For Elasticsearch Upgrade](0075-reindex-all-indexes-for-es-upgrade.md)
 Reindex Elasticsearch Indices for upcoming ES Upgrade.
 
 
