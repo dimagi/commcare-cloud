@@ -20,6 +20,7 @@ celery_processes:
     celery,export_download_queue,reminder_rule_queue,case_import_queue,case_rule_queue:
       concurrency: 1
     flower: {}
+    beat: {}
 
 pillows:
   pillow_a000:
@@ -43,6 +44,8 @@ pillows:
     KafkaDomainPillow:
       num_processes: 1
     LedgerToElasticsearchPillow:
+      num_processes: 1
+    SqlSMSPillow:
       num_processes: 1
     UpdateUserSyncHistoryPillow:
       num_processes: 1
