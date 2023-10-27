@@ -74,7 +74,7 @@ servers:
     network_tier: "db-private"
     az: "c"
     group: "elasticsearch"
-    os: bionic
+    os: jammy
     volume_size: 20
     volume_encrypted: yes
 
@@ -87,7 +87,7 @@ servers:
     block_device:
       volume_size: 20
     group: "elasticsearch"
-    os: bionic
+    os: jammy
     count: 7
 
   - server_name: "es_b1{i}-bk-production"
@@ -99,7 +99,7 @@ servers:
     block_device:
       volume_size: 20
     group: "elasticsearch"
-    os: bionic
+    os: jammy
     count: 7
 
   - server_name: "couch_a0-bk-production"
@@ -112,7 +112,7 @@ servers:
       volume_size: 20
       encrypted: yes
     group: "couchdb2"
-    os: bionic # should we change this?
+    os: j # should we change this?
 
   - server_name: "rabbit_a0-bk-production"
     server_instance_type: t3a.small
