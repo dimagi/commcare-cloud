@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2023-10-25** [Reindex All Indices For Elasticsearch Upgrade](0075-reindex-all-indexes-for-es-upgrade.md)
+Reindex Elasticsearch Indices for upcoming ES Upgrade.
+
+
+---
 #### **2023-09-12** [update-to-python-3.9.18](0074-update-to-python-3.9.18.md)
 Installs python 3.9.18 and build a new virutalenv for CommCare HQ
 
