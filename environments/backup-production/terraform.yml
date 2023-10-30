@@ -184,60 +184,70 @@ rds_instances:
     storage: 20
     multi_az: false
     engine_version: "14"
+    monitoring_interval: 0
 
   - identifier: "pgucr0-bk-production"
     instance_type: db.t3.micro
     storage: 20
     multi_az: false
     engine_version: "14"
+    monitoring_interval: 0
 
   - identifier: "pgshard1-bk-production"
     instance_type: db.t3.micro
     storage: 20
     multi_az: false
     engine_version: "14"
+    monitoring_interval: 0
 
   - identifier: "pgshard2-bk-production"
     instance_type: db.t3.micro
     storage: 20
     multi_az: false
     engine_version: "14"
+    monitoring_interval: 0
 
   - identifier: "pgshard3-bk-production"
     instance_type: db.t3.micro
     storage: 20
     multi_az: false
     engine_version: "14"
+    monitoring_interval: 0
 
   - identifier: "pgshard4-bk-production"
     instance_type: db.t3.micro
     storage: 20
     multi_az: false
     engine_version: "14"
+    monitoring_interval: 0
 
   - identifier: "pgshard5-bk-production"
     instance_type: db.t3.micro
     storage: 20
     multi_az: false
     engine_version: "14"
+    monitoring_interval: 0
 
   - identifier: "pgsynclog0-bk-production"
     instance_type: db.t3.micro
     storage: 20
     multi_az: false
     engine_version: "14"
+    monitoring_interval: 0
 
   - identifier: "pgformplayer0-bk-production"
     instance_type: db.t3.micro
     storage: 20
     multi_az: false
     engine_version: "14"
+    monitoring_interval: 0
 
   - identifier: "pgauditcare0-bk-production"
     instance_type: db.t3.micro
     storage: 20
     multi_az: false
     engine_version: "14"
+    monitoring_interval: 0
 
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-bk-production
