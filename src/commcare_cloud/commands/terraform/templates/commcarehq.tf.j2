@@ -130,9 +130,7 @@ module "server__{{ server_name }}" {
   metadata_tokens = "{{ 'required' if ec2_metadata_tokens_required else 'optional' }}"
   enable_cross_region_backup = {{ server_spec.enable_cross_region_backup|tojson }}
 
-{% if server_spec.os == 'ubuntu_pro_bionic' %}
-  server_image = data.aws_ami.ubuntu_pro_bionic.id
-{% elif server_spec.os == 'bionic' %}
+{% if server_spec.os == 'bionic' %}
   server_image = data.aws_ami.ubuntu_bionic.id
 {% elif server_spec.os == 'jammy' %}
   server_image = data.aws_ami.ubuntu_jammy.id
