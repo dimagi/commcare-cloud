@@ -25,7 +25,6 @@ class CeleryOptions(jsonobject.JsonObject):
     num_workers = jsonobject.IntegerProperty(default=1)
     prefetch_multiplier = jsonobject.IntegerProperty(default=4)
 
-
 class PillowOptions(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     start_process = jsonobject.IntegerProperty(default=0)
@@ -37,7 +36,7 @@ class PillowOptions(jsonobject.JsonObject):
 
 
 class AppProcessesConfig(jsonobject.JsonObject):
-    _allow_dynamic_properties = False
+    _allow_dynamic_properties = True
     django_bind = IpAddressProperty()
     django_port = PortProperty()
     flower_port = PortProperty()
@@ -65,6 +64,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
 
     def check_and_translate_hosts(self, environment):
         self.management_commands = check_and_translate_hosts(environment, self.management_commands)
+
         self.celery_processes = check_and_translate_hosts(environment, self.celery_processes)
         self.pillows = check_and_translate_hosts(environment, self.pillows)
         self.pillows = filter_out_deprecated_pillows(environment, self.pillows)
