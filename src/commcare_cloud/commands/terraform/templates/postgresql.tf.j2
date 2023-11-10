@@ -16,7 +16,7 @@ module "postgresql__{{ rds_instance.identifier }}" {
     backup_retention = {{ rds_instance.backup_retention|tojson }}
     maintenance_window = {{ rds_instance.maintenance_window|tojson }}
     port = {{ rds_instance.port|tojson }}
-    monitoring_interval = {{ rds_instance.monitoring_interval|tojson }}
+    monitoring_interval = 0
     enable_cross_region_backup = {{ rds_instance.enable_cross_region_backup|tojson }}
   }
   parameters = [
