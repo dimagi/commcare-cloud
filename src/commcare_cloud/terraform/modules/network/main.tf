@@ -98,7 +98,16 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
   dynamic "route" {
-    for_each = var.external_routes
+    for_each = concat(
+      tolist([
+        tomap({
+          cidr_block = "0.0.0.0/0",
+          nat_gateway_id = aws_nat_gateway.main.id,
+        }),
+      ]),
+      var.external_routes,
+    )
+
     content {
       # TF-UPGRADE-TODO: The automatic upgrade tool can't predict
       # which keys might be set in maps assigned here, so it has
@@ -129,7 +138,15 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
   dynamic "route" {
-    for_each = var.external_routes
+    for_each = concat(
+      tolist([
+        tomap({
+          cidr_block = "0.0.0.0/0",
+          "gateway_id" = aws_internet_gateway.main.id,
+        }),
+      ]),
+      var.external_routes,
+    )
     content {
       # TF-UPGRADE-TODO: The automatic upgrade tool can't predict
       # which keys might be set in maps assigned here, so it has
