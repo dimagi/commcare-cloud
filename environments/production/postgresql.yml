@@ -23,6 +23,12 @@ pg_repack:
       password: "{{ postgres_users.root.password }}"
       port: 5432
       skip_superuser_check: True
+    - database: formplayer
+      host: pgformplayer0-production.cl9dmuo3ok4h.us-east-1.rds.amazonaws.com
+      username: "{{ postgres_users.root.username }}"
+      password: "{{ postgres_users.root.password }}"
+      port: 5432
+      skip_superuser_check: True
 
 # We're temporarily disabling read replicas
 # and will revisit after migration to RDS
