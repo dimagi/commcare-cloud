@@ -2,6 +2,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import re
 import subprocess
+import os
 import sys
 from io import open
 
@@ -99,6 +100,9 @@ def git(*args):
 
 
 def check_branch(args):
+    if os.environ.get('TEST') == 'quick-install':
+        # Skip branch check during github CI quick-install test
+        return True
     branch = git_branch()
     if branch is None:
         # not in a git repo

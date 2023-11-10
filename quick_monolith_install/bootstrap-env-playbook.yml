@@ -16,8 +16,15 @@
     config_is_not_valid: '{{"" in install_config}}'
     envs_path: "{{ ansible_env.HOME }}/environments"
     env_path: "{{envs_path}}/{{ env_name }}"
+    # provide default during CI_TEST to skip interactive prompt
+    external_interface: "{{ lookup('ansible.builtin.env', 'TEST_EXTERNAL_INTERFACE', default='') }}"
+    internal_interface: "{{ lookup('ansible.builtin.env', 'TEST_INTERNAL_INTERFACE', default='') }}"
   tasks:
-    - name: 'External IP Address'
+    - debug:
+        msg: external_interface
+    - debug:
+        msg: internal_interface
+    - name: result_external_interface
       pause:
         prompt: |
           Found multiple network interfaces.
@@ -33,7 +40,11 @@
       until: "'ansible_{{result_external_interface.user_input}}' in hostvars[inventory_hostname]"
       retries: 3
       delay: 0
-    - name: 'Private inerface'
+      when: external_interface == ''
+    - set_fact:
+        external_interface: "{{result_external_interface.user_input}}"
+      when: result_external_interface.user_input is defined
+    - name: result_internal_interface
       pause:
         prompt: |
           Found multiple network interfaces.
@@ -48,6 +59,10 @@
       until: "result_internal_interface.user_input in ansible_interfaces"
       retries: 3
       delay: 0
+      when: internal_interface == ''
+    - set_fact:
+        internal_interface: "{{result_internal_interface.user_input}}"
+      when: result_internal_interface.user_input is defined
     - debug:
         msg: "Invalid installation configuration: {{install_config}}. Please define all the variables in your install-config.yml file."
       when: config_is_not_valid

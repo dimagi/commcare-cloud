@@ -1,11 +1,11 @@
 [{{server_inventory_name}}]
-{{hostvars[inventory_hostname]['ansible_%s' | format(result_external_interface.user_input)]['ipv4']['address'] }}
+{{hostvars[inventory_hostname]['ansible_%s' | format(external_interface)]['ipv4']['address'] }}
 
 [{{server_inventory_name}}:vars]
 elasticsearch_node_name=es0
 kafka_broker_id=0
 hostname='{{server_inventory_name}}'
-ufw_private_interface={{result_internal_interface.user_input}}
+ufw_private_interface={{internal_interface}}
 
 [control:children]
 {{server_inventory_name}}

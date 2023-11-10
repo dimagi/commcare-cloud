@@ -1,0 +1,1 @@
+echo $NO_INPUT
