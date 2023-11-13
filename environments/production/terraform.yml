@@ -113,7 +113,7 @@ servers:
     volume_encrypted: yes 
 
   - server_name: "es_a2{i}-production"
-    server_instance_type: r7a.2xlarge
+    server_instance_type: m6a.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
