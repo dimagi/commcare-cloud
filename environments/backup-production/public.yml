@@ -210,7 +210,7 @@ localsettings:
   SMS_QUEUE_ENABLED: False
   SUMOLOGIC_URL: ""
   STATIC_ROOT:
-  STATIC_CDN: 'https://d2wbnffibuhek0.cloudfront.net' # TODO: check if we need to set it
+  STATIC_CDN: ""
   STATIC_TOGGLE_STATES:
     mobile_ucr_linked_domain:
       always_enabled:
