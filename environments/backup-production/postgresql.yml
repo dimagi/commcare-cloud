@@ -69,6 +69,12 @@ dbs:
     pgbouncer_hosts:
       - pgbouncer_a0
 
+  repeaters:
+    host: rds_pgmain0
+    pgbouncer_endpoint: pgmain_nlb
+    pgbouncer_hosts:
+      - pgbouncer_a0
+
   form_processing:
     proxy:
       host: pgbouncer_a0

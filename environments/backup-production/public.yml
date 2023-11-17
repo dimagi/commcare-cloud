@@ -192,6 +192,7 @@ localsettings:
   J2ME_ADDRESS: ""  
   LOCAL_CUSTOM_DB_ROUTING:
     auditcare: auditcare
+    repeaters: repeaters
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
   PILLOWTOP_MACHINE_ID: hqdb0
