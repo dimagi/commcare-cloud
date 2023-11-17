@@ -88,7 +88,7 @@ servers:
       volume_size: 20
     group: "elasticsearch"
     os: jammy
-    count: 7
+    count: 5
 
   - server_name: "es_b1{i}-bk-production"
     server_instance_type: t3a.xlarge
@@ -100,7 +100,7 @@ servers:
       volume_size: 20
     group: "elasticsearch"
     os: jammy
-    count: 7
+    count: 5
 
   - server_name: "couch_a0-bk-production"
     server_instance_type: t3a.small
