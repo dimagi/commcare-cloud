@@ -1176,6 +1176,6 @@ FCM_CREDS = json.loads({{ FCM_CREDS }})
 CONNECTID_USERINFO_URL = "{{ localsettings.CONNECTID_URL }}"
 {% endif %}
 
-{% if localsettings.MAX_MOBILE_UCR_LIMIT %}
-MAX_MOBILE_UCR_LIMIT = {{ MAX_MOBILE_UCR_LIMIT }}
+{% if localsettings.MAX_MOBILE_UCR_LIMIT is defined %}
+MAX_MOBILE_UCR_LIMIT = {{ localsettings.MAX_MOBILE_UCR_LIMIT }}
 {% endif %}
