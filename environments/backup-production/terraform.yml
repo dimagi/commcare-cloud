@@ -67,7 +67,7 @@ servers:
     group: "elasticsearch"
     os: jammy
     volume_size: 20
-    volume_encrypted: yes # I have added it to be consistent with production
+    volume_encrypted: yes
 
   - server_name: "esmaster_c0-bk-production"
     server_instance_type: t3a.xlarge
