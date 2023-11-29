@@ -209,7 +209,7 @@ def compact_waf_regexes(patterns, compactible_affixes=None, max_length=200):
     intermediate_compacted_regexes = [
         f'{prefix}({regex}){suffix}'
         for (prefix, suffix), patterns in patterns_grouped_by_affix.items()
-        for regex in compact_waf_regexes_simply(patterns, max_length=max_length-len(prefix + suffix) - 2)
+        for regex in compact_waf_regexes_simply(patterns, max_length=max_length - len(prefix + suffix) - 2)
     ] + compact_waf_regexes_simply(non_matching_patterns, max_length=max_length)
     # sort compacted patterns shortest to longest
     intermediate_compacted_regexes.sort(key=lambda r: len(r))
