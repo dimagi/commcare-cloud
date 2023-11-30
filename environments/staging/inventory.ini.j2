@@ -166,9 +166,11 @@ pillowtop
 webworkers
 
 {{ __control3__ }}
+{{ __control_ansible_ugradation__ }}
 
 [control:children]
 control3
+control_ansible_ugradation
 
 [awsmq]
 {{ aws_resources['staging-mq-broker'] }}

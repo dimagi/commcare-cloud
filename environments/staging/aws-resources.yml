@@ -2,6 +2,8 @@ celery_a1-staging: 10.201.10.31
 celery_a1-staging.instance_id: i-0e15f23fcc71fd3c9
 control3-staging: 10.201.10.21
 control3-staging.instance_id: i-0764b662e2e2637c3
+control_ansible_ugradation-staging: 10.201.10.158
+control_ansible_ugradation-staging.instance_id: i-09b538b971079945e
 couch24-staging: 10.201.42.45
 couch24-staging.instance_id: i-0caec26b9cfd45ee5
 couch25-staging: 10.201.42.181
