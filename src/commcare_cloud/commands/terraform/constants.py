@@ -48,6 +48,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/formplayer/validate_form$
 ^/gvi/api/sms/$
 ^/jserror/$
+^/log_email_event/([\w]+)/([\w\.:-]+)/?$
 ^/log_email_event/([\w]+)/?$
 ^/telerivet/in/?$
 ^/telerivet/status/([\w\-]+)/$
