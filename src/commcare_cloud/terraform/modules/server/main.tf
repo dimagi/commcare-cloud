@@ -16,23 +16,23 @@ resource aws_instance "server" {
     encrypted             = var.volume_encrypted
     volume_type           = var.volume_type
     delete_on_termination = true
-    tags = {
+    tags = merge({
       Name = "vol-${var.server_name}"
       ServerName = var.server_name
       Environment = var.environment
       Group = var.group_tag
       BackupPlan  = var.enable_cross_region_backup ? "BusinessContinuity" : null
-    }
+    }, var.additional_tags)
   }
   lifecycle {
     ignore_changes = [user_data, key_name, root_block_device.0.delete_on_termination,
       ebs_optimized, ami, iam_instance_profile]
   }
-  tags = {
+  tags = merge({
     Name        = var.server_name
     Environment = var.environment
     Group = var.group_tag
-  }
+  }, var.additional_tags)
   metadata_options {
     http_endpoint               = "enabled"
     http_put_response_hop_limit = 1
@@ -48,7 +48,7 @@ resource "aws_ebs_volume" "ebs_volume" {
   type = var.secondary_volume_type
   encrypted = var.secondary_volume_encrypted
 
-  tags = {
+  tags = merge({
     Name = "data-vol-${var.server_name}"
     ServerName = var.server_name
     Environment = var.environment
@@ -56,7 +56,7 @@ resource "aws_ebs_volume" "ebs_volume" {
     VolumeType = "data"
     GroupDetail = "${var.group_tag}:data"
     BackupPlan  = var.secondary_volume_enable_cross_region_backup ? "BusinessContinuity" : null
-  }
+  }, var.additional_tags)
 }
 
 resource "aws_volume_attachment" "ebs_att" {

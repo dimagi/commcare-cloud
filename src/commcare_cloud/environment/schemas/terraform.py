@@ -117,6 +117,7 @@ class ServerConfig(jsonobject.JsonObject):
     volume_encrypted = jsonobject.BooleanProperty(default=True, required=True)
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
+    additional_tags = jsonobject.DictProperty()
     os = jsonobject.StringProperty(required=True, choices=['bionic', 'ubuntu_pro_bionic', 'jammy'])
     server_auto_recovery = jsonobject.BooleanProperty(default=False)
     enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
