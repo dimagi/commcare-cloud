@@ -22,13 +22,14 @@ es22-staging: 10.201.41.68
 es22-staging.instance_id: i-08eed79af34c48103
 es23-staging: 10.201.42.104
 es23-staging.instance_id: i-02a5ef51bc2a6cdb3
+es24-staging: 10.201.42.182
+es24-staging.instance_id: i-006803127d5a3647f
 formplayer-efs: fs-ba70cd39.efs.us-east-1.amazonaws.com
 formplayer11-staging: 10.201.10.202
 formplayer11-staging.instance_id: i-04ea09168ac760aab
 formplayer9-staging: 10.201.11.71
 formplayer9-staging.instance_id: i-039f848c98b6bac65
 frontend_alb-staging: internal-frontend-alb-staging-383875913.us-east-1.elb.amazonaws.com
-fsx_staging-fsx: fs-0ffde07db112793e4.fsx.us-east-1.amazonaws.com
 kafka15-staging: 10.201.42.91
 kafka15-staging.instance_id: i-02b1111b949791b87
 kafka16-staging: 10.201.40.77
@@ -52,7 +53,6 @@ proxy6-staging: 10.201.11.133
 proxy6-staging.instance_id: i-03426413ed3c925f1
 proxy8-staging: 10.201.10.72
 proxy8-staging.instance_id: i-053e8c3dd100eb276
-proxy_alb-staging: internal-proxy-alb-staging-1025146289.us-east-1.elb.amazonaws.com
 rabbit_a3-staging: 10.201.10.231
 rabbit_a3-staging.instance_id: i-0054851ab37af66d6
 rabbit_b2-staging: 10.201.11.253
