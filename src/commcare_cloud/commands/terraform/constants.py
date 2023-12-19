@@ -28,6 +28,9 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/fixtures/fixapi/
 ^/a/([\w\.:-]+)/importer/excel/bulk_upload_api/$
 ^/a/([\w\.:-]+)/importer/excel/config/$
+^/a/([\w\.:-]+)/messaging/broadcasts/add/$
+^/a/([\w\.:-]+)/messaging/conditional/add/$
+^/a/([\w\.:-]+)/messaging/conditional/edit/([\w-]+)/$
 ^/a/([\w\.:-]+)/receiver/$
 ^/a/([\w\.:-]+)/receiver/([\w-]+)/$
 ^/a/([\w\.:-]+)/receiver/api/$
@@ -45,6 +48,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/formplayer/validate_form$
 ^/gvi/api/sms/$
 ^/jserror/$
+^/log_email_event/([\w]+)/([\w\.:-]+)/?$
 ^/log_email_event/([\w]+)/?$
 ^/telerivet/in/?$
 ^/telerivet/status/([\w\-]+)/$
