@@ -141,7 +141,7 @@
   tags:
     - es_restart
 
-- name: Wait for elastic Search to come up, start checking after 20 second
+- name: Check that Elasticsearch is up after 20 seconds
   wait_for:
     host: "{{ groups.elasticsearch.0 }}"
     port: 9200
@@ -226,7 +226,7 @@
   notify: reload monit
   tags: monit
 
-- name: Copy elasticsearch log_retention file
+- name: Copy Elasticsearch log_retention file
   template:
     src: "delete_older_es_logs.sh.j2"
     dest: "/usr/local/sbin/delete_older_es_logs.sh"
