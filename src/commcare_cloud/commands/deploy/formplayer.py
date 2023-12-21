@@ -13,8 +13,14 @@ from commcare_cloud.commands.ansible import ansible_playbook
 from commcare_cloud.commands.ansible.helpers import AnsibleContext
 from commcare_cloud.commands.deploy.deploy_diff import DeployDiff
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
-from commcare_cloud.commands.deploy.utils import record_deploy_start, record_deploy_failed, \
-    announce_deploy_success, create_release_tag, DeployContext
+from commcare_cloud.commands.deploy.utils import (
+    announce_deploy_success,
+    confirm_environment_time,
+    create_release_tag,
+    record_deploy_start,
+    record_deploy_failed,
+    DeployContext
+)
 from commcare_cloud.user_utils import get_default_username
 from commcare_cloud.commands.utils import timeago
 from commcare_cloud.events import publish_deploy_event
@@ -47,6 +53,10 @@ class VersionInfo(namedtuple("VersionInfo", "commit, message, time, build_time")
 
 
 def deploy_formplayer(environment, args):
+    if not confirm_environment_time(environment, quiet=args.quiet):
+        print(color_notice("Aborted by user"))
+        return 1
+
     print(color_notice("\nPreparing to deploy Formplayer to: "), end="")
     print(f"{environment.name}\n")
 
