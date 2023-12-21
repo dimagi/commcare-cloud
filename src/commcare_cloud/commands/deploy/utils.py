@@ -56,8 +56,8 @@ def record_deploy_start(environment, context):
 def send_deploy_start_email(environment, context):
     is_nonstandard_deploy_time = not within_maintenance_window(environment)
     is_non_default_branch = (
-        context.revision != environment.fab_settings_config.default_branch and
-        context.revision is not None
+        context.revision != environment.fab_settings_config.default_branch
+        and context.revision is not None
     )
     env_name = environment.meta_config.deploy_env
     subject = f"{context.user} has initiated a {context.service_name} deploy to {env_name}"
