@@ -118,6 +118,7 @@ class ServerConfig(jsonobject.JsonObject):
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
     os = jsonobject.StringProperty(required=True, choices=['bionic', 'jammy'])
+    additional_tags = jsonobject.DictProperty()
     server_auto_recovery = jsonobject.BooleanProperty(default=False)
     enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
     count = jsonobject.IntegerProperty(default=None)

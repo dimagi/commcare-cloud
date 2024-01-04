@@ -154,9 +154,11 @@ pillow_a2
 pillow_b2
 
 {{ __formplayer_a1__ }}
+{{ __formplayer_a2__ }}
 
 [formplayer:children]
 formplayer_a1
+formplayer_a2
 
 [formplayer:vars]
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
@@ -187,6 +189,10 @@ webworkers
 
 {{ __es_b2__ }}
 
+{{ __es_a3__ }}
+
+{{ __es_b3__ }}
+
 {{ __esmaster_a1__ }} elasticsearch_node_name=esmaster_a1
 
 {{ __esmaster_b1__ }} elasticsearch_node_name=esmaster_b1
@@ -209,11 +215,19 @@ elasticsearch_data=false
 [es_data:children]
 es_a2
 es_b2
+es_a3
+es_b3
 
 [es_a2:vars]
 elasticsearch_node_zone=us-east-1a
 
 [es_b2:vars]
+elasticsearch_node_zone=us-east-1b
+
+[es_a3:vars]
+elasticsearch_node_zone=us-east-1a
+
+[es_b3:vars]
 elasticsearch_node_zone=us-east-1b
 
 [elasticsearch:children]

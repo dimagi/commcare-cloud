@@ -1,3 +1,5 @@
+:nosearch:
+
 .. _sizing-buckets:
 
 Sizing Buckets
