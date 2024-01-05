@@ -143,6 +143,7 @@ module "server__{{ server_name }}" {
   security_group_options = local.security_group_options
   key_name = var.key_name
   group_tag= {{ server_spec.group|tojson }}
+  additional_tags= {{ server_spec.additional_tags|tojson }}
 }
 {%- endfor %}
 {% endfor %}
