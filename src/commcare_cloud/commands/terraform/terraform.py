@@ -53,12 +53,12 @@ class Terraform(CommandBase):
     )
 
     def run(self, args, unknown_args):
-        if 'destroy' in unknown_args:
+        environment = get_environment(args.env_name)
+        if 'destroy' in unknown_args and environment.name != 'backup-production':
             puts(color_error("Refusing to run a terraform command containing the argument 'destroy'."))
             puts(color_error("It's simply not worth the risk."))
             exit(-1)
 
-        environment = get_environment(args.env_name)
         run_dir = environment.paths.get_env_file_path('.generated-terraform')
         modules_dir = os.path.join(TERRAFORM_DIR, 'modules')
         modules_dest = os.path.join(run_dir, 'modules')
@@ -209,7 +209,7 @@ def compact_waf_regexes(patterns, compactible_affixes=None, max_length=200):
     intermediate_compacted_regexes = [
         f'{prefix}({regex}){suffix}'
         for (prefix, suffix), patterns in patterns_grouped_by_affix.items()
-        for regex in compact_waf_regexes_simply(patterns, max_length=max_length-len(prefix + suffix) - 2)
+        for regex in compact_waf_regexes_simply(patterns, max_length=max_length - len(prefix + suffix) - 2)
     ] + compact_waf_regexes_simply(non_matching_patterns, max_length=max_length)
     # sort compacted patterns shortest to longest
     intermediate_compacted_regexes.sort(key=lambda r: len(r))
