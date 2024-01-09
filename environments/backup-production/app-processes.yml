@@ -1,0 +1,58 @@
+datadog_pythonagent: True
+django_command_prefix: ''
+celery_command_prefix: ''
+gunicorn_workers_static_factor: 0
+gunicorn_workers_factor: 2
+formplayer_memory: "1g"
+formplayer_g1heapregionsize: "2m"
+management_commands:
+  celery_a000:
+  pillow_a000:
+celery_processes:
+  celery_a000:
+    background_queue:
+      concurrency: 1
+    email_queue,repeat_record_queue,analytics_queue,reminder_case_update_queue:
+      pooling: gevent
+      concurrency: 1
+    saved_exports_queue:
+      concurrency: 1
+    celery,export_download_queue,reminder_rule_queue,case_import_queue,case_rule_queue:
+      concurrency: 1
+    flower: {}
+    beat: {}
+
+pillows:
+  pillow_a000:
+    case-pillow:
+      num_processes: 1
+      dedicated_migration_process: True
+    user-pillow:
+      num_processes: 1
+    group-pillow:
+      num_processes: 1
+    AppDbChangeFeedPillow:
+      num_processes: 1
+    ApplicationToElasticsearchPillow:
+      num_processes: 1
+    CacheInvalidatePillow:
+      num_processes: 1
+    DefaultChangeFeedPillow:
+      num_processes: 1
+    DomainDbKafkaPillow:
+      num_processes: 1
+    KafkaDomainPillow:
+      num_processes: 1
+    LedgerToElasticsearchPillow:
+      num_processes: 1
+    SqlSMSPillow:
+      num_processes: 1
+    UpdateUserSyncHistoryPillow:
+      num_processes: 1
+    UserCacheInvalidatePillow:
+      num_processes: 1
+    UserGroupsDbKafkaPillow:
+      num_processes: 1
+    xform-pillow:
+      num_processes: 1
+      dedicated_migration_process: True

@@ -1,0 +1,7 @@
+deploy_env: backup-production
+env_monitoring_id: backup-production
+users:
+  - dimagi
+  - fissionlabs
+slack_alerts_channel: alerts-backup-production
+secrets_backend: aws-secrets
