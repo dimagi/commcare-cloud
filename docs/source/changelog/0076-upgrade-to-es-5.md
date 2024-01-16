@@ -15,7 +15,7 @@ The following version of CommCare must be deployed before rolling out this chang
 ## Change Context
 Upgrade to Elasticsearch 5.
 
-CommCare HQ releases after Mar 1, 2024 will not support Elasticsearch 2.x.
+CommCare HQ releases after March 1, 2024 will not support Elasticsearch 2.x.
 So we strongly recommend applying this change before then.
 
 ## Details
@@ -25,7 +25,7 @@ libraries we have upgraded Elasticsearch from version 2.4.6 to 5.6.16.
 ## Steps to update
 This process should be followed after Reindexing is complete for all indices. Refer to the previous [changelog](https://commcare-cloud.readthedocs.io/en/latest/changelog/0075-reindex-all-indexes-for-es-upgrade.html) for further details.
 
-After you ensure that you have followed the steps mentioned in previous changelog, you are all set to move with upgrading your Elasticsearch cluster to version 5.
+After you ensure that you have followed the steps mentioned in the previous changelog, you are all set to move forward with upgrading your Elasticsearch cluster to version 5.
 
 ### Pre-Upgrade Steps
 
@@ -66,11 +66,11 @@ After you ensure that you have followed the steps mentioned in previous changelo
     cchq ${ENV} django-manage elastic_sync_multiplexed remove_residual_indices
   ```
 
-6. Make sure that the disk usage is well below 50%,
+6. Make sure that the disk usage is below 47%,
 or that you have a place to back up to on another disk or remotely. You can check disk usage on each elasticsearch host usage by running:
 
   ```
-    cchq ${ENV} run-shell-command elasticsearch  "ls -lh  /opt/data/elasticsearch-2.4.6" -b
+    cchq ${ENV} run-shell-command elasticsearch  "du -sh  /opt/data/elasticsearch-2.4.6" -b
   ```
 
 7. After you have figured out the backup strategy and ensured sufficient disk space, continue with the steps below.
@@ -105,7 +105,7 @@ or that you have a place to back up to on another disk or remotely. You can chec
     cchq ${ENV} update-config
   ```
 
-5. Disable Elasticsearch shard allocation.It should already be disabled but for ensuring that its already disabled.
+5. Disable Elasticsearch shard allocation. It should already be disabled but for ensuring that its already disabled.
 
   ```
     curl -X PUT "${ES_HOST}:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
@@ -198,7 +198,7 @@ or that you have a place to back up to on another disk or remotely. You can chec
   ```
 
 
-16. Verify that the cluster status is yellow. The cluster status can be red in the beginning and should go yellow and then green eventually .You can run the command below periodically to monitor the cluster status. 
+16. Verify that the cluster status is yellow. The cluster status can be red in the beginning and should go yellow and then green eventually. You can run the command below periodically to monitor the cluster status. 
 
   ```
     curl -XGET "${ES_HOST}:9200/_cluster/health?pretty"
@@ -218,7 +218,7 @@ or that you have a place to back up to on another disk or remotely. You can chec
     cchq ${ENV} django-manage check_services
   ```
 
-20. If everything is fine then delete the backup directory  that was created in the previous step. If space is not a concern then this can be done the next day too.
+20. If everything is fine then delete the backup directory that was created in the previous step. If space is not a concern then this can be done the next day too.
 
   ```
     cchq ${ENV} run-shell-command elasticsearch "rm -rf /opt/data/elasticsearch-2.4.6-backup" -b
@@ -226,7 +226,7 @@ or that you have a place to back up to on another disk or remotely. You can chec
 
 ### Recovery From Backup
 
-If due to any circumstances the upgrade process did not succeed at your environment and you need to roll back to Elasticsearch 2. You are advised to reach out to us on [Dimagi Forum](https://forum.dimagi.com) with the relevant logs.
+If due to any circumstances the upgrade process did not succeed on your environment and you need to roll back to Elasticsearch 2, you are advised to reach out to us on [Dimagi Forum](https://forum.dimagi.com) with the relevant logs first.
 
 You can follow the following steps to rollback to Elasticsearch 2.
 

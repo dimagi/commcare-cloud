@@ -10,7 +10,7 @@ need to be applied on your environment to keep it up to date.
 #### **2024-01-14** [Elasticsearch upgrade from 2.4.6 to 5.6.16](0076-upgrade-to-es-5.md)
 Upgrade to Elasticsearch 5.
 
-CommCare HQ releases after Mar 1, 2024 will not support Elasticsearch 2.x.
+CommCare HQ releases after March 1, 2024 will not support Elasticsearch 2.x.
 So we strongly recommend applying this change before then.
 
 
