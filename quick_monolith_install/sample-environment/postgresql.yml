@@ -11,10 +11,7 @@ postgres_override:
   postgresql_max_stack_depth: 4MB
   postgresql_shared_buffers: 1GB
 
+SEPARATE_FORM_PROCESSING_DBS: False
+
 dbs:
-  form_processing:
-    partitions:
-      p1:
-        shards: [0, 511]
-      p2:
-        shards: [512, 1023]
+  form_processing: null
