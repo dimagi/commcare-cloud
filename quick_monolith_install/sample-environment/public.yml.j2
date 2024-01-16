@@ -5,6 +5,9 @@ elasticsearch_cluster_name: '{{env_name}}-es'
 elasticsearch_version: 2.4.6
 elasticsearch_download_sha256: 5f7e4bb792917bb7ffc2a5f612dfec87416d54563f795d6a70637befef4cfc6f.
 
+formplayer_java_version: {% raw %}"{{ java_17_bin_path }}/java"
+{% endraw %}
+
 backup_blobdb: True
 backup_postgres: 'plain'
 backup_es_s3: False
