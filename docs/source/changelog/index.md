@@ -7,6 +7,14 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2024-01-14** [Elasticsearch upgrade from 2.4.6 to 5.6.16](0076-upgrade-to-es-5.md)
+Upgrade to Elasticsearch 5.
+
+CommCare HQ releases after March 1, 2024 will not support Elasticsearch 2.x.
+So we strongly recommend applying this change before then.
+
+
+---
 #### **2023-10-25** [Reindex All Indices For Elasticsearch Upgrade](0075-reindex-all-indexes-for-es-upgrade.md)
 Reindex Elasticsearch Indices for upcoming ES Upgrade.
 
