@@ -58,11 +58,11 @@ update_steps: |
       cchq ${ENV} django-manage elastic_sync_multiplexed remove_residual_indices
     ```
 
-  6. Make sure that the disk usage is well below 50%,
+  6. Make sure that the disk usage is below 47%,
   or that you have a place to back up to on another disk or remotely. You can check disk usage on each elasticsearch host usage by running:
 
     ```
-      cchq ${ENV} run-shell-command elasticsearch  "ls -lh  /opt/data/elasticsearch-2.4.6" -b
+      cchq ${ENV} run-shell-command elasticsearch  "du -sh  /opt/data/elasticsearch-2.4.6" -b
     ```
 
   7. After you have figured out the backup strategy and ensured sufficient disk space, continue with the steps below.
