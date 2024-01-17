@@ -540,8 +540,7 @@ will tell you more about how we use this vault file.
 Deploy CommCare HQ services
 ---------------------------
 
-**For a cluster** you will need the SSH agent to have your SSH key for
-Ansible to connect to other machines.
+You will need the SSH agent to have your SSH key for Ansible.
 
 ::
 
