@@ -634,7 +634,9 @@ Clean up
 --------
 
 CommCare Cloud will no longer need the root user to be accessible via
-the password. The password can be removed if you wish.
+the password. The password can be removed if you wish, using ::
+
+    $ sudo passwd -d -l root
 
 Test and access CommCare HQ
 ---------------------------
