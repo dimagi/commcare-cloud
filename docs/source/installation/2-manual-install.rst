@@ -517,13 +517,7 @@ Install CommCare Cloud
     Find the value of “ansible_sudo_pass” and record it in your password
     manager. We will need this to deploy CommCare HQ.
 
-14. Next, we’re going to set up an encrypted Ansible vault file. You’ll
-    need to create a strong password and save it somewhere safe. This is
-    the master password that grants access to the vault. You’ll need it
-    for any future changes to this file, as well as when you deploy or
-    make configuration changes to this machine.
-
-    Encrypt the provided vault file, using that “ansible_sudo_pass”. (As
+14. Encrypt the provided vault file, using that “ansible_sudo_pass”. (As
     usual, substitute “cluster” with the name of your environment.)
 
     ::
@@ -540,8 +534,7 @@ will tell you more about how we use this vault file.
 Deploy CommCare HQ services
 ---------------------------
 
-**For a cluster** you will need the SSH agent to have your SSH key for
-Ansible to connect to other machines.
+You will need the SSH agent to have your SSH key for Ansible.
 
 ::
 
@@ -634,7 +627,9 @@ Clean up
 --------
 
 CommCare Cloud will no longer need the root user to be accessible via
-the password. The password can be removed if you wish.
+the password. The password can be removed if you wish, using ::
+
+    $ sudo passwd -d -l root
 
 Test and access CommCare HQ
 ---------------------------

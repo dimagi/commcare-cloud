@@ -23,56 +23,28 @@ in the sequence given below, so you shouldn't proceed to next steps until the pr
 
 #. Add "wipe_environment_enabled: True" to `public.yml` file.
 
-
-#. Stop CommCare and close Postgres sessions.
+#. Stop CommCare
 
    .. code-block::
 
       $ cchq <env_name> service commcare stop
-      $ cchq <env_name> service postgresql stop
-      $ cchq <env_name> service postgresql status
 
-
-   If that doesn't stop Postgres and PgBouncer, and if Postgres is
-   running on the same machine as you are logged in on, you can call
-   ``service`` directly:
-
-   .. code-block::
-
-      $ sudo service pgbouncer stop
-      $ sudo service postgresql stop
-      $ sudo service postgresql start
-      $ sudo service pgbouncer start
-
-#. Wipe PostgreSQL databases
-
-   Check status & start postgres if NOT running.
-
-   .. code-block::
-
-      $ cchq <env_name> service postgresql status
-
-   Status should be "OK" for both postgresql and pgbouncer.
-
-   If not running, Start postgresql and pgbouncer through postgresql service
-
-   .. code-block::
-
-      $ cchq <env_name> service postgresql start
-
-   If that does not start both successfully, reset services by running
+#. Reset PostgreSQL and PgBouncer
 
    .. code-block::
 
       $ cchq <env_name> ap deploy_postgres.yml
 
-   Check status & once status is "OK", Wipe postgres data
+#. Wipe PostgreSQL data
+
+   Check status. Once status is "OK", wipe PostgreSQL data
 
    .. code-block::
 
+      $ cchq <env_name> service postgresql status
       $ cchq <env_name> ap wipe_postgres.yml
 
-#. Clear the redis cache data
+#. Clear the Redis cache data
 
    .. code-block::
 
