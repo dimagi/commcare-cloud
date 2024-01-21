@@ -246,9 +246,7 @@ Scheduling Deploys
 CommCare deploy
 ---------------
 
-Internally at Dimagi the main cloud environment is deployed **every weekday**. 
-
-However, for locally hosted deployments, we recommend deploying **once a week** (for example, every Wednesday), to keep up to date with new features and security patches.
+For locally hosted deployments, we recommend deploying **once a week** (for example, every Wednesday), to keep up to date with new features and security patches.
 
 Since CommCare HQ is an Open Source project, you can see all the new features that were recently merged by looking at the `merged pull requests <https://github.com/dimagi/commcare-hq/pulls?q=is%3Apr+is%3Aclosed>`_ on GitHub.
 
@@ -262,7 +260,7 @@ Local Settings deploy
 
 Settings generally only need to be deployed when static files are updated against your specific environment. 
 
-Sometimes changes are made to the system which require new settings to be deployed before code can be rolled out. In these cases, the detailed steps are provided in the `changelog <https://github.com/dimagi/commcare-cloud/blob/master/docs/changelog/index.md>`_. Announcements are made to the `Developer Forum <https://forum.dimagi.com/>`_ in a `dedicated category <https://forum.dimagi.com/c/developers/maintainer-announcements/>`_ when these actions are needed. We strongly recommend that anyone maintaining a CommCare Cloud instance subscribe to that feed.
+Sometimes changes are made to the system which require new settings to be deployed before code can be rolled out. In these cases, the detailed steps are provided in the `changelog <https://commcare-cloud.readthedocs.io/en/latest/changelog/index.html#changelog>`_. Announcements are made to the `Developer Forum <https://forum.dimagi.com/>`_ in a `dedicated category <https://forum.dimagi.com/c/developers/maintainer-announcements/>`_ when these actions are needed. We strongly recommend that anyone maintaining a CommCare Cloud instance subscribe to that feed.
 
 -------------------------------
 Resolving problems with deploys
@@ -277,7 +275,7 @@ All commands listed here will be run from your control machine which has ``commc
 Local Settings Mismatch
 -----------------------
 
-If local settings files don't match the state expected by ansible during the deploy will fail.
+If local settings files don't match the state expected by ansible, the deploy will fail.
 
 Potential Causes
 ^^^^^^^^^^^^^^^^
@@ -302,4 +300,4 @@ Here is an example of this error which could result from
 Resolution
 ^^^^^^^^^^
 
-After updating ``commcare-cloud`` and ensuring everything is up to date, running a `static settings deploy <deploy.md#deploy-static-settings-files>`_ on the relevant machines should fix this problem, and allow the next deploy to proceed as normal.
+After updating ``commcare-cloud`` and ensuring everything is up to date, running a `static settings deploy <2-deploys.html#deploy-static-settings-files>`_ on the relevant machines should fix this problem, and allow the next deploy to proceed as normal.
