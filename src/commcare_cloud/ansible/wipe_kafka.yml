@@ -23,31 +23,35 @@
     - name: Get PostgreSQL defaults
       include_vars: roles/kafka/defaults/main.yml
 
+    - name: Get Kafka topics (version <= 0.9)
+      command: "/opt/kafka/bin/kafka-topics.sh --list --zookeeper localhost:{{ zookeeper_client_port }}"
+      register: topics_result_0_9
+      check_mode: no
+      when: kafka_version is version('0.9', '<=')
+
     - name: Get Kafka topics (version > 0.9 and < 3.x)
       command: "/opt/kafka/bin/kafka-topics.sh --list --exclude-internal --zookeeper localhost:{{ zookeeper_client_port }}"
-      register: topics_result
+      register: topics_result_1_to_3
       check_mode: no
       when: (kafka_version is version('0.9', '>')) and (kafka_version is version('3.0', '<'))
 
     - name: Get Kafka topics (version >= 3.0)
       command: "/opt/kafka/bin/kafka-topics.sh --list --exclude-internal -bootstrap-server localhost:9092"
-      register: topics_result
+      register: topics_result_3_0
       check_mode: no
       when: kafka_version is version('3.0', '>=')
 
-    - name: Get Kafka topics (version <= 0.9)
-      command: "/opt/kafka/bin/kafka-topics.sh --list --zookeeper localhost:{{ zookeeper_client_port }}"
-      register: topics_result
-      check_mode: no
+    - set_fact:
+        topics_for_delete: "{{ topics_result_0_9.stdout_lines | difference(kafka_internal_topics) }}"
       when: kafka_version is version('0.9', '<=')
 
     - set_fact:
-        topics_for_delete: "{{ topics_result.stdout_lines }}"
-      when: kafka_version is version('0.9', '>')
+        topics_for_delete: "{{ topics_result_1_to_3.stdout_lines }}"
+      when: (kafka_version is version('0.9', '>')) and (kafka_version is version('3.0', '<'))
 
     - set_fact:
-        topics_for_delete: "{{ topics_result.stdout_lines | difference(kafka_internal_topics) }}"
-      when: kafka_version is version('0.9', '<=')
+        topics_for_delete: "{{ topics_result_3_0.stdout_lines }}"
+      when: kafka_version is version('3.0', '>=')
 
     - name: Allow Kafka server to delete topics
       lineinfile:
