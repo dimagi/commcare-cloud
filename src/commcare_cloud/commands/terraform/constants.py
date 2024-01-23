@@ -56,5 +56,5 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 """.strip().split('\n')
 
 COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX = """
-^/trumpia/sms/([\w-]+)/?$
+^/trumpia/sms/([\\w-]+)/?$
 """.strip().split('\n')
