@@ -117,3 +117,6 @@ soft_assert_email:
 new_domain_email:
     This address is notified when a user requests a project space or
     organization.
+
+internal_feedback_email:
+    Feedback by staff members for features/changes sent to this address.
