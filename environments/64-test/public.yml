@@ -88,6 +88,8 @@ feedback_email: droberts+feedback@dimagi.com
 eula_change_email: droberts+eula-notifications@dimagi.com
 contact_email: droberts+info@dimagi.com
 soft_assert_email: droberts+commcarehq-ops+soft_asserts@dimagi.com
+internal_feedback_email: solutions-feedback@dimagi.com
+
 daily_deploy_email: null
 
 commcare_cloud_root_user: ubuntu

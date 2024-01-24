@@ -23,7 +23,7 @@ eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
-feedback_email: solutions-feedback@dimagi.com
+internal_feedback_email: solutions-feedback@dimagi.com
 ALTERNATE_HOSTS:
   - rec-mobile.sante.gov.bf
   - onse-iss.commcarehq.org
