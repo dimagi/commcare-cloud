@@ -55,6 +55,6 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/telerivet/status/([\w\-]+)/$
 """.strip().split('\n')
 
-COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX = """
-^/trumpia/sms/([\\w-]+)/?$
+COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX = r"""
+^/trumpia/sms/([\w-]+)/?$
 """.strip().split('\n')
