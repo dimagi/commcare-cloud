@@ -466,7 +466,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgucr0-production"
-    instance_type: "db.m5.2xlarge"
+    instance_type: "db.m6g.2xlarge"
     storage: 850
     max_storage: 5000
     storage_type: gp3
@@ -576,7 +576,7 @@ rds_instances:
       autovacuum_vacuum_cost_limit: 2000
 
   - identifier: "pgformplayer2-production"
-    instance_type: "db.m5.large"
+    instance_type: "db.m6g.large"
     storage: 200
     storage_type: gp3
     multi_az: true
