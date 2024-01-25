@@ -119,4 +119,8 @@ new_domain_email:
     organization.
 
 internal_feedback_email:
-    Feedback by staff members for features/changes sent to this address.
+    Internal feedback by staff members for features or changes is sent
+    to this address. For Dimagi-hosted environments this feedback is
+    sent to Dimagi's Solutions Division. Self-hosted environments can
+    choose to send feedback to a product manager or appropriate team.
+    Set to ``None`` in order to hide this option.
