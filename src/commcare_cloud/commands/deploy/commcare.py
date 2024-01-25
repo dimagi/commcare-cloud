@@ -1,8 +1,6 @@
 import shlex
 from datetime import datetime, timedelta
 
-import pytz
-
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_error, color_notice, color_summary
@@ -19,7 +17,7 @@ from commcare_cloud.commands.deploy.utils import (
     record_deploy_start,
     announce_deploy_success,
     create_release_tag,
-    within_maintenance_window,
+    confirm_environment_time,
     DeployContext,
     record_deploy_failed,
 )
@@ -115,7 +113,7 @@ def confirm_deploy(environment, deploy_revs, rev_diffs, args):
 
     if not (
         _confirm_translated(environment, quiet=args.quiet)
-        and _confirm_environment_time(environment, quiet=args.quiet)
+        and confirm_environment_time(environment, quiet=args.quiet)
     ):
         return False
 
@@ -176,19 +174,6 @@ def _confirm_translated(environment, quiet=False):
         'and review and merge the latest automated "Update Translations" pull request.\n',
         quiet=quiet
     )
-
-
-def _confirm_environment_time(environment, quiet=False):
-    if within_maintenance_window(environment):
-        return True
-    window = environment.fab_settings_config.acceptable_maintenance_window
-    d = datetime.now(pytz.timezone(window['timezone']))
-    message = (
-        "Whoa there bud! You're deploying '%s' outside the configured maintenance window. "
-        "The current local time is %s.\n"
-        "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
-    ) % (environment.name, d.strftime("%-I:%M%p on %h. %d %Z"))
-    return ask(message, quiet=quiet)
 
 
 def _print_same_code_warning(code_branch):

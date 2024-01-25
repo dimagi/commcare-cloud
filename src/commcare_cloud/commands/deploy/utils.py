@@ -6,6 +6,7 @@ import pytz
 from memoized import memoized
 
 from commcare_cloud.alias import commcare_cloud
+from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_summary, color_error
 from commcare_cloud.commands.deploy.slack import notify_slack_deploy_start, notify_slack_deploy_end
 from commcare_cloud.user_utils import get_default_username
@@ -55,8 +56,8 @@ def record_deploy_start(environment, context):
 def send_deploy_start_email(environment, context):
     is_nonstandard_deploy_time = not within_maintenance_window(environment)
     is_non_default_branch = (
-        context.revision != environment.fab_settings_config.default_branch and
-        context.revision is not None
+        context.revision != environment.fab_settings_config.default_branch
+        and context.revision is not None
     )
     env_name = environment.meta_config.deploy_env
     subject = f"{context.user} has initiated a {context.service_name} deploy to {env_name}"
@@ -125,6 +126,20 @@ def send_email(environment, subject, message='', to_admins=True, recipients=None
             *args,
             show_command=False
         )
+
+
+def confirm_environment_time(environment, quiet=False):
+    if within_maintenance_window(environment):
+        return True
+    window = environment.fab_settings_config.acceptable_maintenance_window
+    d = datetime.now(pytz.timezone(window['timezone']))
+    message = (
+        "Whoa there bud! You're deploying '%s' outside the configured maintenance window. "
+        "The current local time is %s.\n"
+        "ARE YOU DOING SOMETHING EXCEPTIONAL THAT WARRANTS THIS?"
+    ) % (environment.name, d.strftime("%-I:%M%p on %h. %d %Z"))
+    return ask(message, quiet=quiet)
+
 
 def within_maintenance_window(environment):
     window = environment.fab_settings_config.acceptable_maintenance_window
