@@ -157,7 +157,6 @@ before importing data from the old environment.
 
   * Rebuild the indices with the new data
     ``./manage.py ptop_preindex``
-    ``./manage.py ptop_es_manage --flip_all_aliases``
 
 * Print the database numbers and compare them to the values obtained previously
 
