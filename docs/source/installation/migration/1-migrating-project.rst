@@ -147,6 +147,8 @@ before importing data from the old environment.
 4. Import the data to the new environment
 -----------------------------------------
 
+* Ensure you are running the following steps from a release created using the CommCare version that you should
+  have been provided.
 
 * Import the dump files (each blob file will need to be imported individually)
 
@@ -156,7 +158,7 @@ before importing data from the old environment.
 * Rebuild elasticsearch indices
 
   * Rebuild the indices with the new data
-    ``./manage.py ptop_preindex``
+    ``./manage.py ptop_preindex --reset``
 
 * Print the database numbers and compare them to the values obtained previously
 

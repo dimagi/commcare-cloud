@@ -1,19 +1,49 @@
 How To Rebuild a CommCare HQ environment
 ========================================
 
-This step deletes all of the CommCare data from your environment and resets to as if it's a new environment.
-In practice, you will likely need this only to delete test environments and not production data. Please understand fully
-before you proceed to perform this as it will permenantly delete all of your data.
+These steps delete *all* CommCare data in your environment.
 
+In practice, you will likely *only* need this to delete test environments. We strongly discourage using any of
+these of steps on production data. Please fully understand this before proceeding as this will permenantly
+delete all of your data.
+
+Prior to Wiping Data
+--------------------
+
+#. Ensure CommCare services are in a healthy state. If you observe any issues, see the Troubleshooting section below.
+
+   .. code-block::
+
+      $ cchq <env_name> django-manage check_services
+
+
+#. Deploy CommCare from a specific revision
+
+   .. code-block::
+
+      $ cchq <env_name> deploy commcare --commcare-rev=<commit-hash>
+
+   .. note::
+        This is especially important if you are performing a migration of your data to a new instance. You should have
+        been given a commit hash that matches the revision of CommCare used to generate your exported data, and it is
+        critical that this same CommCare revision is used to rebuild the new environment, and load data in.
+
+#. Stop CommCare services to prevent background processes from writing to databases.
+
+   .. code-block::
+
+      $ cchq <env_name> downtime start
 
 How To Wipe Persistent Data
 ---------------------------
 
-This step deletes all of the persistent data in BlobDB, Postgres, Couch and Elasticsearch. Note that this works only 
-in the sequence given below, so you shouldn't proceed to next steps until the prior steps are successful.
+These steps are intended to be run in the sequence given below, so you shouldn't proceed to next step until
+the prior step is completed.
 
 
-#. Wipe BlobDB, ES, Couch using management commands.
+#. Add "wipe_environment_enabled: True" to `public.yml` file.
+
+#. Wipe BlobDB, Elasticsearch, and Couch using management commands.
 
    .. code-block::
 
@@ -21,27 +51,12 @@ in the sequence given below, so you shouldn't proceed to next steps until the pr
       $ cchq <env_name> django-manage wipe_es --commit
       $ cchq <env_name> django-manage delete_couch_dbs --commit
 
-#. Add "wipe_environment_enabled: True" to `public.yml` file.
 
-#. Stop CommCare
-
-   .. code-block::
-
-      $ cchq <env_name> service commcare stop
-
-#. Reset PostgreSQL and PgBouncer
+#. Wipe PostgreSQL data (restart first to kill any existing connections)
 
    .. code-block::
 
-      $ cchq <env_name> ap deploy_postgres.yml
-
-#. Wipe PostgreSQL data
-
-   Check status. Once status is "OK", wipe PostgreSQL data
-
-   .. code-block::
-
-      $ cchq <env_name> service postgresql status
+      $ cchq <env_name> service postgresql restart
       $ cchq <env_name> ap wipe_postgres.yml
 
 #. Clear the Redis cache data
@@ -56,41 +71,37 @@ in the sequence given below, so you shouldn't proceed to next steps until the pr
 
       $ cchq <env_name> ap wipe_kafka.yml
 
+#. Remove the "wipe_environment_enabled: True" line in your `public.yml` file.
 
-   You can check they have been removed by confirming that the following shows
-   no output:
-
-**Note**\ : Use below command when the ``kafka version is < 3.x``. The ``--zookeeper`` argument is removed from 3.x.
-
-   .. code-block::
-
-      $ kafka-topics.sh --zookeeper localhost:2181 --list
-
-**Note**\ : Use below command when the ``kafka version is >= 3.x``.
-
-   .. code-block::
-
-      $  kafka-topics.sh --bootstrap-server localhost:9092 --list
 
 Rebuilding environment
 ----------------------
 
-
-#. Remove the "wipe_environment_enabled: True" line in your `public.yml` file.
-
-#. Run Ansible playbook to recreate databases.
+#. Recreate all databases
 
    .. code-block::
 
       $ cchq <env_name> ap deploy_db.yml --skip-check
 
-   Run initial migration
+#. Run migrations for fresh install
 
    .. code-block::
 
       $ cchq <env_name> ap migrate_on_fresh_install.yml -e CCHQ_IS_FRESH_INSTALL=1
 
-#. Run a code deploy to create Kafka topics and Elasticsearch indices.
+#. Create kafka topics
+   
+    .. code-block::
+
+      $ cchq <env_name> django-manage create_kafka_topics
+
+    .. note::
+
+        If you are migrating a project to a new environment, you can return to the steps outlined in
+        `Import the data to the new environment <installation/migration/1-migrating-project.html#import-the-data-to-the-new-environment>`_.
+        Otherwise, you can continue with the following steps.
+
+#. Run a code deploy to start CommCare back up.
 
    .. code-block::
 
@@ -104,3 +115,17 @@ Rebuilding environment
    .. code-block::
 
       $ cchq <env_name> django-manage make_superuser you@your.domain
+
+Troubleshooting
+---------------
+
+Issues with check_services
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Kafka: No Brokers Available - Try resetting Zookeeper by performing the following steps:
+
+  .. code-block::
+    
+     $ cchq monolith service kafka stop
+     $ rm -rf /var/lib/zookeeper/*
+     $ cchq monolith service kafka restart
