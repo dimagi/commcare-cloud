@@ -33,6 +33,7 @@ Prior to Wiping Data
    .. code-block::
 
       $ cchq <env_name> downtime start
+      # Choose option to kill any running processes when prompted
 
 How To Wipe Persistent Data
 ---------------------------
