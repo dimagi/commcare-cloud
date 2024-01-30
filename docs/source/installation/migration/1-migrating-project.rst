@@ -102,10 +102,9 @@ Only after all the devices are updated to use a new/mobile URL, you can proceed 
 2. Pull the domain data from the old environment
 ------------------------------------------------
 
-The migration will require you to block data access to prevent loss of data
-created during the migration. In spite of this, a practice run may also be done
-without this data freeze, though the data will need to be cleared before the
-real run.
+The migration will require you to block data access to prevent loss of data created during the migration. If you
+would like to do a practice run, you will still need to block data access to ensure the exported data is in a
+clean state, and the data will need to be cleared before the real run.
 
 During the downtime, mobile users will still be able to collect data, but they
 will be unable to submit forms or sync with the server.
@@ -125,28 +124,40 @@ will be unable to submit forms or sync with the server.
   * ``./manage.py dump_domain_data <domain_name>`` 
   * ``./manage.py run_blob_export --all <domain_name>``
 
-* Transfer these two files to the new environment.
+  .. note::
+     It is important to have the commit hash that ``dump_domain_data`` and ``run_blob_export`` were run from. If
+     Dimagi does not provide you with this commit hash, please followup to ensure you are able to reference this
+     hash in future steps.
+
+* Transfer these files to the new environment.
 
 .. note::
-  If you are not able to use your own domain for a test run and would like dump data for a test domain for practising or testing, please contact us via https://forum.dimagi.com/c/developers/ with subject "Request for test domain dump data for migration testing" and mention this page. A dimagi developer will provide you above data for any test/QA domains (casesearch, ccqa, dataregistry, qateam, ben-test, qa-erm-v1-downstream1) from https://staging.commcarehq.org.
+  If you are not able to use your own domain for a test run and would like dump data for a test domain for
+  practising or testing, please contact us via https://forum.dimagi.com/c/developers/ with subject
+  "Request for test domain dump data for migration testing" and mention this page. A dimagi developer will
+  provide you above data for any test/QA domains (casesearch, ccqa, dataregistry, qateam, ben-test, qa-erm-v1-downstream1)
+  from https://staging.commcarehq.org.
 
 
 3. Prepare the new environment to be populated
 ----------------------------------------------
 
+* Ensure you are running the following steps from a release created using the CommCare version/commit hash that you
+  should have been provided in Step 1. This ensures the database will be migrated to the same state it was in when
+  the data was dumped.
 * Setup a new environment by following :ref:`deploy-commcarehq`
-* Do a commcare-hq deploy using :ref:`operations/2-deploys:Deploying CommCare HQ code changes`
+* Follow steps in 
+  :ref:`reference/howto/wipe_persistent_data:How To Rebuild a CommCare HQ environment`
+  to ensure your environment is in a clean state before attempting to import data.
 * Proceed to step 4.
-
-If you have performed any tests on your new environment that has created test data, to delete 
-the data you can rebuild your environment using 
-:ref:`reference/howto/wipe_persistent_data:How To Rebuild a CommCare HQ environment`
-before importing data from the old environment.
 
 
 4. Import the data to the new environment
 -----------------------------------------
 
+* Ensure you are running the following steps from a release created using the CommCare version/commit hash that you
+  should have been provided in Step 1. This ensures the database will be migrated to the same state it was in when
+  the data was dumped.
 
 * Import the dump files (each blob file will need to be imported individually)
 
@@ -156,7 +167,7 @@ before importing data from the old environment.
 * Rebuild elasticsearch indices
 
   * Rebuild the indices with the new data
-    ``./manage.py ptop_preindex``
+    ``./manage.py ptop_preindex --reset``
 
 * Print the database numbers and compare them to the values obtained previously
 
