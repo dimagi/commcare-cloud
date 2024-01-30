@@ -17,16 +17,16 @@ Prior to Wiping Data
       $ cchq <env_name> django-manage check_services
 
 
-#. Deploy CommCare from a specific revision
+#. If planning to migrate data, deploy CommCare from a specific revision
 
    .. code-block::
 
       $ cchq <env_name> deploy commcare --commcare-rev=<commit-hash>
 
    .. note::
-        This is especially important if you are performing a migration of your data to a new instance. You should have
-        been given a commit hash that matches the revision of CommCare used to generate your exported data, and it is
-        critical that this same CommCare revision is used to rebuild the new environment, and load data in.
+        You should have been given a commit hash that matches the revision of CommCare used to generate your
+        exported data, and it is critical that this same CommCare revision is used to rebuild the new environment,
+        and load data in. Please request a commit hash if you were not provided one.
 
 #. Stop CommCare services to prevent background processes from writing to databases.
 
@@ -41,6 +41,11 @@ How To Wipe Persistent Data
 These steps are intended to be run in the sequence given below, so you shouldn't proceed to next step until
 the prior step is completed.
 
+#. Ensure CommCare services are stopped to prevent background processes from writing to databases. 
+
+   .. code-block::
+     
+      $ cchq <env_name> service commcare status
 
 #. Add "wipe_environment_enabled: True" to `public.yml` file.
 
