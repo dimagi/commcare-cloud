@@ -133,10 +133,9 @@ will be unable to submit forms or sync with the server.
 
 .. note::
   If you are not able to use your own domain for a test run and would like dump data for a test domain for
-  practising or testing, please contact us via https://forum.dimagi.com/c/developers/ with subject
-  "Request for test domain dump data for migration testing" and mention this page. A dimagi developer will
-  provide you above data for any test/QA domains (casesearch, ccqa, dataregistry, qateam, ben-test, qa-erm-v1-downstream1)
-  from https://staging.commcarehq.org.
+  practising or testing, please contact support with the subject "Request for test domain dump data for migration
+  testing" and mention this page. We will provide you the above data for a test domain from our staging
+  environment.
 
 
 3. Prepare the new environment to be populated
