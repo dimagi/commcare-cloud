@@ -23,7 +23,6 @@ install_deps = [
     'passlib',
     'pycryptodome>=3.6.6',  # security update
     'PyGithub>=1.43.3',
-    'pyOpenSSL~=23.2',
     'pytz',
     'simplejson',
     'six',
