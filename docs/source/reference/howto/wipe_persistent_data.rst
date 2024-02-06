@@ -134,4 +134,5 @@ Issues with check_services
     
      $ cchq monolith service kafka stop
      $ rm -rf /var/lib/zookeeper/*
+     $ rm -rf /opt/data/kafka/data/*
      $ cchq monolith service kafka restart
