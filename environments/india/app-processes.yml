@@ -15,7 +15,7 @@ celery_processes:
   celery8,celery9:
     reminder_queue:
       pooling: gevent
-      concurrency: 20
+      concurrency: 1
     submission_reprocessing_queue:
       concurrency: 1
     sms_queue:
