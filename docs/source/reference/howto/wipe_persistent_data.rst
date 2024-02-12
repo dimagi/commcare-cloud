@@ -133,6 +133,7 @@ Issues with check_services
   .. code-block::
     
      $ cchq monolith service kafka stop
+     NOTE: The following paths may vary if you've specified different paths for ``kafka_data_dir`` and ``zookeeper_data_dir`` 
      $ rm -rf /var/lib/zookeeper/*
      $ rm -rf /opt/data/kafka/data/*
      $ cchq monolith service kafka restart
