@@ -127,7 +127,7 @@ localsettings:
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
   CELERY_PERIODIC_QUEUE: 'celery_null'
-  COMMCARE_ANALYTICS_HOST: "http://commcare-analytics-demo.dimagi.com"
+  COMMCARE_ANALYTICS_HOST: "https://commcare-analytics-staging.dimagi.com"
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
