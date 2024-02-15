@@ -37,4 +37,4 @@
     - role: kinesis_agent
       tags: kinesis-agent
   handlers:
-    - include: roles/monit/handlers/main.yml
+    - include_tasks: roles/monit/handlers/main.yml
