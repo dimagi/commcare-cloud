@@ -1,7 +1,6 @@
 dev_users:
   present:
     - adunn
-    - akjain
     - aphulera
     - biyeun
     - cellowitz
@@ -32,6 +31,7 @@ dev_users:
     - zeng
     - ayadav
   absent:
+    - akjain
     - astone
     - wpride
     - gcapalbo
