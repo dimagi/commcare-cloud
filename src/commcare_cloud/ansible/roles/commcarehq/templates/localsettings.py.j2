@@ -396,6 +396,9 @@ CELERY_BROKER_WRITE_URL = BROKER_WRITE_URL = '{{ BROKER_URL }}'
 {% else %}
 CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
 {% endif %}
+{% if 'BROKER_HEARTBEAT' in localsettings and localsettings.BROKER_HEARTBEAT %}
+BROKER_HEARTBEAT = '{{ localsettings.BROKER_HEARTBEAT }}'
+{% endif %}
 CELERY_HEARTBEAT_THRESHOLDS = {
 {% for queue, threshold in CELERY_HEARTBEAT_THRESHOLDS.items() | sort %}
     {{ queue | to_json }}: {% if threshold == None %}None{% else %}{{ threshold | to_json }}{% endif %},
