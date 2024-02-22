@@ -63,7 +63,7 @@ celery_processes:
       pooling: gevent
       concurrency: 20
     ucr_indicator_queue:
-      concurrency: 1
+      concurrency: 3
     ucr_queue:
       concurrency: 9
       prefetch_multiplier: 1
