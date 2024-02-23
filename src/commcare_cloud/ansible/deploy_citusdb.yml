@@ -14,7 +14,7 @@
     - name: Encrypt drive 
       vars: 
         dir_path: "{{ postgresql_archive_path }}"
-      include: encrypt_dir.yml
+      include_tasks: encrypt_dir.yml
       when: postgresql_archive_path is defined    
   tags: ecryptfs
 
