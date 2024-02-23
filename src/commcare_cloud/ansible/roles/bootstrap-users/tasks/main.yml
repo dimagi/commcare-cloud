@@ -141,7 +141,7 @@
 - name: check users password valid time
   shell: getent shadow "{{ item }}" | cut -d':' -f5
   register: users_pw_valid
-  loop: "{{ dev_users.present }} + ['ansible', '{{ cchq_user }}']"
+  loop: "{{ dev_users.present + ['ansible', cchq_user] }}"
   changed_when: False
 
 - name: clear users password valid time
