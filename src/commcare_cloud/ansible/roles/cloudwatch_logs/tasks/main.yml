@@ -11,7 +11,7 @@
     check_mode: no
 
   - name: install cwa if check command fails
-    include: install-cwa.yml
+    include_tasks: install-cwa.yml
     when: ctl_status.rc > 0
 
   - name: Create cloudwatch logs config

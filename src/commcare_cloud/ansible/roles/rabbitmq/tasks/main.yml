@@ -1,8 +1,8 @@
 ---
-- include: install_latest.yml
+- include_tasks: install_latest.yml
   when: rabbitmq_version == '3.10.13-1'
 
-- include: install_old.yml
+- include_tasks: install_old.yml
   when: rabbitmq_version == '3.10.7-1'
 
 - name: Place config file
@@ -40,10 +40,10 @@
   become: yes
   service: name=rabbitmq-server state=started
 
-- include: config-cluster.yml
+- include_tasks: config-cluster.yml
   when: rabbitmq_create_cluster|bool
 
-- include: config.yml
+- include_tasks: config.yml
   when: not rabbitmq_create_cluster or ( ansible_fqdn == hostvars[rabbitmq_cluster_master]['ansible_fqdn'] )
 
 - name: Enable and start RabbitMQ service
@@ -51,8 +51,8 @@
   service: name=rabbitmq-server state=started
   tags: after-reboot
 
-- include: join-cluster.yml
+- include_tasks: join-cluster.yml
   when: (rabbitmq_create_cluster | bool) and ( ansible_fqdn != hostvars[rabbitmq_cluster_master]['ansible_fqdn'] )
 
-- include: ha-policy.yml
+- include_tasks: ha-policy.yml
   when: (rabbitmq_create_cluster| bool ) and ( ansible_fqdn == hostvars[rabbitmq_cluster_master]['ansible_fqdn'] )

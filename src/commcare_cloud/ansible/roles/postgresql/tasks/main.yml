@@ -33,7 +33,7 @@
   tags: pghashlib
 
 - name: Setup plproxy
-  include: plproxy.yml
+  include_tasks: plproxy.yml
   when: item.get('host')
   loop:
     - "{{ postgresql_dbs.form_processing.proxy|default({}) }}"
