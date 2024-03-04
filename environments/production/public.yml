@@ -256,3 +256,5 @@ shared_dir_gid: 1500
 # for better time syncronization on aws servers
 # replace ntp with chrony.
 use_chrony: True
+
+ASYNC_INDICATORS_TO_QUEUE: 20000
