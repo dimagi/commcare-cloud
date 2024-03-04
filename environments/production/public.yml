@@ -232,6 +232,7 @@ localsettings:
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   WS4REDIS_CONNECTION_HOST: "redis.production.commcare.local"
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
+  ASYNC_INDICATORS_TO_QUEUE: 20000
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
@@ -256,5 +257,3 @@ shared_dir_gid: 1500
 # for better time syncronization on aws servers
 # replace ntp with chrony.
 use_chrony: True
-
-ASYNC_INDICATORS_TO_QUEUE: 20000
