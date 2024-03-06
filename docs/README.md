@@ -27,7 +27,7 @@ To learn more about Sphinx or restructuredText, check out below links.
 
 1. Install the requirements located at [requirements.txt](./requirements.txt) into the commcare-cloud virtualenv.
 2. Edit the content in the `source` directory as necessary after familiarizing yourself with the style guide below.
-3. Run `make html` from `docs` dir to build the HTML files. The files are writte to a `build` directory that is not part of the git repo.
+3. Run `make html` from `docs` dir to build the HTML files. The files are written to a `build` directory that is not part of the git repo.
 4. To view locally, open the generated `build/html/index.html` in your browser.
 
 
