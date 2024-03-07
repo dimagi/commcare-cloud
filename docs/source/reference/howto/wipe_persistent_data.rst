@@ -108,8 +108,13 @@ Rebuilding environment
     data into your new environment.
 
 
-Start services back up
-----------------------
+Start new environment
+---------------------
+
+.. note::
+
+   The following steps should only be run if you are not planning to migrate a project from an existing environment.
+
 
 #. End downtime (you will encounter a prompt that says no record of downtime was found, continue anyway as this starts services up).
 
@@ -119,8 +124,7 @@ Start services back up
 
 
 #. Recreate a superuser (where you substitute your address in place of
-   "you@your.domain"). This is optional and should not be performed if
-   you are planning to migrate domain from other environment.
+   "you@your.domain").
 
    .. code-block::
 
