@@ -145,6 +145,10 @@
 
 - meta: flush_handlers
 
+- name: Wait for 20 seconds
+  pause:
+    seconds: 20
+
 - name: pgbouncer monit monitor
   monit:
     name: pgbouncer
