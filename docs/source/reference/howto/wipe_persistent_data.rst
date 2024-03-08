@@ -113,7 +113,7 @@ Start new environment
 
 .. note::
 
-   The following steps should only be run if you are not planning to migrate a project from an existing environment.
+   The following steps should only be run if you are **not** planning to migrate a project from an existing environment.
 
 
 #. End downtime (you will encounter a prompt that says no record of downtime was found, continue anyway as this starts services up).
