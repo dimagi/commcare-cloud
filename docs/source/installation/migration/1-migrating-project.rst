@@ -152,6 +152,8 @@ will be unable to submit forms or sync with the server.
 * Proceed to step 4.
 
 
+.. _import-data-into-environment:
+
 4. Import the data to the new environment
 -----------------------------------------
 
