@@ -1006,6 +1006,11 @@ ES_XFORM_INDEX_NAME = '{{ localsettings.ES_XFORM_INDEX_NAME }}'
 ES_CASE_SEARCH_INDEX_NAME = '{{ localsettings.ES_CASE_SEARCH_INDEX_NAME }}'
 {% endif %}
 
+{# Flag to toggle the multiplexing settings defined below #}
+{% if localsettings.ES_MULTIPLEX_TO_VERSION is defined %}
+ES_MULTIPLEX_TO_VERSION = {{ localsettings.ES_MULTIPLEX_TO_VERSION }} 
+{% endif %}
+
 {# Elasticsearch Multiplexer Settings, would be used while reindexing #}
 {% if localsettings.ES_APPS_INDEX_MULTIPLEXED is defined %}
 ES_APPS_INDEX_MULTIPLEXED = {{ localsettings.ES_APPS_INDEX_MULTIPLEXED }}
