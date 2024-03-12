@@ -10,12 +10,7 @@ node.name: "{{ elasticsearch_node_name }}"
 {% if elasticsearch_node_zone is defined %}
 # Used for shard allocation awareness
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/allocation-awareness.html
-{% if elasticsearch_version == '2.4.6'%}
-node.zone: "{{ elasticsearch_node_zone }}"
-{% endif %}
-{% if elasticsearch_version is version('5.0.0', '>=') %}
 node.attr.zone: "{{ elasticsearch_node_zone }}"
-{% endif %}
 {% endif %}
 
 # disable multiple nodes starting from the same installation location
@@ -40,10 +35,7 @@ discovery.zen.minimum_master_nodes: {{ [2, groups.elasticsearch|map('extract', h
 discovery.zen.fd.ping_timeout: 90s
 discovery.zen.fd.ping_interval: 10s
 discovery.zen.fd.ping_retries: 20
-{% if elasticsearch_version == '2.4.6' %}
-discovery.zen.ping.multicast.enabled: false
-discovery.zen.ping.timeout: 90s
-{% endif %}
+
 {% if elasticsearch_version == '5.6.16' %}
 discovery.zen.ping_timeout: 90s
 {% endif %}
@@ -70,14 +62,6 @@ network.host: "{{ inventory_hostname }}"
 network.host: "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}"
 {% endif %}
 
-{% if elasticsearch_version == '2.4.6'%}
-index.search.slowlog.threshold.query.warn: 10s
-index.search.slowlog.threshold.query.info: 5s
-index.search.slowlog.threshold.query.debug: 2s
-index.search.slowlog.threshold.query.trace: 500ms
-index.max_result_window: 1050000
-{% endif %}
-
 {% if elasticsearch_fielddata_cache_size|default('') %}
 indices.fielddata.cache.size:  {{ elasticsearch_fielddata_cache_size }}
 {% endif %}
@@ -102,13 +86,8 @@ cloud:
 
 {% endif %}
 
-# Only allow indices to be created by an explicit "create" command
-{% if elasticsearch_version == '2.4.6'%}
-action.auto_create_index: false
-{% endif %}
-{% if elasticsearch_version is version('5.0.0', '>=') %}
+# Only auto create elastic search internal indices
 action.auto_create_index: .watches,.triggered_watches,.watcher-history-*
-{% endif %}
 
 
 {% if es_local_repo and not backup_es_s3%}
