@@ -41,7 +41,7 @@ EOF
 }
 
 resource "aws_eip" "vpn_ip" {
-  vpc      = true
+  domain   = "vpc"
   instance = aws_instance.vpn_host.id
 
   tags = {
