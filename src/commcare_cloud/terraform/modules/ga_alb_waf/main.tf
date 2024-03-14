@@ -317,8 +317,11 @@ resource "aws_wafv2_web_acl" "front_end" {
         name        = "AWSManagedRulesKnownBadInputsRuleSet"
         vendor_name = "AWS"
 
-        excluded_rule {
+        rule_action_override {
           name = "Log4JRCE"
+          action_to_use {
+          count {}
+        }
         }
       }
     }
@@ -401,14 +404,23 @@ resource "aws_wafv2_web_acl" "front_end" {
       managed_rule_group_statement {
         name        = "AWSManagedRulesSQLiRuleSet"
         vendor_name = "AWS"
-        excluded_rule {
+        rule_action_override {
           name = "SQLi_BODY"
+          action_to_use {
+          count {}
         }
-        excluded_rule {
+        }
+        rule_action_override {
           name = "SQLi_QUERYARGUMENTS"
+          action_to_use {
+          count {}
         }
-        excluded_rule {
+        }
+        rule_action_override {
           name = "SQLiExtendedPatterns_BODY"
+          action_to_use {
+          count {}
+        }
         }
       }
     }
@@ -467,26 +479,47 @@ resource "aws_wafv2_web_acl" "front_end" {
       managed_rule_group_statement {
         name        = "AWSManagedRulesCommonRuleSet"
         vendor_name = "AWS"
-        excluded_rule {
+        rule_action_override {
           name = "EC2MetaDataSSRF_COOKIE"
+          action_to_use {
+          count {}
         }
-        excluded_rule {
+        }
+        rule_action_override {
           name = "GenericRFI_BODY"
+          action_to_use {
+          count {}
         }
-        excluded_rule {
+        }
+        rule_action_override {
           name = "SizeRestrictions_BODY"
+          action_to_use {
+          count {}
         }
-        excluded_rule {
+        }
+        rule_action_override {
           name = "GenericLFI_BODY"
+          action_to_use {
+          count {}
         }
-        excluded_rule {
+        }
+        rule_action_override {
           name = "GenericRFI_QUERYARGUMENTS"
+          action_to_use {
+          count {}
         }
-        excluded_rule {
+        }
+        rule_action_override {
           name = "NoUserAgent_HEADER"
+          action_to_use {
+          count {}
         }
-        excluded_rule {
+        }
+        rule_action_override {
           name = "SizeRestrictions_QUERYSTRING"
+          action_to_use {
+          count {}
+        }
         }
       }
     }
