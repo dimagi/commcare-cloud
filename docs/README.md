@@ -1,10 +1,10 @@
-# CommCareHQ Deployment Documentation
+# CommCare HQ Deployment Documentation
 
-This is the documentation on deploying and managing a CommCareHQ instance available at https://commcare-cloud.readthedocs.io/. This uses Sphinx tool and restructuredText markup language and follows the below style guide.
+This is the documentation on deploying and managing a CommCare HQ instance available at https://commcare-cloud.readthedocs.io/. This uses Sphinx tool and reStructuredText markup language and follows the below style guide.
 
 ## Table of contents
 
-- [About Sphinx and restructuredText](#about-sphinx-and-restructuredtext)
+- [About Sphinx and reStructuredText](#about-sphinx-and-restructuredtext)
 - [Contributing](#contributing)
   * [Setting up locally](#setting-up-locally)
   * [Updating https://commcare-cloud.readthedocs.io/](#updating-https---commcare-cloudreadthedocsio-)
@@ -12,12 +12,12 @@ This is the documentation on deploying and managing a CommCareHQ instance availa
   * [Principles](#principles)
   * [Terminology](#terminology)
 
-## About Sphinx and restructuredText
+## About Sphinx and reStructuredText
 
-To learn more about Sphinx or restructuredText, check out below links.
+To learn more about Sphinx or reStructuredText, check out below links.
 
 1. [Sphinx Docs](https://www.sphinx-doc.org/en/master/tutorial/first-steps.html) is useful to understand Sphinx, the tool.
-2. [restructuredText Docs](https://docutils.sourceforge.io/rst.html) is useful to understand restructuredText, the markup language.
+2. [reStructuredText Docs](https://docutils.sourceforge.io/rst.html) is useful to understand reStructuredText, the markup language.
 3. [Cheat Sheets](https://sphinx-tutorial.readthedocs.io/cheatsheet/) are useful as quick reference on the formatting options.
 
 
@@ -41,7 +41,7 @@ The doc files on commcare-cloud commands usage (located in the reference section
 
 ## Style Guide
 
-This documentation contained is intended to be exhaustive, covering information relevant to every step in the life-cycle of hosting a CommCare instance such as info on planning a CommCareHQ installation, installing, managing an instance, scaling, troubleshooting and various reference material. Before creating a new document or editing an existing one, please familiarize yourself with the below principles that the docs must adhere to.
+This documentation contained is intended to be exhaustive, covering information relevant to every step in the life-cycle of hosting a CommCare instance such as info on planning a CommCare HQ installation, installing, managing an instance, scaling, troubleshooting and various reference material. Before creating a new document or editing an existing one, please familiarize yourself with the below principles that the docs must adhere to.
 
 ### Principles
 
@@ -52,7 +52,7 @@ This documentation contained is intended to be exhaustive, covering information 
 4. **Place the page in most relevant location**: The docs have a clear separate sections for each phase of the hosting life-cycle. Think of the the context in which the reader will read the page, whether it's while installing, monitoring or troubleshooting an issue. Accordingly, place that page in the most relevant location so that the docs follow a logical order. Also add a link to the page in the top level index.rst for the respective section. This improves the discoverability of the content.
 5. **Don't mix content types**: A page could be a step by step tutorial or an explanation or a reference. Unless necessary, avoid mixing the content types. For example, if a tutorial should let the user know the options for a command, link to a page in the reference sections instead of putting the reference material in the tutorial. This might be exempt if the reference is only relevant in the tutorial.
 6. **Use consistent language**: Refer to the below [terminology](#terminology) section and use terms consistently.
-7. **Keep in mind the audience**: The readers for these docs could be an external IT team hosting CommCareHQ locally or a Dimagi engineer or a third-party Dimagi contractor. Do not assume any roles such as a system administrator or an HQ/mobile dev or an MSP etc.
+7. **Keep in mind the audience**: The readers for these docs could be an external IT team hosting CommCare HQ locally or a Dimagi engineer or a third-party Dimagi contractor. Do not assume any roles such as a system administrator or an HQ/mobile dev or an MSP etc.
 8. **Use relative links**: For referring to internal pages refer to them via relative links rather than links based on the host https://commcare-cloud.readthedocs.io/ which could change.
 
 ### Terminology
@@ -60,9 +60,9 @@ This documentation contained is intended to be exhaustive, covering information 
 Below are the terms used in these docs and their meanings.
 
 | Term                 | Description        |
-| -------------        | ------------------ |
+| -------------------- | ------------------ |
 | CommCare             | The mobile technology |
-| CommCareHQ           | The server-side technology to deploy and manage CommCare |
-| CommCareHQ Instance  | Refers to the whole hardware powering the CommCareHQ at a specific web address |
+| CommCare HQ          | The server-side technology to deploy and manage CommCare |
+| CommCare HQ Instance | Refers to the whole hardware powering the CommCare HQ at a specific web address |
 | Monolith             | A CommCare instance powered by a single server |
-| Deploy 			   | Installing CommCareHQ or updating the application code depending on the context |
+| Deploy 			         | Installing CommCare HQ or updating the application code depending on the context |
