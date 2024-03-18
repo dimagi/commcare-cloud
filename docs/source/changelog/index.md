@@ -7,7 +7,7 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2024-02-13** [SQL Repat Record Migration](0077-sql-repeatrecord-pr1.md)
+#### **2024-02-13** [SQL Repeat Record Migration](0077-sql-repeatrecord-pr1.md)
 Prepare for and migrate Repeat Records from Couch to SQL.
 
 
