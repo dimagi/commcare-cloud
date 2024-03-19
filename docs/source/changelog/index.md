@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2024-02-13** [SQL Repeat Record Migration](0077-sql-repeatrecord-pr1.md)
+Prepare for and migrate Repeat Records from Couch to SQL.
+
+
+---
 #### **2024-01-14** [Elasticsearch upgrade from 2.4.6 to 5.6.16](0076-upgrade-to-es-5.md)
 Upgrade to Elasticsearch 5.
 
