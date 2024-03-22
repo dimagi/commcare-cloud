@@ -145,14 +145,14 @@
 
 - meta: flush_handlers
 
-- name: pgbouncer monit monitor
-  monit:
-    name: pgbouncer
-    state: monitored
-  ignore_errors: "{{ ansible_check_mode }}"
-  register: result
-  until: not result.failed or 'process not presently configured with monit' not in result.msg
-  retries: 5
-  delay: 20
-  tags: monit
+#- name: pgbouncer monit monitor
+#  monit:
+#    name: pgbouncer
+#    state: monitored
+#  ignore_errors: "{{ ansible_check_mode }}"
+#  register: result
+#  until: not result.failed or 'process not presently configured with monit' not in result.msg
+#  retries: 5
+#  delay: 20
+#  tags: monit
 
