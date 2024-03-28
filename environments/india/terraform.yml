@@ -43,6 +43,16 @@ servers:
     group: django_manage
     os: jammy
 
+  - server_name: "djangomanage3-india"
+    server_instance_type: "t3a.small"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: django_manage
+    os: jammy
+
   - server_name: "web4-india"
     server_instance_type: "r6a.large"
     network_tier: "app-private"
