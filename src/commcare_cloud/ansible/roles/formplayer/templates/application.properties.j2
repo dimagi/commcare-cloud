@@ -65,3 +65,9 @@ server.forward-headers-strategy=NATIVE
 {% if formplayer_detailed_tags is defined %}
 detailed_tagging.tag_names={{ formplayer_detailed_tags|join(',') }}
 {% endif %}
+
+# Per-environment custom properties
+{% for key, value in formplayer_custom_properties.items() %}
+{{ key }}={{ value }}
+{% endfor %}
+```

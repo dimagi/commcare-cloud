@@ -23,3 +23,7 @@ formplayer_release_name: '{{ release_name }}-{{ env_monitoring_id }}'
 # Instructs Spring Boot to process X-FORWARDED-FOR headers. Should be set if behind a 
 # trusted load balancer which forwards the original IP in headers.
 formplayer_forward_ip_proxy: false
+
+# Mapping to define custom properties to be set in the formplayer application.properties file
+# Override this in your environment file to set custom properties
+formplayer_custom_properties: {}
