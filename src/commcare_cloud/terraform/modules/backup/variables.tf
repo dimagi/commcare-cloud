@@ -25,3 +25,7 @@ variable "monthly_retention" {
 variable "quarterly_retention" {
   type = number
 }
+
+variable "cold_storage_after" {
+  type = number
+}

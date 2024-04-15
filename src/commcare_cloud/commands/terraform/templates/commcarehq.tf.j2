@@ -93,6 +93,7 @@ module "backup_plan" {
   weekly_retention = {{ backup_plan.weekly_retention|tojson }}
   monthly_retention = {{ backup_plan.monthly_retention|tojson }}
   quarterly_retention = {{ backup_plan.quarterly_retention|tojson }}
+  cold_storage_after = {{ backup_plan.cold_storage_after|tojson }}
   providers = {
     aws.remote_region = aws.{{ backup_plan.remote_vault_region }}
   }
