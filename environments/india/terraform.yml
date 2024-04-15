@@ -23,15 +23,15 @@ external_routes: []
 
 ec2_metadata_tokens_required: yes
 servers:
-  - server_name: "control1-india"
+  - server_name: "control2-india"
     server_instance_type: "t3a.medium"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: control
-    os: jammy 
+    os: jammy
 
   - server_name: "djangomanage3-india"
     server_instance_type: "t3a.small"
