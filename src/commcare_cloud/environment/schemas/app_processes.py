@@ -52,6 +52,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     formplayer_command_args = jsonobject.StringProperty()
     datadog_pythonagent = jsonobject.BooleanProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
+    enable_automatic_dd_tracing = jsonobject.BooleanProperty()
 
     service_blacklist = jsonobject.ListProperty(six.text_type)
     management_commands = jsonobject.DictProperty(jsonobject.DictProperty())
