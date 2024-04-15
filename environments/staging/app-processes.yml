@@ -4,6 +4,7 @@ formplayer_command_args: ''
 
 django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
 datadog_pythonagent: True
+enable_automatic_dd_tracing: False
 
 management_commands:
   celery_a1:
