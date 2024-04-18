@@ -20,6 +20,5 @@
         DD_REQUESTS_SPLIT_BY_DOMAIN: "{% if app_processes_config.datadog_pythonagent %}True{% endif %}"
         DD_ENV: "{% if app_processes_config.datadog_pythonagent and app_processes_config.django_command_prefix %}{{ env_monitoring_id }}{% endif %}"
         DD_TRACE_LOG_FILE: "{% if app_processes_config.datadog_pythonagent and app_processes_config.django_command_prefix %}{{ log_home }}/ddtrace.log{% endif %}"
-        DD_TRACE_DEBUG: "{% if app_processes_config.datadog_pythonagent and app_processes_config.django_command_prefix %}True{% endif %}"
         DD_TRACE_STARTUP_LOGS: "{% if app_processes_config.datadog_pythonagent and app_processes_config.django_command_prefix %}True{% endif %}"
       gunicorn_workers: "{{ app_processes_config.gunicorn_workers_static_factor + (ansible_processor_vcpus * app_processes_config.gunicorn_workers_factor)|int }}"
