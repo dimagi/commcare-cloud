@@ -33,6 +33,8 @@ esmaster7-india.instance_id: i-0e69053c5e7b2bca9
 formplayer-efs: fs-9d4fdd4c.efs.ap-south-1.amazonaws.com
 formplayer2-india: 10.203.10.12
 formplayer2-india.instance_id: i-099df0d3c49c81b3d
+formplayer3-india: 10.203.10.32
+formplayer3-india.instance_id: i-059f6df8ba2514bdd
 frontend_alb-india: internal-frontend-alb-india-500199263.ap-south-1.elb.amazonaws.com
 kafka_a2-india: 10.203.40.86
 kafka_a2-india.instance_id: i-09d14c26c3e892738
