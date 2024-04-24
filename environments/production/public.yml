@@ -76,7 +76,7 @@ formplayer_detailed_tags:
   - form_name
   - module_name
 formplayer_custom_properties:
-  spring.datasource.hikari.maximum-pool-size: 20
+  spring.datasource.hikari.maximum-pool-size: 40
   spring.datasource.hikari.minimum-idle: 5
 
 KSPLICE_ACTIVE: yes
