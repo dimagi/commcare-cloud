@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2024-02-13** [SQL Repeat Record Migration addendum](0079-sql-repeatrecord-addendum.md)
+Optional: Copy repeat records with deleted repeaters from Couch to SQL
+
+
+---
 #### **2024-03-29** [Upgrade To Node 20](0078-upgrade-to-node-20.md)
 Node.js 16.x LTS is reaching its end of life 15th June 2024, so node and npm must be upgraded on all machines.
 
