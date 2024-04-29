@@ -65,6 +65,28 @@ servers:
     os: jammy
     server_auto_recovery: true
 
+  - server_name: "web6-india"
+    server_instance_type: "r6a.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: webworkers
+    os: jammy
+    server_auto_recovery: true
+
+  - server_name: "web7-india"
+    server_instance_type: "r6a.large"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: webworkers
+    os: jammy
+    server_auto_recovery: true
+
   - server_name: "celery7-india"
     server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
