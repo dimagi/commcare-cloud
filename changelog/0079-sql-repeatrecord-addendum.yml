@@ -3,7 +3,7 @@ key: sql-repeatrecord-pr1-addendum
 date: 2024-02-13
 optional_per_env: yes
 # (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
-min_commcare_version: 77b820a3331c3e3e09b513e377eaf7b96531ca9a
+min_commcare_version: 58bc7541628b870216b2b072f7c89d01cb1cf225
 # (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
 max_commcare_version:
 context: |
