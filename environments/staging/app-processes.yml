@@ -1,6 +1,10 @@
 formplayer_command_args: ''
 # Use the following to enable datadog tracing
 # formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.java.org.javarosa.enableOpenTracing=true'
+
+django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
+datadog_pythonagent: True
+
 management_commands:
   celery_a1:
     handle_survey_actions:
