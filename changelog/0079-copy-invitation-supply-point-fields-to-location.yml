@@ -7,9 +7,9 @@ min_commcare_version: c3f318f328372e904f4b1db42177309211ceb332
 # (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
 max_commcare_version: 72fc5f10dd31c42d854d20ed99d435ff3d2ad7a0
 context: |
-The `supply_point` field in the `users_invitation` table is queried against the corresponding
-row in the `locations_sqllocation` table, and subsequently copied to the `location_id`
-field in the `users_invitation`.
+  The `supply_point` field in the `users_invitation` table is queried against the corresponding
+  row in the `locations_sqllocation` table, and subsequently copied to the `location_id`
+  field in the `users_invitation`.
 
 details: |
   In the `Invitation` model, the `supply_point` field will be replaced by a foreign key reference
