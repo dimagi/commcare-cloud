@@ -64,7 +64,7 @@ gitpython==3.1.41
     # via commcare-cloud (setup.py)
 greenlet==3.0.0
     # via gevent
-idna==2.6
+idna==3.7
     # via requests
 importlib-metadata==3.1.0
     # via commcare-cloud (setup.py)
