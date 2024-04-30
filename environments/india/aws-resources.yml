@@ -66,3 +66,7 @@ web4-india: 10.203.10.219
 web4-india.instance_id: i-0cde1facc3a39611e
 web5-india: 10.203.11.134
 web5-india.instance_id: i-0e850427ac3353058
+web6-india: 10.203.10.149
+web6-india.instance_id: i-08ab1806acb89e010
+web7-india: 10.203.11.54
+web7-india.instance_id: i-0a8979344e89c50c7
