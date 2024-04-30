@@ -1,15 +1,16 @@
-title: Copy Supply Point data to Invitation's Location Field
+title: Copy Supply Point data to Invitation model Location Field
 key: copy-invitation-supply-point-fields-to-location
-date: 2024-04-29
+date: 2024-04-30
 optional_per_env: yes
 # (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
 min_commcare_version: c3f318f328372e904f4b1db42177309211ceb332
 # (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
 max_commcare_version: 72fc5f10dd31c42d854d20ed99d435ff3d2ad7a0
 context: |
-  The `supply_point` field in the `users_invitation` table is queried against the corresponding
-  row in the `locations_sqllocation` table, and subsequently copied to the `location_id`
-  field in the `users_invitation`.
+  Copy data from `supply_point` field to `location` field in `Invitation` model to prevent errors with
+  future migrations to the `users_invitation` table.
+
+  This operation is required for all environment regardless of feature usage.
 
 details: |
   In the `Invitation` model, the `supply_point` field will be replaced by a foreign key reference

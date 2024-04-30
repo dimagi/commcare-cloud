@@ -7,6 +7,14 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2024-04-30** [copy-invitation-supply-point-fields-to-location](0079-copy-invitation-supply-point-fields-to-location.md)
+Copy data from `supply_point` field to `location` field in `Invitation` model to prevent errors with
+future migrations to the `users_invitation` table.
+
+This operation is required for all environment regardless of feature usage.
+
+
+---
 #### **2024-03-29** [Upgrade To Node 20](0078-upgrade-to-node-20.md)
 Node.js 16.x LTS is reaching its end of life 15th June 2024, so node and npm must be upgraded on all machines.
 
