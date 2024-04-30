@@ -7,7 +7,7 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2024-04-30** [copy-invitation-supply-point-fields-to-location](0079-copy-invitation-supply-point-fields-to-location.md)
+#### **2024-04-30** [Copy Supply Point data to Invitation model Location Field](0080-copy-invitation-supply-point-fields-to-location.md)
 Copy data from `supply_point` field to `location` field in `Invitation` model to prevent errors with
 future migrations to the `users_invitation` table.
 
