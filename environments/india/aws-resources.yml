@@ -62,10 +62,6 @@ rabbit_a6-india: 10.203.40.210
 rabbit_a6-india.instance_id: i-043877f32d6705105
 rabbit_c7-india: 10.203.42.241
 rabbit_c7-india.instance_id: i-05ed3ca10cfbceb67
-web4-india: 10.203.10.219
-web4-india.instance_id: i-0cde1facc3a39611e
-web5-india: 10.203.11.134
-web5-india.instance_id: i-0e850427ac3353058
 web6-india: 10.203.10.149
 web6-india.instance_id: i-08ab1806acb89e010
 web7-india: 10.203.11.54
