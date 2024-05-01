@@ -11,7 +11,7 @@ need to be applied on your environment to keep it up to date.
 Copy data from `supply_point` field to `location` field in `Invitation` model to prevent errors with
 future migrations to the `users_invitation` table.
 
-This operation is required for all environment regardless of feature usage.
+This operation is required for all environments regardless of feature usage.
 
 
 ---
