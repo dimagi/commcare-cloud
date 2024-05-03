@@ -45,7 +45,7 @@
         if_not_done: yarn_install
 
 - name: Run webpack
-  hosts: [proxy]
+  hosts: [webworkers, proxy]
   any_errors_fatal: true
   tasks:
     - import_role: {name: deploy_hq}
