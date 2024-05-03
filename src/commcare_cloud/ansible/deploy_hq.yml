@@ -44,6 +44,14 @@
       vars:
         if_not_done: yarn_install
 
+- name: Run webpack
+  hosts: [webworkers]
+  any_errors_fatal: true
+  tasks:
+    - import_role: {name: deploy_hq}
+      vars:
+        if_not_done: run_webpack
+
 - name: Collect static files
   hosts: [webworkers, proxy]
   any_errors_fatal: true
