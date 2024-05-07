@@ -51,6 +51,8 @@
     - import_role: {name: deploy_hq}
       vars:
         if_not_done: run_webpack
+      when: use_webpack is defined and use_webpack
+  
 
 - name: Collect static files
   hosts: [webworkers, proxy]
