@@ -20,6 +20,8 @@ es4-india: 10.203.40.88
 es4-india.instance_id: i-05918141eac6f7f7f
 es5-india: 10.203.41.215
 es5-india.instance_id: i-02ad8bcf33e3d9624
+es6-india: 10.203.40.43
+es6-india.instance_id: i-0449d5a069e795993
 escoordinator7-india: 10.203.40.26
 escoordinator7-india.instance_id: i-09847b1e99b12a2c0
 escoordinator8-india: 10.203.41.15
