@@ -238,5 +238,3 @@ formplayer_java_version: "{{ java_17_bin_path }}/java"
 maintenance_start_time: "06:00"
 
 maintenance_end_time: "08:00"
-
-use_webpack: true
