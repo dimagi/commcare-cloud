@@ -48,10 +48,10 @@
   hosts: [webworkers, proxy]
   any_errors_fatal: true
   tasks:
-    - import_role: {name: deploy_hq}
+    - include_role: {name: deploy_hq}
       vars:
         if_not_done: run_webpack
-      when: use_webpack is defined and use_webpack
+      when: use_webpack | default(false)
   
 
 - name: Collect static files
