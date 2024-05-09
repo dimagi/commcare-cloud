@@ -119,7 +119,7 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 2100
+      volume_size: 2800
       enable_cross_region_backup: yes
     group: "elasticsearch"
     os: jammy 
@@ -132,7 +132,7 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 2100
+      volume_size: 2800
     group: "elasticsearch"
     os: jammy 
     count: 4
@@ -144,7 +144,7 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 1300
+      volume_size: 2800
       enable_cross_region_backup: yes
     group: "elasticsearch"
     os: jammy
@@ -159,7 +159,7 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 1300
+      volume_size: 2800
     group: "elasticsearch"
     os: jammy
     count: 2
