@@ -11,7 +11,6 @@
 {{ __esmaster5__ }} elasticsearch_node_name=esmaster5 elasticsearch_node_zone=ap-south-1a
 {{ __esmaster6__ }} elasticsearch_node_name=esmaster6 elasticsearch_node_zone=ap-south-1b
 {{ __esmaster7__ }} elasticsearch_node_name=esmaster7 elasticsearch_node_zone=ap-south-1c
-{{ __es4__ }} elasticsearch_node_name=es4 elasticsearch_node_zone=ap-south-1a
 {{ __es5__ }} elasticsearch_node_name=es5 elasticsearch_node_zone=ap-south-1b
 {{ __es6__ }} elasticsearch_node_name=es6 elasticsearch_node_zone=ap-south-1a
 {{ __escoordinator7__ }} elasticsearch_node_name=escoordinator7 elasticsearch_node_zone=ap-south-1a
@@ -27,7 +26,6 @@ elasticsearch_master=true
 elasticsearch_data=false
 
 [es_data:children]
-es4
 es5
 es6
 
@@ -119,7 +117,6 @@ pillow4
 formplayer3
 
 [elasticsearch:children]
-es4
 es5
 es6
 
