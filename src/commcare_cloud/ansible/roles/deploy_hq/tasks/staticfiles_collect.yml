@@ -12,6 +12,20 @@
     state: absent
   no_log: true
 
+- name: Handle webpack
+  block:
+  - name: Check for webpack configuration
+    stat:
+      path: "{{ code_source }}/webpack.config.js"
+    register: config_file 
+
+  - name: Run webpack
+    command:
+      cmd: yarn run build:webpack
+      chdir: '{{ code_source }}'
+    when: config_file.stat.exists
+  when: use_webpack | default(false)
+
 - name: Collect static files
   # Must run on web workers for the same reasons as _Version static files_.
   command:
