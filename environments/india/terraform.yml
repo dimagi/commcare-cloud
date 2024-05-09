@@ -165,17 +165,7 @@ servers:
     volume_encrypted: no
     volume_type: "gp3"
     group: "elasticsearch"
-    os: jammy 
-
-  - server_name: "es4-india"
-    server_instance_type: "r6a.large"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 300
-    volume_encrypted: no
-    volume_type: "gp3"
-    group: elasticsearch
-    os: jammy 
+    os: jammy
 
   - server_name: "es5-india"
     server_instance_type: "r6a.large"

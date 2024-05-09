@@ -16,8 +16,6 @@ couch_alb-india: internal-couch-alb-india-410194548.ap-south-1.elb.amazonaws.com
 djangomanage3-india: 10.203.10.52
 djangomanage3-india.instance_id: i-0d7ef4c25678e7990
 efs_india-efs: fs-0c280ddd.efs.ap-south-1.amazonaws.com
-es4-india: 10.203.40.88
-es4-india.instance_id: i-05918141eac6f7f7f
 es5-india: 10.203.41.215
 es5-india.instance_id: i-02ad8bcf33e3d9624
 es6-india: 10.203.40.43
