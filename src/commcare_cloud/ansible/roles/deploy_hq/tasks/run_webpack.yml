@@ -1,0 +1,10 @@
+- name: Check for webpack configuration
+  stat:
+    path: "{{ code_source }}/webpack.config.js"
+  register: config_file 
+
+- name: Run webpack
+  command:
+    cmd: yarn run build:react
+    chdir: '{{ code_source }}'
+  when: config_file.stat.exists
