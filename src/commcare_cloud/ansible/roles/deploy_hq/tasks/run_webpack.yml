@@ -5,6 +5,6 @@
 
 - name: Run webpack
   command:
-    cmd: yarn run build:react
+    cmd: yarn run build:webpack
     chdir: '{{ code_source }}'
   when: config_file.stat.exists
