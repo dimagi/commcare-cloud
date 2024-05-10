@@ -1,6 +1,8 @@
 ---
 - name: Run webpack
   hosts: proxy6 
+  gather_facts: no
+  check_mode: false
 
   tasks:
     - name: My first task
