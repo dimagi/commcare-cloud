@@ -309,7 +309,8 @@ class AwsFillInventoryHelper(object):
             group_name = '{}{}'.format(prefix, host_name)
             context['__{}__'.format(group_name)] = ''.join([
                 '[{}]\n'.format(group_name),
-                self.resources[resource_name],
+                resource_name,
+                ' {}={}'.format('ansible_host', self.resources[resource_name]),
             ]) + ''.join([' {}={}'.format(key, value) for key, value in vars if value])
         return context
 
