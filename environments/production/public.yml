@@ -167,15 +167,17 @@ localsettings:
   ELASTICSEARCH_MAJOR_VERSION: 5
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-04"
   ES_XFORM_INDEX_NAME: "xforms_2023-01-27"
+  # When to consider multiplex settings
+  ES_MULTIPLEX_TO_VERSION: '6'
   # Index Multiplexer Settings  
-  ES_APPS_INDEX_MULTIPLEXED: False # swap completed
-  ES_CASE_SEARCH_INDEX_MULTIPLEXED: False # swap completed 
-  ES_CASES_INDEX_MULTIPLEXED: False # swap completed
-  ES_DOMAINS_INDEX_MULTIPLEXED: False # swap completed
-  ES_FORMS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_GROUPS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_SMS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_USERS_INDEX_MULTIPLEXED: False # swap completed
+  ES_APPS_INDEX_MULTIPLEXED: False
+  ES_CASE_SEARCH_INDEX_MULTIPLEXED: True
+  ES_CASES_INDEX_MULTIPLEXED: False
+  ES_DOMAINS_INDEX_MULTIPLEXED: False
+  ES_FORMS_INDEX_MULTIPLEXED: False
+  ES_GROUPS_INDEX_MULTIPLEXED: False
+  ES_SMS_INDEX_MULTIPLEXED: False
+  ES_USERS_INDEX_MULTIPLEXED: False
   # Index Swap settings  
   ES_APPS_INDEX_SWAPPED: False
   ES_CASE_SEARCH_INDEX_SWAPPED: False
