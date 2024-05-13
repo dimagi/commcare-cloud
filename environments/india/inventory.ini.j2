@@ -11,6 +11,9 @@
 {{ __esmaster5__ }} elasticsearch_node_name=esmaster5 elasticsearch_node_zone=ap-south-1a
 {{ __esmaster6__ }} elasticsearch_node_name=esmaster6 elasticsearch_node_zone=ap-south-1b
 {{ __esmaster7__ }} elasticsearch_node_name=esmaster7 elasticsearch_node_zone=ap-south-1c
+{{ __esmaster8__ }} elasticsearch_node_name=esmaster5 elasticsearch_node_zone=ap-south-1a
+{{ __esmaster9__ }} elasticsearch_node_name=esmaster6 elasticsearch_node_zone=ap-south-1b
+{{ __esmaster10__ }} elasticsearch_node_name=esmaster7 elasticsearch_node_zone=ap-south-1c
 {{ __es5__ }} elasticsearch_node_name=es5 elasticsearch_node_zone=ap-south-1b
 {{ __es6__ }} elasticsearch_node_name=es6 elasticsearch_node_zone=ap-south-1a
 {{ __escoordinator7__ }} elasticsearch_node_name=escoordinator7 elasticsearch_node_zone=ap-south-1a
@@ -20,9 +23,13 @@
 esmaster5
 esmaster6
 esmaster7
+esmaster8
+esmaster9
+esmaster10
 
 [es_master:vars]
 elasticsearch_master=true
+
 elasticsearch_data=false
 
 [es_data:children]
