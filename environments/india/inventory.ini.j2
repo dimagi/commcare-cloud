@@ -8,9 +8,6 @@
 {{ __couch10__ }} swap_size=8G
 {{ __couch11__ }} swap_size=8G
 {{ __couch12__ }} swap_size=8G
-{{ __esmaster5__ }} elasticsearch_node_name=esmaster5 elasticsearch_node_zone=ap-south-1a
-{{ __esmaster6__ }} elasticsearch_node_name=esmaster6 elasticsearch_node_zone=ap-south-1b
-{{ __esmaster7__ }} elasticsearch_node_name=esmaster7 elasticsearch_node_zone=ap-south-1c
 {{ __esmaster8__ }} elasticsearch_node_name=esmaster8 elasticsearch_node_zone=ap-south-1a
 {{ __esmaster9__ }} elasticsearch_node_name=esmaster9 elasticsearch_node_zone=ap-south-1b
 {{ __esmaster10__ }} elasticsearch_node_name=esmaster10 elasticsearch_node_zone=ap-south-1c
@@ -20,9 +17,6 @@
 {{ __escoordinator8__ }} elasticsearch_node_name=escoordinator8 elasticsearch_node_zone=ap-south-1b
 
 [es_master:children]
-esmaster5
-esmaster6
-esmaster7
 esmaster8
 esmaster9
 esmaster10
