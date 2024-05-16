@@ -7,6 +7,14 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2024-05-16** [copy_web_user_permissions_to_tableau_config_permission](0081-copy_web_user_permissions_to_tableau_config_permission.md)
+Copies the edit/view permissions from 'Web User' to 'Manage Tableau Configuration' to maintain
+the existing access rights for affected roles.
+
+This operation is required for only requirements environments with domains that have [TABLEAU SYNC FF] (https://www.commcarehq.org/hq/flags/edit/tableau_user_syncing/) enabled
+
+
+---
 #### **2024-04-30** [Copy Supply Point data to Invitation model Location Field](0080-copy-invitation-supply-point-fields-to-location.md)
 Copy data from `supply_point` field to `location` field in `Invitation` model to prevent errors with
 future migrations to the `users_invitation` table.

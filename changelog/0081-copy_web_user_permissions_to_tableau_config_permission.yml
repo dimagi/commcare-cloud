@@ -1,0 +1,30 @@
+title: copy_web_user_permissions_to_tableau_config_permission
+key: copy_web_user_permissions_to_tableau_config_permission
+date: 2024-05-16
+optional_per_env: yes
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version: 00d7ec6e958f18c2813e33850e9b881cc621cc80
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  Copies the edit/view permissions from 'Web User' to 'Manage Tableau Configuration' to maintain
+  the existing access rights for affected roles.
+
+  This operation is required for only requirements environments with domains that have [TABLEAU SYNC FF] (https://www.commcarehq.org/hq/flags/edit/tableau_user_syncing/) enabled
+
+details: |
+  In this migration, we are introducing a new permission called 'Manage Tableau Configuration,'
+  which is a subset of the existing 'Web User' permission. The purpose of this migration is to
+  ensure that the behavior remains consistent for roles that currently have the 'Web User' permission.
+
+update_steps: |
+  Execute the following command:
+
+  ```sh
+  git checkout 00d7ec6e958f18c2813e33850e9b881cc621cc80
+  python manage.py migrate users 0065_transfer_to_tableau_config_permission
+  ```
+
+  Precautions:
+  * No downtime is needed for this operation however it is best to run the command during a period
+    of low traffic.
