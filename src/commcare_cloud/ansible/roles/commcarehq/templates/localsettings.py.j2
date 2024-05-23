@@ -1007,6 +1007,11 @@ ES_XFORM_INDEX_NAME = '{{ localsettings.ES_XFORM_INDEX_NAME }}'
 ES_CASE_SEARCH_INDEX_NAME = '{{ localsettings.ES_CASE_SEARCH_INDEX_NAME }}'
 {% endif %}
 
+
+{% if localsettings.CASE_SEARCH_SUB_INDICES is defined %}
+CASE_SEARCH_SUB_INDICES = json.loads('{{ localsettings.CASE_SEARCH_SUB_INDICES|to_json }}')
+{% endif %}
+
 {# Flag to toggle the multiplexing settings defined below #}
 {% if localsettings.ES_MULTIPLEX_TO_VERSION is defined %}
 ES_MULTIPLEX_TO_VERSION = '{{ localsettings.ES_MULTIPLEX_TO_VERSION }}'
