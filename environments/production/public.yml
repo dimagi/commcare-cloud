@@ -188,6 +188,12 @@ localsettings:
   ES_SMS_INDEX_SWAPPED: False
   ES_USERS_INDEX_SWAPPED: False
   # Index settings end
+  CASE_SEARCH_SUB_INDICES: {
+    'co-carecoordination': {
+        'index_cname': 'case_search_bha',
+        'multiplex_writes': True,
+    }
+  }
   IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'www'
   INACTIVITY_TIMEOUT: 20160
