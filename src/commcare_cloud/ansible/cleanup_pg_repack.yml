@@ -18,3 +18,4 @@
       file:
         path: "/etc/cron.d/pg_repack_commcarehq_synclogs"
         state: absent
+      when: pg_repack_cron.stat.exists == True
