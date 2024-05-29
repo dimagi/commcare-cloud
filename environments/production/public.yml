@@ -192,6 +192,10 @@ localsettings:
     'co-carecoordination': {
         'index_cname': 'case_search_bha',
         'multiplex_writes': True,
+    },
+    'co-carecoordination-perf': {
+        'index_cname': 'case_search_bha',
+        'multiplex_writes': True,
     }
   }
   IS_DIMAGI_ENVIRONMENT: True
