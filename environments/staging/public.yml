@@ -201,6 +201,10 @@ localsettings:
       'co-carecoordination-test': {
           'index_cname': 'case_search_bha',
           'multiplex_writes': True,
+      },
+      'gherceg': {
+          'index_cname': 'case_search_bha',
+          'multiplex_writes': True,
       }
   }
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
