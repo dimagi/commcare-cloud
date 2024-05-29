@@ -24,6 +24,7 @@ backup_plan:
   weekly_retention: 14
   monthly_retention: 62
   quarterly_retention: 180
+  cold_storage_after : 8
 
 servers:
   - server_name: "control4-production"
