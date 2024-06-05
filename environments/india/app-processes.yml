@@ -7,6 +7,7 @@ management_commands:
     handle_survey_actions:
     run_sms_queue:
   pillow4:
+  pillow5:
     run_pillow_retry_queue:
 celery_processes:
   celery7:
@@ -38,6 +39,7 @@ celery_processes:
       concurrency: 2
 pillows:
   pillow4:
+  pillow5:
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:
