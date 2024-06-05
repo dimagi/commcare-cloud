@@ -22,6 +22,5 @@ This documentation contains guides and reference material on how to self host Co
    Service Guides <services/0-index>
    Backups and Disaster Recovery <backups_dr/1-index>
    Security <security/1-security>
-   Supporting Your Users <support/1-index>
    Reference Material <reference/0-index>
    Changelog <changelog/index>
