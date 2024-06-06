@@ -218,16 +218,6 @@ servers:
     os: jammy
     server_auto_recovery: true
 
-  - server_name: "pillow4-india"
-    server_instance_type: "t3a.xlarge"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 60
-    volume_encrypted: no
-    volume_type: "gp3"
-    group: pillowtop
-    os: jammy
-
   - server_name: "pillow5-india"
     server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
