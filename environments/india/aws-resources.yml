@@ -52,8 +52,6 @@ pgmain_nlb-india: pgmain-nlb-india-4747ab10b065afa3.elb.ap-south-1.amazonaws.com
 pgshard_nlb-india: pgshard-nlb-india-337a6ad6c13111c1.elb.ap-south-1.amazonaws.com
 pgsynclogs_nlb-india: pgsynclogs-nlb-india-8facd1c4825bca96.elb.ap-south-1.amazonaws.com
 pgucr_nlb-india: pgucr-nlb-india-7cab226e7a1d3928.elb.ap-south-1.amazonaws.com
-pillow4-india: 10.203.10.164
-pillow4-india.instance_id: i-094e24ac7fd45b4ca
 pillow5-india: 10.203.10.53
 pillow5-india.instance_id: i-0aaae69fbfdf3ff59
 proxy_a1-india: 10.203.10.184
