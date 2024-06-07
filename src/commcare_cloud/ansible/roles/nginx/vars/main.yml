@@ -40,5 +40,5 @@ commcarehq_errors_repository: "https://github.com/dimagi/commcare-hq-errorpages.
 commcare_errors_branch: "master"
 errors_home: "{{ www_home }}/error_root"
 error_pages:
-  - "502 503 /errors/50x.html"
+  - "500 502 503 504 /errors/50x.html"
   - "400 /errors/400.html"
