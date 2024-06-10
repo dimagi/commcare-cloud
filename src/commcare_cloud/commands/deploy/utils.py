@@ -100,7 +100,7 @@ def send_email(environment, subject, message='', to_admins=True, recipients=None
     """
     Call a Django management command to send an email.
 
-    :param environment: The Environment object
+    :param environment: The Environement object
     :param subject: Email subject
     :param message: Email message
     :param to_admins: True if mail should be sent to Django admins
@@ -108,11 +108,6 @@ def send_email(environment, subject, message='', to_admins=True, recipients=None
     """
     if environment.fab_settings_config.email_enabled:
         print(color_summary(f">> Sending email: {subject}"))
-
-        if not message:
-            # Azure Communication Services require a message body
-            message = subject
-
         args = [
             message,
             '--subject', subject,
