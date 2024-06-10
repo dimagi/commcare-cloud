@@ -60,27 +60,30 @@ def send_deploy_start_email(environment, context):
         and context.revision is not None
     )
     env_name = environment.meta_config.deploy_env
-    subject = f"{context.user} has initiated a {context.service_name} deploy to {env_name}"
+    message = f"{context.user} has initiated a {context.service_name} deploy to {env_name}"
     prefix = ""
     if is_nonstandard_deploy_time:
-        subject += " outside maintenance window"
+        message += " outside maintenance window"
         prefix = "ATTENTION: "
     if is_non_default_branch:
-        subject += f" with non-default branch '{context.revision}'"
+        message += f" with non-default branch '{context.revision}'"
         prefix = "ATTENTION: "
-    subject = f"{prefix}{subject}"
+    message = f"{prefix}{message}"
 
     send_email(
         environment,
-        subject=subject,
+        subject=message,
+        message=message,
     )
 
 
 def record_deploy_failed(environment, context):
     notify_slack_deploy_end(environment, context, is_success=False)
+    message = f"{context.service_name} deploy to {environment.name} failed"
     send_email(
         environment,
-        subject=f"{context.service_name} deploy to {environment.name} failed",
+        subject=message,
+        message=message,
     )
 
 
