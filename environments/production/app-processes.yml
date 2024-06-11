@@ -102,6 +102,11 @@ celery_processes:
 
 pillows:
   pillow_a2000:
+    case-pillow:
+      num_processes: 4
+      total_processes: 17
+      start_process: 13
+      dedicated_migration_process: True
     xform-pillow:
       num_processes: 33
       dedicated_migration_process: True
@@ -135,5 +140,6 @@ pillows:
   # case-sql partitions: 96
     case-pillow:
       num_processes: 13
-      total_processes: 13
+      total_processes: 17
+      start_process: 0
       dedicated_migration_process: True
