@@ -46,6 +46,8 @@ pgbouncer6-india: 10.203.42.192
 pgbouncer6-india.instance_id: i-0f65a7e9ead1c5d20
 pgbouncer7-india: 10.203.40.235
 pgbouncer7-india.instance_id: i-02f47b63900f84604
+pgbouncer8-india: 10.203.40.93
+pgbouncer8-india.instance_id: i-09dade6acf4a54b92
 pgformplayer_nlb-india: pgformplayer-nlb-india-ea6dd4c1a194c9bb.elb.ap-south-1.amazonaws.com
 pgmain0-india: pgmain0-india.ccqpd1xrju8m.ap-south-1.rds.amazonaws.com
 pgmain_nlb-india: pgmain-nlb-india-4747ab10b065afa3.elb.ap-south-1.amazonaws.com
