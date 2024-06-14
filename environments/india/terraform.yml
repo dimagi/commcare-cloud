@@ -278,12 +278,12 @@ servers:
     group: "postgresql"
     os: jammy
 
-  - server_name: "pgbouncer7-india"
+  - server_name: "pgbouncer8-india"
     server_instance_type: t3a.small
     network_tier: "db-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: "postgresql"
     os: jammy
@@ -348,7 +348,7 @@ pgbouncer_nlbs:
       - pgbouncer6-india
   - name: pgucr_nlb-india
     targets:
-      - pgbouncer7-india
+      - pgbouncer8-india
   - name: pgsynclogs_nlb-india
     targets:
       - pgbouncer5-india
