@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2024-06-18** [SQL Repeat Record Migration - Delete Unused Couch Data](0081-delete-receiverwrapper-couch-db.md)
+Optional: Delete unused forwarding data from Couch.
+
+
+---
 #### **2024-04-30** [Copy Supply Point data to Invitation model Location Field](0080-copy-invitation-supply-point-fields-to-location.md)
 Copy data from `supply_point` field to `location` field in `Invitation` model to prevent errors with
 future migrations to the `users_invitation` table.
