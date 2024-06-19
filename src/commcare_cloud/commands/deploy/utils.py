@@ -99,16 +99,19 @@ def announce_deploy_success(environment, context):
     )
 
 
-def send_email(environment, subject, message='', to_admins=True, recipients=None):
+def send_email(environment, subject, message, to_admins=True, recipients=None):
     """
     Call a Django management command to send an email.
 
-    :param environment: The Environement object
+    :param environment: The Environment object
     :param subject: Email subject
-    :param message: Email message
+    :param message: Email message body
     :param to_admins: True if mail should be sent to Django admins
     :param recipients: List of additional addresses to send mail to
     """
+    if not message:
+        raise ValueError('Some cloud hosting providers require a message body')
+
     if environment.fab_settings_config.email_enabled:
         print(color_summary(f">> Sending email: {subject}"))
         args = [
