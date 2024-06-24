@@ -1,15 +1,9 @@
-celery10-india: 10.203.10.254
-celery10-india.instance_id: i-08d8016c85d690abe
-celery11-india: 10.203.11.187
-celery11-india.instance_id: i-06259febdced717a3
 celery7-india: 10.203.10.192
 celery7-india.instance_id: i-067835e8065640f0c
 celery8-india: 10.203.11.217
 celery8-india.instance_id: i-020a7b12a72c7f789
 celery9-india: 10.203.12.242
 celery9-india.instance_id: i-0fde22628ba1450e4
-celerybeat_a0-india: 10.203.10.38
-celerybeat_a0-india.instance_id: i-01f0c72db12ee93d8
 control2-india: 10.203.10.243
 control2-india.instance_id: i-0b43400b6494a2d8e
 couch10-india: 10.203.40.6
