@@ -8,7 +8,8 @@ disruption as possible.
 You can minimize disruption by preparing the following in advance:
 
 #. Register a DNS alias that initially points to the existing
-   environment.
+   environment. This is most likely to be Dimagi's production
+   environment, www.commcarehq.org.
 
 #. Set the DNS alias as a custom base URL for each CommCare application
    that is in use, and build and release a new version.
