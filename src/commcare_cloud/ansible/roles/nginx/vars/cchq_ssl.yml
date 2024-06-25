@@ -67,7 +67,15 @@ nginx_sites:
       proxy_buffers: 8 64k
       proxy_buffer_size: 64k
       client_body_buffer_size: 512k
-    - name: '~ /a/[^/]+/(receiver|phone|admin/phone)/'
+    - name: '~ /a/[^/]+/(receiver|phone)/'
+      balancer: "{{ deploy_env }}_commcare_submissions"
+      proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
+      proxy_next_upstream_tries: 1
+      proxy_read_timeout: 900s
+      proxy_buffers: 8 64k
+      proxy_buffer_size: 64k
+      client_body_buffer_size: 512k
+    - name: '~ /hq/admin/phone/restore/'
       balancer: "{{ deploy_env }}_commcare_submissions"
       proxy_redirect: "http://{{ SITE_HOST }} https://{{ SITE_HOST }}"
       proxy_next_upstream_tries: 1
