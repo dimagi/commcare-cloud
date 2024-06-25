@@ -6,7 +6,10 @@ Deploy CommCare HQ
 This section has details on the following topics.
 
 - How to deploy a CommCare HQ instance on one or more servers
-  (also referred as install sometimes).
+  (also referred to as "install" sometimes).
+
+- :doc:`Preparatory steps <preparing-to-migrate>` for migrating from
+  another environment such as Dimagi's www.commcarehq.org.
 
 - Import data if you are migrating from another existing instance such
   as Dimagi's www.commcarehq.org or any other
