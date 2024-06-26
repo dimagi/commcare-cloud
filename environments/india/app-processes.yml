@@ -12,7 +12,7 @@ celery_processes:
   celery7:
     beat: {}
     flower: {}
-  celery12,celery13:
+  celery8,celery9:
     reminder_queue:
       pooling: gevent
       concurrency: 10
