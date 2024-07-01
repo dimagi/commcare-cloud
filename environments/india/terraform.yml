@@ -94,7 +94,27 @@ servers:
     volume_type: "gp3"
     group: celery
     os: jammy
- 
+
+  - server_name: "celery14-india"
+    server_instance_type: "t3a.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 60
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: celery
+    os: jammy
+
+  - server_name: "celery15-india"
+    server_instance_type: "t3a.xlarge"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 60
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: celery
+    os: jammy
+
   - server_name: "couch10-india"
     server_instance_type: "r5a.xlarge"
     network_tier: "db-private"
