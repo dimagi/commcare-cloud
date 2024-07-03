@@ -73,7 +73,7 @@ celery_processes:
     ush_background_tasks:
       concurrency: 8
     soltech_custom_script_queue:  # TODO: Remove after executing script
-    concurrency: 4
+      concurrency: 4
 
   celerybeat_a0:
     # not really queues
