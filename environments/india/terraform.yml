@@ -65,16 +65,6 @@ servers:
     os: jammy
     server_auto_recovery: true
 
-  - server_name: "celery7-india"
-    server_instance_type: "t3a.xlarge"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 60
-    volume_encrypted: no
-    volume_type: "gp3"
-    group: celery
-    os: jammy
-
   - server_name: "celerybeat_a2-india"
     server_instance_type: "t3a.xlarge"
     network_tier: "app-private"

@@ -2,8 +2,6 @@ celery14-india: 10.203.10.24
 celery14-india.instance_id: i-0a74f0479d21fd422
 celery15-india: 10.203.11.161
 celery15-india.instance_id: i-010474080b0895d92
-celery7-india: 10.203.10.192
-celery7-india.instance_id: i-067835e8065640f0c
 celerybeat_a2-india: 10.203.10.244
 celerybeat_a2-india.instance_id: i-0440283034514a9f3
 control2-india: 10.203.10.243
