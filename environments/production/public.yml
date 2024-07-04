@@ -248,6 +248,8 @@ localsettings:
   WS4REDIS_CONNECTION_HOST: "redis.production.commcare.local"
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
   ASYNC_INDICATORS_TO_QUEUE: 20000
+  # TODO: Remove after script has finished executing
+  SOLTECH_CUSTOM_SCRIPT_CELERY_QUEUE: 'soltech_custom_script_queue'
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
