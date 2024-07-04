@@ -1193,3 +1193,7 @@ CONNECTID_USERINFO_URL = "{{ localsettings.CONNECTID_URL }}"
 {% if localsettings.MAX_MOBILE_UCR_LIMIT is defined %}
 MAX_MOBILE_UCR_LIMIT = {{ localsettings.MAX_MOBILE_UCR_LIMIT }}
 {% endif %}
+
+{% if localsettings.SOLTECH_CUSTOM_SCRIPT_CELERY_QUEUE is defined %}
+SOLTECH_CUSTOM_SCRIPT_CELERY_QUEUE = {{ localsettings.SOLTECH_CUSTOM_SCRIPT_CELERY_QUEUE}}
+{% endif %}
