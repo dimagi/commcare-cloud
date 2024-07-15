@@ -3,25 +3,25 @@
 Migrate a CommCare Application from one instance to a new instance
 ==========================================================
 .. note::
-  This guide is for projects which does not require a full project migration and are only interested in
+  This guide is for projects which do not require a full project migration and are only interested in
   migrating an existing CommCare application from one CommCare HQ instance to another CommCare HQ instance.
   In the event that you already did a full project migration as outline in :doc:`/installation/migration/1-migrating-project`, this guide
   will not be relevant anymore.
 
 
-Often application development commences on the Dimagi-hosted CommCare SaaS
-platform (referred to as an “upstream domain”) in parallel with deploying an on-premise instance
+Often application development commences on the Dimagi-hosted CommCare HQ environment
+(referred to as an “upstream domain”) in parallel with deploying an on-premise instance
 of CommCare (referred to as an “downstream domain”. The application code must be moved to the
-on-premise instance of CommCare so that it can be pushed to end user’s devices.
-This is achieved by doing a one-time migration of the application from the SaaS environment to the
+on-premise instance of CommCare so that it can be pushed to end users’ devices.
+This is achieved by doing a one-time migration of the application from the Dimagi-hosted environment to the
 on-premise instance before severing the link.
 
 
 1. Prerequisites
 ----------------
-In order to proceed with establishing the link between each domains, the following must be established:
+In order to proceed with establishing the link between each domain, the following must be established:
 
-1. An CommCare administrative user must have access to both the upstream and downstream project spaces
+1. A CommCare administrative user must have access to both the upstream and downstream project spaces
 
 2. The CommCare administrative user must have the Multi-Environment Release Management permission added
    to their role in both the upstream and downstream domains.
