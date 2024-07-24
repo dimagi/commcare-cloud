@@ -26,6 +26,15 @@ http.max_content_length: 200mb
 path.data: {{ elasticsearch_data_dir }}/data
 path.logs: {{ elasticsearch_data_dir }}/logs
 
+# configure slow logs
+index.search.slowlog.threshold.query.warn: 10s
+index.search.slowlog.threshold.fetch.warn: 1s
+index.search.slowlog.level: warn
+
+index.indexing.slowlog.threshold.query.warn: 10s
+index.indexing.slowlog.threshold.fetch.warn: 1s
+index.indexing.slowlog.level: warn
+
 {% if elasticsearch_version is version('5.6.16', '<=') %}
 # discovery.zen.minimum_master_nodes is the minimum number of
 # MASTER ELIGIBLE nodes that must be reachable before a master may be elected
