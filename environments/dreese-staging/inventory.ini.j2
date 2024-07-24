@@ -1,0 +1,190 @@
+# This file currently contains a lot of commented-out hosts
+# that refer to presumed eventual hosts that will live on AWS but don't yet exist
+# As they get added, we'll uncomment them and the IPs will get populated from live AWS resources
+# using the aws-fill-inventory command.
+
+{{ __proxy6__ }}
+{{ __proxy8__ }}
+
+[proxy:children]
+# Amazon EC2
+proxy6
+proxy8
+
+[logproxy:children]
+proxy
+
+{{ __web13__ }} swap_size=1G
+{{ __web14__ }} swap_size=1G
+
+[webworkers:children]
+# Amazon EC2
+web13
+web14
+
+{{ __pgproxy6__ }} pgbouncer_processes=2 swap_size=2G
+
+{{ __pgbouncer2__ }}
+
+{{ __rds_pg0__ }}
+
+{{ __rds_pgformplayer0__ }}
+
+[remote_postgresql:children]
+rds_pg0
+rds_pgformplayer0
+
+{{ __pgformplayer_nlb__ }}
+{{ __pgmain_nlb__ }}
+{{ __pgucr_nlb__ }}
+{{ __pgsynclogs_nlb__ }}
+{{ __pgshard_nlb__ }}
+{{ __couch_alb__ }}
+
+[postgresql:children]
+pgproxy6
+remote_postgresql
+pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb
+pgshard_nlb
+
+[pgbouncer:children]
+pgbouncer2
+
+{{ __couch24__ }}
+{{ __couch25__ }}
+{{ __couch27__ }}
+
+[couchdb2:children]
+couch24
+couch25
+couch27
+
+[couchdb2_proxy:children]
+couch_alb
+
+[couchdb2_alb:children]
+couch_alb
+
+{{ __rabbit_a3__ }}
+{{ __rabbit_b2__ }}
+
+[rabbitmq:children]
+# Amazon EC2
+rabbit_a3
+rabbit_b2
+
+{{ __kafka15__ }} kafka_broker_id=15 zookeeper_server_id=15
+{{ __kafka16__ }} kafka_broker_id=16 zookeeper_server_id=16
+{{ __kafka17__ }} kafka_broker_id=17 zookeeper_server_id=17
+
+[zookeeper:children]
+# Amazon EC2
+kafka15
+kafka16
+kafka17
+
+[kafka:children]
+# Amazon EC2
+kafka15
+kafka16
+kafka17
+
+{{ __celery_a1__ }}
+
+[celery:children]
+celery_a1
+
+[celery:vars]
+swap_size=2G
+
+{{ __pillow5__ }}
+
+[pillowtop:children]
+# Amazon EC2
+pillow5
+
+{{ __formplayer9__ }}
+{{ __formplayer11__ }}
+
+[formplayer:children]
+# Amazon EC2
+formplayer9
+formplayer11
+
+[formplayer:vars]
+formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
+formplayer_fsx_dns={{ aws_resources['fsx_staging-fsx'] }}:/fsx
+cchq_uid=2002
+cchq_gid=3002
+
+{{ __es18__ }} elasticsearch_node_name=es18-staging elasticsearch_node_zone=us-east-1b
+
+{{ __es19__ }} elasticsearch_node_name=es19-staging elasticsearch_node_zone=us-east-1a
+
+{{ __es20__ }} elasticsearch_node_name=es20-staging elasticsearch_node_zone=us-east-1b
+
+{{ __es21__ }} elasticsearch_node_name=es21-staging elasticsearch_node_zone=us-east-1a
+
+{{ __es22__ }} elasticsearch_node_name=es22-staging elasticsearch_node_zone=us-east-1b
+
+{{ __es23__ }} elasticsearch_node_name=es23-staging elasticsearch_node_zone=us-east-1c
+
+[elasticsearch:children]
+# Amazon EC2
+es_master
+es_data
+es_coordinator
+
+[es_master:children]
+es21
+es22
+es23
+
+[es_master:vars]
+elasticsearch_master=true
+elasticsearch_data=true
+
+[es_data:children]
+es19
+es20
+
+[es_coordinator:children]
+es18
+
+[es_coordinator:vars]
+elasticsearch_master=false
+elasticsearch_data=false
+
+[shared_efs_client_host:children]
+celery
+django_manage
+proxy
+pillowtop
+webworkers
+
+{{ __control3__ }}
+
+[control:children]
+control3
+
+[awsmq]
+{{ aws_resources['staging-mq-broker'] }}
+
+[ansible_skip:children]
+rds_pg0
+rds_pgformplayer0
+pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb
+pgshard_nlb
+couch_alb
+awsmq
+
+
+[django_manage:children]
+# Amazon EC2
+web13

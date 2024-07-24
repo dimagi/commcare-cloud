@@ -1,0 +1,93 @@
+formplayer_command_args: ''
+# Use the following to enable datadog tracing
+# formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.java.org.javarosa.enableOpenTracing=true'
+
+django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
+datadog_pythonagent: True
+
+management_commands:
+  celery_a1:
+    handle_survey_actions:
+    queue_schedule_instances:
+    run_sms_queue:
+    run_submission_reprocessing_queue:
+  pillow5:
+    run_pillow_retry_queue:
+celery_processes:
+  celery_a1:
+    analytics_queue,sms_queue,sumologic_logs_queue:
+      pooling: gevent
+      concurrency: 4
+    email_queue:
+      pooling: gevent
+      concurrency: 4
+    async_restore_queue:
+      concurrency: 2
+    background_queue:
+      concurrency: 2
+    case_import_queue,user_import_queue,export_download_queue:
+      concurrency: 2
+      prefetch_multiplier: 1
+    case_rule_queue,saved_exports_queue,ucr_indicator_queue:
+      concurrency: 2
+      prefetch_multiplier: 1
+    celery:
+      concurrency: 2
+    celery_periodic:
+      concurrency: 2
+    linked_domain_queue,logistics_background_queue,logistics_reminder_queue:
+      concurrency: 1
+    malt_generation_queue:
+      pooling: gevent
+      concurrency: 1
+    reminder_case_update_queue,reminder_queue,repeat_record_queue:
+      pooling: gevent
+      concurrency: 4
+    reminder_case_update_bulk_queue,reminder_rule_queue:
+      concurrency: 1
+    send_report_throttled:
+      concurrency: 1
+    submission_reprocessing_queue:
+      concurrency: 1
+    ucr_queue:
+      concurrency: 2
+      prefetch_multiplier: 1
+    ush_background_tasks:
+      concurrency: 2
+    beat: {}
+    flower: {}
+pillows:
+  'pillow5':
+    AppDbChangeFeedPillow:
+      num_processes: 1
+    ApplicationToElasticsearchPillow:
+      num_processes: 1
+    CacheInvalidatePillow:
+      num_processes: 1
+    DefaultChangeFeedPillow:
+      num_processes: 1
+    DomainDbKafkaPillow:
+      num_processes: 1
+    KafkaDomainPillow:
+      num_processes: 1
+    LedgerToElasticsearchPillow:
+      num_processes: 1
+    SqlSMSPillow:
+      num_processes: 1
+    UpdateUserSyncHistoryPillow:
+      num_processes: 1
+    UserCacheInvalidatePillow:
+      num_processes: 1
+    UserGroupsDbKafkaPillow:
+      num_processes: 1
+    case-pillow:
+      num_processes: 2
+      processor_chunk_size: 1
+      dedicated_migration_process: True
+    xform-pillow:
+      num_processes: 2
+      dedicated_migration_process: True
+    group-pillow:
+      num_processes: 1
+    user-pillow:
+      num_processes: 1

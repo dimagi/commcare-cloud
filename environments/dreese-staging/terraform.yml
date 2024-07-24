@@ -1,0 +1,416 @@
+account_alias: commcare-staging
+terraform_version: '1.5'
+state_bucket: dimagi-terraform
+state_bucket_region: "us-east-1"
+region: "us-east-1"
+environment: "staging"
+ssl_policy: 'ELBSecurityPolicy-TLS13-1-2-Res-2021-06'
+azs:
+  - "us-east-1a"
+  - "us-east-1b"
+  - "us-east-1c"
+vpc_begin_range: "10.201"
+
+openvpn_image: ami-5e73b923
+
+backup_plan:
+  local_vault_name: "BusinessContinuity_Staging_East-1"
+  remote_vault_name: "BusinessContinuity_Staging_East-2"
+  remote_vault_region: us-east-2
+  outside_account_id: '767699164629'
+  daily_retention: 2
+  weekly_retention: 14
+  monthly_retention: 62
+  quarterly_retention: 180
+  cold_storage_after : 8
+
+servers:
+  - server_name: "control3-staging"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 100
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "control"
+    os: jammy 
+
+  - server_name: "web13-staging"
+    server_instance_type: "t3a.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_type: "gp3"
+    volume_encrypted: yes
+    group: webworkers
+    os: jammy
+    server_auto_recovery: true
+
+  - server_name: "web14-staging"
+    server_instance_type: "t3a.large"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_type: "gp3"
+    volume_encrypted: yes
+    group: webworkers
+    os: jammy
+    server_auto_recovery: true
+
+  - server_name: "es18-staging"
+    server_instance_type: "t3a.medium"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      volume_type: "gp3"
+    group: "elasticsearch"
+    os: jammy
+
+  - server_name: "es19-staging"
+    server_instance_type: "t3.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      volume_type: "gp3"
+    group: "elasticsearch"
+    os: jammy
+
+  - server_name: "es20-staging"
+    server_instance_type: "t3a.medium"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      volume_type: "gp3"
+    group: "elasticsearch"
+    os: jammy
+
+  - server_name: "es21-staging"
+    server_instance_type: "t3a.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      volume_type: "gp3"
+    group: "elasticsearch"
+    os: jammy
+
+  - server_name: "es22-staging"
+    server_instance_type: "t3a.medium"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      volume_type: "gp3"
+    group: "elasticsearch"
+    os: jammy
+
+  - server_name: "es23-staging"
+    server_instance_type: "t3a.medium"
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 80
+      volume_type: "gp3"
+    group: "elasticsearch"
+    os: jammy
+
+  - server_name: "pillow5-staging"
+    server_instance_type: "t3a.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: pillowtop
+    os: jammy 
+
+  - server_name: "celery_a1-staging"
+    server_instance_type: "t3a.2xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 120
+    volume_type: "gp3"
+    group: celery
+    os: jammy 
+
+  - server_name: "formplayer9-staging"
+    server_instance_type: "t3a.large"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      encrypted: true
+      volume_type: "gp3"
+    group: formplayer
+    os: jammy
+    server_auto_recovery: true
+
+  - server_name: "formplayer11-staging"
+    server_instance_type: "t3a.large"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      encrypted: true
+      volume_type: "gp3"
+    group: formplayer
+    os: jammy
+    server_auto_recovery: true
+
+  - server_name: "couch24-staging"
+    server_instance_type: "t3a.large"
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 30
+      volume_type: "gp3"
+      encrypted: true
+    group: "couchdb2"
+    os: jammy
+
+  - server_name: "couch25-staging"
+    server_instance_type: "t3a.large"
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 30
+      volume_type: "gp3"
+      encrypted: true
+    group: "couchdb2"
+    os: jammy
+
+  - server_name: "couch27-staging"
+    server_instance_type: "t3a.large"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_type: "gp3"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 30
+      volume_type: "gp3"
+      encrypted: true
+    group: "couchdb2"
+    os: jammy
+
+  - server_name: "rabbit_a3-staging"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "rabbitmq"
+    os: jammy
+
+  - server_name: "rabbit_b2-staging"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "rabbitmq"
+    os: jammy
+
+  - server_name: "kafka15-staging"
+    server_instance_type: t3a.medium
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 5
+      encrypted: true
+      volume_type: "gp3"
+    group: "kafka"
+    os: jammy
+
+  - server_name: "kafka16-staging"
+    server_instance_type: t3a.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 5
+      encrypted: true
+      volume_type: "gp3"
+    group: "kafka"
+    os: jammy
+
+  - server_name: "kafka17-staging"
+    server_instance_type: t3a.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 5
+      encrypted: true
+      volume_type: "gp3"
+    group: "kafka"
+    os: jammy
+
+  - server_name: "pgproxy6-staging"
+    server_instance_type: t3a.small
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      encrypted: true
+      volume_type: "gp3"
+    group: postgresql
+    os: jammy
+
+  - server_name: "pgbouncer2-staging"
+    server_instance_type: t3a.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: postgresql
+    os: jammy
+
+proxy_servers:
+  - server_name: "proxy6-staging"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_type: "gp3"
+    volume_encrypted: yes
+    group: "proxy"
+    os: jammy
+
+  - server_name: "proxy8-staging"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_type: "gp3"
+    volume_encrypted: yes
+    group: "proxy"
+    os: jammy
+
+rds_instances:
+  - identifier: "pg0-staging"
+    instance_type: "db.t3.small"
+    storage: 160
+    storage_type: gp3
+    multi_az: yes
+    engine_version: "14"
+    params:
+      shared_preload_libraries: pg_stat_statements
+      track_io_timing: 1
+    enable_cross_region_backup: yes
+
+  - identifier: "pgformplayer0-staging"
+    instance_type: "db.t3.small"
+    storage: 160
+    storage_type: gp3
+    multi_az: yes
+    engine_version: "14.4"
+    params:
+      shared_preload_libraries: pg_stat_statements
+      track_io_timing: 1
+
+pgbouncer_nlbs:
+  - name: "pgformplayer_nlb-staging"
+    targets:
+      - pgbouncer2-staging
+      - pgproxy6-staging
+  - name: "pgmain_nlb-staging"
+    targets:
+      - pgproxy6-staging
+  - name: "pgucr_nlb-staging"
+    targets:
+      - pgproxy6-staging
+  - name: "pgsynclogs_nlb-staging"
+    targets:
+      - pgproxy6-staging
+  - name: "pgshard_nlb-staging"
+    targets:
+      - pgbouncer2-staging
+
+internal_albs:
+  - name: "couch_alb-staging"
+    listener_port: 25984
+    target_port: 15984
+    targets:
+      - couch24-staging
+      - couch25-staging
+      - couch27-staging
+      
+elasticache_cluster:
+  create: yes
+  cache_node_type: "cache.t4g.micro"
+  cache_engine_version: "7.0"
+  params:
+    maxmemory-policy: 'allkeys-lru'
+  automatic_failover: true
+  transit_encryption: false
+  at_rest_encryption: true
+  multi_az: true
+  auto_minor_version: false
+  cluster_size: 2
+  maintenance_window: "sun:03:30-sun:04:30"
+  snapshot_retention: 7
+  snapshot_window: "07:30-08:30"
+
+r53_private_zone:
+  create: yes
+  domain_name:  "staging.commcare.local"
+  create_record: yes
+  route_names:  "redis"
+
+efs_file_systems:
+  - efs_name: "efs_staging"
+    create: yes
+    transition_to_ia:  "AFTER_7_DAYS"
+    create_access: no
+    create_mount: yes
+    create_record: yes
+    domain_name: "staging.commcare.local"
+    route_names: "shared-efs"
+

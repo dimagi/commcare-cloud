@@ -7,6 +7,12 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2024-07-24** [deprecate_unicel_gateway](0082-deprecate_unicel_gateway.md)
+This is a notice specifically for projects with Unicel configured as an SMS gateway, which is no longer functional.
+Projects that do not have Unicel configured do not need to take any action.
+
+
+---
 #### **2024-06-18** [SQL Repeat Record Migration - Delete Unused Couch Data](0081-delete-receiverwrapper-couch-db.md)
 Optional: Delete unused forwarding data from Couch.
 

@@ -1,0 +1,12 @@
+deploy_env: staging
+env_monitoring_id: staging
+users:
+  - dimagi
+  - dimagi-qa
+  - dimagi-interns
+  - g2
+  - fissionlabs
+  - fission-warehouse
+  - staging
+secrets_backend: aws-secrets
+slack_notifications_channel: C0WLJ3HRP  # gtd-staging

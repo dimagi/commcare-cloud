@@ -1,0 +1,86 @@
+DEFAULT_POSTGRESQL_HOST: rds_pg0
+
+postgres_override:
+  postgresql_max_connections: 300
+  postgresql_version: '14'
+  postgresql_hba_entries:  # required for backup
+    - contype: host
+      databases: replication
+      users: hqrepl
+      netmask: 0.0.0.0/0
+
+pgbouncer_override:
+  pgbouncer_pool_mode: transaction
+  pgbouncer_max_connections: 1600
+  pgbouncer_default_pool: 290
+
+pg_repack:
+  pgproxy6:
+    - database: commcarehq_synclogs
+      host: "{{ DEFAULT_POSTGRESQL_HOST }}"
+      username: "{{ postgres_users.root.username }}"
+      password: "{{ postgres_users.root.password }}"
+      port: 5432
+      skip_superuser_check: True
+
+dbs:
+  main:
+    pgbouncer_endpoint: pgmain_nlb
+    pgbouncer_hosts:
+      - pgproxy6
+    query_stats: True
+  ucr:
+    pgbouncer_endpoint: pgucr_nlb
+    pgbouncer_hosts:
+      - pgproxy6
+    query_stats: True
+  synclogs:
+    pgbouncer_endpoint: pgsynclogs_nlb
+    pgbouncer_hosts:
+      - pgproxy6
+  formplayer:
+    host: rds_pgformplayer0
+    pgbouncer_endpoint: pgformplayer_nlb
+    pgbouncer_hosts:
+      - pgproxy6
+      - pgbouncer2
+  auditcare:
+    pgbouncer_host: pgproxy6
+    pgbouncer_reserve_pool_size: 2
+  repeaters:
+    pgbouncer_host: pgproxy6
+    pgbouncer_reserve_pool_size: 2
+  form_processing:
+    proxy:
+      host: pgproxy6
+    partitions:
+      p1:
+        pgbouncer_endpoint: pgshard_nlb
+        pgbouncer_hosts:
+          - pgbouncer2
+        shards: [0, 99]
+        query_stats: True
+      p2:
+        pgbouncer_endpoint: pgshard_nlb
+        pgbouncer_hosts:
+          - pgbouncer2
+        shards: [100, 199]
+        query_stats: True
+      p3:
+        pgbouncer_endpoint: pgshard_nlb
+        pgbouncer_hosts:
+          - pgbouncer2
+        shards: [200, 299]
+        query_stats: True
+      p4:
+        pgbouncer_endpoint: pgshard_nlb
+        pgbouncer_hosts:
+          - pgbouncer2
+        shards: [300, 399]
+        query_stats: True
+      p5:
+        pgbouncer_endpoint: pgshard_nlb
+        pgbouncer_hosts:
+          - pgbouncer2
+        shards: [400, 511]
+        query_stats: True
