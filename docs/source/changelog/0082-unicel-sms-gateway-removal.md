@@ -20,7 +20,7 @@ Starting June 1st, 2020, the Telecom Regulatory Authority of India (TRAI) issued
 restricts SMS gateways to sending only pre-approved template messages. Given the flexible nature of CommCare Messaging,
 which allows users to configure custom SMSs, this change has made it challenging for us to continue operating the Unicel
 gateway effectively in India. Therefore, effective August 1, 2024, the Unicel gateway will no longer be available as an
-option under the [SMS Connectivity page] (https://dimagi.atlassian.net/wiki/spaces/commcarepublic/pages/2143955324/Setup+SMS+Connection)
+option under the [SMS Connectivity page](https://dimagi.atlassian.net/wiki/spaces/commcarepublic/pages/2143955324/Setup+SMS+Connection)
 
 ## Steps to update
 Projects that are not using the Unicel gateway do not need to take any action. Likewise, projects that do not use or
@@ -28,9 +28,9 @@ plan to use messaging do not need to take any action. After the deprecation, pro
 gateway will default to having no SMS provider. 
 
 If you do plan on sending messages for your project, we recommend transitioning to a new SMS gateway by following the
-instructions in [this wiki] (https://dimagi.atlassian.net/wiki/spaces/commcarepublic/pages/2143955324/Setup+SMS+Connection)
+instructions in [this wiki](https://dimagi.atlassian.net/wiki/spaces/commcarepublic/pages/2143955324/Setup+SMS+Connection)
 - First, navigate to SMS Connectivity settings by following the instructions in the wiki.
 - Then, select "Set as default" next to the new gateway of your choice.
-- Finally, go to [SMS reports] (https://dimagi.atlassian.net/wiki/spaces/commcarepublic/pages/2143945812/CommCare+Messaging+Reports) on your project space to ensure that all messages are sent correctly
+- Finally, go to [SMS reports](https://dimagi.atlassian.net/wiki/spaces/commcarepublic/pages/2143945812/CommCare+Messaging+Reports) on your project space to ensure that all messages are sent correctly
 Please note that selecting a new gateway may have cost implications. To learn more about the cost of
-SMS with different gateway providers, please refer to our [wiki] (https://dimagi.atlassian.net/wiki/spaces/commcarepublic/pages/2143950358/CommCare+Pricing+FAQs#Fees-for-SMS)
+SMS with different gateway providers, please refer to our [wiki](https://dimagi.atlassian.net/wiki/spaces/commcarepublic/pages/2143950358/CommCare+Pricing+FAQs#Fees-for-SMS)
