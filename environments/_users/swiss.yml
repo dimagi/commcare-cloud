@@ -3,6 +3,7 @@ dev_users:
     - ddobre
     - pdelcroix
     - crenner
+    - delcroip
   absent:
     - ava
     - gcastro
