@@ -56,18 +56,6 @@
         loop_var: site_config
       tags: nginx_sites
 
-    - name: install j2me http site
-      include_role:
-        name: {name: nginx, tags: nginx_sites}
-        tasks_from: set_site_present
-      vars:
-        site_present: "{{ J2ME_SITE_HOST|default(None) is not none }}"
-      with_items:
-        - {name: cchq_http_j2me, vars_file: cchq_http_j2me}
-      loop_control:
-        loop_var: site_config
-      tags: nginx_sites
-
     - name: install other sites
       include_role:
         name: {name: nginx, tags: nginx_sites}
