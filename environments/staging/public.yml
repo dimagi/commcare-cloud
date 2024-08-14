@@ -116,7 +116,6 @@ s3_blob_db_s3_bucket: 'dimagi-commcare-staging-blobdb'
 
 localsettings:
   ALLOWED_HOSTS:
-    - j2mestaging.commcarehq.org
     - testserver
   ALLOW_MAKE_SUPERUSER_COMMAND: False  
   ANALYTICS_DEBUG: True
@@ -155,7 +154,6 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
-  J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   LOCAL_CUSTOM_DB_ROUTING:
     auditcare: auditcare
     repeaters: repeaters
