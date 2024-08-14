@@ -1,7 +1,6 @@
 fake_ssl_cert: yes
 SITE_HOST: 'www.commcarehq.org'
 NO_WWW_SITE_HOST: 'commcarehq.org'
-J2ME_SITE_HOST: 'j2mewww.commcarehq.org'
 # This sets production_commcare as the default endpoint for ssl connections
 primary_ssl_env: "production"
 trusted_proxies:
