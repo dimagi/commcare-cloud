@@ -161,7 +161,6 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
-  J2ME_ADDRESS: ''
 #  KAFKA_HOST:
   #  PILLOWTOP_MACHINE_ID:
   LOCAL_MIDDLEWARE:
