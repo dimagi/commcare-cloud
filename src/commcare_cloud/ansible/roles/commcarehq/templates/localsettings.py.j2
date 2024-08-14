@@ -338,6 +338,7 @@ ANALYTICS_IDS = {
     'HUBSPOT_ACCESS_TOKEN': '{{ HUBSPOT_ACCESS_TOKEN }}',
     'KISSMETRICS_KEY': '{{ KISSMETRICS_KEY }}',
     'FULLSTORY_ID': '{{ FULLSTORY_ID }}',
+    'GTM_ID': '{{ GTM_ID }}',
     'DRIFT_ID': '{{ DRIFT_ID }}',
     'APPCUES_ID': '{{ APPCUES_ID }}',
     'APPCUES_KEY': '{{ APPCUES_KEY }}'
@@ -463,7 +464,7 @@ ELASTICSEARCH_PORT = {{ ELASTICSEARCH_PORT }}
 {% if 'ELASTICSEARCH_MAJOR_VERSION' in localsettings %}
 ELASTICSEARCH_MAJOR_VERSION = {{ localsettings.ELASTICSEARCH_MAJOR_VERSION }}
 {% else %}
-ELASTICSEARCH_MAJOR_VERSION = 2
+ELASTICSEARCH_MAJOR_VERSION = 5
 {% endif %}
 
 ES_SETTINGS = {{ ES_SETTINGS }}
@@ -1004,6 +1005,16 @@ ES_XFORM_INDEX_NAME = '{{ localsettings.ES_XFORM_INDEX_NAME }}'
 
 {% if localsettings.ES_CASE_SEARCH_INDEX_NAME is defined %}
 ES_CASE_SEARCH_INDEX_NAME = '{{ localsettings.ES_CASE_SEARCH_INDEX_NAME }}'
+{% endif %}
+
+
+{% if localsettings.CASE_SEARCH_SUB_INDICES is defined %}
+CASE_SEARCH_SUB_INDICES = json.loads('{{ localsettings.CASE_SEARCH_SUB_INDICES|to_json }}')
+{% endif %}
+
+{# Flag to toggle the multiplexing settings defined below #}
+{% if localsettings.ES_MULTIPLEX_TO_VERSION is defined %}
+ES_MULTIPLEX_TO_VERSION = '{{ localsettings.ES_MULTIPLEX_TO_VERSION }}'
 {% endif %}
 
 {# Elasticsearch Multiplexer Settings, would be used while reindexing #}

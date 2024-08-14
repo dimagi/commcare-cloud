@@ -1,0 +1,104 @@
+title: 'SQL Repeat Record Migration'
+key: sql-repeatrecord-pr1
+date: 2024-02-13
+optional_per_env: yes
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version: 090a403508e60dc36fc3a61f2b975fb53adce616
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  Prepare for and migrate Repeat Records from Couch to SQL.
+
+details: |
+  This is an optional procedure that should be done if you use data forwarding
+  and want to ensure a future deploy is not blocked on needing to perform manual
+  migration steps.
+
+update_steps: |
+  Run the following command to determine how many repeat records you have to
+  migrate (in all commands below, replace `<env>` with your environment name):
+
+  ```sh
+  cchq <env> django-manage shell -c '
+  from corehq.motech.repeaters.management.commands.populate_repeatrecords import count_docs;
+  print("Records to migrate:", count_docs())'
+  ```
+
+  The output should include something like the following:
+
+  ```
+  Records to migrate: 125011
+  ```
+
+  If the number of records to migrate is more than 1000 and the steps below are
+  not done, a future deploy will be blocked, at which point this procedure will
+  be required to proceed with the deploy. These steps can be skipped and the
+  migration will be performed automatically during a future deploy if the number
+  is less than 1000 (as counted at deployment time). It is safe and recommended
+  to perform these steps even if the number is less than 1000.
+
+  Before proceeding, **make a full backup of your CommCare HQ data**. [Backup
+  procedures](https://commcare-cloud.readthedocs.io/en/latest/backups_dr/2-backups-guide.html)
+  are outside the scope of this document.
+
+  Next, estimate the amount of free space that will be required for new data in
+  PostgreSQL (main or repeaters database, depending on configuration):
+
+  ```sh
+  cchq <env> django-manage shell -c '
+  from corehq.motech.repeaters.models import RepeatRecord;
+  size = RepeatRecord.get_db().info()["sizes"]["active"];
+  mult = int((int.bit_length(size) - 1) / 10);
+  unit = " KMGT"[mult].strip();
+  print(f"Couch DB file size: {size / (1024 ** mult):.2f} {unit}B")'
+  ```
+
+  The output will include something like:
+
+  ```
+  Couch DB file size: 8.33 GB
+  ```
+
+  Ensure there is at least 1.5 to 2 times that amount of free space available on
+  the machine hosting the main PostgreSQL database in your environment. That is,
+  unless you have configured CommCare HQ to store repeaters in a separate
+  database, in which case the extra space should be available to the repeaters
+  database.
+
+  Run the following commands to perform the migration.
+
+  ```sh
+  # Create a private release in which to run management commands.
+  # Make a note of the release directory path.
+  cchq <env> deploy commcare --private --keep-days=30
+
+  # Start a screen session
+  cchq <env> ssh django_manage -t screen -S couch2sql
+
+  # If the connection drops, reconnect with
+  cchq <env> ssh django_manage -t screen -x couch2sql
+
+  # In the screen session
+  sudo -iu cchq
+  mkdir ~/couch2sql
+  cd <private-release-directory-path>  # created above
+
+  # Run the migration command
+  ./manage.py populate_repeatrecords --log-path ~/couch2sql
+  # Re-run this command until it completes successfully (exit code 0).
+
+  # After successful completion, run again with --fixup-diffs=... if directed
+  # to do so by command output.
+  ```
+
+  DO NOT delete repeat records from Couch DB yet, they are still needed! A
+  future change log entry will instruct when it is safe to do that.
+
+  If you do not want to migrate historical repeat records from Couch you can
+  make it appear as if the migration has completed without actually migrating
+  anything. Use the following command to do that:
+
+  ```sh
+  # WARNING do not do this unless you want to discard repeat records in Couch
+  cchq <env> django-manage populate_repeatrecords --override-is-migration-completed yes
+  ```

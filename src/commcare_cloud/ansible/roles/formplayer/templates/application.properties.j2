@@ -5,6 +5,7 @@ server.port={{ formplayer_port }}
 user.suffix=commcarehq.org
 logging.config=logback-spring.xml
 sqlite.dataDir={{ formplayer_data_dir }}/
+sqlite.tmpDataDir={{ formplayer_data_dir }}/tmp_dbs/
 
 // Takes the format of https://<key>@sentry.io/<project>
 // More info on the DSN can be found here: https://docs.sentry.io/quickstart/#configure-the-dsn
@@ -65,3 +66,8 @@ server.forward-headers-strategy=NATIVE
 {% if formplayer_detailed_tags is defined %}
 detailed_tagging.tag_names={{ formplayer_detailed_tags|join(',') }}
 {% endif %}
+
+# Per-environment custom properties
+{% for key, value in formplayer_custom_properties.items() %}
+{{ key }}={{ value }}
+{% endfor %}

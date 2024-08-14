@@ -23,78 +23,78 @@ external_routes: []
 
 ec2_metadata_tokens_required: yes
 servers:
-  - server_name: "control1-india"
+  - server_name: "control2-india"
     server_instance_type: "t3a.medium"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: control
-    os: jammy 
+    os: jammy
 
-  - server_name: "djangomanage2-india"
+  - server_name: "djangomanage3-india"
     server_instance_type: "t3a.small"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: django_manage
     os: jammy
 
-  - server_name: "web4-india"
+  - server_name: "web6-india"
     server_instance_type: "r6a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: webworkers
     os: jammy
     server_auto_recovery: true
 
-  - server_name: "web5-india"
+  - server_name: "web7-india"
     server_instance_type: "r6a.large"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: webworkers
     os: jammy
     server_auto_recovery: true
 
-  - server_name: "celery7-india"
+  - server_name: "celerybeat_a2-india"
     server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: celery
     os: jammy
 
-  - server_name: "celery8-india"
+  - server_name: "celery14-india"
+    server_instance_type: "t3a.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 60
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: celery
+    os: jammy
+
+  - server_name: "celery15-india"
     server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "b"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: celery
     os: jammy
 
-  - server_name: "celery9-india"
-    server_instance_type: "t3a.xlarge"
-    network_tier: "app-private"
-    az: "c"
-    volume_size: 60
-    volume_encrypted: no
-    volume_type: "gp3"
-    group: celery
-    os: jammy
- 
   - server_name: "couch10-india"
     server_instance_type: "r5a.xlarge"
     network_tier: "db-private"
@@ -137,45 +137,35 @@ servers:
     group: couchdb2
     os: jammy 
 
-  - server_name: "esmaster5-india"
+  - server_name: "esmaster8-india"
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "a"
     volume_size: 40
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: "elasticsearch"
-    os: jammy 
-    
-  - server_name: "esmaster6-india"
+    os: jammy
+
+  - server_name: "esmaster9-india"
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "b"
     volume_size: 40
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: "elasticsearch"
-    os: jammy 
-    
-  - server_name: "esmaster7-india"
+    os: jammy
+
+  - server_name: "esmaster10-india"
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "c"
     volume_size: 40
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: "elasticsearch"
-    os: jammy 
-
-  - server_name: "es4-india"
-    server_instance_type: "r6a.large"
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 300
-    volume_encrypted: no
-    volume_type: "gp3"
-    group: elasticsearch
-    os: jammy 
+    os: jammy
 
   - server_name: "es5-india"
     server_instance_type: "r6a.large"
@@ -186,6 +176,16 @@ servers:
     volume_type: "gp3"
     group: elasticsearch
     os: jammy 
+
+  - server_name: "es6-india"
+    server_instance_type: "r6a.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 300
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: elasticsearch
+    os: jammy
 
   - server_name: "escoordinator7-india"
     server_instance_type: "t3a.large"
@@ -207,23 +207,23 @@ servers:
     group: elasticsearch
     os: jammy 
 
-  - server_name: "formplayer2-india"
+  - server_name: "formplayer3-india"
     server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 200
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: formplayer
     os: jammy
     server_auto_recovery: true
 
-  - server_name: "pillow4-india"
+  - server_name: "pillow5-india"
     server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: pillowtop
     os: jammy
@@ -278,12 +278,12 @@ servers:
     group: "postgresql"
     os: jammy
 
-  - server_name: "pgbouncer7-india"
+  - server_name: "pgbouncer8-india"
     server_instance_type: t3a.small
     network_tier: "db-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: "postgresql"
     os: jammy
@@ -348,7 +348,7 @@ pgbouncer_nlbs:
       - pgbouncer6-india
   - name: pgucr_nlb-india
     targets:
-      - pgbouncer7-india
+      - pgbouncer8-india
   - name: pgsynclogs_nlb-india
     targets:
       - pgbouncer5-india

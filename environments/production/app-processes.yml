@@ -1,5 +1,5 @@
 datadog_pythonagent: True
-django_command_prefix: ''
+django_command_prefix: '{% if inventory_hostname in groups["mobile_webworkers"] %}{{ virtualenv_home }}/bin/ddtrace-run {% endif %}'
 celery_command_prefix: ''
 gunicorn_workers_static_factor: 0
 gunicorn_workers_factor: 4
@@ -54,7 +54,7 @@ celery_processes:
       concurrency: 1
     repeat_record_queue:
       pooling: gevent
-      concurrency: 6
+      concurrency: 36
       prefetch_multiplier: 1
     saved_exports_queue:
       concurrency: 3
@@ -134,6 +134,6 @@ pillows:
   pillow_b2000:
   # case-sql partitions: 96
     case-pillow:
-      num_processes: 13
-      total_processes: 13
+      num_processes: 25
+      total_processes: 25
       dedicated_migration_process: True

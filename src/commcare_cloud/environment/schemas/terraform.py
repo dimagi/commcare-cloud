@@ -104,6 +104,7 @@ class BackupPlan(jsonobject.JsonObject):
     weekly_retention = jsonobject.IntegerProperty()
     monthly_retention = jsonobject.IntegerProperty()
     quarterly_retention = jsonobject.IntegerProperty()
+    cold_storage_after = jsonobject.IntegerProperty()
 
 
 class ServerConfig(jsonobject.JsonObject):

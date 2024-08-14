@@ -65,7 +65,7 @@ default_from_email: commcarehq-noreply-staging@dimagi.com
 return_path_email: commcarehq-bounces+staging@dimagi.com
 support_email: support@dimagi.com
 probono_support_email: pro-bono@dimagi.com
-accounts_email: accounts@dimagi.com
+accounts_email: commcarehq-ops+accounts@dimagi.com
 data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
 internal_subscription_change_email: accounts+subchange+internal@dimagi.com
@@ -127,7 +127,7 @@ localsettings:
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
   CELERY_PERIODIC_QUEUE: 'celery_null'
-  COMMCARE_ANALYTICS_HOST: "http://commcare-analytics-demo.dimagi.com"
+  COMMCARE_ANALYTICS_HOST: "https://commcare-analytics-staging.dimagi.com"
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
@@ -180,6 +180,7 @@ localsettings:
   STATIC_ROOT:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-08-23"
+  ES_MULTIPLEX_TO_VERSION: '6'
   ES_APPS_INDEX_MULTIPLEXED: False
   ES_CASE_SEARCH_INDEX_MULTIPLEXED: False
   ES_CASES_INDEX_MULTIPLEXED: False
@@ -188,14 +189,24 @@ localsettings:
   ES_USERS_INDEX_MULTIPLEXED: False
   ES_GROUPS_INDEX_MULTIPLEXED: False
   ES_DOMAINS_INDEX_MULTIPLEXED: False
-  ES_APPS_INDEX_SWAPPED: True
-  ES_CASE_SEARCH_INDEX_SWAPPED: True
-  ES_CASES_INDEX_SWAPPED: True
-  ES_DOMAINS_INDEX_SWAPPED: True
-  ES_FORMS_INDEX_SWAPPED: True
-  ES_GROUPS_INDEX_SWAPPED: True
-  ES_SMS_INDEX_SWAPPED: True
-  ES_USERS_INDEX_SWAPPED: True
+  ES_APPS_INDEX_SWAPPED: False
+  ES_CASE_SEARCH_INDEX_SWAPPED: False
+  ES_CASES_INDEX_SWAPPED: False
+  ES_DOMAINS_INDEX_SWAPPED: False
+  ES_FORMS_INDEX_SWAPPED: False
+  ES_GROUPS_INDEX_SWAPPED: False
+  ES_SMS_INDEX_SWAPPED: False
+  ES_USERS_INDEX_SWAPPED: False
+  CASE_SEARCH_SUB_INDICES: {
+      'co-carecoordination-test': {
+          'index_cname': 'case_search_bha',
+          'multiplex_writes': True,
+      },
+      'gherceg': {
+          'index_cname': 'case_search_bha',
+          'multiplex_writes': True,
+      }
+  }
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
 
 
@@ -237,3 +248,5 @@ formplayer_java_version: "{{ java_17_bin_path }}/java"
 maintenance_start_time: "06:00"
 
 maintenance_end_time: "08:00"
+
+use_webpack: true

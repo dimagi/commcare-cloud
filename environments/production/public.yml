@@ -75,6 +75,9 @@ formplayer_forward_ip_proxy: true
 formplayer_detailed_tags:
   - form_name
   - module_name
+formplayer_custom_properties:
+  spring.datasource.hikari.maximum-pool-size: 40
+  spring.datasource.hikari.minimum-idle: 5
 
 KSPLICE_ACTIVE: yes
 
@@ -164,25 +167,37 @@ localsettings:
   ELASTICSEARCH_MAJOR_VERSION: 5
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-04"
   ES_XFORM_INDEX_NAME: "xforms_2023-01-27"
+  # When to consider multiplex settings
+  ES_MULTIPLEX_TO_VERSION: '6'
   # Index Multiplexer Settings  
-  ES_APPS_INDEX_MULTIPLEXED: False # swap completed
-  ES_CASE_SEARCH_INDEX_MULTIPLEXED: False # swap completed 
-  ES_CASES_INDEX_MULTIPLEXED: False # swap completed
-  ES_DOMAINS_INDEX_MULTIPLEXED: False # swap completed
-  ES_FORMS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_GROUPS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_SMS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_USERS_INDEX_MULTIPLEXED: False # swap completed
+  ES_APPS_INDEX_MULTIPLEXED: False
+  ES_CASE_SEARCH_INDEX_MULTIPLEXED: False # Index swapped
+  ES_CASES_INDEX_MULTIPLEXED: False
+  ES_DOMAINS_INDEX_MULTIPLEXED: False
+  ES_FORMS_INDEX_MULTIPLEXED: False
+  ES_GROUPS_INDEX_MULTIPLEXED: False
+  ES_SMS_INDEX_MULTIPLEXED: False
+  ES_USERS_INDEX_MULTIPLEXED: False
   # Index Swap settings  
-  ES_APPS_INDEX_SWAPPED: True
+  ES_APPS_INDEX_SWAPPED: False
   ES_CASE_SEARCH_INDEX_SWAPPED: True
-  ES_CASES_INDEX_SWAPPED: True
-  ES_DOMAINS_INDEX_SWAPPED: True
-  ES_FORMS_INDEX_SWAPPED: True
-  ES_GROUPS_INDEX_SWAPPED: True
-  ES_SMS_INDEX_SWAPPED: True
-  ES_USERS_INDEX_SWAPPED: True
+  ES_CASES_INDEX_SWAPPED: False
+  ES_DOMAINS_INDEX_SWAPPED: False
+  ES_FORMS_INDEX_SWAPPED: False
+  ES_GROUPS_INDEX_SWAPPED: False
+  ES_SMS_INDEX_SWAPPED: False
+  ES_USERS_INDEX_SWAPPED: False
   # Index settings end
+  CASE_SEARCH_SUB_INDICES: {
+    'co-carecoordination': {
+        'index_cname': 'case_search_bha',
+        'multiplex_writes': True,
+    },
+    'co-carecoordination-perf': {
+        'index_cname': 'case_search_bha',
+        'multiplex_writes': True,
+    }
+  }
   IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'www'
   INACTIVITY_TIMEOUT: 20160
@@ -232,6 +247,7 @@ localsettings:
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   WS4REDIS_CONNECTION_HOST: "redis.production.commcare.local"
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
+  ASYNC_INDICATORS_TO_QUEUE: 20000
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu

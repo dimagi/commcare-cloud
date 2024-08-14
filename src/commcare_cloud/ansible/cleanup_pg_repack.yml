@@ -1,0 +1,21 @@
+- name: Cleanup pg_repack configuration
+  hosts: pgbouncer_a6
+  tasks:
+    - include_vars:
+        file: roles/postgresql_base/defaults/main.yml
+
+    - name: Check if pg_repack is installed
+      stat:
+        path: "{{ postgres_install_dir }}/bin/pg_repack"
+      register: pg_repack_stat
+
+    - name: Check if pg_repack cron exists
+      stat:
+        path: "/etc/cron.d/pg_repack_commcarehq_synclogs"
+      register: pg_repack_cron
+
+    - name: Remove pg_repack cron file
+      file:
+        path: "/etc/cron.d/pg_repack_commcarehq_synclogs"
+        state: absent
+      when: pg_repack_cron.stat.exists == True

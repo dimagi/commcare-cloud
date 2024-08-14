@@ -22,6 +22,7 @@ backup_plan:
   weekly_retention: 14
   monthly_retention: 62
   quarterly_retention: 180
+  cold_storage_after : 8
 
 servers:
   - server_name: "control3-staging"
@@ -35,7 +36,7 @@ servers:
     os: jammy 
 
   - server_name: "web13-staging"
-    server_instance_type: "t3a.large"
+    server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -46,7 +47,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web14-staging"
-    server_instance_type: "t3a.large"
+    server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "b"
     volume_size: 80

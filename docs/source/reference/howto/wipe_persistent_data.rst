@@ -101,22 +101,30 @@ Rebuilding environment
 
       $ cchq <env_name> django-manage create_kafka_topics
 
-    .. note::
+.. warning::
 
-        If you are migrating a project to a new environment, you can return to the steps outlined in
-        `Import the data to the new environment <installation/migration/1-migrating-project.html#import-the-data-to-the-new-environment>`_.
-        Otherwise, you can continue with the following steps.
+    If you are migrating a project to a new environment, return to the steps outlined in
+    :ref:`import-data-into-environment`. Do not start services back up until you have finished loading
+    data into your new environment.
 
-#. Run a code deploy to start CommCare back up.
+
+Start new environment
+---------------------
+
+.. note::
+
+   The following steps should only be run if you are **not** planning to migrate a project from an existing environment.
+
+
+#. End downtime (you will encounter a prompt that says no record of downtime was found, continue anyway as this starts services up).
 
    .. code-block::
 
-      $ cchq <env_name> deploy
+      $ cchq <env_name> downtime end
 
 
 #. Recreate a superuser (where you substitute your address in place of
-   "you@your.domain"). This is optional and should not be performed if
-   you are planning to migrate domain from other environment.
+   "you@your.domain").
 
    .. code-block::
 
