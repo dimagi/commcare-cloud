@@ -6,9 +6,6 @@ message: |
   {{#is_match "environment.name" "icds-new"}}
   https://www.icds-cas.gov.in/hq/admin/pillow_errors
   {{/is_match}}
-  {{#is_match "environment.name" "pna"}}
-  https://pna.commcarehq.org/hq/admin/pillow_errors
-  {{/is_match}}
   {{#is_match "environment.name" "india"}}
   https://india.commcarehq.org/hq/admin/pillow_errors
   {{/is_match}}
