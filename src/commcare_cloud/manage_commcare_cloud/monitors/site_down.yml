@@ -17,7 +17,6 @@ options:
   notify_no_data: true
   renotify_interval: 10
   silenced:
-    host:hqproxy0: null
     host:proxy0.india.commcarehq.org: null
     host:proxy1.internal-icds.commcarehq.org: null
     instance:icds_heartbeat: null
