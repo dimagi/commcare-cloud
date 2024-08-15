@@ -107,18 +107,6 @@
       tags:
         - nginx_sites
 
-- name: PNA Proxy
-  hosts: pna_proxy
-  tasks:
-    - include_role:
-        name: {name: nginx, tags: nginx_sites}
-        tasks_from: set_site_present
-      vars:
-        site_present: "{{ 'pna_ssl' in special_sites }}"
-        site_config: {name: pna_ssl, vars_file: pna_ssl}
-      tags:
-        - nginx_sites
-
 - name: Nginx log rolling configurations
   hosts:
    - proxy

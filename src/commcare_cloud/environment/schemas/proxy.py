@@ -23,7 +23,7 @@ class ProxyConfig(jsonobject.JsonObject):
     trusted_proxies = jsonobject.ListProperty(str)
 
     special_sites = jsonobject.ListProperty(str)
-    
+
     extra_sites = jsonobject.ListProperty(str)
 
     nginx_block_ips = jsonobject.ListProperty(str)
@@ -40,10 +40,6 @@ class ProxyConfig(jsonobject.JsonObject):
     tableau_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
     tableau_key_value = jsonobject.StringProperty(exclude_if_none=True)
     tableau_server = jsonobject.StringProperty(exclude_if_none=True)
-
-    PNA_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
-    pna_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
-    pna_key_value = jsonobject.StringProperty(exclude_if_none=True)
 
     def check(self):
         pass
