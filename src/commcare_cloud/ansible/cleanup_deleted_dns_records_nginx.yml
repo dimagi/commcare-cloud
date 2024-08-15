@@ -1,0 +1,20 @@
+- name: Remove deleted DNS records from nginx config
+  hosts: 
+    - proxy_a3
+    - proxy_b3
+  become: true
+  tasks:
+    - include_role:
+        name: nginx
+        tasks_from: set_site_present
+      vars:
+        site_present: False
+      with_items:
+        - {name: motech, vars_file: motech}
+        - {name: motech, vars_file: motech_http}
+        - {name: motech2, vars_file: motech2}
+        - {name: motech2, vars_file: motech2_http}
+        - {name: cas_sentry, vars_file: cas_sentry}
+        - {name: cas_grafana, vars_file: cas_grafana}
+      loop_control:
+        loop_var: site_config
