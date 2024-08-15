@@ -189,7 +189,6 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: INC-
   INVOICE_STARTING_NUMBER: 5000
-  J2ME_ADDRESS: ""  
   LOCAL_CUSTOM_DB_ROUTING:
     auditcare: auditcare
     repeaters: repeaters

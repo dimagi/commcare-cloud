@@ -114,7 +114,6 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 localsettings:
   ALLOWED_HOSTS:
     - "{{ CAS_SITE_HOST }}"
-    - "{{ J2ME_SITE_HOST }}"
   ALLOW_MAKE_SUPERUSER_COMMAND: False  
   ASYNC_INDICATORS_TO_QUEUE: 30000
   AUDIT_ALL_VIEWS: True
@@ -172,7 +171,6 @@ localsettings:
     'website': "http://www.dimagi.com"
   INVOICE_PREFIX: India-
   INVOICE_STARTING_NUMBER: 5000
-  J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
   LOCAL_CUSTOM_DB_ROUTING:
     auditcare: auditcare
     repeaters: repeaters

@@ -708,10 +708,6 @@ INACTIVITY_TIMEOUT = {{ localsettings.INACTIVITY_TIMEOUT }}
 # See corehq/apps/builds/README.md for more information.
 BASE_ADDRESS = '{{ SITE_HOST }}'
 
-{% if localsettings.get('J2ME_ADDRESS') %}
-J2ME_ADDRESS = '{{ localsettings.J2ME_ADDRESS }}'
-{% endif %}
-
 EMAIL_USE_TLS = {{ localsettings.EMAIL_USE_TLS }}
 
 BANK_ROUTING_NUMBER_ACH = '{{ BANK_ROUTING_NUMBER_ACH }}'

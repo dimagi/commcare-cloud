@@ -8,7 +8,6 @@ class ProxyConfig(jsonobject.JsonObject):
 
     SITE_HOST = jsonobject.StringProperty(required=True)
     NO_WWW_SITE_HOST = jsonobject.StringProperty()
-    J2ME_SITE_HOST = jsonobject.StringProperty()
     nginx_combined_cert_value = jsonobject.StringProperty()
     nginx_key_value = jsonobject.StringProperty()
     nginx_hsts_max_age = jsonobject.IntegerProperty()
@@ -23,7 +22,7 @@ class ProxyConfig(jsonobject.JsonObject):
     trusted_proxies = jsonobject.ListProperty(str)
 
     special_sites = jsonobject.ListProperty(str)
-    
+
     extra_sites = jsonobject.ListProperty(str)
 
     nginx_block_ips = jsonobject.ListProperty(str)

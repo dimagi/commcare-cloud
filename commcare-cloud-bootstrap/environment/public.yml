@@ -65,7 +65,6 @@ localsettings:
   EMAIL_USE_TLS: no
   FULLSTORY_ID:
   HQ_INSTANCE: 'dev'
-  J2ME_ADDRESS: ''
   REDIS_DB: '0'
   REDIS_HOST: "{{ groups.redis.0 }}"
   REDIS_PORT: '6379'
