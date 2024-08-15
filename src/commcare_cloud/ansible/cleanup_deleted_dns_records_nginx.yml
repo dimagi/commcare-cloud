@@ -10,11 +10,9 @@
       vars:
         site_present: False
       with_items:
-        - {name: motech, vars_file: motech}
-        - {name: motech, vars_file: motech_http}
-        - {name: motech2, vars_file: motech2}
-        - {name: motech2, vars_file: motech2_http}
-        - {name: cas_sentry, vars_file: cas_sentry}
-        - {name: cas_grafana, vars_file: cas_grafana}
+        - motech
+        - motech_http
+        - motech2
+        - motech2_http
       loop_control:
-        loop_var: site_config
+        loop_var: file_name
