@@ -1193,3 +1193,11 @@ CONNECTID_USERINFO_URL = "{{ localsettings.CONNECTID_URL }}"
 {% if localsettings.MAX_MOBILE_UCR_LIMIT is defined %}
 MAX_MOBILE_UCR_LIMIT = {{ localsettings.MAX_MOBILE_UCR_LIMIT }}
 {% endif %}
+
+{% if localsettings.MIN_REPEATER_RATE_LIMIT_DELAY is defined %}
+MIN_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MIN_REPEATER_RATE_LIMIT_DELAY }}
+{% endif %}
+
+{% if localsettings.MAX_REPEATER_RATE_LIMIT_DELAY is defined %}
+MAX_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MAX_REPEATER_RATE_LIMIT_DELAY }}
+{% endif %}
