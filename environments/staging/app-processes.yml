@@ -45,7 +45,7 @@ celery_processes:
       concurrency: 2 
     repeat_record_queue:
       pooling: gevent
-      concurrency: 2
+      concurrency: 72
     reminder_case_update_bulk_queue,reminder_rule_queue:
       concurrency: 1
     send_report_throttled:
