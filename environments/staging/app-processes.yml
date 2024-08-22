@@ -43,7 +43,7 @@ celery_processes:
     reminder_case_update_queue,reminder_queue:
       pooling: gevent
       concurrency: 2 
-    repeat_record_queue:
+    repeat_record_queue, repeat_record_datasource_queue:
       pooling: gevent
       concurrency: 2
     reminder_case_update_bulk_queue,reminder_rule_queue:
