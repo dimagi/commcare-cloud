@@ -114,6 +114,7 @@ CELERY_PROCESSES = [
     CeleryProcess("celery", blockage_threshold=60),
     CeleryProcess("celery_periodic", required=False, blockage_threshold=10 * 60),
     CeleryProcess("dashboard_comparison_queue", required=False),
+    CeleryProcess("repeat_record_datasource_queue", required=False),
     CeleryProcess("email_queue", blockage_threshold=30),
     CeleryProcess("export_download_queue", blockage_threshold=30),
     CeleryProcess("flower", is_queue=False),
@@ -131,7 +132,7 @@ CELERY_PROCESSES = [
     CeleryProcess("saved_exports_queue", blockage_threshold=6 * 60 * 60),
     CeleryProcess("sumologic_logs_queue", required=False, blockage_threshold=6 * 60 * 60),
     CeleryProcess("send_report_throttled", required=False, blockage_threshold=6 * 60 * 60),
-    CeleryProcess("sms_queue", required=False, blockage_threshold=5 * 60), # TODO remove required
+    CeleryProcess("sms_queue", required=False, blockage_threshold=5 * 60),  # TODO remove required
     CeleryProcess("submission_reprocessing_queue", required=False, blockage_threshold=60 * 60),
     CeleryProcess("ucr_indicator_queue", required=False, blockage_threshold=60 * 60),
     CeleryProcess("ucr_queue", required=False, blockage_threshold=60 * 60),
