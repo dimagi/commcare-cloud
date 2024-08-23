@@ -56,6 +56,10 @@ celery_processes:
       pooling: gevent
       concurrency: 72
       prefetch_multiplier: 1
+    repeat_record_datasource_queue:
+      pooling: gevent
+      concurrency: 2
+      prefetch_multiplier: 1
     saved_exports_queue:
       concurrency: 3
       prefetch_multiplier: 1
