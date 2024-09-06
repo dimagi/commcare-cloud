@@ -12,7 +12,7 @@ pgbouncer_override:
 
 postgres_override:
   postgresql_version: '14'
-  postgresql_max_connections: 300
+  postgresql_max_connections: 125
   postgresql_hba_entries:
     # required for backup
     - contype: host
