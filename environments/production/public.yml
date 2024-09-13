@@ -23,6 +23,7 @@ eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
+solutions_aes_email: solutions-tech-app-engineers@dimagi.com
 ALTERNATE_HOSTS:
   - rec-mobile.sante.gov.bf
   - onse-iss.commcarehq.org
@@ -150,6 +151,7 @@ localsettings:
   BIGCOUCH: True
   BIGCOUCH_QUORUM_COUNT: 2
   CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE: "reminder_case_update_bulk_queue"
+  CELERY_REPEAT_RECORD_DATASOURCE_QUEUE: "repeat_record_datasource_queue"
   CHECK_REPEATERS_PARTITION_COUNT: 4
   COMMCARE_ANALYTICS_HOST: "https://commcare-analytics.dimagi.com"
   COUCH_CACHE_DOCS: True
@@ -219,6 +221,8 @@ localsettings:
     repeaters: repeaters
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
+  MIN_REPEATER_RATE_LIMIT_DELAY: 10
+  MAX_REPEATER_RATE_LIMIT_DELAY: 30
   PILLOWTOP_MACHINE_ID: hqdb0
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes

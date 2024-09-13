@@ -410,6 +410,10 @@ CELERY_HEARTBEAT_THRESHOLDS = {
 CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE = '{{ localsettings.CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE }}'
 {% endif %}
 
+{% if 'CELERY_REPEAT_RECORD_DATASOURCE_QUEUE' in localsettings and localsettings.CELERY_REPEAT_RECORD_DATASOURCE_QUEUE %}
+CELERY_REPEAT_RECORD_DATASOURCE_QUEUE = '{{ localsettings.CELERY_REPEAT_RECORD_DATASOURCE_QUEUE }}'
+{% endif %}
+
 FORMPLAYER_URL = "/formplayer"
 
 {% if FORMPLAYER_INTERNAL_AUTH_KEY %}
@@ -970,6 +974,7 @@ CONTACT_EMAIL = '{{ contact_email }}'
 FEEDBACK_EMAIL = '{{ feedback_email }}'
 SOFT_ASSERT_EMAIL = '{{ soft_assert_email }}'
 DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'
+SOLUTIONS_AES_EMAIL = '{{ solutions_aes_email }}'
 {% if TRANSIFEX_API_TOKEN %}
 TRANSIFEX_DETAILS = {
     'organization': 'dimagi',
@@ -1200,4 +1205,12 @@ CONNECTID_USERINFO_URL = "{{ localsettings.CONNECTID_URL }}"
 
 {% if localsettings.MAX_MOBILE_UCR_LIMIT is defined %}
 MAX_MOBILE_UCR_LIMIT = {{ localsettings.MAX_MOBILE_UCR_LIMIT }}
+{% endif %}
+
+{% if localsettings.MIN_REPEATER_RATE_LIMIT_DELAY is defined %}
+MIN_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MIN_REPEATER_RATE_LIMIT_DELAY }}
+{% endif %}
+
+{% if localsettings.MAX_REPEATER_RATE_LIMIT_DELAY is defined %}
+MAX_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MAX_REPEATER_RATE_LIMIT_DELAY }}
 {% endif %}

@@ -81,6 +81,7 @@ eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
+solutions_aes_email: solutions-tech-app-engineers@dimagi.com
 show_maintenance_updates_on_deploy: False
 
 couch_dbs:
@@ -127,6 +128,7 @@ localsettings:
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
   CELERY_PERIODIC_QUEUE: 'celery_null'
+  CELERY_REPEAT_RECORD_DATASOURCE_QUEUE: "repeat_record_datasource_queue"
   COMMCARE_ANALYTICS_HOST: "https://commcare-analytics-staging.dimagi.com"
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
@@ -181,16 +183,16 @@ localsettings:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-08-23"
   ES_MULTIPLEX_TO_VERSION: '6'
-  ES_APPS_INDEX_MULTIPLEXED: False
-  ES_CASE_SEARCH_INDEX_MULTIPLEXED: False
-  ES_CASES_INDEX_MULTIPLEXED: False
-  ES_FORMS_INDEX_MULTIPLEXED: False
-  ES_SMS_INDEX_MULTIPLEXED: False
-  ES_USERS_INDEX_MULTIPLEXED: False
-  ES_GROUPS_INDEX_MULTIPLEXED: False
-  ES_DOMAINS_INDEX_MULTIPLEXED: False
+  ES_APPS_INDEX_MULTIPLEXED: True
+  ES_CASE_SEARCH_INDEX_MULTIPLEXED: True
+  ES_CASES_INDEX_MULTIPLEXED: True
+  ES_FORMS_INDEX_MULTIPLEXED: True
+  ES_SMS_INDEX_MULTIPLEXED: True
+  ES_USERS_INDEX_MULTIPLEXED: True
+  ES_GROUPS_INDEX_MULTIPLEXED: True
+  ES_DOMAINS_INDEX_MULTIPLEXED: True
   ES_APPS_INDEX_SWAPPED: False
-  ES_CASE_SEARCH_INDEX_SWAPPED: False
+  ES_CASE_SEARCH_INDEX_SWAPPED: True
   ES_CASES_INDEX_SWAPPED: False
   ES_DOMAINS_INDEX_SWAPPED: False
   ES_FORMS_INDEX_SWAPPED: False
@@ -248,5 +250,3 @@ formplayer_java_version: "{{ java_17_bin_path }}/java"
 maintenance_start_time: "06:00"
 
 maintenance_end_time: "08:00"
-
-use_webpack: true
