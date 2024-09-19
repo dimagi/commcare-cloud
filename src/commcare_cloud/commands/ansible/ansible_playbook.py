@@ -90,6 +90,7 @@ def run_ansible_playbook(
     playbook, ansible_context,
     skip_check=False, quiet=False, always_skip_check=False, limit=None,
     use_factory_auth=False, unknown_args=None, respect_ansible_skip=True,
+    extra_vars=None,
 ):
 
     unknown_args = unknown_args or []
@@ -134,6 +135,7 @@ def run_ansible_playbook(
             '-i', environment.paths.inventory_source,
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
+            '-e', '{}'.format(extra_vars),
             '--diff',
         ) + get_limit(environment) + cmd_args
 

@@ -488,6 +488,9 @@ class Webworker(SingleSupervisorService):
 
 def _restart_commcare_services(environment, limit, name="commcare"):
     from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
+    extra_vars = None
+    if name == 'webworker':
+        extra_vars = {'webworker_hosts': 'webworkers'}
     return run_ansible_playbook(
         # grep:
         # restart_commcare_services.yml
@@ -497,6 +500,7 @@ def _restart_commcare_services(environment, limit, name="commcare"):
         limit=limit,
         skip_check=True,
         quiet=True,
+        extra_vars=extra_vars,
     )
 
 
