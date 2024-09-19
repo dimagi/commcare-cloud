@@ -135,7 +135,7 @@ def run_ansible_playbook(
             '-i', environment.paths.inventory_source,
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
-            '-e', '{}'.format(extra_vars),
+            '-e', f'{extra_vars}',
             '--diff',
         ) + get_limit(environment) + cmd_args
 
