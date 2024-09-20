@@ -22,7 +22,7 @@ postgres_override:
     - contype: host
       database: all
       users: all
-      netmask: pgbouncer7/32
+      netmask: pgbouncer8/32
 
 dbs:
   main:
@@ -38,7 +38,7 @@ dbs:
   ucr:
     pgbouncer_endpoint: pgucr_nlb
     pgbouncer_hosts:
-      - pgbouncer7
+      - pgbouncer8
   synclogs:
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
@@ -56,7 +56,7 @@ dbs:
       - pgbouncer6
   form_processing:
     proxy:
-      host: pgbouncer7
+      host: pgbouncer8
     partitions:
       p1:
         shards: [0, 204]

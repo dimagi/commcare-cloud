@@ -338,6 +338,7 @@ ANALYTICS_IDS = {
     'HUBSPOT_ACCESS_TOKEN': '{{ HUBSPOT_ACCESS_TOKEN }}',
     'KISSMETRICS_KEY': '{{ KISSMETRICS_KEY }}',
     'FULLSTORY_ID': '{{ FULLSTORY_ID }}',
+    'GTM_ID': '{{ GTM_ID }}',
     'DRIFT_ID': '{{ DRIFT_ID }}',
     'APPCUES_ID': '{{ APPCUES_ID }}',
     'APPCUES_KEY': '{{ APPCUES_KEY }}'
@@ -409,6 +410,10 @@ CELERY_HEARTBEAT_THRESHOLDS = {
 CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE = '{{ localsettings.CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE }}'
 {% endif %}
 
+{% if 'CELERY_REPEAT_RECORD_DATASOURCE_QUEUE' in localsettings and localsettings.CELERY_REPEAT_RECORD_DATASOURCE_QUEUE %}
+CELERY_REPEAT_RECORD_DATASOURCE_QUEUE = '{{ localsettings.CELERY_REPEAT_RECORD_DATASOURCE_QUEUE }}'
+{% endif %}
+
 FORMPLAYER_URL = "/formplayer"
 
 {% if FORMPLAYER_INTERNAL_AUTH_KEY %}
@@ -463,7 +468,7 @@ ELASTICSEARCH_PORT = {{ ELASTICSEARCH_PORT }}
 {% if 'ELASTICSEARCH_MAJOR_VERSION' in localsettings %}
 ELASTICSEARCH_MAJOR_VERSION = {{ localsettings.ELASTICSEARCH_MAJOR_VERSION }}
 {% else %}
-ELASTICSEARCH_MAJOR_VERSION = 2
+ELASTICSEARCH_MAJOR_VERSION = 5
 {% endif %}
 
 ES_SETTINGS = {{ ES_SETTINGS }}
@@ -859,6 +864,14 @@ SENTRY_QUERY_URL = '{{ SENTRY_QUERY_URL }}'
 GREENHOUSE_API_KEY = '{{ GREENHOUSE_API_KEY }}'
 {% endif %}
 
+{% if EPIC_PRIVATE_KEY %}
+EPIC_PRIVATE_KEY = '{{ EPIC_PRIVATE_KEY }}'
+{%endif%}
+
+{% if EPIC_CLIENT_ID %}
+EPIC_CLIENT_ID = '{{ EPIC_CLIENT_ID }}'
+{%endif%}
+
 LOCAL_LOGGING_CONFIG = json.loads('{{ localsettings.get('LOCAL_LOGGING_CONFIG', {})|to_json }}')
 LOCAL_MIDDLEWARE = {{ localsettings.get('LOCAL_MIDDLEWARE', [])|to_json }}
 
@@ -961,6 +974,7 @@ CONTACT_EMAIL = '{{ contact_email }}'
 FEEDBACK_EMAIL = '{{ feedback_email }}'
 SOFT_ASSERT_EMAIL = '{{ soft_assert_email }}'
 DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'
+SOLUTIONS_AES_EMAIL = '{{ solutions_aes_email }}'
 {% if TRANSIFEX_API_TOKEN %}
 TRANSIFEX_DETAILS = {
     'organization': 'dimagi',
@@ -1004,6 +1018,16 @@ ES_XFORM_INDEX_NAME = '{{ localsettings.ES_XFORM_INDEX_NAME }}'
 
 {% if localsettings.ES_CASE_SEARCH_INDEX_NAME is defined %}
 ES_CASE_SEARCH_INDEX_NAME = '{{ localsettings.ES_CASE_SEARCH_INDEX_NAME }}'
+{% endif %}
+
+
+{% if localsettings.CASE_SEARCH_SUB_INDICES is defined %}
+CASE_SEARCH_SUB_INDICES = json.loads('{{ localsettings.CASE_SEARCH_SUB_INDICES|to_json }}')
+{% endif %}
+
+{# Flag to toggle the multiplexing settings defined below #}
+{% if localsettings.ES_MULTIPLEX_TO_VERSION is defined %}
+ES_MULTIPLEX_TO_VERSION = '{{ localsettings.ES_MULTIPLEX_TO_VERSION }}'
 {% endif %}
 
 {# Elasticsearch Multiplexer Settings, would be used while reindexing #}
@@ -1181,4 +1205,12 @@ CONNECTID_USERINFO_URL = "{{ localsettings.CONNECTID_URL }}"
 
 {% if localsettings.MAX_MOBILE_UCR_LIMIT is defined %}
 MAX_MOBILE_UCR_LIMIT = {{ localsettings.MAX_MOBILE_UCR_LIMIT }}
+{% endif %}
+
+{% if localsettings.MIN_REPEATER_RATE_LIMIT_DELAY is defined %}
+MIN_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MIN_REPEATER_RATE_LIMIT_DELAY }}
+{% endif %}
+
+{% if localsettings.MAX_REPEATER_RATE_LIMIT_DELAY is defined %}
+MAX_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MAX_REPEATER_RATE_LIMIT_DELAY }}
 {% endif %}

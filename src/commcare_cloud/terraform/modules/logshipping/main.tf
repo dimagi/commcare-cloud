@@ -121,7 +121,7 @@ resource "aws_lambda_function" "check_file_lambda" {
     function_name = "check_file_lambda"
     role = aws_iam_role.check_file_lambda.arn
     handler = "check_file_lambda.handler"
-    runtime = "python3.8"
+    runtime = "python3.12"
     timeout = 30
     source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 

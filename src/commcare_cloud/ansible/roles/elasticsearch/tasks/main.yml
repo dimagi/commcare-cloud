@@ -24,14 +24,6 @@
     value: '262144'
     state: present
   become: yes
-  
-- name: Download Elasticsearch 2.4.x
-  become: yes
-  get_url:
-    url: "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz"
-    dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
-    sha256sum: "{{ elasticsearch_download_sha256 }}"
-  when: elasticsearch_version == "2.4.6"
 
 - name: Download Elasticsearch 5
   become: yes
@@ -82,9 +74,6 @@
   register: copy_elasticsearch_conf_result
   tags:
     - es_conf
-
-- include_tasks: misc_v2.yml
-  when: elasticsearch_version == '2.4.6'
 
 - include_tasks: misc_v5.yml
   when: elasticsearch_version == '5.6.16'

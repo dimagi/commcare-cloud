@@ -589,6 +589,12 @@ initially.
 
        $ commcare-cloud cluster deploy
 
+   Or if you need to deploy a specific version of CommCare HQ as opposed to the latest:
+
+   ::
+
+       $ commcare-cloud cluster deploy --commcare-rev=<commit-hash>
+
    When prompted for the ``sudo`` password, enter the
    “ansible_sudo_pass” value.
 

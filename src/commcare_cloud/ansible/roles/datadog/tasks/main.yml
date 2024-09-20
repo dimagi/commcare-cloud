@@ -64,7 +64,12 @@
   become: true
   become_user: "{{ cchq_user }}"
   get_url:
-    url: "https://dtdg.co/latest-java-tracer"
+    # You can find every available version of dd-java-agent
+    # at https://repo1.maven.org/maven2/com/datadoghq/dd-java-agent/
+    # per the link in https://docs.datadoghq.com/tracing/trace_collection/automatic_instrumentation/dd_libraries/java/
+    # each version provides the .jar file and hashes of the .jar file that you can use for the checksum
+    url: "https://repo1.maven.org/maven2/com/datadoghq/dd-java-agent/1.33.0/dd-java-agent-1.33.0.jar"
+    checksum: 'sha512:54777323c549bf953aafc02747fea4b3ed83075518a84caa35fd392a5aa2ceef81cb2a057fd5edeff61945eac86fde893a069233de3262d5bdab8e6bf1e85b0f'
     dest: "{{ cchq_home }}/dd-java-agent.jar"
   when: "'formplayer' in groups and inventory_hostname in groups.formplayer"
 

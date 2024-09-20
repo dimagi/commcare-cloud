@@ -7,6 +7,40 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2024-07-25** [Unicel SMS Gateway Removal](0082-unicel-sms-gateway-removal.md)
+This is a notice specifically for projects with Unicel configured as an SMS gateway, which is no longer functional.
+Projects that are not using the Unicel gateway do not need to take any action.
+
+
+---
+#### **2024-06-18** [SQL Repeat Record Migration - Delete Unused Couch Data](0081-delete-receiverwrapper-couch-db.md)
+Optional: Delete unused forwarding data from Couch.
+
+
+---
+#### **2024-04-30** [Copy Supply Point data to Invitation model Location Field](0080-copy-invitation-supply-point-fields-to-location.md)
+Copy data from `supply_point` field to `location` field in `Invitation` model to prevent errors with
+future migrations to the `users_invitation` table.
+
+This operation is required for all environments regardless of feature usage.
+
+
+---
+#### **2024-02-13** [SQL Repeat Record Migration addendum](0079-sql-repeatrecord-addendum.md)
+Optional: Copy repeat records with deleted repeaters from Couch to SQL
+
+
+---
+#### **2024-03-29** [Upgrade To Node 20](0078-upgrade-to-node-20.md)
+Node.js 16.x LTS is reaching its end of life 15th June 2024, so node and npm must be upgraded on all machines.
+
+
+---
+#### **2024-02-13** [SQL Repeat Record Migration](0077-sql-repeatrecord-pr1.md)
+Prepare for and migrate Repeat Records from Couch to SQL.
+
+
+---
 #### **2024-01-14** [Elasticsearch upgrade from 2.4.6 to 5.6.16](0076-upgrade-to-es-5.md)
 Upgrade to Elasticsearch 5.
 

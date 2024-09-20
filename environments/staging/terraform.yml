@@ -22,6 +22,7 @@ backup_plan:
   weekly_retention: 14
   monthly_retention: 62
   quarterly_retention: 180
+  cold_storage_after : 8
 
 servers:
   - server_name: "control3-staging"
@@ -313,7 +314,7 @@ servers:
 
 proxy_servers:
   - server_name: "proxy6-staging"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
@@ -323,7 +324,7 @@ proxy_servers:
     os: jammy
 
   - server_name: "proxy8-staging"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80

@@ -24,6 +24,7 @@ backup_plan:
   weekly_retention: 14
   monthly_retention: 62
   quarterly_retention: 180
+  cold_storage_after : 8
 
 servers:
   - server_name: "control4-production"
@@ -66,7 +67,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_m_a2{i}-production"
-    server_instance_type: r6a.xlarge
+    server_instance_type: c6a.8xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -76,7 +77,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_m_b2{i}-production"
-    server_instance_type: r6a.xlarge
+    server_instance_type: c6a.8xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
@@ -119,7 +120,7 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 2100
+      volume_size: 2800
       enable_cross_region_backup: yes
     group: "elasticsearch"
     os: jammy 
@@ -132,7 +133,7 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 2100
+      volume_size: 2800
     group: "elasticsearch"
     os: jammy 
     count: 4
@@ -144,7 +145,7 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 1300
+      volume_size: 2800
       enable_cross_region_backup: yes
     group: "elasticsearch"
     os: jammy
@@ -159,7 +160,7 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 1300
+      volume_size: 2800
     group: "elasticsearch"
     os: jammy
     count: 2
@@ -167,7 +168,7 @@ servers:
       BillTo: USH
 
   - server_name: "escoordinator_a1-production"
-    server_instance_type: r6a.2xlarge
+    server_instance_type: m6a.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -175,7 +176,7 @@ servers:
     os: jammy 
 
   - server_name: "escoordinator_b1-production"
-    server_instance_type: r6a.2xlarge
+    server_instance_type: m6a.4xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -309,7 +310,7 @@ servers:
     count: 1
 
   - server_name: "pillow_b2{i}-production"
-    server_instance_type: r6a.4xlarge
+    server_instance_type: r6a.8xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 50
@@ -321,7 +322,7 @@ servers:
     server_instance_type: r6a.2xlarge
     network_tier: "app-private"
     az: "a"
-    volume_size: 70
+    volume_size: 140
     volume_encrypted: yes
     group: "formplayer"
     os: jammy
@@ -332,7 +333,7 @@ servers:
     server_instance_type: r6a.2xlarge
     network_tier: "app-private"
     az: "a"
-    volume_size: 50
+    volume_size: 140
     volume_encrypted: yes
     group: "formplayer"
     os: jammy
@@ -657,7 +658,7 @@ internal_albs:
 elasticache_cluster:
   create: yes
   cache_node_type: "cache.r6g.large"
-  cache_engine_version: "7.x"
+  cache_engine_version: "7.0"
   params:
     maxmemory-policy: 'allkeys-lru'
   automatic_failover: true
