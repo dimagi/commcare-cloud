@@ -39,6 +39,7 @@ printf "\n"
 sudo apt --assume-yes -qq update
 sudo apt --assume-yes -qq install python3-pip sshpass
 sudo -H pip3 -q install --upgrade pip
+sudo -H pip3 -q install setuptools
 sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 # install python 3.10 if on ubuntu 18.04 and not installed yet
 if ! hash python3.10 2>/dev/null && [[ $( source /etc/os-release; echo $VERSION_ID ) == 18.04 ]]; then
@@ -66,9 +67,12 @@ printf "#################################################"
 printf "\n"
 
 ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/bootstrap-env-playbook.yml"
-printf "\n Encrypting your environment's passwords file using ansible-vault.\n"
-printf "Please store this password safely as it will be asked multiple times during the install.\n"
-ansible-vault encrypt ~/environments/$env_name/vault.yml
+
+echo $ansible_vault_password
+> ./vault_pass.txt
+echo $ansible_vault_password >> ./vault_pass.txt
+ansible-vault encrypt ~/environments/$env_name/vault.yml --vault-password-file=./vault_pass.txt
+rm ./vault_pass.txt
 
 printf "\n"
 printf "#################################################"
@@ -76,8 +80,8 @@ printf "\nStep 4: Setting up users and SSH auth \n"
 printf "#################################################"
 printf "\n"
 source ~/.commcare-cloud/load_config.sh
-commcare-cloud $env_name update-local-known-hosts
-commcare-cloud $env_name bootstrap-users -c local --quiet
+ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name update-local-known-hosts
+ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name bootstrap-users -c local --quiet
 
 printf "\nEverything is setup to install CommCareHQ now! Would you like to install CommCareHQ now?\n"
 printf "Please see below a summary of what this script has setup so far!\n"
@@ -91,6 +95,12 @@ printf "You can now install CommCareHQ using below two commands.\n\n"
 printf "source ~/.commcare-cloud/load_config.sh\n"
 printf "commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local \n\n"
 printf "Would you like the above command to be run now?\n"
+
+if [[ $SKIP_DEPLOY_STACK != 'yes' ]]
+then
+    exit
+fi
+
 read -p "(Please note that if this command fails midway, you can run this command directly instead of rerunning the cchq-install command) Proceed (Y/n)?" -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
@@ -102,8 +112,8 @@ fi
 
 printf "\nSuccessfully installed all the required services for CommCareHQ instance!\n"
 printf "Prepareing the system for first time application (code) deploy\n"
-commcare-cloud $env_name django-manage create_kafka_topics
-commcare-cloud $env_name django-manage preindex_everything
+ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name django-manage create_kafka_topics
+ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name django-manage preindex_everything
 printf "\nDeploying latest CommCareHQ Application code\n"
 printf "If this fails you can run 'commcare-cloud $env_name deploy --resume' to try again"
-commcare-cloud $env_name deploy
+ANSIBLE_VAULT_PASSWORD=$ansible_vault_password commcare-cloud $env_name deploy

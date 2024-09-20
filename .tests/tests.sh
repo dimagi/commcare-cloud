@@ -50,3 +50,8 @@ then
     ./tests/test_modernize.sh
     ./tests/test_requirements.sh
 fi
+
+if [[ ${TEST} = 'quick-install' ]]
+then
+    ./tests/quick-install/test-quick-install.sh
+fi

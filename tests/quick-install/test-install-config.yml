@@ -1,21 +1,21 @@
 # Name to uniquely identify your CommCareHQ instance/environment.
-env_name: ""
+env_name: "testhq"
 
 # Web address of your HQ instance (e.g. example.com)
-site_host: ""
+site_host: "www.testhq.com"
 
 # Ansible inventory name for this server (e.g. hqserver1).
-server_inventory_name: ""
+server_inventory_name: "hqtest1"
 
 # Host address of this server. This is used to set server's email address (e.g. exampelserver1.example.com)
-server_host_name: ""
+server_host_name: "hqtest1.abc.com"
 
 # Your SSH public key string to enable passwordless auth to this server
 # You can find this in your local machine's ~/.ssh/id_rsa.pub (not server)
-ssh_public_key: ""
+ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP41XS4e8UG0SlD2dQsu7oen2a0Q1B8p2RoXcZAsouXV sravfeyn@gmail.com"
 
 # The username to use for your user to be created on the server. This will be tied to above public key
-ssh_username: ""
+ssh_username: "sravfeyn"
 
 # This is the password used for enrypting your ansible-vault based passwords file.
-ansible_vault_password: ""
+ansible_vault_password: "replaceme"

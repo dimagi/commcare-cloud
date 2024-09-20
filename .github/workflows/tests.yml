@@ -53,3 +53,21 @@ jobs:
     - name: Run tests
       run: |
         .tests/tests.sh
+  quick-install:
+
+    runs-on: ubuntu-18.04
+
+    env:
+      TEST: quick-install
+      TEST_EXTERNAL_INTERFACE: "docker0"
+      TEST_INTERNAL_INTERFACE: "eth0"
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.6"
+    - name: Run tests
+      run: |
+        ./tmp-tests/test_me.sh
