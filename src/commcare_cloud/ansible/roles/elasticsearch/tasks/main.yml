@@ -75,10 +75,10 @@
   tags:
     - es_conf
 
-- include: misc_v5.yml
+- include_tasks: misc_v5.yml
   when: elasticsearch_version == '5.6.16'
 
-- include: misc_v7.yml
+- include_tasks: misc_v7.yml
   when: elasticsearch_version is version('7.0.0', '>=')
 
 - name: Copy Elasticsearch Systemd Conf
