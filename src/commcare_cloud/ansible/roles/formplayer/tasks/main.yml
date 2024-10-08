@@ -166,6 +166,14 @@
     - formplayer_deploy
   when: not _should_update_formplayer_in_place and current_stat.stat.exists
 
+- name: Get current formplayer release
+  shell: "basename $(readlink {{ formplayer_current_dir }})-{{ env_monitoring_id }}"
+  check_mode: no
+  register: current_release_result
+  tags:
+    - localsettings
+    - formplayer_deploy
+
 - name: Update formplayer config files
   become: yes
   template:
@@ -179,6 +187,8 @@
       filename: application.properties
     - template: logback-spring.xml.j2
       filename: logback-spring.xml
+  vars:
+    formplayer_current_release_name: "{{ current_release_result.stdout }}"
   tags:
     - localsettings
     - formplayer_deploy
