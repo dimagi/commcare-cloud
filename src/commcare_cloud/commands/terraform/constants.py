@@ -40,9 +40,11 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/receiver/submission/?$
 ^/a/([\w\.:-]+)/reports/export/(case_list_explorer|duplicate_cases)/$
 ^/a/([\w\.:-]+)/settings/locations/import/$
+^/a/([\w\.:-]+)/settings/locations/import/bulk_location_upload_api/$
 ^/a/([\w\.:-]+)/settings/project/basic/$
 ^/a/([\w\.:-]+)/settings/users/commcare/fields/$
 ^/a/([\w\.:-]+)/settings/users/commcare/upload/$
+^/a/([\w\.:-]+)/settings/users/commcare/upload/bulk_user_upload_api/$
 ^/a/([\w\.:-]+)/settings/users/join/([ \w-]+)/$
 ^/a/([\w\.:-]+)/settings/users/web/upload/$
 ^/formplayer/answer_media$
