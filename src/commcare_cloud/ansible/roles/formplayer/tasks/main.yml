@@ -166,10 +166,12 @@
     - formplayer_deploy
   when: not _should_update_formplayer_in_place and current_stat.stat.exists
 
-- name: Get current formplayer release
-  shell: "basename $(readlink {{ formplayer_current_dir }})-{{ env_monitoring_id }}"
+- name: Register current formplayer release
+  shell: "readlink {{ formplayer_current_dir }}"
   check_mode: no
   register: current_release_result
+  changed_when: no
+  failed_when: no
   tags:
     - localsettings
     - formplayer_deploy
@@ -188,7 +190,12 @@
     - template: logback-spring.xml.j2
       filename: logback-spring.xml
   vars:
-    formplayer_current_release_name: "{{ current_release_result.stdout }}"
+    current_formplayer_release: >-
+      {{
+      (("%s-%s" % (current_release_result.stdout, env_monitoring_id)) | basename)
+      if current_release_result.stdout and _should_update_formplayer_in_place
+      else formplayer_release_name
+      }}
   tags:
     - localsettings
     - formplayer_deploy
