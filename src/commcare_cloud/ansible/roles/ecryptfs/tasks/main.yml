@@ -84,7 +84,7 @@
 
     - name: "Create {{ encrypted_root }}/blobdb directory for setups that do not use NFS"
       become: yes
-      when: not shared_drive_enabled
+      when: not shared_drive_enabled|bool
       file: path="{{ encrypted_root }}/blobdb" owner=nobody group="{{ shared_dir_gid }}" mode=0775 state=directory
       tags:
         - ecryptfs-blobdb
@@ -97,13 +97,13 @@
         group: "{{ shared_dir_gid }}"
         mode: "u=rwx,g=rwx,o=rx"
         state: directory
-      when: not shared_drive_enabled
+      when: not shared_drive_enabled|bool
       tags:
         - ecryptfs-blobdb
 
     - name: Create blob DB symlink (cchq looks for it in the shared drive)
       become: yes
-      when: not shared_drive_enabled
+      when: not shared_drive_enabled|bool
       file: src="{{ encrypted_root }}/blobdb" dest="{{ shared_data_dir }}/blobdb" state=link
       tags:
         - ecryptfs-blobdb
