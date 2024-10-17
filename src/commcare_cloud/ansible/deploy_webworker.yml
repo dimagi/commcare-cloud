@@ -31,8 +31,8 @@
             - nocreate
             - notifempty
             - sharedscripts
-        scripts:
-          postrotate: "[ -s /tmp/gunicorn.pid ] && kill -USR1 `cat /tmp/gunicorn.pid`"
+          scripts:
+            postrotate: "[ -s /tmp/gunicorn.pid ] && kill -USR1 `cat /tmp/gunicorn.pid`"
 
 # There used to be some code here for updating workers one by one
 # but it's not functionally useful until we're off fab deploy and makes things
