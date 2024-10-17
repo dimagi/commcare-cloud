@@ -41,7 +41,7 @@
     # but leaving any that have been modified in the last 20m
     # (to avoid a race condition on newly created dirs)
     # Also never delete {{ formplayer_access_log_dir }}
-    job: 'find {{ formplayer_data_dir }} -path {{ formplayer_access_log_dir }} -prune -o -empty -type d -mmin +20 -delete'
+    job: 'find {{ formplayer_data_dir }} -not -path {{ formplayer_access_log_dir }} -empty -type d -mmin +20 -delete'
     user: '{{ cchq_user }}'
     state: present
   tags:
