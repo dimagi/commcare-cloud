@@ -17,6 +17,9 @@
   become: true
   roles:
     - role: ansible-logrotate
+      tags:
+      - webworkers
+      - logging
       logrotate_scripts:
         - name: "{{ project }}-gunicorn"
           path: "{{ log_home }}/{{ project }}.gunicorn.log"
