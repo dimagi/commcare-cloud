@@ -22,7 +22,7 @@
     path: "{{ shared_mount_dir }}"
     owner: "{{ shared_dir_user }}"
     group: "{{ shared_dir_group }}"
-    mode: "{{ shared_dir_mode|default(0775) }}"
+    mode: "{{ shared_dir_mode|default('0775') }}"
     state: directory
   run_once: yes
   tags:
