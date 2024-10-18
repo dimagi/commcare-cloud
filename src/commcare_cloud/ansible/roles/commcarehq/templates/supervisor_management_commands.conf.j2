@@ -2,7 +2,7 @@
 [program:{{ project }}-{{ deploy_env }}-{{ command_name }}]
 directory={{ code_home }}
 environment=TMPDIR="{{ encrypted_tmp }}"
-environment={% for name, value in item.env_vars.items() %}{% if value|string|length|int > 0 %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
+environment={% for name, value in item.env_vars.items() %}{% if value|string|length > 0 %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
 
 command={{ django_bash_runner if prometheus_monitoring_enabled else django_direct_runner }} {{ command_name }}
 user={{ cchq_user }}
