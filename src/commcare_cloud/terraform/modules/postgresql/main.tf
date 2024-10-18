@@ -36,7 +36,7 @@ module "postgresql" {
   password = var.rds_instance["password"]
   port     = var.rds_instance["port"]
 
-  deletion_protection = true
+  deletion_protection = var.environment == "bk-production" ? false : true
 
   multi_az = var.rds_instance["multi_az"]
 
