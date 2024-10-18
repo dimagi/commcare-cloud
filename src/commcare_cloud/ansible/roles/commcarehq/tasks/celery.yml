@@ -37,3 +37,7 @@
         no_proxy: "{% if http_proxy_address is defined %}{{ groups['all'] | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}{% endif %}"
         PROMETHEUS_PUSHGATEWAY_HOST: "{% if prometheus_celery_pushgateway is defined %}{{ prometheus_celery_pushgateway }}{% endif %}"
         TMPDIR: '{{ encrypted_tmp }}'
+        DD_TRACE_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
+        DD_TRACE_DJANGO_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
+        DD_TRACE_DEBUG: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
+        DD_INSTRUMENTATION_TELEMETRY_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
