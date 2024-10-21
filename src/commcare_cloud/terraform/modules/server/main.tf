@@ -9,7 +9,7 @@ resource aws_instance "server" {
   source_dest_check       = false
   iam_instance_profile    = var.iam_instance_profile
 
-  disable_api_termination = true
+  disable_api_termination = var.environment == "bk-production" ? false : true
   ebs_optimized = true
   root_block_device {
     volume_size           = var.volume_size
