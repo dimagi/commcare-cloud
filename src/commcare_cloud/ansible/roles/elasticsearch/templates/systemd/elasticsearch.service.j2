@@ -7,8 +7,10 @@ After=network-online.target
 [Service]
 Type=simple
 Environment=ES_HOME={{ elasticsearch_home }}
-Environment=CONF_DIR={{ elasticsearch_conf_dir}}
 Environment=ES_PATH_CONF={{ elasticsearch_conf_dir}}
+{% if elasticsearch_version <= '5.6.16'%}
+Environment=CONF_DIR={{ elasticsearch_conf_dir}}
+{% endif %}
 {% if elasticsearch_version == '5.6.16'%}
 Environment=ES_JVM_OPTIONS={{ elasticsearch_conf_dir}}/jvm.options
 {% endif %}
