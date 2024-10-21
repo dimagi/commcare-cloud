@@ -32,6 +32,15 @@
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
   when: elasticsearch_version == "5.6.16"
 
+- name: Download Elasticsearch 6
+  become: yes
+  get_url:
+    url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz
+    dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+    sha256sum: "{{ elasticsearch_download_sha256 }}"
+  when: elasticsearch_version is version('6.0.0', '>=') and elasticsearch_version is version('7.0.0', '<')
+
+
 - name: Download Elasticsearch 7
   become: yes
   get_url:
