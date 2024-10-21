@@ -39,12 +39,12 @@ discovery.zen.fd.ping_interval: 10s
 discovery.zen.fd.ping_retries: 20
 {% endif %}
 
-{% if elasticsearch_version == '5.6.16' %}
+{% if elasticsearch_version is version('6.0.0', '>=') %}
 discovery.zen.ping_timeout: 90s
 {% endif %}
 {% endif %}
 
-{% if elasticsearch_version is version('5.6.16', '<=') %}
+{% if elasticsearch_version is version('7.0.0', '<') %}
 discovery.zen.ping.unicast.hosts: [
 {% endif %}
 {% if elasticsearch_version is version('7.0.0', '>=') %}
@@ -114,7 +114,7 @@ cluster.initial_master_nodes:
 {% endif %}
 
 
-{% if elasticsearch_version is version('5.6.16', '<=') %}
+{% if elasticsearch_version is version('7.0.0', '<') %}
 # see also discovery.zen.minimum_master_nodes above for how a master gets elected
 {# only include master eligibility if it is set on at least one node in the cluster #}
 {% if groups.elasticsearch|map('extract', hostvars, 'elasticsearch_master_value')|select()|list %}
