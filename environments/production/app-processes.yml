@@ -22,7 +22,7 @@ celery_processes:
     async_restore_queue:
       concurrency: 8
     background_queue:
-      concurrency: 9
+      concurrency: 12
     case_import_queue:
       concurrency: 3
       prefetch_multiplier: 1
