@@ -3,8 +3,8 @@ monitor_celery_heartbeat: False
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
-elasticsearch_version: 5.6.16
-elasticsearch_download_sha256: 6b035a59337d571ab70cea72cc55225c027ad142fbb07fd8984e54261657c77f.
+elasticsearch_version: 6.8.23
+elasticsearch_download_sha256: 73258b400cd194768058105a74ca0e811962ccf81bed8c4d3a824d4e5b97a8178a31150e60602fa1e04c6764b139980eb45ae6f246864702120653b45120b597.
 elasticsearch_delete_old_logs: True
 
 kafka_version: 3.2.3
