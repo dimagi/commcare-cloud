@@ -40,8 +40,8 @@
     # delete any empty directories so they don't just build up (to literally 100,000+)
     # but leaving any that have been modified in the last 20m
     # (to avoid a race condition on newly created dirs)
-    # Also never delete {{ formplayer_access_log_dir }} or {{ formplayer_data_dir }}
-    job: 'find {{ formplayer_data_dir }} -mindepth 1 -not -path {{ formplayer_access_log_dir }} -empty -type d -mmin +20 -delete'
+    # and skip {{ formplayer_access_log_dir }} and its contents
+    job: "find {{ formplayer_data_dir }} -mindepth 1 -not -path {{ formplayer_access_log_dir }} -not -path '{{ formplayer_access_log_dir }}/*' -empty -type d -mmin +20 -delete"
     user: '{{ cchq_user }}'
     state: present
   tags:
