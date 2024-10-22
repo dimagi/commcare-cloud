@@ -39,7 +39,7 @@ discovery.zen.fd.ping_interval: 10s
 discovery.zen.fd.ping_retries: 20
 {% endif %}
 
-{% if elasticsearch_version is version('6.0.0', '>=') %}
+{% if elasticsearch_version is version('5.0.0', '>=') %}
 discovery.zen.ping_timeout: 90s
 {% endif %}
 {% endif %}
