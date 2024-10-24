@@ -154,6 +154,7 @@
     - "{{ elasticsearch_data_dir }}"
     - "{{ elasticsearch_data_dir }}/data"
     - "{{ elasticsearch_data_dir }}/logs"
+    - "{{ elasticsearch_data_dir }}/tmp"
 
 - name: Start Elasticsearch
   become: yes
