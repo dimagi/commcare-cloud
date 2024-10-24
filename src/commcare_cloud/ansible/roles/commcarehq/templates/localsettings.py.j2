@@ -1206,6 +1206,10 @@ CONNECTID_USERINFO_URL = "{{ localsettings.CONNECTID_URL }}"
 CONNECTID_SECRET_KEY = "{{ CONNECTID_SECRET_KEY }}"
 {% endif %}
 
+{% if CONNECTID_CLIENT_ID is defined %}
+CONNECTID_CLIENT_ID = "{{ CONNECTID_CLIENT_ID }}"
+{% endif %}
+
 {% if localsettings.CONNECTIDCHANNEL_URL is defined %}
 CONNECTID_CHANNEL_URL = "{{ localsettings.CONNECTIDCHANNEL_URL }}"
 {% endif %}
