@@ -75,7 +75,6 @@ localsettings:
   EMAIL_SMTP_PORT: '1025'
   # use True in prod!
   EMAIL_USE_TLS: no
-  FULLSTORY_ID:
   HQ_INSTANCE: 'dev'
 #  INVOICE_FROM_ADDRESS:
 #  INVOICE_PREFIX:
