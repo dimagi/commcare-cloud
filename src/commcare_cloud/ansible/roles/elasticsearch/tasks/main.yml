@@ -37,7 +37,7 @@
   get_url:
     url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
-    sha256sum: "{{ elasticsearch_download_sha256 }}"
+    checksum: "sha256:{{ elasticsearch_download_sha256 }}"
   when: elasticsearch_version is version('6.0.0', '>=') and elasticsearch_version is version('7.0.0', '<')
 
 
@@ -46,7 +46,7 @@
   get_url:
     url: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}-linux-x86_64.tar.gz"
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
-    sha256sum: "{{ elasticsearch_download_sha256 }}"
+    checksum: "sha256:{{ elasticsearch_download_sha256 }}"
   when: elasticsearch_version is version('7.0.0', '>=')
 
 - name: Unarchive Elasticsearch
