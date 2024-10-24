@@ -34,7 +34,7 @@ DATADOG_TRACE:
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'prodhqes-1.x'
 elasticsearch_version: 6.8.23
-elasticsearch_download_sha256: 73258b400cd194768058105a74ca0e811962ccf81bed8c4d3a824d4e5b97a8178a31150e60602fa1e04c6764b139980eb45ae6f246864702120653b45120b597.
+elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
 elasticsearch_delete_old_logs: True
