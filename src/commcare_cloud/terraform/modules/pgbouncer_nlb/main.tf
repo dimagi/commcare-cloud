@@ -4,7 +4,7 @@ resource "aws_lb" "this" {
   load_balancer_type = "network"
   subnets = var.subnets
 
-  enable_deletion_protection = true
+  enable_deletion_protection = var.environment == "bk-production" ? false : true
 
   tags = {
     Environment = var.environment
