@@ -19,7 +19,7 @@ WorkingDirectory={{ elasticsearch_home }}
 User=elasticsearch
 Group=elasticsearch
 
-ExecStart={{ elasticsearch_home }}/bin/elasticsearch -Epath.conf=${CONF_DIR}
+ExecStart={{ elasticsearch_home }}/bin/elasticsearch  {% if elasticsearch_version == '5.6.16'%} -Epath.conf=${CONF_DIR} {% endif %}
 
 Restart=always
 RestartSec=10
