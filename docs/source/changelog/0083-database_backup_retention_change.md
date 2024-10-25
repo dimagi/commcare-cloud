@@ -16,8 +16,8 @@ The logic used to retain database backups has been modified to better respect th
 how many days to keep backups.
 
 ## Details
-No action is needed. This is just to inform you that the logic determining which daily backups to
-keep has been modified. These impacts the values set for services like [couchdb](https://github.com/dimagi/commcare-cloud/blob/c3abda48758fb337ca87e8039f1b97e333129351/src/commcare_cloud/ansible/roles/couchdb2/defaults/main.yml#L9-L10),
+No action is needed. This is just to inform you that the logic determining which backups to
+keep has been modified. This impacts the values set for services like [couchdb](https://github.com/dimagi/commcare-cloud/blob/c3abda48758fb337ca87e8039f1b97e333129351/src/commcare_cloud/ansible/roles/couchdb2/defaults/main.yml#L9-L10),
 [postgres](https://github.com/dimagi/commcare-cloud/blob/c3abda48758fb337ca87e8039f1b97e333129351/src/commcare_cloud/ansible/roles/pg_backup/defaults/main.yml#L9-L10),
 and [blob](https://github.com/dimagi/commcare-cloud/blob/c3abda48758fb337ca87e8039f1b97e333129351/src/commcare_cloud/ansible/roles/backups/defaults/main.yml#L5-L6).
 
