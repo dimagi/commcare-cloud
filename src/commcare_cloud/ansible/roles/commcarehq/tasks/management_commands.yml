@@ -11,3 +11,7 @@
     - env_vars:
         TMPDIR: '{{ encrypted_tmp }}'
         PROMETHEUS_MULTIPROC_DIR: "{% if prometheus_monitoring_enabled|default(False) %}{{ metrics_home }}{% endif %}"
+        DD_TRACE_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
+        DD_TRACE_DJANGO_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
+        DD_TRACE_DEBUG: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
+        DD_INSTRUMENTATION_TELEMETRY_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
