@@ -17,7 +17,7 @@ ec2_metadata_tokens_required: yes
 
 servers:
   - server_name: "control_a0-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.medium
     network_tier: "app-private"
     az: "c"
     volume_size: 20
