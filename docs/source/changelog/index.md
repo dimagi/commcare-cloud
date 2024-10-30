@@ -7,6 +7,12 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2024-10-25** [Database Backup Retention Change](0083-database_backup_retention_change.md)
+The logic used to retain database backups has been modified to better respect the settings that specify
+how many days to keep backups.
+
+
+---
 #### **2024-07-25** [Unicel SMS Gateway Removal](0082-unicel-sms-gateway-removal.md)
 This is a notice specifically for projects with Unicel configured as an SMS gateway, which is no longer functional.
 Projects that are not using the Unicel gateway do not need to take any action.

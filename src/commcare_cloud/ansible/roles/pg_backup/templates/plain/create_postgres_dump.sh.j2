@@ -64,8 +64,8 @@ else
     fi
 
     # Remove old backups of this backup type, if backup succeded
-    find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${ENV}_${BACKUP_TYPE}_*" -delete
-    find {{ postgresql_backup_dir }} -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${BACKUP_TYPE}_*" -delete
+    find {{ postgresql_backup_dir }} -daystart -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${ENV}_${BACKUP_TYPE}_*" -delete
+    find {{ postgresql_backup_dir }} -daystart -mtime "+$DAYS_TO_RETAIN_BACKUPS" -name "postgres_${BACKUP_TYPE}_*" -delete
 fi
 
 
