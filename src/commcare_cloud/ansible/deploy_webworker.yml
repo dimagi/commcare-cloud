@@ -25,7 +25,7 @@
           path: "{{ log_home }}/{{ project }}.gunicorn.log"
           options:
             - daily
-            - size 5M
+            - size 100M
             - rotate 5
             - missingok
             - compress
