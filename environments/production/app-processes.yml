@@ -76,6 +76,8 @@ celery_processes:
       prefetch_multiplier: 1
     ush_background_tasks:
       concurrency: 8
+    geospatial_queue:
+      concurrency: 1
 
   celerybeat_a0:
     # not really queues

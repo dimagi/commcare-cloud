@@ -62,6 +62,8 @@ celery_processes:
       prefetch_multiplier: 1
     ush_background_tasks:
       concurrency: 2
+    geospatial_queue:
+      concurrency: 1
     beat: {}
     flower: {}
 pillows:
