@@ -251,7 +251,9 @@ def get_deployed_version(environment, from_source=False):
     if not versions:
         raise BadAnsibleResult("Unable to get version from hosts: no versions found. Try again soon.")
     if len(versions) > 1:
-        raise BadAnsibleResult(f"Unable to get version from hosts: multiple versions found. Try again soon.")
+        raise BadAnsibleResult(
+            f"Unable to get version from hosts. Multiple versions found: {versions}. Try again soon."
+        )
     return list(versions)[0]
 
 
