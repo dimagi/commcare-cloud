@@ -249,9 +249,9 @@ def get_deployed_version(environment, from_source=False):
     # using --resume=RELEASE_NAME without --private.
     versions = {host_result.get('stdout') for host_result in res.values() if host_result.get('rc') == 0}
     if not versions:
-        raise BadAnsibleResult("Unable to get version from hosts: no versions found")
+        raise BadAnsibleResult("Unable to get version from hosts: no versions found. Try again soon.")
     if len(versions) > 1:
-        raise BadAnsibleResult(f"Unable to get version from hosts: {len(versions)} versions found")
+        raise BadAnsibleResult(f"Unable to get version from hosts: {len(versions)} versions found. Try again soon.")
     return list(versions)[0]
 
 
