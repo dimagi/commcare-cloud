@@ -12,6 +12,31 @@
   roles:
     - webworker
 
+- name: Rotate gunicorn logs
+  hosts: webworkers
+  become: true
+  roles:
+    - role: ansible-logrotate
+      tags:
+      - webworkers
+      - logging
+      logrotate_scripts:
+        - name: "{{ project }}-gunicorn"
+          path: "{{ log_home }}/{{ project }}.gunicorn.log"
+          options:
+            - daily
+            - size 50M
+            - rotate 5
+            - missingok
+            - compress
+            - delaycompress
+            - copytruncate
+            - nocreate
+            - notifempty
+            - sharedscripts
+          scripts:
+            postrotate: "[ -s /tmp/gunicorn.pid ] && kill -USR1 `cat /tmp/gunicorn.pid`"
+
 # There used to be some code here for updating workers one by one
 # but it's not functionally useful until we're off fab deploy and makes things
 # look back to commit 94b08e0390bb031dd048804ce5a9c8dfcfeccbc1 if you want it
