@@ -67,7 +67,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_m_a2{i}-production"
-    server_instance_type: c6a.8xlarge
+    server_instance_type: m6a.4xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -77,7 +77,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_m_b2{i}-production"
-    server_instance_type: c6a.8xlarge
+    server_instance_type: m6a.4xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
