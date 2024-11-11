@@ -8,7 +8,7 @@ ansible==4.10.0
     # via
     #   ansible-vault
     #   commcare-cloud (setup.py)
-ansible-core==2.11.12
+ansible-core==2.17.6
     # via ansible
 ansible-inventory==0.6.4
     # via commcare-cloud (setup.py)
