@@ -26,10 +26,13 @@ Microplanning feature.
 This update should be performed before updating CommCare to a version more recent than that specified above.
 
 First, add a queue called `geospatial_queue` to your app_processes.yml,
-following the examples in commcare-cloud commit a94636b1d.
+following the examples in commcare-cloud commit [a94636b1d](https://github.com/dimagi/commcare-cloud/commit/a94636b1d).
 
-To apply this change, run:
+Then, to apply this change:
 
 ```
 commcare-cloud <env> update-supervisor-confs
 ```
+
+Please note that a restart is required for the change to take effect and can be done as part of the above command
+or with a separately done deploy.
