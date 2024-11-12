@@ -79,6 +79,8 @@ celery_processes:
       prefetch_multiplier: 1
     logistics_reminder_queue:
       concurrency: 2
+    geospatial_queue:
+      concurrency: 1
   echis_server5:
     ucr_indicator_queue:
       concurrency: 15

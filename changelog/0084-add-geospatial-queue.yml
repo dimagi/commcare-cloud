@@ -1,0 +1,30 @@
+title: New Geospatial Celery Queue
+key: add-geospatial-queue
+date: 2024-11-06
+optional_per_env: no
+min_commcare_version:
+max_commcare_version: 513700958cf443a85f0480ff681979d207f22db0
+context: |
+  The Microplanning feature requires the location properties on cases to be indexed correctly so
+  that they can be used correctly in this feature. A separate queue is added to handle this indexing
+  process when the Microplanning feature is enabled for a domain. This can potentially be a long-running
+  task, and so having a separate queue ensures that other queues do not get clogged up by this indexing task.
+
+details: |
+  This creates a geospatial_queue in Celery, which will be used for indexing cases when enabling the
+  Microplanning feature.
+
+update_steps: |
+  This update should be performed before updating CommCare to a version more recent than that specified above.
+
+  First, add a queue called `geospatial_queue` to your app_processes.yml,
+  following the examples in commcare-cloud commit [a94636b1d](https://github.com/dimagi/commcare-cloud/commit/a94636b1d).
+
+  Then, to apply this change:
+
+  ```
+  commcare-cloud <env> update-supervisor-confs
+  ```
+
+  Please note that a restart is required for the change to take effect and can be done as part of the above command
+  or with a separately done deploy.

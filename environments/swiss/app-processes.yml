@@ -10,7 +10,7 @@ celery_processes:
       concurrency: 1  
     export_download_queue:
       concurrency: 1
-    case_import_queue,reminder_case_update_queue,linked_domain_queue:
+    case_import_queue,reminder_case_update_queue,linked_domain_queue,geospatial_queue:
       concurrency: 1
     background_queue,case_rule_queue:
       concurrency: 1
