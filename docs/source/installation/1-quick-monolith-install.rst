@@ -11,7 +11,6 @@ Prerequisites
 - A single Ubuntu 22.04 64-bit server
 - Root user to SSH into the server
 - git must be installed on the server. If not, please use https://github.com/git-guides/install-git#debianubuntu to install git
-- We recommend using Python 3.10 with commcare-cloud. Follow instructions at https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#upgrade-to-python-3-10 to upgrade.
 
 Installation Steps
 ------------------
