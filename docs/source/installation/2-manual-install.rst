@@ -190,15 +190,14 @@ If you do not have an SSH key pair already, you will need to create one.
 
    $ ssh-keygen -t rsa -b 4096 -C "jbloggs@example.com"
 
-**Cluster only:** Copy an SSH key pair for your user to the control
-machine. For example, if the key pair you want to copy is
-``~/.ssh/id_rsa`` and ``~/.ssh/id_rsa.pub``, then the commands to copy
-the SSH key pair would be
+Copy your user's SSH public key to the control
+machine. For example, if the public key you want to copy is
+``~/.ssh/id_rsa.pub``, then you would run the following:
 
 ::
 
    $ ssh-copy-id -i ~/.ssh/id_rsa.pub jbloggs@control1
-   $ scp ~/.ssh/id_rsa{,.pub} control1:.ssh/
+   $ scp ~/.ssh/id_rsa.pub control1:.ssh/
 
 You can now log in using your SSH key:
 
