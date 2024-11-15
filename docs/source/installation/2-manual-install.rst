@@ -258,12 +258,6 @@ Install CommCare Cloud
 9.  Copy your **public** key to ``~/environments/_authorized_keys/``.
     The filename must correspond to your username.
 
-    For example:
-
-    ::
-
-       $ cp ~/.ssh/id_rsa.pub ~/environments/_authorized_keys/$(whoami).pub
-
 10. Change “monolith.commcarehq.test” to your real domain name,
 
     ::
