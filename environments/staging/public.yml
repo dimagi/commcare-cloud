@@ -210,6 +210,8 @@ localsettings:
       }
   }
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
+  CONNECTID_CHANNEL_URL: 'https://connectid.dimagi.com/messaging/create_channel/'
+  CONNECTID_MESSAGE_URL: 'https://connectid.dimagi.com/messaging/send_fcm/'
 
 
 # comment these two lines out to make a new rackspace machine
