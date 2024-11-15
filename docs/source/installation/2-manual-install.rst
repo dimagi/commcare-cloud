@@ -180,30 +180,6 @@ add them to the “sudo” user group. For example, if your username were
    ...
    $ sudo usermod -a -G sudo jbloggs
 
-Configure SSH
--------------
-
-If you do not have an SSH key pair already, you will need to create one.
-(Substitute “jbloggs@example.com” with your email address)
-
-::
-
-   $ ssh-keygen -t rsa -b 4096 -C "jbloggs@example.com"
-
-Copy your user's SSH public key to the control
-machine. For example, if the public key you want to copy is
-``~/.ssh/id_rsa.pub``, then you would run the following:
-
-::
-
-   $ ssh-copy-id -i ~/.ssh/id_rsa.pub jbloggs@control1
-   $ scp ~/.ssh/id_rsa.pub control1:.ssh/
-
-You can now log in using your SSH key:
-
-::
-
-   (jbloggs@jbloggs-pc) $ ssh control1
 
 Install CommCare Cloud
 ----------------------
