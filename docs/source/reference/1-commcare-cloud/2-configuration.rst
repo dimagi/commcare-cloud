@@ -190,7 +190,8 @@ Each ``<queue-name>`` must be one of the following values:
 ``linked_domain_queue``, ``reminder_case_update_queue``, ``reminder_queue``,
 ``reminder_rule_queue``, ``repeat_record_queue``, ``saved_exports_queue``,
 ``sumologic_logs_queue``, ``send_report_throttled``, ``sms_queue``,
-``submission_reprocessing_queue``, ``ucr_indicator_queue``, ``ucr_queue``.
+``submission_reprocessing_queue``, ``ucr_indicator_queue``, ``ucr_queue``,
+``geospatial_queue``.
 For all features to work, each of these queues must
 appear at least once, and up to once per host.
 
