@@ -11,7 +11,6 @@ azs:
   - "us-east-1c"
 vpc_begin_range: "10.201"
 
-openvpn_image: ami-5e73b923
 
 backup_plan:
   local_vault_name: "BusinessContinuity_Staging_East-1"
