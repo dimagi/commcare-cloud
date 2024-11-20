@@ -6,7 +6,6 @@
         hostname: "{{ item }}"
         groups: all_commcarehq
       with_items: "{{ groups['all'] }}"
-      when: "item not in groups['openvpn']|default([])"
       changed_when: no
     - name: Create commcarehq group alias
       add_host:

@@ -32,12 +32,21 @@
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
   when: elasticsearch_version == "5.6.16"
 
+- name: Download Elasticsearch 6
+  become: yes
+  get_url:
+    url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz
+    dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+    checksum: "sha256:{{ elasticsearch_download_sha256 }}"
+  when: elasticsearch_version is version('6.0.0', '>=') and elasticsearch_version is version('7.0.0', '<')
+
+
 - name: Download Elasticsearch 7
   become: yes
   get_url:
     url: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}-linux-x86_64.tar.gz"
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
-    sha256sum: "{{ elasticsearch_download_sha256 }}"
+    checksum: "sha256:{{ elasticsearch_download_sha256 }}"
   when: elasticsearch_version is version('7.0.0', '>=')
 
 - name: Unarchive Elasticsearch
@@ -75,11 +84,41 @@
   tags:
     - es_conf
 
-- include_tasks: misc_v5.yml
-  when: elasticsearch_version == '5.6.16'
+- name: Copy Elasticsearch logging config
+  become: yes
+  copy:
+    src: log4j2.properties
+    dest: "{{ elasticsearch_conf_dir }}/log4j2.properties"
+    owner: elasticsearch
+    group: elasticsearch
+  register: copy_elasticsearch_logging_result
+  tags:
+    - es_conf
 
-- include_tasks: misc_v7.yml
-  when: elasticsearch_version is version('7.0.0', '>=')
+- name: Copy Elasticsearch JVM Options
+  become: yes
+  template:
+    src: config/jvm.options.j2
+    dest: "{{ elasticsearch_conf_dir }}/jvm.options"
+    owner: elasticsearch
+    group: elasticsearch
+  register: copy_elasticsearch_logging_result
+  tags:
+    - es_conf
+
+- name: Install elasticsearch python client
+  become: yes
+  pip:
+    name: "elasticsearch>={{ elasticsearch_version.split('.')[0] }}.0.0,<{{ elasticsearch_version.split('.')[0] | int + 1 }}.0.0"
+
+- name: Check for installed plugins
+  shell: "{{ elasticsearch_home }}/bin/elasticsearch-plugin list"
+  register: installed_plugins
+
+- name: Install elasticsearch phonetic plugin
+  become: yes
+  shell: "{{ elasticsearch_home }}/bin/elasticsearch-plugin install analysis-phonetic"
+  when: (installed_plugins.stdout is defined) and ('analysis-phonetic' not in installed_plugins.stdout) and es_plugins_phonetic_enabled
 
 - name: Copy Elasticsearch Systemd Conf
   become: yes
@@ -103,18 +142,26 @@
 - debug: msg="If you're just updating the ES conf then you sill need to restart the cluster. Use  the 'es_rolling_restart' playbook."
   when: copy_elasticsearch_conf_result.changed
 
-- name: Create Elasticsearch data directories
-  become: yes
-  file:
+- name: Check if Elasticsearch data directories exist
+  stat:
     path: "{{ item }}"
-    state: directory
-    owner: elasticsearch
-    group: elasticsearch
-    mode: 0755
+  register: dir_stat
   with_items:
     - "{{ elasticsearch_data_dir }}"
     - "{{ elasticsearch_data_dir }}/data"
     - "{{ elasticsearch_data_dir }}/logs"
+    - "{{ elasticsearch_data_dir }}/tmp"
+
+- name: Create Elasticsearch data directories if they do not exist
+  become: yes
+  file:
+    path: "{{ item.item }}"
+    state: directory
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0755
+  when: not item.stat.exists
+  with_items: "{{ dir_stat.results }}"
 
 - name: Start Elasticsearch
   become: yes

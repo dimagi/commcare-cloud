@@ -79,15 +79,15 @@ source ~/.commcare-cloud/load_config.sh
 commcare-cloud $env_name update-local-known-hosts
 commcare-cloud $env_name bootstrap-users -c local --quiet
 
-printf "\nEverything is setup to install CommCareHQ now! Would you like to install CommCareHQ now?\n"
-printf "Please see below a summary of what this script has setup so far!\n"
-printf "1. Installed commcare-cloud, the tool to deploy and manage your CommCareHQ instance.\n"
-printf "2. Users ansible and $ssh_username are created with SSH and sudo access.\n"
-printf "3. A configuration directory created for your CommCareHQ environment at: $HOME/environments/$env_name.\n"
-printf "  This directory has all the configuration and the encrypted vault file containing passwords.\n"
-printf "  The vault file also has the sudo password for the ansible user under the key ansible_sudo_pass\n\n"
+printf "\ncommcare-cloud setup is complete!\n\n"
+printf "Here is a summary of what this script has setup:\n"
+printf "1. Installed commcare-cloud, the tool to deploy and manage your CommCare HQ instance.\n"
+printf "2. The users ansible and $ssh_username were created with SSH and sudo access.\n"
+printf "3. A configuration directory was created for your CommCare HQ environment in $HOME/environments/$env_name.\n"
+printf "   In addition to configuration for your environment, this directory contains the encrypted vault file with passwords.\n"
+printf "   The vault file also has the sudo password for the ansible user under the key ansible_sudo_pass\n\n"
 
-printf "You can now install CommCareHQ using below two commands.\n\n"
+printf "You can now install CommCare HQ using below two commands.\n\n"
 printf "source ~/.commcare-cloud/load_config.sh\n"
 printf "commcare-cloud $env_name deploy-stack --skip-check --skip-tags=users -e 'CCHQ_IS_FRESH_INSTALL=1' -c local \n\n"
 printf "Would you like the above command to be run now?\n"
@@ -100,7 +100,7 @@ else
     exit
 fi
 
-printf "\nSuccessfully installed all the required services for CommCareHQ instance!\n"
+printf "\nSuccessfully installed all the required services for CommCare HQ instance!\n"
 printf "Prepareing the system for first time application (code) deploy\n"
 commcare-cloud $env_name django-manage create_kafka_topics
 commcare-cloud $env_name django-manage preindex_everything

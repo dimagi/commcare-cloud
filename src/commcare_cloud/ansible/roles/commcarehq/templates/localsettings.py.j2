@@ -1202,6 +1202,22 @@ FCM_CREDS = json.loads({{ FCM_CREDS }})
 CONNECTID_USERINFO_URL = "{{ localsettings.CONNECTID_URL }}"
 {% endif %}
 
+{% if CONNECTID_SECRET_KEY is defined %}
+CONNECTID_SECRET_KEY = "{{ CONNECTID_SECRET_KEY }}"
+{% endif %}
+
+{% if CONNECTID_CLIENT_ID is defined %}
+CONNECTID_CLIENT_ID = "{{ CONNECTID_CLIENT_ID }}"
+{% endif %}
+
+{% if localsettings.CONNECTID_CHANNEL_URL is defined %}
+CONNECTID_CHANNEL_URL = "{{ localsettings.CONNECTID_CHANNEL_URL }}"
+{% endif %}
+
+{% if localsettings.CONNECTID_MESSAGE_URL is defined %}
+CONNECTID_MESSAGE_URL = "{{ localsettings.CONNECTID_MESSAGE_URL }}"
+{% endif %}
+
 {% if localsettings.MAX_MOBILE_UCR_LIMIT is defined %}
 MAX_MOBILE_UCR_LIMIT = {{ localsettings.MAX_MOBILE_UCR_LIMIT }}
 {% endif %}

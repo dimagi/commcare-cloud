@@ -12,7 +12,6 @@ elasticsearch_http_port: 9200
 #es_snapshot_bucket: "dimagi-{{ deploy_env }}-es-snapshots"
 es_repository_name: "{{ deploy_env }}_es_snapshot"
 backup_es_swift: no
-elasticsearch_enable_inline_groovy_scripts: True
 elasticsearch_service_name: elasticsearch
 elasticsearch_node_name: "{{ hostname }}"
 elasticsearch_delete_old_logs: False

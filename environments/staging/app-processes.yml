@@ -1,6 +1,5 @@
-formplayer_command_args: ''
 # Use the following to enable datadog tracing
-# formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.java.org.javarosa.enableOpenTracing=true'
+formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.java.org.javarosa.enableOpenTracing=true -Ddd.service=formplayer -Ddd.env=staging'
 
 django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
 datadog_pythonagent: True

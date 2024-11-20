@@ -180,31 +180,6 @@ add them to the “sudo” user group. For example, if your username were
    ...
    $ sudo usermod -a -G sudo jbloggs
 
-Configure SSH
--------------
-
-If you do not have an SSH key pair already, you will need to create one.
-(Substitute “jbloggs@example.com” with your email address)
-
-::
-
-   $ ssh-keygen -t rsa -b 4096 -C "jbloggs@example.com"
-
-**Cluster only:** Copy an SSH key pair for your user to the control
-machine. For example, if the key pair you want to copy is
-``~/.ssh/id_rsa`` and ``~/.ssh/id_rsa.pub``, then the commands to copy
-the SSH key pair would be
-
-::
-
-   $ ssh-copy-id -i ~/.ssh/id_rsa.pub jbloggs@control1
-   $ scp ~/.ssh/id_rsa{,.pub} control1:.ssh/
-
-You can now log in using your SSH key:
-
-::
-
-   (jbloggs@jbloggs-pc) $ ssh control1
 
 Install CommCare Cloud
 ----------------------
@@ -282,12 +257,6 @@ Install CommCare Cloud
 
 9.  Copy your **public** key to ``~/environments/_authorized_keys/``.
     The filename must correspond to your username.
-
-    For example:
-
-    ::
-
-       $ cp ~/.ssh/id_rsa.pub ~/environments/_authorized_keys/$(whoami).pub
 
 10. Change “monolith.commcarehq.test” to your real domain name,
 

@@ -15,7 +15,6 @@ az_codes:
   - c
 vpc_begin_range: "10.203"
 
-openvpn_image: ami-085d67fbfe42a25e7
 
 vpn_connections: []
 
