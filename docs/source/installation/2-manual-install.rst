@@ -268,9 +268,9 @@ Install CommCare Cloud
 
     ::
 
-       $ git grep -n "monolith"
+       $ git grep -n "monolith.commcarehq.test"
 
-    You should find references in the following files and places:
+    You should find references in the following places:
 
     -  ``proxy.yml``
 
@@ -279,11 +279,19 @@ Install CommCare Cloud
     -  ``public.yml``
 
        -  ``ALLOWED_HOSTS``
-       -  ``server_email``
-       -  ``default_from_email``
-       -  ``root_email``
 
-11. Configure ``inventory.ini``
+
+
+11. Change default emails
+
+    ::
+
+      $ git grep -n "_email"
+
+    You should find references in ``public.yml``
+
+
+12. Configure ``inventory.ini``
 
     .. rubric:: For a monolith
        :name: for-a-monolith
@@ -421,7 +429,7 @@ Install CommCare Cloud
        db1
        db2
 
-12. Configure the ``commcare-cloud`` command.
+13. Configure the ``commcare-cloud`` command.
 
     ::
 
@@ -465,7 +473,7 @@ Install CommCare Cloud
 
        $ commcare-cloud cluster update-local-known-hosts
 
-13. Generate secured passwords for the vault
+14. Generate secured passwords for the vault
 
     In this step, we’ll generate passwords in the ``vault.yml`` file.
     This file will store all the passwords used in this CommCare
@@ -486,7 +494,7 @@ Install CommCare Cloud
     Find the value of “ansible_sudo_pass” and record it in your password
     manager. We will need this to deploy CommCare HQ.
 
-14. Encrypt the provided vault file, using that “ansible_sudo_pass”. (As
+15. Encrypt the provided vault file, using that “ansible_sudo_pass”. (As
     usual, substitute “cluster” with the name of your environment.)
 
     ::
