@@ -1218,6 +1218,10 @@ CONNECTID_CHANNEL_URL = "{{ localsettings.CONNECTID_CHANNEL_URL }}"
 CONNECTID_MESSAGE_URL = "{{ localsettings.CONNECTID_MESSAGE_URL }}"
 {% endif %}
 
+{% if localsettings.CONNECTID_USERINVITE_URL is defined %}
+CONNECTID_USERINVITE_URL = "{{ localsettings.CONNECTID_USERINVITE_URL }}"
+{% endif %}
+
 {% if localsettings.MAX_MOBILE_UCR_LIMIT is defined %}
 MAX_MOBILE_UCR_LIMIT = {{ localsettings.MAX_MOBILE_UCR_LIMIT }}
 {% endif %}
