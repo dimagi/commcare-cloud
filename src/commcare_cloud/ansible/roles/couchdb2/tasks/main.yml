@@ -82,6 +82,7 @@
 - meta: flush_handlers
 
 - name: Add nodes
+  no_log: true
   uri:
     url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{% if couchdb_version is version('3.0.0', '>=') %}{{ couchdb_port }}/_node/_local{% else %}{{ couchdb_node_port }}{% endif %}/_nodes/couchdb@{{ item|ipaddr }}"
     method: PUT
@@ -91,6 +92,10 @@
     status_code: 201, 409 # 409 means already set up (conflict)
     body: '{}'
   when: inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
+  register: result
+  until: not result.failed or 'Connection refused' not in result.msg
+  retries: 5
+  delay: 10
   with_items: "{{ groups.couchdb2 }}"
   tags:
     - add_couch_nodes
