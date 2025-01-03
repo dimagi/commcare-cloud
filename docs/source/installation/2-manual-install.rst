@@ -450,7 +450,13 @@ Install and Configure CommCare Cloud
 
     ::
 
-       $ echo "source ~/.commcare-cloud/load_config.sh" >> ~/.profile
+        $ nano ~/.profile
+
+    Paste the following before the line that sources the init-ansible script.
+
+    ::
+
+        source ~/.commcare-cloud/load_config.sh
 
     Load the commcare-cloud config so it takes effect immediately:
 
