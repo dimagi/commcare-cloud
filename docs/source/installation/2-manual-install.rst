@@ -514,13 +514,6 @@ will tell you more about how we use this vault file.
 Deploy CommCare HQ services
 ---------------------------
 
-You will need the SSH agent to have your SSH key for Ansible.
-
-::
-
-   $ eval `ssh-agent`
-   $ ssh-add ~/.ssh/id_rsa
-
 When you run the “commcare-cloud deploy-stack”, you will be prompted for
 the vault password from earlier. You will also be prompted for an SSH
 password. This is the root user’s password. After this step, the root
