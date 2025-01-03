@@ -111,6 +111,12 @@ reference.
 
         PasswordAuthentication yes
 
+    To allow keyboard interactive authentication, ensure
+
+    ::
+
+        KbdInteractiveAuthentication yes
+
 4.  Restart SSH:
 
     ::
