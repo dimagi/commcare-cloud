@@ -514,19 +514,31 @@ will tell you more about how we use this vault file.
 Deploy CommCare HQ services
 ---------------------------
 
-When you run the “commcare-cloud deploy-stack”, you will be prompted for
-the vault password from earlier. You will also be prompted for an SSH
-password. This is the root user’s password. After this step, the root
-user will not be able to log in via SSH.
+The first step is to setup the expected user configuration. You will be prompted for
+the vault password from earlier and the SSH password, which is the root user's password.
+After this step, the root user will not be able to log in via SSH.
 
 ::
 
-   $ commcare-cloud cluster deploy-stack --first-time -e 'CCHQ_IS_FRESH_INSTALL=1'
+    $ commcare-cloud cluster bootstrap-users
 
-   This command will apply without running the check first. Continue? [y/N]y
-   ansible-playbook /home/jbloggs/commcare-cloud/src/commcare_cloud/ansible/deploy_stack.yml -i /home/jbloggs/environments/cluster/inventory.ini -e @/home/jbloggs/environments/cluster/vault.yml -e @/home/jbloggs/environments/cluster/public.yml -e @/home/jbloggs/environments/cluster/.generated.yml --diff --tags=bootstrap-users -u root --ask-pass --vault-password-file=/home/jbloggs/commcare-cloud/src/commcare_cloud/ansible/echo_vault_password.sh --ask-pass --ssh-common-args -o=UserKnownHostsFile=/home/jbloggs/environments/cluster/known_hosts
-   Vault Password for 'cluster': <ansible_sudo_pass>
-   SSH password: <root user's password>
+
+Once this completes successfully, you will now be able to ssh into this machine from your previously created user (e.g., jbloggs).
+You should exit your current ssh session, and ssh back into the machine using the "-A" option to enable agent forwarding.
+This is necessary to escalate privileges when running commcare-cloud commands, as well as for executing commands on other machines if
+you are setting up a cluster.
+
+::
+
+    $ exit  # exit until no longer connected to the machine
+    $ ssh -A jbloggs@control1
+
+
+You are now ready to deploy CommCare HQ services.
+
+::
+
+   $ commcare-cloud cluster deploy-stack -e 'CCHQ_IS_FRESH_INSTALL=1'
 
 This will run a series of Ansible commands that will take quite a long
 time to run.
