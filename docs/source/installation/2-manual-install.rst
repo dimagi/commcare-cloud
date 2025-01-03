@@ -158,7 +158,7 @@ Switch to this user for the remainder of these setup steps:
 
 ::
 
-    $ sudo -iu jbloggs
+    $ su - jbloggs
 
 
 Install system dependencies
