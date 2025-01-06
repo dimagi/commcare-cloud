@@ -208,7 +208,7 @@ Install and Configure CommCare Cloud
         (y/n): y
 
     If the input times out before entering 'y', you can follow the prompt instructions
-    to setup CommCare Coud on login:
+    to setup CommCare Cloud on login:
 
     ::
 
