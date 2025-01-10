@@ -67,11 +67,31 @@ class SlackClient:
         response = self._post_message(message, blocks)
         context.set_meta_value('slack_thread_ts', response["ts"])
         if self.environment.fab_settings_config.generate_deploy_diffs:
-            diff_blocks = [{
-                "type": "section",
-                "text": {"type": "mrkdwn", "text": context.diff.get_slack_diff()}
-            }]
-            self._post_message("Deploy diff", diff_blocks, thread_ts=response["ts"])
+            diff_text = context.diff.get_slack_diff()
+            for chunked_diff_text in self._chunk_diff(diff_text):
+                diff_blocks = [{
+                    "type": "section",
+                    "text": {"type": "mrkdwn", "text": chunked_diff_text}
+                }]
+                self._post_message("Deploy diff", diff_blocks, thread_ts=response["ts"])
+
+    def _chunk_diff(self, diff_text, chunk_size=2800):
+        # Slack has a limit of 3000 characters per message block
+        # https://api.slack.com/reference/block-kit/blocks#section_fields
+        diff_lines = diff_text.split('\n')
+        current_chunk = []
+        current_length = 0
+        for line in diff_lines:
+            line_length = len(line) + 1
+            if current_length + line_length > chunk_size:
+                yield '\n'.join(current_chunk)
+                current_chunk = [line]
+                current_length = line_length
+            else:
+                current_chunk.append(line)
+                current_length += line_length
+        if current_chunk:
+            yield '\n'.join(current_chunk)
 
     def send_deploy_end_message(self, context, is_success):
         thread_ts = context.get_meta_value('slack_thread_ts')
