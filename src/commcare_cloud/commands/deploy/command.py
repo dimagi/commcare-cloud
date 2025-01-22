@@ -63,6 +63,9 @@ class Deploy(CommandBase):
             Generate new localsettings.py rather than copying from the previous
             release.
         """),
+        Argument('--use-prebuilt-staticfiles', action='store_true', help="""
+            Use prebuilt staticfiles rather than building them.
+        """),
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
     )
