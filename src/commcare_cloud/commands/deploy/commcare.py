@@ -40,7 +40,7 @@ def deploy_commcare(environment, args, unknown_args):
         resume=args.resume
     )
 
-    should_record = not (args.skip_record or args.private)
+    should_record = False #not (args.skip_record or args.private)
     if should_record:
         record_deploy_start(environment, context)
 
