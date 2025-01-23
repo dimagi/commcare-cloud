@@ -444,7 +444,7 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain1-production"
-    instance_type: "db.m5.4xlarge"
+    instance_type: "db.m6g.4xlarge"
     storage: 2000
     storage_type: gp3
     multi_az: true
@@ -554,7 +554,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgsynclog2-production"
-    instance_type: "db.m5.xlarge"
+    instance_type: "db.m6g.xlarge"
     storage: 1000
     storage_type: gp3
     multi_az: true
@@ -598,7 +598,7 @@ rds_instances:
       track_io_timing: 1
 
   - identifier: "pgauditcare1-production"
-    instance_type: "db.m5.xlarge"
+    instance_type: "db.m6g.xlarge"
     storage: 7000
     storage_type: gp3
     multi_az: true
