@@ -99,7 +99,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     block_device:
       volume_size: 80
