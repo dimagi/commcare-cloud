@@ -51,6 +51,7 @@
     - import_role: {name: deploy_hq}
       vars:
         if_not_done: staticfiles_collect
+        do_this_step: '{{ not use_prebuilt_staticfiles }}'
 
 - name: Compress static files
   hosts: proxy[0]

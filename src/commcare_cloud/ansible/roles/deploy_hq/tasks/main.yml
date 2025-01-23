@@ -3,9 +3,10 @@
   stat:
     path: '{{ code_source }}/.{{ if_not_done }}-done'
   register: done_marker
+  when: do_this_step | default(true)
 
 - name: Run {{ if_not_done }}
-  when: not done_marker.stat.exists
+  when: not done_marker.stat.exists and do_this_step | default(true)
   become: true
   become_user: '{{ cchq_user }}'
   block:
