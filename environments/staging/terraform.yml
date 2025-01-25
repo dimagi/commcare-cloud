@@ -334,7 +334,7 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pg0-staging"
-    instance_type: "db.t3.small"
+    instance_type: "db.t4g.small"
     storage: 160
     storage_type: gp3
     multi_az: yes
@@ -345,7 +345,7 @@ rds_instances:
     enable_cross_region_backup: yes
 
   - identifier: "pgformplayer0-staging"
-    instance_type: "db.t3.small"
+    instance_type: "db.t4g.small"
     storage: 160
     storage_type: gp3
     multi_az: yes
