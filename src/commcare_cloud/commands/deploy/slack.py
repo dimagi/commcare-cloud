@@ -1,7 +1,9 @@
 from enum import Enum
 from datetime import datetime
 
+import random
 import requests
+import re
 from clint.textui import puts
 from requests import RequestException
 
@@ -13,6 +15,10 @@ class Emoji(Enum):
     failure = 'x'
     success_reaction = 'white_check_mark'
     failure_reaction = 'x'
+
+    slow_reaction = random.choice(['snail', 'turtle', 'tortoise_wag'])
+    medium_reaction = random.choice(['meh', 'meh_blue', 'cat-roomba'])
+    fast_reaction = random.choice(['racing_car', 'zap', 'dash', 'rocket'])
 
     @property
     def code(self):
@@ -78,9 +84,22 @@ class SlackClient:
         thread_ts = context.get_meta_value('slack_thread_ts')
         reaction_emoji = Emoji.success_reaction if is_success else Emoji.failure_reaction
         self._post_reaction(thread_ts, reaction_emoji)
-        status = "completed" if is_success else "failed"
+
         end = datetime.utcnow()
-        message = f"Deploy {status} in {end - context.start_time}"
+        duration = end - context.start_time
+
+        if is_success:
+            if duration.seconds < 60 * 15:
+                speed_emoji = Emoji.fast_reaction
+            elif duration.seconds > 60 * 30:
+                speed_emoji = Emoji.slow_reaction
+            else:
+                speed_emoji = Emoji.medium_reaction
+            self._post_reaction(thread_ts, speed_emoji)
+
+        status = "completed" if is_success else "failed"
+        duration = re.sub(r'\.\d+', '', str(duration))
+        message = f"Deploy {status} in {duration}"
         self._post_message(message, self._get_text_blocks(message), thread_ts)
 
     def _post_message(self, notification_text, blocks, thread_ts=None):
