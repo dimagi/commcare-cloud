@@ -1,4 +1,5 @@
 from enum import Enum
+from datetime import datetime
 
 import requests
 from clint.textui import puts
@@ -77,6 +78,10 @@ class SlackClient:
         thread_ts = context.get_meta_value('slack_thread_ts')
         reaction_emoji = Emoji.success_reaction if is_success else Emoji.failure_reaction
         self._post_reaction(thread_ts, reaction_emoji)
+        status = "completed" if is_success else "failed"
+        end = datetime.utcnow()
+        message = f"Deploy {status} in {end - context.start_time}"
+        self._post_message(message, self._get_text_blocks(message), thread_ts)
 
     def _post_message(self, notification_text, blocks, thread_ts=None):
         data = {
@@ -91,14 +96,7 @@ class SlackClient:
 
     def _get_message_blocks(self, message, context):
         env_name = self.environment.meta_config.deploy_env
-        return [
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": message,
-                }
-            },
+        return self._get_text_blocks(message) + [
             {
                 "type": "context",
                 "elements": [
@@ -117,6 +115,15 @@ class SlackClient:
                 ]
             }
         ]
+
+    def _get_text_blocks(self, message):
+        return [{
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": message,
+            }
+        }]
 
     def _post_reaction(self, thread_ts, emoji):
         data = {
