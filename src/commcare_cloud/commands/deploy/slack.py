@@ -18,7 +18,7 @@ class Emoji(Enum):
 
     slow_reaction = random.choice(['snail', 'turtle', 'tortoise_wag'])
     medium_reaction = random.choice(['meh', 'meh_blue', 'cat-roomba'])
-    fast_reaction = random.choice(['racing_car', 'zap', 'dash', 'rocket'])
+    fast_reaction = random.choice(['racing_car', 'zap', 'dash', 'rocket', 'cat-roomba-exceptionally-fast'])
 
     @property
     def code(self):
