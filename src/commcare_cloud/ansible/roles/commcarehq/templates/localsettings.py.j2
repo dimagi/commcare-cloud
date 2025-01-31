@@ -1231,3 +1231,7 @@ MIN_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MIN_REPEATER_RATE_LIMIT_DELAY }
 {% if localsettings.MAX_REPEATER_RATE_LIMIT_DELAY is defined %}
 MAX_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MAX_REPEATER_RATE_LIMIT_DELAY }}
 {% endif %}
+
+{% if localsettings.DEVICE_LIMIT_PER_USER is defined %}
+DEVICE_LIMIT_PER_USER = {{ localsettings.DEVICE_LIMIT_PER_USER }}
+{% endif %}
