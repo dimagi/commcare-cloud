@@ -36,7 +36,7 @@
   become: true
   cron:
     name: "Soft kill old celery processes"
-    job: "/usr/local/sbin/celery_task_kill.sh {{ celery_hours_before_soft_kill }} SIGTERM "
+    job: "/usr/local/sbin/celery_bash_runner_kill.sh {{ celery_hours_before_soft_kill }} SIGTERM "
     minute: 15
     hour: "*"
     user: root
