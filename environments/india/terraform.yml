@@ -335,6 +335,9 @@ rds_instances:
     storage_type: gp3
     multi_az: true
     engine_version: "14.4"
+    params:
+      max_connections: "125"
+
 
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-india
