@@ -11,7 +11,6 @@ azs:
   - "us-east-1c"
 vpc_begin_range: "10.202"
 
-openvpn_image: ami-5e73b923
 
 ec2_metadata_tokens_required: yes
 
@@ -67,7 +66,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_m_a2{i}-production"
-    server_instance_type: c6a.8xlarge
+    server_instance_type: m6a.4xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -77,7 +76,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_m_b2{i}-production"
-    server_instance_type: c6a.8xlarge
+    server_instance_type: m6a.4xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
@@ -168,7 +167,7 @@ servers:
       BillTo: USH
 
   - server_name: "escoordinator_a1-production"
-    server_instance_type: m6a.4xlarge
+    server_instance_type: r6a.2xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -176,7 +175,7 @@ servers:
     os: jammy 
 
   - server_name: "escoordinator_b1-production"
-    server_instance_type: m6a.4xlarge
+    server_instance_type: r6a.2xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -254,7 +253,7 @@ servers:
     os: jammy
 
   - server_name: "rabbit14-production"
-    server_instance_type: t3a.2xlarge
+    server_instance_type: c6a.2xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -445,7 +444,7 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain1-production"
-    instance_type: "db.m5.4xlarge"
+    instance_type: "db.m6g.4xlarge"
     storage: 2000
     storage_type: gp3
     multi_az: true
@@ -555,7 +554,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgsynclog2-production"
-    instance_type: "db.m5.xlarge"
+    instance_type: "db.m6g.xlarge"
     storage: 1000
     storage_type: gp3
     multi_az: true
@@ -599,7 +598,7 @@ rds_instances:
       track_io_timing: 1
 
   - identifier: "pgauditcare1-production"
-    instance_type: "db.m5.xlarge"
+    instance_type: "db.m6g.xlarge"
     storage: 7000
     storage_type: gp3
     multi_az: true

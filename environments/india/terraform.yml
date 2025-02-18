@@ -15,7 +15,6 @@ az_codes:
   - c
 vpc_begin_range: "10.203"
 
-openvpn_image: ami-085d67fbfe42a25e7
 
 vpn_connections: []
 
@@ -310,7 +309,7 @@ servers:
 
 proxy_servers:
   - server_name: "proxy_a1-india"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -320,7 +319,7 @@ proxy_servers:
     os: jammy
 
   - server_name: "proxy_b1-india"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
@@ -331,7 +330,7 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain0-india"
-    instance_type: "db.t3.medium"
+    instance_type: "db.t4g.medium"
     storage: 500
     storage_type: gp3
     multi_az: true

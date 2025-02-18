@@ -30,6 +30,7 @@ dev_users:
     - rcostello
     - zeng
     - ayadav
+    - devanshhooda
   absent:
     - akjain
     - astone

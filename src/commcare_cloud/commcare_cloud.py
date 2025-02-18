@@ -23,7 +23,6 @@ from commcare_cloud.commands.preindex_views import PreindexViews
 from commcare_cloud.commands.secrets import Secrets, MigrateSecrets
 from commcare_cloud.commands.sentry import ExportSentryEvents
 from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory, AwsSignIn
-from commcare_cloud.commands.terraform.openvpn import OpenvpnActivateUser, OpenvpnClaimUser
 from commcare_cloud.commands.terraform.terraform import Terraform
 from commcare_cloud.commands.terraform.terraform_migrate_state import TerraformMigrateState
 from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
@@ -104,8 +103,6 @@ COMMAND_GROUPS = OrderedDict([
         AwsSignIn,
         AwsList,
         AwsFillInventory,
-        OpenvpnActivateUser,
-        OpenvpnClaimUser,
         ForwardPort,
     ])
 ])

@@ -23,6 +23,7 @@ eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
+solutions_aes_email: solutions-tech-app-engineers@dimagi.com
 ALTERNATE_HOSTS:
   - rec-mobile.sante.gov.bf
   - onse-iss.commcarehq.org
@@ -159,6 +160,7 @@ localsettings:
   CUSTOM_SYNCLOGS_DB: "synclogs_2017-11-01"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   DEVICE_LOGS_ENABLED: no
+  DEVICE_LIMIT_PER_USER: 50
   EULA_COMPLIANCE: True
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
@@ -171,20 +173,20 @@ localsettings:
   # When to consider multiplex settings
   ES_MULTIPLEX_TO_VERSION: '6'
   # Index Multiplexer Settings  
-  ES_APPS_INDEX_MULTIPLEXED: False
+  ES_APPS_INDEX_MULTIPLEXED: True
   ES_CASE_SEARCH_INDEX_MULTIPLEXED: False # Index swapped
-  ES_CASES_INDEX_MULTIPLEXED: False
-  ES_DOMAINS_INDEX_MULTIPLEXED: False
-  ES_FORMS_INDEX_MULTIPLEXED: False
-  ES_GROUPS_INDEX_MULTIPLEXED: False
-  ES_SMS_INDEX_MULTIPLEXED: False
-  ES_USERS_INDEX_MULTIPLEXED: False
+  ES_CASES_INDEX_MULTIPLEXED: False # Index swapped
+  ES_DOMAINS_INDEX_MULTIPLEXED: True
+  ES_FORMS_INDEX_MULTIPLEXED: False # Index swapped
+  ES_GROUPS_INDEX_MULTIPLEXED: True
+  ES_SMS_INDEX_MULTIPLEXED: True
+  ES_USERS_INDEX_MULTIPLEXED: True
   # Index Swap settings  
   ES_APPS_INDEX_SWAPPED: False
   ES_CASE_SEARCH_INDEX_SWAPPED: True
-  ES_CASES_INDEX_SWAPPED: False
+  ES_CASES_INDEX_SWAPPED: True
   ES_DOMAINS_INDEX_SWAPPED: False
-  ES_FORMS_INDEX_SWAPPED: False
+  ES_FORMS_INDEX_SWAPPED: True
   ES_GROUPS_INDEX_SWAPPED: False
   ES_SMS_INDEX_SWAPPED: False
   ES_USERS_INDEX_SWAPPED: False
@@ -195,6 +197,10 @@ localsettings:
         'multiplex_writes': True,
     },
     'co-carecoordination-perf': {
+        'index_cname': 'case_search_bha',
+        'multiplex_writes': True,
+    },
+    'co-carecoordination-uat': {
         'index_cname': 'case_search_bha',
         'multiplex_writes': True,
     }
@@ -250,6 +256,8 @@ localsettings:
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   WS4REDIS_CONNECTION_HOST: "redis.production.commcare.local"
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
+  CONNECTID_CHANNEL_URL: 'https://connectid.dimagi.com/messaging/create_channel/'
+  CONNECTID_MESSAGE_URL: 'https://connectid.dimagi.com/messaging/send_fcm/'
   ASYNC_INDICATORS_TO_QUEUE: 20000
 
 # comment these two lines out to make a new rackspace machine

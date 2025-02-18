@@ -23,6 +23,7 @@ eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
+solutions_aes_email: solutions-tech-app-engineers@dimagi.com
 
 DATADOG_ENABLED: False
 
@@ -68,6 +69,9 @@ formplayer_forward_ip_proxy: true
 formplayer_detailed_tags:
   - form_name
   - module_name
+formplayer_custom_properties:
+  spring.datasource.hikari.maximum-pool-size: 40
+  spring.datasource.hikari.minimum-idle: 5
 
 KSPLICE_ACTIVE: no # Don't know what this does, this is set to yes in prod
 
@@ -155,6 +159,7 @@ localsettings:
   ELASTICSEARCH_MAJOR_VERSION: 5
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-04"
   ES_XFORM_INDEX_NAME: "xforms_2023-01-27"
+  ES_MULTIPLEX_TO_VERSION: '6'
   # Index Multiplexer Settings  
   ES_APPS_INDEX_MULTIPLEXED: False # swap completed
   ES_CASE_SEARCH_INDEX_MULTIPLEXED: False # swap completed 
@@ -174,6 +179,20 @@ localsettings:
   ES_SMS_INDEX_SWAPPED: False
   ES_USERS_INDEX_SWAPPED: False
   # Index settings end
+  CASE_SEARCH_SUB_INDICES: {
+    'co-carecoordination': {
+        'index_cname': 'case_search_bha',
+        'multiplex_writes': True,
+    },
+    'co-carecoordination-perf': {
+        'index_cname': 'case_search_bha',
+        'multiplex_writes': True,
+    },
+    'co-carecoordination-uat': {
+        'index_cname': 'case_search_bha',
+        'multiplex_writes': True,
+    }
+  }
   IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'backup.www'
   INACTIVITY_TIMEOUT: 20160
@@ -222,6 +241,7 @@ localsettings:
         - 'ils-gateway-train'
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   WS4REDIS_CONNECTION_HOST: "redis.bk-production.commcare.local"
+  CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
