@@ -228,7 +228,7 @@ enable_cloudwatch_logs: true
 # celery variables to soft/hard kill tasks running for long hours.
 # hard_kill: 46, soft_kill: 36, False will remove the cron.
 celery_hours_before_hard_kill: 46
-celery_hours_before_soft_kill: 36
+celery_hours_before_soft_kill: 1
 
 efs_shared_mount_dir: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 efs_shared_mount_endpoint: "shared-efs.staging.commcare.local:/"
