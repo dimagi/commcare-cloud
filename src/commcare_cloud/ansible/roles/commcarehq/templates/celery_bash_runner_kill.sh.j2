@@ -15,8 +15,9 @@ if [ "$PARENT_PIDS" != "" ]; then
   echo "Process information with start and elapsed time:"
   for pid in ${PARENT_PIDS}
   do
-     if ps -p ${pid} -o pid,cmd | grep -qE 'celery_bash_runner'; then
-        echo "`ps -p ${pid} -o pid,start,etime,cmd`"
-        kill -${SIG_NAME} ${pid}
+    if ps -p ${pid} -o pid,cmd | grep -qE 'celery_bash_runner'; then
+      echo "`ps -p ${pid} -o pid,start,etime,cmd`"
+      kill -${SIG_NAME} ${pid}
+    fi
   done
 fi
