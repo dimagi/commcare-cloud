@@ -4,11 +4,11 @@
 #
 
 HOURS=$1
-MAX_MINUTES=`expr ${HOURS} \* 60 \* 60`
+MAX_SECONDS=`expr ${HOURS} \* 60 \* 60`
 
 SIG_NAME=$2
 
-PARENT_PIDS=$(ps -eo comm,ppid,etimes | awk '/celeryd:/ { if ( $4 > '"${MAX_MINUTES}"' ) { print $3 } }');
+PARENT_PIDS=$(ps -eo comm,ppid,etimes | awk '/celeryd:/ { if ( $4 > '"${MAX_SECONDS}"' ) { print $3 } }');
 
 if [ "$PARENT_PIDS" != "" ]; then
   echo "Shutting down celery bash runners:"
