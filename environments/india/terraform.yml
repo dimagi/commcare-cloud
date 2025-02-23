@@ -330,11 +330,14 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain0-india"
-    instance_type: "db.t3.medium"
+    instance_type: "db.t4g.medium"
     storage: 500
     storage_type: gp3
     multi_az: true
     engine_version: "14.4"
+    params:
+      max_connections: "125"
+
 
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-india

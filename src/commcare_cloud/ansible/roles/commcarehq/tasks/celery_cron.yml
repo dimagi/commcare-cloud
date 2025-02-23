@@ -19,7 +19,20 @@
   tags:
     - cron
 
-- name: Copy celery cron script
+- name: Copy celery bash runner kill cron script
+  become: yes
+  template:
+    src: "celery_bash_runner_kill.sh.j2"
+    dest: "/usr/local/sbin/celery_bash_runner_kill.sh"
+    group: root
+    owner: root
+    mode: 0744
+    backup: yes
+  when: "celery_hours_before_soft_kill"
+  tags:
+    - cron
+
+- name: Copy celery process kill cron script
   become: yes
   template:
     src: "celery_task_kill.sh.j2"
@@ -28,7 +41,7 @@
     owner: root
     mode: 0744
     backup: yes
-  when: "celery_hours_before_soft_kill or celery_hours_before_hard_kill"
+  when: "celery_hours_before_hard_kill"
   tags:
     - cron
 
@@ -36,7 +49,7 @@
   become: true
   cron:
     name: "Soft kill old celery processes"
-    job: "/usr/local/sbin/celery_task_kill.sh {{ celery_hours_before_soft_kill }} SIGTERM "
+    job: "/usr/local/sbin/celery_bash_runner_kill.sh {{ celery_hours_before_soft_kill }} SIGTERM "
     minute: 15
     hour: "*"
     user: root
