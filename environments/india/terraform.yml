@@ -330,7 +330,7 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain0-india"
-    instance_type: "db.t4g.medium"
+    instance_type: "db.t3.medium"
     storage: 500
     storage_type: gp3
     multi_az: true
