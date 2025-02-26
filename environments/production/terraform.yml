@@ -336,7 +336,7 @@ servers:
     volume_encrypted: yes
     group: "formplayer"
     os: jammy
-    count: 8
+    count: 6
     server_auto_recovery: true
     additional_tags:
       BillTo: USH
