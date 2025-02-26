@@ -91,10 +91,6 @@ formplayer_a2004-production: 10.202.10.227
 formplayer_a2004-production.instance_id: i-0cddb7e12d8beabb2
 formplayer_a2005-production: 10.202.10.129
 formplayer_a2005-production.instance_id: i-0d8b161d573e34e9d
-formplayer_a2006-production: 10.202.10.173
-formplayer_a2006-production.instance_id: i-01e192ca2cf7ba27b
-formplayer_a2007-production: 10.202.10.75
-formplayer_a2007-production.instance_id: i-0de04e5d02be92cc8
 frontend_alb-production: internal-frontend-alb-production-457692877.us-east-1.elb.amazonaws.com
 kafka_a1-production: 10.202.40.121
 kafka_a1-production.instance_id: i-0f6c3ba76b828859e
