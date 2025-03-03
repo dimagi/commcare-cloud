@@ -162,7 +162,7 @@ servers:
       volume_size: 2800
     group: "elasticsearch"
     os: jammy
-    count: 2
+    count: 1
     additional_tags:
       BillTo: USH
 
