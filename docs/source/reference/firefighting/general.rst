@@ -152,24 +152,20 @@ Note: /dev/sdX device where ``/`` is mounted
 
 **Steps:**
 
+1. open **/etc/default/grub**
 
- 	1. open **/etc/default/grub**
+2. add the following parameters **fsck.mode=force fsck.repair=yes**::
 
- 	2. add the following parameters **fsck.mode=force fsck.repair=yes**
+    GRUB_CMDLINE_LINUX_DEFAULT="quiet splash fsck.mode=force fsck.repair=yes"
 
- 		::
-         GRUB_CMDLINE_LINUX_DEFAULT="quiet splash fsck.mode=force fsck.repair=yes"
+   the new parameters added here are: **fsck.mode=force fsck.repair=yes**
 
-		the new parameters added here are: **fsck.mode=force fsck.repair=yes**
+   **caution:** Make sure you don't edit anything else, and that the edits you've made are correct, or else your 
+   computer may fail to boot
 
+3. update grub configuration::
 
-	**caution:** Make sure you don't edit anything else, and that the edits you've made are correct, or else your 
-	computer may fail to boot
-
-
-	3. update grub configuration
-		::
-         sudo update-grub
+    sudo update-grub
 
 
 
@@ -1147,7 +1143,7 @@ Checking redis after restart
 
 Redis takes some time to read the AOF back into memory upon restart/startup. To check if it's up, you can run the following:
 
-.. code-block:: memory
+.. code-block:: bash
 
    $ cchq <env> ssh ansible@redis
 

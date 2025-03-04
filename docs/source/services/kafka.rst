@@ -131,9 +131,11 @@ Move partitions
 **Output**\ :
 
    .. code-block::
+
        Current partition replica assignment
 
        {"version":1,"partitions":[{"topic":"case-sql","partition":96,"replicas":[0]}, ... ]}
+       
        Proposed partition reassignment configuration
 
        {"version":1,"partitions":[{"topic":"case-sql","partition":96,"replicas":[1]}, ... ]}
