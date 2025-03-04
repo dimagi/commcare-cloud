@@ -40,7 +40,7 @@ https://www.commcarehq.org/hq/admin/system/check_services - plaintext URL that c
 
 
 Control machine log files
-===================
+=========================
 There are two log files on the control machine that might be useful to reference if you need to know what commands were executed.
 These files are located in the `/var/log/` directory and are:
 
