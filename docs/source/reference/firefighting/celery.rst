@@ -7,7 +7,7 @@ Queue is blocked
 ----------------
 
 Symptoms
-^^^^^^^^
+~~~~~~~~
 
 You check /serverup.txt?only=celery and see a queue has been blocked for some duration.
 Example of what this looks like:
@@ -17,7 +17,7 @@ Example of what this looks like:
   celery: reminder_case_update_queue has been blocked for 0:27:57.285204 (max allowed is 0:15:00)
 
 Resolution
-^^^^^^^^^^
+~~~~~~~~~~
 
 You can restart the blocked queue using:
 
@@ -35,7 +35,7 @@ Worker is down
 --------------
 
 Symptoms
-^^^^^^^^
+~~~~~~~~
 
 You check /hq/admin/system/check_services or /serverup.txt?heartbeat (example: https://www.commcarehq.org/serverup.txt?heartbeat) and it shows the worker is down:
 
@@ -51,7 +51,7 @@ You check /hq/admin/system/check_services or /serverup.txt?heartbeat (example: h
    commcare-hq-production-celery_saved_exports_queue RUNNING    pid 10463, uptime 0:45:47
 
 Resolution
-^^^^^^^^^^
+~~~~~~~~~~
 
 Start the worker:
 
@@ -73,7 +73,7 @@ Worker won't start
 ------------------
 
 Symptoms
-^^^^^^^^
+~~~~~~~~
 
 You check /hq/admin/system/check_services or /serverup.txt?heartbeat (example: https://www.commcarehq.org/serverup.txt?heartbeat) and it shows the worker is down:
 
@@ -89,7 +89,7 @@ You check /hq/admin/system/check_services or /serverup.txt?heartbeat (example: h
    commcare-hq-production-celery_saved_exports_queue RUNNING    pid 10463, uptime 0:45:47
 
 Resolution
-^^^^^^^^^^
+~~~~~~~~~~
 
 View the log file to see what the error is preventing the worker from starting and resolve that error. The log file name and location are given in the service template for supervisor.
 
@@ -105,7 +105,7 @@ Worker did not shut down properly
 ---------------------------------
 
 Symptoms
-^^^^^^^^
+~~~~~~~~
 
 You check /serverup.txt?heartbeat (example: https://www.commcarehq.org/serverup.txt?heartbeat) and it shows the worker is running when it shouldn't be:
 
@@ -113,7 +113,7 @@ You check /serverup.txt?heartbeat (example: https://www.commcarehq.org/serverup.
 * celery@hqcelery2.internal-va.commcarehq.org_main.1491639725_timestamp celery worker is running when we expect it to be stopped
 
 Resolution
-^^^^^^^^^^
+~~~~~~~~~~
 
 To kill the workers that didn't shut down properly, you can use the ``commcare-cloud <env> kill-stale-celery-workers``. This will automatically figure out which ones to kill. If that still doesn't work, follow the steps below.
 
@@ -139,14 +139,14 @@ Worker is deadlocked
 --------------------
 
 Symptoms
-^^^^^^^^
+~~~~~~~~
 
 The worker is running (so there is no down notice), but it won't accept new tasks.
 If the main worker is deadlocked, people may be reporting that they can't do exports or imports of data.
 When you view the current active tasks for the worker with the show_celery_tasks management command, it either shows no tasks or tasks that are hours old.
 
 Resolution
-^^^^^^^^^^
+~~~~~~~~~~
 
 Restart the worker:
 
@@ -169,7 +169,7 @@ The queue the worker is consuming from has a large backlog of tasks
 -------------------------------------------------------------------
 
 Symptoms
-^^^^^^^^
+~~~~~~~~
 
 The datadog monitor for queued tasks has given an alert for the queue that the worker consumes from.
 
@@ -178,7 +178,7 @@ If the main queue has a large backlog of tasks, people may be reporting that the
 When you view the current active tasks for the worker with the show_celery_tasks management command, it shows tasks that are relatively fresh, so you don't believe the worker is deadlocked.
 
 Resolution
-^^^^^^^^^^
+~~~~~~~~~~
 
 For the most part, we just have to wait until the tasks are processed. If it's impacting something like exports/imports, It's worth trying to estimate how long it will take and put up a banner mentioning exports/imports are down at the moment and to not keep retrying them as it will just exacerbate the issue.
 
@@ -234,12 +234,12 @@ Intermittent datadog connection errors
 --------------------------------------
 
 Symptoms
-^^^^^^^^
+~~~~~~~~
 
 Receiving alerts that the datadog agent on a celery machine is not reporting. The alerts recover on their own but continue to trigger.
 
 Resolution
-^^^^^^^^^^
+~~~~~~~~~~
 
 This is only relevant if these alerts are for the first celery machine ``celery[0]``\ :
 
@@ -254,14 +254,14 @@ RabbitMQ is down
 ----------------
 
 Symptoms
-^^^^^^^^
+~~~~~~~~
 
 There are 500 emails saying Connection Refused to a service running on port 5672
 
 You see errors mentioning a celery worker cannot connect to amqp broker in the celery logs
 
 Resolution
-^^^^^^^^^^
+~~~~~~~~~~
 
 See Restarting Services on this :ref:`reference/firefighting/general:Firefighting Guide`.
 
@@ -269,12 +269,12 @@ Disk filling up
 ---------------
 
 Symptoms
-^^^^^^^^
+~~~~~~~~
 
 Disk usage warning
 
 Resolution
-^^^^^^^^^^
+~~~~~~~~~~
 
 
 #. Use 'ncdu' on the machine to detemine if it's RabbitMQ that's using up the disk
@@ -289,7 +289,7 @@ Useful Celery Commands
 ======================
 
 Show celery tasks
------------------
+~~~~~~~~~~~~~~~~~
 
 Unfortunately, flower often times will show stale data. To view the most current information on active, reserved, or scheduled tasks for a worker, use this command.
 
@@ -302,14 +302,14 @@ This command prints the celery tasks in the given state on the given worker. For
 To view a list of worker names, use the show_celery_workers command.
 
 Show celery workers
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 To get a quick list of workers that are currently running, use this command:
 
 ``python manage.py show_celery_workers``
 
 Shut down a celery worker
--------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To initiate a warm shutdown for a worker, you can either use flower as described in the "Worker did not shut down properly" section above, or you can use this command:
 
@@ -318,7 +318,7 @@ To initiate a warm shutdown for a worker, you can either use flower as described
 The :raw-html-m2r:`<worker name>` parameter will be one of the values you get from running ``python manage.py show_celery_workers``.
 
 Revoke celery tasks
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 To revoke specific tasks, issue this command, passing the fully-qualified python task names as args:
 
@@ -331,7 +331,7 @@ This command revokes all active, reserved, and scheduled tasks (from all workers
 You can pass more than one task to this command, and you can stop it any time with Ctrl+C.
 
 Purge queue
------------
+~~~~~~~~~~~
 
 NOTE: This should almost never be necessary in production and can be more useful during local development. In production it's better to target specific tasks to revoke using the revoke_celery_tasks command described above.  In case you do need to do this in production, It's best to stop the worker that's consuming from that queue first:
 
@@ -355,12 +355,12 @@ Locally you can use sudo to run these commands, but in a production environment 
 The :raw-html-m2r:`<vhost name>` parameter is commcarehq in our production environments. Locally you might have this set to /, but you can check it with the list virtual hosts command.
 
 List Virtual Hosts
-------------------
+~~~~~~~~~~~~~~~~~~
 
 ``rabbitmqctl list_vhosts``
 
 List number of messages in each queue
--------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This command lists the number of messages in each queue (i.e., the number of tasks in each celery queue) that are either ready to be delivered to a consumer or have been delivered but have not been acknowledged yet.
 
