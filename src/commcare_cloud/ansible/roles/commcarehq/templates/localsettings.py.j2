@@ -762,12 +762,6 @@ DATADOG_APP_KEY = '{{ DATADOG_APP_KEY }}'
 
 METRICS_PROVIDERS = {{ metrics_providers | to_json }}
 
-{% if localsettings.get('WS4REDIS_CONNECTION_HOST') %}
-WS4REDIS_CONNECTION = {
-    'host': '{{ localsettings.WS4REDIS_CONNECTION_HOST }}'
-}
-{% endif %}
-
 {% if prometheus_celery_pushgateway is defined %}
 PROMETHEUS_PUSHGATEWAY_HOST = os.environ.get('PROMETHEUS_PUSHGATEWAY_HOST', None)
 {% endif %}
