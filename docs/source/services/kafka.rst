@@ -128,7 +128,7 @@ Move partitions
 
        $ /opt/kafka/bin/kafka-reassign-partitions.sh --bootstrap-server=localhost:9092 --broker-list "0,1,2" --topics-to-move-json-file topics.json --generate 
 
-**Output**\ :
+**Output**:
 
    .. code-block::
 
