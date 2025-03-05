@@ -82,8 +82,6 @@ formplayer_custom_properties:
 
 KSPLICE_ACTIVE: yes
 
-run_websockets_wsgi: True
-
 couch_dbs:
   default:
     host: "{{ groups.couchdb2_alb[0] }}"
@@ -253,7 +251,6 @@ localsettings:
         - 'ils-gateway'
         - 'ils-gateway-train'
   USER_REPORTING_METADATA_BATCH_ENABLED: True
-  WS4REDIS_CONNECTION_HOST: "redis.production.commcare.local"
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
   CONNECTID_CHANNEL_URL: 'https://connectid.dimagi.com/messaging/create_channel/'
   CONNECTID_MESSAGE_URL: 'https://connectid.dimagi.com/messaging/send_fcm/'
