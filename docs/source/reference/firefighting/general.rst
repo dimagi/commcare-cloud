@@ -1120,7 +1120,7 @@ Disk full / filling rapidly
 Is maxmemory set too high wrt actual memory?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We have seen a situation where the redis disk fills up with files of the pattern /opt/data/redis/temp-rewriteaof-*.aof. This happens when redis maxmemory is configured to be too high a proportion of the total memory (although the connection is unclear to the author, Danny). This blog http://oldblog.antirez.com/post/redis-persistence-demystified.html/ explains AOF rewrite files. The solution is to (1) lower maxmemory and (2) delete the temp files.
+We have seen a situation where the redis disk fills up with files of the pattern ``/opt/data/redis/temp-rewriteaof-*.aof``. This happens when redis maxmemory is configured to be too high a proportion of the total memory (although the connection is unclear to the author, Danny). This blog http://oldblog.antirez.com/post/redis-persistence-demystified.html/ explains AOF rewrite files. The solution is to (1) lower maxmemory and (2) delete the temp files.
 
 .. code-block::
 

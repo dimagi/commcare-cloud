@@ -140,7 +140,7 @@ Move partitions
 
        {"version":1,"partitions":[{"topic":"case-sql","partition":96,"replicas":[1]}, ... ]}
 
-    --broker-list: list of brokers that can have partitions assigned to them
+**Note:** --broker-list: list of brokers that can have partitions assigned to them
 
 #. 
    Copy the proposed reassignment configuration to a JSON file and verify / update as required
