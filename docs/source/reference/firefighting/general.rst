@@ -707,7 +707,7 @@ Filter the list of running queries by process ID:
 
 .. code-block:: sql
 
-   SELECT pid, query_start, now() - query_start as duration, client_addr, query FROM pg_stat_activity WHERE procpid = {pid} ORDER BY query_start;
+   SELECT pid, query_start, now() - query_start as duration, client_addr, query FROM pg_stat_activity WHERE procpid = :pid ORDER BY query_start;
 
 Kill connections
 ~~~~~~~~~~~~~~~~
@@ -730,7 +730,7 @@ Kill a single query
 
 .. code-block:: sql
 
-   SELECT pg_terminate_backend({procpid})
+   SELECT pg_terminate_backend(procpid)
 
 Replication Delay
 ^^^^^^^^^^^^^^^^^
