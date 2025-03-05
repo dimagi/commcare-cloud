@@ -249,7 +249,7 @@ Couch node is down
 
 If a couch node is down, the couch disk might be full. In that case, see `Couch node data disk is full <#couch-node-data-disk-is-full>`_ below. Otherwise, it could mean that the node is slow to respond, erroring frequently, or that the couch process or VM itself in a stopped state.
 
-Monitors are setup to ping the proxy instead of couch instance directly, so the error will appear as "instance:http://\ :raw-html-m2r:`<proxy ip>`\ /\ *node/couchdb*\ :raw-html-m2r:`<couch node ip>`\ /".
+Monitors are setup to ping the proxy instead of couch instance directly, so the error will appear as "instance:http://<proxy ip>/node/couchdb/<couch node ip>/".
 
 
 #. log into couch node ip
@@ -1052,9 +1052,9 @@ Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a 
 
 
   * Reroute according to existing shard allocation
-  * 
-    The rerouting of unassigned primary shards will cause data loss (w.r.t es_2.4.6). :raw-html-m2r:`<br>`
-    :warning: The :raw-html-m2r:`<b>allow_primary</b>` parameter will force a new empty primary shard to be allocated without any data. If a node which has a copy of the original shard (including data) rejoins the cluster later on, that data will be deleted: the old shard copy will be replaced by the new live shard copy.
+  * The rerouting of unassigned primary shards will cause data loss (w.r.t es_2.4.6).
+
+    **Warning** The **allow_primary** parameter will force a new empty primary shard to be allocated without any data. If a node which has a copy of the original shard (including data) rejoins the cluster later on, that data will be deleted: the old shard copy will be replaced by the new live shard copy.
 
   * 
     Example reroute command to allocate replica shard
@@ -1266,7 +1266,7 @@ and sometimes that alone can clean up space. This is run on every deploy, so if 
 Move logs to another drive
 --------------------------
 
-Check the size of the log files stored at /home/cchq/www/\ :raw-html-m2r:`<environment>`\ /log, these can get out of hand.  Last time this ocurred, we moved these into the shared drive, which had plenty of available disk space (but check first!)
+Check the size of the log files stored at /home/cchq/www/<environment>/log, these can get out of hand.  Last time this ocurred, we moved these into the shared drive, which had plenty of available disk space (but check first!)
 
 ``$ mv -v pattern-matching-old-logs.*.gz /mnt/shared/temp-log-storage-main-hd-full/``
 

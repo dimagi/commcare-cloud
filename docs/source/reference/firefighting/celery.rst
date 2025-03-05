@@ -314,7 +314,7 @@ To initiate a warm shutdown for a worker, you can either use flower as described
 
 ``python manage.py shutdown_celery_worker_by_hostname <worker name>``
 
-The :raw-html-m2r:`<worker name>` parameter will be one of the values you get from running ``python manage.py show_celery_workers``.
+The ``<worker name>`` parameter will be one of the values you get from running ``python manage.py show_celery_workers``.
 
 Revoke celery tasks
 ~~~~~~~~~~~~~~~~~~~
@@ -351,7 +351,7 @@ We use rabbitmqctl to inspect RabbitMQ. All rabbitmqctl commands must be run as 
 
 Locally you can use sudo to run these commands, but in a production environment you'll need to switch to the root user first.
 
-The :raw-html-m2r:`<vhost name>` parameter is commcarehq in our production environments. Locally you might have this set to /, but you can check it with the list virtual hosts command.
+The ``<vhost name>`` parameter is commcarehq in our production environments. Locally you might have this set to /, but you can check it with the list virtual hosts command.
 
 List Virtual Hosts
 ~~~~~~~~~~~~~~~~~~
