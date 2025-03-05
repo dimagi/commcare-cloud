@@ -116,9 +116,7 @@ Setting up Bridged mode:
 
 With these settings:
 
-
-* 
-  SSH into your server with:
+* SSH into your server with:
 
   .. code-block:: bash
 
