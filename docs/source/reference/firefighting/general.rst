@@ -328,7 +328,7 @@ Once the node has enough disk
 #. Start the node (or ensure that it's already started)
 #. Force `internal replication <https://docs.couchdb.org/en/stable/cluster/sharding.html#forcing-synchronization-of-the-shard-s>`_.
 #. Verify `internal replication is up to date <https://docs.couchdb.org/en/stable/cluster/sharding.html#monitor-internal-replication-to-ensure-up-to-date-shard-s>`_.
-#. Clear node `maintenance mode <https://docs.couchdb.org/en/stable/cluster/sharding.html#clear-the-target-node-s-maintenance-mode>`_.
+#. Clear node `maintenance mode_off <https://docs.couchdb.org/en/stable/cluster/sharding.html#clear-the-target-node-s-maintenance-mode>`_.
 #. Reset your inventory.ini to the way it was (i.e. with the node present under the ``[couchdb2]`` group)
 #. Run the same command again to now route a portion of traffic back to the node again:
    .. code-block:: bash
