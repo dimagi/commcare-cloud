@@ -51,6 +51,8 @@ To install the plugin on the ansible server.
 
 
 
+Configuring in Ansible
+~~~~~~~~~~~~~~~~~~~~~~
 
 Once you can check that above process is working fine you can proceed with configuring the same in Ansible.
 
