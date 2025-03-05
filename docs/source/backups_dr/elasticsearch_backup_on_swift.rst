@@ -11,18 +11,13 @@ Plugin used : https://github.com/BigDataBoutique/elasticsearch-repository-swift
 Configuring and Testing.
 ------------------------
 
-To install the plugin on the ansible server. 
-
+To install the plugin on the Ansible server. 
 
 * Install the plugin using elasticsearch plugin binary::
 
    /opt/elasticsearch-1.7.6/bin/plugin install org.wikimedia.elasticsearch.swift/swift-repository-plugin/1.7.0
 
-.. code-block::
-
-
-   * To create a Repo for the sanpshot
-   ```bash
+* To create a Repo for the snapshot::
 
    curl -XPUT 'http://<ip-address>:9200/_snapshot/<env>_es_snapshot' -d '{
    >         "type": "swift",
