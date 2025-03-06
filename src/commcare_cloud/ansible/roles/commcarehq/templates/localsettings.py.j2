@@ -1235,3 +1235,11 @@ MAX_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MAX_REPEATER_RATE_LIMIT_DELAY }
 {% if localsettings.DEVICE_LIMIT_PER_USER is defined %}
 DEVICE_LIMIT_PER_USER = {{ localsettings.DEVICE_LIMIT_PER_USER }}
 {% endif %}
+
+{% if localsettings.INCREASED_DEVICE_LIMIT_PER_USER is defined %}
+INCREASED_DEVICE_LIMIT_PER_USER = {{ localsettings.INCREASED_DEVICE_LIMIT_PER_USER }}
+{% endif %}
+
+{% if localsettings.ENABLE_DEVICE_RATE_LIMITER is defined %}
+ENABLE_DEVICE_RATE_LIMITER = {{ localsettings.ENABLE_DEVICE_RATE_LIMITER }}
+{% endif %}
