@@ -58,7 +58,6 @@ couchdb_dir: "{{ '/usr/local/couchdb2/couchdb' if ansible_distribution_version =
 
 is_redis_cluster: '{{ "redis_cluster_master" in groups and groups["redis_cluster_master"]|length > 1 }}'
 redis_bind: 0.0.0.0
-run_websockets_wsgi: False
 
 # commcare-hq connects to an S3-compatible service
 s3_blob_db_enabled: False
@@ -178,7 +177,6 @@ java_17_bin_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64/bin
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_prometheus.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_pillowtop.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_workers.conf.j2
-#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_websockets.conf
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_formplayer_spring.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_management_commands.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_flower.conf.j2
@@ -217,10 +215,6 @@ supervisor_service_files:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
     template: ../templates/supervisor_pillowtop.conf.j2
     should_exist: "{{ inventory_hostname in groups['pillowtop'] }}"
-  websockets:
-    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_websockets.conf"
-    template: ../templates/supervisor_websockets.conf
-    should_exist: "{{ inventory_hostname in groups['proxy'] and run_websockets_wsgi }}"
   prometheus:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_prometheus.conf"
     template: ../templates/supervisor_prometheus.conf.j2

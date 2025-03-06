@@ -47,13 +47,6 @@
     - include_tasks: roles/commcarehq/tasks/pillowtop.yml
   tags: services
 
-- name: Proxy Websockets Supervisor Config
-  hosts: proxy
-  tasks:
-    - include_tasks: roles/commcarehq/tasks/proxy_websockets.yml
-      when: run_websockets_wsgi|bool
-  tags: services
-
 - name: Webworker Supervisor Config
   hosts: webworkers
   tasks:
