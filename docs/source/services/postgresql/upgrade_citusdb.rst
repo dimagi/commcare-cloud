@@ -45,8 +45,8 @@ Prepare for the 'citus' extension upgrade
 Upgrade the 'citus' extension
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1. Update ``public.yml``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. Update citus version in ``public.yml``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 public.yml:
 
@@ -76,8 +76,8 @@ Upgrade PostgreSQL
 Prepare for the PostgreSQL upgrade
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1. Update ``public.yml``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. Update PostgreSQL version in ``public.yml``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 public.yml:
 

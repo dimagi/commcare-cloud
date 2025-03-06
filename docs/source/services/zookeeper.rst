@@ -1,5 +1,5 @@
 Zookeeper
-=====
+=========
 
 ---------
 Resources
@@ -20,9 +20,9 @@ Setup
 
 Zookeeper is installed on each host in the *Zookeeper* inventory group.
 
----------------
+-------------------
 Upgrading Zookeeper
----------------
+-------------------
 
 
 * Current default version: 3.2.0

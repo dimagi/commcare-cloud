@@ -60,7 +60,7 @@ Host and Disk Security
 
 
 Network and Physical Security
-----------------------------
+-----------------------------
 
 #. Use VPN to access virtual machines when outside the LAN.
 

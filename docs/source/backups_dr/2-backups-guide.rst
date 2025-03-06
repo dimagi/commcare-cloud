@@ -31,7 +31,7 @@ Backup to Amazon S3 or a compatible service
 S3 credentials
 ^^^^^^^^^^^^^^
 
-In order to use this service, you will need to add your S3 credentials to the ``localsettings_private`` section of your **\ `vault file <https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md#managing-secrets-with-vault>`_\ **\ :
+In order to use this service, you will need to add your S3 credentials to the ``localsettings_private`` section of your `vault file <https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md#managing-secrets-with-vault>`_:
 
 
 * ``AMAZON_S3_ACCESS_KEY``\ : Your aws access key id

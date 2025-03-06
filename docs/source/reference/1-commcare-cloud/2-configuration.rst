@@ -86,14 +86,14 @@ Each of these files should contain YAML of the following format:
        - <username4>
        ...
 
-The **\ ``present``\ ** section will have a list of users who have access to your servers. The name you add here should be their desired system username, and should correspond to the name of their public key in ``<username>.pub`` under `\ ``_authorized_keys`` <#_authorized_keys>`_.
+The ``present`` section will have a list of users who have access to your servers. The name you add here should be their desired system username, and should correspond to the name of their public key in ``<username>.pub`` under `\ ``_authorized_keys`` <#_authorized_keys>`_.
 
 Each ``<username>`` must correspond to that used in a ``<username>.pub``
 under .
 
-The **\ ``absent``\ ** section lists those users whose access you want to remove from your servers when running the user update scripts.
+The ``absent`` section lists those users whose access you want to remove from your servers when running the user update scripts.
 
-If you change this file, you will need to run the `\ ``update-users`` command <../commands/index.md#update-users>`_
+If you change this file, you will need to run the ``update-users`` command ``<../commands/index.md#update-users>``
 
 Contents of an ``environment`` configuration directory
 ----------------------------------------------------------
@@ -107,15 +107,15 @@ given as ``<env1>``\ , ``<env2>``\ , etc. above.
 A ``commcare-cloud`` environment configuration is made up of the following files:
 
 
-* `\ ``app-processes.yml`` <#app-processesyml>`_
-* `\ ``fab-settings.yml`` <#fab-settingsyml>`_
-* `\ ``inventory.ini`` <#inventoryini>`_
-* `\ ``known_hosts`` <#known_hosts>`_
-* `\ ``meta.yml`` <#metayml>`_
-* `\ ``postgresql.yml`` <#postgresqlyml>`_
-* `\ ``proxy.yml`` <#proxyyml>`_
-* `\ ``public.yml`` <#publicyml>`_
-* `\ ``vault.yml`` <#vaultyml>`_
+* ``app-processes.yml`` ``<#app-processesyml>``
+* ``fab-settings.yml`` ``<#fab-settingsyml>``
+* ``inventory.ini`` ``<#inventoryini>``
+* ``known_hosts`` ``<#known_hosts>``
+* ``meta.yml`` ``<#metayml>``
+* ``postgresql.yml`` ``<#postgresqlyml>``
+* ``proxy.yml`` ``<#proxyyml>``
+* ``public.yml`` ``<#publicyml>``
+* ``vault.yml`` ``<#vaultyml>``
 
 The purpose of each of these files and their formats will be discussed
 in detail in the following sections.

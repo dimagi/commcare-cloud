@@ -1,7 +1,7 @@
 .. _migrate-project:
 
 Migrate a CommCare Application from one instance to a new instance
-==========================================================
+==================================================================
 .. note::
   This guide is for projects which do not require a full project migration and are only interested in
   migrating an existing CommCare application from one CommCare HQ instance to another CommCare HQ instance.

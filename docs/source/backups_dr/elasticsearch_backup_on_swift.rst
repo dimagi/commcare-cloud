@@ -11,19 +11,13 @@ Plugin used : https://github.com/BigDataBoutique/elasticsearch-repository-swift
 Configuring and Testing.
 ------------------------
 
-To install the plugin on the ansible server. 
+To install the plugin on the Ansible server. 
 
+* Install the plugin using elasticsearch plugin binary::
 
-* install the plugin using elasticsearch plugin binary. 
-  ```bash
+   /opt/elasticsearch-1.7.6/bin/plugin install org.wikimedia.elasticsearch.swift/swift-repository-plugin/1.7.0
 
-/opt/elasticsearch-1.7.6/bin/plugin install org.wikimedia.elasticsearch.swift/swift-repository-plugin/1.7.0```
-
-.. code-block::
-
-
-   * To create a Repo for the sanpshot
-   ```bash
+* To create a Repo for the snapshot::
 
    curl -XPUT 'http://<ip-address>:9200/_snapshot/<env>_es_snapshot' -d '{
    >         "type": "swift",
@@ -38,38 +32,31 @@ To install the plugin on the ansible server.
    {"acknowledged":true}
 
 
-* To take a snapshot
-  ```bash
+* To take a snapshot::
 
-curl -X PUT "localhost:9200/_snapshot/\ :raw-html-m2r:`<env>`\ _es_snapshot/snapshot_1?wait_for_completion=true"
+    curl -X PUT "localhost:9200/_snapshot/<env>_es_snapshot/snapshot_1?wait_for_completion=true"
 
-.. code-block::
+* To Verify the snapshot::
 
+    curl -X GET "<ip-address>:9200/_snapshot/<env>_es_snapshot/_all"
 
-   * To Verify the snapshot.
-   ```bash
+* To restore a snapshot of date say 2018/10/05::
 
-   curl -X GET "<ip-address>:9200/_snapshot/<env>_es_snapshot/_all"
-
-
-* To restore a snapshot of date say 2018/10/05. 
-  ```bash
-
-curl -X POST "\ :raw-html-m2r:`<ip-address>`\ :9200/_snapshot/\ :raw-html-m2r:`<env>`\ _es_snapshot/\ :raw-html-m2r:`<env>`\ _es_snapshot_2018_10_5/_restore"
-
-.. code-block::
+    curl -X POST "<ip-address>:9200/_snapshot/<env>_es_snapshot/<env>_es_snapshot_2018_10_5/_restore"
 
 
 
-   ## Configuring in Ansible
-   Once you can check that above process is working fine you can proceed with configuring the same in Ansible.
+Configuring in Ansible
+~~~~~~~~~~~~~~~~~~~~~~
 
-   Add the following entries in `public.yml` of the environemtn you want to configure.  
-   ```bash
-   # ElasticSearch Backup on Swift API
-   backup_es_swift: True
-   swift_container: "nameofthecontainer"
-   swift_url: https://<aurl-address>/auth/v1.0/
+Once you can check that above process is working fine you can proceed with configuring the same in Ansible.
+
+Add the following entries in `public.yml` of the environment you want to configure::  
+
+      # ElasticSearch Backup on Swift API
+      backup_es_swift: True
+      swift_container: "nameofthecontainer"
+      swift_url: https://<aurl-address>/auth/v1.0/
 
 Add the follwing line in vault.yml
 
