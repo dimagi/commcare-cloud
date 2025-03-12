@@ -135,7 +135,6 @@ localsettings:
   COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
   COUCH_USERNAME: "{{ COUCH_USERNAME }}"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  DEVICE_LIMIT_PER_USER: 50
   ELASTICSEARCH_MAJOR_VERSION: 6
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
