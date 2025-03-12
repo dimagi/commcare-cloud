@@ -128,17 +128,19 @@ Move partitions
 
        $ /opt/kafka/bin/kafka-reassign-partitions.sh --bootstrap-server=localhost:9092 --broker-list "0,1,2" --topics-to-move-json-file topics.json --generate 
 
-**Output**\ :
+**Output**:
 
    .. code-block::
+
        Current partition replica assignment
 
        {"version":1,"partitions":[{"topic":"case-sql","partition":96,"replicas":[0]}, ... ]}
+       
        Proposed partition reassignment configuration
 
        {"version":1,"partitions":[{"topic":"case-sql","partition":96,"replicas":[1]}, ... ]}
 
-    --broker-list: list of brokers that can have partitions assigned to them
+**Note:** --broker-list: list of brokers that can have partitions assigned to them
 
 #. 
    Copy the proposed reassignment configuration to a JSON file and verify / update as required

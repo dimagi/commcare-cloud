@@ -24,14 +24,17 @@ Send new writes to the new S3 endpoint
 #. If the new endpoint is a Riak CS cluster, deploy proxy.
    This will leave the proxy site for the old endpoint listing to port 8080,
    and add a new one listening to 8081. (If migrating to Amazon S3, can skip.)
+
    .. code-block:: bash
 
        commcare-cloud <env> ansible-playbook deploy_proxy.yml
 
 #. Deploy localsettings
+
    .. code-block:: bash
 
        commcare-cloud <env> update-config
+
    During this deploy hosts with old localsettings will continue to talk
    to old riak cluster on port 8080.
 
@@ -49,22 +52,31 @@ Flip to just the new backend
    * Add    ``localsettings.TEMP_RIAKCS_PROXY: True``
 
 #. Deploy proxy with
+
    .. code-block::
 
       cchq <env> ansible-deploy deploy_proxy.yml --tags=nginx_sites
+
    You should see both ports (8080 and 8081) now route to the new blobdb backend.
+
 #. Deploy localsettings with
+
    .. code-block::
 
       cchq <env> update-config
+
    During this deploy hosts with old localsettings will continue to talk
    to new riak cluster on port 8081, and once updated will talk to new riak
    cluster proxied on port 8080. There is a slight chance of MigratingBlobDB
    failover from new to new, but this should be rare and benign.
+
 #. Remove ``localsettings.TEMP_RIAKCS_PROXY: True`` from ``environments/<env>/public.yml``
+
 #. Deploy proxy again with
+
    .. code-block::
 
       cchq <env> ansible-deploy deploy_proxy.yml --tags=nginx_sites
+
    You should now see only 8080 route to the new blobdb backend,
    with the configuration for 8081 being removed.

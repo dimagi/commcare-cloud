@@ -651,7 +651,7 @@ Firefighting issues once CommCare HQ is running
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You may also wish to look at the
-:ref:`firefighting` page which lists out common
+:ref:`reference/firefighting/index:Firefighting Production Issues` page which lists out common
 issues that ``commcare-cloud`` can resolve.
 
 If you ever reboot this machine, make sure to follow the `after reboot
