@@ -8,11 +8,9 @@ ssl_policy: "ELBSecurityPolicy-TLS13-1-2-Res-2021-06"
 azs:
   - "eu-west-1a"
   - "eu-west-1b"
-  - "eu-west-1c"
 az_codes:
   - a
   - b
-  - c
 vpc_begin_range: "10.204"
 
 vpn_connections: []
