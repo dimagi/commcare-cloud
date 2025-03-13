@@ -25,8 +25,6 @@ rabbitmq_version: 3.10.13-1
 #RabbitMQ Broker URL
 BROKER_URL: "{% if amqp == true %}amqps://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5671{% else %}amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}{% endif %}"
 
-run_websockets_wsgi: True
-
 backup_blobdb: False
 backup_postgres: plain
 backup_es_s3: False
@@ -177,7 +175,6 @@ localsettings:
   SMS_QUEUE_ENABLED: True
   SUMOLOGIC_URL: "{{ SUMOLOGIC_URL }}"
   USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER: True
-  WS4REDIS_CONNECTION_HOST: "redis.staging.commcare.local"
   ENABLE_NEW_TRIAL_EXPERIENCE: True
   STATIC_ROOT:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'

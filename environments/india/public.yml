@@ -59,8 +59,6 @@ AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 
 control_machine_ip: 10.162.36.196
 
-run_websockets_wsgi: True
-
 show_maintenance_updates_on_deploy: False
 
 couch_dbs:
@@ -194,7 +192,6 @@ localsettings:
   SUMOLOGIC_URL: "{{ SUMOLOGIC_URL }}"
   SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
 #  STATIC_ROOT:
-  WS4REDIS_CONNECTION_HOST: "redis.india.commcare.local"
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   STATIC_TOGGLE_STATES:
     ucr_sum_when_templates:

@@ -1,9 +1,0 @@
-- name: define websockets services
-  become: yes
-  template:
-    src: "{{ supervisor_service_files.websockets.template }}"
-    dest: "{{ supervisor_service_files.websockets.file_path }}"
-    owner: "{{ cchq_user }}"
-    group: "{{ cchq_user }}"
-    mode: 0644
-  when: supervisor_service_files.websockets.should_exist
