@@ -1,0 +1,400 @@
+account_alias: commcare-eu
+terraform_version: "1.5"
+state_bucket: dimagi-terraform
+state_bucket_region: "us-east-1"
+region: "eu-west-1"
+environment: "eu"
+ssl_policy: "ELBSecurityPolicy-TLS13-1-2-Res-2021-06"
+azs:
+  - "eu-west-1a"
+  - "eu-west-1b"
+  - "eu-west-1c"
+az_codes:
+  - a
+  - b
+  - c
+vpc_begin_range: "10.204"
+
+vpn_connections: []
+
+external_routes: []
+
+ec2_metadata_tokens_required: yes
+servers:
+  - server_name: "control-eu"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: control
+    os: jammy
+
+  - server_name: "djangomanage-eu"
+    server_instance_type: "t3a.small"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: django_manage
+    os: jammy
+
+  - server_name: "web_a1-eu"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: webworkers
+    os: jammy
+    server_auto_recovery: true
+
+  - server_name: "web_b1-eu"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: webworkers
+    os: jammy
+    server_auto_recovery: true
+
+  - server_name: "celerybeat_a1-eu"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 60
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: celery
+    os: jammy
+
+  - server_name: "celery_a1-eu"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 60
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: celery
+    os: jammy
+
+  - server_name: "celery_b1-eu"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 60
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: celery
+    os: jammy
+
+  - server_name: "couch_a1-eu"
+    server_instance_type: "r5a.xlarge"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 60
+    volume_encrypted: no
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      encrypted: yes
+      volume_type: "gp3"
+    group: couchdb2
+    os: jammy
+
+  - server_name: "couch_b1-eu"
+    server_instance_type: "r5a.xlarge"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 60
+    volume_encrypted: no
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      encrypted: yes
+      volume_type: "gp3"
+    group: couchdb2
+    os: jammy
+
+  - server_name: "couch_a2-eu"
+    server_instance_type: "r5a.xlarge"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 60
+    volume_encrypted: no
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      encrypted: yes
+      volume_type: "gp3"
+    group: couchdb2
+    os: jammy
+
+  - server_name: "esmaster_a1-eu"
+    server_instance_type: t3a.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "elasticsearch"
+    os: jammy
+
+  - server_name: "esmaster_b1-eu"
+    server_instance_type: t3a.medium
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 40
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "elasticsearch"
+    os: jammy
+
+  - server_name: "esmaster_a2-eu"
+    server_instance_type: t3a.medium
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "elasticsearch"
+    os: jammy
+
+  - server_name: "es_b1-eu"
+    server_instance_type: "r6a.large"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 300
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: elasticsearch
+    os: jammy
+
+  - server_name: "es_a1-eu"
+    server_instance_type: "r6a.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 300
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: elasticsearch
+    os: jammy
+
+  - server_name: "escoordinator_a1-eu"
+    server_instance_type: "t3a.large"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: elasticsearch
+    os: jammy
+
+  - server_name: "escoordinator_b1-eu"
+    server_instance_type: "t3a.large"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 40
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: elasticsearch
+    os: jammy
+
+  - server_name: "formplayer_a1-eu"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 200
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: formplayer
+    os: jammy
+    server_auto_recovery: true
+
+  - server_name: "pillow_a1-eu"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 60
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: pillowtop
+    os: jammy
+
+  - server_name: "kafka_a1-eu"
+    server_instance_type: "t3a.medium"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: kafka
+    os: jammy
+
+  - server_name: "kafka_b1-eu"
+    server_instance_type: "t3a.medium"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: kafka
+    os: jammy
+
+  - server_name: "kafka_b2-eu"
+    server_instance_type: "t3a.medium"
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: kafka
+    os: jammy
+
+  - server_name: "pgbouncer_a1-eu"
+    server_instance_type: t3a.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "postgresql"
+    os: jammy
+
+  - server_name: "pgbouncer_b1-eu"
+    server_instance_type: t3a.small
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "postgresql"
+    os: jammy
+
+  - server_name: "pgbouncer_a2-eu"
+    server_instance_type: t3a.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "postgresql"
+    os: jammy
+
+  - server_name: "rabbit_a1-eu"
+    server_instance_type: t3a.small
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "rabbitmq"
+    os: jammy
+
+  - server_name: "rabbit_b1-eu"
+    server_instance_type: t3a.small
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 30
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: "rabbitmq"
+    os: jammy
+
+proxy_servers:
+  - server_name: "proxy_a1-eu"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: proxy
+    os: jammy
+
+  - server_name: "proxy_b1-eu"
+    server_instance_type: "t3a.medium"
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 80
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: proxy
+    os: jammy
+
+rds_instances:
+  - identifier: "pgmain1-eu"
+    instance_type: "db.t4g.small"
+    storage: 500
+    storage_type: gp3
+    multi_az: true
+    engine_version: "14.4"
+    params:
+      max_connections: "125"
+
+pgbouncer_nlbs:
+  - name: pgformplayer_nlb-eu
+    targets:
+      - pgbouncer_a1-eu
+      - pgbouncer_b1-eu
+  - name: pgmain_nlb-eu
+    targets:
+      - pgbouncer_a1-eu
+      - pgbouncer_b1-eu
+  - name: pgucr_nlb-eu
+    targets:
+      - pgbouncer_a2-eu
+  - name: pgsynclogs_nlb-eu
+    targets:
+      - pgbouncer_a1-eu
+      - pgbouncer_b1-eu
+  - name: pgshard_nlb-eu
+    targets:
+      - pgbouncer_a1-eu
+      - pgbouncer_b1-eu
+
+internal_albs:
+  - name: "couch_alb-eu"
+    listener_port: 25984
+    target_port: 15984
+    targets:
+      - couch_a1-eu
+      - couch_b1-eu
+      - couch_a2-eu
+
+elasticache_cluster:
+  create: yes
+  cache_node_type: "cache.t4g.small"
+  cache_engine_version: "7.0"
+  params:
+    maxmemory-policy: "allkeys-lru"
+  automatic_failover: true
+  transit_encryption: false
+  at_rest_encryption: true
+  auto_minor_version: false
+  cluster_size: 2
+  multi_az: true
+  maintenance_window: "sun:00:30-sun:01:30"
+  snapshot_retention: 7
+  snapshot_window: "10:30-11:30"
+
+r53_private_zone:
+  create: yes
+  domain_name: "eu.commcare.local"
+  create_record: yes
+  route_names: "redis"
+
+efs_file_systems:
+  - efs_name: "efs_eu"
+    create: yes
+    transition_to_ia: "AFTER_7_DAYS"
+    create_access: no
+    create_mount: yes
+    create_record: yes
+    domain_name: "eu.commcare.local"
+    route_names: "shared-efs"
