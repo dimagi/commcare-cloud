@@ -180,8 +180,8 @@ localsettings:
   ES_GROUPS_INDEX_MULTIPLEXED: False # Index swapped
   ES_SMS_INDEX_MULTIPLEXED: False # Index swapped
   ES_USERS_INDEX_MULTIPLEXED: False # Index swapped
-  # Index Swap settings  
-  ES_APPS_INDEX_SWAPPED: False
+  # Index Swap settings
+  ES_APPS_INDEX_SWAPPED: True
   ES_CASE_SEARCH_INDEX_SWAPPED: True
   ES_CASES_INDEX_SWAPPED: True
   ES_DOMAINS_INDEX_SWAPPED: True
