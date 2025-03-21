@@ -1,0 +1,27 @@
+title: Removing websockets
+key: remove_websockets
+date: 2025-03-21
+optional_per_env: no
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version: c67e1a4d7e79eda106e51b7213d83de037493c9e
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  All code related to websockets is being removed from both CommCare HQ and CommCare-Cloud.
+
+details: |
+  This will also sunset the notifications that appear in the form builder for superusers only
+  that indicate another user is currently editing the same form. This feature is disabled in
+  the minimum CommCare HQ version referenced above.
+
+  Note that if the steps below are run **before** updating CommCare HQ to the minimum version above,
+  superusers using the form builder may experience warnings in the JavaScript console. However, there should
+  be no other ill effects.
+
+  A future update to CommCare HQ will remove additional websockets configuration code. This update will be
+  released **no sooner than Monday, April 14**. Once this update is released, if the steps below have **not**
+  been run, deploying CommCare HQ will fail until they are run.
+
+update_steps: |
+  1. Run `update-code` to pull the latest code, specifically [https://github.com/dimagi/commcare-cloud/pull/6481](https://github.com/dimagi/commcare-cloud/pull/6481)
+  2. Run `cchq <env> update-supervisor-confs`
