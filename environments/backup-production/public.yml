@@ -75,8 +75,6 @@ formplayer_custom_properties:
 
 KSPLICE_ACTIVE: no # Don't know what this does, this is set to yes in prod
 
-run_websockets_wsgi: True
-
 couch_dbs:
   default:
     host: "{{ groups.couchdb2_alb[0] }}"
@@ -240,7 +238,6 @@ localsettings:
         - 'ils-gateway'
         - 'ils-gateway-train'
   USER_REPORTING_METADATA_BATCH_ENABLED: True
-  WS4REDIS_CONNECTION_HOST: "redis.bk-production.commcare.local"
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
 
 # comment these two lines out to make a new rackspace machine
