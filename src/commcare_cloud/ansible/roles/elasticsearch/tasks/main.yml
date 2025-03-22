@@ -55,6 +55,7 @@
     src: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     dest: /opt/
     copy: no
+  ignore_errors: '{{ ansible_check_mode }}'
 
 - name: Chown Elasticsearch
   become: yes
