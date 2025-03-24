@@ -170,7 +170,7 @@ localsettings:
   # When to consider multiplex settings
   ES_MULTIPLEX_TO_VERSION: '6'
   # Index Multiplexer Settings  
-  ES_APPS_INDEX_MULTIPLEXED: True
+  ES_APPS_INDEX_MULTIPLEXED: False # Index swapped
   ES_CASE_SEARCH_INDEX_MULTIPLEXED: False # Index swapped
   ES_CASES_INDEX_MULTIPLEXED: False # Index swapped
   ES_DOMAINS_INDEX_MULTIPLEXED: False # Index swapped
