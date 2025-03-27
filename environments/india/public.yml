@@ -79,7 +79,7 @@ couchdb_cluster_settings:
   n: 3
 
 s3_blob_db_enabled: yes
-s3_blob_db_url: "https://s3.amazonaws.com"
+s3_blob_db_url: "https://s3.ap-south-1.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-india-blobdb'
 
 root_email: commcarehq-ops+root@dimagi.com
