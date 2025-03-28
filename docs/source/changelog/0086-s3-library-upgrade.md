@@ -37,3 +37,10 @@ to roll it out with commcare-cloud.
 ```sh
 cchq <env> update-config
 ```
+
+The changes will be applied on the next deploy. If you wish to apply them
+immediately, run the following command.
+
+```sh
+cchq <env> service commcare restart
+```
