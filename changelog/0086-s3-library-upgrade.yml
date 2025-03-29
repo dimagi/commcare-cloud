@@ -1,0 +1,40 @@
+title: AWS S3 Client Library Upgrade
+key: s3-library-upgrade
+date: 2025-03-27
+optional_per_env: yes
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version:
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version: 61cd1f25298069c63aa7c2c1e915096afaef462b
+context: |
+  The `botocore` library is being upgraded in CommCare HQ. A blob db
+  configuration change may be necessary prior to deploying the new version.
+
+details: |
+  If you use Amazon S3 for blob storage and you use a bucket outside of
+  `us-east-1` you will need to change the endpoint URL in your environment
+  configuration before the botocore dependency of CommCare HQ is upgraded to or
+  beyond 1.28.0.
+
+update_steps: |
+  Update `s3_blob_db_url` in your environment's `public.yml` file to the
+  region-specific URL where your blob db bucket resides. For example, if your
+  AWS region is `ap-south-1` then you should change the URL from
+  `https://s3.amazonaws.com` to `https://s3.ap-south-1.amazonaws.com`.
+
+  See https://github.com/dimagi/commcare-cloud/pull/6504/files for an example
+  of how to make this change.
+
+  After making this change in your environment file, run the following command
+  to roll it out with commcare-cloud.
+
+  ```sh
+  cchq <env> update-config
+  ```
+
+  The changes will be applied on the next deploy. If you wish to apply them
+  immediately, run the following command.
+
+  ```sh
+  cchq <env> service commcare restart
+  ```
