@@ -70,6 +70,9 @@ celery_processes:
     sms_queue:
       pooling: gevent
       concurrency: 20
+    submission_reprocessing_queue:
+      concurrency: 1
+      prefetch_multiplier: 1
     ucr_indicator_queue:
       concurrency: 3
     ucr_queue:
@@ -103,9 +106,6 @@ celery_processes:
     malt_generation_queue:
       pooling: gevent
       concurrency: 2
-    submission_reprocessing_queue:
-      concurrency: 2
-      prefetch_multiplier: 1
     sumologic_logs_queue:
       pooling: gevent
       concurrency: 50
