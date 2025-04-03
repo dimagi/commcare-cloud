@@ -15,8 +15,9 @@ roles:
   - src: git+https://github.com/nickhammond/ansible-logrotate.git
     version: v0.0.5
     name: ansible-logrotate
-  - src: DavidWittman.redis
-    version: 1.2.7
+  - name: DavidWittman.redis
+    src: https://github.com/DavidWittman/ansible-redis.git
+    version: 1.2.12
   - src: sansible.logstash
     version: v2.4.0-latest
   - name: cloudalchemy.prometheus
