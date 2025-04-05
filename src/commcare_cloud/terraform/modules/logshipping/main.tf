@@ -22,9 +22,18 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "log_bucket" {
   }
 }
 
+resource "aws_s3_bucket_ownership_controls" "log_bucket" {
+  bucket = aws_s3_bucket.log_bucket.id
+
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
+
 resource "aws_s3_bucket_acl" "log_bucket" {
   bucket = aws_s3_bucket.log_bucket.id
   acl    = "private"
+  depends_on = [aws_s3_bucket_ownership_controls.log_bucket]
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "log_bucket" {
