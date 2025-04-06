@@ -38,9 +38,9 @@ DATADOG_TRACE:
     env: production
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_cluster_name: 'prodhqes-1.x'
-elasticsearch_version: 5.6.16
-elasticsearch_download_sha256: 6b035a59337d571ab70cea72cc55225c027ad142fbb07fd8984e54261657c77f.
+elasticsearch_cluster_name: 'prodhqes'
+elasticsearch_version: 6.8.23
+elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
@@ -164,7 +164,7 @@ localsettings:
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
   ENFORCE_SSO_LOGIN: True
-  ELASTICSEARCH_MAJOR_VERSION: 5
+  ELASTICSEARCH_MAJOR_VERSION: 6
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-04"
   ES_XFORM_INDEX_NAME: "xforms_2023-01-27"
   # When to consider multiplex settings
