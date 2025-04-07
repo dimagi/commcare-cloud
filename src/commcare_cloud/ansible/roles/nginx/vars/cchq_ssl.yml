@@ -9,7 +9,7 @@ nginx_sites:
       hosts: "{{ groups['mobile_webworkers'] | default('webworkers') }}"
       port: "{{ django_port }}"
     - name: "{{ deploy_env }}_commcare_api"
-      hosts: "{{ groups['api_webworkers'] | default('webworkers') }}"
+      hosts: "{{ groups.get('api_webworkers') or groups.get('hq_webworkers') or groups.get('webworkers') }}"
       port: "{{ django_port }}"
     - name: "{{ deploy_env }}_formplayer"
       hosts: formplayer
