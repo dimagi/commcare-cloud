@@ -147,7 +147,6 @@ localsettings:
   SMS_QUEUE_ENABLED: True
   #bug_report_email: echismoh@moh.gov.et
   STATIC_ROOT:
-  WS4REDIS_CONNECTION_HOST: "{{ groups.redis.0 }}"
   ENABLE_PRELOGIN_SITE: False
   ENTERPRISE_MODE: True
   RESTRICT_DOMAIN_CREATION: True

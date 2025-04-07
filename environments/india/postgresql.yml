@@ -4,7 +4,7 @@ REPORTING_DATABASES:
   aaa-data: aaa-data
 
 pgbouncer_override:
-  pgbouncer_default_pool: 290
+  pgbouncer_default_pool: 115
   pgbouncer_max_connections: 4000
   pgbouncer_pool_mode: transaction
   pgbouncer_pool_timeout: 1
@@ -12,7 +12,7 @@ pgbouncer_override:
 
 postgres_override:
   postgresql_version: '14'
-  postgresql_max_connections: 300
+  postgresql_max_connections: 125
   postgresql_hba_entries:
     # required for backup
     - contype: host

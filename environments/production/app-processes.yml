@@ -2,7 +2,7 @@ datadog_pythonagent: True
 django_command_prefix: '{% if inventory_hostname in groups["mobile_webworkers"] %}{{ virtualenv_home }}/bin/ddtrace-run {% endif %}'
 celery_command_prefix: ''
 gunicorn_workers_static_factor: 0
-gunicorn_workers_factor: 4
+gunicorn_workers_factor: 2
 formplayer_memory: "31g"
 formplayer_g1heapregionsize: "16m"
 formplayer_command_args: ''
@@ -48,7 +48,8 @@ celery_processes:
       concurrency: 24
       num_workers: 5
     reminder_case_update_bulk_queue:
-      concurrency: 1
+      pooling: gevent
+      concurrency: 4
     reminder_queue:
       pooling: gevent
       concurrency: 40
@@ -56,7 +57,8 @@ celery_processes:
       concurrency: 1
     repeat_record_queue:
       pooling: gevent
-      concurrency: 72
+      concurrency: 36
+      num_workers: 2
       prefetch_multiplier: 1
     repeat_record_datasource_queue:
       pooling: gevent
@@ -68,6 +70,9 @@ celery_processes:
     sms_queue:
       pooling: gevent
       concurrency: 20
+    submission_reprocessing_queue:
+      concurrency: 1
+      prefetch_multiplier: 1
     ucr_indicator_queue:
       concurrency: 3
     ucr_queue:
@@ -101,9 +106,6 @@ celery_processes:
     malt_generation_queue:
       pooling: gevent
       concurrency: 2
-    submission_reprocessing_queue:
-      concurrency: 2
-      prefetch_multiplier: 1
     sumologic_logs_queue:
       pooling: gevent
       concurrency: 50
@@ -142,6 +144,6 @@ pillows:
   pillow_b2000:
   # case-sql partitions: 96
     case-pillow:
-      num_processes: 25
-      total_processes: 25
+      num_processes: 33
+      total_processes: 33
       dedicated_migration_process: True

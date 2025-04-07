@@ -37,13 +37,14 @@ or Pingdom.
 Procedure to configure SSL for a new environment
 ------------------------------------------------
 
-:raw-html-m2r:`<small>**Note from author**: I haven't tried this many times in a row and noted/fixed all the kinks,
-so there may be something missing here,
-but those are the general steps at this point.
-It would be lovely to make it so that it happened on the first setup,
-but we're not quite there yet.
-If there are any errors or gaps, a github issue or pull requests
-would be much appreciated.</small>`
+.. note::
+   **Note from author**: I haven't tried this many times in a row and noted/fixed all the kinks,
+   so there may be something missing here,
+   but those are the general steps at this point.
+   It would be lovely to make it so that it happened on the first setup,
+   but we're not quite there yet.
+   If there are any errors or gaps, a github issue or pull requests
+   would be much appreciated.
 
 1. Set up site without HTTPS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

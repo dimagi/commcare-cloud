@@ -16,11 +16,7 @@ couch12-production: 10.202.40.52
 couch12-production.instance_id: i-0e9aaeea3a117206e
 couch_a0-production: 10.202.40.200
 couch_a0-production.instance_id: i-0451df80fe9da4eef
-couch_a1-production: 10.202.40.179
-couch_a1-production.instance_id: i-04b77afb7b43ddf16
 couch_alb-production: internal-couch-alb-production-4251727.us-east-1.elb.amazonaws.com
-couch_b0-production: 10.202.41.204
-couch_b0-production.instance_id: i-03f70dc45f928a0a7
 djangomanage_a1-production: 10.202.10.13
 djangomanage_a1-production.instance_id: i-05287a83c6f4dfc10
 efs_production-efs: fs-99495a6e.efs.us-east-1.amazonaws.com
@@ -91,14 +87,6 @@ formplayer_a2004-production: 10.202.10.227
 formplayer_a2004-production.instance_id: i-0cddb7e12d8beabb2
 formplayer_a2005-production: 10.202.10.129
 formplayer_a2005-production.instance_id: i-0d8b161d573e34e9d
-formplayer_a2006-production: 10.202.10.173
-formplayer_a2006-production.instance_id: i-01e192ca2cf7ba27b
-formplayer_a2007-production: 10.202.10.75
-formplayer_a2007-production.instance_id: i-0de04e5d02be92cc8
-formplayer_a2008-production: 10.202.10.159
-formplayer_a2008-production.instance_id: i-0b3435b0ff598c76b
-formplayer_a2009-production: 10.202.10.216
-formplayer_a2009-production.instance_id: i-013093a5ad79ead77
 frontend_alb-production: internal-frontend-alb-production-457692877.us-east-1.elb.amazonaws.com
 kafka_a1-production: 10.202.40.121
 kafka_a1-production.instance_id: i-0f6c3ba76b828859e

@@ -1,6 +1,9 @@
 from enum import Enum
+from datetime import datetime
 
+import random
 import requests
+import re
 from clint.textui import puts
 from requests import RequestException
 
@@ -12,6 +15,10 @@ class Emoji(Enum):
     failure = 'x'
     success_reaction = 'white_check_mark'
     failure_reaction = 'x'
+
+    slow_reaction = random.choice(['snail', 'turtle', 'tortoise_wag'])
+    medium_reaction = random.choice(['meh', 'meh_blue', 'cat-roomba'])
+    fast_reaction = random.choice(['racing_car', 'zap', 'dash', 'rocket', 'cat-roomba-exceptionally-fast'])
 
     @property
     def code(self):
@@ -98,6 +105,23 @@ class SlackClient:
         reaction_emoji = Emoji.success_reaction if is_success else Emoji.failure_reaction
         self._post_reaction(thread_ts, reaction_emoji)
 
+        end = datetime.utcnow()
+        duration = end - context.start_time
+
+        if is_success:
+            if duration.seconds < 60 * 15:
+                speed_emoji = Emoji.fast_reaction
+            elif duration.seconds > 60 * 30:
+                speed_emoji = Emoji.slow_reaction
+            else:
+                speed_emoji = Emoji.medium_reaction
+            self._post_reaction(thread_ts, speed_emoji)
+
+        status = "completed" if is_success else "failed"
+        duration = re.sub(r'\.\d+', '', str(duration))
+        message = f"Deploy {status} in {duration}"
+        self._post_message(message, self._get_text_blocks(message), thread_ts)
+
     def _post_message(self, notification_text, blocks, thread_ts=None):
         data = {
             "channel": self.channel,
@@ -111,14 +135,7 @@ class SlackClient:
 
     def _get_message_blocks(self, message, context):
         env_name = self.environment.meta_config.deploy_env
-        return [
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": message,
-                }
-            },
+        return self._get_text_blocks(message) + [
             {
                 "type": "context",
                 "elements": [
@@ -137,6 +154,15 @@ class SlackClient:
                 ]
             }
         ]
+
+    def _get_text_blocks(self, message):
+        return [{
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": message,
+            }
+        }]
 
     def _post_reaction(self, thread_ts, emoji):
         data = {

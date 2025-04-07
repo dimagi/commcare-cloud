@@ -6,9 +6,9 @@ DATADOG_ENABLED: True
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 #elasticsearch_memory: '4096m'
-elasticsearch_cluster_name: 'indiahqes-1.x'
-elasticsearch_version: 5.6.16
-elasticsearch_download_sha256: 6b035a59337d571ab70cea72cc55225c027ad142fbb07fd8984e54261657c77f.
+elasticsearch_cluster_name: 'indiahqes'
+elasticsearch_version: 6.8.23
+elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
 elasticsearch_delete_old_logs: True
 
 backup_blobdb: False
@@ -59,8 +59,6 @@ AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 
 control_machine_ip: 10.162.36.196
 
-run_websockets_wsgi: True
-
 show_maintenance_updates_on_deploy: False
 
 couch_dbs:
@@ -81,7 +79,7 @@ couchdb_cluster_settings:
   n: 3
 
 s3_blob_db_enabled: yes
-s3_blob_db_url: "https://s3.amazonaws.com"
+s3_blob_db_url: "https://s3.ap-south-1.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-india-blobdb'
 
 root_email: commcarehq-ops+root@dimagi.com
@@ -135,7 +133,7 @@ localsettings:
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
   ENFORCE_SSO_LOGIN: True
-  ELASTICSEARCH_MAJOR_VERSION: 5
+  ELASTICSEARCH_MAJOR_VERSION: 6
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-14"
   ES_MULTIPLEX_TO_VERSION: '6'
   # Index Multiplexer Settings  
@@ -194,7 +192,6 @@ localsettings:
   SUMOLOGIC_URL: "{{ SUMOLOGIC_URL }}"
   SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
 #  STATIC_ROOT:
-  WS4REDIS_CONNECTION_HOST: "redis.india.commcare.local"
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   STATIC_TOGGLE_STATES:
     ucr_sum_when_templates:
