@@ -32,7 +32,7 @@ roles:
   - src: bdellegrazie.postgres_exporter
     version: v4.1.0
   - src: gantsign.golang
-    version: 3.4.1
+    version: 3.2.1
 
 collections:
   - name: https://github.com/dimagi/commcare-logstash/releases/download/V0.9.5/dimagi-commcare_logstash-0.9.5.tar.gz
