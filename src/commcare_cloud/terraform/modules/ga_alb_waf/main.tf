@@ -108,7 +108,7 @@ resource "aws_wafv2_ip_set" "permanent_block" {
 
 resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
   name     = "CommCareWhitelistRules"
-  capacity = "50"
+  capacity = "75"
   scope    = "REGIONAL"
   visibility_config {
     cloudwatch_metrics_enabled = true
