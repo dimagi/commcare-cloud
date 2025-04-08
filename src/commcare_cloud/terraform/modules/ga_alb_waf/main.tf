@@ -22,19 +22,29 @@ locals {
 data "aws_region" "current" {
 }
 
-resource "aws_wafv2_regex_pattern_set" "allow_xml_post_urls" {
-  name        = "XML_POST_urls"
+resource "aws_wafv2_regex_pattern_set" "allow_xml_post_urls_0" {
+  name        = "XML_POST_urls_0"
   description = "URLs that should circumvent CrossSiteScripting_BODY rule"
   scope       = "REGIONAL"
 
   dynamic "regular_expression" {
-    for_each = var.commcarehq_xml_post_urls_regex
+    for_each = var.commcarehq_xml_post_urls_regex_0
     content {
-      # TF-UPGRADE-TODO: The automatic upgrade tool can't predict
-      # which keys might be set in maps assigned here, so it has
-      # produced a comprehensive set here. Consider simplifying
-      # this after confirming which keys can be set in practice.
+      regex_string = regular_expression.value.regex_string
+    }
+  }
 
+  tags = {}
+}
+
+resource "aws_wafv2_regex_pattern_set" "allow_xml_post_urls_1" {
+  name        = "XML_POST_urls_1"
+  description = "URLs that should circumvent CrossSiteScripting_BODY rule"
+  scope       = "REGIONAL"
+
+  dynamic "regular_expression" {
+    for_each = var.commcarehq_xml_post_urls_regex_1
+    content {
       regex_string = regular_expression.value.regex_string
     }
   }
