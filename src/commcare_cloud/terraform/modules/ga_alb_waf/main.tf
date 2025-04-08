@@ -147,7 +147,7 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
   }
 
   rule {
-    name     = "AllowXMLBody"
+    name     = "AllowXMLBody0"
     priority = 1
 
     action {
@@ -157,7 +157,37 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
 
     statement {
       regex_pattern_set_reference_statement {
-        arn = aws_wafv2_regex_pattern_set.allow_xml_post_urls.arn
+        arn = aws_wafv2_regex_pattern_set.allow_xml_post_urls_0.arn
+        field_to_match {
+          uri_path {
+          }
+        }
+        text_transformation {
+          priority = 0
+          type     = "NONE"
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AllowXMLBody"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "AllowXMLBody1"
+    priority = 2
+
+    action {
+      allow {
+      }
+    }
+
+    statement {
+      regex_pattern_set_reference_statement {
+        arn = aws_wafv2_regex_pattern_set.allow_xml_post_urls_1.arn
         field_to_match {
           uri_path {
           }
