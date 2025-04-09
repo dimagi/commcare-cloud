@@ -112,6 +112,7 @@ class DeployDiff(CommandBase):
     def run(self, args, unknown_args):
         check_branch(args)
         environment = get_environment(args.env_name)
+        environment.release_name = 'deploy-diff'
         if args.component == 'formplayer':
             diff = get_formplayer_deploy_diff(environment)
         else:
