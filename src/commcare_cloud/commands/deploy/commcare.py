@@ -25,6 +25,7 @@ from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.const import DATE_FMT
 from commcare_cloud.github import github_repo
 
+
 def get_commcare_deploy_diff(environment, args):
     deploy_revs, rev_diffs = get_deploy_revs_and_diffs_from_defaults(environment, args)
     return _get_code_diff(environment, deploy_revs, False)

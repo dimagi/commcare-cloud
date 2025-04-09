@@ -95,6 +95,7 @@ class Deploy(CommandBase):
                 rc = deploy_formplayer(environment, args)
         return rc
 
+
 class DeployDiff(CommandBase):
     command = 'deploy-diff'
     help = (
@@ -118,7 +119,6 @@ class DeployDiff(CommandBase):
         else:
             diff = get_commcare_deploy_diff(environment, args)
         diff.print_deployer_diff()
-
 
 
 def _warn_about_non_formplayer_args(args):
