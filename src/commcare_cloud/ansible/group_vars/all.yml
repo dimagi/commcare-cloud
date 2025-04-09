@@ -168,7 +168,8 @@ celery_hours_before_soft_kill: ~
 ansible_become_password: "{{ ansible_sudo_pass }}"
 
 # Java version for Formplayer
-java_17_bin_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64/bin
+java_17_home_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64
+java_17_bin_path: '{{ java_17_home_path }}/bin'
 
 #  To find this complete list, you can run:
 #  $ find . -type f | grep templates/supervisor_
