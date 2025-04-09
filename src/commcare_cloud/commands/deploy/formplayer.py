@@ -51,6 +51,10 @@ class VersionInfo(namedtuple("VersionInfo", "commit, message, time, build_time")
         delta = datetime.utcnow() - build_time
         return timeago(delta)
 
+def get_formplayer_deploy_diff(environment):
+    tag_commits = environment.fab_settings_config.tag_deploy_commits
+    repo = github_repo('dimagi/formplayer', require_write_permissions=tag_commits)
+    return get_deploy_diff(environment, repo)
 
 def deploy_formplayer(environment, args):
     if not confirm_environment_time(environment, quiet=args.quiet):
@@ -60,10 +64,7 @@ def deploy_formplayer(environment, args):
     print(color_notice("\nPreparing to deploy Formplayer to: "), end="")
     print(f"{environment.name}\n")
 
-    tag_commits = environment.fab_settings_config.tag_deploy_commits
-    repo = github_repo('dimagi/formplayer', require_write_permissions=tag_commits)
-
-    diff = get_deploy_diff(environment, repo)
+    diff = get_formplayer_deploy_diff(environment)
     diff.print_deployer_diff()
 
     context = DeployContext(
