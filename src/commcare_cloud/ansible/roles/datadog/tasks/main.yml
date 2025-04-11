@@ -3,12 +3,17 @@
     id: "{{ item }}"
     state: absent
   with_list:
+   - 5F1E256061D813B125E156E8E6266D4AC0962C7D
    - D75CEA17048B9ACBF186794B32637D44F14F620E
    - A2923DFF56EDA6E76E55E492D3A80E30382E94DE
 
 # ansible apt_key doesn't do any action on expired keys
 - name: Remove expired datadog apt key manually
-  command: apt-key del A2923DFF56EDA6E76E55E492D3A80E30382E94DE
+  command: apt-key del {{ item }}
+  with_list:
+    - A2923DFF56EDA6E76E55E492D3A80E30382E94DE
+    - D75CEA17048B9ACBF186794B32637D44F14F620E
+    - 5F1E256061D813B125E156E8E6266D4AC0962C7D
 
 - name: Remove old datadog apt repository
   apt_repository:
@@ -17,14 +22,14 @@
 
 - name: Add new datadog apt key
   copy:
-    src: DATADOG_APT_KEY_F14F620E.gpg
+    src: DATADOG_APT_KEY_C0962C7D.gpg
     dest: /etc/apt/keyrings/
     owner: root
     group: root
 
 - name: Add new datadog apt repository
   apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/DATADOG_APT_KEY_F14F620E.gpg] http://apt.datadoghq.com/ stable 7"
+    repo: "deb [signed-by=/etc/apt/keyrings/DATADOG_APT_KEY_C0962C7D.gpg] http://apt.datadoghq.com/ stable 7"
     state: present
 
 - name: Install datadog agent

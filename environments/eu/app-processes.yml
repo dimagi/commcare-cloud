@@ -1,0 +1,77 @@
+formplayer_memory: "2g"
+formplayer_g1heapregionsize: "4m"
+management_commands:
+  celerybeat_a1:
+    run_submission_reprocessing_queue:
+    queue_schedule_instances:
+    handle_survey_actions:
+    run_sms_queue:
+  pillow_a1:
+    run_pillow_retry_queue:
+celery_processes:
+  celerybeat_a1:
+    beat: {}
+    flower: {}
+  celery_a1,celery_b1:
+    reminder_queue:
+      pooling: gevent
+      concurrency: 10
+    submission_reprocessing_queue:
+      concurrency: 1
+    sms_queue:
+      pooling: gevent
+      concurrency: 5
+    email_queue,repeat_record_queue,sumologic_logs_queue,reminder_case_update_queue,icds_aggregation_queue,analytics_queue:
+      pooling: gevent
+      concurrency: 100
+    celery,export_download_queue,reminder_rule_queue,case_import_queue,icds_dashboard_reports_queue,async_restore_queue,celery_periodic:
+      concurrency: 4
+    ucr_queue,ucr_indicator_queue,case_rule_queue:
+      concurrency: 2
+    linked_domain_queue:
+      concurrency: 10
+    malt_generation_queue:
+      concurrency: 10
+    saved_exports_queue:
+      concurrency: 1
+    background_queue,dashboard_comparison_queue:
+      concurrency: 2
+    geospatial_queue:
+      concurrency: 1
+pillows:
+  pillow_a1:
+    AppDbChangeFeedPillow:
+      num_processes: 1
+    ApplicationToElasticsearchPillow:
+      num_processes: 1
+    CacheInvalidatePillow:
+      num_processes: 1
+    DefaultChangeFeedPillow:
+      num_processes: 1
+    DomainDbKafkaPillow:
+      num_processes: 1
+    KafkaDomainPillow:
+      num_processes: 1
+    LedgerToElasticsearchPillow:
+      num_processes: 1
+    SqlSMSPillow:
+      num_processes: 1
+      processor_chunk_size: 1
+    UpdateUserSyncHistoryPillow:
+      num_processes: 1
+    UserCacheInvalidatePillow:
+      num_processes: 1
+    UserGroupsDbKafkaPillow:
+      num_processes: 1
+    case-pillow:
+      num_processes: 2
+      dedicated_migration_process: True
+      processor_chunk_size: 1
+    xform-pillow:
+      num_processes: 2
+      dedicated_migration_process: True
+    group-pillow:
+      num_processes: 1
+    user-pillow:
+      num_processes: 1
+      processor_chunk_size: 1

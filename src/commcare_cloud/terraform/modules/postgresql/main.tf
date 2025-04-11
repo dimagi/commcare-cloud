@@ -59,6 +59,7 @@ module "postgresql" {
   # DB option group
   major_engine_version = local.major_engine_version == "" ? local.computed_major_engine_version : var.major_engine_version
   monitoring_interval = var.rds_instance["monitoring_interval"]
+  monitoring_role_arn = var.rds_instance["monitoring_interval"] > 0 ? var.rds_monitoring_role_arn : null
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
   performance_insights_enabled = true
   performance_insights_retention_period = 7
