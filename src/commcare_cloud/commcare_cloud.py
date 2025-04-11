@@ -16,7 +16,7 @@ from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_error
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.clean_releases import CleanReleases
-from commcare_cloud.commands.deploy.command import Deploy
+from commcare_cloud.commands.deploy.command import Deploy, DeployDiff
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
 from commcare_cloud.commands.preindex_views import PreindexViews
@@ -85,6 +85,7 @@ COMMAND_GROUPS = OrderedDict([
         UpdateSupervisorConfs,
         Fab,
         Deploy,
+        DeployDiff,
         ListReleases,
         CleanReleases,
         PreindexViews,
