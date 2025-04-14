@@ -451,6 +451,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 15000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -466,6 +467,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 15000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -481,6 +483,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 15000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -496,6 +499,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 15000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -511,6 +515,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 15000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
