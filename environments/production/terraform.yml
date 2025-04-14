@@ -167,7 +167,7 @@ servers:
       BillTo: USH
 
   - server_name: "escoordinator_a1-production"
-    server_instance_type: r6in.2xlarge
+    server_instance_type: m6in.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -175,7 +175,7 @@ servers:
     os: jammy 
 
   - server_name: "escoordinator_b1-production"
-    server_instance_type: r6in.2xlarge
+    server_instance_type: m6in.4xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 30
