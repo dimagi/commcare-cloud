@@ -32,7 +32,7 @@ dbs:
   main:
     host: rds_pgmain1
     pgbouncer_endpoint: pgmain_nlb
-    pgbouncer_pool_size: 36
+    pgbouncer_pool_size: 43
     pgbouncer_reserve_pool_size: 0
     pgbouncer_hosts:
       - pgbouncer_a4
