@@ -1,0 +1,49 @@
+title: upgrade-to-es-6
+key: upgrade-to-es-6
+date: 2025-04-09
+optional_per_env: no
+
+min_commcare_version: # will add later
+
+context: |
+  Upgrade to Elasticsearch 6.
+  This changelog outlines the steps required to `reindex` all indices and then perform the upgrade from Elasticsearch 5.6.16 to 6.8.23.
+
+details: |
+  Currently, CommCare HQ is configured to run with Elasticsearch 5.6.16. The support for Elasticsearch 6.8.23 has been added in HQ. So everyone who is hosting CommCare HQ should is advised to upgrade to this version.
+  The support for Elasticsearch 5.6.16 will be removed soon.
+
+update_steps: |
+  The Elasticsearch upgrade is a multi-step process.
+  1. Reindex all indices.
+  2. Upgrade the Elasticsearch version.
+  3. Verify the upgrade.
+
+  We will go through each of these steps in detail below.
+
+  ## Reindex all indices
+
+  1. Deploy the latest version of CommCare HQ.
+  2. Ensure that there is enough free space available in your cluster. The command to estimate disk space required for reindexing is:
+
+      ```sh
+      cchq <env> django-manage elastic_sync_multiplexed estimated_size_for_reindex
+      ```
+  3. Check disk usage on each node
+      - If you have separate data nodes, check disk usage on data nodes
+          ```sh
+          cchq <env>  run-shell-command es_data "df -h /opt/data" -b
+          ```
+      - If you don't have separate data nodes, check disk usage on ES nodes.
+          ```sh
+          cchq <env>  run-shell-command elasticsearch "df -h /opt/data" -b
+          ```
+      This will return disk usage for each node. You can check if the cumulative available space across all nodes is greater than the total recommended space from the `estimated_size_for_reindex` output.
+
+  4. Update the public.yml    
+      If you don't have enough space available in your elasticsearch cluster, it is recommended to add more storage capacity before reindexing. If you don't have the option to add more storage, you will need to reindex one index at a time. You should follow the process described in [Reindexing One Index at A Time](https://github.com/dimagi/commcare-hq/blob/56682492f20c60cdef0ccde6049b9945b3658493/corehq/apps/es/REINDEX_PROCESS.md#reindexing-one-index-at-a-time)
+
+  ## Upgrade the Elasticsearch version
+  
+  
+  ## Verify the upgrade
