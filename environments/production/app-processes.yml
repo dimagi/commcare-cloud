@@ -74,7 +74,7 @@ celery_processes:
       concurrency: 1
       prefetch_multiplier: 1
     ucr_indicator_queue:
-      concurrency: 3
+      concurrency: 5
     ucr_queue:
       concurrency: 9
       prefetch_multiplier: 1
