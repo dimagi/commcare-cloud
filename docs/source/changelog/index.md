@@ -7,6 +7,12 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2025-04-16** [Upgrade to Elasticsearch 6](0087-upgrade-to-es-6.md)
+Upgrade to Elasticsearch 6.
+This changelog outlines the steps required to `reindex` all indices and then perform the upgrade from Elasticsearch 5.6.16 to 6.8.23.
+
+
+---
 #### **2025-03-27** [AWS S3 Client Library Upgrade](0086-s3-library-upgrade.md)
 The `botocore` library is being upgraded in CommCare HQ. A blob db
 configuration change may be necessary prior to deploying the new version.
