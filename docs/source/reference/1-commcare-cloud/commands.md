@@ -1206,6 +1206,22 @@ release.
 
 ---
 
+#### ``deploy-diff`` Command
+
+Display pull requests that would be deployed on master now.
+
+```
+commcare-cloud <env> deploy-diff [{commcare,formplayer}]
+```
+
+##### Positional Arguments
+
+###### `{commcare,formplayer}`
+
+Component to check deploy diff for. Default is 'commcare'.
+
+---
+
 #### ``list-releases`` Command
 
 List names that can be passed to `deploy --resume=RELEASE_NAME`

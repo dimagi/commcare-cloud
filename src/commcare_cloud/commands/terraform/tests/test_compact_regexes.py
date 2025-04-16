@@ -1,7 +1,11 @@
 import re
 
 from commcare_cloud.commands.terraform.constants import COMMCAREHQ_XML_POST_URLS_REGEX
-from commcare_cloud.commands.terraform.terraform import compact_waf_regexes_simply, compact_waf_regexes
+from commcare_cloud.commands.terraform.terraform import (
+    compact_waf_regexes_simply,
+    compact_waf_regexes,
+    create_waf_regex_lists
+)
 
 
 def test_compact_waf_regexes_simply__single_pattern():
@@ -51,9 +55,12 @@ def test_compact_waf_regexes__pattern_length():
         assert len(pattern) <= 200, pattern
 
 
-def test_compact_waf_regexes__number_of_patterns():
-    compacted_patterns = compact_waf_regexes(COMMCAREHQ_XML_POST_URLS_REGEX)
-    assert len(compacted_patterns) <= 10
+def test_compact_regex_lists__restricts_group_sizes():
+    groups = create_waf_regex_lists(COMMCAREHQ_XML_POST_URLS_REGEX)
+    num_keys = len(groups.keys())
+    assert num_keys == 2, num_keys
+    for (key, group) in groups.items():
+        assert len(group) <= 10, f'{key} has too many regexes: {len(group)}'
 
 
 def _test_compact_function_against_examples(compact_function, patterns):
