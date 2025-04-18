@@ -7,8 +7,4 @@
   loop:
     - update_django_locales
     - compilemessages -v 0
-
-- name: Compile Django JS Translations
-  command:
-    cmd: ./manage.py compilejsi18n
-    chdir: '{{ code_source }}'
+    - compilejsi18n
