@@ -26,3 +26,8 @@ variable "environment" {}
 variable "major_engine_version" {
   default = ""
 }
+
+variable "rds_monitoring_role_arn" {
+  type        = string
+  default     = null
+}
