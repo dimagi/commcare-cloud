@@ -16,14 +16,14 @@ Upgrade to Elasticsearch 6.
 This changelog outlines the steps required to `reindex` all indices and then perform the upgrade from Elasticsearch 5.6.16 to 6.8.23.
 
 ## Details
-Currently, CommCareHQ is configured to run with Elasticsearch 5.6.16. The support for Elasticsearch 6.8.23 has been added in HQ. So everyone who is hosting CommCareHQ should upgrade to this version.
-The support for Elasticsearch 5.6.16 will be removed soon.
+Currently, CommCare HQ is configured to run with Elasticsearch 5.6.16. Support for Elasticsearch 6.8.23 has recently been added in HQ. So everyone who is hosting CommCare HQ should upgrade to this version.
+Support for Elasticsearch 5.6.16 will be removed soon.
 
 ## Steps to update
 The Elasticsearch upgrade is a multi-step process.
 1. Reindex all HQ indices.
-2. Swap the indices to start reading and writing to the new index.
-3. Upgrade the Elasticsearch version.
+2. Swap the indices to start reading from and writing to the new index.
+3. Upgrade Elasticsearch to the newversion.
 4. Verify the upgrade.
 
 ## Reindex all indices
@@ -43,7 +43,7 @@ The Elasticsearch upgrade is a multi-step process.
         ```sh
         cchq <env>  run-shell-command elasticsearch "df -h /opt/data" -b
         ```
-    This will return disk usage for each node. You can check if the cumulative available space across all nodes is greater than the total recommended space from the `estimated_size_for_reindex` output.
+    This will return disk usage for each node. Ensure that the cumulative available space across all nodes is greater than the total recommended space from the `estimated_size_for_reindex` output.
 
 4. Update the `environments/<env>/public.yml`
   - Before we start reindexing, we need to ensure that the following parameters are set to the correct values in the `public.yml` file
@@ -64,7 +64,7 @@ The Elasticsearch upgrade is a multi-step process.
     ES_SMS_INDEX_MULTIPLEXED: True
     ES_USERS_INDEX_MULTIPLEXED: True
     ```
-    The multiplexer settings when set to `True` will start writing data to both the old and new indices. But reads will only go to the old index.
+    The multiplexer settings when set to `True` will start writing data to both the old and new indices, but reads will only go to the old index.
 
     ##### Index Swap Settings
     ```yaml
@@ -77,9 +77,9 @@ The Elasticsearch upgrade is a multi-step process.
     ES_SMS_INDEX_SWAPPED: False
     ES_USERS_INDEX_SWAPPED: False
     ```
-    The index swap settings when set to `True` will start reading and writing to the new index. We will set these to `False` for now. They will be set to `True` after the reindexing process is complete.
+    Ensure the index swapped settings are `False`. When set to `True`, reads and writes will go to the new index. They will be set to `True` after the reindexing process is complete.
 
-    If you don't see these variables in the `public.yml` file, you can add them to the file. we are going to use them at different stages of the reindexing process.
+    If you don't see these variables in the `public.yml` file, you should add them in the `localsettings:` block. They are required to run the reindexing process.
 
     If you want to understand more about these variables, read our [Adapter Design](https://github.com/dimagi/commcare-hq/blob/master/corehq/apps/es/README.rst#adapter-design) document.
 
@@ -90,18 +90,22 @@ The Elasticsearch upgrade is a multi-step process.
     cchq <env> django-manage restart_services
     ```
 6. Run the reindexing process.
-> If you don't have enough space available in your elasticsearch cluster, it is recommended to add more storage capacity before reindexing. If you don't have the option to add more storage, you will need to reindex one index at a time. You should follow the process described in [Reindexing One Index at A Time](https://github.com/dimagi/commcare-hq/blob/master/corehq/apps/es/REINDEX_PROCESS.md#reindexing-one-index-at-a-time)
+  
+    > If you don't have enough space available in your elasticsearch cluster, it is recommended to add more storage capacity before reindexing.
+    > If you don't have the option to add more storage, you will need to reindex one index at a time. You should follow the process described in [Reindexing One Index at A Time](https://github.com/dimagi/commcare-hq/blob/master/corehq/apps/es/REINDEX_PROCESS.md#reindexing-one-index-at-a-time)
+  
 
+    It is advised to run the following steps in a tmux session as they might take a long time and can be detached/re-attached as needed for monitoring progress.
 
-It is advised to run the following steps in a tmux session as they might take a long time and can be detached/re-attached as needed for monitoring progress.
-    - To start a tmux session in your django-manage machine, use the following steps, changing `<env>` to your environment name where needed:
+  - To start a tmux session in your django-manage machine, use the following steps, changing `<env>` to your environment name where needed:
 
-      ```bash
-      cchq <env> tmux django_manage
-      sudo -iu cchq
-      cd /home/cchq/www/<env>/current
-      source python_env/bin/activate
-      ```
+    ```bash
+    cchq <env> tmux django_manage
+    sudo -iu cchq
+    cd /home/cchq/www/<env>/current
+    source python_env/bin/activate
+    ```
+    
 
 7. The following steps should be performed serially for each canonical index name, replacing `${INDEX_CNAME}` with each of the following values `['apps', 'cases', 'case_search', 'domains', 'forms', 'groups', 'sms', 'users']`
 
@@ -175,7 +179,7 @@ Once all the indices have been reindexed, we can swap the indices to start readi
     cchq <env> django-manage restart_services
     ```
 
-3. Ensure that HQ is running fine with the new index. You can do it by testing the reports in your hosted CommCare instance. Optional but recommended: You can keep HQ in this state for a few working hours to ensure that the new index is stable.
+3. Ensure that CommCare HQ is running fine with the new index. You can do it by testing the reports in your hosted CommCare instance. Optional but recommended: You can keep CommCare HQ in this state for a few working hours to ensure that the new index is stable.
 
 4. Turn off multiplexing by setting the following variables to `False` in the public.yml file.
 
@@ -196,9 +200,9 @@ Once all the indices have been reindexed, we can swap the indices to start readi
     cchq <env> django-manage update_config
     cchq <env> django-manage restart_services
     ```
-6. Ensure that HQ is running fine with the new index. You can do it by clicking around HQ and maybe testing a report or two.
+6. Ensure that CommCare HQ is running fine with the new index. The simplest way is to check that a report works as expected.
 
-7. Delete old and unused CommCare Indices by running the following commands. The command will ask you confirm the deletion by typing in the index cname. 
+7. Delete old and unused Elasticsearch Indices created by CommCare HQ by running the following commands. The command will ask you confirm the deletion by typing in the index name. 
   ```
     cchq <env> django-manage elastic_sync_multiplexed delete apps
     cchq <env> django-manage elastic_sync_multiplexed delete cases
@@ -209,7 +213,7 @@ Once all the indices have been reindexed, we can swap the indices to start readi
     cchq <env> django-manage elastic_sync_multiplexed delete sms
     cchq <env> django-manage elastic_sync_multiplexed delete users
   ``` 
-8. Delete residual indices from elasticsearch that do not belong to CommCare. The command will ask you to confirm the deletion by typing in the index name.
+8. Delete residual indices from elasticsearch that do not belong to CommCare HQ. The command will ask you to confirm the deletion by typing in the index name.
   
   ```
     cchq <env> django-manage elastic_sync_multiplexed remove_residual_indices
@@ -278,7 +282,7 @@ or that you have a place to back up to on another disk or remotely. You can chec
     cchq ${ENV} update-config
   ```
 
-5. Disable Elasticsearch shard allocation. It should already be disabled but for ensuring that its already disabled.
+5. Disable Elasticsearch shard allocation. It should already be disabled, but run this command to ensure that it is already disabled.
 
   ```sh
     curl -X PUT "${ES_HOST}:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
@@ -308,7 +312,7 @@ or that you have a place to back up to on another disk or remotely. You can chec
 8. Make a backup of the 5.6.16 data directory. If you are backing up on the same machine then one way to do it is by:
   
   ```sh
-    cchq ${ENV} run-shell-command elasticsearch "cp -r /opt/data/elasticsearch-5.6.16 /opt/data/elasticsearch-5.6.16-backup" -b
+    cchq ${ENV} run-shell-command elasticsearch "rsync -av /opt/data/elasticsearch-5.6.16 /opt/data/elasticsearch-5.6.16-backup" -b
   ```
 9. Install and run the new version of Elasticsearch.
 
@@ -332,7 +336,7 @@ or that you have a place to back up to on another disk or remotely. You can chec
     cchq ${ENV} run-shell-command elasticsearch "mv /opt/data/elasticsearch-5.6.16 /opt/data/elasticsearch-6.8.23" -b
   ```
 
-12. With ES 6 the cluster name is not allowed in data path, so we move data directory up one level.
+12. With Elasticsearch 6 the cluster name is not allowed in data path, so we move data directory up one level.
 
 You might see an error if there is no cluster name in your elasticsearch data path and that is fine. It can happen if you have a relatively new installation.
 
@@ -351,7 +355,7 @@ You might see an error if there is no cluster name in your elasticsearch data pa
     cchq ${ENV} run-shell-command  elasticsearch  "ls -al  /opt/data/elasticsearch-6.8.23" -b
   ```
 
-14. Verify that the tmp directory exists and create it and assign it right permissions if it doesn't.
+14. Verify that the tmp directory exists. If it does not, create it and assign it the right permissions.
 
   ```sh
     cchq ${ENV} run-shell-command elasticsearch "mkdir /opt/data/elasticsearch-6.8.23/tmp" -b
