@@ -312,7 +312,7 @@ or that you have a place to back up to on another disk or remotely. You can chec
 8. Make a backup of the 5.6.16 data directory. If you are backing up on the same machine then one way to do it is by:
   
   ```sh
-    cchq ${ENV} run-shell-command elasticsearch "rsync -av /opt/data/elasticsearch-5.6.16 /opt/data/elasticsearch-5.6.16-backup" -b
+    cchq ${ENV} run-shell-command elasticsearch "rsync -av /opt/data/elasticsearch-5.6.16/ /opt/data/elasticsearch-5.6.16-backup/" -b
   ```
 9. Install and run the new version of Elasticsearch.
 
