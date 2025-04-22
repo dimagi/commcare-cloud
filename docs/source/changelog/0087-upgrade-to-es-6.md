@@ -23,7 +23,7 @@ Support for Elasticsearch 5.6.16 will be removed soon.
 The Elasticsearch upgrade is a multi-step process.
 1. Reindex all HQ indices.
 2. Swap the indices to start reading from and writing to the new index.
-3. Upgrade Elasticsearch to the newversion.
+3. Upgrade Elasticsearch to the new version.
 4. Verify the upgrade.
 
 ## Reindex all indices
