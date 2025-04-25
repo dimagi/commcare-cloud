@@ -416,6 +416,7 @@ rds_instances:
     storage: 2000
     storage_type: gp3
     storage_throughput: 1000
+    iops: 20000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
