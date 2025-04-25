@@ -415,6 +415,7 @@ rds_instances:
     instance_type: "db.m6g.4xlarge"
     storage: 2000
     storage_type: gp3
+    storage_throughput: 1000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
