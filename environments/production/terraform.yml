@@ -189,7 +189,7 @@ servers:
     volume_size: 90
     volume_encrypted: yes
     block_device:
-      volume_size: 3500
+      volume_size: 1000
       encrypted: yes
     group: "couchdb2"
     os: bionic
