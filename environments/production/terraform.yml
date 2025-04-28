@@ -420,6 +420,7 @@ rds_instances:
     engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
+    iops: 18000
     enable_cross_region_backup: true
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
