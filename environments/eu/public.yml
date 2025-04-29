@@ -264,16 +264,16 @@ localsettings:
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa
 
-firehose_endpoint: "firehose.ap-south-1.amazonaws.com"
-kinesis_endpoint: "kinesis.ap-south-1.amazonaws.com"
+firehose_endpoint: "firehose.eu-west-1.amazonaws.com"
+kinesis_endpoint: "kinesis.eu-west-1.amazonaws.com"
 kinesis_flows:
   - file_pattern: "/opt/data/formplayer/log/request_response.*log"
-    delivery_stream: "formplayer-request-response-logs-partitioned-india"
+    delivery_stream: "formplayer-request-response-logs-partitioned-eu"
 
 enable_cloudwatch_logs: true
 
 efs_shared_mount_dir: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
-efs_shared_mount_endpoint: "shared-efs.india.commcare.local:/"
+efs_shared_mount_endpoint: "shared-efs.eu.commcare.local:/"
 efs_shared_mount_options: "_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
 shared_dir_gid: 1500
 
