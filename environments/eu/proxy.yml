@@ -4,3 +4,4 @@ primary_ssl_env: "eu"
 nginx_hsts_max_age: 31536000 # 1 year
 trusted_proxies:
   - 10.203.0.0/16
+J2ME_SITE_HOST: "j2me.eu.commcarehq.org"
