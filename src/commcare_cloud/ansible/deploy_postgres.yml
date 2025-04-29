@@ -37,8 +37,7 @@
     - name: Install python-psycopg2 to be able to set up remote postgresql
       become: yes
       block:
-        - apt: name=libpq-dev state=latest
-        - pip: name=psycopg2
+        - pip: name=psycopg2-binary
     - name: Remote PostgreSQL
       include_role:
         name: postgresql_base
