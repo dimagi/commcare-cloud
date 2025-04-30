@@ -16,11 +16,7 @@ couch12-production: 10.202.40.52
 couch12-production.instance_id: i-0e9aaeea3a117206e
 couch_a0-production: 10.202.40.200
 couch_a0-production.instance_id: i-0451df80fe9da4eef
-couch_a1-production: 10.202.40.179
-couch_a1-production.instance_id: i-04b77afb7b43ddf16
 couch_alb-production: internal-couch-alb-production-4251727.us-east-1.elb.amazonaws.com
-couch_b0-production: 10.202.41.204
-couch_b0-production.instance_id: i-03f70dc45f928a0a7
 djangomanage_a1-production: 10.202.10.13
 djangomanage_a1-production.instance_id: i-05287a83c6f4dfc10
 efs_production-efs: fs-99495a6e.efs.us-east-1.amazonaws.com
@@ -34,6 +30,8 @@ es_a2003-production: 10.202.40.227
 es_a2003-production.instance_id: i-05c908c2f55a1549a
 es_a3000-production: 10.202.40.66
 es_a3000-production.instance_id: i-0d58fc64497052f07
+es_a3001-production: 10.202.40.116
+es_a3001-production.instance_id: i-06346b458b5eea0b9
 es_b2000-production: 10.202.41.55
 es_b2000-production.instance_id: i-04281634f9046726f
 es_b2001-production: 10.202.41.131
@@ -44,6 +42,8 @@ es_b2003-production: 10.202.41.212
 es_b2003-production.instance_id: i-02a7aac1a3b7b4386
 es_b3000-production: 10.202.41.48
 es_b3000-production.instance_id: i-0497f925fcf895a8b
+es_b3001-production: 10.202.41.191
+es_b3001-production.instance_id: i-0a6da3f8e5af8a3a6
 escoordinator_a1-production: 10.202.40.159
 escoordinator_a1-production.instance_id: i-07757f1f451725bf0
 escoordinator_b1-production: 10.202.41.10

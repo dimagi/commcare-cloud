@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 install_deps = [
     'ansible-vault==2.1.0',
@@ -22,7 +22,7 @@ install_deps = [
     'netaddr',
     'passlib',
     'pycryptodome>=3.6.6',  # security update
-    'PyGithub>=1.43.3',
+    'PyGithub',
     'pytz',
     'simplejson',
     'six',

@@ -28,6 +28,8 @@ module "postgresql" {
   allocated_storage = var.rds_instance["storage"]
   max_allocated_storage = var.rds_instance["max_storage"]
   storage_type = var.rds_instance["storage_type"]
+  iops = var.rds_instance["iops"]
+  storage_throughput = var.rds_instance["storage_throughput"]
 
   apply_immediately     = var.apply_immediately
   auto_minor_version_upgrade = false

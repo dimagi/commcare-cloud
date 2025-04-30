@@ -26,8 +26,6 @@
   loop:
     - collectstatic --noinput -v 0
     - fix_less_imports_collectstatic
-    - compilejsi18n
-    - build_requirejs
 
 - name: Generate Webpack Settings
   # Generates webpack/settings.json so that webpack has the same path

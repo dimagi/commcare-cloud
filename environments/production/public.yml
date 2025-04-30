@@ -38,9 +38,9 @@ DATADOG_TRACE:
     env: production
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_cluster_name: 'prodhqes-1.x'
-elasticsearch_version: 5.6.16
-elasticsearch_download_sha256: 6b035a59337d571ab70cea72cc55225c027ad142fbb07fd8984e54261657c77f.
+elasticsearch_cluster_name: 'prodhqes'
+elasticsearch_version: 6.8.23
+elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
@@ -81,8 +81,6 @@ formplayer_custom_properties:
   spring.datasource.hikari.minimum-idle: 5
 
 KSPLICE_ACTIVE: yes
-
-run_websockets_wsgi: True
 
 couch_dbs:
   default:
@@ -160,29 +158,28 @@ localsettings:
   CUSTOM_SYNCLOGS_DB: "synclogs_2017-11-01"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   DEVICE_LOGS_ENABLED: no
-  DEVICE_LIMIT_PER_USER: 50
   EULA_COMPLIANCE: True
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
   ENFORCE_SSO_LOGIN: True
-  ELASTICSEARCH_MAJOR_VERSION: 5
+  ELASTICSEARCH_MAJOR_VERSION: 6
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-04"
   ES_XFORM_INDEX_NAME: "xforms_2023-01-27"
   # When to consider multiplex settings
   ES_MULTIPLEX_TO_VERSION: '6'
   # Index Multiplexer Settings  
-  ES_APPS_INDEX_MULTIPLEXED: True
+  ES_APPS_INDEX_MULTIPLEXED: False # Index swapped
   ES_CASE_SEARCH_INDEX_MULTIPLEXED: False # Index swapped
   ES_CASES_INDEX_MULTIPLEXED: False # Index swapped
-  ES_DOMAINS_INDEX_MULTIPLEXED: True
+  ES_DOMAINS_INDEX_MULTIPLEXED: False # Index swapped
   ES_FORMS_INDEX_MULTIPLEXED: False # Index swapped
-  ES_GROUPS_INDEX_MULTIPLEXED: True
-  ES_SMS_INDEX_MULTIPLEXED: True
-  ES_USERS_INDEX_MULTIPLEXED: True
-  # Index Swap settings  
-  ES_APPS_INDEX_SWAPPED: False
+  ES_GROUPS_INDEX_MULTIPLEXED: False # Index swapped
+  ES_SMS_INDEX_MULTIPLEXED: False # Index swapped
+  ES_USERS_INDEX_MULTIPLEXED: False # Index swapped
+  # Index Swap settings
+  ES_APPS_INDEX_SWAPPED: True
   ES_CASE_SEARCH_INDEX_SWAPPED: True
   ES_CASES_INDEX_SWAPPED: True
   ES_DOMAINS_INDEX_SWAPPED: True
@@ -193,10 +190,6 @@ localsettings:
   # Index settings end
   CASE_SEARCH_SUB_INDICES: {
     'co-carecoordination': {
-        'index_cname': 'case_search_bha',
-        'multiplex_writes': True,
-    },
-    'co-carecoordination-perf': {
         'index_cname': 'case_search_bha',
         'multiplex_writes': True,
     },
@@ -254,11 +247,10 @@ localsettings:
         - 'ils-gateway'
         - 'ils-gateway-train'
   USER_REPORTING_METADATA_BATCH_ENABLED: True
-  WS4REDIS_CONNECTION_HOST: "redis.production.commcare.local"
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
   CONNECTID_CHANNEL_URL: 'https://connectid.dimagi.com/messaging/create_channel/'
   CONNECTID_MESSAGE_URL: 'https://connectid.dimagi.com/messaging/send_fcm/'
-  ASYNC_INDICATORS_TO_QUEUE: 20000
+  ASYNC_INDICATORS_TO_QUEUE: 100000
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu

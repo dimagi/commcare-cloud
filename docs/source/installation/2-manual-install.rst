@@ -538,17 +538,11 @@ You are now ready to deploy CommCare HQ services.
 
 ::
 
-   $ commcare-cloud cluster deploy-stack -e 'CCHQ_IS_FRESH_INSTALL=1'
+   $ commcare-cloud cluster deploy-stack -e 'CCHQ_IS_FRESH_INSTALL=1' --skip-check
 
 This will run a series of Ansible commands that will take quite a long
-time to run.
-
-If there are failures during the install, which may happen due to timing
-issues, you can continue running the playbook with:
-
-::
-
-   $ commcare-cloud cluster deploy-stack --skip-check -e 'CCHQ_IS_FRESH_INSTALL=1'
+time to run. If there are failures during the install, which may happen due to timing
+issues, you can rerun this command.
 
 Deploy CommCare HQ code
 -----------------------
@@ -657,7 +651,7 @@ Firefighting issues once CommCare HQ is running
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You may also wish to look at the
-:ref:`firefighting` page which lists out common
+:ref:`reference/firefighting/index:Firefighting Production Issues` page which lists out common
 issues that ``commcare-cloud`` can resolve.
 
 If you ever reboot this machine, make sure to follow the `after reboot

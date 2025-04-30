@@ -44,7 +44,7 @@ servers:
     os: jammy 
 
   - server_name: "web_a2{i}-production"
-    server_instance_type: m6a.2xlarge
+    server_instance_type: c6a.4xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -55,7 +55,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_b2{i}-production"
-    server_instance_type: m6a.2xlarge
+    server_instance_type: c6a.4xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
@@ -66,7 +66,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_m_a2{i}-production"
-    server_instance_type: m6a.4xlarge
+    server_instance_type: c6a.8xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -76,7 +76,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_m_b2{i}-production"
-    server_instance_type: m6a.4xlarge
+    server_instance_type: c6a.8xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
@@ -148,7 +148,7 @@ servers:
       enable_cross_region_backup: yes
     group: "elasticsearch"
     os: jammy
-    count: 1
+    count: 2
     additional_tags:
       BillTo: USH
 
@@ -162,12 +162,12 @@ servers:
       volume_size: 2800
     group: "elasticsearch"
     os: jammy
-    count: 1
+    count: 2
     additional_tags:
       BillTo: USH
 
   - server_name: "escoordinator_a1-production"
-    server_instance_type: r6a.2xlarge
+    server_instance_type: m6in.4xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -175,7 +175,7 @@ servers:
     os: jammy 
 
   - server_name: "escoordinator_b1-production"
-    server_instance_type: r6a.2xlarge
+    server_instance_type: m6in.4xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -189,7 +189,7 @@ servers:
     volume_size: 90
     volume_encrypted: yes
     block_device:
-      volume_size: 3500
+      volume_size: 1000
       encrypted: yes
     group: "couchdb2"
     os: bionic
@@ -217,38 +217,6 @@ servers:
       volume_size: 3150
       encrypted: yes
       enable_cross_region_backup: yes
-    group: "couchdb2"
-    os: jammy
-
-  - server_name: "couch_a1-production"
-    ## Increase once ready for migration
-    # server_instance_type: c6a.8xlarge
-    server_instance_type: c6a.large
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    volume_encrypted: yes
-    block_device:
-      ## Increase once ready for migration
-      # volume_size: 3150
-      volume_size: 1
-      encrypted: yes
-    group: "couchdb2"
-    os: jammy
-
-  - server_name: "couch_b0-production"
-    ## Increase once ready for migration
-    # server_instance_type: c6a.8xlarge
-    server_instance_type: c6a.large
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 80
-    volume_encrypted: yes
-    block_device:
-      ## Increase once ready for migration
-      # volume_size: 3150
-      volume_size: 1
-      encrypted: yes
     group: "couchdb2"
     os: jammy
 
@@ -309,7 +277,7 @@ servers:
     count: 1
 
   - server_name: "pillow_b2{i}-production"
-    server_instance_type: r6a.8xlarge
+    server_instance_type: r6a.24xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 50
@@ -345,7 +313,7 @@ servers:
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "a"
-    volume_size: 150
+    volume_size: 210
     volume_encrypted: yes
     group: "kafka"
     os: jammy 
@@ -354,7 +322,7 @@ servers:
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "b"
-    volume_size: 150
+    volume_size: 210
     volume_encrypted: yes
     group: "kafka"
     os: jammy 
@@ -363,7 +331,7 @@ servers:
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "c"
-    volume_size: 150
+    volume_size: 210
     volume_encrypted: yes
     group: "kafka"
     os: jammy 
@@ -447,10 +415,12 @@ rds_instances:
     instance_type: "db.m6g.4xlarge"
     storage: 2000
     storage_type: gp3
+    storage_throughput: 1000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
+    iops: 18000
     enable_cross_region_backup: true
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
@@ -479,10 +449,11 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard1-production"
-    instance_type: "db.m6g.2xlarge"
+    instance_type: "db.m6g.4xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 20000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -494,10 +465,11 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard2-production"
-    instance_type: "db.m6g.2xlarge"
+    instance_type: "db.m6g.4xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 20000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -509,10 +481,11 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard3-production"
-    instance_type: "db.m6g.2xlarge"
+    instance_type: "db.m6g.4xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 20000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -524,10 +497,11 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard4-production"
-    instance_type: "db.m6g.2xlarge"
+    instance_type: "db.m6g.4xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 20000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -539,10 +513,11 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard5-production"
-    instance_type: "db.m6g.2xlarge"
+    instance_type: "db.m6g.4xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 20000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"

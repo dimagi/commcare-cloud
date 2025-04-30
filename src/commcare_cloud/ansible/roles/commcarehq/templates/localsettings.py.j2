@@ -736,6 +736,14 @@ RECAPTCHA_PUBLIC_KEY = {{ RECAPTCHA_PUBLIC_KEY }}
 RECAPTCHA_PRIVATE_KEY = {{ RECAPTCHA_PRIVATE_KEY }}
 {% endif %}
 
+{% if MAXMIND_ACCOUNT_ID %}
+MAXMIND_ACCOUNT_ID = {{ MAXMIND_ACCOUNT_ID }}
+{% endif %}
+
+{% if MAXMIND_LICENSE_KEY %}
+MAXMIND_LICENSE_KEY = {{ MAXMIND_LICENSE_KEY }}
+{% endif %}
+
 {% if localsettings.get('DISABLE_AUTOCOMPLETE_ON_SENSITIVE_FORMS') %}
 DISABLE_AUTOCOMPLETE_ON_SENSITIVE_FORMS = True
 {% endif %}
@@ -761,12 +769,6 @@ DATADOG_APP_KEY = '{{ DATADOG_APP_KEY }}'
 {% endif %}
 
 METRICS_PROVIDERS = {{ metrics_providers | to_json }}
-
-{% if localsettings.get('WS4REDIS_CONNECTION_HOST') %}
-WS4REDIS_CONNECTION = {
-    'host': '{{ localsettings.WS4REDIS_CONNECTION_HOST }}'
-}
-{% endif %}
 
 {% if prometheus_celery_pushgateway is defined %}
 PROMETHEUS_PUSHGATEWAY_HOST = os.environ.get('PROMETHEUS_PUSHGATEWAY_HOST', None)
@@ -1230,8 +1232,4 @@ MIN_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MIN_REPEATER_RATE_LIMIT_DELAY }
 
 {% if localsettings.MAX_REPEATER_RATE_LIMIT_DELAY is defined %}
 MAX_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MAX_REPEATER_RATE_LIMIT_DELAY }}
-{% endif %}
-
-{% if localsettings.DEVICE_LIMIT_PER_USER is defined %}
-DEVICE_LIMIT_PER_USER = {{ localsettings.DEVICE_LIMIT_PER_USER }}
 {% endif %}
