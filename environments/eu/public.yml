@@ -57,9 +57,8 @@ BROKER_URL: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ 
 
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 
-control_machine_ip: 10.162.36.196
+control_machine_ip: 10.204.10.141
 
-run_websockets_wsgi: True
 
 show_maintenance_updates_on_deploy: False
 
@@ -176,7 +175,7 @@ localsettings:
     "country": "US"
     "phone_number": "(617) 649-2214"
     "email": "accounts@dimagi.com"
-    "website": "http://www.dimagi.com"
+    "website": "https://www.dimagi.com"
   INVOICE_PREFIX: EU-
   INVOICE_STARTING_NUMBER: 5000
   J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
@@ -202,64 +201,6 @@ localsettings:
   #  STATIC_ROOT:
   WS4REDIS_CONNECTION_HOST: "redis.eu.commcare.local"
   USER_REPORTING_METADATA_BATCH_ENABLED: True
-  STATIC_TOGGLE_STATES:
-    ucr_sum_when_templates:
-      always_enabled:
-        - "icds-cas"
-    hierarchical_location_fixture:
-      always_enabled:
-        - "icds-cas"
-    extension_sync:
-      always_enabled:
-        - "icds-cas"
-    livequery_sync:
-      always_enabled:
-        - "icds-cas"
-    mobile_ucr:
-      always_enabled:
-        - "icds-cas"
-    mobile_ucr_linked_domain:
-      always_enabled:
-        - "icds-cas"
-    cautious_multimedia:
-      always_enabled:
-        - "icds-cas"
-        - "icds"
-    icds:
-      always_enabled:
-        - "icds-cas"
-        - "icds-dashboard-qa"
-        - "reach-test"
-        - "icds-sql"
-        - "icds-test"
-        - "icds-cas-sandbox"
-    show_build_profile_in_app_status:
-      always_enabled:
-        - "icds-cas"
-    mm_case_properties:
-      always_disabled:
-        - "icds-cas"
-    async_restore:
-      always_disabled:
-        - "icds-cas"
-    sync_all_locations:
-      always_disabled:
-        - "icds-cas"
-    FORM_SUBMISSION_BLACKLIST:
-      always_disabled:
-        - "icds-cas"
-    run_auto_case_updates_on_save:
-      always_disabled:
-        - "icds-cas"
-    mobile_user_login_lockout:
-      always_disabled:
-        - "icds-cas"
-    sort_out_of_order_form_submissions_sql:
-      always_disabled:
-        - "icds-cas"
-    manage_releases_per_location:
-      always_disabled:
-        - "icds-cas"
 
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa
