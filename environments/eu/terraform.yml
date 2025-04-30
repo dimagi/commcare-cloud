@@ -40,7 +40,7 @@ servers:
     os: jammy
 
   - server_name: "web_a1-eu"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -51,7 +51,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_b1-eu"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
@@ -306,7 +306,7 @@ servers:
 
 proxy_servers:
   - server_name: "proxy_a1-eu"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -316,7 +316,7 @@ proxy_servers:
     os: jammy
 
   - server_name: "proxy_b1-eu"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
