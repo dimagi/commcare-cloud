@@ -86,7 +86,7 @@ saas_ops_email:
 
 saas_reporting_email:
     The "Credits On HQ" report is sent to this address for the
-    "production", "india" and "swiss" Dimagi environments.
+    "production" and "india" Dimagi environments.
 
 master_list_email:
     This address is sent a list of self-started projects which have

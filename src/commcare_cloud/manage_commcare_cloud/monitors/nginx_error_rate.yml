@@ -19,8 +19,8 @@ options:
   silenced: {}
   thresholds: {critical: 8.0}
   timeout_h: 0
-query: min(last_30m):sum:nginx.requests{status_code:500,!environment:swiss,!environment:staging}
-  by {environment}.rollup(sum, 600) * 100 / ( sum:nginx.requests{!environment:swiss,!environment:staging}
+query: min(last_30m):sum:nginx.requests{status_code:500,!environment:staging}
+  by {environment}.rollup(sum, 600) * 100 / ( sum:nginx.requests{!environment:staging}
   by {environment}.rollup(sum, 600) + 100 ) > 8
 tags: ['*']
 type: query alert

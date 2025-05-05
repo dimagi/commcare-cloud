@@ -105,7 +105,8 @@ To check that commcare-cloud is now installed, run
    admin@control.example.com:~$ commcare-cloud -h
    usage: commcare-cloud [-h] [--control]
 
-                         {development,echis,icds,icds-new,pna,production,softlayer,staging,swiss}
+                         {development,echis,icds,icds-new,pna,production,softlayer,staging,
+                         swiss}
                          {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
                          ...
 
