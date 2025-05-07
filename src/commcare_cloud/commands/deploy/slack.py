@@ -111,7 +111,7 @@ class SlackClient:
         if is_success:
             if duration.seconds < 60 * 15:
                 speed_emoji = Emoji.fast_reaction
-            elif duration.seconds > 60 * 30:
+            elif duration.seconds > 60 * 35:
                 speed_emoji = Emoji.slow_reaction
             else:
                 speed_emoji = Emoji.medium_reaction
