@@ -7,6 +7,12 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2025-05-08** [Install uv for Python dependency management](0088-install-uv.md)
+CommCare HQ is moving to using `uv` for Python dependency management, which
+simplifies and speeds up dependency installation.
+
+
+---
 #### **2025-04-16** [Upgrade to Elasticsearch 6](0087-upgrade-to-es-6.md)
 Upgrade to Elasticsearch 6.
 This changelog outlines the steps required to `reindex` all indices and then perform the upgrade from Elasticsearch 5.6.16 to 6.8.23.
