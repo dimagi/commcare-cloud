@@ -43,6 +43,25 @@ class TestSetupVirtualenv(TestCase):
         assert (self.release / "venv/bin").is_dir(), listdir(self.release)
         self.assertEqual(result["venv"], str(self.release / "venv"))
 
+    def test_setup_virtualenv_with_uv(self):
+        def pip_sync(*args, **kw):
+            raise Fail("unexpected pip-sync")
+
+        (self.release / "pyproject.toml").touch()
+        setup_virtualenv = ansible.import_module("setup_virtualenv")
+        with patch.object(setup_virtualenv, "pip_sync", pip_sync):
+            result = ansible.run("setup_virtualenv", {
+                "src": str(self.previous_release),
+                "dest": str(self.release),
+                "env_name": "venv",
+                "python_version": PYTHON_VERSION,
+            })
+        self.assertTrue(result.get("changed"), result)
+        assert (self.release / "venv-3.9/bin").exists(), listdir(self.release)
+        assert (self.release / ".venv/bin").is_dir(), listdir(self.release)
+        assert (self.release / "venv/bin").is_dir(), listdir(self.release)
+        self.assertEqual(result["venv"], str(self.release / "venv"))
+
     def test_setup_virtualenv_with_wrong_python_version(self):
         py36_release = self.tmp / "py36"
         create_fake_virtualenv(py36_release / "venv-3.6")

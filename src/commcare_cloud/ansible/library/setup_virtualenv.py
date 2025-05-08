@@ -113,15 +113,31 @@ def main():
     if not python_env.exists():
         result["changed"] = True
         if not module.check_mode:
-            if not (next_env / "bin/python").exists():
-                if not prev_env.exists():
-                    module.fail_json(msg=f"virtualenv not found: {prev_env}")
-                    return
-                clone_virtualenv(prev_env, next_env, module)
-            pip_sync(dest, next_env, module, proxy)
+            if (dest / "pyproject.toml").exists():
+                uv_sync(dest, proxy, module)
+                assert (dest / ".venv").is_dir(), "uv did not create .venv"
+                (dest / full_env_name).symlink_to(".venv")
+                full_env_name = ".venv"
+            else:
+                if not (next_env / "bin/python").exists():
+                    if not prev_env.exists():
+                        module.fail_json(msg=f"virtualenv not found: {prev_env}")
+                        return
+                    clone_virtualenv(prev_env, next_env, module)
+                pip_sync(dest, next_env, module, proxy)
             python_env.symlink_to(full_env_name)
 
     module.exit_json(**result)
+
+
+def uv_sync(dest, proxy, module):
+    proxy_env = {"ALL_PROXY": proxy} if proxy else {}
+    module.run_command(
+        ["uv", "sync", "--group=prod", "--no-dev", "--locked"],
+        environ_update={"UV_HTTP_TIMEOUT": "60", **proxy_env},
+        cwd=dest,
+        check_rc=True,
+    )
 
 
 def clone_virtualenv(prev_env, next_env, module):
