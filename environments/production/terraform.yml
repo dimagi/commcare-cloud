@@ -449,11 +449,11 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard1-production"
-    instance_type: "db.m6g.4xlarge"
+    instance_type: "db.m6g.2xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
-    iops: 20000
+    iops: 12000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -465,11 +465,11 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard2-production"
-    instance_type: "db.m6g.4xlarge"
+    instance_type: "db.m6g.2xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
-    iops: 20000
+    iops: 12000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -481,11 +481,11 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard3-production"
-    instance_type: "db.m6g.4xlarge"
+    instance_type: "db.m6g.2xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
-    iops: 20000
+    iops: 12000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -497,11 +497,11 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard4-production"
-    instance_type: "db.m6g.4xlarge"
+    instance_type: "db.m6g.2xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
-    iops: 20000
+    iops: 12000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -513,11 +513,11 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard5-production"
-    instance_type: "db.m6g.4xlarge"
+    instance_type: "db.m6g.2xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
-    iops: 20000
+    iops: 12000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
