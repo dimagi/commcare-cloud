@@ -149,6 +149,13 @@ def pip_sync(dest, venv_path, module, proxy):
     pip_args = ["--timeout=60"]
     if proxy:
         pip_args.append(f"--proxy={quote(proxy)}")
+    if not pip.exists():
+        # Install pip if previous environment didn't have it (uv envs don't)
+        # This uses a pip installed at the system level.
+        module.run_command(
+            ["pip", "--python", venv_path, "install", *pip_args, "pip"],
+            check_rc=True,
+        )
     module.run_command(
         [pip, "install", "--quiet", "--upgrade", *pip_args, "pip-tools"],
         check_rc=True,
