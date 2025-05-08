@@ -89,7 +89,6 @@ def main():
         'dest': {'type': 'str', 'required': True},
         'env_name': {'type': 'str', 'default': 'python_env'},
         'python_version': {'type': 'str', 'required': True},
-        'requirements_file': {'type': 'str', 'required': True},
         'http_proxy': {'type': 'str', 'default': None},
     }
     module = AnsibleModule(
@@ -106,7 +105,6 @@ def main():
     prev_env = src.resolve() / full_env_name
     next_env = dest / full_env_name
     python_env = dest / env_name
-    requirements_file = dest / params["requirements_file"]
     proxy = params["http_proxy"]
 
     diff = {'before': {'path': str(prev_env)}, 'after': {'path': str(next_env)}}
@@ -120,7 +118,7 @@ def main():
                     module.fail_json(msg=f"virtualenv not found: {prev_env}")
                     return
                 clone_virtualenv(prev_env, next_env, module)
-            pip_sync(requirements_file, next_env, module, proxy)
+            pip_sync(dest, next_env, module, proxy)
             python_env.symlink_to(full_env_name)
 
     module.exit_json(**result)
@@ -130,7 +128,7 @@ def clone_virtualenv(prev_env, next_env, module):
     module.run_command(["virtualenv-clone", prev_env, next_env], check_rc=True)
 
 
-def pip_sync(requirements_file, venv_path, module, proxy):
+def pip_sync(dest, venv_path, module, proxy):
     pip = venv_path / "bin/pip"
     pip_args = ["--timeout=60"]
     if proxy:
@@ -139,6 +137,7 @@ def pip_sync(requirements_file, venv_path, module, proxy):
         [pip, "install", "--quiet", "--upgrade", *pip_args, "pip-tools"],
         check_rc=True,
     )
+    requirements_file = dest / "requirements/prod-requirements.txt"
     pip_sync = venv_path / "bin/pip-sync"
     module.run_command(
         [pip_sync, "--quiet", f"--pip-args={' '.join(pip_args)}", requirements_file],

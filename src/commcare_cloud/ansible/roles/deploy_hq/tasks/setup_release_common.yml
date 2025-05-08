@@ -12,7 +12,6 @@
     src: "{{ code_home }}"
     dest: "{{ code_source }}"
     python_version: "{{ python_version }}"
-    requirements_file: "requirements/prod-requirements.txt"
     http_proxy: "{{ http_proxy | default(omit, true) }}"
 
 - name: Copy localsettings.py

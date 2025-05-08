@@ -27,8 +27,8 @@ class TestSetupVirtualenv(TestCase):
 
     def setUp(self):
         self.release = self.tmp / "release"
-        self.release.mkdir()
-        (self.release / "requires.txt").symlink_to(self.requires)
+        (self.release / "requirements").mkdir(parents=True)
+        (self.release / "requirements/prod-requirements.txt").symlink_to(self.requires)
         self.addCleanup(shutil.rmtree, self.release)
 
     def test_setup_virtualenv(self):
@@ -37,7 +37,6 @@ class TestSetupVirtualenv(TestCase):
             "dest": str(self.release),
             "env_name": "venv",
             "python_version": PYTHON_VERSION,
-            "requirements_file": "requires.txt",
         })
         self.assertTrue(result.get("changed"), result)
         assert (self.release / "venv-3.9/bin").is_dir(), listdir(self.release)
@@ -53,7 +52,6 @@ class TestSetupVirtualenv(TestCase):
                 "dest": str(self.release),
                 "env_name": "venv",
                 "python_version": PYTHON_VERSION,
-                "requirements_file": "requires.txt",
             })
         assert not (self.release / "venv-3.6").is_dir()
         assert not (self.release / "venv-3.9").is_dir()
@@ -72,7 +70,6 @@ class TestSetupVirtualenv(TestCase):
                     "dest": str(self.release),
                     "env_name": "venv",
                     "python_version": PYTHON_VERSION,
-                    "requirements_file": "requires.txt",
                 })
         assert not (self.release / "venv-3.9/bin/python").exists()
         assert not (self.release / "venv").exists(), listdir(self.release)
@@ -81,7 +78,7 @@ class TestSetupVirtualenv(TestCase):
     def test_failed_pip_sync(self):
         setup_virtualenv = ansible.import_module("setup_virtualenv")
         with patch.object(setup_virtualenv, "pip_sync") as mock:
-            def pip_fail(requirements_file, next_env, module, proxy):
+            def pip_fail(dest, next_env, module, proxy):
                 raise Fail()
             mock.side_effect = pip_fail
             with self.assertRaises(Fail):
@@ -90,7 +87,6 @@ class TestSetupVirtualenv(TestCase):
                     "dest": str(self.release),
                     "env_name": "venv",
                     "python_version": PYTHON_VERSION,
-                    "requirements_file": "requires.txt",
                 })
         assert (self.release / "venv-3.9/bin/python").exists()
         assert not (self.release / "venv").exists(), listdir(self.release)
@@ -106,7 +102,6 @@ class TestSetupVirtualenv(TestCase):
             "src": str(self.previous_release),
             "dest": str(self.release),
             "python_version": PYTHON_VERSION,
-            "requirements_file": "requires.txt",
         })
         self.assertTrue(result.get("changed"), result)
         assert (self.release / "python_env-3.9/bin").is_dir(), listdir(self.release)
@@ -119,11 +114,10 @@ class TestSetupVirtualenv(TestCase):
             "dest": str(self.release),
             "env_name": "venv",
             "python_version": PYTHON_VERSION,
-            "requirements_file": "requires.txt",
             "_ansible_check_mode": True,
         })
         assert not Path(result["venv"]).exists(), result
-        assert not (self.release / f"venv-3.9").exists(), result
+        assert not (self.release / "venv-3.9").exists(), result
 
 
 def create_fake_virtualenv(path):
