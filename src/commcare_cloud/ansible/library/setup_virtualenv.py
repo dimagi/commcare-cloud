@@ -133,7 +133,7 @@ def main():
 def uv_sync(dest, proxy, module):
     proxy_env = {"ALL_PROXY": proxy} if proxy else {}
     module.run_command(
-        ["uv", "sync", "--group=prod", "--no-dev", "--locked"],
+        ["uv", "sync", "--group=prod", "--no-dev", "--locked", "--compile-bytecode"],
         environ_update={"UV_HTTP_TIMEOUT": "60", **proxy_env},
         cwd=dest,
         check_rc=True,
