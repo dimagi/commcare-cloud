@@ -4,7 +4,7 @@
 
 **Date:** 2025-05-08
 
-**Optional per env:** _only required on some environments_
+**Optional per env:** _required on all environments_
 
 
 ## CommCare Version Dependency
