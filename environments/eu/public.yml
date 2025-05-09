@@ -1,0 +1,223 @@
+couchdb2:
+  username: "{{ COUCH_USERNAME }}"
+  password: "{{ COUCH_PASSWORD }}"
+
+DATADOG_ENABLED: True
+
+elasticsearch_endpoint: "{{ groups.elasticsearch.0 }}"
+#elasticsearch_memory: '4096m'
+elasticsearch_cluster_name: "eu_hqes"
+elasticsearch_version: 6.8.23
+elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
+elasticsearch_delete_old_logs: True
+
+backup_blobdb: False
+backup_postgres: plain
+backup_es_s3: False
+postgres_s3: True
+postgresql_backup_weeks: 1
+postgresql_backup_days: 1
+
+citus_version: 9.4
+citus_postgresql_version: 12
+citus_postgresql_port: 5432
+
+aws_region: "eu-west-1"
+
+formplayer_java_version: "{{ java_17_bin_path }}/java"
+formplayer_sensitive_data_logging: true
+
+nofile_limit: 65536
+
+KSPLICE_ACTIVE: yes
+
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags: nginx-error
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
+
+kafka_version: 3.2.3
+kafka_scala_version: 2.13
+kafka_download_sha512: 36A129823B058DC10788D0893BDE47B6F39B9E4972F9EAC2D5C9E85E51E477344C6F1E1EBD126CE34D5FD430EB07E55FDD60D60CB541F1D48655C0EBC0A4778
+kafka_inter_broker_protocol_version: 3.2
+kafka_log_message_format_version: 3.2
+kafka_log_dir: "{{ encrypted_root }}/kafka"
+kafka_log_retention: 1344 # 56 days
+
+zookeeper_version: 3.7.1
+zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
+zookeeper_cluster: True
+
+erlang: 1:24.3.3-1
+rabbitmq_version: 3.10.13-1
+
+#RabbitMQ Broker URL
+BROKER_URL: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}"
+
+AMQP_HOST: "{{ groups.rabbitmq.0 }}"
+
+control_machine_ip: 10.204.10.141
+
+
+show_maintenance_updates_on_deploy: False
+
+couch_dbs:
+  default:
+    host: "{{ groups.couchdb2_alb[0] }}"
+    port: "{{ couchdb2_proxy_port }}"
+    name: commcarehq
+    username: "{{ COUCH_USERNAME }}"
+    password: "{{ COUCH_PASSWORD }}"
+    is_https: False
+couchdb_version: "3.3.1"
+couchdb_rexi_use_kill_all: "true"
+couchdb_reduce_limit: False
+couchdb_cluster_settings:
+  q: 8
+  r: 2
+  w: 2
+  n: 3
+
+s3_blob_db_enabled: yes
+s3_blob_db_url: "https://s3.amazonaws.com"
+s3_blob_db_s3_bucket: "dimagi-commcare-eu-blobdb"
+
+root_email: commcarehq-ops+root@dimagi.com
+server_email: commcarehq-noreply@dimagi.com
+server_admin_email: commcarehq-ops+admins@dimagi.com
+default_from_email: commcarehq-noreply-eu@dimagi.com
+return_path_email: commcarehq-bounces+eu@dimagi.com
+support_email: support@dimagi.com
+probono_support_email: pro-bono@dimagi.com
+accounts_email: accounts@dimagi.com
+data_email: datatree@dimagi.com
+subscription_change_email: accounts+subchange@dimagi.com
+internal_subscription_change_email: accounts+subchange+internal@dimagi.com
+billing_email: sales@dimagi.com
+invoicing_contact_email: accounts@dimagi.com
+growth_email: growth@dimagi.com
+saas_ops_email: saas-ops@dimagi.com
+saas_reporting_email: saas-reporting@dimagi.com
+master_list_email: master-list@dimagi.com
+sales_email: sales@dimagi.com
+privacy_email: privacy@dimagi.com
+feedback_email: hq-feedback@dimagi.com
+eula_change_email: eula-notifications@dimagi.com
+contact_email: info@dimagi.com
+soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
+new_domain_email: inquiries@dimagi.com
+
+TWO_FACTOR_GATEWAY_ENABLED: True
+
+localsettings:
+  ALLOWED_HOSTS:
+    - "{{ J2ME_SITE_HOST }}"
+  ALLOW_MAKE_SUPERUSER_COMMAND: False
+  ASYNC_INDICATORS_TO_QUEUE: 30000
+  AUDIT_ALL_VIEWS: True
+  AUDIT_TRACE_ID_HEADER: "X-Amzn-Trace-Id"
+  BANK_ADDRESS:
+    {
+      "first_line": "1 Citizens Drive",
+      "city": "Riverside",
+      "region": "RI",
+      "postal_code": "02915",
+    }
+  BANK_NAME: "RBS Citizens N.A."
+  BANK_SWIFT_CODE: "CTZIUS33"
+  CELERY_BROKER_HEARTBEAT: 600
+  #  COUCH_CACHE_DOCS:
+  #  COUCH_CACHE_VIEWS:
+  CONNECTID_URL: "https://connectid.dimagi.com/o/userinfo"
+  COUCH_USERNAME: "{{ COUCH_USERNAME }}"
+  COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
+  DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
+  DEVICE_LOGS_ENABLED: no
+  DEVICE_LIMIT_PER_USER: 50
+  EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
+  EMAIL_SMTP_PORT: 587
+  EMAIL_USE_TLS: yes
+  ENABLE_SOFT_ASSERT_EMAILS: True
+  ENFORCE_SSO_LOGIN: True
+  ELASTICSEARCH_MAJOR_VERSION: 5
+  ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-14"
+  ES_MULTIPLEX_TO_VERSION: "6"
+  # Index Multiplexer Settings
+  ES_APPS_INDEX_MULTIPLEXED: False
+  ES_CASE_SEARCH_INDEX_MULTIPLEXED: False
+  ES_CASES_INDEX_MULTIPLEXED: False
+  ES_DOMAINS_INDEX_MULTIPLEXED: False
+  ES_FORMS_INDEX_MULTIPLEXED: False
+  ES_GROUPS_INDEX_MULTIPLEXED: False
+  ES_SMS_INDEX_MULTIPLEXED: False
+  ES_USERS_INDEX_MULTIPLEXED: False
+  # Index Swap Settings
+  ES_APPS_INDEX_SWAPPED: True
+  ES_CASE_SEARCH_INDEX_SWAPPED: True
+  ES_CASES_INDEX_SWAPPED: True
+  ES_DOMAINS_INDEX_SWAPPED: True
+  ES_FORMS_INDEX_SWAPPED: True
+  ES_GROUPS_INDEX_SWAPPED: True
+  ES_SMS_INDEX_SWAPPED: True
+  ES_USERS_INDEX_SWAPPED: True
+  # Index Settings End
+  IS_DIMAGI_ENVIRONMENT: True
+  EULA_COMPLIANCE: True
+  HQ_INSTANCE: "eu"
+  INACTIVITY_TIMEOUT: 20160
+  INVOICE_FROM_ADDRESS:
+    "name": "Dimagi, Inc."
+    "first_line": "585 Massachusetts Ave"
+    "city": "Cambridge"
+    "region": "MA"
+    "postal_code": "02139"
+    "country": "US"
+    "phone_number": "(617) 649-2214"
+    "email": "accounts@dimagi.com"
+    "website": "https://www.dimagi.com"
+  INVOICE_PREFIX: EU-
+  INVOICE_STARTING_NUMBER: 5000
+  J2ME_ADDRESS: "{{ J2ME_SITE_HOST }}"
+  LOCAL_CUSTOM_DB_ROUTING:
+    auditcare: auditcare
+    repeaters: repeaters
+  LOCAL_MIDDLEWARE:
+    - "django.middleware.security.SecurityMiddleware"
+  PILLOWTOP_MACHINE_ID: eucloud
+  RATE_LIMIT_SUBMISSIONS: yes
+  SES_CONFIGURATION_SET: eu-email-events
+  SNS_EMAIL_EVENT_SECRET: "{{ SNS_EMAIL_EVENT_SECRET }}"
+  REDIS_DB: "0"
+  REDIS_HOST: "redis.eu.commcare.local"
+  REDIS_PORT: "6379"
+  REMINDERS_QUEUE_ENABLED: True
+  REQUIRE_TWO_FACTOR_FOR_SUPERUSERS: True
+  SAVED_EXPORT_ACCESS_CUTOFF: 180
+  SMS_GATEWAY_URL: ""
+  SMS_QUEUE_ENABLED: True
+  SUMOLOGIC_URL: "{{ SUMOLOGIC_URL }}"
+  SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
+  #  STATIC_ROOT:
+  WS4REDIS_CONNECTION_HOST: "redis.eu.commcare.local"
+  USER_REPORTING_METADATA_BATCH_ENABLED: True
+
+commcare_cloud_root_user: ubuntu
+commcare_cloud_pem: ~/.ssh/id_rsa
+
+firehose_endpoint: "firehose.eu-west-1.amazonaws.com"
+kinesis_endpoint: "kinesis.eu-west-1.amazonaws.com"
+kinesis_flows:
+  - file_pattern: "/opt/data/formplayer/log/request_response.*log"
+    delivery_stream: "formplayer-request-response-logs-partitioned-eu"
+
+enable_cloudwatch_logs: true
+
+efs_shared_mount_dir: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
+efs_shared_mount_endpoint: "shared-efs.eu.commcare.local:/"
+efs_shared_mount_options: "_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
+shared_dir_gid: 1500
+
+# for better time syncronization on aws servers
+# replace ntp with chrony.
+use_chrony: True

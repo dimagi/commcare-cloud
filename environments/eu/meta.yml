@@ -1,0 +1,9 @@
+deploy_env: eu
+env_monitoring_id: eu
+users:
+  - dimagi
+  - fissionlabs
+  - consultants
+slack_alerts_channel: alerts-eu
+secrets_backend: aws-secrets
+slack_notifications_channel: C0B44C0Q2 # gtd-dev-support

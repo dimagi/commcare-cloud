@@ -1,0 +1,158 @@
+{{ __control_a1__ }}
+{{ __djangomanage_a1__ }}
+{{ __web_a1__ }}
+{{ __web_b1__ }}
+{{ __celerybeat_a1__ }} swap_size=4G
+{{ __celery_a1__ }} swap_size=4G
+{{ __celery_b1__ }} swap_size=4G
+{{ __couch_a1__ }} swap_size=8G
+{{ __couch_b1__ }} swap_size=8G
+{{ __couch_a2__ }} swap_size=8G
+{{ __esmaster_a1__ }} elasticsearch_node_name=esmaster_a1 elasticsearch_node_zone=eu-west-1a
+{{ __esmaster_b1__ }} elasticsearch_node_name=esmaster_b1 elasticsearch_node_zone=eu-west-1b
+{{ __esmaster_a2__ }} elasticsearch_node_name=esmaster_a2 elasticsearch_node_zone=eu-west-1a
+{{ __es_b1__ }} elasticsearch_node_name=es_b1 elasticsearch_node_zone=eu-west-1b
+{{ __es_a1__ }} elasticsearch_node_name=es_a1 elasticsearch_node_zone=eu-west-1a
+{{ __escoordinator_a1__ }} elasticsearch_node_name=escoordinator_a1 elasticsearch_node_zone=eu-west-1a
+{{ __escoordinator_b1__ }} elasticsearch_node_name=escoordinator_b1 elasticsearch_node_zone=eu-west-1b
+
+[es_master:children]
+esmaster_a1
+esmaster_b1
+esmaster_a2
+
+[es_master:vars]
+elasticsearch_master=true
+elasticsearch_data=false
+
+[es_data:children]
+es_b1
+es_a1
+
+[elasticsearch:children]
+es_master
+es_data
+es_coordinator
+
+[es_coordinator:children]
+escoordinator_a1
+escoordinator_b1
+
+[es_coordinator:vars]
+elasticsearch_master=false
+elasticsearch_data=false
+
+{{ __formplayer_a1__ }}
+{{ __pillow_a1__ }}
+{{ __kafka_a1__ }} kafka_broker_id=8 zookeeper_server_id=8
+{{ __kafka_b1__ }} kafka_broker_id=9 zookeeper_server_id=9
+{{ __kafka_b2__ }} kafka_broker_id=10 zookeeper_server_id=10
+{{ __rabbit_a1__ }}
+{{ __rabbit_b1__ }}
+{{ __pgbouncer_a1__ }} pgbouncer_processes=2
+{{ __pgbouncer_b1__ }} pgbouncer_processes=2
+{{ __pgbouncer_a2__ }} pgbouncer_processes=2
+{{ __proxy_a1__ }}
+{{ __proxy_b1__ }}
+{{ __rds_pgmain1__ }}
+{{ __pgformplayer_nlb__ }}
+{{ __pgmain_nlb__ }}
+{{ __pgucr_nlb__ }}
+{{ __pgsynclogs_nlb__ }}
+{{ __pgshard_nlb__ }}
+{{ __couch_alb__ }}
+
+
+[pg_standby:children]
+# empty
+
+[proxy:children]
+proxy_a1
+proxy_b1
+
+[logproxy:children]
+proxy_a1
+proxy_b1
+
+[webworkers:children]
+web_a1
+web_b1
+
+[postgresql:children]
+remote_postgresql
+pgbouncer_a2
+
+[pgbouncer:children]
+pgbouncer_a1
+pgbouncer_b1
+pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb
+pgshard_nlb
+
+[rabbitmq:children]
+rabbit_a1
+rabbit_b1
+
+[zookeeper:children]
+kafka_a1
+kafka_b1
+kafka_b2
+
+[kafka:children]
+kafka_a1
+kafka_b1
+kafka_b2
+
+[celery:children]
+celerybeat_a1
+celery_a1
+celery_b1
+
+[pillowtop:children]
+pillow_a1
+
+[formplayer:children]
+formplayer_a1
+
+[elasticsearch:children]
+es_master
+es_data
+es_coordinator
+
+[shared_efs_client_host:children]
+celery
+django_manage
+proxy
+pillowtop
+webworkers
+
+[couchdb2:children]
+couch_a1
+couch_b1
+couch_a2
+
+[couchdb2_proxy:children]
+couch_alb
+
+[couchdb2_alb:children]
+couch_alb
+
+[control:children]
+control_a1
+
+[django_manage:children]
+djangomanage_a1
+
+[remote_postgresql:children]
+rds_pgmain1
+
+[ansible_skip:children]
+remote_postgresql
+pgformplayer_nlb
+pgmain_nlb
+pgucr_nlb
+pgsynclogs_nlb
+pgshard_nlb
+couch_alb
