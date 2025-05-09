@@ -1,0 +1,3 @@
+#! /usr/bin/env bash
+mkdir -p .venv/bin
+echo "uv synced"
