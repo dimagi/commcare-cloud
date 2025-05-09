@@ -20,12 +20,17 @@ proxy
 web_a2
 web_b2
 
+[api_webworkers:children]
+web_a_a
+web_a_b
+
 [mobile_webworkers:children]
 web_m_a2
 web_m_b2
 
 [webworkers:children]
 hq_webworkers
+api_webworkers
 mobile_webworkers
 
 {{ __pgbouncer_a4__ }} pgbouncer_processes=2
