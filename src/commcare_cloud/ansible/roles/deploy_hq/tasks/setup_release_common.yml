@@ -7,12 +7,19 @@
     key_file: "{{ deploy_key | default(omit, true) }}"
     previous_release: "{{ code_home }}"
 
+- name: Install uv
+  # Can be removed six weeks after the uv installation change log is announced.
+  become: true
+  become_user: root
+  pip:
+    name: uv
+    umask: "0022"
+
 - name: Setup virtualenv
   setup_virtualenv:
     src: "{{ code_home }}"
     dest: "{{ code_source }}"
     python_version: "{{ python_version }}"
-    requirements_file: "requirements/prod-requirements.txt"
     http_proxy: "{{ http_proxy | default(omit, true) }}"
 
 - name: Copy localsettings.py
