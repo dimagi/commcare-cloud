@@ -145,10 +145,14 @@ web_a_a000-production: 10.202.10.111
 web_a_a000-production.instance_id: i-00ad27b81efa43b49
 web_a_a001-production: 10.202.10.201
 web_a_a001-production.instance_id: i-0a67370d23777af8e
+web_a_a002-production: 10.202.10.228
+web_a_a002-production.instance_id: i-0589697dea8199ae8
 web_a_b000-production: 10.202.11.11
 web_a_b000-production.instance_id: i-0f71078a2d15912d8
 web_a_b001-production: 10.202.11.80
 web_a_b001-production.instance_id: i-0d785d6581b886274
+web_a_b002-production: 10.202.11.149
+web_a_b002-production.instance_id: i-03391d7f11c1d81a7
 web_b2000-production: 10.202.11.206
 web_b2000-production.instance_id: i-0685b4e45319515a7
 web_b2001-production: 10.202.11.136

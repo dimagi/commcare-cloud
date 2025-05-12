@@ -65,16 +65,6 @@ servers:
     count: 3
     server_auto_recovery: true
 
-  - server_name: "web_m_a2{i}-production"
-    server_instance_type: m6a.4xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 40
-    group: "mobile_webworkers"
-    os: jammy
-    count: 2
-    server_auto_recovery: true
-
   - server_name: "web_a_a{i}-production"
     server_instance_type: m6a.2xlarge
     network_tier: "app-private"
@@ -83,7 +73,7 @@ servers:
     volume_encrypted: yes
     group: "api_webworkers"
     os: jammy
-    count: 2
+    count: 3
     server_auto_recovery: true
 
   - server_name: "web_a_b{i}-production"
@@ -93,6 +83,16 @@ servers:
     volume_size: 40
     volume_encrypted: yes
     group: "api_webworkers"
+    os: jammy
+    count: 3
+    server_auto_recovery: true
+
+  - server_name: "web_m_a2{i}-production"
+    server_instance_type: m6a.4xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    group: "mobile_webworkers"
     os: jammy
     count: 2
     server_auto_recovery: true
