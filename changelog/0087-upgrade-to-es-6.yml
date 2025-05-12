@@ -47,6 +47,12 @@ update_steps: |
       ELASTICSEARCH_MAJOR_VERSION: 6
       ```
 
+      ##### Add `ES_MULTIPLEX_TO_VERSION` which tells when to consider the below multiplex settings ###
+
+      ```yaml
+      ES_MULTIPLEX_TO_VERSION: '6'
+      ```
+
       ##### Index Multiplexer Settings
       ```yaml
       ES_APPS_INDEX_MULTIPLEXED: True
