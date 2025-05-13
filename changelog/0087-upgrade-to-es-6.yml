@@ -86,7 +86,7 @@ update_steps: |
   5. Run update config and restart the services to apply the changes.
 
       ```sh
-      cchq <env> update_config
+      cchq <env> update-config
       cchq <env> service commcare restart
       ```
   6. Run the reindexing process.
@@ -175,7 +175,7 @@ update_steps: |
   2. Run update config and restart the services to apply the changes.
 
       ```sh
-      cchq <env> update_config
+      cchq <env> update-config
       cchq <env> service commcare restart
       ```
 
@@ -197,7 +197,7 @@ update_steps: |
   5. Run update config and restart the services to apply the changes.
 
       ```sh
-      cchq <env> update_config
+      cchq <env> update-config
       cchq <env> service commcare restart
       ```
   6. Ensure that CommCare HQ is running fine with the new index. The simplest way is to check that a report works as expected.
