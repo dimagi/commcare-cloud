@@ -51,7 +51,7 @@ servers:
     volume_encrypted: yes
     group: "hq_webworkers"
     os: jammy
-    count: 3
+    count: 2
     server_auto_recovery: true
 
   - server_name: "web_b2{i}-production"
@@ -62,7 +62,7 @@ servers:
     volume_encrypted: yes
     group: "hq_webworkers"
     os: jammy
-    count: 3
+    count: 2
     server_auto_recovery: true
 
   - server_name: "web_a_a{i}-production"
