@@ -25,13 +25,28 @@
       - git
       - slow
 
+  - name: register pyproject.toml
+    stat: path="{{ repo_dest }}/pyproject.toml"
+    register: pyproject
+
+  - name: uv sync ({{ item.url }})
+    command:
+      cmd: uv sync --group=prod --no-dev --locked --compile-bytecode
+      chdir: "{{ code_source }}"
+    when: pyproject.stat.exists and not testing|default(False)
+    tags:
+      - python
+
   - name: install pip requirements ({{ item.url }})
     pip:
       requirements: "{{ repo_dest }}/{{ item.requirements_path }}"
       virtualenv: "{{ virtualenv_source }}"
       virtualenv_python: "{{ python_name }}"
       chdir: "{{ code_source }}"
-    when: item.requirements_path|default(None) and not testing|default(False)
+    when: >
+      not pyproject.stat.exists
+      and item.requirements_path|default(None)
+      and not testing|default(False)
     tags:
       - slow
       - python

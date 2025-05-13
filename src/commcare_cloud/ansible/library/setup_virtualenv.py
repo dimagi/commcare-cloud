@@ -43,10 +43,6 @@ options:
             version of Python.
         required: true
         type: str
-    requirements_file:
-        description: Pip requirements file path (may be relative to dest).
-        required: true
-        type: str
     http_proxy:
         description: HTTP proxy address.
         required: false
@@ -65,7 +61,6 @@ EXAMPLES = """
     src: "/path/to/releases/previous"
     dest: "/path/to/releases/next"
     python_version: "3.9"
-    requirements_file: "requirements/prod-requirements.txt"
 """
 
 RETURN = """
