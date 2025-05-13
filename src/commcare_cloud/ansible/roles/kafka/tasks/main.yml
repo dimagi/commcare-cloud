@@ -11,6 +11,7 @@
     url: "http://{{ apache_mirror }}/kafka/{{ kafka_version }}/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz"
     dest: "/opt/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz"
   when: kafka_version != '2.6.1'
+  notify: restart kafka
 
 - name: Download Kafka 2.6.1
   get_url:
@@ -18,15 +19,19 @@
     dest: "/opt/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz"
     checksum: "{{ kafka_download_sha512 }}"
   when: kafka_version == '2.6.1'
+  notify: restart kafka
 
 - name: Extract Kafka
   unarchive: src="/opt/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz" dest=/opt/ copy=no creates="/opt/kafka_{{ kafka_scala_version }}-{{ kafka_version }}"
+  notify: restart kafka
 
 - name: Symlink install directory
   file: src="/opt/kafka_{{ kafka_scala_version }}-{{ kafka_version }}" path=/opt/kafka state=link
+  notify: restart kafka
 
 - name: Set permissions to Kafka folder
   file: path=/opt/kafka/ owner=root group=root recurse=yes follow=no
+  notify: restart kafka
 
 - name: Create Kafka data directories
   become: yes
@@ -38,24 +43,30 @@
     mode: 0755
   with_items:
     - "{{ kafka_data_dir }}"
+  notify: restart kafka
 
 - name: Create Kafka log directory
   file: path="{{ kafka_log_dir }}" state=directory owner="{{ kafka_user }}" group="{{ kafka_group }}" recurse=yes
+  notify: restart kafka
 
 - name: Link the log directory
   file: src="{{ kafka_log_dir }}" path=/opt/kafka/logs state=link
+  notify: restart kafka
 
 - name: Create Kafka conf directory
   file: path="{{ kafka_conf_dir }}" state=directory owner=root group=root mode=755
+  notify: restart kafka
 
 - name: Configure Kafka server
   template: src=server.properties.j2 dest="{{kafka_conf_dir}}/server.properties"
+  notify: restart kafka
 
 - name: Copy Kafka partition reassign Script
   get_url:
     url: "https://raw.githubusercontent.com/dimas/kafka-reassign-tool/master/kafka-reassign-tool" 
     dest: "/opt/kafka/bin/kafka-reassign-tool.rb"
     mode: 0755
+  notify: restart kafka
 
 - name: Copies kafka log4j.properties (2.X.X)
   copy:
@@ -66,6 +77,7 @@
     mode: 0644
   when: kafka_version is version('2.0', '>')
   tags: log4j
+  notify: restart kafka
 
 - name: Copies kafka log4j.properties (0.8.2.2)
   copy:
@@ -76,14 +88,17 @@
     mode: 0644
   when: kafka_version == "0.8.2.2"
   tags: log4j
+  notify: restart kafka
 
 - name: Install Kafka systemd script
   template: src=kafka-server.service.j2 dest=/etc/systemd/system/kafka-server.service mode=0755
+  notify: restart kafka
 
 - name: Remove kafka.service (cleanup)
   file:
     name: /etc/systemd/system/kafka.service
     state: absent
+  notify: restart kafka
 
 - name: Reload Systemd Daemon
   become: yes
@@ -95,16 +110,6 @@
   changed_when: false
   register: no_tags
 
-- name: start Kafka service
-  service: name=kafka-server enabled=yes state=started
-  when: no_tags is not defined
-  register: kafka_service_started
-  tags: after-reboot
-
-# Restarting a service right after it's been started will cause an unnecessary/non-idempotent restart
-- name: Enable and start Kafka service
-  service: name=kafka-server enabled=yes state=restarted
-  when: kafka_service_started.changed == False
-
 - name: Add Kafka binaries to PATH
   copy: src=kafka.sh dest=/etc/profile.d/ owner=root group=root mode=0644
+  notify: restart kafka
