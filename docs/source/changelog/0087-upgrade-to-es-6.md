@@ -92,7 +92,7 @@ The Elasticsearch upgrade is a multi-step process.
 5. Run update config and restart the services to apply the changes.
 
     ```sh
-    cchq <env> update_config
+    cchq <env> update-config
     cchq <env> service commcare restart
     ```
 6. Run the reindexing process.
@@ -181,7 +181,7 @@ Once all the indices have been reindexed, we can swap the indices to start readi
 2. Run update config and restart the services to apply the changes.
 
     ```sh
-    cchq <env> update_config
+    cchq <env> update-config
     cchq <env> service commcare restart
     ```
 
@@ -203,7 +203,7 @@ Once all the indices have been reindexed, we can swap the indices to start readi
 5. Run update config and restart the services to apply the changes.
 
     ```sh
-    cchq <env> update_config
+    cchq <env> update-config
     cchq <env> service commcare restart
     ```
 6. Ensure that CommCare HQ is running fine with the new index. The simplest way is to check that a report works as expected.
