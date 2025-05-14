@@ -53,6 +53,12 @@ The Elasticsearch upgrade is a multi-step process.
     ELASTICSEARCH_MAJOR_VERSION: 6
     ```
 
+    ##### Add `ES_MULTIPLEX_TO_VERSION` which tells when to consider the below multiplex settings ###
+
+    ```yaml
+    ES_MULTIPLEX_TO_VERSION: '6'
+    ```
+
     ##### Index Multiplexer Settings
     ```yaml
     ES_APPS_INDEX_MULTIPLEXED: True
@@ -86,8 +92,8 @@ The Elasticsearch upgrade is a multi-step process.
 5. Run update config and restart the services to apply the changes.
 
     ```sh
-    cchq <env> django-manage update_config
-    cchq <env> django-manage restart_services
+    cchq <env> update-config
+    cchq <env> service commcare restart
     ```
 6. Run the reindexing process.
   
@@ -175,8 +181,8 @@ Once all the indices have been reindexed, we can swap the indices to start readi
 2. Run update config and restart the services to apply the changes.
 
     ```sh
-    cchq <env> django-manage update_config
-    cchq <env> django-manage restart_services
+    cchq <env> update-config
+    cchq <env> service commcare restart
     ```
 
 3. Ensure that CommCare HQ is running fine with the new index. You can do it by testing the reports in your hosted CommCare instance. Optional but recommended: You can keep CommCare HQ in this state for a few working hours to ensure that the new index is stable.
@@ -197,8 +203,8 @@ Once all the indices have been reindexed, we can swap the indices to start readi
 5. Run update config and restart the services to apply the changes.
 
     ```sh
-    cchq <env> django-manage update_config
-    cchq <env> django-manage restart_services
+    cchq <env> update-config
+    cchq <env> service commcare restart
     ```
 6. Ensure that CommCare HQ is running fine with the new index. The simplest way is to check that a report works as expected.
 

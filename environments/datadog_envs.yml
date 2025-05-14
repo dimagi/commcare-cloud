@@ -5,4 +5,3 @@ env_notifications:
   india: '@slack-alerts-india'
   production: '@slack-alerts-production @opsgenie-commcarehq'
   pna: '@slack-alerts-pna'
-  swiss: '@slack-alerts-swiss'

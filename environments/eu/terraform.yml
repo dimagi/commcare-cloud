@@ -62,7 +62,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "celerybeat_a1-eu"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 60
@@ -72,7 +72,7 @@ servers:
     os: jammy
 
   - server_name: "celery_a1-eu"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 60
@@ -82,7 +82,7 @@ servers:
     os: jammy
 
   - server_name: "celery_b1-eu"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "b"
     volume_size: 60
@@ -215,7 +215,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "pillow_a1-eu"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 60

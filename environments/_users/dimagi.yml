@@ -30,7 +30,6 @@ dev_users:
     - rcostello
     - zeng
     - ayadav
-    - devanshhooda
   absent:
     - akjain
     - astone
@@ -55,3 +54,4 @@ dev_users:
     - jmiller
     - mperosa
     - schauhan
+    - devanshhooda  

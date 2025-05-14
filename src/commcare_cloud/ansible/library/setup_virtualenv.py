@@ -43,10 +43,6 @@ options:
             version of Python.
         required: true
         type: str
-    requirements_file:
-        description: Pip requirements file path (may be relative to dest).
-        required: true
-        type: str
     http_proxy:
         description: HTTP proxy address.
         required: false
@@ -65,7 +61,6 @@ EXAMPLES = """
     src: "/path/to/releases/previous"
     dest: "/path/to/releases/next"
     python_version: "3.9"
-    requirements_file: "requirements/prod-requirements.txt"
 """
 
 RETURN = """
@@ -89,7 +84,6 @@ def main():
         'dest': {'type': 'str', 'required': True},
         'env_name': {'type': 'str', 'default': 'python_env'},
         'python_version': {'type': 'str', 'required': True},
-        'requirements_file': {'type': 'str', 'required': True},
         'http_proxy': {'type': 'str', 'default': None},
     }
     module = AnsibleModule(
@@ -106,7 +100,6 @@ def main():
     prev_env = src.resolve() / full_env_name
     next_env = dest / full_env_name
     python_env = dest / env_name
-    requirements_file = dest / params["requirements_file"]
     proxy = params["http_proxy"]
 
     diff = {'before': {'path': str(prev_env)}, 'after': {'path': str(next_env)}}
@@ -115,30 +108,54 @@ def main():
     if not python_env.exists():
         result["changed"] = True
         if not module.check_mode:
-            if not (next_env / "bin/python").exists():
-                if not prev_env.exists():
-                    module.fail_json(msg=f"virtualenv not found: {prev_env}")
-                    return
-                clone_virtualenv(prev_env, next_env, module)
-            pip_sync(requirements_file, next_env, module, proxy)
+            if (dest / "pyproject.toml").exists():
+                uv_sync(dest, proxy, module)
+                assert (dest / ".venv").is_dir(), "uv did not create .venv"
+                (dest / full_env_name).symlink_to(".venv")
+                full_env_name = ".venv"
+            else:
+                if not (next_env / "bin/python").exists():
+                    if not prev_env.exists():
+                        module.fail_json(msg=f"virtualenv not found: {prev_env}")
+                        return
+                    clone_virtualenv(prev_env, next_env, module)
+                pip_sync(dest, next_env, module, proxy)
             python_env.symlink_to(full_env_name)
 
     module.exit_json(**result)
+
+
+def uv_sync(dest, proxy, module):
+    proxy_env = {"ALL_PROXY": proxy} if proxy else {}
+    module.run_command(
+        ["uv", "sync", "--group=prod", "--no-dev", "--locked", "--compile-bytecode"],
+        environ_update={"UV_HTTP_TIMEOUT": "60", **proxy_env},
+        cwd=dest,
+        check_rc=True,
+    )
 
 
 def clone_virtualenv(prev_env, next_env, module):
     module.run_command(["virtualenv-clone", prev_env, next_env], check_rc=True)
 
 
-def pip_sync(requirements_file, venv_path, module, proxy):
+def pip_sync(dest, venv_path, module, proxy):
     pip = venv_path / "bin/pip"
     pip_args = ["--timeout=60"]
     if proxy:
         pip_args.append(f"--proxy={quote(proxy)}")
+    if not pip.exists():
+        # Install pip if previous environment didn't have it (uv envs don't)
+        # This uses a pip installed at the system level.
+        module.run_command(
+            ["pip", "--python", venv_path, "install", *pip_args, "pip"],
+            check_rc=True,
+        )
     module.run_command(
         [pip, "install", "--quiet", "--upgrade", *pip_args, "pip-tools"],
         check_rc=True,
     )
+    requirements_file = dest / "requirements/prod-requirements.txt"
     pip_sync = venv_path / "bin/pip-sync"
     module.run_command(
         [pip_sync, "--quiet", f"--pip-args={' '.join(pip_args)}", requirements_file],
