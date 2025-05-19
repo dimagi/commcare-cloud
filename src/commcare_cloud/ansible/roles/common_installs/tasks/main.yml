@@ -7,40 +7,12 @@
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
   register: add_postgres_repo
 
-- name: Add Python PPA
-  apt_repository:
-    repo: 'ppa:deadsnakes/ppa'
-    state: '{{ "present" if use_deadsnakes else "absent" }}'
-  register: add_deadsnakes_ppa
-  tags:
-    - python
-
 - name: Update package list
   apt: update_cache=yes
   when: |
     add_postgres_repo is defined and add_postgres_repo is changed or
     add_pango_repo is defined and add_pango_repo is changed or
-    add_deadsnakes_ppa is defined and add_deadsnakes_ppa is changed or
     add_python_ppa_bionic is defined and add_python_ppa_bionic is changed
-  tags:
-    - python
-
-
-- name: Install python packages
-  become: yes
-  apt:
-    name:
-      - python{{ python_version }}={{ python_version }}.*
-      - python{{ python_version }}-dev
-  tags:
-    - python
-
-- name: Install extra python packages
-  become: yes
-  apt:
-    name:
-      - python{{ python_version }}-distutils  # for virtualenv
-  when: python_version == '3.9'
   tags:
     - python
 
@@ -129,10 +101,7 @@
   pip:
     name:
       - uv>=0.7
-      - virtualenv
       - sh
-      - httplib2
-      - pexpect
     umask: "0022"
   become: yes
   tags:
@@ -140,10 +109,3 @@
     # log is announced. Also update change log 0088-install-uv.yml to remove
     # the tag from the deploy-stack command.
     - uv
-
-- name: Install virtualenv-clone
-  become: yes
-  pip:
-    name: virtualenv-clone
-    version: 0.5.1
-    umask: "0022"

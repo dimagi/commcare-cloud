@@ -235,9 +235,6 @@ shared_dir_gid: 1500
 # replace ntp with chrony.
 use_chrony: True
 
-python_version: '3.9'
-use_deadsnakes: yes
-
 allow_aws_ssm_proxy: true
 
 release_bucket: dimagi-commcare-staging-release
