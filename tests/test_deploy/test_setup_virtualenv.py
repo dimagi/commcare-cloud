@@ -9,8 +9,6 @@ from testil import tempdir
 from .. import ansible
 from ..utils import set_log_level, test_context
 
-PYTHON_VERSION = "3.9"
-
 
 class TestSetupVirtualenv(TestCase):
 
@@ -22,7 +20,7 @@ class TestSetupVirtualenv(TestCase):
         cls.requires = tmp / "requires.txt"
         with open(cls.requires, mode="w"):
             pass
-        fake_venv_bin = create_fake_virtualenv(prev / f"venv-{PYTHON_VERSION}")
+        fake_venv_bin = create_fake_virtualenv(prev / "venv")
         test_context(cls, patch.dict('os.environ', {"PATH": f"{fake_venv_bin}:{os.environ['PATH']}"}))
 
     def setUp(self):
@@ -36,10 +34,8 @@ class TestSetupVirtualenv(TestCase):
             "src": str(self.previous_release),
             "dest": str(self.release),
             "env_name": "venv",
-            "python_version": PYTHON_VERSION,
         })
         self.assertTrue(result.get("changed"), result)
-        assert (self.release / "venv-3.9/bin").is_dir(), listdir(self.release)
         assert (self.release / "venv/bin").is_dir(), listdir(self.release)
         self.assertEqual(result["venv"], str(self.release / "venv"))
 
@@ -54,7 +50,6 @@ class TestSetupVirtualenv(TestCase):
                 "src": str(self.previous_release),
                 "dest": str(self.release),
                 "env_name": "venv",
-                "python_version": PYTHON_VERSION,
             })
         self.assertTrue(result.get("changed"), result)
         assert (self.release / ".venv/bin").is_dir(), listdir(self.release)
@@ -69,10 +64,8 @@ class TestSetupVirtualenv(TestCase):
                 "src": str(py36_release),
                 "dest": str(self.release),
                 "env_name": "venv",
-                "python_version": PYTHON_VERSION,
             })
         assert not (self.release / "venv-3.6").is_dir()
-        assert not (self.release / "venv-3.9").is_dir()
         assert not (self.release / "venv").is_dir()
 
     def test_failed_virtualenv_clone(self):
@@ -87,9 +80,7 @@ class TestSetupVirtualenv(TestCase):
                     "src": str(self.previous_release),
                     "dest": str(self.release),
                     "env_name": "venv",
-                    "python_version": PYTHON_VERSION,
                 })
-        assert not (self.release / "venv-3.9/bin/python").exists()
         assert not (self.release / "venv").exists(), listdir(self.release)
         self.test_setup_virtualenv()
 
@@ -104,25 +95,21 @@ class TestSetupVirtualenv(TestCase):
                     "src": str(self.previous_release),
                     "dest": str(self.release),
                     "env_name": "venv",
-                    "python_version": PYTHON_VERSION,
                 })
-        assert (self.release / "venv-3.9/bin/python").exists()
         assert not (self.release / "venv").exists(), listdir(self.release)
         with patch.object(setup_virtualenv, "clone_virtualenv") as mock:
             mock.side_effect = Fail("unexpected: env already created")
             self.test_setup_virtualenv()
 
     def test_setup_virtualenv_with_default_env_name(self):
-        prev_venv = self.previous_release / f"python_env-{PYTHON_VERSION}"
+        prev_venv = self.previous_release / "python_env"
         create_fake_virtualenv(prev_venv)
         self.addCleanup(shutil.rmtree, prev_venv)
         result = ansible.run("setup_virtualenv", {
             "src": str(self.previous_release),
             "dest": str(self.release),
-            "python_version": PYTHON_VERSION,
         })
         self.assertTrue(result.get("changed"), result)
-        assert (self.release / "python_env-3.9/bin").is_dir(), listdir(self.release)
         assert (self.release / "python_env/bin").is_dir(), listdir(self.release)
         self.assertEqual(result["venv"], str(self.release / "python_env"))
 
@@ -131,7 +118,6 @@ class TestSetupVirtualenv(TestCase):
             "src": str(self.previous_release),
             "dest": str(self.release),
             "env_name": "venv",
-            "python_version": PYTHON_VERSION,
             "_ansible_check_mode": True,
         })
         assert not Path(result["venv"]).exists(), result
