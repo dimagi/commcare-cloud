@@ -117,6 +117,8 @@ def main():
                     # version, which could happen if trying to install an old
                     # commcare from before the switch to uv.
                     (dest / full_env_name).symlink_to(".venv")
+                else:
+                    diff["after"]["path"] = str(dest / ".venv")
                 full_env_name = ".venv"
             else:
                 if not (next_env / "bin/python").exists():
