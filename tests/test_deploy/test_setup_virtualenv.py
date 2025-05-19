@@ -31,7 +31,6 @@ class TestSetupVirtualenv(TestCase):
 
     def test_setup_virtualenv(self):
         result = ansible.run("setup_virtualenv", {
-            "src": str(self.previous_release),
             "dest": str(self.release),
             "env_name": "venv",
         })
@@ -39,74 +38,24 @@ class TestSetupVirtualenv(TestCase):
         assert (self.release / "venv/bin").is_dir(), listdir(self.release)
         self.assertEqual(result["venv"], str(self.release / "venv"))
 
-    def test_setup_virtualenv_with_uv(self):
-        def pip_sync(*args, **kw):
-            raise Fail("unexpected pip-sync")
+    def test_failed_uv_sync(self):
+        def uv_sync(*args, **kwargs):
+            raise Fail()
 
-        (self.release / "pyproject.toml").touch()
         setup_virtualenv = ansible.import_module("setup_virtualenv")
-        with patch.object(setup_virtualenv, "pip_sync", pip_sync):
-            result = ansible.run("setup_virtualenv", {
-                "src": str(self.previous_release),
-                "dest": str(self.release),
-                "env_name": "venv",
-            })
-        self.assertTrue(result.get("changed"), result)
-        assert (self.release / ".venv/bin").is_dir(), listdir(self.release)
-        assert (self.release / "venv/bin").is_dir(), listdir(self.release)
-        self.assertEqual(result["venv"], str(self.release / "venv"))
-
-    def test_setup_virtualenv_with_wrong_python_version(self):
-        py36_release = self.tmp / "py36"
-        create_fake_virtualenv(py36_release / "venv-3.6")
-        with self.assertRaisesRegex(ansible.Fail, "virtualenv not found: "):
-            ansible.run("setup_virtualenv", {
-                "src": str(py36_release),
-                "dest": str(self.release),
-                "env_name": "venv",
-            })
-        assert not (self.release / "venv-3.6").is_dir()
-        assert not (self.release / "venv").is_dir()
-
-    def test_failed_virtualenv_clone(self):
-        setup_virtualenv = ansible.import_module("setup_virtualenv")
-        with patch.object(setup_virtualenv, "clone_virtualenv") as mock:
-            def clone_fail(prev_env, next_env, module):
-                next_env.mkdir()
-                raise Fail()
-            mock.side_effect = clone_fail
+        with patch.object(setup_virtualenv, "uv_sync", uv_sync):
             with self.assertRaises(Fail):
                 ansible.run(setup_virtualenv, {
-                    "src": str(self.previous_release),
                     "dest": str(self.release),
                     "env_name": "venv",
                 })
+        assert not (self.release / ".venv").exists(), listdir(self.release)
         assert not (self.release / "venv").exists(), listdir(self.release)
-        self.test_setup_virtualenv()
 
-    def test_failed_pip_sync(self):
-        setup_virtualenv = ansible.import_module("setup_virtualenv")
-        with patch.object(setup_virtualenv, "pip_sync") as mock:
-            def pip_fail(dest, next_env, module, proxy):
-                raise Fail()
-            mock.side_effect = pip_fail
-            with self.assertRaises(Fail):
-                ansible.run(setup_virtualenv, {
-                    "src": str(self.previous_release),
-                    "dest": str(self.release),
-                    "env_name": "venv",
-                })
-        assert not (self.release / "venv").exists(), listdir(self.release)
-        with patch.object(setup_virtualenv, "clone_virtualenv") as mock:
-            mock.side_effect = Fail("unexpected: env already created")
-            self.test_setup_virtualenv()
+        self.test_setup_virtualenv()  # should not fail
 
     def test_setup_virtualenv_with_default_env_name(self):
-        prev_venv = self.previous_release / "python_env"
-        create_fake_virtualenv(prev_venv)
-        self.addCleanup(shutil.rmtree, prev_venv)
         result = ansible.run("setup_virtualenv", {
-            "src": str(self.previous_release),
             "dest": str(self.release),
         })
         self.assertTrue(result.get("changed"), result)
@@ -115,7 +64,6 @@ class TestSetupVirtualenv(TestCase):
 
     def test_check_mode(self):
         result = ansible.run("setup_virtualenv", {
-            "src": str(self.previous_release),
             "dest": str(self.release),
             "env_name": "venv",
             "_ansible_check_mode": True,
