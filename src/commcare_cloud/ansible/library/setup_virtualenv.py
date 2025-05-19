@@ -111,7 +111,12 @@ def main():
             if (dest / "pyproject.toml").exists():
                 uv_sync(dest, proxy, module)
                 assert (dest / ".venv").is_dir(), "uv did not create .venv"
-                (dest / full_env_name).symlink_to(".venv")
+                if (dest / f".venv/bin/python{python_version}").exists():
+                    # Only symlink if python_version matches uv python version.
+                    # Prevents virtualenv-clone of this env to an older python
+                    # version, which could happen if trying to install an old
+                    # commcare from before the switch to uv.
+                    (dest / full_env_name).symlink_to(".venv")
                 full_env_name = ".venv"
             else:
                 if not (next_env / "bin/python").exists():
