@@ -37,12 +37,6 @@ options:
         required: false
         default: 'python_env'
         type: str
-    python_version:
-        description: Python version. Included in the virtualenv name to
-            allow multiple virtualenvs to exist when upgrading to a new
-            version of Python.
-        required: true
-        type: str
     http_proxy:
         description: HTTP proxy address.
         required: false
@@ -60,7 +54,6 @@ EXAMPLES = """
   setup_virtualenv:
     src: "/path/to/releases/previous"
     dest: "/path/to/releases/next"
-    python_version: "3.9"
 """
 
 RETURN = """
@@ -83,7 +76,6 @@ def main():
         'src': {'type': 'str', 'required': True},
         'dest': {'type': 'str', 'required': True},
         'env_name': {'type': 'str', 'default': 'python_env'},
-        'python_version': {'type': 'str', 'required': True},
         'http_proxy': {'type': 'str', 'default': None},
     }
     module = AnsibleModule(
@@ -92,13 +84,12 @@ def main():
     )
     params = module.params
     env_name = params["env_name"]
-    python_version = params["python_version"]
-    full_env_name = f"{env_name}-{python_version}"
+    assert env_name != ".venv"
     src = Path(params["src"])
     dest = Path(params["dest"])
     # resolve() because of bug in virtualenv-clone: can't clone env from symlink
-    prev_env = src.resolve() / full_env_name
-    next_env = dest / full_env_name
+    prev_env = (src / env_name).resolve()
+    next_env = dest / ".venv"
     python_env = dest / env_name
     proxy = params["http_proxy"]
 
@@ -110,16 +101,7 @@ def main():
         if not module.check_mode:
             if (dest / "pyproject.toml").exists():
                 uv_sync(dest, proxy, module)
-                assert (dest / ".venv").is_dir(), "uv did not create .venv"
-                if (dest / f".venv/bin/python{python_version}").exists():
-                    # Only symlink if python_version matches uv python version.
-                    # Prevents virtualenv-clone of this env to an older python
-                    # version, which could happen if trying to install an old
-                    # commcare from before the switch to uv.
-                    (dest / full_env_name).symlink_to(".venv")
-                else:
-                    diff["after"]["path"] = str(dest / ".venv")
-                full_env_name = ".venv"
+                assert next_env.is_dir(), f"uv did not create {next_env}"
             else:
                 if not (next_env / "bin/python").exists():
                     if not prev_env.exists():
@@ -127,7 +109,7 @@ def main():
                         return
                     clone_virtualenv(prev_env, next_env, module)
                 pip_sync(dest, next_env, module, proxy)
-            python_env.symlink_to(full_env_name)
+            python_env.symlink_to(".venv")
 
     module.exit_json(**result)
 

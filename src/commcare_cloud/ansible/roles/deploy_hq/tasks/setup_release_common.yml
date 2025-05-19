@@ -19,7 +19,6 @@
   setup_virtualenv:
     src: "{{ code_home }}"
     dest: "{{ code_source }}"
-    python_version: "{{ python_version }}"
     http_proxy: "{{ http_proxy | default(omit, true) }}"
 
 - name: Copy localsettings.py
