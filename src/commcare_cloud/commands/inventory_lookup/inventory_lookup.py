@@ -375,11 +375,8 @@ class DjangoManage(CommandBase):
         else:
             tee_file_cmd = ''
 
-        # TODO remove when machines are no longer running Python 3.6
-        python_env = "python_env-3.6" if environment.python_version == "3.6" else "python_env"
-
         sh_args = ' '.join(shlex_quote(arg) for arg in manage_args)
-        command = f'cd {code_dir}; {python_env}/bin/python manage.py {sh_args}{tee_file_cmd}'
+        command = f'cd {code_dir}; python_env/bin/python manage.py {sh_args}{tee_file_cmd}'
         if args.tmux:
             args.remote_command = command
             return Tmux(self.parser).run(args, [])
