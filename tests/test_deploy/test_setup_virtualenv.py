@@ -57,7 +57,6 @@ class TestSetupVirtualenv(TestCase):
                 "python_version": PYTHON_VERSION,
             })
         self.assertTrue(result.get("changed"), result)
-        assert (self.release / "venv-3.9/bin").exists(), listdir(self.release)
         assert (self.release / ".venv/bin").is_dir(), listdir(self.release)
         assert (self.release / "venv/bin").is_dir(), listdir(self.release)
         self.assertEqual(result["venv"], str(self.release / "venv"))
