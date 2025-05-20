@@ -15,5 +15,5 @@ update_steps: |
   To install `uv`, run:
 
   ```sh
-  cchq <env> deploy-stack --tags=uv
+  cchq <env> deploy-stack
   ```

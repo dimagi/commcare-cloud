@@ -104,8 +104,3 @@
       - sh
     umask: "0022"
   become: yes
-  tags:
-    # The 'uv' tag can be removed six weeks after the uv installation change
-    # log is announced. Also update change log 0088-install-uv.yml to remove
-    # the tag from the deploy-stack command.
-    - uv
