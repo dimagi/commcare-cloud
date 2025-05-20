@@ -22,5 +22,5 @@ It is necessary to install `uv` on all servers that run CommCare HQ code.
 To install `uv`, run:
 
 ```sh
-cchq <env> deploy-stack --tags=uv
+cchq <env> deploy-stack
 ```
