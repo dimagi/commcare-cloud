@@ -4,7 +4,14 @@
   apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
 
 - name: Add PostgreSQL apt repository
-  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
+  apt_repository: 
+    repo: >-
+      {% if ansible_distribution_version == '18.04' %}
+      deb https://apt-archive.postgresql.org/pub/repos/apt bionic-pgdg main
+      {% else %}
+      deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main
+      {% endif %}
+    state: present
   register: add_postgres_repo
 
 - name: Add Python PPA
