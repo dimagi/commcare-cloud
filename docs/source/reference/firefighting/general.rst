@@ -1071,24 +1071,24 @@ Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a 
   * Turn on auto shard allocation using
     .. code-block::
 
-       curl 'http://<es_url>/_cluster/settings/' -X PUT  --data '{"transient":{"cluster.routing.allocation.enable":"all"}}'
+       curl 'http://<es_url>/_cluster/settings/' -X PUT -H 'Content-Type: application/json' --data '{"transient":{"cluster.routing.allocation.enable":"all"}}'
 
   * Wait for replicas to get assigned.
 
 * Finally **remember to turn off** auto shard allocation using
   .. code-block::
 
-       curl 'http://<es_url>/_cluster/settings/' -X PUT  --data '{"transient":{"cluster.routing.allocation.enable":"none"}}'
+       curl 'http://<es_url>/_cluster/settings/' -X PUT -H 'Content-Type: application/json' --data '{"transient":{"cluster.routing.allocation.enable":"none"}}'
 
 .. code-block::
 
-   curl -XPUT '<es url/ip>:9200/_cluster/settings' -d '{ "transient":
+   curl -XPUT -H 'Content-Type: application/json' '<es url/ip>:9200/_cluster/settings' -d '{ "transient":
      { "cluster.routing.allocation.enable" : "all"
      }
    }'
    # wait for shards to be allocated
    ./scripts/elasticsearch-administer.py <es url> shard_status # all shards should say STARTED
-   curl -XPUT '<es url/ip>:9200/_cluster/settings' -d '{ "transient":
+   curl -XPUT -H 'Content-Type: application/json' '<es url/ip>:9200/_cluster/settings' -d '{ "transient":
      { "cluster.routing.allocation.enable" : "none"
      }
    }'
