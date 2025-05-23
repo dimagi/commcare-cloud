@@ -6,7 +6,6 @@
   when: not stop_loop_hack.failed | default(False)
   loop:
     - compress --force -v 0
-    - purge_compressed_files
 
 - name: Push shared staticfiles cache
   when: shared_dir_for_staticfiles
