@@ -32,6 +32,14 @@
     state: present
   when: ansible_distribution_version == '22.04'
 
+- name: Blacklist Erlang from unattended upgrades
+  # prevent unattended rabbitmq restart disrupting celery
+  lineinfile:
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    insertafter: '^Unattended-Upgrade::Package-Blacklist \{'
+    regexp: '^\s*"erlang";'
+    line: '    "erlang";'
+
 - name: Add trusted key
   apt_key:
     url: https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey
