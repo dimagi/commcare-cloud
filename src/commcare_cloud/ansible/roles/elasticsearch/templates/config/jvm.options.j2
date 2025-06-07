@@ -54,7 +54,11 @@
 14-:-XX:InitiatingHeapOccupancyPercent=30
 
 ## JVM temporary directory
+{% if elasticsearch_jvm_tmp_dir is defined %}
+-Djava.io.tmpdir={{ elasticsearch_jvm_tmp_dir }}
+{% else %}
 -Djava.io.tmpdir={{ elasticsearch_data_dir }}/tmp
+{% endif %}
 
 ## heap dumps
 
