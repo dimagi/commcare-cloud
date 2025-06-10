@@ -1,7 +1,5 @@
 J2ME_SITE_HOST: null
 NO_WWW_SITE_HOST: null
-TABLEAU_HOST: null
-tableau_server: null
 special_sites: [ ]
 primary_ssl_env: ""
 nginx_hsts_max_age: null
