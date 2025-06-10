@@ -115,7 +115,7 @@ pyyaml==6.0.1
     #   couchdb-cluster-admin
 redis==4.4.4
     # via ansible-inventory
-requests==2.32.3
+requests==2.32.4
     # via
     #   couchdb-cluster-admin
     #   datadog
