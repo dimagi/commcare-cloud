@@ -70,10 +70,11 @@
 
     - name: remove obsolete sites
       include_role:
-        name: {name: nginx, tags: nginx_sites}
+        name: {name: nginx, tags: [nginx_sites, drop_old_sites]}
         tasks_from: set_site_present
       vars:
         site_present: False
+        nginx_sites: [{server: {file_name: '{{ file_name }}'}}]
       with_items:
         - wiki
         - wiki_http
@@ -81,7 +82,9 @@
         - icds_tableau_http
       loop_control:
         loop_var: file_name
-      tags: nginx_sites
+      tags:
+        - nginx_sites
+        - drop_old_sites
 
 - name: Reach Proxy
   hosts: reach_proxy
