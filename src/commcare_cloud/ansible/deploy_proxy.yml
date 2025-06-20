@@ -74,6 +74,7 @@
         tasks_from: set_site_present
       vars:
         site_present: False
+        nginx_sites: [{server: {file_name: '{{ file_name }}'}}]
       with_items:
         - wiki
         - wiki_http
