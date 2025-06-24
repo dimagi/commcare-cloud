@@ -801,6 +801,10 @@ ENTERPRISE_MODE = {{ localsettings.ENTERPRISE_MODE }}
 RESTRICT_DOMAIN_CREATION = {{ localsettings.RESTRICT_DOMAIN_CREATION }}
 {% endif %}
 
+{% if localsettings.get('ENABLE_BHA_CASE_SEARCH_ADAPTER') %}
+ENABLE_BHA_CASE_SEARCH_ADAPTER = {{ localsettings.ENABLE_BHA_CASE_SEARCH_ADAPTER }}
+{% endif %}
+
 {% if localsettings.get('TABLEAU_URL_ROOT') %}
 TABLEAU_URL_ROOT = '{{ localsettings.TABLEAU_URL_ROOT }}'
 {% endif %}
