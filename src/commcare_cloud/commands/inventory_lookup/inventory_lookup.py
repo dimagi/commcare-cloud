@@ -305,7 +305,7 @@ class DjangoManage(CommandBase):
     ```
     commcare-cloud <env> django-manage --tmux --release 2018-04-13_18.16 shell
     ```
-    
+
     To do this on a specific server
 
     ```
@@ -375,11 +375,8 @@ class DjangoManage(CommandBase):
         else:
             tee_file_cmd = ''
 
-        # TODO remove when machines are no longer running Python 3.6
-        python_env = "python_env-3.6" if environment.python_version == "3.6" else "python_env"
-
         sh_args = ' '.join(shlex_quote(arg) for arg in manage_args)
-        command = f'cd {code_dir}; {python_env}/bin/python manage.py {sh_args}{tee_file_cmd}'
+        command = f'cd {code_dir}; python_env/bin/python manage.py {sh_args}{tee_file_cmd}'
         if args.tmux:
             args.remote_command = command
             return Tmux(self.parser).run(args, [])
@@ -416,7 +413,8 @@ class ForwardPort(CommandBase):
         local_port = self.get_random_available_port()
 
         while not self.is_loopback_address_set_up(loopback_address):
-            puts(color_error('To make this work you will need to run set up a special loopback address on your local machine:'))
+            puts(color_error('To make this work you will need to run set up a '
+                             'special loopback address on your local machine:'))
             puts(color_notice(f'  - Mac: Run `sudo ifconfig lo0 alias {loopback_address}`.'))
             puts(color_notice(f'  - Linux: Run `sudo ip addr add {loopback_address}/8 dev lo`.'))
             if not ask("Follow the instructions above or type n to exit. Ready to continue?"):
@@ -425,16 +423,19 @@ class ForwardPort(CommandBase):
 
         while not self.is_etc_hosts_alias_set_up(loopback_address, nice_name):
             puts(color_error('Okay, now the last step is to set up a special alias in your /etc/hosts:'))
-            puts(color_notice(f'  - Edit /etc/hosts (e.g. `sudo vim /etc/hosts`) and add the line `{loopback_address} {nice_name}` to it.'))
+            puts(color_notice('  - Edit /etc/hosts (e.g. `sudo vim /etc/hosts`) and add '
+                              f'the line `{loopback_address} {nice_name}` to it.'))
             if not ask("Follow the instructions above or type n to exit. Ready to continue?"):
                 return -1
             puts()
 
-        puts(color_notice(f'You should now be able to reach {args.env_name} {args.service} at {color_link(f"http://{nice_name}:{local_port}{url_path}")}.'))
-        puts(f'Interrupt with ^C to stop port-forwarding and exit.')
+        puts(color_notice(f'You should now be able to reach {args.env_name} {args.service} '
+                          f'at {color_link(f"http://{nice_name}:{local_port}{url_path}")}.'))
+        puts('Interrupt with ^C to stop port-forwarding and exit.')
         puts()
         try:
-            return commcare_cloud(args.env_name, 'ssh', 'control', '-NL', f'{loopback_address}:{local_port}:{remote_host}:{remote_port}')
+            return commcare_cloud(args.env_name, 'ssh', 'control', '-NL',
+                                  f'{loopback_address}:{local_port}:{remote_host}:{remote_port}')
         except KeyboardInterrupt:
             puts()
             puts('Connection closed.')

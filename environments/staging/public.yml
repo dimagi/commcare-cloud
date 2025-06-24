@@ -235,9 +235,6 @@ efs_shared_mount_options: "_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,
 # replace ntp with chrony.
 use_chrony: True
 
-python_version: '3.9'
-use_deadsnakes: yes
-
 allow_aws_ssm_proxy: true
 
 release_bucket: dimagi-commcare-staging-release
