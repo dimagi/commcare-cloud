@@ -1,0 +1,5 @@
+deploy_env: myenv
+env_monitoring_id: myenv
+always_deploy_formplayer: true
+users:
+  - admins
