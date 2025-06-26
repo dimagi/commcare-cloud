@@ -267,12 +267,7 @@ RUN_CASE_SEARCH_PILLOW = {{ localsettings.RUN_CASE_SEARCH_PILLOW }}
 RUN_UNKNOWN_USER_PILLOW = {{ localsettings.RUN_UNKNOWN_USER_PILLOW }}
 {% endif %}
 
-{% if BITLY_OAUTH_TOKEN %}
 BITLY_OAUTH_TOKEN = '{{ BITLY_OAUTH_TOKEN }}'
-{% else %}
-BITLY_LOGIN = '{{ BITLY_LOGIN }}'
-BITLY_APIKEY = '{{ BITLY_APIKEY }}'
-{% endif %}
 
 #xep
 #GET_URL_BASE  = 'dimagi.utils.web.get_secure_url_base'
