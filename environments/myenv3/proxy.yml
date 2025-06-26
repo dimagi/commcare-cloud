@@ -1,4 +1,4 @@
-SITE_HOST: 'clusterq2test3.dimagi.com'
+SITE_HOST: 'clusterq2test2.dimagi.com'
 
 special_sites: []
 fake_ssl_cert: False
