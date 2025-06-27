@@ -62,6 +62,7 @@
     - "{{ restore_payload_dir_host }}"
     - "{{ transfer_payload_dir_host }}"
     - "{{ shared_temp_dir_host }}"
+    - "{{ blobdb_dir_host }}"
   tags:
     - shared_files
 
