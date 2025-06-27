@@ -56,7 +56,7 @@ privacy_email: mkangia@dimagi.com
 feedback_email: mkangia@dimagi.com
 contact_email: mkangia@dimagi.com
 
-BROKER_URL: 'redis://localhost:6379/0'
+BROKER_URL: 'redis://{{ groups.redis.0 }}:6379/0'
 
 KSPLICE_ACTIVE: no
 
