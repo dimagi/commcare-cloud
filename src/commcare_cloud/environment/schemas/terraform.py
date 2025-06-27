@@ -40,6 +40,7 @@ class TerraformConfig(jsonobject.JsonObject):
     ec2_auto_recovery = jsonobject.ListProperty(lambda: Ec2AutoRecovery, default=None)
     fsx_file_systems = jsonobject.ListProperty(lambda: FsxFileSystem, default=None)
     awsmq = jsonobject.ObjectProperty(lambda: awsmqConfig, default=None)
+    terraform_imports = jsonobject.ListProperty(lambda: TerraformImportsConfig, default=list)
 
     @classmethod
     def wrap(cls, data):
@@ -318,3 +319,9 @@ class FsxFileSystem(jsonobject.JsonObject):
     fsx_name = jsonobject.StringProperty(required=True)
     storage_capacity = jsonobject.IntegerProperty(required=True)
     throughput_capacity = jsonobject.IntegerProperty(required=True)
+
+
+class TerraformImportsConfig(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    to = jsonobject.StringProperty(required=True)
+    id = jsonobject.StringProperty(required=True)

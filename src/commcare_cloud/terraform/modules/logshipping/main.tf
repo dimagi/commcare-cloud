@@ -154,3 +154,28 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_check_file" {
     principal = "events.amazonaws.com"
     source_arn = aws_cloudwatch_event_rule.check-file-event.arn
 }
+
+resource "aws_cloudwatch_event_rule" "config-changes" {
+  name = "config-changes"
+  event_pattern = jsonencode({
+    source = ["aws.config"],
+    detail-type = ["Config Configuration Item Change"]
+  })
+  lifecycle {
+    ignore_changes = [name]
+  }
+}
+
+resource "aws_cloudwatch_log_group" "config-changes" {
+  name = "/aws/events/config-changes"
+  retention_in_days = 0
+}
+
+resource "aws_cloudwatch_event_target" "config-changes" {
+  target_id = "config-changes"
+  rule = aws_cloudwatch_event_rule.config-changes.name
+  arn = aws_cloudwatch_log_group.config-changes.arn
+  lifecycle {
+    ignore_changes = [target_id]
+  }
+}
