@@ -16,20 +16,20 @@ SEPARATE_FORM_PROCESSING_DBS: False
 
 dbs:
   auditcare:
-    pgbouncer_host: machine2
-    host: machine2
+    pgbouncer_host: machine3
+    host: machine3
   main:
-    pgbouncer_host: machine2
-    host: machine2
+    pgbouncer_host: machine3
+    host: machine3
   ucr:
-    pgbouncer_host: machine2
-    host: machine2
+    pgbouncer_host: machine3
+    host: machine3
   formplayer:
-    pgbouncer_host: machine2
-    host: machine2
+    pgbouncer_host: machine3
+    host: machine3
   synclogs:
-    pgbouncer_host: machine2
-    host: machine2
+    pgbouncer_host: machine3
+    host: machine3
   form_processing: null
   # For partitioned database
   #form_processing:

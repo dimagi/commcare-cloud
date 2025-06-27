@@ -38,7 +38,7 @@ couchdb_use_haproxy: True
 haproxy_version: 2.4
 couch_dbs:
   default:
-    host: 172.31.7.0
+    host: 172.31.10.29
     port: 35984
     name: commcarehq
     username: "{{ localsettings_private.COUCH_USERNAME }}"
@@ -114,7 +114,7 @@ localsettings:
   #  PILLOWTOP_MACHINE_ID:
   PILLOW_RETRY_QUEUE_ENABLED: True
   REDIS_DB: '0'
-  REDIS_HOST: "localhost"
+  REDIS_HOST: "172.31.6.177"
   REDIS_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
