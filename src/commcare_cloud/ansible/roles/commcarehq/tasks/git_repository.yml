@@ -25,15 +25,11 @@
       - git
       - slow
 
-  - name: register virtualenv
-    stat: path="{{ repo_dest }}/.venv"
-    register: venv
-
   - name: uv sync ({{ item.url }})
     command:
       cmd: uv sync --group=prod --no-dev --locked --compile-bytecode
       chdir: "{{ code_source }}"
-    when: venv.stat.exists and not testing|default(False)
+    when: not testing|default(False)
     tags:
       - python
 
