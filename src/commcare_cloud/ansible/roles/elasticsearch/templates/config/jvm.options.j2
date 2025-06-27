@@ -57,7 +57,7 @@
 {% if elasticsearch_jvm_tmp_dir is defined %}
 -Djava.io.tmpdir={{ elasticsearch_jvm_tmp_dir }}
 {% else %}
--Djava.io.tmpdir={{ elasticsearch_data_dir }}/tmp
+-Djava.io.tmpdir=/tmp
 {% endif %}
 
 ## heap dumps
