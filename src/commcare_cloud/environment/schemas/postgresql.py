@@ -16,7 +16,7 @@ from six.moves import range
 PostgresqlOverride = get_defaults_jsonobject(
     'postgresql_base',
     allow_dump_from_pgstandby=jsonobject.BooleanProperty(),
-    idle_in_transaction_session_timeout=jsonobject.IntegerProperty(),
+    postgresql_idle_in_transaction_session_timeout=jsonobject.IntegerProperty(),
 )
 
 PgbouncerOverride = get_defaults_jsonobject('pgbouncer')
