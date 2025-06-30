@@ -9,6 +9,9 @@ postgres_override:
       users: hqrepl
       netmask: 0.0.0.0/0
 
+postgresql_parameters:
+  idle_in_transaction_session_timeout: 86400000
+
 pgbouncer_override:
   pgbouncer_pool_mode: transaction
   pgbouncer_max_connections: 1600
