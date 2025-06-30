@@ -679,8 +679,8 @@ efs_file_systems:
     route_names: "shared-efs"
 
 terraform_imports:
-  - to: 'module.logshipping.aws_cloudwatch_event_rule.config-changes'
-    id: 'default/ConfigChanges'
+  - to: module.logshipping.aws_cloudwatch_event_rule.config-changes
+    id: default/ConfigChanges
   - to: module.logshipping.aws_cloudwatch_event_target.config-changes
     id: default/ConfigChanges/Id27473066087598
   - to: module.logshipping.aws_cloudwatch_log_group.config-changes
