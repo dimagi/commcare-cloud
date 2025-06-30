@@ -400,3 +400,11 @@ efs_file_systems:
     create_record: yes
     domain_name: "india.commcare.local"
     route_names: "shared-efs"
+
+terraform_imports:
+  - to: module.logshipping.aws_cloudwatch_event_rule.config-changes
+    id: default/config-changes
+  - to: module.logshipping.aws_cloudwatch_event_target.config-changes
+    id: default/config-changes/Id5885852165010
+  - to: module.logshipping.aws_cloudwatch_log_group.config-changes
+    id: /aws/events/config-changes
