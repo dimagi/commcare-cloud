@@ -85,6 +85,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
 
     postgres_override = jsonobject.ObjectProperty(PostgresqlOverride)
     pgbouncer_override = jsonobject.ObjectProperty(PgbouncerOverride)
+    postgresql_idle_in_transaction_session_timeout = jsonobject.IntegerProperty()
 
     # Mapping of host to list of databases to run pg_repack on
     pg_repack = jsonobject.DictProperty()
