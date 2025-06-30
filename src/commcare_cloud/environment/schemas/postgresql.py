@@ -16,6 +16,7 @@ from six.moves import range
 PostgresqlOverride = get_defaults_jsonobject(
     'postgresql_base',
     allow_dump_from_pgstandby=jsonobject.BooleanProperty(),
+    idle_in_transaction_session_timeout=jsonobject.IntegerProperty(),
 )
 
 PgbouncerOverride = get_defaults_jsonobject('pgbouncer')
@@ -85,7 +86,6 @@ class PostgresqlConfig(jsonobject.JsonObject):
 
     postgres_override = jsonobject.ObjectProperty(PostgresqlOverride)
     pgbouncer_override = jsonobject.ObjectProperty(PgbouncerOverride)
-    postgresql_idle_in_transaction_session_timeout = jsonobject.IntegerProperty()
 
     # Mapping of host to list of databases to run pg_repack on
     pg_repack = jsonobject.DictProperty()
