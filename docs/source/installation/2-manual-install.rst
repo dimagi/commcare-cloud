@@ -532,6 +532,18 @@ To see which ports need to be opened, refer to the following documentation :ref:
 
 For a monolith, this step is not required.
 
+Shared Directory
+----------------
+
+For a cluster, configure the file path for the shared directory in the ``public.yml`` file like
+
+::code-block:: yaml
+
+    datadisk_device: "/dev/xvdbb"
+
+You can use `fdisk -l` to find the path of the disk you want to use as a shared directory.
+In the example above, it was ``/dev/xvdbb1``.
+
 Deploy CommCare HQ services
 ---------------------------
 
