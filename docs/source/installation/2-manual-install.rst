@@ -521,6 +521,15 @@ pages <https://docs.ansible.com/ansible/latest/user_guide/vault.html>`__.
 Vault <https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md#managing-secrets-with-vault>`__
 will tell you more about how we use this vault file.
 
+
+Networking
+----------
+
+For a cluster, before we deploy CommCare HQ services, we need to open ports on the machines so the services can communicate with each other.
+To see which ports need to be opened, refer to the following documentation :ref:`commcare-ports`
+
+For a monolith, this step is not required.
+
 Deploy CommCare HQ services
 ---------------------------
 
