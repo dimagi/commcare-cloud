@@ -106,6 +106,13 @@ Below are the list of ports for various services required for running CommCare H
      - no
      - ---
      - ---
+   * - Shared directory host
+     - 111 2049
+     - yes
+     - no
+     - no
+     - ---
+     - :sub:`Both TCP and UDP protocols to be allowed`
    * - Mail/SMTP ports
      - 25 465 587
      - ---
