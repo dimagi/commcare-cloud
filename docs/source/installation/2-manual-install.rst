@@ -124,6 +124,15 @@ reference.
 
         $ sudo service ssh reload
 
+5. Test that you can log in as root:
+
+    ::
+
+        $ ssh root@localhost
+
+    Test this from the machine itself in case of a monolith or from the control machine (named "control1") in case of a cluster.
+    Use "localhost" for monolith or the private IP address of the machine to login to for a cluster (including the control machine itself).
+
 Initialize log file
 ~~~~~~~~~~~~~~~~~~~
 To be used in the installation process.
