@@ -292,7 +292,7 @@ This file contains settings related to the Nginx proxy.
 ``public.yml``
 ^^^^^^^^^^^^^^^^^^
 
-This file contains the remainder of the settings for the environement
+This file contains the remainder of the settings for the environment
 that aren't specified in any of the aforementioned files.
 
 ``vault.yml``
