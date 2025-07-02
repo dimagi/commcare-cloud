@@ -3,7 +3,9 @@
 Install Using Commcare-Cloud on one or more machines
 ====================================================
 
-This tutorial will walk you through the process of setting up a new environment to run CommCare HQ using :ref:`commcare-cloud <commcare-cloud>`. It covers both a single-server (“monolith”) environment and a small cluster of virtual machines. If you want to quickly test or preview the environment setup on a single machine you can follow :ref:`quick-install` which uses a script to automate all of the below.
+This tutorial will walk you through the process of setting up a new environment to run CommCare HQ using :ref:`commcare-cloud <commcare-cloud>`. It covers both, a single-server (“monolith”) environment and a small cluster of virtual machines.
+
+If you want to quickly test or preview the environment setup on a single machine you can follow :ref:`quick-install` which uses a script to automate all of the below.
 
 This assumes you have gone through :ref:`deploy-commcarehq` which details what all you need to know to deploy CommCare HQ in production.
 
@@ -13,11 +15,11 @@ Procure Hardware
 The first step is to procure the hardware required to run CommCare HQ to meet your project requirements. To understand the hardware resources required for your project please see :ref:`deployment-options`. Below are configurations used for the purpose of the tutorial.
 
 
-Single server
+Single server (Monolith)
 ~~~~~~~~~~~~~
 
 When CommCare HQ is running on a single server, this configuration is
-referred to as a “monolith”. A monolith will need an *absolute minimum*
+referred to as a **monolith**. A monolith will need an *absolute minimum*
 of:
 
 -  4 CPU cores
@@ -25,7 +27,7 @@ of:
 -  40 GB storage
 
 These resources are only sufficient to run a demo of CommCare HQ. Any
-production environment will need a lot more resources.
+production environment will need more resources.
 
 If you are using VirtualBox for testing CommCare HQ, you can follow the
 instructions on :ref:`configure-vbox`.
@@ -33,8 +35,8 @@ instructions on :ref:`configure-vbox`.
 Cluster
 ~~~~~~~
 
-The following example uses a cluster of similarly resourced virtual
-machines. Let us assume that we have estimated that the following will
+The following example uses a cluster of virtual
+machines with similar resources available as for a monolith. Let us assume that we have estimated that the following will
 meet the requirements of our project:
 
 ========== ===== ===== =====================
@@ -49,7 +51,7 @@ db2        2     16 GB 30 GB + 60 GB + 20 GB
 ========== ===== ===== =====================
 
 db1 has an extra volume for databases. db2 has one extra volume for
-databases, and another for a shared NFS volume.
+databases, and another 20GB for a shared NFS volume.
 
 All environments
 ~~~~~~~~~~~~~~~~
