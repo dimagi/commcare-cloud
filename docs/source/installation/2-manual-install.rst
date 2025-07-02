@@ -5,6 +5,8 @@ Install Using Commcare-Cloud on one or more machines
 
 This tutorial will walk you through the process of setting up a new environment to run CommCare HQ using :ref:`commcare-cloud <commcare-cloud>`. It covers both, a single-server (“monolith”) environment and a small cluster of virtual machines.
 
+If you face any issue during the setup, you can refer the :ref:`troubleshoot-first-time-install` documentation.
+
 If you want to quickly test or preview the environment setup on a single machine you can follow :ref:`quick-install` which uses a script to automate all of the below.
 
 This assumes you have gone through :ref:`deploy-commcarehq` which details what all you need to know to deploy CommCare HQ in production.
@@ -675,11 +677,6 @@ from a browser.
 
 If you are using VirtualBox, see :ref:`configure-vbox` to find the URL to use
 in your browser.
-
-Troubleshooting first-time setup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you face any issues, it is recommended to review the :ref:`troubleshoot-first-time-install` documentation.
 
 Firefighting issues once CommCare HQ is running
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
