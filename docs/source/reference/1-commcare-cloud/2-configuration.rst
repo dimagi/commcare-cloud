@@ -89,7 +89,7 @@ Each of these files should contain YAML of the following format:
 The ``present`` section will have a list of users who have access to your servers. The name you add here should be their desired system username, and should correspond to the name of their public key in ``<username>.pub`` under `\ ``_authorized_keys`` <#_authorized_keys>`_.
 
 Each ``<username>`` must correspond to that used in a ``<username>.pub``
-under .
+under :ref:`_authorized_keys`.
 
 The ``absent`` section lists those users whose access you want to remove from your servers when running the user update scripts.
 

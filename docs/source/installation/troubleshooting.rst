@@ -10,7 +10,7 @@ If you are seeing a blank screen with just the words "Internal Server Error" on 
 it means that the django webworker process is not reporting as "down",
 but still failing to bootstrap fully.
 (If you are seeing a more elaborate 500 page, then that is an issue with a single request,
-but ususally does not indicate a more pervasive problem with the site's ability to receive and handle requests in general.)
+but usually does not indicate a more pervasive problem with the site's ability to receive and handle requests in general.)
 Often this is because it is unable to connect to
 a backing service (such as CouchDB, Redis, PostgreSQL, PgBouncer, Elasticsearch, Riak).
 This in turn can fall into a number of categories of issue:
