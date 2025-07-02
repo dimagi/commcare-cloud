@@ -16,6 +16,25 @@ If that works then it could be that ssh agent forwarding is not working correctl
 If ssh from the local machine does not work, then it could be that the key is not added to the authorized keys file on the remote machine correctly via the bootstrap-users command.
 Check the key and the username setup in the `_users` and `_authorized_keys` files on the monolith or the control machine for your environment.
 
+Elasticsearch fails to start
+----------------------------
+Check logs for Elasticsearch to see if there are any errors.
+
+There is a known issue that can happen with access to tmp directory configured for elasticsearch.
+https://www.elastic.co/docs/deploy-manage/deploy/self-managed/executable-jna-tmpdir
+
+This can be resolved by providing elasticsearch with a different tmp directory which should have user and group as
+elasticsearch and can have the same permissions as the default tmp directory.
+You can use the default tmp directory on the machine as well but it can cause issues if it is cleared while
+elasticsearch is running.
+Set the relevant path by adding the following to your environment's public.yml file:
+
+.. code-block:: yaml
+
+   elasticsearch_jvm_tmp_dir : '/path/to/new/elasticsearch/tmp' # or just '/tmp'
+
+Re-run the deploy-stack command once set.
+
 My site is showing "Internal Server Error"
 ------------------------------------------
 
