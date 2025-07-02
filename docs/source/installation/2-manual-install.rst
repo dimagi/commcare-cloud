@@ -67,7 +67,7 @@ When choosing which software to install during the Ubuntu installation,
 select only “SSH Server”.
 
 You will need a domain name which directs to the monolith or the
-cluster’s proxy server.
+cluster’s proxy server. DNS for this can be set up before or during the installation as per your convenience.
 
 Prepare all machines for automated deploy
 -----------------------------------------
@@ -563,7 +563,9 @@ initially.
 
        $ commcare-cloud cluster django-manage preindex_everything
 
-3. Run the “deploy” command:
+3. This is a good point to set up the DNS record for the domain, if not done already.
+
+4. Run the “deploy” command:
 
    ::
 
