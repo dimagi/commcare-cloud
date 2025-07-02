@@ -3,6 +3,19 @@
 Troubleshooting first time setup
 ================================
 
+This document is intended to help you troubleshoot issues that may arise
+when setting up a new CommCareHQ instance.
+
+Access denied for ssh ansible@<IP>
+----------------------------------
+Assuming that the necessary port is opened for ssh access, this is likely due to a misconfiguration around keys to be used.
+
+Try to ssh from your local machine using the key for the user that should have access to the concerned machine.
+If that works then it could be that ssh agent forwarding is not working correctly. Use `ssh-add` command to debug.
+
+If ssh from the local machine does not work, then it could be that the key is not added to the authorized keys file on the remote machine correctly via the bootstrap-users command.
+Check the key and the username setup in the `_users` and `_authorized_keys` files on the monolith or the control machine for your environment.
+
 My site is showing "Internal Server Error"
 ------------------------------------------
 
