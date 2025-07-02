@@ -16,6 +16,18 @@ If that works then it could be that ssh agent forwarding is not working correctl
 If ssh from the local machine does not work, then it could be that the key is not added to the authorized keys file on the remote machine correctly via the bootstrap-users command.
 Check the key and the username setup in the `_users` and `_authorized_keys` files on the monolith or the control machine for your environment.
 
+Elasticsearch fails to start
+----------------------------
+Check logs for Elasticsearch to see if there are any errors.
+
+There is a known issue with access to error to temp directory which can be resolved by setting the following in your environment's public.yml file:
+
+.. code-block:: yaml
+
+   elasticsearch_jvm_tmp_dir : '/tmp'
+
+Re-run the installation command once set.
+
 My site is showing "Internal Server Error"
 ------------------------------------------
 
