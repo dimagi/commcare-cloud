@@ -1,20 +1,32 @@
-- name: Logstash
+- name: Install and configure Logstash with community.general
   hosts: logproxy
   become: yes
   gather_facts: true
+
   vars:
-    sansible_logstash_family: 7.x
-    sansible_java_version: 8
-    sansible_java_apt_keyserver: 'https://keyserver.ubuntu.com'
-    sansible_logstash_version: 1:7.5.2-1
-    sansible_logstash_plugins:
+    logstash_version: 7.5.2
+    logstash_plugins:
       - logstash-patterns-core
       - logstash-filter-alter
       - logstash-output-datadog_metrics
-    sansible_logstash_default_config: no
+
   tasks:
-    - import_role:
-        name: sansible.logstash
+
+    - name: Install Logstash
+      apt:
+        name: logstash={{ logstash_version }}
+        state: present
+      become: yes
+      tags: install
+
+    - name: Install Logstash plugins
+      community.general.logstash_plugin:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ logstash_plugins }}"
+      become: yes
+      tags: plugins
+
     - import_role:
         name: dimagi.commcare_logstash.logstash
       tags: configure
