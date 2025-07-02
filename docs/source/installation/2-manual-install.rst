@@ -600,6 +600,8 @@ initially.
    When prompted for the ``sudo`` password, enter the
    “ansible_sudo_pass” value.
 
+   Please ensure you run this deploy even if the version has not changed since it will do an initial setup of the environment.
+
 See the Deploying CommCare HQ code changes section in :ref:`manage-deployment` for more information.
 
    If deploy fails, you can restart where it left off:
