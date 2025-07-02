@@ -543,8 +543,19 @@ you are setting up a cluster.
     $ exit  # exit until no longer connected to the machine
     $ ssh -A jbloggs@control1
 
+Please note the option used to ssh "-A" which enables agent forwarding.
+Run on your **local machine** to check if you have an SSH key added to your ssh agent:
 
-You are now ready to deploy CommCare HQ services.
+::
+
+    $ ssh-add -l
+
+If you don't see SSH key listed here for the user you are using to log in, you will need to add it to the ssh agent before running the ssh command.
+You can read about it here, https://www.ssh.com/academy/ssh/agent#adding-ssh-keys-to-the-agent.
+**WARNING**: ssh-add should only be run locally and not on the remote machine.
+If this isn't setup correctly, you will face a machine access error in the next step.
+
+Let's deploy CommCare HQ services.
 
 ::
 
