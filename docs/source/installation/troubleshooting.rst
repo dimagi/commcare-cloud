@@ -6,6 +6,11 @@ Troubleshooting first time setup
 This document is intended to help you troubleshoot issues that may arise
 when setting up a new CommCareHQ instance.
 
+Login as the user "ubuntu" rather than the user "root"
+------------------------------------------------
+
+https://askubuntu.com/questions/1156830/please-login-as-the-user-ubuntu-rather-than-the-user-root
+
 Access denied for ssh ansible@<IP>
 ----------------------------------
 Assuming that the necessary port is opened for ssh access, this is likely due to a misconfiguration around keys to be used.
