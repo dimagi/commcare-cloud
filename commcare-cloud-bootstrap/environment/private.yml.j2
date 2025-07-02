@@ -46,5 +46,6 @@ localsettings_private:
   HUBSPOT_API_ID: ''
   HUBSPOT_ACCESS_TOKEN: ''
   SECRET_KEY: '{{ generate_password() }}'
+  REDIS_PASSWORD: '{{ generate_password() }}'
 
 ansible_sudo_pass: '{{ generate_password() }}'
