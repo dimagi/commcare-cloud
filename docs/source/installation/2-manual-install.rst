@@ -59,10 +59,9 @@ All environments
 CommCare HQ environments run on Ubuntu Server 22.04 (64-bit).
 
 During the installation of Ubuntu you will be prompted for the details
-of the first user, who will have sudo access. It is convenient to name
-the user “ansible”. (The user can be named something else. Deploying
-CommCare HQ will create an “ansible” user if one does not already
-exist.)
+of the first user, who will have sudo access.
+You can use any name you want. However, it is convenient to name the user “ansible” since we will add a user by this name for installation anyway.
+If you are using EC2 instances from AWS, you will have the available default user "ubuntu".
 
 When choosing which software to install during the Ubuntu installation,
 select only “SSH Server”.
