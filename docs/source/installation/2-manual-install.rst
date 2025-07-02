@@ -258,21 +258,17 @@ Install and Configure CommCare Cloud
 
         $ git remote add origin git@github.com:your-organization/commcare-environment.git
 
-6.  Configure your CommCare environment.
-
-    See :ref:`configure-env` for more information.
-
-7.  Add your username to the ``present`` section of
+6.  Add your username to the ``present`` section of
     ``~/environments/_users/admins.yml``.
 
     ::
 
        $ nano ~/environments/_users/admins.yml
 
-8.  Copy your **public** key to ``~/environments/_authorized_keys/``.
+7.  Copy your **public** key to ``~/environments/_authorized_keys/``.
     The filename must correspond to your username.
 
-9. Change “monolith.commcarehq.test” to your real domain name,
+8. Change “monolith.commcarehq.test” to your real domain name,
 
     ::
 
@@ -295,7 +291,7 @@ Install and Configure CommCare Cloud
        -  ``ALLOWED_HOSTS``
 
 
-10. Change default emails
+9. Change default emails
 
     ::
 
@@ -304,7 +300,7 @@ Install and Configure CommCare Cloud
     You should find references in ``public.yml``
 
 
-11. Configure ``inventory.ini``
+10. Configure ``inventory.ini``
 
     .. rubric:: For a monolith
        :name: for-a-monolith
@@ -441,6 +437,10 @@ Install and Configure CommCare Cloud
        [elasticsearch:children]
        db1
        db2
+
+11.  Configure rest of your CommCare environment.
+
+    See :ref:`configure-env` for more information.
 
 12. Configure the ``commcare-cloud`` command.
 
