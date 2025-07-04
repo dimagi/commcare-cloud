@@ -1,34 +1,65 @@
-- name: Logstash
+- name: Install and configure Logstash with community.general
   hosts: logproxy
   become: yes
   gather_facts: true
   vars:
-    sansible_logstash_family: 7.x
-    sansible_java_version: 8
-    sansible_java_apt_keyserver: 'https://keyserver.ubuntu.com'
-    sansible_logstash_version: 1:7.5.2-1
-    sansible_logstash_plugins:
+    logstash_version: "1:7.5.2-1"
+    logstash_plugins:
       - logstash-patterns-core
       - logstash-filter-alter
       - logstash-output-datadog_metrics
-    sansible_logstash_default_config: no
+
   tasks:
-    - import_role:
-        name: sansible.logstash
+    - name: Install OpenJDK 11
+      apt:
+        name: openjdk-11-jre-headless
+        state: present
+      tags: install
+
+    - name: Add Elastic GPG key
+      apt_key:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
+      tags: install
+
+    - name: Add Elastic APT repository
+      apt_repository:
+        repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
+        state: present
+        filename: 'elastic-7.x'
+      tags: install
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+      tags: install
+
+    - name: Install Logstash
+      apt:
+        name: logstash={{ logstash_version }}
+        state: present
+      tags: install
+
+    - name: Install Logstash plugins
+      community.general.logstash_plugin:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ logstash_plugins }}"
+      environment:
+        LS_JAVA_OPTS: "-Xms256m -Xmx256m"
+      tags: plugins
+
     - import_role:
         name: dimagi.commcare_logstash.logstash
       tags: configure
-    - sysctl:
+
+    - name: Set kernel buffer size
+      sysctl:
         name: net.core.rmem_max
         value: '26214400'
         state: present
-    - name: 'Accommodate poorly functioning task within sansible.users_and_groups'
-      # Task 'Enable include of /etc/sudoers.d'
-      # Forces the line '#includedir /etc/sudoers.d' to be included in /etc/sudoers.
-      # The up-to-date syntax is @includedir, and it's in the default file that comes with Jammy
-      # but since there's no simple way to get sansible *not* to add its version of this line,
-      # I'm removing the more correct line so that the dir is not included twice.
-      # Including the same directory twice causes annoying stderr warning output on many commands.
+
+    - name: Remove @includedir to avoid sudo warnings
       lineinfile:
         path: /etc/sudoers
         regex: '^\@includedir /etc/sudoers.d'
@@ -40,8 +71,6 @@
   become: yes
   gather_facts: true
   vars:
-    sansible_java_version: 8
-    sansible_java_apt_keyserver: 'https://keyserver.ubuntu.com'
     filebeat_version: 7.x
   tasks:
     - import_role:

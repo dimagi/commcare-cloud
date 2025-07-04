@@ -18,8 +18,6 @@ roles:
   - name: DavidWittman.redis
     src: https://github.com/DavidWittman/ansible-redis.git
     version: 1.2.12
-  - src: sansible.logstash
-    version: v2.4.4
   - name: cloudalchemy.prometheus
     src: https://github.com/cloudalchemy/ansible-prometheus
     version: 2.15.5
