@@ -16,7 +16,7 @@ install_deps = [
     'dimagi-memoized>=1.1.0',
     'dnspython',
     'gitpython',
-    'importlib-metadata==3.1.0',
+    'importlib-metadata',
     'jinja2-cli',
     'jsonobject',
     'netaddr',
