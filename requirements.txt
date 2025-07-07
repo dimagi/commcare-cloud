@@ -136,7 +136,7 @@ tabulate==0.8.9
     # via commcare-cloud (setup.py)
 typing-extensions==4.12.2
     # via pygithub
-urllib3==1.26.19
+urllib3==2.5.0
     # via
     #   botocore
     #   pygithub
