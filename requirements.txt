@@ -67,7 +67,7 @@ greenlet==3.0.0
     # via gevent
 idna==3.7
     # via requests
-importlib-metadata==3.1.0
+importlib-metadata==8.7.0
     # via commcare-cloud (setup.py)
 jinja2==3.1.6
     # via
@@ -145,7 +145,7 @@ urllib3==1.26.19
     #   requests
 wrapt==1.13.1
     # via deprecated
-zipp==3.19.1
+zipp==3.23.0
     # via importlib-metadata
 zope-event==4.5.0
     # via gevent
