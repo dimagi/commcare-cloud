@@ -16,7 +16,6 @@ from gettext import gettext as _
 
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commcare_cloud import make_command_parser, COMMAND_GROUPS
-from six.moves import range
 
 
 class _Section(RawTextHelpFormatter._Section):

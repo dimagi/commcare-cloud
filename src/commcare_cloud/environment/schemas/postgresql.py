@@ -9,7 +9,6 @@ import re
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import PGConfigException
 from commcare_cloud.environment.schemas.role_defaults import get_defaults_jsonobject
-from six.moves import range
 
 PostgresqlOverride = get_defaults_jsonobject(
     'postgresql_base',

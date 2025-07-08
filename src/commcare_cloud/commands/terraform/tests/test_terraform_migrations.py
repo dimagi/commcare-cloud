@@ -7,7 +7,6 @@ from nose.tools import assert_equal
 
 from commcare_cloud.commands.terraform.terraform_migrate_state import get_migrations, \
     Migration, make_migration_plans, MigrationPlan
-from six.moves import range
 
 
 def test_numbering():

@@ -5,8 +5,6 @@ import subprocess
 from collections import namedtuple
 from io import open
 
-from six.moves import range
-
 ANSIBLE_HELP_OPTIONS_PREFIX = 'options:'
 _HELP_CACHE = os.path.join(os.path.dirname(__file__), 'help_cache')
 _AVAILABLE_HELP_CACHES = {

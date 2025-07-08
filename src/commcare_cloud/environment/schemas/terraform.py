@@ -5,7 +5,6 @@ import json
 import re
 
 import jsonobject
-from six.moves import range
 
 
 class TerraformConfig(jsonobject.JsonObject):
