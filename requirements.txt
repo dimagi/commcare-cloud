@@ -99,7 +99,7 @@ pygments==2.15.0
     # via ansible-inventory
 pyjwt[crypto]==2.4.0
     # via pygithub
-pynacl==1.4.0
+pynacl==1.5.0
     # via pygithub
 pyparsing==3.0.9
     # via packaging
@@ -128,7 +128,6 @@ six==1.16.0
     # via
     #   commcare-cloud (setup.py)
     #   jsonobject
-    #   pynacl
     #   python-dateutil
 smmap==5.0.0
     # via gitdb
