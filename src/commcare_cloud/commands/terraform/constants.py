@@ -3,7 +3,6 @@
 #   ./manage.py list_waf_allow_patterns
 #
 # to replace the contents of the multiline string
-from __future__ import unicode_literals
 COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/api/case/v2(?:/([\w\-,]+))?/?$
 ^/a/([\w\.:-]+)/api/case/v2/bulk-fetch/$

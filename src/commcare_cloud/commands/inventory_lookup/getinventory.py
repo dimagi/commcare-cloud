@@ -1,9 +1,6 @@
 """
 Utilities to get server hostname or IP address from an inventory file and group.
 """
-from __future__ import absolute_import, print_function
-
-from __future__ import unicode_literals
 import re
 from collections import defaultdict
 
