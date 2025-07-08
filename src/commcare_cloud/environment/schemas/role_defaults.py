@@ -16,7 +16,7 @@ def get_defaults_jsonobject(role, **kwargs):
     :return: The new JsonObject subclass.
     """
     cls = type(jsonobject.JsonObject)(
-        str("{}_Defaults".format(role)),
+        "{}_Defaults".format(role),
         (jsonobject.JsonObject,),
         dict(get_role_defaults(role), _allow_dynamic_properties=False, **kwargs),
     )
