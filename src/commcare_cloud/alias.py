@@ -1,5 +1,4 @@
 from __future__ import absolute_import, unicode_literals
-import six
 
 
 def _generate_args(*args, **kwargs):
@@ -9,7 +8,7 @@ def _generate_args(*args, **kwargs):
             continue
         elif value is True:
             argv.append('--{}'.format(key))
-        elif isinstance(value, six.string_types + six.integer_types):
+        elif isinstance(value, (str, int)):
             argv.extend(['--{}'.format(key), str(value)])
         else:
             raise TypeError(

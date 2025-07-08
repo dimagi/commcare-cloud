@@ -244,7 +244,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
         defined_django_aliases = {db.django_alias for db in self.generate_postgresql_dbs()
                                   if db.django_alias is not None}
         for reporting_alias, value in self.REPORTING_DATABASES.items():
-            if isinstance(value, six.string_types):
+            if isinstance(value, str):
                 referenced_django_aliases.add(value)
             else:
                 # value is {WRITE: alias, READ: [(alias, weight)...]}

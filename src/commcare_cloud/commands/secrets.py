@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 import getpass
 import json
 
-import six
 import yaml
 from clint.textui import puts
 from six.moves import input
@@ -40,7 +39,7 @@ class Secrets(CommandBase):
 
     def _secrets_view(self, environment, secret_name):
         secret = environment.get_secret(secret_name)
-        if isinstance(secret, six.string_types):
+        if isinstance(secret, str):
             print(secret)
         else:
             print(yaml.safe_dump(secret))

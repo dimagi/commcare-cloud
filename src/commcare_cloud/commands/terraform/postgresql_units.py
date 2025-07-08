@@ -3,8 +3,6 @@ from __future__ import unicode_literals
 from __future__ import division
 import re
 
-import six
-
 
 class Bytes(int):
     pass
@@ -114,7 +112,7 @@ def convert_to_unit(value, new_unit):
 def convert_to_standard_unit(param, value):
     if param not in UNITS_BY_PARAM:
         return value
-    elif isinstance(value, six.integer_types):
+    elif isinstance(value, int):
         return value
     else:
         try:
