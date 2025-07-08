@@ -22,8 +22,6 @@ args==0.1.0
     # via clint
 async-timeout==4.0.2
     # via redis
-attrs==21.2.0
-    # via commcare-cloud (setup.py)
 boto3==1.18.57
     # via commcare-cloud (setup.py)
 botocore==1.21.57
