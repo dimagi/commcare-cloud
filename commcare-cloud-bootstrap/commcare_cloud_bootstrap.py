@@ -242,9 +242,6 @@ def ask_aws_for_instances(env_name, aws_config, count):
         cmd_parts.extend(['--block-device-mappings', json.dumps(block_device_mappings)])
         aws_response = subprocess.check_output(cmd_parts)
         with open(cache_file, 'wb') as f:
-            # PY2: check_output returns a byte string
-            # PY3: would need to specify universal_newlines=True in check_output to pass in str and receive str
-            # easiest to continue using bytes on both python versions
             f.write(aws_response)
     else:
         # Use the existing instances
@@ -376,7 +373,6 @@ def save_inventory(environment, inventory):
     if not os.path.exists(os.path.dirname(inventory_file)):
         os.makedirs(os.path.dirname(inventory_file))
     with open(inventory_file, 'w', encoding='utf-8') as f:
-        # PY2: inventory_file_contents is unicode
         f.write(inventory_file_contents)
     print('inventory file saved to {}'.format(inventory_file),
           file=sys.stderr)
@@ -393,7 +389,6 @@ def save_vault_yml(environment):
     vault_file_contents = template.render(deploy_env=environment.name)
     vault_file = environment.paths.vault_yml
     with open(vault_file, 'w', encoding='utf-8') as f:
-        # PY2: vault_file_contents is unicode
         f.write(vault_file_contents)
     print('vault file saved to {}'.format(vault_file),
           file=sys.stderr)
@@ -407,7 +402,6 @@ def save_app_processes_yml(environment, inventory):
     pillowtop_host, = [host for host in inventory.all_hosts if host.name == pillowtop_host_name]
     contents = template.render(celery_host=celery_host, pillowtop_host=pillowtop_host)
     with open(environment.paths.app_processes_yml, 'w', encoding='utf-8') as f:
-        # PY2: contents is unicode
         f.write(contents)
 
 
@@ -415,7 +409,6 @@ def save_meta_yml(environment, env_name, users):
     template = j2.get_template('meta.yml.j2')
     contents = template.render(env_name=env_name, users=users)
     with open(environment.paths.meta_yml, 'w', encoding='utf-8') as f:
-        # PY2: contents is unicode
         f.write(contents)
 
 

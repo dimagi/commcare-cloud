@@ -210,7 +210,6 @@ class AwsFillInventory(CommandBase):
                 f.write(yaml.safe_dump(resources, default_flow_style=False))
         else:
             with open(environment.paths.aws_resources_yml, 'r', encoding='utf-8') as f:
-                # PY2: yaml.safe_load will return bytes when the content is ASCII-only bytes
                 resources = yaml.safe_load(f.read())
 
         with open(environment.paths.inventory_ini_j2, 'r', encoding='utf-8') as f:
@@ -222,7 +221,6 @@ class AwsFillInventory(CommandBase):
             # reflecting that we were unable to create it
             out_string = AwsFillInventoryHelper(environment, inventory_ini_j2,
                                                 resources).render()
-            # PY2: out_string is unicode based on Jinja2 render method
             f.write(out_string)
 
 

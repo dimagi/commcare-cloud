@@ -134,7 +134,6 @@ def get_monitor_definitions(config):
         if file.endswith('yml') and file != '.ignore.yml':
             file_path = os.path.join(CONFIG_ROOT, file)
             with open(file_path, 'r', encoding='utf-8') as mon:
-                # PY2: data is used in a yaml.safe_load below so will return a bytes str anyway
                 data = mon.read()
             monitor_def = render_messages(config, yaml.safe_load(data))
             monitors[monitor_def['id']] = monitor_def
