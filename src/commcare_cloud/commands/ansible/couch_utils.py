@@ -7,7 +7,7 @@ from collections import defaultdict
 from operator import attrgetter
 
 from couchdb_cluster_admin.suggest_shard_allocation import get_db_info
-from six.moves import urllib_parse, zip_longest, map
+from six.moves import urllib_parse, zip_longest
 
 import jsonobject
 from couchdb_cluster_admin.utils import do_node_local_request, get_membership, NodeDetails, humansize
