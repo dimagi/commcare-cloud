@@ -6,7 +6,6 @@ import os
 import time
 from io import open
 
-import six.moves.cPickle as pickle
 from ansible_collections.amazon.aws.plugins.lookup import aws_secret
 from cryptography.fernet import Fernet, InvalidToken
 
