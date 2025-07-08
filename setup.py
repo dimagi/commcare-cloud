@@ -25,7 +25,6 @@ install_deps = [
     'PyGithub',
     'pytz',
     'simplejson',
-    'six',
     'tabulate'
 ]
 test_deps = [
