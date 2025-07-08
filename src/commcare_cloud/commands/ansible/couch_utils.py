@@ -5,9 +5,9 @@ from __future__ import unicode_literals
 import itertools
 from collections import defaultdict
 from operator import attrgetter
+from urllib.parse import quote
 
 from couchdb_cluster_admin.suggest_shard_allocation import get_db_info
-from six.moves import urllib_parse
 
 import jsonobject
 from couchdb_cluster_admin.utils import do_node_local_request, get_membership, NodeDetails, humansize
@@ -34,7 +34,7 @@ def get_node_shards(node_details, databases=None):
 
 
 def get_shard_details(node_name, node_details, shard_name):
-    data = do_node_local_request(node_details, urllib_parse.quote(shard_name, safe=""))
+    data = do_node_local_request(node_details, quote(shard_name, safe=""))
     data["node"] = node_name
     data["shard_name"] = data["db_name"]
     data["db_name"] = _get_db_name(shard_name)
