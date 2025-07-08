@@ -7,7 +7,6 @@ from abc import ABCMeta, abstractmethod
 from io import open
 
 import jinja2
-import six
 import yaml
 from clint.textui import indent, puts
 from datadog import api, initialize
@@ -225,7 +224,7 @@ class MonitorError(Exception):
     pass
 
 
-class MonitorAPI(six.with_metaclass(ABCMeta)):
+class MonitorAPI(metaclass=ABCMeta):
     def __init__(self, filtered_ids=None):
         self.filtered_ids = filtered_ids
 

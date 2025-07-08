@@ -8,7 +8,6 @@ from itertools import groupby
 import sys
 
 import attr
-import six
 from clint.textui import puts, indent
 
 from commcare_cloud.colors import color_error, color_warning, color_code, color_notice
@@ -43,7 +42,7 @@ class ServiceOption(object):
     sub_options = attr.ib(default=None)
 
 
-class ServiceBase(six.with_metaclass(ABCMeta)):
+class ServiceBase(metaclass=ABCMeta):
     """Base class for all services."""
 
     @abstractproperty
@@ -131,7 +130,7 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
         )
 
 
-class SubServicesMixin(six.with_metaclass(ABCMeta)):
+class SubServicesMixin(metaclass=ABCMeta):
     @abstractproperty
     def managed_services(self):
         """
