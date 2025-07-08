@@ -43,6 +43,27 @@ locals {
   }
 }
 
+resource "aws_guardduty_detector" "detector" {
+  enable = true
+  finding_publishing_frequency = "SIX_HOURS"
+  datasources {
+    kubernetes {
+        audit_logs {
+            enable = false
+        }
+    }
+    malware_protection {
+        scan_ec2_instance_with_findings {
+            ebs_volumes {
+                enable = false
+            }
+        }
+    }
+    s3_logs {
+        enable = false
+    }
+  }
+}
 
 data "aws_iam_role" "data_lifecycle_role" {
   name = "AWSDataLifecycleManagerDefaultRole"
