@@ -6,8 +6,6 @@ from collections import defaultdict
 import jsonobject
 import re
 
-import six
-
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import PGConfigException
 from commcare_cloud.environment.schemas.role_defaults import get_defaults_jsonobject
@@ -325,7 +323,7 @@ class DBOptions(jsonobject.JsonObject):
     port = jsonobject.IntegerProperty(default=None)
     user = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
-    options = jsonobject.DictProperty(six.text_type)
+    options = jsonobject.DictProperty(str)
     django_alias = jsonobject.StringProperty()
     django_migrate = jsonobject.BooleanProperty(default=True)
     query_stats = jsonobject.BooleanProperty(default=False)

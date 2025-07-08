@@ -2,7 +2,6 @@ import getpass
 import os
 import subprocess
 
-import six
 from clint.textui import puts
 from memoized import memoized
 
@@ -10,7 +9,7 @@ from commcare_cloud.colors import color_error, color_notice
 from commcare_cloud.environment.main import get_environment
 
 
-class StringIsGuess(six.text_type):
+class StringIsGuess(str):
     def __new__(cls, *args, **kwargs):
         is_guess = kwargs.pop('is_guess')
         self = super(StringIsGuess, cls).__new__(cls, *args, **kwargs)
