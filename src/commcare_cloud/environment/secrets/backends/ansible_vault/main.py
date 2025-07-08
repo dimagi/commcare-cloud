@@ -1,6 +1,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import getpass
+import shlex
 import os
 import sys
 from contextlib import contextmanager
@@ -11,7 +12,6 @@ import yaml
 from ansible.parsing.vault import AnsibleVaultError
 from ansible_vault import Vault
 from memoized import memoized
-from six.moves import shlex_quote
 
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from commcare_cloud.environment.secrets.backends.abstract_backend import (
@@ -156,7 +156,7 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
             )
             datadog.api.Event.create(
                 title="commcare-cloud vault loaded",
-                text=' '.join([shlex_quote(arg) for arg in sys.argv]),
+                text=' '.join([shlex.quote(arg) for arg in sys.argv]),
                 tags=["environment:{}".format(self.env_name)],
                 source_type_name='ansible',
             )

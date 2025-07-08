@@ -1,11 +1,11 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import os
+import shlex
 import textwrap
 from io import open
 
 from clint.textui import puts
-from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_code, color_notice, color_summary
@@ -90,7 +90,7 @@ class Configure(CommandBase):
                     export PATH=$PATH:{virtualenv_path}
                     source {PACKAGE_BASE}/.bash_completion
                 """.format(
-                    COMMCARE_CLOUD_ENVIRONMENTS=shlex_quote(environments_dir),
+                    COMMCARE_CLOUD_ENVIRONMENTS=shlex.quote(environments_dir),
                     virtualenv_path=get_virtualenv_bin_path(),
                     PACKAGE_BASE=PACKAGE_BASE,
                 )).strip())

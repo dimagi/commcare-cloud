@@ -3,6 +3,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import json
 import os
+import shlex
 import subprocess
 from datetime import datetime
 from dateutil import parser
@@ -16,7 +17,7 @@ import yaml
 from clint.textui import puts
 from memoized import memoized
 from simplejson import JSONDecodeError
-from six.moves import configparser, shlex_quote
+from six.moves import configparser
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_notice, color_success
@@ -31,7 +32,7 @@ def check_output(cmd_parts, env, silent=False):
     env_vars = os.environ.copy()
     env_vars.update(env)
     if not silent:
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command('{} {}'.format(
             ' '.join('{}={}'.format(key, value) for key, value in env.items()),
             cmd,
@@ -44,7 +45,7 @@ def run(cmd_parts, env, silent=False):
     env_vars = os.environ.copy()
     env_vars.update(env)
     if not silent:
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command('{} {}'.format(
             ' '.join('{}={}'.format(key, value) for key, value in env.items()),
             cmd,
