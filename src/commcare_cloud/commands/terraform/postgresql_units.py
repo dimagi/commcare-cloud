@@ -97,7 +97,7 @@ def convert_to_unit(value, new_unit):
     unit = UNITS[unit_str]
 
     # make sure the units are for the same quantity (time / bytes):
-    if type(unit) != type(new_unit):
+    if type(unit) != type(new_unit):  # noqa: E721
         raise ValueError("{} can't be measured as unit {}"
                          .format(value, type(new_unit).__name__))
 
