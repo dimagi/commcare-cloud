@@ -7,7 +7,7 @@ install_deps = [
     'ansible~=4.3',
     'ansible-inventory==0.6.4',
     'argparse>=1.4',
-    'attrs>=18.1.0',
+    'attrs',
     'boto3>=1.9.131',
     'clint',
     'couchdb-cluster-admin',
