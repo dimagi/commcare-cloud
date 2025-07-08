@@ -17,7 +17,6 @@ import yaml
 from clint.textui import puts
 from memoized import memoized
 from simplejson import JSONDecodeError
-from six.moves import configparser
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_notice, color_success
