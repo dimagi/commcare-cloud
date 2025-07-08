@@ -6,7 +6,6 @@ import json
 
 import yaml
 from clint.textui import puts
-from six.moves import input
 
 from commcare_cloud.colors import color_error
 from commcare_cloud.commands.command_base import CommandBase, Argument

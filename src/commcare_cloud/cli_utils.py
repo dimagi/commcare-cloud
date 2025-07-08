@@ -6,7 +6,7 @@ import sys
 from io import open
 
 from clint.textui import puts
-from six.moves import input, shlex_quote
+from six.moves import shlex_quote
 
 from commcare_cloud.colors import color_code, color_error
 
