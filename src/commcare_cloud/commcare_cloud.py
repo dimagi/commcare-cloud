@@ -210,9 +210,9 @@ def call_commcare_cloud(input_argv=sys.argv):
     # throw error if user is attempting to use python 2
     if not os.environ.get("CI_TEST") and sys.version_info[0] == 2:
         exit(dedent("""
-            Error: you must upgrade to Python 3. Python 2 is no longer supported.
+            Error: you must upgrade to Python 3. Python 2 is not supported.
 
-            To setup Python 3.6, see
+            To setup Python 3.10, see
             https://commcare-cloud.readthedocs.io/en/latest/reference/1-commcare-cloud/1-installation.html#manual-installation
             """))
 
