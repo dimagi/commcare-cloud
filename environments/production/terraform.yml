@@ -685,3 +685,5 @@ terraform_imports:
     id: default/ConfigChanges/Id27473066087598
   - to: module.logshipping.aws_cloudwatch_log_group.config-changes
     id: /aws/events/config-changes
+  - to: aws_guardduty_detector.detector
+    id: 9eb3966fab99cbe22172e608d5fda108
