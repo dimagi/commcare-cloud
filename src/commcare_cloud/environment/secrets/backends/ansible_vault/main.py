@@ -1,6 +1,5 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 import getpass
+import shlex
 import os
 import sys
 from contextlib import contextmanager
@@ -11,7 +10,6 @@ import yaml
 from ansible.parsing.vault import AnsibleVaultError
 from ansible_vault import Vault
 from memoized import memoized
-from six.moves import shlex_quote
 
 from commcare_cloud.environment.paths import ANSIBLE_DIR
 from commcare_cloud.environment.secrets.backends.abstract_backend import (
@@ -100,9 +98,8 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
 
     @memoized
     def _get_ansible_vault_password(self):
-        return (
-            os.environ.get('ANSIBLE_VAULT_PASSWORD') or
-            getpass.getpass("Vault Password for '{}': ".format(self.env_name))
+        return os.environ.get("ANSIBLE_VAULT_PASSWORD") or getpass.getpass(
+            "Vault Password for '{}': ".format(self.env_name)
         )
 
     @memoized
@@ -134,8 +131,8 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
         return context[var_name]
 
     def _set_secret(self, var, value):
-    # No effort is made to preserve the original YAML format (comments, etc.),
-    # and no edge cases are handled (e.g. vault does not exist, etc.)
+        # No effort is made to preserve the original YAML format (comments, etc.),
+        # and no edge cases are handled (e.g. vault does not exist, etc.)
         data = self._get_vault_variables() or {}
         data[var] = value
         vault = Vault(self._get_ansible_vault_password())
@@ -144,11 +141,7 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
         self._get_vault_variables.reset_cache(self)
 
     def _record_vault_loaded_event(self, secrets):
-        if (
-            self.should_send_vault_loaded_event and
-            secrets.get('DATADOG_API_KEY') and
-            self.record_to_datadog
-        ):
+        if self.should_send_vault_loaded_event and secrets.get("DATADOG_API_KEY") and self.record_to_datadog:
             self.should_send_vault_loaded_event = False
             datadog.initialize(
                 api_key=secrets['DATADOG_API_KEY'],
@@ -156,7 +149,7 @@ class AnsibleVaultSecretsBackend(AbstractSecretsBackend):
             )
             datadog.api.Event.create(
                 title="commcare-cloud vault loaded",
-                text=' '.join([shlex_quote(arg) for arg in sys.argv]),
+                text=' '.join([shlex.quote(arg) for arg in sys.argv]),
                 tags=["environment:{}".format(self.env_name)],
                 source_type_name='ansible',
             )

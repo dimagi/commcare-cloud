@@ -3,7 +3,6 @@
 # Script run by cron to execute pg_repack under certain conditions
 # Must be run as the ``postgres`` user.
 #
-from __future__ import division
 import argparse
 import multiprocessing
 import subprocess
@@ -36,6 +35,7 @@ SIZE_QUERY = """
 
 FILTERED_SIZE_QUERY = "{} AND relname = ANY(%s)".format(SIZE_QUERY)
 
+
 def log_state(pre_table_infos, post_table_infos):
     run_date = datetime.utcnow()
     rows_by_table = {
@@ -66,7 +66,9 @@ def fetchall_as_namedtuple(cursor):
 
 def get_table_info(dbname, table_names=None, host='127.0.0.1', port=5432, username=None, password=None):
     tables = defaultdict(dict)
-    connection = psycopg2.connect(connection_factory=LoggingConnection, dbname=dbname, host=host, port=port, user=username, password=password)
+    connection = psycopg2.connect(
+        connection_factory=LoggingConnection, dbname=dbname, host=host, port=port, user=username, password=password
+    )
     connection.initialize(logger)
     try:
         with connection.cursor() as cursor:
@@ -116,19 +118,41 @@ def setup_logging(verbosity):
 def main():
     parser = argparse.ArgumentParser('PG Repack Script')
     parser.add_argument('--tables', nargs="*")
-    parser.add_argument('--table-size-limit', dest='size_limit', type=int, default=10,
-                        help='Only consider tables larger than this size (GB)')
-    parser.add_argument('--dead-tup-ratio', dest='dead_tup_ratio_limit', type=float, default=0.1,
-                        help='Only consider tables with a ratio of live tuples to dead tuples above this limit')
+    parser.add_argument(
+        "--table-size-limit",
+        dest="size_limit",
+        type=int,
+        default=10,
+        help="Only consider tables larger than this size (GB)",
+    )
+    parser.add_argument(
+        "--dead-tup-ratio",
+        dest="dead_tup_ratio_limit",
+        type=float,
+        default=0.1,
+        help="Only consider tables with a ratio of live tuples to dead tuples above this limit",
+    )
     parser.add_argument('--pg-repack', help='Path to pg_repack', required=True)
     parser.add_argument('-d', '--database', help='Name of the database', required=True)
-    parser.add_argument('-v', dest='verbosity', help="Verbose logging. Specify multiple times (up to 3).", action='count', default=0)
+    parser.add_argument(
+        "-v",
+        dest="verbosity",
+        help="Verbose logging. Specify multiple times (up to 3).",
+        action="count",
+        default=0,
+    )
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--host', help='Name of the host')
     parser.add_argument('-p', '--port', help='Port number')
     parser.add_argument('-U', '--username', help='Name of the user')
     parser.add_argument('-W', '--password', help='Password of the user')
-    parser.add_argument('-k', '--no-superuser-check', dest='no_superuser_check', help='skip superuser checks in client', action='store_true')
+    parser.add_argument(
+        "-k",
+        "--no-superuser-check",
+        dest="no_superuser_check",
+        help="skip superuser checks in client",
+        action="store_true",
+    )
 
     args = parser.parse_args()
 
@@ -138,7 +162,15 @@ def main():
 
     size_limit_bytes = args.size_limit * GB
     tables = [
-        table for table in get_table_info(dbname=args.database, table_names=args.tables, host=args.host, port=args.port, username=args.username, password=args.password)
+        table
+        for table in get_table_info(
+            dbname=args.database,
+            table_names=args.tables,
+            host=args.host,
+            port=args.port,
+            username=args.username,
+            password=args.password,
+        )
         if table.should_repack(size_limit_bytes, args.dead_tup_ratio_limit)
     ]
     table_names = [table.table_name for table in tables]
@@ -151,14 +183,16 @@ def main():
     for table in tables:
         logger.debug('\t%s', table)
 
-    repack_command = [args.pg_repack, '--no-order', '--wait-timeout=30', f'--dbname={args.database}' ] + [f'--table={table}' for table in table_names]
+    repack_command = [args.pg_repack, "--no-order", "--wait-timeout=30", f"--dbname={args.database}"] + [
+        f"--table={table}" for table in table_names
+    ]
 
     additional_args = {'port': args.port, 'username': args.username, 'host': args.host}
 
     for key, value in additional_args.items():
         if value:
-           add_params = f'--{key}={value}'
-           repack_command.append(add_params)
+            add_params = f"--{key}={value}"
+            repack_command.append(add_params)
 
     if args.no_superuser_check:
         repack_command.append('-k')
@@ -181,7 +215,7 @@ def main():
         repack_command += ['--elevel=DEBUG']
 
     logger.info('Running pg_repack:\n\t%s', ' '.join(repack_command))
-    process = subprocess.Popen(repack_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8')
+    process = subprocess.Popen(repack_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8")
     output, error_output = process.communicate()
     returncode = process.poll()
 

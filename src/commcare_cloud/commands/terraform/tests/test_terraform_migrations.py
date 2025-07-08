@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import re
 from collections import namedtuple
 
@@ -7,7 +5,6 @@ from nose.tools import assert_equal
 
 from commcare_cloud.commands.terraform.terraform_migrate_state import get_migrations, \
     Migration, make_migration_plans, MigrationPlan
-from six.moves import range
 
 
 def test_numbering():

@@ -1,17 +1,12 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import copy
 from collections import defaultdict
 
 import jsonobject
 import re
 
-import six
-
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import PGConfigException
 from commcare_cloud.environment.schemas.role_defaults import get_defaults_jsonobject
-from six.moves import range
 
 PostgresqlOverride = get_defaults_jsonobject(
     'postgresql_base',
@@ -165,7 +160,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
         if not standby_master:
             raise PGConfigException('{} has not root PG host'.format(standby_host))
         standby_master = env.translate_host(standby_master, env.paths.inventory_source)
-        potential_masters = env.groups['postgresql'] + env.groups.get('citusdb',[])
+        potential_masters = env.groups['postgresql'] + env.groups.get('citusdb', [])
         if standby_master in potential_masters:
             return standby_master
         return self._get_root_pg_host(standby_master, env)
@@ -212,8 +207,12 @@ class PostgresqlConfig(jsonobject.JsonObject):
         self.pg_repack = pg_repack
 
         for replication in self.replications:
-            replication.source_host = environment.translate_host(replication.source_host, environment.paths.postgresql_yml)
-            replication.target_host = environment.translate_host(replication.target_host, environment.paths.postgresql_yml)
+            replication.source_host = environment.translate_host(
+                replication.source_host, environment.paths.postgresql_yml
+            )
+            replication.target_host = environment.translate_host(
+                replication.target_host, environment.paths.postgresql_yml
+            )
 
         for entry in self.postgres_override.postgresql_hba_entries:
             netmask = entry.get('netmask')
@@ -244,7 +243,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
         defined_django_aliases = {db.django_alias for db in self.generate_postgresql_dbs()
                                   if db.django_alias is not None}
         for reporting_alias, value in self.REPORTING_DATABASES.items():
-            if isinstance(value, six.string_types):
+            if isinstance(value, str):
                 referenced_django_aliases.add(value)
             else:
                 # value is {WRITE: alias, READ: [(alias, weight)...]}
@@ -325,7 +324,7 @@ class DBOptions(jsonobject.JsonObject):
     port = jsonobject.IntegerProperty(default=None)
     user = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
-    options = jsonobject.DictProperty(six.text_type)
+    options = jsonobject.DictProperty(str)
     django_alias = jsonobject.StringProperty()
     django_migrate = jsonobject.BooleanProperty(default=True)
     query_stats = jsonobject.BooleanProperty(default=False)

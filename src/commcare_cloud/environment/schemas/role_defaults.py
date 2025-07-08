@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import jsonobject
 from commcare_cloud.environment.paths import get_role_defaults
 
@@ -18,7 +16,7 @@ def get_defaults_jsonobject(role, **kwargs):
     :return: The new JsonObject subclass.
     """
     cls = type(jsonobject.JsonObject)(
-        str('{}_Defaults'.format(role)),  # bytes in Python 2, text in Python 3
+        "{}_Defaults".format(role),
         (jsonobject.JsonObject,),
         dict(get_role_defaults(role), _allow_dynamic_properties=False, **kwargs),
     )

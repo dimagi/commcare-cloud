@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from setuptools import find_packages, setup
 
 install_deps = [
@@ -24,12 +22,10 @@ install_deps = [
     'PyGithub',
     'pytz',
     'simplejson',
-    'six',
     'tabulate'
 ]
 test_deps = [
     'docopt',
-    'modernize',
     'nose @ git+https://github.com/dimagi/nose.git@06dff28bbe661b9d032ce839ea0ec8e9eaf6f337',
     'parameterized>=0.6.1',
     'requests-mock',

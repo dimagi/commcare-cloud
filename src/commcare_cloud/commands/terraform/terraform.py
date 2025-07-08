@@ -1,14 +1,12 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 from itertools import islice
 import json
 import os
+import shlex
 import subprocess
 from collections import defaultdict
 from io import open
 
 from clint.textui import puts
-from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_error
@@ -100,7 +98,7 @@ class Terraform(CommandBase):
         all_env_vars = os.environ.copy()
         all_env_vars.update(env_vars)
         cmd_parts = ['terraform'] + unknown_args
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command('cd {}; {} {}; cd -'.format(
             run_dir,
             ' '.join('{}={}'.format(key, value) for key, value in env_vars.items()),

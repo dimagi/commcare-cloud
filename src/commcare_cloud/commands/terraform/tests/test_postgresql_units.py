@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 from nose.tools import assert_equal, assert_raises
 
 from commcare_cloud.commands.terraform.postgresql_units import convert_to_unit, SECOND, \

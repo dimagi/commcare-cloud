@@ -1,5 +1,3 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 import os
 import shutil
 from io import open
@@ -24,6 +22,7 @@ from tests.utils import get_file_contents
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'couch_migration_config')
 PLANS_DIR = os.path.join(TEST_ENVIRONMENTS_DIR, 'plans')
 TEST_PLANS = os.listdir(PLANS_DIR)
+
 
 def tearDown():
     # delete generated files
@@ -92,8 +91,9 @@ def test_generate_shard_prune_playbook(plan_name):
     migration = _get_migration(plan_name)
     mock_shard_allocation = _get_expected_yml(plan_name, 'mock_shard_allocation_post_migration.yml')
     mock_func = get_shard_allocation_func(mock_shard_allocation)
-    with patch('commcare_cloud.commands.migrations.couchdb.get_shard_allocation', mock_func),\
-            patch('commcare_cloud.commands.migrations.couchdb.get_db_list', return_value=['commcarehq', 'commcarehq__apps']):
+    with patch("commcare_cloud.commands.migrations.couchdb.get_shard_allocation", mock_func), patch(
+        "commcare_cloud.commands.migrations.couchdb.get_db_list", return_value=["commcarehq", "commcarehq__apps"]
+    ):
         nodes = generate_shard_prune_playbook(migration)
 
     if nodes:
@@ -138,5 +138,3 @@ def _get_yml(path):
 
 def _get_test_file(plan_name, filename):
     return get_file_contents(os.path.join(PLANS_DIR, plan_name, filename))
-
-

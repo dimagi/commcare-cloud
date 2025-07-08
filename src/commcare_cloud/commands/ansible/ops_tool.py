@@ -1,5 +1,3 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 import collections
 import csv
 import git
@@ -497,7 +495,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         super().__init__(*args, **kwargs)
         self.env_info_dict = {}
         # We set the audits_directory in the `run` method
-        self.audits_directory = os.path.expanduser(f"~/.commcare-cloud/audits")
+        self.audits_directory = os.path.expanduser("~/.commcare-cloud/audits")
         self.environment = ""
         self.curr_audit_directory = ""
 
@@ -505,7 +503,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self.args = args
         self.environment = get_environment(args.env_name)
         self.env_info_dict["environment"] = args.env_name
-        
+
         env_name = args.env_name
         audit_name = datetime.utcnow().strftime('%Y-%m-%d_%H.%M.%S')
         self.curr_audit_directory = os.path.join(self.audits_directory, f"{env_name}/{audit_name}")
@@ -517,7 +515,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self._collect_control_machine_os_level_info()
         self._audit_hosts()
         self._collect_service_status_info()
-        
+
         self._write_info_file()
         self._remove_old_audit_folders()
 
@@ -567,7 +565,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
 
     def _collect_control_machine_os_level_info(self):
         os_data = {}
-        
+
         os_distrib = {}
         with open("/etc/lsb-release", "r") as file:
             distrib_info = file.read().split("\n")
@@ -577,10 +575,10 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
                 key = info.split("=")[0]
                 value = info.split("=")[1]
                 os_distrib[key] = value
-        
+
         os_data["os_distrib"] = os_distrib
         self.env_info_dict["os_data"] = os_data
-        
+
     def _audit_hosts(self):
         args = self.args
         args.playbook = 'commcare-audit.yml'

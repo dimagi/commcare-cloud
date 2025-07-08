@@ -1,6 +1,4 @@
-from __future__ import absolute_import
 import jsonobject
-import six
 
 
 class UsersConfig(jsonobject.JsonObject):
@@ -9,5 +7,5 @@ class UsersConfig(jsonobject.JsonObject):
 
 
 class DevUsers(jsonobject.JsonObject):
-    present = jsonobject.ListProperty(six.text_type)
-    absent = jsonobject.ListProperty(six.text_type)
+    present = jsonobject.ListProperty(str)
+    absent = jsonobject.ListProperty(str)

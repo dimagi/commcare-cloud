@@ -126,7 +126,6 @@ simplejson==3.17.5
     # via commcare-cloud (setup.py)
 six==1.16.0
     # via
-    #   commcare-cloud (setup.py)
     #   jsonobject
     #   python-dateutil
 smmap==5.0.0

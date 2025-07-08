@@ -1,9 +1,4 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from __future__ import division
 import re
-
-import six
 
 
 class Bytes(int):
@@ -102,7 +97,7 @@ def convert_to_unit(value, new_unit):
     unit = UNITS[unit_str]
 
     # make sure the units are for the same quantity (time / bytes):
-    if type(unit) != type(new_unit):
+    if type(unit) != type(new_unit):  # noqa: E721
         raise ValueError("{} can't be measured as unit {}"
                          .format(value, type(new_unit).__name__))
 
@@ -114,7 +109,7 @@ def convert_to_unit(value, new_unit):
 def convert_to_standard_unit(param, value):
     if param not in UNITS_BY_PARAM:
         return value
-    elif isinstance(value, six.integer_types):
+    elif isinstance(value, int):
         return value
     else:
         try:

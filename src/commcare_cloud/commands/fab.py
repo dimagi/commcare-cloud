@@ -1,7 +1,3 @@
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 from memoized import memoized
 
 from commcare_cloud.colors import color_error, color_summary, color_highlight, color_link
@@ -63,7 +59,11 @@ class Fab(CommandBase):
         print(color_highlight('  commcare-cloud <env> deploy'))
         print()
         print("For info on how you can use the new command, please see")
-        print(color_link("https://commcare-cloud.readthedocs.io/en/latest/reference/1-commcare-cloud/commands.html#deploy-command"))
+        print(
+            color_link(
+                "https://commcare-cloud.readthedocs.io/en/latest/reference/1-commcare-cloud/commands.html#deploy-command"  # noqa: E501
+            )
+        )
         print("or run")
         print()
         print(color_highlight('  commcare-cloud <env> deploy -h'))

@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import os
 
 from parameterized import parameterized
@@ -129,6 +127,7 @@ INTERNAL_HOST_VARS = (
     'inventory_file',
     'inventory_dir',
 )
+
 
 @parameterized(TEST_ENVIRONMENTS)
 def test_csv_inventory(env_name):
