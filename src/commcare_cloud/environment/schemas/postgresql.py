@@ -160,7 +160,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
         if not standby_master:
             raise PGConfigException('{} has not root PG host'.format(standby_host))
         standby_master = env.translate_host(standby_master, env.paths.inventory_source)
-        potential_masters = env.groups['postgresql'] + env.groups.get('citusdb',[])
+        potential_masters = env.groups['postgresql'] + env.groups.get('citusdb', [])
         if standby_master in potential_masters:
             return standby_master
         return self._get_root_pg_host(standby_master, env)
@@ -207,8 +207,12 @@ class PostgresqlConfig(jsonobject.JsonObject):
         self.pg_repack = pg_repack
 
         for replication in self.replications:
-            replication.source_host = environment.translate_host(replication.source_host, environment.paths.postgresql_yml)
-            replication.target_host = environment.translate_host(replication.target_host, environment.paths.postgresql_yml)
+            replication.source_host = environment.translate_host(
+                replication.source_host, environment.paths.postgresql_yml
+            )
+            replication.target_host = environment.translate_host(
+                replication.target_host, environment.paths.postgresql_yml
+            )
 
         for entry in self.postgres_override.postgresql_hba_entries:
             netmask = entry.get('netmask')

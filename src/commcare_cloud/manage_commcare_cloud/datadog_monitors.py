@@ -351,7 +351,9 @@ class UpdateDatadogMonitors(CommandBase):
                 "No change will be applied for these:"
             ))
             for id, missing_monitor in sorted(only_remote.items()):
-                puts("  - Untracked monitor {} '{}' (no change will be applied)".format(id, missing_monitor['name']))
+                puts(
+                    "  - Untracked monitor {} '{}' (no change will be applied)".format(id, missing_monitor["name"])
+                )
             if ask("And BTW do you want to dump all untracked monitors as a starting point?"):
                 for id, missing_monitor in sorted(only_remote.items()):
                     local_monitor_api.create(id, missing_monitor)

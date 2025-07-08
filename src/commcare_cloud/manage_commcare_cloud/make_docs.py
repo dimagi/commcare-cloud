@@ -192,4 +192,3 @@ class MakeDocs(CommandBase):
         template = j2.get_template('commands.md.j2')
         print(template.render(parser=parser, subparsers_by_group=subparsers_by_group,
                               commands=commands), end='')
-

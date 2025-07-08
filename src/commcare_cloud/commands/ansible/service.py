@@ -7,7 +7,7 @@ import sys
 import attr
 from clint.textui import puts, indent
 
-from commcare_cloud.colors import color_error, color_warning, color_code, color_notice
+from commcare_cloud.colors import color_error
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, get_django_webworker_name,
     get_formplayer_spring_instance_name,

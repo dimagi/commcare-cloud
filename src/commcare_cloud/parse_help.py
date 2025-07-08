@@ -25,6 +25,7 @@ _LARGE_INDENT = '                        '
 class _States(object):
     NOT_STARTED, LOOKING_FOR_ARG, FOUND_ARG, TRAVERSING_ARG_LINES, FOUND_EOF = range(5)
 
+
 _Section = namedtuple('Section', 'arg_names lines')
 
 

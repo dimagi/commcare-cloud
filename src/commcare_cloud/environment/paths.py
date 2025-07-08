@@ -151,7 +151,7 @@ class DefaultPaths(object):
     @lazy_immutable_property
     def authorized_keys_dir(self):
         return os.path.join(self.environments_dir, '_authorized_keys')
-    
+
     @lazy_immutable_property
     def prometheus_yml(self):
         return self.get_env_file_path('prometheus.yml')

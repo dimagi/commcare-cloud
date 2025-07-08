@@ -54,7 +54,9 @@ class Secrets(CommandBase):
         if not isinstance(secret, list):
             print("Cannot append. '{}' is not a list.".format(secret_name))
             exit(-1)
-        value_to_append = getpass.getpass("Value for '{}' to append to '{}': ".format(environment.name, secret_name))
+        value_to_append = getpass.getpass(
+            "Value for '{}' to append to '{}': ".format(environment.name, secret_name)
+        )
         secret.append(value_to_append)
         environment.secrets_backend.set_secret(secret_name, secret)
 
@@ -63,7 +65,9 @@ class Secrets(CommandBase):
         if not isinstance(secret, list):
             print("Cannot remove. '{}' is not a list.".format(secret_name))
             exit(-1)
-        value_to_remove = getpass.getpass("Value for '{}' to remove from '{}': ".format(environment.name, secret_name))
+        value_to_remove = getpass.getpass(
+            "Value for '{}' to remove from '{}': ".format(environment.name, secret_name)
+        )
         try:
             secret.remove(value_to_remove)
         except ValueError:

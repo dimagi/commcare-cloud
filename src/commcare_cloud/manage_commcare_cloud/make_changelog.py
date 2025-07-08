@@ -85,7 +85,9 @@ class MakeChangelogIndex(CommandBase):
     arguments = ()
 
     def run(self, args, unknown_args):
-        j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
+        j2 = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True
+        )
 
         changelog_contents = compile_changelog()
 
@@ -103,7 +105,9 @@ class MakeChangelog(CommandBase):
     def run(self, args, unknown_args):
         changelog_yml = args.changelog_yml
         ordinal = int(changelog_yml.split('/')[-1].split('-')[0])
-        j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
+        j2 = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True
+        )
 
         changelog_entry = load_changelog_entry(changelog_yml)
         template = j2.get_template('changelog.md.j2')
@@ -121,7 +125,9 @@ class NewChangelog(CommandBase):
     )
 
     def run(self, args, unknown_args):
-        j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True)
+        j2 = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), keep_trailing_newline=True
+        )
 
         changelog_dir = 'changelog'
         for filename in _sort_files(changelog_dir):

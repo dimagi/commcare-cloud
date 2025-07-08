@@ -137,11 +137,15 @@ def provision_machines(spec, env_name=None, create_machines=True):
         inventory.all_groups['lvm'] = Group(name='lvm')
         for group in inventory.all_groups:
             for host_name in inventory.all_groups[group].host_names:
-                hosts_by_name[host_name].vars.update({
-                    'datavol_device': '/dev/mapper/consolidated-data',
-                    'devices': "'{}'".format(json.dumps([spec.aws_config.data_volume['DeviceName']])),
-                    'partitions': "'{}'".format(json.dumps(['{}1'.format(spec.aws_config.data_volume['DeviceName'])])),
-                })
+                hosts_by_name[host_name].vars.update(
+                    {
+                        "datavol_device": "/dev/mapper/consolidated-data",
+                        "devices": "'{}'".format(json.dumps([spec.aws_config.data_volume["DeviceName"]])),
+                        "partitions": "'{}'".format(
+                            json.dumps(["{}1".format(spec.aws_config.data_volume["DeviceName"])])
+                        ),
+                    }
+                )
                 if host_name not in inventory.all_groups['lvm'].host_names:
                     inventory.all_groups['lvm'].host_names.append(host_name)
 
@@ -158,7 +162,9 @@ def alphanumeric_sort_key(key):
     Thanks to http://stackoverflow.com/a/2669120/240553
     """
     import re
-    convert = lambda text: int(text) if text.isdigit() else text
+
+    def convert(text):
+        return int(text) if text.isdigit() else text
     return [convert(c) for c in re.split('([0-9]+)', key)]
 
 
@@ -205,15 +211,17 @@ def bootstrap_inventory(spec, env_name):
 def ask_aws_for_instances(env_name, aws_config, count):
     cache_file = '{env}-aws-new-instances.json'.format(env=env_name)
     if os.path.exists(cache_file):
-        cache_file_response = input("\n{} already exists. Enter: "
-                                        "\n(d) to delete the file AND environment directory containing it, and"
-                                        " terminate the existing aws instances or "
-                                        "\n(anything) to continue using this file and these instances."
-                                        "\n Enter selection: ".format(cache_file))
+        cache_file_response = input(
+            "\n{} already exists. Enter: "
+            "\n(d) to delete the file AND environment directory containing it, and"
+            " terminate the existing aws instances or "
+            "\n(anything) to continue using this file and these instances."
+            "\n Enter selection: ".format(cache_file)
+        )
         if cache_file_response == 'd':
             # Remove old cache file and terminate existing instances for this env
             print("Terminating existing instances for {}".format(env_name))
-            subprocess.call(['commcare-cloud-bootstrap', 'terminate',  env_name])
+            subprocess.call(['commcare-cloud-bootstrap', 'terminate', env_name])
             print("Deleting file: {}".format(cache_file))
             os.remove(cache_file)
             env_dir = get_environment(env_name).paths.get_env_file_path('')
@@ -253,8 +261,12 @@ def ask_aws_for_instances(env_name, aws_config, count):
 
 def print_describe_instances(describe_instances):
     for instance in get_instances(describe_instances):
-        print("{InstanceId}\t{InstanceType}\t{ImageId}\t{State[Name]}\t{PublicIpAddress}\t{PrivateIpAddress}".format(**instance),
-              file=sys.stderr)
+        print(
+            "{InstanceId}\t{InstanceType}\t{ImageId}\t{State[Name]}\t{PublicIpAddress}\t{PrivateIpAddress}".format(
+                **instance
+            ),
+            file=sys.stderr,
+        )
 
 
 def get_instances(describe_instances):

@@ -128,6 +128,7 @@ INTERNAL_HOST_VARS = (
     'inventory_dir',
 )
 
+
 @parameterized(TEST_ENVIRONMENTS)
 def test_csv_inventory(env_name):
     env = Environment(DefaultPaths(env_name, environments_dir=TEST_ENVIRONMENTS_DIR))
