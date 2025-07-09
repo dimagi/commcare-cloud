@@ -413,3 +413,6 @@ efs_file_systems:
     domain_name: "staging.commcare.local"
     route_names: "shared-efs"
 
+terraform_imports:
+  - to: aws_guardduty_detector.detector
+    id: CBEA74BFAc3fcfdeB82cEF1FFDEc9DEE

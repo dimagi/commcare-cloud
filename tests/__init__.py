@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 from unittest.mock import patch
 
 from commcare_cloud.user_utils import StringIsGuess

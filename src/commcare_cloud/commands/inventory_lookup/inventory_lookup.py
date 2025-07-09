@@ -1,13 +1,9 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
-
 import os
+import shlex
 import socket
 import subprocess
 import sys
 from inspect import isfunction
-from shlex import quote as shlex_quote
 
 from clint.textui import puts
 
@@ -84,7 +80,7 @@ class _Ssh(Lookup):
         if port:
             ssh_args = ['-p', port] + ssh_args
         cmd_parts = self.assemble_command(address, args, ssh_args)
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         if not args.quiet:
             print_command(cmd)
         try:
@@ -271,7 +267,7 @@ class Tmux(_Ssh):
         window_name_expression = '"`whoami` (`date +%Y-%m-%d`)"'
         if args.remote_command:
             # add bash as second command to keep tmux open after command exits
-            remote_command = shlex_quote('{} ; bash'.format(args.remote_command))
+            remote_command = shlex.quote('{} ; bash'.format(args.remote_command))
             ssh_args = [
                 r'tmux attach \; new-window -n {window_name} {remote_command} '
                 r'|| tmux new -n {window_name} {remote_command}'
@@ -354,13 +350,13 @@ class DjangoManage(CommandBase):
         def _get_ssh_args(remote_command):
             return ['sudo -iu {cchq_user} bash -c {remote_command}'.format(
                 cchq_user=environment.remote_conf.cchq_user,
-                remote_command=shlex_quote(remote_command),
+                remote_command=shlex.quote(remote_command),
             )]
 
         if args.tee_file:
             rc = Ssh(self.parser).run(args, _get_ssh_args(
                 'cd {code_dir}; [[ -f {tee_file} ]]'
-                .format(code_dir=code_dir, tee_file=shlex_quote(args.tee_file))
+                .format(code_dir=code_dir, tee_file=shlex.quote(args.tee_file))
             ))
             if rc in (0, 1):
                 file_already_exists = (rc == 0)
@@ -371,11 +367,11 @@ class DjangoManage(CommandBase):
                 puts(color_error("Refusing to --tee to a file that already exists ({})".format(args.tee_file)))
                 return 1
 
-            tee_file_cmd = ' | tee {}'.format(shlex_quote(args.tee_file))
+            tee_file_cmd = ' | tee {}'.format(shlex.quote(args.tee_file))
         else:
             tee_file_cmd = ''
 
-        sh_args = ' '.join(shlex_quote(arg) for arg in manage_args)
+        sh_args = ' '.join(shlex.quote(arg) for arg in manage_args)
         command = f'cd {code_dir}; python_env/bin/python manage.py {sh_args}{tee_file_cmd}'
         if args.tmux:
             args.remote_command = command
@@ -446,7 +442,7 @@ class ForwardPort(CommandBase):
     def is_loopback_address_set_up(loopback_address):
         try:
             # Use either ifconfig or ip, whichever is available
-            subprocess.check_output(f'ping -c 1 -W 1 {shlex_quote(loopback_address)}', shell=True)
+            subprocess.check_output(f'ping -c 1 -W 1 {shlex.quote(loopback_address)}', shell=True)
         except subprocess.CalledProcessError:
             return False
         else:

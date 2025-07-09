@@ -1,11 +1,7 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import json
 import re
 
 import jsonobject
-from six.moves import range
 
 
 class TerraformConfig(jsonobject.JsonObject):

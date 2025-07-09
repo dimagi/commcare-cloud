@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import os
 import subprocess
 
@@ -31,7 +29,7 @@ class Args(object):
 
 @parameterized([
     (Args(server='bob@demo_server0', env_name='simple_ssh'), [],
-     ['ssh', 'ansible@172.19.3.0', '-t', '-o', 'UserKnownHostsFile={}/simple_ssh/known_hosts'.format(TEST_ENVIRONMENTS_DIR)]),
+     ['ssh', 'ansible@172.19.3.0', '-t', '-o', 'UserKnownHostsFile={}/simple_ssh/known_hosts'.format(TEST_ENVIRONMENTS_DIR)]),  # noqa: E501
     (Args(server='demo_server0', env_name='ssh_no_known_hosts'), [],
      ['ssh', 'ansible@172.19.3.0', '-t']),
     (Args(server='demo_server0', env_name='no_strict_known_hosts'), [],

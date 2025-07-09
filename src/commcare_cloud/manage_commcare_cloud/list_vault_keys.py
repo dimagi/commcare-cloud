@@ -1,6 +1,3 @@
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
 from collections import defaultdict
 from itertools import chain
 
@@ -17,7 +14,7 @@ class ListVaultKeys(CommandBase):
     Audit the structure of vault.yml files.
 
     A password will be required for each encrypted vault file in the env.
-    
+
     For each vault key a value will be printed for each environments:
       * '' (blank)  : indicates that the key does not exist for this environment or is empty
       * 'x'         : indicates that the value exists and is unique among the environments that were analysed
@@ -32,7 +29,9 @@ class ListVaultKeys(CommandBase):
             environment = get_environment(env)
             passwd = environment.secrets_backend._get_ansible_vault_password()
             if passwd:
-                var_keys[env] = dict(get_flat_list_of_keys(environment.secrets_backend._get_vault_variables_and_record()))
+                var_keys[env] = dict(
+                    get_flat_list_of_keys(environment.secrets_backend._get_vault_variables_and_record())
+                )
 
         headers = ["key"] + [env for env in envs if env in var_keys]
 

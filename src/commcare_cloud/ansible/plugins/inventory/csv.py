@@ -1,10 +1,3 @@
-from __future__ import (
-    absolute_import,
-    division,
-    print_function,
-    unicode_literals,
-)
-
 import csv
 import json
 import os
@@ -17,7 +10,7 @@ from ansible.plugins.inventory import BaseInventoryPlugin
 
 __metaclass__ = type
 
-DOCUMENTATION = '''
+DOCUMENTATION = """
     inventory: csv
     short_description: Uses CSV files and inventory source.
     description: |
@@ -40,8 +33,9 @@ DOCUMENTATION = '''
     notes:
        - "The hostname of a host defaults to the value in the 'hostname' column but it can be overridden by
          adding a C(var: hostname) var column."
-       - If this is done then the value in the C(hostname) column will be set as the value of the C(alt_hostname) var.
-'''
+       - If this is done then the value in the C(hostname) column will be set as the value of the
+         C(alt_hostname) var.
+"""
 
 EXAMPLES = '''
   example1: |
@@ -68,15 +62,12 @@ EXAMPLES = '''
       # groups are separated by a blank line (or a line where the first cell is cells)
       hostname,  host_address,   group 1,   I.var: db_port,  var: root_path
       host3,     192.168.33.23,  db,        1234,            /opt/data/db
-      
+
       # group table (column format)
       group,  var: port,  var: relay
       g1,     9010,       True
       g2,     8000,       False
 '''
-
-
-
 
 TYPE_STRING = 'S'
 TYPE_INTEGER = 'I'

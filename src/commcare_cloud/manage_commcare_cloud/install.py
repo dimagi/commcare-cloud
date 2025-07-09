@@ -1,7 +1,6 @@
-from __future__ import absolute_import, print_function, unicode_literals
 import os
+import shlex
 import subprocess
-from six.moves import shlex_quote
 
 from clint.textui import puts
 
@@ -35,7 +34,7 @@ class Install(CommandBase):
         cmd_collection_parts = ['ansible-galaxy', 'collection', 'install', '-f', '-r', requirements_yml]
 
         for cmd_parts in (cmd_roles_parts, cmd_collection_parts):
-            cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+            cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
             print_command(cmd)
             try:
                 subprocess.check_output(cmd, shell=True, env=env)

@@ -1,7 +1,3 @@
-from __future__ import print_function
-
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import pickle
 from ipaddress import ip_address
 from parameterized import parameterized
@@ -21,12 +17,6 @@ commcare_envs = [
 @parameterized(commcare_envs)
 def test_all(environment):
     environment.check()
-
-
-# useful for python 2 -> 3 migration
-@parameterized(commcare_envs)
-def test_authorized_key(environment):
-    environment.get_authorized_key('gherceg')
 
 
 @parameterized(commcare_envs)
