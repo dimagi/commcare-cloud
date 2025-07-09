@@ -424,7 +424,6 @@ redis_cache = {
     'LOCATION': '{{ redis_url }}',
 {% endif %}
     'OPTIONS': {
-        'PARSER_CLASS': 'redis.connection.HiredisParser',
         'REDIS_CLIENT_KWARGS': {
             'health_check_interval': 15,
         },
