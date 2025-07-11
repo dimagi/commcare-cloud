@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2025-07-10** [Remove PARSER_CLASS from redis settings](0089-remove-parser-class.md)
+We've remove the PARSER_CLASS when configuring redis in settings.py.
+
+
+---
 #### **2025-05-08** [Install uv for Python dependency management](0088-install-uv.md)
 CommCare HQ is moving to using `uv` for Python dependency management, which
 simplifies and speeds up dependency installation.
