@@ -12,26 +12,6 @@ variable "vpc_begin_range" {}
 # To do so please visit http://aws.amazon.com/marketplace/pp?sku=3ihdqli79gl9v2jnlzs6nq60h
 
 
-data "aws_ami" "ubuntu_bionic" {
-  # Should match what is in
-  # https://cloud-images.ubuntu.com/locator/ec2/
-  # with search hvm:ebs-ssd bionic amd64
-
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] # Canonical
-}
-
 data "aws_ami" "ubuntu_jammy" {
   # Should match what is in
   # https://cloud-images.ubuntu.com/locator/ec2/
