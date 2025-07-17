@@ -18,7 +18,7 @@ DOCUMENTATION = """
         - Each group of lines can either be a list of hosts or a list of group var definitions.
         - Hosts are listed with the following required fields (C(hostname), C(host_address))
         - Host groups are specified in group columns e.g. C(group 1), C(group 2) etc.
-        - Host vars are listed in individual colums with headers formatted as follows - C({type}.var: {name}).
+        - Host vars are listed in individual columns with headers formatted as follows - C({type}.var: {name}).
         - The 'type' field must be one of the following (or blank for the default)
             - S: string (default if no type specified)
             - B: boolean ('true' or 't' (case insensitive), anything else is false)
