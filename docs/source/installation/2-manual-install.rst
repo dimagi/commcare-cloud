@@ -78,8 +78,9 @@ Do the following on the monolith or on each machine in the cluster.
 Enable root login via SSH
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 On a standard Ubuntu install, the root user is not enabled or
-allowed to SSH. The root user will only be used initially, and
-will then be disabled automatically by the install scripts.
+allowed to SSH but is needed for this installation.
+The root user will be used initially to setup all users, and
+will then be disabled automatically by the installation scripts.
 
 Make a root password and store it somewhere safe for later
 reference.
@@ -134,6 +135,7 @@ reference.
 
     Test this from the machine itself in case of a monolith or from the control machine (named "control1") in case of a cluster.
     Use "localhost" for monolith or the private IP address of the machine to login to for a cluster (including the control machine itself).
+    Remember to logout or exit once done.
 
 Initialize log file
 ~~~~~~~~~~~~~~~~~~~
