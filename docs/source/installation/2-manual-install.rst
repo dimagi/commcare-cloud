@@ -269,7 +269,7 @@ Install and Configure CommCare Cloud
 
        $ nano ~/environments/_users/admins.yml
 
-7.  Copy your **public** key to ``~/environments/_authorized_keys/``.
+7.  Copy your **public** SSH key to ``~/environments/_authorized_keys/``.
     The filename must correspond to your username.
 
 8. Change “monolith.commcarehq.test” to your real domain name,
