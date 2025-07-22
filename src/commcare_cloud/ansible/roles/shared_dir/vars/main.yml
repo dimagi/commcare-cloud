@@ -12,7 +12,6 @@ shared_mount_address: "{{ groups.shared_dir_host[0] }}:{{ shared_data_dir }}"
 restore_payload_dir_host: "{{ shared_data_dir }}/{{ restore_payload_dir_name }}"
 transfer_payload_dir_host: "{{ shared_data_dir }}/{{ transfer_payload_dir_name }}"
 shared_temp_dir_host: "{{ shared_data_dir }}/{{ shared_temp_dir_name }}"
-blobdb_dir_host: "{{ shared_data_dir }}/{{ blobdb_dir_name }}"
 
 #needed for cleanup tasks
 old_shared_dir_name: "shared_data{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"

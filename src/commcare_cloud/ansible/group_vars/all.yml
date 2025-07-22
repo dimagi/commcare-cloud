@@ -29,7 +29,6 @@ shared_drive_enabled: '{{ not is_monolith }}'
 transfer_payload_dir_name: "transfer_payloads"
 restore_payload_dir_name: "restore_payloads"
 shared_temp_dir_name: "temp"
-blobdb_dir_name: "blobdb"
 public_site_path: /opt/commcare-hq-public/site/output
 cchq_user: cchq
 cchq_group: cchq
