@@ -442,7 +442,7 @@ Install and Configure CommCare Cloud
        db1
        db2
 
-11.  Configure rest of your CommCare environment.
+11. Configure rest of your CommCare environment.
 
     See :ref:`configure-env` for more information.
 
@@ -539,7 +539,7 @@ Shared Directory
 
 For a cluster, configure the file path for the shared directory in the ``public.yml`` file like
 
-::code-block:: yaml
+.. code-block:: yaml
 
     datadisk_device: "/dev/xvdbb"
 
@@ -577,7 +577,9 @@ Run on your **local machine** to check if you have an SSH key added to your ssh 
 
 If you don't see SSH key listed here for the user you are using to log in, you will need to add it to the ssh agent before running the ssh command.
 You can read about it here, https://www.ssh.com/academy/ssh/agent#adding-ssh-keys-to-the-agent.
-**WARNING**: ssh-add should only be run locally and not on the remote machine.
+
+.. warning::
+ssh-add should only be run locally and not on the remote machine.
 If this isn't setup correctly, you will face a machine access error in the next step.
 
 Also consider using a config file for ssh to make this easier in the future, https://www.digitalocean.com/community/tutorials/how-to-configure-custom-connection-options-for-your-ssh-client
@@ -627,7 +629,7 @@ initially.
    When prompted for the ``sudo`` password, enter the
    “ansible_sudo_pass” value.
 
-    Please ensure you run this deploy even if the version has not changed since it will do an initial setup of the environment.
+   Please ensure you run this deploy even if the version has not changed since it will do an initial setup of the environment.
 
 See the Deploying CommCare HQ code changes section in :ref:`manage-deployment` for more information.
 
