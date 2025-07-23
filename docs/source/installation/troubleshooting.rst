@@ -25,11 +25,18 @@ Elasticsearch fails to start
 ----------------------------
 Check logs for Elasticsearch to see if there are any errors.
 
-There is a known issue with access to error to temp directory which can be resolved by setting the following in your environment's public.yml file:
+There is a known issue that can happen with access to tmp directory configured for elasticsearch.
+https://www.elastic.co/docs/deploy-manage/deploy/self-managed/executable-jna-tmpdir
+
+This can be resolved by providing elasticsearch with a different tmp directory which should have user and group as
+elasticsearch and can have the same permissions as the default tmp directory.
+You can use the default tmp directory on the machine as well but it can cause issues if it is cleared while
+elasticsearch is running.
+Set the relevant path by adding the following to your environment's public.yml file:
 
 .. code-block:: yaml
 
-   elasticsearch_jvm_tmp_dir : '/tmp'
+   elasticsearch_jvm_tmp_dir : '/path/to/new/elasticsearch/tmp' # or just '/tmp'
 
 Re-run the installation command once set.
 
