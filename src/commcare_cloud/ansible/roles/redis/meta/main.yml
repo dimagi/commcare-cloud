@@ -2,3 +2,5 @@
 dependencies:
   - role: monit
   - role: DavidWittman.redis
+    vars:
+      redis_password: "{{ localsettings_private.get('REDIS_PASSWORD') }}"
