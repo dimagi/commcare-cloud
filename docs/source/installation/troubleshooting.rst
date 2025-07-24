@@ -38,7 +38,7 @@ Set the relevant path by adding the following to your environment's public.yml f
 
    elasticsearch_jvm_tmp_dir : '/path/to/new/elasticsearch/tmp' # or just '/tmp'
 
-Re-run the installation command once set.
+Re-run the deploy-stack command once set.
 
 My site is showing "Internal Server Error"
 ------------------------------------------
