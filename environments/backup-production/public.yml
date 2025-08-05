@@ -32,7 +32,7 @@ DATADOG_TRACE:
     env: backup-production
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_cluster_name: 'prodhqes-1.x'
+elasticsearch_cluster_name: 'prodhqes'
 elasticsearch_version: 6.8.23
 elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
 #elasticsearch_node_name: '???'
@@ -154,10 +154,8 @@ localsettings:
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
   ENFORCE_SSO_LOGIN: True
-  ELASTICSEARCH_MAJOR_VERSION: 5
-  ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-04"
-  ES_XFORM_INDEX_NAME: "xforms_2023-01-27"
-  ES_MULTIPLEX_TO_VERSION: '6'
+  ELASTICSEARCH_MAJOR_VERSION: 6
+  ES_MULTIPLEX_TO_VERSION: '7'
   # Index Multiplexer Settings  
   ES_APPS_INDEX_MULTIPLEXED: False # swap completed
   ES_CASE_SEARCH_INDEX_MULTIPLEXED: False # swap completed 
