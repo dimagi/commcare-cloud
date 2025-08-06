@@ -25,7 +25,7 @@ servers:
     os: jammy
 
   - server_name: "djangomanage_a0-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.large
     network_tier: "app-private"
     az: "c"
     volume_size: 20
@@ -33,7 +33,7 @@ servers:
     os: jammy
 
   - server_name: "web_a{i}-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.large
     network_tier: "app-private"
     az: "c"
     volume_size: 20
@@ -43,7 +43,7 @@ servers:
     count: 2
 
   - server_name: "web_b{i}-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.large
     network_tier: "app-private"
     az: "b"
     volume_size: 20
@@ -195,7 +195,7 @@ servers:
 
 proxy_servers:
   - server_name: "proxy_a0-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.large
     network_tier: "public"
     az: "c"
     volume_size: 20
