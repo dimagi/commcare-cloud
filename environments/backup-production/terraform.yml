@@ -97,7 +97,7 @@ servers:
     volume_size: 20
     volume_encrypted: yes
     block_device:
-      volume_size: 20
+      volume_size: 2800
     group: "elasticsearch"
     os: jammy
     count: 4
@@ -121,7 +121,7 @@ servers:
     volume_size: 20
     volume_encrypted: yes
     block_device:
-      volume_size: 20
+      volume_size: 2800
     group: "elasticsearch"
     os: jammy
     count: 3
