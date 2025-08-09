@@ -25,7 +25,7 @@ servers:
     os: jammy
 
   - server_name: "djangomanage_a0-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.large
     network_tier: "app-private"
     az: "c"
     volume_size: 20
@@ -33,7 +33,7 @@ servers:
     os: jammy
 
   - server_name: "web_a{i}-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.large
     network_tier: "app-private"
     az: "c"
     volume_size: 20
@@ -43,7 +43,7 @@ servers:
     count: 2
 
   - server_name: "web_b{i}-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.large
     network_tier: "app-private"
     az: "b"
     volume_size: 20
@@ -97,7 +97,7 @@ servers:
     volume_size: 20
     volume_encrypted: yes
     block_device:
-      volume_size: 20
+      volume_size: 2800
     group: "elasticsearch"
     os: jammy
     count: 4
@@ -112,7 +112,7 @@ servers:
       volume_size: 20
     group: "elasticsearch"
     os: jammy
-    count: 2
+    count: 3
 
   - server_name: "es_b3{i}-bk-production"
     server_instance_type: t3a.xlarge
@@ -121,10 +121,10 @@ servers:
     volume_size: 20
     volume_encrypted: yes
     block_device:
-      volume_size: 20
+      volume_size: 2800
     group: "elasticsearch"
     os: jammy
-    count: 2
+    count: 3
 
   - server_name: "couch_a0-bk-production"
     server_instance_type: t3a.small
@@ -195,7 +195,7 @@ servers:
 
 proxy_servers:
   - server_name: "proxy_a0-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.large
     network_tier: "public"
     az: "c"
     volume_size: 20
