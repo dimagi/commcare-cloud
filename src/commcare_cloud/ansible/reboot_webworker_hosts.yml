@@ -1,0 +1,31 @@
+---
+- name: Rolling reboot webworker hosts - ({{ webworker_hosts }})
+  hosts: "{{ webworker_hosts }}"
+  serial: ["10%", "40%", "100%"]
+  become: true
+  any_errors_fatal: true
+
+  pre_tasks:
+    - name: Decommission hosts from nginx upstreams
+      import_role:
+        name: deploy_hq
+        tasks_from: commission_hosts
+      vars:
+        comment: true
+
+  tasks:
+    - name: Reboot host and wait for it to become reachable
+      reboot:
+        reboot_timeout: 900
+        connect_timeout: 30
+        msg: "Reboot initiated by Ansible (webworker rolling reboot)"
+
+  post_tasks:
+    - name: Recommission hosts into nginx upstreams
+      import_role:
+        name: deploy_hq
+        tasks_from: commission_hosts
+      vars:
+        comment: false
+
+

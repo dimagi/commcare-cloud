@@ -1,0 +1,26 @@
+---
+- name: "Reboot all webworkers (if not split)"
+  import_playbook: reboot_webworker_hosts.yml
+  vars:
+    webworker_hosts: 'webworkers'
+  when: "'hq_webworkers' not in groups"
+
+- name: "Reboot hq_webworkers (if split)"
+  import_playbook: reboot_webworker_hosts.yml
+  vars:
+    webworker_hosts: 'hq_webworkers'
+  when: "'hq_webworkers' in groups"
+
+- name: "Reboot mobile_webworkers (if split)"
+  import_playbook: reboot_webworker_hosts.yml
+  vars:
+    webworker_hosts: 'mobile_webworkers'
+  when: "'mobile_webworkers' in groups"
+
+- name: "Reboot api_webworkers (if split)"
+  import_playbook: reboot_webworker_hosts.yml
+  vars:
+    webworker_hosts: 'api_webworkers'
+  when: "'api_webworkers' in groups"
+
+
