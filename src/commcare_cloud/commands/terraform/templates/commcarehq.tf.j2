@@ -153,7 +153,7 @@ module "server__{{ server_name }}" {
   enable_cross_region_backup = {{ server_spec.enable_cross_region_backup|tojson }}
 
 {% if server_spec.os == 'bionic' %}
-  server_image = data.aws_ami.ubuntu_bionic.id
+  server_image = "deprecated"
 {% elif server_spec.os == 'jammy' %}
   server_image = data.aws_ami.ubuntu_jammy.id
 {% else %}

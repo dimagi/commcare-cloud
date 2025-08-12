@@ -96,7 +96,7 @@ subscription_change_email: accounts+subchange@dimagi.com
 internal_subscription_change_email: accounts+subchange+internal@dimagi.com
 billing_email: sales@dimagi.com
 invoicing_contact_email: accounts@dimagi.com
-growth_email: growth@dimagi.com
+growth_email: saas-revenue-team@dimagi.com
 saas_ops_email: saas-ops@dimagi.com
 saas_reporting_email: saas-reporting@dimagi.com
 master_list_email: master-list@dimagi.com
@@ -143,7 +143,7 @@ localsettings:
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
   ENFORCE_SSO_LOGIN: True
-  ELASTICSEARCH_MAJOR_VERSION: 5
+  ELASTICSEARCH_MAJOR_VERSION: 6
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-14"
   ES_MULTIPLEX_TO_VERSION: "6"
   # Index Multiplexer Settings
