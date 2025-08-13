@@ -136,6 +136,20 @@ servers:
     group: couchdb2
     os: jammy 
 
+  - server_name: "couch13-india"
+    server_instance_type: "r5a.xlarge"
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 60
+    volume_encrypted: yes
+    volume_type: "gp3"
+    block_device:
+      volume_size: 80
+      encrypted: yes
+      volume_type: "gp3"
+    group: couchdb2
+    os: jammy
+
   - server_name: "esmaster8-india"
     server_instance_type: t3a.medium
     network_tier: "db-private"
@@ -368,6 +382,7 @@ internal_albs:
       - couch10-india
       - couch11-india
       - couch12-india
+      - couch13-india
 
 elasticache_cluster:
   create: yes
