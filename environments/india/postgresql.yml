@@ -12,6 +12,7 @@ pgbouncer_override:
 
 postgres_override:
   postgresql_version: '14'
+  postgresql_idle_in_transaction_session_timeout: '86400000'
   postgresql_max_connections: 125
   postgresql_hba_entries:
     # required for backup
