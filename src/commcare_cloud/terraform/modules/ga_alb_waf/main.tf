@@ -4,6 +4,7 @@ locals {
   // for more regions
   aws_elb_account_map = {
     us-east-1 = "127311923021"
+    us-east-2 = "033677994240"
     us-west-1 = "027434742980"
     ap-south-1 = "718504428378"
     eu-west-1  = "156460612806"

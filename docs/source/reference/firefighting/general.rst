@@ -1186,33 +1186,34 @@ Resources:
 Managing Pillows
 ----------------
 
-You can check on the status of the pillow processors with
+You can check the status of pillow processes with:
 
 .. code-block::
 
    cchq <env> service pillowtop status
 
-and you can restart a pillow which is not currently ``RUNNING`` with
+All processes should have a status of ``RUNNING``. If not, you can start a pillow with:
 
 .. code-block::
 
    cchq <env> service pillowtop start --only=<pillow_name>
 
-Note that the elements returned by the ``status`` command are the names of the processors, not the names of the pillows themselves. 
+Run pillowtop status again to confirm the pillow is now running. If it is not, check pillow logs for errors during startup.
 
-For example if the status command identified that ``myenv-production-DefaultChangeFeedPillow-0`` was not running, to restart the pillow one would run 
+.. note::
 
-.. code-block::
+    The elements returned by the ``status`` command are the names of processes, not the names of the pillows themselves.
 
-   #Correct - Restarting by pillow name
-   cchq myenv service pillowtop start --only=DefaultChangeFeedPillow
+    For example, if the status command identified that ``commcare-hq-cluster-pillowtop-DefaultChangeFeedPillow-0`` was not running, start the pillow using:
 
-rather than
+    .. code-block::
 
-.. code-block::
+        #Correct - Restarting by pillow name
+        cchq cluster service pillowtop start --only=DefaultChangeFeedPillow
 
-   #Incorrect - Restarting by processor name
-   cchq myenv service pillowtop start --only=myenv-production-DefaultChangeFeedPillow-0
+        #Incorrect - Restarting by process name
+        cchq cluster service pillowtop start --only=commcare-hq-cluster-pillowtop-DefaultChangeFeedPillow-0
+
 
 Formplayer / Cloudcare / Webapps
 ================================

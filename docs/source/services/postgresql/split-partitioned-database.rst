@@ -46,9 +46,6 @@ Current database configuration:
            'PASSWORD': 'commcarehq',
            'HOST': 'pg1',
            'PORT': '5432',
-           'TEST': {
-               'SERIALIZE': False,
-           },
        },
        'p1': {
            'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -57,9 +54,6 @@ Current database configuration:
            'PASSWORD': 'commcarehq',
            'HOST': 'pg1',
            'PORT': '5432',
-           'TEST': {
-               'SERIALIZE': False,
-           },
        },
    }
 
