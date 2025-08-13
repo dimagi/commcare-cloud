@@ -1,4 +1,5 @@
 import argparse
+import copy
 import json
 import os
 import random
@@ -19,6 +20,9 @@ from commcare_cloud.environment.main import get_environment
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'environment')
 j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
 
+AMI_NETWORK_INTERFACE = {
+    "ami-0b152cfd354c4c7a4": "ens5"
+}
 
 class StrictJsonObject(jsonobject.JsonObject):
     _allow_dynamic_properties = False
@@ -55,6 +59,7 @@ class AwsConfig(StrictJsonObject):
     subnet = jsonobject.StringProperty()
     data_volume = jsonobject.DictProperty(exclude_if_none=True)
     boot_volume = jsonobject.DictProperty(exclude_if_none=True)
+    profile = jsonobject.StringProperty()
 
     @classmethod
     def wrap(cls, data):
@@ -108,22 +113,27 @@ def provision_machines(spec, env_name=None, create_machines=True):
         )
     environment = get_environment(env_name)
     inventory = bootstrap_inventory(spec, env_name)
+
     if create_machines:
-        instance_ids = ask_aws_for_instances(env_name, spec.aws_config, len(inventory.all_hosts))
+        num_hosts = len(set([h.name for h in inventory.all_hosts]))
+        instance_ids = ask_aws_for_instances(env_name, spec.aws_config, num_hosts)
     else:
         instance_ids = None
 
     while True:
-        instance_ip_addresses = poll_for_aws_state(env_name, instance_ids)
+        instance_ip_addresses = poll_for_aws_state(env_name, instance_ids, spec.aws_config.profile)
         if instance_ip_addresses:
             break
 
     hosts_by_name = {}
+    network_interface = get_network_interface(spec)
 
-    for host, (public_ip, private_ip) in zip(inventory.all_hosts, instance_ip_addresses.values()):
+    for host, (instance_id, (public_ip, private_ip)) in zip(inventory.all_hosts, (instance_ip_addresses.items())):
         host.public_ip = public_ip
         host.private_ip = private_ip
         host.vars['hostname'] = host.name
+        host.vars['ufw_private_interface'] = network_interface
+        host.vars['ec2_instance_id'] = instance_id
         hosts_by_name[host.name] = host
 
     for i, host_name in enumerate(inventory.all_groups['kafka'].host_names):
@@ -170,11 +180,13 @@ def alphanumeric_sort_key(key):
 
 def bootstrap_inventory(spec, env_name):
     incomplete = dict(spec.allocations.items())
+    incomplete_allocations = copy.deepcopy(incomplete)
 
     inventory = Inventory()
+    counter = 0
 
-    while incomplete:
-        for role, allocation in incomplete.items():
+    while counter < len(incomplete_allocations):
+        for role, allocation in incomplete_allocations.items():
             if allocation.from_:
                 if allocation.from_ not in spec.allocations:
                     raise KeyError('You specified an unknown group in the from field of {}: {}'
@@ -194,7 +206,7 @@ def bootstrap_inventory(spec, env_name):
                 new_host_names = set()
                 for i in range(allocation.count):
                     host_name = '{env}-{group}-{i}'.format(env=env_name, group=role, i=i)
-                    host_name = string.replace(host_name, '_', '-')
+                    host_name = host_name.replace('_', '-')
                     new_host_names.add(host_name)
                     inventory.all_hosts.append(
                         Host(name=host_name, public_ip=None, private_ip=None, vars={}))
@@ -205,6 +217,8 @@ def bootstrap_inventory(spec, env_name):
                 )
 
             del incomplete[role]
+            counter += 1
+
     return inventory
 
 
@@ -232,6 +246,8 @@ def ask_aws_for_instances(env_name, aws_config, count):
     if not os.path.exists(cache_file):
         # Provision new instances for this env
         print("Provisioning new instances.")
+        user = os.getlogin()
+
         cmd_parts = [
             'aws', 'ec2', 'run-instances',
             '--image-id', aws_config.ami,
@@ -240,7 +256,8 @@ def ask_aws_for_instances(env_name, aws_config, count):
             '--key-name', aws_config.key_name,
             '--security-group-ids', aws_config.security_group_id,
             '--subnet-id', aws_config.subnet,
-            '--tag-specifications', 'ResourceType=instance,Tags=[{Key=env,Value=' + env_name + '}]',
+            '--tag-specifications', 'ResourceType=instance,Tags=[{Key=env,Value=' + env_name + '}, {Key=user,Value=' + user + '}]',
+            '--profile', aws_config.profile,
         ]
         block_device_mappings = []
         if aws_config.boot_volume:
@@ -248,13 +265,24 @@ def ask_aws_for_instances(env_name, aws_config, count):
         if aws_config.data_volume:
             block_device_mappings.append(aws_config.data_volume)
         cmd_parts.extend(['--block-device-mappings', json.dumps(block_device_mappings)])
-        aws_response = subprocess.check_output(cmd_parts)
+
+        cmd_parts_cleaned = cmd_parts[:3]
+        for part in cmd_parts[3:]:
+            if part is None:
+                # Remove key from args
+                cmd_parts_cleaned.pop()
+            else:
+                cmd_parts_cleaned.append(part)
+
+        aws_response = subprocess.run(cmd_parts_cleaned, capture_output=True).stdout
+
         with open(cache_file, 'wb') as f:
             f.write(aws_response)
     else:
         # Use the existing instances
         with open(cache_file, 'r', encoding='utf-8') as f:
             aws_response = f.read()
+
     aws_response = json.loads(aws_response)
     return {instance['InstanceId'] for instance in aws_response["Instances"]}
 
@@ -275,12 +303,17 @@ def get_instances(describe_instances):
             yield instance
 
 
-def raw_describe_instances(env_name):
+def raw_describe_instances(env_name, profile=None):
     cmd_parts = [
         'aws', 'ec2', 'describe-instances', '--filters',
         'Name=instance-state-code,Values=16',
-        'Name=tag:env,Values=' + env_name
+        f'Name=tag:env,Values={env_name}',
+        f'Name=tag:user,Values={os.getlogin()}'
     ]
+
+    if profile:
+        cmd_parts.extend(['--profile', profile])
+
     return json.loads(subprocess.check_output(cmd_parts))
 
 
@@ -294,17 +327,25 @@ def get_hosts_from_describe_instances(describe_instances):
     return hosts
 
 
-def terminate_instances(instance_ids):
+def terminate_instances(instance_ids, profile=None):
     cmd_parts = [
         'aws', 'ec2', 'terminate-instances', '--instance-ids',
     ] + instance_ids
+
+    if profile:
+        cmd_parts.extend(['--profile', profile])
+
     return json.loads(subprocess.check_output(cmd_parts))
 
 
-def stop_instances(instance_ids):
+def stop_instances(instance_ids, profile=None):
     cmd_parts = [
         'aws', 'ec2', 'stop-instances', '--instance-ids',
     ] + instance_ids
+
+    if profile:
+        cmd_parts.extend(['--profile', profile])
+
     return json.loads(subprocess.check_output(cmd_parts))
 
 
@@ -355,8 +396,8 @@ def update_inventory_public_ips(inventory, new_hosts):
         host.public_ip = new_host_by_private_ip[host.private_ip].public_ip
 
 
-def poll_for_aws_state(env_name, instance_ids=None):
-    describe_instances = raw_describe_instances(env_name)
+def poll_for_aws_state(env_name, instance_ids=None, profile=None):
+    describe_instances = raw_describe_instances(env_name, profile)
     print_describe_instances(describe_instances)
 
     instances = [instance
@@ -410,9 +451,10 @@ def save_app_processes_yml(environment, inventory):
     template = j2.get_template('app-processes.yml.j2')
     celery_host_name = inventory.all_groups['celery'].host_names[0]
     pillowtop_host_name = inventory.all_groups['pillowtop'].host_names[0]
-    celery_host, = [host for host in inventory.all_hosts if host.name == celery_host_name]
-    pillowtop_host, = [host for host in inventory.all_hosts if host.name == pillowtop_host_name]
-    contents = template.render(celery_host=celery_host, pillowtop_host=pillowtop_host)
+    celery_host = [host for host in inventory.all_hosts if host.name == celery_host_name]
+    pillowtop_host = [host for host in inventory.all_hosts if host.name == pillowtop_host_name]
+
+    contents = template.render(celery_host=celery_host[0], pillowtop_host=pillowtop_host[0])
     with open(environment.paths.app_processes_yml, 'w', encoding='utf-8') as f:
         f.write(contents)
 
@@ -431,7 +473,6 @@ def save_fab_settings_yml(environment):
 
 def copy_default_vars(environment, aws_config):
     save_vault_yml(environment)
-
     vars_public = environment.paths.public_yml
     vars_postgresql = environment.paths.postgresql_yml
     vars_proxy = environment.paths.proxy_yml
@@ -446,6 +487,10 @@ def copy_default_vars(environment, aws_config):
                 print("The pem file {} specified in {} does not exist. Exiting.".format(
                     aws_config.pem, os.path.join(TEMPLATE_DIR, 'public.yml')))
                 sys.exit(1)
+
+
+def get_network_interface(spec):
+    return AMI_NETWORK_INTERFACE.get(spec.aws_config.ami, "eth0")
 
 
 class Provision(object):
@@ -465,6 +510,7 @@ class Provision(object):
             spec = yaml.safe_load(f)
 
         spec = Spec.wrap(spec)
+
         provision_machines(spec, args.env, create_machines=args.create_machines)
 
 
@@ -475,10 +521,11 @@ class Show(object):
     @staticmethod
     def make_parser(parser):
         parser.add_argument('env')
+        parser.add_argument('--aws-profile')
 
     @staticmethod
     def run(args):
-        describe_instances = raw_describe_instances(args.env)
+        describe_instances = raw_describe_instances(args.env, profile=args.aws_profile)
         print_describe_instances(describe_instances)
 
 
@@ -489,13 +536,15 @@ class Terminate(object):
     @staticmethod
     def make_parser(parser):
         parser.add_argument('env')
+        parser.add_argument('--aws-profile')
 
     @staticmethod
     def run(args):
-        describe_instances = raw_describe_instances(args.env)
+        describe_instances = raw_describe_instances(args.env, profile=args.aws_profile)
+
         instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
         if instance_ids:
-            terminate_instances_result = terminate_instances(instance_ids)
+            terminate_instances_result = terminate_instances(instance_ids, profile=args.aws_profile)
             print(terminate_instances_result)
             print(instance_ids)
         else:
@@ -509,10 +558,11 @@ class Stop(object):
     @staticmethod
     def make_parser(parser):
         parser.add_argument('env')
+        parser.add_argument('--aws-profile')
 
     @staticmethod
     def run(args):
-        describe_instances = raw_describe_instances(args.env)
+        describe_instances = raw_describe_instances(args.env, profile=args.aws_profile)
         instance_ids = [instance['InstanceId'] for instance in get_instances(describe_instances)]
         if instance_ids:
             stop_instances_result = stop_instances(instance_ids)
@@ -530,10 +580,11 @@ class Reip(object):
     @staticmethod
     def make_parser(parser):
         parser.add_argument('env')
+        parser.add_argument('--aws-profile')
 
     @staticmethod
     def run(args):
-        describe_instances = raw_describe_instances(args.env)
+        describe_instances = raw_describe_instances(args.env, profile=args.aws_profile)
         environment = get_environment(args.env)
         new_hosts = get_hosts_from_describe_instances(describe_instances)
         inventory = get_inventory_from_file(environment)
@@ -562,3 +613,6 @@ def main():
     for standard_arg in STANDARD_ARGS:
         if args.command == standard_arg.command:
             standard_arg.run(args)
+
+
+main()
