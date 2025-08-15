@@ -387,9 +387,10 @@ class ForwardPort(CommandBase):
     Port forward to access a remote admin console
     """
     _SERVICES = {
-        'flower': (lambda env: ForwardPort.get_flower_machine(env), 5555, '/'),
         'couch': ('couchdb2_proxy[0]', 25984, '/_utils/'),
         'elasticsearch': ('elasticsearch[0]', 9200, '/'),
+        'flower': (lambda env: ForwardPort.get_flower_machine(env), 5555, '/'),
+        'rabbit': ('rabbitmq[0]', 15672, '/'),
     }
 
     arguments = (
