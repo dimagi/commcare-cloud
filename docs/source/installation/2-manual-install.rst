@@ -579,8 +579,8 @@ If you don't see SSH key listed here for the user you are using to log in, you w
 You can read about it here, https://www.ssh.com/academy/ssh/agent#adding-ssh-keys-to-the-agent.
 
 .. warning::
-ssh-add should only be run locally and not on the remote machine.
-If this isn't setup correctly, you will face a machine access error in the next step.
+   ssh-add should only be run locally and not on the remote machine.
+   If this isn't setup correctly, you will face a machine access error in the next step.
 
 Also consider using a config file to streamline ssh.
 https://www.digitalocean.com/community/tutorials/how-to-configure-custom-connection-options-for-your-ssh-client
