@@ -1714,13 +1714,13 @@ have been made to our actual resources in AWS.
 Port forward to access a remote admin console
 
 ```
-commcare-cloud <env> forward-port {couch,elasticsearch,flower,rabbit}
+commcare-cloud <env> forward-port {flower,couch,elasticsearch}
 ```
 
 ##### Positional Arguments
 
-###### `{couch,elasticsearch,flower,rabbit}`
+###### `{flower,couch,elasticsearch}`
 
-The remote service to port forward. Must be one of couch,elasticsearch,flower,rabbit.
+The remote service to port forward. Must be one of couch,elasticsearch,flower.
 
 ---
