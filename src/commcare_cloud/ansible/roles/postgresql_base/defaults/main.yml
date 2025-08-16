@@ -29,7 +29,7 @@ postgresql_autovacuum_multixact_freeze_max_age: ~
 postgresql_autovacuum_max_workers: ~
 postgresql_autovacuum_analyze_scale_factor: ~
 postgresql_autovacuum_vacuum_scale_factor: ~
-postgresql_idle_in_transaction_session_timeout: ~
+postgresql_idle_in_transaction_session_timeout: ''
 postgresql_custom_settings: []
 
 postgresql_systemd_config_dir: "/etc/systemd/system/postgresql@.service.d"
