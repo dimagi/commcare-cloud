@@ -3,6 +3,7 @@ import inspect
 import os
 import shlex
 import sys
+from argparse import ArgumentParser, RawTextHelpFormatter
 from collections import OrderedDict
 from textwrap import dedent
 
@@ -11,39 +12,70 @@ from clint.textui import puts
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_error
 from commcare_cloud.commands.ansible.downtime import Downtime
+from commcare_cloud.commands.ansible.reboot_webworkers import RebootWebworkers
+from commcare_cloud.commands.ansible.service import Service
 from commcare_cloud.commands.clean_releases import CleanReleases
+from commcare_cloud.commands.command_base import (
+    Argument,
+    CommandBase,
+    CommandError,
+)
 from commcare_cloud.commands.deploy.command import Deploy, DeployDiff
-from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
+from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.preindex_views import PreindexViews
-from commcare_cloud.commands.secrets import Secrets, MigrateSecrets
+from commcare_cloud.commands.secrets import MigrateSecrets, Secrets
 from commcare_cloud.commands.sentry import ExportSentryEvents
-from commcare_cloud.commands.terraform.aws import AwsList, AwsFillInventory, AwsSignIn
+from commcare_cloud.commands.terraform.aws import (
+    AwsFillInventory,
+    AwsList,
+    AwsSignIn,
+)
 from commcare_cloud.commands.terraform.terraform import Terraform
-from commcare_cloud.commands.terraform.terraform_migrate_state import TerraformMigrateState
-from commcare_cloud.commands.validate_environment_settings import ValidateEnvironmentSettings
-from argparse import ArgumentParser, RawTextHelpFormatter
+from commcare_cloud.commands.terraform.terraform_migrate_state import (
+    TerraformMigrateState,
+)
+from commcare_cloud.commands.validate_environment_settings import (
+    ValidateEnvironmentSettings,
+)
 
 from .commands.ansible.ansible_playbook import (
+    AfterReboot,
     AnsiblePlaybook,
-    UpdateConfig, AfterReboot, BootstrapUsers, DeployStack,
-    UpdateUsers, UpdateUserPublicKey, UpdateSupervisorConfs,
+    BootstrapUsers,
+    DeployStack,
     PerformSystemChecks,
+    UpdateConfig,
+    UpdateSupervisorConfs,
+    UpdateUserPublicKey,
+    UpdateUsers,
 )
-from commcare_cloud.commands.ansible.service import Service
+from .commands.ansible.ops_tool import (
+    AuditEnvironment,
+    CeleryResourceReport,
+    CouchDBClusterInfo,
+    ListDatabases,
+    PillowResourceReport,
+    PillowTopicAssignments,
+    UpdateLocalKnownHosts,
+)
 from .commands.ansible.run_module import (
-    Ping,
     KillStaleCeleryWorkers,
     ListReleases,
+    Ping,
     RunAnsibleModule,
     RunShellCommand,
     SendDatadogEvent,
 )
 from .commands.fab import Fab
-from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Scp, DjangoManage, Tmux, ForwardPort
-from .commands.ansible.ops_tool import ListDatabases, CeleryResourceReport, PillowResourceReport, \
-    CouchDBClusterInfo, AuditEnvironment, UpdateLocalKnownHosts, PillowTopicAssignments
-from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
+from .commands.inventory_lookup.inventory_lookup import (
+    DjangoManage,
+    ForwardPort,
+    Lookup,
+    Scp,
+    Ssh,
+    Tmux,
+)
 from .environment.paths import (
     get_available_envs,
     put_virtualenv_bin_on_the_path,
@@ -95,6 +127,7 @@ COMMAND_GROUPS = OrderedDict([
         KillStaleCeleryWorkers,
         PerformSystemChecks,
         CouchDBClusterInfo,
+        RebootWebworkers,
         Terraform,
         TerraformMigrateState,
         AwsSignIn,
