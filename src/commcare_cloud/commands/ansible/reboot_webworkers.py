@@ -11,7 +11,12 @@ from clint.textui import puts
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import check_branch, print_command
-from commcare_cloud.colors import color_error, color_summary, color_warning
+from commcare_cloud.colors import (
+    color_error,
+    color_notice,
+    color_summary,
+    color_warning,
+)
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.ansible.helpers import (
     DEPRECATED_ANSIBLE_ARGS,
@@ -95,6 +100,9 @@ class RebootWebworkers(CommandBase):
             return self._run_reboot_with_notifications(
                 args, ansible_context, log_file_path, use_factory_auth, unknown_args
             )
+        except Exception as e:
+            puts(color_error(f"Error running reboot playbook: {e}"))
+            return 1
         finally:
             try:
                 os.unlink(log_file_path)
@@ -147,8 +155,10 @@ class RebootWebworkers(CommandBase):
         if slack_client and thread_ts:
             try:
                 self._send_log_file_to_slack(slack_client, log_file_path, thread_ts, service_name)
+                puts(color_summary(f"[{self.command}] Log file uploaded to Slack"))
             except Exception as e:
-                puts(color_warning(f"Failed to send log file to Slack: {e}"))
+                puts(color_warning(f"Failed to send log file to Slack : {e}"))
+                puts(color_notice(f"[{self.command}] Log file is available at: {log_file_path}"))
 
         if slack_client and thread_ts:
             self._send_slack_completion_notification(slack_client, thread_ts, start_time, success, service_name)
@@ -179,20 +189,20 @@ class RebootWebworkers(CommandBase):
         environment = ansible_context.environment
         playbook_path = os.path.join(ANSIBLE_DIR, playbook)
         
-        cmd_parts = (
+        cmd_parts = list((
             'ansible-playbook',
             playbook_path,
             '-i', environment.paths.inventory_source,
             '-e', '@{}'.format(environment.paths.public_yml),
             '-e', '@{}'.format(environment.paths.generated_yml),
             '--diff',
-        ) + get_limit(environment) + (unknown_args or [])
+        ) + get_limit(environment) + (unknown_args or ()))
 
         public_vars = environment.public_vars
         env_vars = ansible_context.build_env()
-        cmd_parts += get_user_arg(public_vars, unknown_args or [], use_factory_auth)
-        cmd_parts += environment.secrets_backend.get_extra_ansible_args()
-        cmd_parts += get_common_ssh_args(environment, use_factory_auth=use_factory_auth)
+        cmd_parts.extend(get_user_arg(public_vars, unknown_args or [], use_factory_auth))
+        cmd_parts.extend(environment.secrets_backend.get_extra_ansible_args())
+        cmd_parts.extend(get_common_ssh_args(environment, use_factory_auth=use_factory_auth))
         
         cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command(cmd)
