@@ -207,7 +207,7 @@ servers:
     os: jammy 
 
   - server_name: "formplayer3-india"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "r6a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 200
