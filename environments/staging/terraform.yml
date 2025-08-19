@@ -191,7 +191,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 30
+      volume_size: 35
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
@@ -205,7 +205,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 30
+      volume_size: 35
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
@@ -219,7 +219,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 30
+      volume_size: 35
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
