@@ -16,14 +16,13 @@ kafka_log_message_format_version: 3.2
 zookeeper_version: 3.7.1
 zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
 zookeeper_cluster: True
-amqp: False
-AMQP_HOST: "{% if amqp == true %}{{ groups.awsmq.0 }}{%else%}{{ groups.rabbitmq.0}}{% endif %}"
+AMQP_HOST: "{{ groups.rabbitmq.0}}"
 TWO_FACTOR_GATEWAY_ENABLED: True
 erlang: 1:24.3.3-1
 rabbitmq_version: 3.10.13-1
 
 #RabbitMQ Broker URL
-BROKER_URL: "{% if amqp == true %}amqps://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5671{% else %}amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}{% endif %}"
+BROKER_URL: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}"
 
 backup_blobdb: False
 backup_postgres: plain
