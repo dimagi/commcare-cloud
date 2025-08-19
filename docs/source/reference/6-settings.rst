@@ -33,8 +33,8 @@ default_from_email:
 
     * All emails sent via the Celery email queue
     * "Dimagi Finance" and "Dimagi Accounting" on automated accounting
-      reports, sales requests, subscription reminders, invoices, weekly
-      digests of subscriptions, and pro-bono applications
+      reports, sales requests, subscription reminders, invoices, and weekly
+      digests of subscriptions
     * The ``send_email`` management command
 
 return_path_email:
@@ -50,9 +50,6 @@ support_email:
 
     In non-Dimagi environments this address is given as the email for
     Support in CommCare apps.
-
-probono_support_email:
-    The address given for Support in pro-bono application submissions.
 
 accounts_email:
     The email account to which generated invoices and weekly digests
