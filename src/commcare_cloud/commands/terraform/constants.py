@@ -3,13 +3,15 @@
 #   ./manage.py list_waf_allow_patterns
 #
 # to replace the contents of the multiline string
-from __future__ import unicode_literals
 COMMCAREHQ_XML_POST_URLS_REGEX = r"""
+^/a/([\w\.:-]+)/api/case/v2(?:/([\w\-,]+))?/?$
+^/a/([\w\.:-]+)/api/case/v2/bulk-fetch/$
 ^/a/([\w\.:-]+)/api/v([\d\.]+)/form/$
 ^/a/([\w\.:-]+)/api/v0\.6/case(?:/([\w\-,]+))?/?$
 ^/a/([\w\.:-]+)/api/v0\.6/case/bulk-fetch/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/app_logo/([\w\-]+)/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/audio/$
+^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/bulk/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/image/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/video/$
 ^/a/([\w\.:-]+)/apps/edit_advanced_form_actions/([\w-]+)/([\w-]+)/$
@@ -29,6 +31,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/importer/excel/bulk_upload_api/$
 ^/a/([\w\.:-]+)/importer/excel/config/$
 ^/a/([\w\.:-]+)/messaging/broadcasts/add/$
+^/a/([\w\.:-]+)/messaging/broadcasts/edit/([\w-]+)/([\w-]+)/$
 ^/a/([\w\.:-]+)/messaging/conditional/add/$
 ^/a/([\w\.:-]+)/messaging/conditional/edit/([\w-]+)/$
 ^/a/([\w\.:-]+)/receiver/$
@@ -39,10 +42,12 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/receiver/submission/?$
 ^/a/([\w\.:-]+)/reports/export/(case_list_explorer|duplicate_cases)/$
 ^/a/([\w\.:-]+)/settings/locations/import/$
+^/a/([\w\.:-]+)/settings/locations/import/bulk_location_upload_api/$
 ^/a/([\w\.:-]+)/settings/project/basic/$
-^/a/([\w\.:-]+)/settings/users/commcare/fields/$
 ^/a/([\w\.:-]+)/settings/users/commcare/upload/$
+^/a/([\w\.:-]+)/settings/users/commcare/upload/bulk_user_upload_api/$
 ^/a/([\w\.:-]+)/settings/users/join/([ \w-]+)/$
+^/a/([\w\.:-]+)/settings/users/user_data/$
 ^/a/([\w\.:-]+)/settings/users/web/upload/$
 ^/formplayer/answer_media$
 ^/formplayer/new-form$

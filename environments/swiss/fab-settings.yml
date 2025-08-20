@@ -1,2 +1,0 @@
-ignore_kafka_checkpoint_warning: True
-tag_deploy_commits: True

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 import sys
 
 from commcare_cloud.manage_commcare_cloud.datadog_monitors import UpdateDatadogMonitors, ListDatadogMonitors

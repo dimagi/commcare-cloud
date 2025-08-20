@@ -1,0 +1,51 @@
+title: 'SQL Repeat Record Migration addendum'
+key: sql-repeatrecord-pr1-addendum
+date: 2024-02-13
+optional_per_env: yes
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version: 58bc7541628b870216b2b072f7c89d01cb1cf225
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  Optional: Copy repeat records with deleted repeaters from Couch to SQL
+
+details: |
+  This is an optional procedure that should be done if you use data forwarding
+  and want to retain access to forwarding records that reference deleted
+  data forwarders. Otherwise this procedure may be skipped.
+
+update_steps: |
+  Run the following commands:
+
+  ```sh
+  # Create a private release in which to run management commands.
+  # Make a note of the release directory path.
+  cchq <env> deploy commcare --private --keep-days=30
+
+  # Start a screen session
+  cchq <env> ssh django_manage -t screen -S couch2sql
+
+  # If the connection drops, reconnect with
+  cchq <env> ssh django_manage -t screen -x couch2sql
+
+  # In the screen session
+  sudo -iu cchq
+  mkdir ~/couch2sql
+  cd <private-release-directory-path>  # created above
+
+  # Migrate deleted repeaters from Couch to SQL
+  ./manage.py create_missing_repeaters
+
+  # Discard previous migration state
+  ./manage.py populate_repeatrecords --log-path ~/couch2sql --override-is-migration-completed=discard
+
+  # Run the migration command
+  ./manage.py populate_repeatrecords --log-path ~/couch2sql
+  # Re-run this command until it completes successfully (exit code 0).
+
+  # After successful completion, run again with --fixup-diffs=... if directed
+  # to do so by command output.
+  ```
+
+  DO NOT delete repeat records from Couch DB yet, they are still needed! A
+  future change log entry will instruct when it is safe to do that.

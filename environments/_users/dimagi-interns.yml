@@ -4,3 +4,4 @@ dev_users:
     # only for users we want to completely remove
     - jcheng
     - mliang
+    - dfadil

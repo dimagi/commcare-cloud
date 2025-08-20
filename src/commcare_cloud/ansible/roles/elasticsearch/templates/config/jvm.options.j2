@@ -54,7 +54,11 @@
 14-:-XX:InitiatingHeapOccupancyPercent=30
 
 ## JVM temporary directory
--Djava.io.tmpdir=${ES_TMPDIR}
+{% if elasticsearch_jvm_tmp_dir is defined %}
+-Djava.io.tmpdir={{ elasticsearch_jvm_tmp_dir }}
+{% else %}
+-Djava.io.tmpdir={{ elasticsearch_data_dir }}/tmp
+{% endif %}
 
 ## heap dumps
 
@@ -67,7 +71,7 @@
 -XX:HeapDumpPath={{ elasticsearch_data_dir }}/logs/heapdump.hprof
 
 # specify an alternative path for JVM fatal error logs
--XX:ErrorFile={{ elasticsearch_data_dir }}logs/hs_err_pid%p.log
+-XX:ErrorFile={{ elasticsearch_data_dir }}/logs/hs_err_pid%p.log
 
 ## JDK 8 GC logging
 8:-XX:+PrintGCDetails

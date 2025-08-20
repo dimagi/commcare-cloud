@@ -1,13 +1,8 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import abc
 from contextlib import contextmanager
 
-import six
 
-
-@six.add_metaclass(abc.ABCMeta)
-class AbstractSecretsBackend(object):
+class AbstractSecretsBackend(metaclass=abc.ABCMeta):
 
     @classmethod
     @abc.abstractmethod

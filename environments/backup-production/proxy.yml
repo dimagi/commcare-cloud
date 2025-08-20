@@ -19,7 +19,3 @@ nginx_block_ips:
 
 special_sites:
   - tableau
-  - wiki
-  - wiki_http
-  - motech
-  - motech2

@@ -33,7 +33,7 @@
       until: "'ansible_{{result_external_interface.user_input}}' in hostvars[inventory_hostname]"
       retries: 3
       delay: 0
-    - name: 'Private inerface'
+    - name: 'Private interface'
       pause:
         prompt: |
           Found multiple network interfaces.
@@ -42,7 +42,7 @@
             IP Address: {{hostvars[inventory_hostname]['ansible_%s' | format(interface)]['ipv4']['address'] }}, Interface Name: {{ interface}}
           {% endfor%}
 
-          Please enter the private interface name to be used from above three.
+          Please enter the private interface name to be used from the above options.
           This will be used to set firewall rules
       register: result_internal_interface
       until: "result_internal_interface.user_input in ansible_interfaces"

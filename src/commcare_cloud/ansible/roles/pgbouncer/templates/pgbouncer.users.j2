@@ -1,9 +1,6 @@
 {% for group in postgres_users.values() %}
 "{{ group.username }}" "{{ group.password }}"
 {% endfor %}
-{% if postgresql_dbs.repeaters and inventory_hostname in postgresql_dbs.repeaters.pgbouncer_hosts %}
-"repeaters_fdw_user" "{{ postgres_users.commcare.password }}"
-{% endif %}
 {% if inventory_hostname in groups['citusdb_worker']|default([]) %}
 "postgres" ""
 {% endif %}

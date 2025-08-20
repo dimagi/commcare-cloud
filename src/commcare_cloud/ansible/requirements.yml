@@ -15,15 +15,16 @@ roles:
   - src: git+https://github.com/nickhammond/ansible-logrotate.git
     version: v0.0.5
     name: ansible-logrotate
-  - src: DavidWittman.redis
-    version: 1.2.7
+  - name: DavidWittman.redis
+    src: https://github.com/DavidWittman/ansible-redis.git
+    version: 1.2.12
   - src: sansible.logstash
-    version: v2.4.0-latest
+    version: v2.4.4
   - name: cloudalchemy.prometheus
     src: https://github.com/cloudalchemy/ansible-prometheus
     version: 2.15.5
   - src: cloudalchemy.alertmanager
-    version: 0.19.0
+    version: 0.19.1
   - src: cloudalchemy.grafana
     version: 0.17.0
   - src: cloudalchemy.node_exporter
@@ -31,7 +32,7 @@ roles:
   - src: bdellegrazie.postgres_exporter
     version: v4.1.0
   - src: gantsign.golang
-    version: 2.3.1  
+    version: 3.2.1
 
 collections:
   - name: https://github.com/dimagi/commcare-logstash/releases/download/V0.9.5/dimagi-commcare_logstash-0.9.5.tar.gz

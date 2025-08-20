@@ -156,33 +156,45 @@ proxy
 pillowtop
 webworkers
 
-{{ __es_a1__ }}
+{{ __es_a2__ }}
 
-{{ __es_b1__ }}
+{{ __es_b2__ }}
 
-{{ __esmaster_a0__ }} elasticsearch_node_name=esmaster_a0
+{{ __es_a3__ }}
 
-{{ __esmaster_b0__ }} elasticsearch_node_name=esmaster_b0
+{{ __es_b3__ }}
 
-{{ __esmaster_c0__ }} elasticsearch_node_name=esmaster_c0
+{{ __esmaster_a1__ }} elasticsearch_node_name=esmaster_a1
+
+{{ __esmaster_b1__ }} elasticsearch_node_name=esmaster_b1
+
+{{ __esmaster_c1__ }} elasticsearch_node_name=esmaster_c1
 
 [es_master:children]
-esmaster_a0
-esmaster_b0
-esmaster_c0
+esmaster_a1
+esmaster_b1
+esmaster_c1
 
 [es_master:vars]
 elasticsearch_master=true
 elasticsearch_data=false
 
 [es_data:children]
-es_a1
-es_b1
+es_a2
+es_b2
+es_a3
+es_b3
 
-[es_a1:vars]
+[es_a2:vars]
 elasticsearch_node_zone=us-east-2c
 
-[es_b1:vars]
+[es_b2:vars]
+elasticsearch_node_zone=us-east-2b
+
+[es_a3:vars]
+elasticsearch_node_zone=us-east-2c
+
+[es_b3:vars]
 elasticsearch_node_zone=us-east-2b
 
 [elasticsearch:children]

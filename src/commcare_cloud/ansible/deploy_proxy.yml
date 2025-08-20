@@ -68,26 +68,23 @@
         loop_var: site_config
       tags: nginx_sites
 
-    - name: install other sites
+    - name: remove obsolete sites
       include_role:
-        name: {name: nginx, tags: nginx_sites}
+        name: {name: nginx, tags: [nginx_sites, drop_old_sites]}
         tasks_from: set_site_present
       vars:
-        site_present: "{{ site_config.name in special_sites }}"
+        site_present: False
+        nginx_sites: [{server: {file_name: '{{ file_name }}'}}]
       with_items:
-        - {name: motech, vars_file: motech}
-        - {name: motech, vars_file: motech_http}
-        - {name: motech2, vars_file: motech2}
-        - {name: motech2, vars_file: motech2_http}
-        - {name: wiki, vars_file: wiki}
-        - {name: cas_sentry, vars_file: cas_sentry}
-        - {name: cas_grafana, vars_file: cas_grafana}
-        - {name: wiki, vars_file: wiki_http}
-        - {name: icds_tableau, vars_file: icds_tableau}
-        - {name: icds_tableau, vars_file: icds_tableau_http}
+        - wiki
+        - wiki_http
+        - icds_tableau
+        - icds_tableau_http
       loop_control:
-        loop_var: site_config
-      tags: nginx_sites
+        loop_var: file_name
+      tags:
+        - nginx_sites
+        - drop_old_sites
 
 - name: Reach Proxy
   hosts: reach_proxy

@@ -5,14 +5,13 @@ server_admin_email: commcarehq-ops+admins@dimagi.com
 default_from_email: commcarehq-noreply-production@dimagi.com
 return_path_email: commcarehq-bounces+production@dimagi.com
 support_email: support@dimagi.com
-probono_support_email: pro-bono@dimagi.com
 accounts_email: accounts@dimagi.com
 data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
 internal_subscription_change_email: accounts+subchange+internal@dimagi.com
 billing_email: sales@dimagi.com
 invoicing_contact_email: accounts@dimagi.com
-growth_email: growth@dimagi.com
+growth_email: saas-revenue-team@dimagi.com
 saas_ops_email: saas-ops@dimagi.com
 saas_reporting_email: saas-reporting@dimagi.com
 master_list_email: master-list@dimagi.com
@@ -23,6 +22,7 @@ eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
+solutions_aes_email: solutions-tech-app-engineers@dimagi.com
 ALTERNATE_HOSTS:
   - rec-mobile.sante.gov.bf
   - onse-iss.commcarehq.org
@@ -37,9 +37,9 @@ DATADOG_TRACE:
     env: production
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_cluster_name: 'prodhqes-1.x'
-elasticsearch_version: 5.6.16
-elasticsearch_download_sha256: 6b035a59337d571ab70cea72cc55225c027ad142fbb07fd8984e54261657c77f.
+elasticsearch_cluster_name: 'prodhqes'
+elasticsearch_version: 6.8.23
+elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
 #elasticsearch_memory: '4096m'
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
@@ -76,12 +76,10 @@ formplayer_detailed_tags:
   - form_name
   - module_name
 formplayer_custom_properties:
-  spring.datasource.hikari.maximum-pool-size: 20
+  spring.datasource.hikari.maximum-pool-size: 40
   spring.datasource.hikari.minimum-idle: 5
 
 KSPLICE_ACTIVE: yes
-
-run_websockets_wsgi: True
 
 couch_dbs:
   default:
@@ -150,6 +148,7 @@ localsettings:
   BIGCOUCH: True
   BIGCOUCH_QUORUM_COUNT: 2
   CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE: "reminder_case_update_bulk_queue"
+  CELERY_REPEAT_RECORD_DATASOURCE_QUEUE: "repeat_record_datasource_queue"
   CHECK_REPEATERS_PARTITION_COUNT: 4
   COMMCARE_ANALYTICS_HOST: "https://commcare-analytics.dimagi.com"
   COUCH_CACHE_DOCS: True
@@ -162,30 +161,47 @@ localsettings:
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
+  ENABLE_BHA_CASE_SEARCH_ADAPTER: True
   ENABLE_SOFT_ASSERT_EMAILS: True
   ENFORCE_SSO_LOGIN: True
-  ELASTICSEARCH_MAJOR_VERSION: 5
+  ELASTICSEARCH_MAJOR_VERSION: 6
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-04"
   ES_XFORM_INDEX_NAME: "xforms_2023-01-27"
+  # When to consider multiplex settings
+  ES_MULTIPLEX_TO_VERSION: '6'
   # Index Multiplexer Settings  
-  ES_APPS_INDEX_MULTIPLEXED: False # swap completed
-  ES_CASE_SEARCH_INDEX_MULTIPLEXED: False # swap completed 
-  ES_CASES_INDEX_MULTIPLEXED: False # swap completed
-  ES_DOMAINS_INDEX_MULTIPLEXED: False # swap completed
-  ES_FORMS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_GROUPS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_SMS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_USERS_INDEX_MULTIPLEXED: False # swap completed
-  # Index Swap settings  
-  ES_APPS_INDEX_SWAPPED: False
-  ES_CASE_SEARCH_INDEX_SWAPPED: False
-  ES_CASES_INDEX_SWAPPED: False
-  ES_DOMAINS_INDEX_SWAPPED: False
-  ES_FORMS_INDEX_SWAPPED: False
-  ES_GROUPS_INDEX_SWAPPED: False
-  ES_SMS_INDEX_SWAPPED: False
-  ES_USERS_INDEX_SWAPPED: False
+  ES_APPS_INDEX_MULTIPLEXED: False # Index swapped
+  ES_CASE_SEARCH_INDEX_MULTIPLEXED: False # Index swapped
+  ES_CASES_INDEX_MULTIPLEXED: False # Index swapped
+  ES_DOMAINS_INDEX_MULTIPLEXED: False # Index swapped
+  ES_FORMS_INDEX_MULTIPLEXED: False # Index swapped
+  ES_GROUPS_INDEX_MULTIPLEXED: False # Index swapped
+  ES_SMS_INDEX_MULTIPLEXED: False # Index swapped
+  ES_USERS_INDEX_MULTIPLEXED: False # Index swapped
+  # Index Swap settings
+  ES_APPS_INDEX_SWAPPED: True
+  ES_CASE_SEARCH_INDEX_SWAPPED: True
+  ES_CASES_INDEX_SWAPPED: True
+  ES_DOMAINS_INDEX_SWAPPED: True
+  ES_FORMS_INDEX_SWAPPED: True
+  ES_GROUPS_INDEX_SWAPPED: True
+  ES_SMS_INDEX_SWAPPED: True
+  ES_USERS_INDEX_SWAPPED: True
   # Index settings end
+  CASE_SEARCH_SUB_INDICES: {
+    'co-carecoordination': {
+        'index_cname': 'case_search_bha',
+        'multiplex_writes': True,
+    },
+    'co-carecoordination-uat': {
+        'index_cname': 'case_search_bha',
+        'multiplex_writes': True,
+    },
+    'co-carecoordination-perf': {
+        'index_cname': 'case_search_cc_perf',
+        'multiplex_writes': True,
+    }
+  }
   IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'www'
   INACTIVITY_TIMEOUT: 20160
@@ -207,6 +223,8 @@ localsettings:
     repeaters: repeaters
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
+  MIN_REPEATER_RATE_LIMIT_DELAY: 10
+  MAX_REPEATER_RATE_LIMIT_DELAY: 30
   PILLOWTOP_MACHINE_ID: hqdb0
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes
@@ -233,9 +251,10 @@ localsettings:
         - 'ils-gateway'
         - 'ils-gateway-train'
   USER_REPORTING_METADATA_BATCH_ENABLED: True
-  WS4REDIS_CONNECTION_HOST: "redis.production.commcare.local"
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
-  ASYNC_INDICATORS_TO_QUEUE: 20000
+  CONNECTID_CHANNEL_URL: 'https://connectid.dimagi.com/messaging/create_channel/'
+  CONNECTID_MESSAGE_URL: 'https://connectid.dimagi.com/messaging/send_fcm/'
+  ASYNC_INDICATORS_TO_QUEUE: 100000
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu

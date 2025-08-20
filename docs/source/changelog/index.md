@@ -7,6 +7,77 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2025-07-10** [Remove PARSER_CLASS from redis settings](0089-remove-parser-class.md)
+We've remove the PARSER_CLASS when configuring redis in settings.py.
+
+
+---
+#### **2025-05-08** [Install uv for Python dependency management](0088-install-uv.md)
+CommCare HQ is moving to using `uv` for Python dependency management, which
+simplifies and speeds up dependency installation.
+
+
+---
+#### **2025-04-16** [Upgrade to Elasticsearch 6](0087-upgrade-to-es-6.md)
+Upgrade to Elasticsearch 6.
+This changelog outlines the steps required to `reindex` all indices and then perform the upgrade from Elasticsearch 5.6.16 to 6.8.23.
+
+
+---
+#### **2025-03-27** [AWS S3 Client Library Upgrade](0086-s3-library-upgrade.md)
+The `botocore` library is being upgraded in CommCare HQ. A blob db
+configuration change may be necessary prior to deploying the new version.
+
+
+---
+#### **2025-03-21** [Removing websockets](0085-remove_websockets.md)
+All code related to websockets is being removed from both CommCare HQ and CommCare-Cloud.
+
+
+---
+#### **2024-11-06** [New Geospatial Celery Queue](0084-add-geospatial-queue.md)
+The Microplanning feature requires the location properties on cases to be indexed correctly so
+that they can be used correctly in this feature. A separate queue is added to handle this indexing
+process when the Microplanning feature is enabled for a domain. This can potentially be a long-running
+task, and so having a separate queue ensures that other queues do not get clogged up by this indexing task.
+
+
+---
+#### **2024-10-25** [Database Backup Retention Change](0083-database_backup_retention_change.md)
+The logic used to retain database backups has been modified to better respect the settings that specify
+how many days to keep backups.
+
+
+---
+#### **2024-07-25** [Unicel SMS Gateway Removal](0082-unicel-sms-gateway-removal.md)
+This is a notice specifically for projects with Unicel configured as an SMS gateway, which is no longer functional.
+Projects that are not using the Unicel gateway do not need to take any action.
+
+
+---
+#### **2024-06-18** [SQL Repeat Record Migration - Delete Unused Couch Data](0081-delete-receiverwrapper-couch-db.md)
+Optional: Delete unused forwarding data from Couch.
+
+
+---
+#### **2024-04-30** [Copy Supply Point data to Invitation model Location Field](0080-copy-invitation-supply-point-fields-to-location.md)
+Copy data from `supply_point` field to `location` field in `Invitation` model to prevent errors with
+future migrations to the `users_invitation` table.
+
+This operation is required for all environments regardless of feature usage.
+
+
+---
+#### **2024-02-13** [SQL Repeat Record Migration addendum](0079-sql-repeatrecord-addendum.md)
+Optional: Copy repeat records with deleted repeaters from Couch to SQL
+
+
+---
+#### **2024-03-29** [Upgrade To Node 20](0078-upgrade-to-node-20.md)
+Node.js 16.x LTS is reaching its end of life 15th June 2024, so node and npm must be upgraded on all machines.
+
+
+---
 #### **2024-02-13** [SQL Repeat Record Migration](0077-sql-repeatrecord-pr1.md)
 Prepare for and migrate Repeat Records from Couch to SQL.
 

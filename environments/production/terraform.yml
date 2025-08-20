@@ -11,7 +11,6 @@ azs:
   - "us-east-1c"
 vpc_begin_range: "10.202"
 
-openvpn_image: ami-5e73b923
 
 ec2_metadata_tokens_required: yes
 
@@ -24,6 +23,7 @@ backup_plan:
   weekly_retention: 14
   monthly_retention: 62
   quarterly_retention: 180
+  cold_storage_after : 8
 
 servers:
   - server_name: "control4-production"
@@ -51,7 +51,7 @@ servers:
     volume_encrypted: yes
     group: "hq_webworkers"
     os: jammy
-    count: 3
+    count: 2
     server_auto_recovery: true
 
   - server_name: "web_b2{i}-production"
@@ -61,6 +61,28 @@ servers:
     volume_size: 40
     volume_encrypted: yes
     group: "hq_webworkers"
+    os: jammy
+    count: 2
+    server_auto_recovery: true
+
+  - server_name: "web_a_a{i}-production"
+    server_instance_type: m6a.2xlarge
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 40
+    volume_encrypted: yes
+    group: "api_webworkers"
+    os: jammy
+    count: 3
+    server_auto_recovery: true
+
+  - server_name: "web_a_b{i}-production"
+    server_instance_type: m6a.2xlarge
+    network_tier: "app-private"
+    az: "b"
+    volume_size: 40
+    volume_encrypted: yes
+    group: "api_webworkers"
     os: jammy
     count: 3
     server_auto_recovery: true
@@ -119,7 +141,7 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 2100
+      volume_size: 2800
       enable_cross_region_backup: yes
     group: "elasticsearch"
     os: jammy 
@@ -132,7 +154,7 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 2100
+      volume_size: 2800
     group: "elasticsearch"
     os: jammy 
     count: 4
@@ -144,13 +166,11 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 1300
+      volume_size: 2800
       enable_cross_region_backup: yes
     group: "elasticsearch"
     os: jammy
-    count: 2
-    additional_tags:
-      BillTo: USH
+    count: 3
 
   - server_name: "es_b3{i}-production"
     server_instance_type: r6a.4xlarge
@@ -159,12 +179,10 @@ servers:
     volume_size: 30
     volume_encrypted: yes
     block_device:
-      volume_size: 1300
+      volume_size: 2800
     group: "elasticsearch"
     os: jammy
-    count: 2
-    additional_tags:
-      BillTo: USH
+    count: 3
 
   - server_name: "escoordinator_a1-production"
     server_instance_type: r6a.2xlarge
@@ -189,7 +207,7 @@ servers:
     volume_size: 90
     volume_encrypted: yes
     block_device:
-      volume_size: 3500
+      volume_size: 1000
       encrypted: yes
     group: "couchdb2"
     os: bionic
@@ -201,7 +219,7 @@ servers:
     volume_size: 90
     volume_encrypted: yes
     block_device:
-      volume_size: 3500
+      volume_size: 1000
       encrypted: yes
       enable_cross_region_backup: yes
     group: "couchdb2"
@@ -214,46 +232,14 @@ servers:
     volume_size: 80
     volume_encrypted: yes
     block_device:
-      volume_size: 3150
+      volume_size: 1000
       encrypted: yes
       enable_cross_region_backup: yes
     group: "couchdb2"
     os: jammy
 
-  - server_name: "couch_a1-production"
-    ## Increase once ready for migration
-    # server_instance_type: c6a.8xlarge
-    server_instance_type: c6a.large
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 80
-    volume_encrypted: yes
-    block_device:
-      ## Increase once ready for migration
-      # volume_size: 3150
-      volume_size: 1
-      encrypted: yes
-    group: "couchdb2"
-    os: jammy
-
-  - server_name: "couch_b0-production"
-    ## Increase once ready for migration
-    # server_instance_type: c6a.8xlarge
-    server_instance_type: c6a.large
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 80
-    volume_encrypted: yes
-    block_device:
-      ## Increase once ready for migration
-      # volume_size: 3150
-      volume_size: 1
-      encrypted: yes
-    group: "couchdb2"
-    os: jammy
-
   - server_name: "rabbit14-production"
-    server_instance_type: t3a.2xlarge
+    server_instance_type: c6a.2xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -309,7 +295,7 @@ servers:
     count: 1
 
   - server_name: "pillow_b2{i}-production"
-    server_instance_type: r6a.4xlarge
+    server_instance_type: r6a.12xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 50
@@ -321,31 +307,18 @@ servers:
     server_instance_type: r6a.2xlarge
     network_tier: "app-private"
     az: "a"
-    volume_size: 70
+    volume_size: 140
     volume_encrypted: yes
     group: "formplayer"
     os: jammy
     count: 10
     server_auto_recovery: true
-
-  - server_name: "formplayer_a2{i}-production"
-    server_instance_type: r6a.2xlarge
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 50
-    volume_encrypted: yes
-    group: "formplayer"
-    os: jammy
-    count: 10
-    server_auto_recovery: true
-    additional_tags:
-      BillTo: USH
 
   - server_name: "kafka_a1-production"
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "a"
-    volume_size: 150
+    volume_size: 210
     volume_encrypted: yes
     group: "kafka"
     os: jammy 
@@ -354,7 +327,7 @@ servers:
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "b"
-    volume_size: 150
+    volume_size: 210
     volume_encrypted: yes
     group: "kafka"
     os: jammy 
@@ -363,7 +336,7 @@ servers:
     server_instance_type: t3a.medium
     network_tier: "db-private"
     az: "c"
-    volume_size: 150
+    volume_size: 210
     volume_encrypted: yes
     group: "kafka"
     os: jammy 
@@ -444,13 +417,15 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain1-production"
-    instance_type: "db.m5.4xlarge"
+    instance_type: "db.m6g.4xlarge"
     storage: 2000
     storage_type: gp3
+    storage_throughput: 500
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
     backup_retention: 7
+    iops: 12000
     enable_cross_region_backup: true
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
@@ -483,6 +458,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 12000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -498,6 +474,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 12000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -513,6 +490,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 12000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -528,6 +506,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 12000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -543,6 +522,7 @@ rds_instances:
     storage: 750
     max_storage: 2500
     storage_type: gp3
+    iops: 12000
     multi_az: true
     engine_version: "14"
     backup_window: "23:00-01:00"
@@ -554,7 +534,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgsynclog2-production"
-    instance_type: "db.m5.xlarge"
+    instance_type: "db.m6g.xlarge"
     storage: 1000
     storage_type: gp3
     multi_az: true
@@ -598,7 +578,7 @@ rds_instances:
       track_io_timing: 1
 
   - identifier: "pgauditcare1-production"
-    instance_type: "db.m5.xlarge"
+    instance_type: "db.m6g.xlarge"
     storage: 7000
     storage_type: gp3
     multi_az: true
@@ -684,3 +664,13 @@ efs_file_systems:
     create_record: yes
     domain_name: "production.commcare.local"
     route_names: "shared-efs"
+
+terraform_imports:
+  - to: module.logshipping.aws_cloudwatch_event_rule.config-changes
+    id: default/ConfigChanges
+  - to: module.logshipping.aws_cloudwatch_event_target.config-changes
+    id: default/ConfigChanges/Id27473066087598
+  - to: module.logshipping.aws_cloudwatch_log_group.config-changes
+    id: /aws/events/config-changes
+  - to: aws_guardduty_detector.detector
+    id: 9eb3966fab99cbe22172e608d5fda108

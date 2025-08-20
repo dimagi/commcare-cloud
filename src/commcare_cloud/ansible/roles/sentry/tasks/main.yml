@@ -1,7 +1,7 @@
 ---
-- include: sentry.yml
+- include_tasks: sentry.yml
   tags: sentry
-- include: clickhouse.yml
+- include_tasks: clickhouse.yml
   tags: clickhouse
-- include: snuba.yml
+- include_tasks: snuba.yml
   tags: snuba

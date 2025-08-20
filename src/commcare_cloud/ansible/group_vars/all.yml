@@ -6,8 +6,6 @@ log_home: "{{ www_home }}/log"
 metrics_home: "{{ www_home }}/metrics"
 legacy_service_home: "{{ code_home }}/services"
 service_home: "{{ www_home }}/services"
-python_version: '3.9'
-use_deadsnakes: yes
 virtualenv_home: "{{ code_home }}/python_env"
 nginx_static_home: "{{ code_home }}/staticfiles"
 encrypted_root: "/opt/data"
@@ -58,7 +56,6 @@ couchdb_dir: "{{ '/usr/local/couchdb2/couchdb' if ansible_distribution_version =
 
 is_redis_cluster: '{{ "redis_cluster_master" in groups and groups["redis_cluster_master"]|length > 1 }}'
 redis_bind: 0.0.0.0
-run_websockets_wsgi: False
 
 # commcare-hq connects to an S3-compatible service
 s3_blob_db_enabled: False
@@ -107,14 +104,13 @@ server_email: commcarehq-noreply@example.com
 server_admin_email: commcarehq-ops+admins@example.com
 default_from_email: commcarehq-noreply@example.com
 support_email: support@example.com
-probono_support_email: pro-bono@example.com
 accounts_email: accounts@example.com
 data_email: datatree@example.com
 subscription_change_email: accounts+subchange@example.com
 internal_subscription_change_email: accounts+subchange+internal@example.com
 billing_email: sales@example.com
 invoicing_contact_email: accounts@example.com
-growth_email: growth@example.com
+growth_email: saas-revenue-team@example.com
 saas_ops_email: saas-ops@example.com
 saas_reporting_email: null
 master_list_email: master-list@example.com
@@ -128,6 +124,7 @@ daily_deploy_email: null
 check_s3_backups_email: null
 return_path_email: null
 new_domain_email: inquiries@example.com
+solutions_aes_email: null
 show_maintenance_updates_on_deploy: true
 
 ALTERNATE_HOSTS: []
@@ -168,7 +165,8 @@ celery_hours_before_soft_kill: ~
 ansible_become_password: "{{ ansible_sudo_pass }}"
 
 # Java version for Formplayer
-java_17_bin_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64/bin
+java_17_home_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64
+java_17_bin_path: '{{ java_17_home_path }}/bin'
 
 #  To find this complete list, you can run:
 #  $ find . -type f | grep templates/supervisor_
@@ -177,7 +175,6 @@ java_17_bin_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64/bin
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_prometheus.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_pillowtop.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_workers.conf.j2
-#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_websockets.conf
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_formplayer_spring.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_management_commands.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_flower.conf.j2
@@ -216,10 +213,6 @@ supervisor_service_files:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
     template: ../templates/supervisor_pillowtop.conf.j2
     should_exist: "{{ inventory_hostname in groups['pillowtop'] }}"
-  websockets:
-    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_websockets.conf"
-    template: ../templates/supervisor_websockets.conf
-    should_exist: "{{ inventory_hostname in groups['proxy'] and run_websockets_wsgi }}"
   prometheus:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_prometheus.conf"
     template: ../templates/supervisor_prometheus.conf.j2

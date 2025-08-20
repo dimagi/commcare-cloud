@@ -26,5 +26,16 @@
   loop:
     - collectstatic --noinput -v 0
     - fix_less_imports_collectstatic
-    - compilejsi18n
-    - build_requirejs
+
+- name: Generate Webpack Settings
+  # Generates webpack/settings.json so that webpack has the same path
+  # to STATIC_ROOT as django
+  command:
+    cmd: ./manage.py generate_webpack_settings
+    chdir: '{{ code_source }}'
+
+- name: Build Webpack Bundles
+  # Builds all the webpack bundles
+  command:
+    cmd: yarn build
+    chdir: '{{ code_source }}'

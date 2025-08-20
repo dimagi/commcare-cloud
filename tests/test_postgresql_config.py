@@ -1,5 +1,3 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 import difflib
 import os
 from io import open
@@ -35,16 +33,22 @@ def test_postgresql_config(env_name):
 
     actual_json = env.postgresql_config.to_generated_variables(env)['postgresql_dbs']
 
-    assert_equal(actual_json, expected_json, msg=(
-        '\n\n' +
-        '\n'.join(difflib.unified_diff(
-            list(yaml.dump(actual_json, Dumper=PreserveUnsafeDumper).splitlines()),
-            list(yaml.dump(expected_json, Dumper=PreserveUnsafeDumper).splitlines()),
-            'Actual',
-            'Expected',
-            lineterm=''
-        ))
-    ))
+    assert_equal(
+        actual_json,
+        expected_json,
+        msg=(
+            "\n\n"
+            + "\n".join(
+                difflib.unified_diff(
+                    list(yaml.dump(actual_json, Dumper=PreserveUnsafeDumper).splitlines()),
+                    list(yaml.dump(expected_json, Dumper=PreserveUnsafeDumper).splitlines()),
+                    "Actual",
+                    "Expected",
+                    lineterm="",
+                )
+            )
+        ),
+    )
 
 
 def update_configs():

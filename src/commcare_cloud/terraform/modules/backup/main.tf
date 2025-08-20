@@ -88,6 +88,8 @@ resource "aws_backup_plan" "business_continuity_plan" {
 
       lifecycle {
         delete_after = max(var.quarterly_retention, var.monthly_retention)
+        cold_storage_after = var.cold_storage_after
+        opt_in_to_archive_for_supported_resources = true
       }
     }
 

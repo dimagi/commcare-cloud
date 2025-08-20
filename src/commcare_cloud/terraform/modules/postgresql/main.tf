@@ -28,6 +28,8 @@ module "postgresql" {
   allocated_storage = var.rds_instance["storage"]
   max_allocated_storage = var.rds_instance["max_storage"]
   storage_type = var.rds_instance["storage_type"]
+  iops = var.rds_instance["iops"]
+  storage_throughput = var.rds_instance["storage_throughput"]
 
   apply_immediately     = var.apply_immediately
   auto_minor_version_upgrade = false
@@ -36,7 +38,7 @@ module "postgresql" {
   password = var.rds_instance["password"]
   port     = var.rds_instance["port"]
 
-  deletion_protection = true
+  deletion_protection = var.environment == "bk-production" ? false : true
 
   multi_az = var.rds_instance["multi_az"]
 
@@ -59,6 +61,7 @@ module "postgresql" {
   # DB option group
   major_engine_version = local.major_engine_version == "" ? local.computed_major_engine_version : var.major_engine_version
   monitoring_interval = var.rds_instance["monitoring_interval"]
+  monitoring_role_arn = var.rds_instance["monitoring_interval"] > 0 ? var.rds_monitoring_role_arn : null
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
   performance_insights_enabled = true
   performance_insights_retention_period = 7

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 import os
 import re
 import shlex
@@ -117,13 +115,6 @@ class Environment(object):
     def _read_yaml(self, path):
         with open(path, encoding='utf-8') as f:
             return from_yaml(f)
-
-    @property
-    def python_version(self):
-        value = self.public_vars.get('python_version')
-        if value is None:
-            value = self.group_vars['python_version']
-        return value
 
     @memoized_property
     def _disallowed_public_variables(self):

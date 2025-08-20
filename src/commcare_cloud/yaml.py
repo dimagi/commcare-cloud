@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 from ansible.parsing.yaml.dumper import AnsibleDumper
 from ansible.utils.unsafe_proxy import AnsibleUnsafeText
 

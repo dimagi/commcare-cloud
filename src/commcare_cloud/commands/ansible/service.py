@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
 import re
 from abc import ABCMeta, abstractmethod, abstractproperty
 from collections import defaultdict, OrderedDict
@@ -8,10 +5,9 @@ from itertools import groupby
 import sys
 
 import attr
-import six
 from clint.textui import puts, indent
 
-from commcare_cloud.colors import color_error, color_warning, color_code, color_notice
+from commcare_cloud.colors import color_error
 from commcare_cloud.commands.ansible.helpers import (
     AnsibleContext, get_django_webworker_name,
     get_formplayer_spring_instance_name,
@@ -43,7 +39,7 @@ class ServiceOption(object):
     sub_options = attr.ib(default=None)
 
 
-class ServiceBase(six.with_metaclass(ABCMeta)):
+class ServiceBase(metaclass=ABCMeta):
     """Base class for all services."""
 
     @abstractproperty
@@ -131,7 +127,7 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
         )
 
 
-class SubServicesMixin(six.with_metaclass(ABCMeta)):
+class SubServicesMixin(metaclass=ABCMeta):
     @abstractproperty
     def managed_services(self):
         """

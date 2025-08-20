@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 import jsonobject
 
 
@@ -9,5 +8,3 @@ class PrometheusConfig(jsonobject.JsonObject):
     def to_generated_variables(self):
         variables = self.to_json()
         return variables
-    
-   

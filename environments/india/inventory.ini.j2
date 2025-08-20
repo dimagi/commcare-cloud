@@ -1,33 +1,33 @@
 {{ __control2__ }}
 {{ __djangomanage3__ }}
-{{ __web4__ }}
-{{ __web5__ }}
-{{ __celery7__ }} swap_size=4G
-{{ __celery8__ }} swap_size=4G
-{{ __celery9__ }} swap_size=4G
+{{ __web6__ }}
+{{ __web7__ }}
+{{ __celerybeat_a2__ }} swap_size=4G
+{{ __celery14__ }} swap_size=4G
+{{ __celery15__ }} swap_size=4G
 {{ __couch10__ }} swap_size=8G
 {{ __couch11__ }} swap_size=8G
 {{ __couch12__ }} swap_size=8G
-{{ __esmaster5__ }} elasticsearch_node_name=esmaster5 elasticsearch_node_zone=ap-south-1a
-{{ __esmaster6__ }} elasticsearch_node_name=esmaster6 elasticsearch_node_zone=ap-south-1b
-{{ __esmaster7__ }} elasticsearch_node_name=esmaster7 elasticsearch_node_zone=ap-south-1c
-{{ __es4__ }} elasticsearch_node_name=es4 elasticsearch_node_zone=ap-south-1a
+{{ __esmaster8__ }} elasticsearch_node_name=esmaster8 elasticsearch_node_zone=ap-south-1a
+{{ __esmaster9__ }} elasticsearch_node_name=esmaster9 elasticsearch_node_zone=ap-south-1b
+{{ __esmaster10__ }} elasticsearch_node_name=esmaster10 elasticsearch_node_zone=ap-south-1c
 {{ __es5__ }} elasticsearch_node_name=es5 elasticsearch_node_zone=ap-south-1b
+{{ __es6__ }} elasticsearch_node_name=es6 elasticsearch_node_zone=ap-south-1a
 {{ __escoordinator7__ }} elasticsearch_node_name=escoordinator7 elasticsearch_node_zone=ap-south-1a
 {{ __escoordinator8__ }} elasticsearch_node_name=escoordinator8 elasticsearch_node_zone=ap-south-1b
 
 [es_master:children]
-esmaster5
-esmaster6
-esmaster7
+esmaster8
+esmaster9
+esmaster10
 
 [es_master:vars]
 elasticsearch_master=true
 elasticsearch_data=false
 
 [es_data:children]
-es4
 es5
+es6
 
 [elasticsearch:children]
 es_master
@@ -42,8 +42,8 @@ escoordinator8
 elasticsearch_master=false
 elasticsearch_data=false
 
-{{ __formplayer2__ }}
-{{ __pillow4__ }}
+{{ __formplayer3__ }}
+{{ __pillow5__ }}
 {{ __kafka_a2__ }} kafka_broker_id=8 zookeeper_server_id=8
 {{ __kafka_b2__ }} kafka_broker_id=9 zookeeper_server_id=9
 {{ __kafka_b3__ }} kafka_broker_id=10 zookeeper_server_id=10
@@ -51,7 +51,7 @@ elasticsearch_data=false
 {{ __rabbit_c7__ }}
 {{ __pgbouncer5__ }} pgbouncer_processes=2
 {{ __pgbouncer6__ }} pgbouncer_processes=2
-{{ __pgbouncer7__ }}
+{{ __pgbouncer8__ }}
 {{ __proxy_a1__ }}
 {{ __proxy_b1__ }}
 {{ __rds_pgmain0__ }}
@@ -75,12 +75,12 @@ proxy_a1
 proxy_b1
 
 [webworkers:children]
-web4
-web5
+web6
+web7
 
 [postgresql:children]
 remote_postgresql
-pgbouncer7
+pgbouncer8
 
 [pgbouncer:children]
 pgbouncer5
@@ -106,19 +106,19 @@ kafka_b2
 kafka_b3
 
 [celery:children]
-celery7
-celery8
-celery9
+celerybeat_a2
+celery14
+celery15
 
 [pillowtop:children]
-pillow4
+pillow5
 
 [formplayer:children]
-formplayer2
+formplayer3
 
 [elasticsearch:children]
-es4
 es5
+es6
 
 [shared_efs_client_host:children]
 celery

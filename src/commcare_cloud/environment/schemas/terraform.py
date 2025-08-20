@@ -1,11 +1,7 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import json
 import re
 
 import jsonobject
-from six.moves import range
 
 
 class TerraformConfig(jsonobject.JsonObject):
@@ -21,9 +17,6 @@ class TerraformConfig(jsonobject.JsonObject):
     state_bucket_region = jsonobject.StringProperty()
     region = jsonobject.StringProperty()
     environment = jsonobject.StringProperty()
-    openvpn_image = jsonobject.StringProperty()
-    openvpn_instance_type = jsonobject.StringProperty()
-    openvpn_az = jsonobject.StringProperty()
     azs = jsonobject.ListProperty(str)
     az_codes = jsonobject.ListProperty(str, default=['a', 'b', 'c'])
     ssl_policy = jsonobject.StringProperty(default="ELBSecurityPolicy-2016-08")
@@ -42,7 +35,7 @@ class TerraformConfig(jsonobject.JsonObject):
     efs_file_systems = jsonobject.ListProperty(lambda: EfsFileSystem, default=None)
     ec2_auto_recovery = jsonobject.ListProperty(lambda: Ec2AutoRecovery, default=None)
     fsx_file_systems = jsonobject.ListProperty(lambda: FsxFileSystem, default=None)
-    awsmq = jsonobject.ObjectProperty(lambda: awsmqConfig, default=None)
+    terraform_imports = jsonobject.ListProperty(lambda: TerraformImportsConfig, default=list)
 
     @classmethod
     def wrap(cls, data):
@@ -104,6 +97,7 @@ class BackupPlan(jsonobject.JsonObject):
     weekly_retention = jsonobject.IntegerProperty()
     monthly_retention = jsonobject.IntegerProperty()
     quarterly_retention = jsonobject.IntegerProperty()
+    cold_storage_after = jsonobject.IntegerProperty()
 
 
 class ServerConfig(jsonobject.JsonObject):
@@ -178,6 +172,8 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     storage = jsonobject.IntegerProperty(required=True)
     max_storage = jsonobject.IntegerProperty(default=0)
     storage_type = jsonobject.StringProperty(default='gp2', choices=['gp2', 'gp3', 'io1', 'standard'])
+    iops = jsonobject.IntegerProperty(default=None)
+    storage_throughput = jsonobject.IntegerProperty(default=None)
     create = jsonobject.BooleanProperty(default=True)
     username = "root"
     backup_window = jsonobject.StringProperty(default="06:27-06:57")
@@ -269,22 +265,6 @@ class ElasticacheClusterConfig(jsonobject.JsonObject):
     snapshot_window = jsonobject.StringProperty(default="07:30-08:30")
 
 
-class awsmqConfig(jsonobject.JsonObject):
-    _allow_dynamic_properties = False
-    create = jsonobject.BooleanProperty(default=True)
-    broker_name = jsonobject.StringProperty(default="mq-broker")
-    apply_immediately = jsonobject.BooleanProperty(default=True)
-    auto_minor_version_upgrade = jsonobject.BooleanProperty(default=False)
-    deployment_mode = jsonobject.StringProperty(default="CLUSTER_MULTI_AZ")
-    engine_type = jsonobject.StringProperty(default="RabbitMQ")
-    engine_version = jsonobject.StringProperty(default="3.10.10")
-    host_instance_type = jsonobject.StringProperty(default="mq.m5.large")
-    publicly_accessible = jsonobject.BooleanProperty(default=False)
-    logs_general = jsonobject.BooleanProperty(default=True)
-    audit_log_enabled = jsonobject.BooleanProperty(default=False)
-    encryption_enabled = jsonobject.BooleanProperty(default=False)
-
-
 class RoutePrivateZoneConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     create = jsonobject.BooleanProperty(default=True)
@@ -318,3 +298,9 @@ class FsxFileSystem(jsonobject.JsonObject):
     fsx_name = jsonobject.StringProperty(required=True)
     storage_capacity = jsonobject.IntegerProperty(required=True)
     throughput_capacity = jsonobject.IntegerProperty(required=True)
+
+
+class TerraformImportsConfig(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    to = jsonobject.StringProperty(required=True)
+    id = jsonobject.StringProperty(required=True)

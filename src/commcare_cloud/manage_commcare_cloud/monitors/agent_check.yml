@@ -73,6 +73,6 @@ options:
   thresholds: {critical: 1, ok: 1, warning: 1}
   timeout_h: 0
   include_tags: true
-query: '"datadog.agent.up".over("*").exclude("environment:64-test","group:pgsynclog","environment:enikshay","host:citus0.india.commcarehq.org","host:citus1.india.commcarehq.org","host:citus2.india.commcarehq.org").by("host").last(2).count_by_status()'
+query: '"datadog.agent.up".over("*").exclude("group:pgsynclog","environment:enikshay","host:citus0.india.commcarehq.org","host:citus1.india.commcarehq.org","host:citus2.india.commcarehq.org").by("host").last(2).count_by_status()'
 tags: [opsgenie]
 type: service check

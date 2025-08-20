@@ -1,6 +1,6 @@
 settings:
   case_search:
-    number_of_shards: 96
+    number_of_shards: 192
   xforms:
     number_of_shards: 64
   hqdomains:

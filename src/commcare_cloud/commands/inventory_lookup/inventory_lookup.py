@@ -1,13 +1,9 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
-
 import os
+import shlex
 import socket
 import subprocess
 import sys
 from inspect import isfunction
-from shlex import quote as shlex_quote
 
 from clint.textui import puts
 
@@ -84,7 +80,7 @@ class _Ssh(Lookup):
         if port:
             ssh_args = ['-p', port] + ssh_args
         cmd_parts = self.assemble_command(address, args, ssh_args)
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         if not args.quiet:
             print_command(cmd)
         try:
@@ -271,7 +267,7 @@ class Tmux(_Ssh):
         window_name_expression = '"`whoami` (`date +%Y-%m-%d`)"'
         if args.remote_command:
             # add bash as second command to keep tmux open after command exits
-            remote_command = shlex_quote('{} ; bash'.format(args.remote_command))
+            remote_command = shlex.quote('{} ; bash'.format(args.remote_command))
             ssh_args = [
                 r'tmux attach \; new-window -n {window_name} {remote_command} '
                 r'|| tmux new -n {window_name} {remote_command}'
@@ -305,7 +301,7 @@ class DjangoManage(CommandBase):
     ```
     commcare-cloud <env> django-manage --tmux --release 2018-04-13_18.16 shell
     ```
-    
+
     To do this on a specific server
 
     ```
@@ -354,13 +350,13 @@ class DjangoManage(CommandBase):
         def _get_ssh_args(remote_command):
             return ['sudo -iu {cchq_user} bash -c {remote_command}'.format(
                 cchq_user=environment.remote_conf.cchq_user,
-                remote_command=shlex_quote(remote_command),
+                remote_command=shlex.quote(remote_command),
             )]
 
         if args.tee_file:
             rc = Ssh(self.parser).run(args, _get_ssh_args(
                 'cd {code_dir}; [[ -f {tee_file} ]]'
-                .format(code_dir=code_dir, tee_file=shlex_quote(args.tee_file))
+                .format(code_dir=code_dir, tee_file=shlex.quote(args.tee_file))
             ))
             if rc in (0, 1):
                 file_already_exists = (rc == 0)
@@ -371,15 +367,12 @@ class DjangoManage(CommandBase):
                 puts(color_error("Refusing to --tee to a file that already exists ({})".format(args.tee_file)))
                 return 1
 
-            tee_file_cmd = ' | tee {}'.format(shlex_quote(args.tee_file))
+            tee_file_cmd = ' | tee {}'.format(shlex.quote(args.tee_file))
         else:
             tee_file_cmd = ''
 
-        # TODO remove when machines are no longer running Python 3.6
-        python_env = "python_env-3.6" if environment.python_version == "3.6" else "python_env"
-
-        sh_args = ' '.join(shlex_quote(arg) for arg in manage_args)
-        command = f'cd {code_dir}; {python_env}/bin/python manage.py {sh_args}{tee_file_cmd}'
+        sh_args = ' '.join(shlex.quote(arg) for arg in manage_args)
+        command = f'cd {code_dir}; python_env/bin/python manage.py {sh_args}{tee_file_cmd}'
         if args.tmux:
             args.remote_command = command
             return Tmux(self.parser).run(args, [])
@@ -394,9 +387,10 @@ class ForwardPort(CommandBase):
     Port forward to access a remote admin console
     """
     _SERVICES = {
-        'flower': (lambda env: ForwardPort.get_flower_machine(env), 5555, '/'),
         'couch': ('couchdb2_proxy[0]', 25984, '/_utils/'),
         'elasticsearch': ('elasticsearch[0]', 9200, '/'),
+        'flower': (lambda env: ForwardPort.get_flower_machine(env), 5555, '/'),
+        'rabbit': ('rabbitmq[0]', 15672, '/'),
     }
 
     arguments = (
@@ -416,7 +410,8 @@ class ForwardPort(CommandBase):
         local_port = self.get_random_available_port()
 
         while not self.is_loopback_address_set_up(loopback_address):
-            puts(color_error('To make this work you will need to run set up a special loopback address on your local machine:'))
+            puts(color_error('To make this work you will need to run set up a '
+                             'special loopback address on your local machine:'))
             puts(color_notice(f'  - Mac: Run `sudo ifconfig lo0 alias {loopback_address}`.'))
             puts(color_notice(f'  - Linux: Run `sudo ip addr add {loopback_address}/8 dev lo`.'))
             if not ask("Follow the instructions above or type n to exit. Ready to continue?"):
@@ -425,16 +420,19 @@ class ForwardPort(CommandBase):
 
         while not self.is_etc_hosts_alias_set_up(loopback_address, nice_name):
             puts(color_error('Okay, now the last step is to set up a special alias in your /etc/hosts:'))
-            puts(color_notice(f'  - Edit /etc/hosts (e.g. `sudo vim /etc/hosts`) and add the line `{loopback_address} {nice_name}` to it.'))
+            puts(color_notice('  - Edit /etc/hosts (e.g. `sudo vim /etc/hosts`) and add '
+                              f'the line `{loopback_address} {nice_name}` to it.'))
             if not ask("Follow the instructions above or type n to exit. Ready to continue?"):
                 return -1
             puts()
 
-        puts(color_notice(f'You should now be able to reach {args.env_name} {args.service} at {color_link(f"http://{nice_name}:{local_port}{url_path}")}.'))
-        puts(f'Interrupt with ^C to stop port-forwarding and exit.')
+        puts(color_notice(f'You should now be able to reach {args.env_name} {args.service} '
+                          f'at {color_link(f"http://{nice_name}:{local_port}{url_path}")}.'))
+        puts('Interrupt with ^C to stop port-forwarding and exit.')
         puts()
         try:
-            return commcare_cloud(args.env_name, 'ssh', 'control', '-NL', f'{loopback_address}:{local_port}:{remote_host}:{remote_port}')
+            return commcare_cloud(args.env_name, 'ssh', 'control', '-NL',
+                                  f'{loopback_address}:{local_port}:{remote_host}:{remote_port}')
         except KeyboardInterrupt:
             puts()
             puts('Connection closed.')
@@ -445,7 +443,7 @@ class ForwardPort(CommandBase):
     def is_loopback_address_set_up(loopback_address):
         try:
             # Use either ifconfig or ip, whichever is available
-            subprocess.check_output(f'ping -c 1 -W 1 {shlex_quote(loopback_address)}', shell=True)
+            subprocess.check_output(f'ping -c 1 -W 1 {shlex.quote(loopback_address)}', shell=True)
         except subprocess.CalledProcessError:
             return False
         else:

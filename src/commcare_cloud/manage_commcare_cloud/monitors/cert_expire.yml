@@ -17,6 +17,6 @@ options:
   silenced: {}
   thresholds: {critical: 5, ok: 1, warning: 1}
   timeout_h: 0
-query: '"http.ssl_cert".over("*").exclude("environment:64-test","host:hqproxy0").by("host","instance","url").last(6).count_by_status()'
+query: '"http.ssl_cert".over("*").by("host","instance","url").last(6).count_by_status()'
 tags: [opsgenie]
 type: service check

@@ -15,15 +15,6 @@ pgbouncer_override:
   pgbouncer_pool_timeout: 1
   pgbouncer_reserve_pool: 5
 
-pg_repack:
-  pgbouncer_a6:
-    - database: commcarehq_synclogs
-      host: "{{ DEFAULT_POSTGRESQL_HOST }}"
-      username: "{{ postgres_users.root.username }}"
-      password: "{{ postgres_users.root.password }}"
-      port: 5432
-      skip_superuser_check: True
-
 # We're temporarily disabling read replicas
 # and will revisit after migration to RDS
 #LOAD_BALANCED_APPS:
@@ -41,7 +32,7 @@ dbs:
   main:
     host: rds_pgmain1
     pgbouncer_endpoint: pgmain_nlb
-    pgbouncer_pool_size: 36
+    pgbouncer_pool_size: 43
     pgbouncer_reserve_pool_size: 0
     pgbouncer_hosts:
       - pgbouncer_a4
@@ -64,7 +55,7 @@ dbs:
   ucr:
     host: rds_pgucr0
     pgbouncer_endpoint: pgucr_nlb
-    pgbouncer_pool_size: 10
+    pgbouncer_pool_size: 20
     pgbouncer_reserve_pool_size: 2
     pgbouncer_hosts:
       - pgbouncer_a4
@@ -99,7 +90,7 @@ dbs:
   repeaters:
     host: rds_pgmain1
     pgbouncer_endpoint: pgmain_nlb
-    pgbouncer_pool_size: 6
+    pgbouncer_pool_size: 12
     pgbouncer_reserve_pool_size: 0
     pgbouncer_hosts:
       - pgbouncer_a4
