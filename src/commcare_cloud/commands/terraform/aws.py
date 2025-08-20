@@ -91,17 +91,6 @@ def get_aws_resources(environment):
         '--output', 'json', '--region', config.region,
     ])
 
-    awsmq_info = [{
-        'brokerid': brokerid,
-        'brokername': brokername,
-        'endpoint': '{brokerid}.mq.{config.region}.amazonaws.com:5671'.format(brokerid=brokerid, config=config)
-    } for brokername, brokerid in aws_cli(environment, [
-        'aws', 'mq', 'list-brokers',
-        '--query', 'BrokerSummaries[*].[BrokerName,BrokerId]',
-        "--output", "json",
-        "--region", config.region,
-    ])]
-
     nlb_endpoints = aws_cli(environment, [
         'aws', 'elbv2', 'describe-load-balancers',
         '--query', "LoadBalancers[?Type=='network'].[LoadBalancerName,DNSName]",
@@ -159,9 +148,6 @@ def get_aws_resources(environment):
 
     for info in fsx_info:
         resources['{name}-fsx'.format(**info)] = info['fsx_dns']
-
-    for info in awsmq_info:
-        resources[info['brokername']] = info['endpoint']
 
     return resources
 

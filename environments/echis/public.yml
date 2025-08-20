@@ -17,7 +17,6 @@ zookeeper_cluster: True
 
 rabbitmq_version: 3.10.7-1
 erlang: 1:25.0.4-1
-amqp: True
 AMQP_HOST: 172.19.3.34
 #OLD_AMQP_HOST: 172.19.4.33
 
