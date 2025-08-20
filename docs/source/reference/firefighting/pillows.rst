@@ -27,34 +27,31 @@ Glossary
 Firefighting
 ------------
 
-Symptoms of pillows being down:
+The majority of pillow issues manifest as pillow lag, which means that the pillow is not
+up to date. The primary symptom is that data is not appearing or out of date in reports,
+exports, UCRs, or elasticsearch.
 
-
-* Data not appearing in reports, exports, or elasticsearch
-* UCR or report builder reports behind
-* `Datadog monitor <https://app.datadoghq.com/monitors#4013126?group=all&live=1d>`_
-
-Resources:
-
-
-* `graph of change feed activity <https://app.datadoghq.com/dash/256236/change-feeds?live=true&page=0&is_auto=false&from_ts=1518372763225&to_ts=1518459163225&tile_size=m&fullscreen=185100827>`_
-* `Pillows documentation <https://commcare-hq.readthedocs.io/pillows.html>`_
-* `Pillows overview and introduction <https://docs.google.com/presentation/d/1xgEZBer-FMUkeWutrTRcRbqKzVToK6mZvl0x2628BGY/edit#slide=id.p>`_
+For an overview of pillows, see `Pillows documentation <https://commcare-hq.readthedocs.io/pillows.html>`_
 
 Confirm pillow lag
 ~~~~~~~~~~~~~~~~~~
 
-Go to change feed dashboard and filter to impacted pillow
+1. Look at the metrics
 
-Confirm that all partitions for the selected pillow are impacted.
-If only a few partitions are experiencing lag, it is likely that
-one process for that pillow is backed up. In this case, we wait
-for the issue to resolve itself. If all partitions appear to be experiencing
-lag, move to diagnostic steps.
+   Go to `change feed dashboard <https://app.datadoghq.com/dashboard/ewu-jyr-udt/change-feeds-pillows?fromUser=false&refresh_mode=sliding&from_ts=1755710820633&to_ts=1755714420633&live=true>`_
+   and filter to impacted pillow.
+   Look at the `pilllow lag graph <https://app.datadoghq.com/dashboard/ewu-jyr-udt/change-feeds-pillows?fromUser=false&fullscreen_end_ts=1755714546214&fullscreen_paused=false&fullscreen_refresh_mode=sliding&fullscreen_section=overview&fullscreen_start_ts=1755710946214&fullscreen_widget=210889790&refresh_mode=paused&tpl_var_pillow%5B0%5D=case-pillow&from_ts=1751388427080&to_ts=1751396936000>`_.
 
-If you are unable to confirm pillow lag, but there are confirmed symptoms of
-pillow lag, check for newly created pillow errors (see section under
-diagnostic steps).
+2. Confirm that all partitions for the selected pillow are impacted. 
+   
+   If only a few partitions are experiencing lag, it is likely that
+   one process for that pillow is backed up. In this case, we wait
+   for the issue to resolve itself.
+
+   If all partitions appear to be experiencing lag, move to diagnostic steps.
+
+3. If you are unable to confirm pillow lag, but there are confirmed symptoms of
+   pillow lag, check for newly created pillow errors (see `Check pillow errors`_).
 
 Diagnose the cause
 ~~~~~~~~~~~~~~~~~~
