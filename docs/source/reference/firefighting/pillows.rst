@@ -59,15 +59,15 @@ Diagnose the cause
 Check status of pillow processes
 ********************************
 
-Run `cchq --control production service pillowtop status`
+1. Run `cchq --control <env> service pillowtop status`
 
-Make sure all processes for that pillow have a status of “RUNNING”
 
-If any process is not running, do cchq --control <env> service pillowtop start –only=<pillow_name>
+2. Make sure all processes for that pillow have a status of “RUNNING”
 
-Run pillowtop status again to confirm pillow is now running. If it is not, check pillow logs for errors during startup. See “How to check logs”
 
-Follow the instruction in readthedocs to check if the pillow is running. If it is not, check pillow logs for errors during startup. See https://dimagi.atlassian.net/wiki/spaces/saas/pages/edit-v2/3230597233#How-to-check-logs%3F 
+3. If any process is not running, do `cchq --control <env> service pillowtop start –only=<pillow_name>`
+
+   Run pillowtop status again to confirm pillow is now running. If it is not, check pillow logs for errors during startup. (See `Check pillow logs`_).
 
 Check load on impacted pillow
 *****************************
@@ -102,17 +102,16 @@ Sentry by filtering by the pillow_name, eg. “pillow_name: case-pillow“
 
 You should look for pillow errors that have been created recently. This could be an indication of a recent code change that is causing errors when processing changes in pillows. You can use the stacktrace available in each pillow error to diagnose and resolve the bug.
 
-How to check logs?
+Check pillow logs
+*****************
 
-TODO: move to read the docs
+1. Before viewing logs, you need to determine which pillowtop machine contains the logs you are interested in.
 
-Before viewing logs, you need to determine which pillowtop machine contains the logs you are interested in.
+   You can find out which machine(s) a pillow process runs on by viewing the `<env>/app_processes.yml`
 
-You can find out which machine(s) a pillow process runs on by viewing the <env>/app_processes.yml
+2. You can view logs in cloudwatch or directly on the machine
 
-You can view logs in cloudwatch or directly on the machine
-
-To see where logs live on the machine, run: cchq <env> service pillowtop logs
+   To see where logs live on the machine, run: `cchq <env> service pillowtop logs`
 
 
 
