@@ -234,6 +234,32 @@ module "elasticache-module-base" {
 }
 {% endif %}
 
+{% if elasticache_celery_broker %}
+module "elasticache-celery-broker" {
+  source                = "./modules/elasticache-cluster"
+  create               = "{{ elasticache_celery_broker.create|tojson }}"
+  namespace             = "${var.environment}-elasticache-celery-broker"
+  cluster_id            = "${var.environment}-elasticache-celery-broker"
+  subnet_ids_cache      = values(module.network.subnets-app-private)
+  securitygroup_id      = compact([module.network.db-private-sg, module.network.ssh-sg, module.network.vpn-connections-sg])
+  cache_engine          = {{ elasticache_celery_broker.cache_engine|tojson }}
+  cache_engine_version  = {{ elasticache_celery_broker.cache_engine_version|tojson }}
+  cache_node_type       = {{ elasticache_celery_broker.cache_node_type|tojson }}
+  params                = {{ elasticache_celery_broker.params|tojson }}
+  automatic_failover    = {{ elasticache_celery_broker.automatic_failover|tojson }}
+  transit_encryption    = {{ elasticache_celery_broker.transit_encryption|tojson }}
+  at_rest_encryption    = {{ elasticache_celery_broker.at_rest_encryption|tojson }}
+  multi_az              = {{ elasticache_celery_broker.multi_az|tojson }}
+  auto_minor_version    = {{ elasticache_celery_broker.auto_minor_version|tojson }}
+  maintenance_window    = {{ elasticache_celery_broker.maintenance_window|tojson }}
+  snapshot_retention    = {{ elasticache_celery_broker.snapshot_retention|tojson }}
+  snapshot_window       = {{ elasticache_celery_broker.snapshot_window|tojson }}
+  port_number           = 6379
+  cluster_size          = {{ elasticache_celery_broker.cluster_size|tojson }}
+  description           = "${var.environment}-elasticache-celery-broker"
+}
+{% endif %}
+
 {% if r53_private_zone %}
 module "r53-private-zone-create" {
   source      = "./modules/r53-private-zone-create-update"
