@@ -31,7 +31,7 @@ servers:
     volume_size: 20
     volume_encrypted: yes
     block_device:
-      volume_size: 20
+      volume_size: 1000
       encrypted: yes
     group: "couchdb2"
     os: jammy
@@ -44,8 +44,3 @@ internal_albs:
     targets:
       - couch_a0-bk-production
 
-r53_private_zone:
-  create: yes
-  domain_name:  "bk-production.commcare.local"
-  create_record: yes
-  route_names:  "redis"
