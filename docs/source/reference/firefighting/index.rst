@@ -8,3 +8,4 @@ This section has information on how to debug issues that might occur in your Com
 
    /reference/firefighting/general
    /reference/firefighting/celery
+   /reference/firefighting/pillows
