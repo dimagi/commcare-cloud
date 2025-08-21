@@ -93,9 +93,11 @@ kafka16
 kafka17
 
 {{ __celery_a1__ }}
+{{ __celery_a2__ }}
 
 [celery:children]
 celery_a1
+celery_a2
 
 [celery:vars]
 swap_size=2G
