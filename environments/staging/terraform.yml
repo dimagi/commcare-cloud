@@ -406,6 +406,23 @@ elasticache_cluster:
   snapshot_retention: 7
   snapshot_window: "07:30-08:30"
 
+elasticache_celery_broker:
+  create: yes
+  cache_engine: "redis"
+  cache_engine_version: "7.0"
+  cache_node_type: "cache.r6a.large"
+  params:
+    maxmemory-policy: "noeviction"
+  automatic_failover: true
+  transit_encryption: false
+  at_rest_encryption: true
+  auto_minor_version: false
+  cluster_size: 2
+  multi_az: true
+  maintenance_window: "sun:00:30-sun:01:30"
+  snapshot_retention: 7
+  snapshot_window: "10:30-11:30"
+
 r53_private_zone:
   create: yes
   domain_name:  "staging.commcare.local"
