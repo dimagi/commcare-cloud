@@ -240,7 +240,7 @@ module "elasticache-celery-broker" {
   create               = "{{ elasticache_celery_broker.create|tojson }}"
   namespace             = "${var.environment}-elasticache-celery-broker"
   cluster_id            = "${var.environment}-elasticache-celery-broker"
-  subnet_ids_cache      = values(module.network.subnets-db-private)
+  subnet_ids_cache      = values(module.network.subnets-app-private)
   securitygroup_id      = compact([module.network.db-private-sg, module.network.ssh-sg, module.network.vpn-connections-sg])
   cache_engine          = {{ elasticache_celery_broker.cache_engine|tojson }}
   cache_engine_version  = {{ elasticache_celery_broker.cache_engine_version|tojson }}
