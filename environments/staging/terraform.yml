@@ -410,7 +410,7 @@ elasticache_celery_broker:
   create: yes
   cache_engine: "redis"
   cache_engine_version: "7.0"
-  cache_node_type: "cache.r6a.large"
+  cache_node_type: "cache.r6g.large"
   params:
     maxmemory-policy: "noeviction"
   automatic_failover: true
