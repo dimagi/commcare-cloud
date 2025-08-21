@@ -420,8 +420,7 @@ elasticache_celery_broker:
   cluster_size: 2
   multi_az: true
   maintenance_window: "sun:00:30-sun:01:30"
-  snapshot_retention: 7
-  snapshot_window: "10:30-11:30"
+  snapshot_retention: 0
 
 r53_private_zone:
   create: yes
