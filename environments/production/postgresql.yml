@@ -4,6 +4,7 @@ postgres_override:
   allow_dump_from_pgstandby: yes
   postgresql_max_connections: 1000
   postgresql_version: '14'
+  postgresql_idle_in_transaction_session_timeout: '86400000'
   postgresql_checkpoint_completion_target: '0.7'
   postgresql_wal_buffers: 16MB
   postgresql_max_wal_size: 2GB
