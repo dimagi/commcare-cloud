@@ -36,6 +36,7 @@ class TerraformConfig(jsonobject.JsonObject):
     ec2_auto_recovery = jsonobject.ListProperty(lambda: Ec2AutoRecovery, default=None)
     fsx_file_systems = jsonobject.ListProperty(lambda: FsxFileSystem, default=None)
     terraform_imports = jsonobject.ListProperty(lambda: TerraformImportsConfig, default=list)
+    skip_ebs_snapshots = jsonobject.StringProperty(default="no")
 
     @classmethod
     def wrap(cls, data):

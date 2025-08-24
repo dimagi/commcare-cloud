@@ -69,6 +69,8 @@ data "aws_iam_role" "data_lifecycle_role" {
   name = "AWSDataLifecycleManagerDefaultRole"
 }
 
+{% if skip_ebs_snapshots != "yes" %}
+
 resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
   description        = "Data Volume Backup Policy"
   execution_role_arn = data.aws_iam_role.data_lifecycle_role.arn
@@ -99,6 +101,7 @@ resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
     }
   }
 }
+{% endif %}
 
 {% if backup_plan %}
 module "backup_plan" {
