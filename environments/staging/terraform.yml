@@ -397,6 +397,12 @@ elasticache_cluster:
   snapshot_retention: 7
   snapshot_window: "07:30-08:30"
 
+r53_private_zone:
+  create: yes
+  domain_name:  "staging.commcare.local"
+  create_record: yes
+  route_names:  "redis"
+
 elasticache_celery_broker:
   create: yes
   cache_engine: "redis"
@@ -417,7 +423,7 @@ r53_private_zone:
   create: yes
   domain_name:  "staging.commcare.local"
   create_record: yes
-  route_names:  "redis"
+  route_names:  "broker"
 
 efs_file_systems:
   - efs_name: "efs_staging"
