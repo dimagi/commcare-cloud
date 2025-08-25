@@ -66,6 +66,56 @@ celery_processes:
       concurrency: 1
     beat: {}
     flower: {}
+  celery_a2:
+    analytics_queue,sms_queue,sumologic_logs_queue:
+      pooling: gevent
+      concurrency: 2
+    email_queue:
+      pooling: gevent
+      concurrency: 2
+    async_restore_queue:
+      concurrency: 2
+    background_queue:
+      concurrency: 2
+    case_import_queue,user_import_queue,export_download_queue:
+      concurrency: 2
+      prefetch_multiplier: 1
+    case_rule_queue,saved_exports_queue,ucr_indicator_queue:
+      concurrency: 2
+      prefetch_multiplier: 1
+    celery:
+      concurrency: 2
+    celery_periodic:
+      concurrency: 2
+    linked_domain_queue,logistics_background_queue,logistics_reminder_queue:
+      concurrency: 1
+    malt_generation_queue:
+      pooling: gevent
+      concurrency: 1
+    reminder_case_update_queue,reminder_queue:
+      pooling: gevent
+      concurrency: 2
+    repeat_record_queue:
+      pooling: gevent
+      concurrency: 2
+      prefetch_multiplier: 1
+    repeat_record_datasource_queue:
+      pooling: gevent
+      concurrency: 2
+      prefetch_multiplier: 1
+    reminder_case_update_bulk_queue,reminder_rule_queue:
+      concurrency: 1
+    send_report_throttled:
+      concurrency: 1
+    submission_reprocessing_queue:
+      concurrency: 1
+    ucr_queue:
+      concurrency: 2
+      prefetch_multiplier: 1
+    ush_background_tasks:
+      concurrency: 2
+    geospatial_queue:
+      concurrency: 1
 pillows:
   'pillow5':
     AppDbChangeFeedPillow:
