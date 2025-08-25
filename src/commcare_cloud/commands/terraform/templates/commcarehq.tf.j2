@@ -404,7 +404,8 @@ module "efs_mount__{{ efs_file_system_mount.efs_name }}__{{ az }}" {
         domain_name = {{ efs_file_system_route53.domain_name|tojson }}
         route_names = {{ efs_file_system_route53.route_names|tojson }}
         records = module.efs_file_system__{{ efs_file_system_route53.efs_name }}.efs_endpoint_address
-      }
+        depends_on = [module.r53-private-zone-create]
+    }
 {% endfor %}
 
 {% endif %}
