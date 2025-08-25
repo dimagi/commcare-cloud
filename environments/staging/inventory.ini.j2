@@ -93,9 +93,11 @@ kafka16
 kafka17
 
 {{ __celery_a1__ }}
+{{ __celery_a2__ }}
 
 [celery:children]
 celery_a1
+celery_a2
 
 [celery:vars]
 swap_size=2G
@@ -170,9 +172,6 @@ webworkers
 [control:children]
 control3
 
-[awsmq]
-{{ aws_resources['staging-mq-broker'] }}
-
 [ansible_skip:children]
 rds_pg0
 rds_pgformplayer0
@@ -182,7 +181,6 @@ pgucr_nlb
 pgsynclogs_nlb
 pgshard_nlb
 couch_alb
-awsmq
 
 
 [django_manage:children]
