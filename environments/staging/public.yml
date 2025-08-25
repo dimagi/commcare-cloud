@@ -21,6 +21,11 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 erlang: 1:24.3.3-1
 rabbitmq_version: 3.10.13-1
 
+# Elasticache Broker Info
+ELASTICACHE_BROKER_DB: '0'
+ELASTICACHE_BROKER_HOST: "broker.staging.commcare.local"
+ELASTICACHE_BROKER_PORT: '6379'
+
 #RabbitMQ Broker URL
 BROKER_URL: "redis://{{ ELASTICACHE_BROKER_HOST }}:{{ ELASTICACHE_BROKER_PORT }}/{{ ELASTICACHE_BROKER_DB }}"
 OLD_BROKER_URL: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}"
@@ -170,9 +175,6 @@ localsettings:
   REDIS_DB: '0'
   REDIS_HOST: "redis.staging.commcare.local"
   REDIS_PORT: '6379'
-  ELASTICACHE_BROKER_DB: '0'
-  ELASTICACHE_BROKER_HOST: "broker.staging.commcare.local"
-  ELASTICACHE_BROKER_PORT: '6379'
   REMINDERS_QUEUE_ENABLED: False
   SMS_GATEWAY_URL: 'http://gw1.promessaging.com/sms.php'
   SMS_QUEUE_ENABLED: True
