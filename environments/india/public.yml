@@ -192,6 +192,7 @@ localsettings:
   SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
 #  STATIC_ROOT:
   USER_REPORTING_METADATA_BATCH_ENABLED: True
+  CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
   STATIC_TOGGLE_STATES:
     ucr_sum_when_templates:
       always_enabled:

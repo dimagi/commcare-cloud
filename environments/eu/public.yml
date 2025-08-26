@@ -203,6 +203,7 @@ localsettings:
   #  STATIC_ROOT:
   WS4REDIS_CONNECTION_HOST: "redis.eu.commcare.local"
   USER_REPORTING_METADATA_BATCH_ENABLED: True
+  CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
 
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa
