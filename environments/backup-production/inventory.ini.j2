@@ -10,6 +10,8 @@ couch_a2
 [couchdb2:vars]
 swap_size=8G
 
+{{ __couch_alb__ }}
+
 [couchdb2_proxy:children]
 couch_alb
 
