@@ -154,7 +154,7 @@ servers:
     os: jammy 
 
   - server_name: "celery_a2-staging"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "t3a.2xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 60
