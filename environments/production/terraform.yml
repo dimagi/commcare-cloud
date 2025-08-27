@@ -560,6 +560,7 @@ rds_instances:
     instance_type: "db.m6g.large"
     storage: 200
     storage_type: gp3
+    storage_throughput: 250
     multi_az: true
     engine_version: "14"
     backup_retention: 7
