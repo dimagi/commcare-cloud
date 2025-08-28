@@ -33,7 +33,7 @@ servers:
     os: jammy
 
   - server_name: "djangomanage3-india"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.small"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
