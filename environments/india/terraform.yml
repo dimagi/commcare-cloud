@@ -334,7 +334,7 @@ rds_instances:
     storage: 500
     storage_type: gp3
     multi_az: true
-    engine_version: "14.4"
+    engine_version: "14.18"
     params:
       max_connections: "125"
 
