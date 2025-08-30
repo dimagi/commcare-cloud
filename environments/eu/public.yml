@@ -89,7 +89,6 @@ server_admin_email: commcarehq-ops+admins@dimagi.com
 default_from_email: commcarehq-noreply-eu@dimagi.com
 return_path_email: commcarehq-bounces+eu@dimagi.com
 support_email: support@dimagi.com
-probono_support_email: pro-bono@dimagi.com
 accounts_email: accounts@dimagi.com
 data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
@@ -204,6 +203,7 @@ localsettings:
   #  STATIC_ROOT:
   WS4REDIS_CONNECTION_HOST: "redis.eu.commcare.local"
   USER_REPORTING_METADATA_BATCH_ENABLED: True
+  CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
 
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa

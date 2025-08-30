@@ -69,6 +69,8 @@ data "aws_iam_role" "data_lifecycle_role" {
   name = "AWSDataLifecycleManagerDefaultRole"
 }
 
+{% if skip_ebs_snapshots != "yes" %}
+
 resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
   description        = "Data Volume Backup Policy"
   execution_role_arn = data.aws_iam_role.data_lifecycle_role.arn
@@ -99,6 +101,7 @@ resource "aws_dlm_lifecycle_policy" "data_volume_backups" {
     }
   }
 }
+{% endif %}
 
 {% if backup_plan %}
 module "backup_plan" {
@@ -401,7 +404,8 @@ module "efs_mount__{{ efs_file_system_mount.efs_name }}__{{ az }}" {
         domain_name = {{ efs_file_system_route53.domain_name|tojson }}
         route_names = {{ efs_file_system_route53.route_names|tojson }}
         records = module.efs_file_system__{{ efs_file_system_route53.efs_name }}.efs_endpoint_address
-      }
+        depends_on = [module.r53-private-zone-create]
+    }
 {% endfor %}
 
 {% endif %}
@@ -420,27 +424,4 @@ module "fsx_file_system__{{ fsx_file_system.efs_name }}" {
 }
 {% endfor %}
 
-{% endif %}
-
-{% if environment == 'testing' %}
-module "awsmq" {
-  source                	= "./modules/awsmq"
-  broker_name             = {{ awsmq.broker_name|tojson }}  
-  vpc_id = module.network.vpc-id  
-  apply_immediately     	=  {{ awsmq.apply_immediately|tojson }}
-  auto_minor_version_upgrade 	= {{ awsmq.auto_minor_version_upgrade|tojson }}
-  deployment_mode 		= {{ awsmq.deployment_mode|tojson }}
-  subnet_ids			    = ["${lookup(module.network.subnets-app-private, "a", "")}"]
-  security_groups    	= compact([module.network.db-private-sg, module.network.ssh-sg, module.network.vpn-connections-sg])
-  environment = var.environment
-  account_alias = var.account_alias
-  username            = var.username
-  password            = var.password
-  engine_type			= {{ awsmq.engine_type|tojson }}
-  engine_version  = {{ awsmq.engine_version|tojson }}
-  host_instance_type 		= {{ awsmq.host_instance_type|tojson }}
-  publicly_accessible		= {{ awsmq.publicly_accessible|tojson }}
-  encryption_enabled    = {{ awsmq.encryption_enabled|tojson }}
-  logs_general          = {{ awsmq.logs_general|tojson }}
-}
 {% endif %}

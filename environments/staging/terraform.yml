@@ -153,6 +153,15 @@ servers:
     group: celery
     os: jammy 
 
+  - server_name: "celery_a2-staging"
+    server_instance_type: "t3a.2xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 60
+    volume_type: "gp3"
+    group: celery
+    os: jammy
+
   - server_name: "formplayer9-staging"
     server_instance_type: "t3a.large"
     network_tier: "app-private"
@@ -191,7 +200,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 30
+      volume_size: 35
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
@@ -205,7 +214,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 30
+      volume_size: 35
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
@@ -219,7 +228,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 30
+      volume_size: 35
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"

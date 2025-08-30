@@ -35,8 +35,8 @@ class TerraformConfig(jsonobject.JsonObject):
     efs_file_systems = jsonobject.ListProperty(lambda: EfsFileSystem, default=None)
     ec2_auto_recovery = jsonobject.ListProperty(lambda: Ec2AutoRecovery, default=None)
     fsx_file_systems = jsonobject.ListProperty(lambda: FsxFileSystem, default=None)
-    awsmq = jsonobject.ObjectProperty(lambda: awsmqConfig, default=None)
     terraform_imports = jsonobject.ListProperty(lambda: TerraformImportsConfig, default=list)
+    skip_ebs_snapshots = jsonobject.StringProperty(default="no")
 
     @classmethod
     def wrap(cls, data):
@@ -264,22 +264,6 @@ class ElasticacheClusterConfig(jsonobject.JsonObject):
     maintenance_window = jsonobject.StringProperty(default="sun:03:30-sun:04:30")
     snapshot_retention = jsonobject.IntegerProperty(default=5)
     snapshot_window = jsonobject.StringProperty(default="07:30-08:30")
-
-
-class awsmqConfig(jsonobject.JsonObject):
-    _allow_dynamic_properties = False
-    create = jsonobject.BooleanProperty(default=True)
-    broker_name = jsonobject.StringProperty(default="mq-broker")
-    apply_immediately = jsonobject.BooleanProperty(default=True)
-    auto_minor_version_upgrade = jsonobject.BooleanProperty(default=False)
-    deployment_mode = jsonobject.StringProperty(default="CLUSTER_MULTI_AZ")
-    engine_type = jsonobject.StringProperty(default="RabbitMQ")
-    engine_version = jsonobject.StringProperty(default="3.10.10")
-    host_instance_type = jsonobject.StringProperty(default="mq.m5.large")
-    publicly_accessible = jsonobject.BooleanProperty(default=False)
-    logs_general = jsonobject.BooleanProperty(default=True)
-    audit_log_enabled = jsonobject.BooleanProperty(default=False)
-    encryption_enabled = jsonobject.BooleanProperty(default=False)
 
 
 class RoutePrivateZoneConfig(jsonobject.JsonObject):
