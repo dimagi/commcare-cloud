@@ -30,6 +30,7 @@
         action: describe
       register: instance_state_check
       delegate_to: localhost
+      become: false
 
     - name: Display current instance state
       debug:
@@ -43,6 +44,7 @@
         wait_timeout: 300
       register: restart_result
       delegate_to: localhost
+      become: false
 
     - name: Display restart result
       debug:
