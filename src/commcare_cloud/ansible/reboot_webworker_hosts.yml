@@ -13,20 +13,6 @@
       vars:
         comment: true
 
-    - name: Verify AWS CLI is available on control machine
-      command: which aws
-      register: aws_cli_check
-      delegate_to: localhost
-      run_once: true
-      failed_when: aws_cli_check.rc != 0
-
-    - name: Verify AWS credentials/role are working
-      command: aws sts get-caller-identity
-      register: aws_creds_check
-      delegate_to: localhost
-      run_once: true
-      failed_when: aws_creds_check.rc != 0
-
   tasks:
     - name: Verify EC2 instance ID is available
       fail:
@@ -38,79 +24,29 @@
         msg: "Processing host {{ inventory_hostname }} with instance ID {{ ec2_instance_id }}"
 
     - name: Get current instance state
-      command: >
-        aws ec2 describe-instances 
-        --instance-ids {{ ec2_instance_id }} 
-        --region {{ aws_region | default('us-east-1') }}
-        --query 'Reservations[0].Instances[0].State.Name' 
-        --output text
-      register: current_state
+      ec2_instance_control:
+        instance_id: "{{ ec2_instance_id }}"
+        region: "{{ aws_region | default('us-east-1') }}"
+        action: describe
+      register: instance_state_check
       delegate_to: localhost
 
     - name: Display current instance state
       debug:
-        msg: "Instance {{ ec2_instance_id }} ({{ inventory_hostname }}) is currently in state: {{ current_state.stdout }}"
+        msg: "Instance {{ ec2_instance_id }} ({{ inventory_hostname }}) is currently in state: {{ instance_state_check.state }}"
 
-    - name: Skip if instance is already stopped
+    - name: Stop and start EC2 instance
+      ec2_instance_control:
+        instance_id: "{{ ec2_instance_id }}"
+        region: "{{ aws_region | default('us-east-1') }}"
+        action: restart
+        wait_timeout: 300
+      register: restart_result
+      delegate_to: localhost
+
+    - name: Display restart result
       debug:
-        msg: "Instance {{ ec2_instance_id }} is already stopped, proceeding to start"
-      when: current_state.stdout == 'stopped'
-
-    - name: Stop EC2 instance
-      command: >
-        aws ec2 stop-instances 
-        --instance-ids {{ ec2_instance_id }} 
-        --region {{ aws_region | default('us-east-1') }}
-      delegate_to: localhost
-      register: stop_result
-      when: current_state.stdout == 'running'
-
-    - name: Wait for instance to be stopped
-      command: >
-        aws ec2 wait instance-stopped 
-        --instance-ids {{ ec2_instance_id }} 
-        --region {{ aws_region | default('us-east-1') }}
-      delegate_to: localhost
-      timeout: 300
-      when: current_state.stdout == 'running'
-
-    - name: Verify instance is stopped
-      command: >
-        aws ec2 describe-instances 
-        --instance-ids {{ ec2_instance_id }} 
-        --region {{ aws_region | default('us-east-1') }}
-        --query 'Reservations[0].Instances[0].State.Name' 
-        --output text
-      register: stopped_state
-      delegate_to: localhost
-      failed_when: stopped_state.stdout != 'stopped'
-
-    - name: Start EC2 instance
-      command: >
-        aws ec2 start-instances 
-        --instance-ids {{ ec2_instance_id }} 
-        --region {{ aws_region | default('us-east-1') }}
-      delegate_to: localhost
-      register: start_result
-
-    - name: Wait for instance to be running
-      command: >
-        aws ec2 wait instance-running 
-        --instance-ids {{ ec2_instance_id }} 
-        --region {{ aws_region | default('us-east-1') }}
-      delegate_to: localhost
-      timeout: 300
-
-    - name: Verify instance is running
-      command: >
-        aws ec2 describe-instances 
-        --instance-ids {{ ec2_instance_id }} 
-        --region {{ aws_region | default('us-east-1') }}
-        --query 'Reservations[0].Instances[0].State.Name' 
-        --output text
-      register: running_state
-      delegate_to: localhost
-      failed_when: running_state.stdout != 'running'
+        msg: "{{ restart_result.message }}"
 
     - name: Wait for SSH to become available
       wait_for_connection:
