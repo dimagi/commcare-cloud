@@ -57,17 +57,32 @@
         delay: 30
         timeout: 600
 
-    - name: Verify system services are running
+    - name: Check supervisor service status
       service_facts:
       register: service_status
 
-    - name: Display critical service status
+    - name: Display supervisor service status
       debug:
-        msg: "Service {{ item }} is {{ service_status.ansible_facts.services[item].state | default('not found') }}"
-      loop:
-        - nginx
-        - supervisor
-      when: item in service_status.ansible_facts.services
+        msg: "Supervisor service is {{ service_status.ansible_facts.services['supervisor'].state | default('not found') }}"
+      when: "'supervisor' in service_status.ansible_facts.services"
+
+    - name: Check supervisor processes
+      command: supervisorctl status
+      register: supervisor_status
+      become: true
+      failed_when: false
+
+    - name: Display supervisor processes status
+      debug:
+        msg: "Supervisor processes:\n{{ supervisor_status.stdout }}"
+      when: supervisor_status is defined
+
+    - name: Verify supervisor processes are running
+      fail:
+        msg: "Critical supervisor processes are not running"
+      when: 
+        - supervisor_status is defined
+        - supervisor_status.rc != 0
 
   post_tasks:
     - name: Recommission hosts into nginx upstreams
