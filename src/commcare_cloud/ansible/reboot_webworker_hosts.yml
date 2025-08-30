@@ -1,5 +1,5 @@
 ---
-- name: Rolling reboot webworker hosts - ({{ webworker_hosts }})
+- name: Rolling stop/start webworker hosts - ({{ webworker_hosts }})
   hosts: "{{ webworker_hosts }}"
   serial: ["10%", "40%", "100%"]
   become: true
@@ -13,12 +13,123 @@
       vars:
         comment: true
 
+    - name: Verify AWS CLI is available on control machine
+      command: which aws
+      register: aws_cli_check
+      delegate_to: localhost
+      run_once: true
+      failed_when: aws_cli_check.rc != 0
+
+    - name: Verify AWS credentials/role are working
+      command: aws sts get-caller-identity
+      register: aws_creds_check
+      delegate_to: localhost
+      run_once: true
+      failed_when: aws_creds_check.rc != 0
+
   tasks:
-    - name: Reboot host and wait for it to become reachable
-      reboot:
-        reboot_timeout: 900
+    - name: Verify EC2 instance ID is available
+      fail:
+        msg: "EC2 instance ID not found in inventory for host {{ inventory_hostname }}"
+      when: ec2_instance_id is not defined or ec2_instance_id == ""
+
+    - name: Display instance information
+      debug:
+        msg: "Processing host {{ inventory_hostname }} with instance ID {{ ec2_instance_id }}"
+
+    - name: Get current instance state
+      command: >
+        aws ec2 describe-instances 
+        --instance-ids {{ ec2_instance_id }} 
+        --region {{ aws_region | default('us-east-1') }}
+        --query 'Reservations[0].Instances[0].State.Name' 
+        --output text
+      register: current_state
+      delegate_to: localhost
+
+    - name: Display current instance state
+      debug:
+        msg: "Instance {{ ec2_instance_id }} ({{ inventory_hostname }}) is currently in state: {{ current_state.stdout }}"
+
+    - name: Skip if instance is already stopped
+      debug:
+        msg: "Instance {{ ec2_instance_id }} is already stopped, proceeding to start"
+      when: current_state.stdout == 'stopped'
+
+    - name: Stop EC2 instance
+      command: >
+        aws ec2 stop-instances 
+        --instance-ids {{ ec2_instance_id }} 
+        --region {{ aws_region | default('us-east-1') }}
+      delegate_to: localhost
+      register: stop_result
+      when: current_state.stdout == 'running'
+
+    - name: Wait for instance to be stopped
+      command: >
+        aws ec2 wait instance-stopped 
+        --instance-ids {{ ec2_instance_id }} 
+        --region {{ aws_region | default('us-east-1') }}
+      delegate_to: localhost
+      timeout: 300
+      when: current_state.stdout == 'running'
+
+    - name: Verify instance is stopped
+      command: >
+        aws ec2 describe-instances 
+        --instance-ids {{ ec2_instance_id }} 
+        --region {{ aws_region | default('us-east-1') }}
+        --query 'Reservations[0].Instances[0].State.Name' 
+        --output text
+      register: stopped_state
+      delegate_to: localhost
+      failed_when: stopped_state.stdout != 'stopped'
+
+    - name: Start EC2 instance
+      command: >
+        aws ec2 start-instances 
+        --instance-ids {{ ec2_instance_id }} 
+        --region {{ aws_region | default('us-east-1') }}
+      delegate_to: localhost
+      register: start_result
+
+    - name: Wait for instance to be running
+      command: >
+        aws ec2 wait instance-running 
+        --instance-ids {{ ec2_instance_id }} 
+        --region {{ aws_region | default('us-east-1') }}
+      delegate_to: localhost
+      timeout: 300
+
+    - name: Verify instance is running
+      command: >
+        aws ec2 describe-instances 
+        --instance-ids {{ ec2_instance_id }} 
+        --region {{ aws_region | default('us-east-1') }}
+        --query 'Reservations[0].Instances[0].State.Name' 
+        --output text
+      register: running_state
+      delegate_to: localhost
+      failed_when: running_state.stdout != 'running'
+
+    - name: Wait for SSH to become available
+      wait_for_connection:
         connect_timeout: 30
-        msg: "Reboot initiated by Ansible (webworker rolling reboot)"
+        sleep: 5
+        delay: 30
+        timeout: 600
+
+    - name: Verify system services are running
+      service_facts:
+      register: service_status
+
+    - name: Display critical service status
+      debug:
+        msg: "Service {{ item }} is {{ service_status.ansible_facts.services[item].state | default('not found') }}"
+      loop:
+        - nginx
+        - supervisor
+      when: item in service_status.ansible_facts.services
 
   post_tasks:
     - name: Recommission hosts into nginx upstreams
@@ -28,4 +139,6 @@
       vars:
         comment: false
 
-
+    - name: Final status check
+      debug:
+        msg: "Instance {{ ec2_instance_id }} ({{ inventory_hostname }}) has been successfully stopped and started"
