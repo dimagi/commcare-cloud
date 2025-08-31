@@ -95,3 +95,34 @@
           - delaycompress
           - nocreate
           - notifempty
+
+
+- name: Copy webworker restart cron script to /usr/local/sbin
+  template:
+    src: webworker_restart_cron.sh.j2
+    dest: /usr/local/sbin/webworker_restart_cron.sh
+    owner: "ansible"
+    group: "ansible"
+    mode: "u=rwx,g=rwx,o=r"
+  when: "'control' in group_names and webworker_restart_cron_enabled | default(false)"
+  tags:
+    - cron
+    - webworker_restart
+
+- name: Create cron job for webworker restart
+  become: yes
+  cron:
+    name: "Automated webworker restart"
+    minute: "{{ webworker_restart_cron_minute | default('30') }}"
+    hour: "{{ webworker_restart_cron_hour | default('2') }}"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    user: "ansible"
+    job: "/usr/local/sbin/webworker_restart_cron.sh"
+    cron_file: webworker_restart
+    state: "{{ 'present' if webworker_restart_cron_enabled | default(false) else 'absent' }}"
+  when: "'control' in group_names"
+  tags:
+    - cron
+    - webworker_restart
