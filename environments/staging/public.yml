@@ -111,6 +111,11 @@ s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-staging-blobdb'
 
+webworker_restart_cron_enabled: true
+webworker_restart_cron_hour: "2" # (7:30 AM IST)
+webworker_restart_cron_minute: "30"
+webworker_restart_slack_channel: "restart-tests"
+
 localsettings:
   ALLOWED_HOSTS:
     - j2mestaging.commcarehq.org
