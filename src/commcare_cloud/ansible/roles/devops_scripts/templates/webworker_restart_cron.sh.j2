@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Webworker restart cron script for {{ deploy_env }}
+# This script runs the commcare-cloud reboot-webworkers command
+# and logs the output
+
+set -euo pipefail
+
+SCRIPT_NAME="webworker_restart_cron"
+LOCK_FILE="/var/lock/${SCRIPT_NAME}.lock"
+LOG_FILE="/tmp/${SCRIPT_NAME}.log"
+ENV_NAME="{{ deploy_env }}"
+SLACK_CHANNEL="{{ webworker_restart_slack_channel | default('gtd-alerts-' + deploy_env) }}"
+
+COMMCARE_CLOUD_REPO="${COMMCARE_CLOUD_REPO:-${HOME}/commcare-cloud}"
+
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+}
+
+cleanup() {
+    rm -f "${LOCK_FILE}"
+}
+
+trap cleanup EXIT
+
+if [ -f "${LOCK_FILE}" ]; then
+    log "ERROR: Another instance of ${SCRIPT_NAME} is already running (lock file exists)"
+    exit 1
+fi
+
+# Create lock file for exclusive execution, write the PID of the current process to it
+echo $$ > "${LOCK_FILE}"
+
+log "Starting webworker restart process for environment: ${ENV_NAME}"
+
+# Verify CommCare Cloud repo exists
+if [ ! -d "${COMMCARE_CLOUD_REPO}" ]; then
+    log "ERROR: CommCare Cloud repository not found at ${COMMCARE_CLOUD_REPO}"
+    exit 1
+fi
+
+# Use the same activation method as init.sh
+log "Activating CommCare Cloud environment"
+source "${COMMCARE_CLOUD_REPO}/control/activate_venv.sh"
+
+if [ "$VIRTUALENV_NOT_FOUND" == "true" ]; then
+    log "ERROR: Virtual environment not found or not activated"
+    exit 1
+fi
+
+if ! command -v commcare-cloud &> /dev/null; then
+    log "ERROR: commcare-cloud command not found in virtual environment"
+    exit 1
+fi
+
+# Set up environment variables that might be needed (from init.sh)
+export ANSIBLE_ROLES_PATH="${HOME}/.ansible/roles"
+
+# Run the reboot-webworkers command
+log "Executing: commcare-cloud ${ENV_NAME} reboot-webworkers --slack-channel=${SLACK_CHANNEL}"
+
+if commcare-cloud "${ENV_NAME}" reboot-webworkers --slack-channel="${SLACK_CHANNEL}" >> "${LOG_FILE}" 2>&1; then
+    log "Webworker restart completed successfully"
+    exit 0
+else
+    log "ERROR: Webworker restart failed"
+    exit 1
+fi
