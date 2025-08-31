@@ -57,6 +57,9 @@ fi
 # Set up environment variables that might be needed (from init.sh)
 export ANSIBLE_ROLES_PATH="${HOME}/.ansible/roles"
 
+# Set the default username to avoid interactive prompts
+export COMMCARE_CLOUD_DEFAULT_USERNAME="ansible"
+
 # Run the reboot-webworkers command
 log "Executing: commcare-cloud ${ENV_NAME} reboot-webworkers --slack-channel=${SLACK_CHANNEL}"
 
