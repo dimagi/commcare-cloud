@@ -63,7 +63,7 @@ export COMMCARE_CLOUD_DEFAULT_USERNAME="ansible"
 # Run the reboot-webworkers command
 log "Executing: commcare-cloud ${ENV_NAME} reboot-webworkers --slack-channel=${SLACK_CHANNEL}"
 
-if commcare-cloud "${ENV_NAME}" reboot-webworkers --slack-channel="${SLACK_CHANNEL}" >> "${LOG_FILE}" 2>&1; then
+if commcare-cloud "${ENV_NAME}" reboot-webworkers --slack-channel="${SLACK_CHANNEL}" --branch="ap/web-worker-restart" >> "${LOG_FILE}" 2>&1; then
     log "Webworker restart completed successfully"
     exit 0
 else
