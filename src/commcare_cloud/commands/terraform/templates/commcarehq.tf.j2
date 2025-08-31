@@ -134,6 +134,15 @@ module "server_iam_role" {
   s3_blob_db_s3_bucket = var.s3_blob_db_s3_bucket
 }
 
+# {% if environment == 'staging' %}
+# module "control_iam_role" {
+#   source = "./modules/control_iam_role"
+#   account_id = {{ account_id|tojson }}
+#   region_name = var.region
+#   account_alias = var.account_alias
+# }
+# {% endif %}
+
 {% for server_spec in servers + proxy_servers %}
 {%- for server_name in server_spec.get_all_server_names %}
 module "server__{{ server_name }}" {

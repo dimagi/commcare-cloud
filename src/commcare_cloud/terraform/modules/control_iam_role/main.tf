@@ -68,7 +68,7 @@ resource "aws_iam_role_policy" "slack_credentials_access_policy" {
                 "secretsmanager:DescribeSecret"
             ],
             "Resource": [
-                "arn:aws:secretsmanager:${var.region_name}:${var.account_id}:secret:${var.account_alias}/slack_token-*",
+                "arn:aws:secretsmanager:${var.region_name}:${var.account_id}:secret:${var.account_alias}/slack_token-*"
             ]
         }
     ]

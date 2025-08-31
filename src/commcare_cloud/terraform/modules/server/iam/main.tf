@@ -111,6 +111,30 @@ resource "aws_iam_role_policy" "access_s3_commcare_blobdb" {
   POLICY
 }
 
+resource "aws_iam_role_policy" "ec2_instance_management_policy" {
+  name = "EC2InstanceManagement"
+  role = aws_iam_role.commcare_server_role.id
+
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "EC2InstanceControl",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeInstances",
+                "ec2:DescribeInstanceStatus",
+                "ec2:StartInstances",
+                "ec2:StopInstances"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+  POLICY
+}
+
 resource "aws_iam_role_policy" "access_s3_kiss_upload" {
   // This grants permissions only necessary on envs that define a KISSMETRICS_KEY
   // which is only production and india
