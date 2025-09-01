@@ -200,6 +200,8 @@ class RebootWebworkers(CommandBase):
 
         public_vars = environment.public_vars
         env_vars = ansible_context.build_env()
+        env_vars['ANSIBLE_BECOME_PASS'] = environment.get_ansible_user_password()
+
         cmd_parts.extend(get_user_arg(public_vars, unknown_args or [], use_factory_auth))
         cmd_parts.extend(environment.secrets_backend.get_extra_ansible_args())
         cmd_parts.extend(get_common_ssh_args(environment, use_factory_auth=use_factory_auth))
@@ -208,7 +210,7 @@ class RebootWebworkers(CommandBase):
         print_command(cmd)
         
         with open(log_file_path, 'w') as log_file:
-            log_file.write(f"Reboot command started at: {datetime.now(timezone.utc)}\n")
+            log_file.write(f"Stop/start command started at: {datetime.now(timezone.utc)}\n")
             log_file.write(f"Command: {cmd}\n")
             log_file.write("-" * 80 + "\n")
             log_file.flush()
