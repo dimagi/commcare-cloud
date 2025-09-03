@@ -206,7 +206,7 @@ class RebootWebworkers(CommandBase):
             # SSM-specific configuration
             cmd_parts.extend([
                 '-e', 'ansible_connection=aws_ssm',
-                '-e', f'ansible_aws_ssm_region={environment.aws_config.region}',
+                '-e', f'ansible_aws_ssm_region={environment.terraform_config.region}',
                 # Don't specify user - let SSM use the default instance user
             ])
             # Build environment without secrets since SSM doesn't need ansible user password
