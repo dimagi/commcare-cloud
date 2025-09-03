@@ -2,6 +2,7 @@
 import os
 import shlex
 import subprocess
+import sys
 import tempfile
 import time
 from copy import deepcopy
@@ -189,26 +190,38 @@ class RebootWebworkers(CommandBase):
         environment = ansible_context.environment
         playbook_path = os.path.join(ANSIBLE_DIR, playbook)
         
+        # Determine if we should use SSM (e.g., when running from cron)
+        use_ssm = not os.isatty(sys.stdin.fileno())  # True when running non-interactively
+
         cmd_parts = list((
-        'ansible-playbook',
-        playbook_path,
-        '-i', environment.paths.inventory_source,
-        '-e', '@{}'.format(environment.paths.public_yml),
-        '-e', '@{}'.format(environment.paths.generated_yml),
-        # Force SSM connection for all hosts
-        '-e', 'ansible_connection=aws_ssm',
-        '-e',
-        '-e', 'ansible_aws_ssm_region=' + environment.aws_config.region,
-        '--diff',
-    ) + get_limit(environment) + (unknown_args or ()))
+            'ansible-playbook',
+            playbook_path,
+            '-i', environment.paths.inventory_source,
+            '-e', '@{}'.format(environment.paths.public_yml),
+            '-e', '@{}'.format(environment.paths.generated_yml),
+            '--diff',
+        ) + get_limit(environment) + (unknown_args or ()))
 
-        public_vars = environment.public_vars
-        env_vars = ansible_context.build_env()
-        env_vars['ANSIBLE_BECOME_PASS'] = environment.get_ansible_user_password()
+        if use_ssm:
+            # SSM-specific configuration
+            cmd_parts.extend([
+                '-e', 'ansible_connection=aws_ssm',
+                '-e', f'ansible_aws_ssm_region={environment.aws_config.region}',
+                # Don't specify user - let SSM use the default instance user
+            ])
+            # Build environment without secrets since SSM doesn't need ansible user password
+            env_vars = ansible_context.build_env(need_secrets=False)
+        else:
+            # SSH-based configuration (original behavior)
+            public_vars = environment.public_vars
+            env_vars = ansible_context.build_env()
+            env_vars['ANSIBLE_BECOME_PASS'] = environment.get_ansible_user_password()
 
-        cmd_parts.extend(get_user_arg(public_vars, unknown_args or [], use_factory_auth))
+            cmd_parts.extend(get_user_arg(public_vars, unknown_args or [], use_factory_auth))
+            cmd_parts.extend(get_common_ssh_args(environment, use_factory_auth=use_factory_auth))
+
+        # These are always needed regardless of connection type
         cmd_parts.extend(environment.secrets_backend.get_extra_ansible_args())
-        cmd_parts.extend(get_common_ssh_args(environment, use_factory_auth=use_factory_auth))
         
         cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command(cmd)
