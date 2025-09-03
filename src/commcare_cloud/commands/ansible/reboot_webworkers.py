@@ -191,7 +191,7 @@ class RebootWebworkers(CommandBase):
         playbook_path = os.path.join(ANSIBLE_DIR, playbook)
         
         # Determine if we should use SSM (e.g., when running from cron)
-        use_ssm = not os.isatty(sys.stdin.fileno())  # True when running non-interactively
+        use_ssm = True
 
         cmd_parts = list((
             'ansible-playbook',
