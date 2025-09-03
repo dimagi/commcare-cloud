@@ -190,13 +190,17 @@ class RebootWebworkers(CommandBase):
         playbook_path = os.path.join(ANSIBLE_DIR, playbook)
         
         cmd_parts = list((
-            'ansible-playbook',
-            playbook_path,
-            '-i', environment.paths.inventory_source,
-            '-e', '@{}'.format(environment.paths.public_yml),
-            '-e', '@{}'.format(environment.paths.generated_yml),
-            '--diff',
-        ) + get_limit(environment) + (unknown_args or ()))
+        'ansible-playbook',
+        playbook_path,
+        '-i', environment.paths.inventory_source,
+        '-e', '@{}'.format(environment.paths.public_yml),
+        '-e', '@{}'.format(environment.paths.generated_yml),
+        # Force SSM connection for all hosts
+        '-e', 'ansible_connection=aws_ssm',
+        '-e',
+        '-e', 'ansible_aws_ssm_region=' + environment.aws_config.region,
+        '--diff',
+    ) + get_limit(environment) + (unknown_args or ()))
 
         public_vars = environment.public_vars
         env_vars = ansible_context.build_env()
