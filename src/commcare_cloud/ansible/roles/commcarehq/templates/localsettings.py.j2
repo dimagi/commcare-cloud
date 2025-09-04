@@ -2,11 +2,6 @@
 # {{ ansible_managed }}
 #
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-
 from datetime import time
 import hashlib
 import json
@@ -267,12 +262,7 @@ RUN_CASE_SEARCH_PILLOW = {{ localsettings.RUN_CASE_SEARCH_PILLOW }}
 RUN_UNKNOWN_USER_PILLOW = {{ localsettings.RUN_UNKNOWN_USER_PILLOW }}
 {% endif %}
 
-{% if BITLY_OAUTH_TOKEN %}
 BITLY_OAUTH_TOKEN = '{{ BITLY_OAUTH_TOKEN }}'
-{% else %}
-BITLY_LOGIN = '{{ BITLY_LOGIN }}'
-BITLY_APIKEY = '{{ BITLY_APIKEY }}'
-{% endif %}
 
 #xep
 #GET_URL_BASE  = 'dimagi.utils.web.get_secure_url_base'
@@ -333,15 +323,11 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
 ANALYTICS_IDS = {
     'GOOGLE_ANALYTICS_API_ID': '{{ GOOGLE_ANALYTICS_API_ID }}',
-    'HUBSPOT_API_ID': '{{ HUBSPOT_API_ID }}',
-    'HUBSPOT_API_KEY': '{{ HUBSPOT_API_KEY }}',
-    'HUBSPOT_ACCESS_TOKEN': '{{ HUBSPOT_ACCESS_TOKEN }}',
-    'KISSMETRICS_KEY': '{{ KISSMETRICS_KEY }}',
-    'FULLSTORY_ID': '{{ FULLSTORY_ID }}',
+    'GOOGLE_ANALYTICS_SECRET': '{{ GOOGLE_ANALYTICS_SECRET }}',
+    'GOOGLE_ANALYTICS_MEASUREMENT_ID': '{{ GOOGLE_ANALYTICS_MEASUREMENT_ID }}',
     'GTM_ID': '{{ GTM_ID }}',
-    'DRIFT_ID': '{{ DRIFT_ID }}',
-    'APPCUES_ID': '{{ APPCUES_ID }}',
-    'APPCUES_KEY': '{{ APPCUES_KEY }}'
+    'HUBSPOT_API_ID': '{{ HUBSPOT_API_ID }}',
+    'HUBSPOT_ACCESS_TOKEN': '{{ HUBSPOT_ACCESS_TOKEN }}',
 }
 
 GOOGLE_OAUTH_CONFIG = {
@@ -410,6 +396,10 @@ CELERY_HEARTBEAT_THRESHOLDS = {
 CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE = '{{ localsettings.CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE }}'
 {% endif %}
 
+{% if 'CELERY_REPEAT_RECORD_DATASOURCE_QUEUE' in localsettings and localsettings.CELERY_REPEAT_RECORD_DATASOURCE_QUEUE %}
+CELERY_REPEAT_RECORD_DATASOURCE_QUEUE = '{{ localsettings.CELERY_REPEAT_RECORD_DATASOURCE_QUEUE }}'
+{% endif %}
+
 FORMPLAYER_URL = "/formplayer"
 
 {% if FORMPLAYER_INTERNAL_AUTH_KEY %}
@@ -434,7 +424,6 @@ redis_cache = {
     'LOCATION': '{{ redis_url }}',
 {% endif %}
     'OPTIONS': {
-        'PARSER_CLASS': 'redis.connection.HiredisParser',
         'REDIS_CLIENT_KWARGS': {
             'health_check_interval': 15,
         },
@@ -731,6 +720,14 @@ RECAPTCHA_PUBLIC_KEY = {{ RECAPTCHA_PUBLIC_KEY }}
 RECAPTCHA_PRIVATE_KEY = {{ RECAPTCHA_PRIVATE_KEY }}
 {% endif %}
 
+{% if MAXMIND_ACCOUNT_ID %}
+MAXMIND_ACCOUNT_ID = {{ MAXMIND_ACCOUNT_ID }}
+{% endif %}
+
+{% if MAXMIND_LICENSE_KEY %}
+MAXMIND_LICENSE_KEY = {{ MAXMIND_LICENSE_KEY }}
+{% endif %}
+
 {% if localsettings.get('DISABLE_AUTOCOMPLETE_ON_SENSITIVE_FORMS') %}
 DISABLE_AUTOCOMPLETE_ON_SENSITIVE_FORMS = True
 {% endif %}
@@ -756,12 +753,6 @@ DATADOG_APP_KEY = '{{ DATADOG_APP_KEY }}'
 {% endif %}
 
 METRICS_PROVIDERS = {{ metrics_providers | to_json }}
-
-{% if localsettings.get('WS4REDIS_CONNECTION_HOST') %}
-WS4REDIS_CONNECTION = {
-    'host': '{{ localsettings.WS4REDIS_CONNECTION_HOST }}'
-}
-{% endif %}
 
 {% if prometheus_celery_pushgateway is defined %}
 PROMETHEUS_PUSHGATEWAY_HOST = os.environ.get('PROMETHEUS_PUSHGATEWAY_HOST', None)
@@ -796,6 +787,10 @@ ENTERPRISE_MODE = {{ localsettings.ENTERPRISE_MODE }}
 
 {% if localsettings.get('RESTRICT_DOMAIN_CREATION') %}
 RESTRICT_DOMAIN_CREATION = {{ localsettings.RESTRICT_DOMAIN_CREATION }}
+{% endif %}
+
+{% if localsettings.get('ENABLE_BHA_CASE_SEARCH_ADAPTER') %}
+ENABLE_BHA_CASE_SEARCH_ADAPTER = {{ localsettings.ENABLE_BHA_CASE_SEARCH_ADAPTER }}
 {% endif %}
 
 {% if localsettings.get('TABLEAU_URL_ROOT') %}
@@ -859,6 +854,14 @@ SENTRY_QUERY_URL = '{{ SENTRY_QUERY_URL }}'
 {% if GREENHOUSE_API_KEY %}
 GREENHOUSE_API_KEY = '{{ GREENHOUSE_API_KEY }}'
 {% endif %}
+
+{% if EPIC_PRIVATE_KEY %}
+EPIC_PRIVATE_KEY = '{{ EPIC_PRIVATE_KEY }}'
+{%endif%}
+
+{% if EPIC_CLIENT_ID %}
+EPIC_CLIENT_ID = '{{ EPIC_CLIENT_ID }}'
+{%endif%}
 
 LOCAL_LOGGING_CONFIG = json.loads('{{ localsettings.get('LOCAL_LOGGING_CONFIG', {})|to_json }}')
 LOCAL_MIDDLEWARE = {{ localsettings.get('LOCAL_MIDDLEWARE', [])|to_json }}
@@ -944,7 +947,6 @@ SERVER_EMAIL = '{{ server_email }}'
 DEFAULT_FROM_EMAIL = '{{ default_from_email }}'
 RETURN_PATH_EMAIL = '{{ return_path_email }}'
 SUPPORT_EMAIL = '{{ support_email }}'
-PROBONO_SUPPORT_EMAIL = '{{ probono_support_email }}'
 ACCOUNTS_EMAIL = '{{ accounts_email }}'
 DATA_EMAIL = '{{ data_email }}'
 SUBSCRIPTION_CHANGE_EMAIL = '{{ subscription_change_email }}'
@@ -962,6 +964,7 @@ CONTACT_EMAIL = '{{ contact_email }}'
 FEEDBACK_EMAIL = '{{ feedback_email }}'
 SOFT_ASSERT_EMAIL = '{{ soft_assert_email }}'
 DAILY_DEPLOY_EMAIL = '{{ daily_deploy_email }}'
+SOLUTIONS_AES_EMAIL = '{{ solutions_aes_email }}'
 {% if TRANSIFEX_API_TOKEN %}
 TRANSIFEX_DETAILS = {
     'organization': 'dimagi',
@@ -1190,6 +1193,34 @@ FCM_CREDS = json.loads({{ FCM_CREDS }})
 CONNECTID_USERINFO_URL = "{{ localsettings.CONNECTID_URL }}"
 {% endif %}
 
+{% if CONNECTID_SECRET_KEY is defined %}
+CONNECTID_SECRET_KEY = "{{ CONNECTID_SECRET_KEY }}"
+{% endif %}
+
+{% if CONNECTID_CLIENT_ID is defined %}
+CONNECTID_CLIENT_ID = "{{ CONNECTID_CLIENT_ID }}"
+{% endif %}
+
+{% if localsettings.CONNECTID_CHANNEL_URL is defined %}
+CONNECTID_CHANNEL_URL = "{{ localsettings.CONNECTID_CHANNEL_URL }}"
+{% endif %}
+
+{% if localsettings.CONNECTID_MESSAGE_URL is defined %}
+CONNECTID_MESSAGE_URL = "{{ localsettings.CONNECTID_MESSAGE_URL }}"
+{% endif %}
+
+{% if localsettings.CONNECTID_CREDENTIALS_URL is defined %}
+CONNECTID_CREDENTIALS_URL = "{{ localsettings.CONNECTID_CREDENTIALS_URL }}"
+{% endif %}
+
 {% if localsettings.MAX_MOBILE_UCR_LIMIT is defined %}
 MAX_MOBILE_UCR_LIMIT = {{ localsettings.MAX_MOBILE_UCR_LIMIT }}
+{% endif %}
+
+{% if localsettings.MIN_REPEATER_RATE_LIMIT_DELAY is defined %}
+MIN_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MIN_REPEATER_RATE_LIMIT_DELAY }}
+{% endif %}
+
+{% if localsettings.MAX_REPEATER_RATE_LIMIT_DELAY is defined %}
+MAX_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MAX_REPEATER_RATE_LIMIT_DELAY }}
 {% endif %}

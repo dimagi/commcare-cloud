@@ -25,15 +25,12 @@
       - git
       - slow
 
-  - name: install pip requirements ({{ item.url }})
-    pip:
-      requirements: "{{ repo_dest }}/{{ item.requirements_path }}"
-      virtualenv: "{{ virtualenv_source }}"
-      virtualenv_python: "{{ python_name }}"
+  - name: uv sync ({{ item.url }})
+    command:
+      cmd: uv sync --group=prod --no-dev --locked --compile-bytecode
       chdir: "{{ code_source }}"
-    when: item.requirements_path|default(None) and not testing|default(False)
+    when: not testing|default(False)
     tags:
-      - slow
       - python
 
   when: (CCHQ_IS_FRESH_INSTALL is defined and CCHQ_IS_FRESH_INSTALL) or not gitdir.stat.exists

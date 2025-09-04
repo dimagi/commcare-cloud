@@ -16,7 +16,6 @@ options:
   notify_no_data: true
   renotify_interval: 0
   require_full_window: false
-  silenced: {'environment:64-test': null}
   thresholds: {critical: 5000.0, warning: 2500.0}
   timeout_h: 24
 query: min(last_1d):sum:commcare.change_feed.need_processing{feed_type:kafka} by {pillow_name,environment}

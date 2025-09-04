@@ -1,12 +1,7 @@
 - name: Compress static files
   command:
-    cmd: ./manage.py {{ item }}
+    cmd: ./manage.py compress --force -v 0
     chdir: '{{ code_source }}'
-  register: stop_loop_hack
-  when: not stop_loop_hack.failed | default(False)
-  loop:
-    - compress --force -v 0
-    - purge_compressed_files
 
 - name: Push shared staticfiles cache
   when: shared_dir_for_staticfiles

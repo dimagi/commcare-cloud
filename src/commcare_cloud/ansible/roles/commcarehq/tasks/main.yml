@@ -117,46 +117,16 @@
 - name: Setup python_env
   become: true
   become_user: "{{ cchq_user }}"
-  vars:
-    virtualenv_name: python_env-{{ python_version }}
-    virtualenv_path: "{{ code_home }}/{{ virtualenv_name }}"
   tags:
     - python
   block:
-  - name: check for virtualenv
-    stat: path="{{ virtualenv_path }}"
-    register: virtualenv_dir
-
-  - name: Create virtualenv for new Python version
-    become: true
-    pip:
-      name:
-        - pip
-        - setuptools
-      state: latest
-      virtualenv: "{{ virtualenv_path }}"
-      virtualenv_python: "{{ python_name }}"
-    when: not virtualenv_dir.stat.exists
-
-  - name: install pip requirements if "python" tag specified
-    become: true
-    pip:
-      requirements: "{{ code_home }}/requirements/prod-requirements.txt"
-      virtualenv: "{{ virtualenv_path }}"
-      chdir: "{{ code_home }}"
-    tags:
-      - never  # means only when the 'python' tag is specified
-    when: not testing|default(False)
-
   - name: create "python_env" symlink
-    # All references to the virtualenv should be made using this symlink. This
-    # allows Python to be upgraded without having to change other parts of the
-    # system (e.g., supervisor configs).
+    # All references to the virtualenv should be made using this symlink.
     #
-    # Direct references to .../python_env-3.6 are allowed since the symlink may
-    # not exist in Python 3.6 environments.
+    # This could be removed/changed to .venv since switching to uv because
+    # the virtualenv dir name no longer includes the Python version.
     file:
-      src: "{{ virtualenv_name }}"
+      src: ".venv"
       dest: "{{ virtualenv_home }}"
       state: link
       force: True

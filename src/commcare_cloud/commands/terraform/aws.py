@@ -1,8 +1,8 @@
 # coding=utf-8
-from __future__ import absolute_import, print_function, unicode_literals
-
+import configparser
 import json
 import os
+import shlex
 import subprocess
 from datetime import datetime
 from dateutil import parser
@@ -16,7 +16,6 @@ import yaml
 from clint.textui import puts
 from memoized import memoized
 from simplejson import JSONDecodeError
-from six.moves import configparser, input, shlex_quote
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_notice, color_success
@@ -31,7 +30,7 @@ def check_output(cmd_parts, env, silent=False):
     env_vars = os.environ.copy()
     env_vars.update(env)
     if not silent:
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command('{} {}'.format(
             ' '.join('{}={}'.format(key, value) for key, value in env.items()),
             cmd,
@@ -44,7 +43,7 @@ def run(cmd_parts, env, silent=False):
     env_vars = os.environ.copy()
     env_vars.update(env)
     if not silent:
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command('{} {}'.format(
             ' '.join('{}={}'.format(key, value) for key, value in env.items()),
             cmd,
@@ -91,17 +90,6 @@ def get_aws_resources(environment):
         '--query', 'DBInstances[*].[DBInstanceIdentifier,Endpoint.Address]',
         '--output', 'json', '--region', config.region,
     ])
-
-    awsmq_info = [{
-        'brokerid': brokerid,
-        'brokername': brokername,
-        'endpoint': '{brokerid}.mq.{config.region}.amazonaws.com:5671'.format(brokerid=brokerid, config=config)
-    } for brokername, brokerid in aws_cli(environment, [
-        'aws', 'mq', 'list-brokers',
-        '--query', 'BrokerSummaries[*].[BrokerName,BrokerId]',
-        "--output", "json",
-        "--region", config.region,
-    ])]
 
     nlb_endpoints = aws_cli(environment, [
         'aws', 'elbv2', 'describe-load-balancers',
@@ -161,9 +149,6 @@ def get_aws_resources(environment):
     for info in fsx_info:
         resources['{name}-fsx'.format(**info)] = info['fsx_dns']
 
-    for info in awsmq_info:
-        resources[info['brokername']] = info['endpoint']
-
     return resources
 
 
@@ -210,7 +195,6 @@ class AwsFillInventory(CommandBase):
                 f.write(yaml.safe_dump(resources, default_flow_style=False))
         else:
             with open(environment.paths.aws_resources_yml, 'r', encoding='utf-8') as f:
-                # PY2: yaml.safe_load will return bytes when the content is ASCII-only bytes
                 resources = yaml.safe_load(f.read())
 
         with open(environment.paths.inventory_ini_j2, 'r', encoding='utf-8') as f:
@@ -222,7 +206,6 @@ class AwsFillInventory(CommandBase):
             # reflecting that we were unable to create it
             out_string = AwsFillInventoryHelper(environment, inventory_ini_j2,
                                                 resources).render()
-            # PY2: out_string is unicode based on Jinja2 render method
             f.write(out_string)
 
 

@@ -1,7 +1,7 @@
 formplayer_memory: "8g"
 formplayer_g1heapregionsize: "4m"
 management_commands:
-  celery7:
+  celerybeat_a2:
     run_submission_reprocessing_queue:
     queue_schedule_instances:
     handle_survey_actions:
@@ -9,10 +9,10 @@ management_commands:
   pillow5:
     run_pillow_retry_queue:
 celery_processes:
-  celery7:
+  celerybeat_a2:
     beat: {}
     flower: {}
-  celery8,celery9:
+  celery14,celery15:
     reminder_queue:
       pooling: gevent
       concurrency: 10
@@ -36,6 +36,8 @@ celery_processes:
       concurrency: 1
     background_queue,dashboard_comparison_queue:
       concurrency: 2
+    geospatial_queue:
+      concurrency: 1
 pillows:
   pillow5:
     AppDbChangeFeedPillow:

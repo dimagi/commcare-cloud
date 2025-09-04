@@ -5,14 +5,13 @@ server_admin_email: commcarehq-ops+admins@dimagi.com
 default_from_email: commcarehq-noreply-backup-production@dimagi.com
 return_path_email: commcarehq-bounces+backup-production@dimagi.com
 support_email: support@dimagi.com
-probono_support_email: pro-bono@dimagi.com
 accounts_email: accounts@dimagi.com
 data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
 internal_subscription_change_email: accounts+subchange+internal@dimagi.com
 billing_email: sales@dimagi.com
 invoicing_contact_email: billing-support@dimagi.com
-growth_email: growth@dimagi.com
+growth_email: saas-revenue-team@dimagi.com
 saas_ops_email: saas-ops@dimagi.com
 saas_reporting_email: saas-reporting@dimagi.com
 master_list_email: master-list@dimagi.com
@@ -23,6 +22,7 @@ eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
+solutions_aes_email: solutions-tech-app-engineers@dimagi.com
 
 DATADOG_ENABLED: False
 
@@ -31,9 +31,9 @@ DATADOG_TRACE:
     env: backup-production
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_cluster_name: 'prodhqes-1.x'
-elasticsearch_version: 5.6.16
-elasticsearch_download_sha256: 6b035a59337d571ab70cea72cc55225c027ad142fbb07fd8984e54261657c77f.
+elasticsearch_cluster_name: 'prodhqes'
+elasticsearch_version: 6.8.23
+elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
 elasticsearch_delete_old_logs: True
@@ -68,10 +68,11 @@ formplayer_forward_ip_proxy: true
 formplayer_detailed_tags:
   - form_name
   - module_name
+formplayer_custom_properties:
+  spring.datasource.hikari.maximum-pool-size: 40
+  spring.datasource.hikari.minimum-idle: 5
 
 KSPLICE_ACTIVE: no # Don't know what this does, this is set to yes in prod
-
-run_websockets_wsgi: True
 
 couch_dbs:
   default:
@@ -152,18 +153,17 @@ localsettings:
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
   ENFORCE_SSO_LOGIN: True
-  ELASTICSEARCH_MAJOR_VERSION: 5
-  ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-04"
-  ES_XFORM_INDEX_NAME: "xforms_2023-01-27"
+  ELASTICSEARCH_MAJOR_VERSION: 6
+  ES_MULTIPLEX_TO_VERSION: '7'
   # Index Multiplexer Settings  
-  ES_APPS_INDEX_MULTIPLEXED: False # swap completed
-  ES_CASE_SEARCH_INDEX_MULTIPLEXED: False # swap completed 
-  ES_CASES_INDEX_MULTIPLEXED: False # swap completed
-  ES_DOMAINS_INDEX_MULTIPLEXED: False # swap completed
-  ES_FORMS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_GROUPS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_SMS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_USERS_INDEX_MULTIPLEXED: False # swap completed
+  ES_APPS_INDEX_MULTIPLEXED: False
+  ES_CASE_SEARCH_INDEX_MULTIPLEXED: False
+  ES_CASES_INDEX_MULTIPLEXED: False
+  ES_DOMAINS_INDEX_MULTIPLEXED: False
+  ES_FORMS_INDEX_MULTIPLEXED: False
+  ES_GROUPS_INDEX_MULTIPLEXED: False
+  ES_SMS_INDEX_MULTIPLEXED: False
+  ES_USERS_INDEX_MULTIPLEXED: False
   # Index Swap settings  
   ES_APPS_INDEX_SWAPPED: False
   ES_CASE_SEARCH_INDEX_SWAPPED: False
@@ -174,6 +174,20 @@ localsettings:
   ES_SMS_INDEX_SWAPPED: False
   ES_USERS_INDEX_SWAPPED: False
   # Index settings end
+  CASE_SEARCH_SUB_INDICES: {
+    'co-carecoordination': {
+        'index_cname': 'case_search_bha',
+        'multiplex_writes': True,
+    },
+    'co-carecoordination-uat': {
+        'index_cname': 'case_search_bha',
+        'multiplex_writes': True,
+    },
+    'co-carecoordination-perf': {
+        'index_cname': 'case_search_cc_perf',
+        'multiplex_writes': True,
+    }
+  }
   IS_DIMAGI_ENVIRONMENT: True
   HQ_INSTANCE: 'backup.www'
   INACTIVITY_TIMEOUT: 20160
@@ -221,7 +235,10 @@ localsettings:
         - 'ils-gateway'
         - 'ils-gateway-train'
   USER_REPORTING_METADATA_BATCH_ENABLED: True
-  WS4REDIS_CONNECTION_HOST: "redis.bk-production.commcare.local"
+  CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
+  CONNECTID_CHANNEL_URL: 'https://connectid.dimagi.com/messaging/create_channel/'
+  CONNECTID_MESSAGE_URL: 'https://connectid.dimagi.com/messaging/send_fcm/'
+  CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu

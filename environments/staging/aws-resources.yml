@@ -1,5 +1,7 @@
 celery_a1-staging: 10.201.10.31
 celery_a1-staging.instance_id: i-0e15f23fcc71fd3c9
+celery_a2-staging: 10.201.10.163
+celery_a2-staging.instance_id: i-0fcf2866598d1a9a6
 control3-staging: 10.201.10.21
 control3-staging.instance_id: i-0764b662e2e2637c3
 couch24-staging: 10.201.42.45

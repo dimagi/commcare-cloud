@@ -1,13 +1,8 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
 import getpass
 import json
 
-import six
 import yaml
 from clint.textui import puts
-from six.moves import input
 
 from commcare_cloud.colors import color_error
 from commcare_cloud.commands.command_base import CommandBase, Argument
@@ -40,7 +35,7 @@ class Secrets(CommandBase):
 
     def _secrets_view(self, environment, secret_name):
         secret = environment.get_secret(secret_name)
-        if isinstance(secret, six.string_types):
+        if isinstance(secret, str):
             print(secret)
         else:
             print(yaml.safe_dump(secret))
@@ -59,7 +54,9 @@ class Secrets(CommandBase):
         if not isinstance(secret, list):
             print("Cannot append. '{}' is not a list.".format(secret_name))
             exit(-1)
-        value_to_append = getpass.getpass("Value for '{}' to append to '{}': ".format(environment.name, secret_name))
+        value_to_append = getpass.getpass(
+            "Value for '{}' to append to '{}': ".format(environment.name, secret_name)
+        )
         secret.append(value_to_append)
         environment.secrets_backend.set_secret(secret_name, secret)
 
@@ -68,7 +65,9 @@ class Secrets(CommandBase):
         if not isinstance(secret, list):
             print("Cannot remove. '{}' is not a list.".format(secret_name))
             exit(-1)
-        value_to_remove = getpass.getpass("Value for '{}' to remove from '{}': ".format(environment.name, secret_name))
+        value_to_remove = getpass.getpass(
+            "Value for '{}' to remove from '{}': ".format(environment.name, secret_name)
+        )
         try:
             secret.remove(value_to_remove)
         except ValueError:

@@ -12,7 +12,6 @@
     shared_mount_dir: "{{ fsx_mount_dir }}"
     shared_dir_user: "root"
     shared_dir_group: "root"
-    shared_dir_group: "root"
     shared_dir_mode: 0777
     shared_mount_address: "{{ formplayer_fsx_dns }}"
     shared_mount_opts: "{{ fsx_shared_mount_options }}"

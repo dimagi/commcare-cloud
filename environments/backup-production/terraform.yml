@@ -4,6 +4,7 @@ state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-2"
 environment: "bk-production"
+skip_ebs_snapshots: "yes"
 ssl_policy: 'ELBSecurityPolicy-FS-1-2-Res-2020-10'
 azs:
   - "us-east-2b"
@@ -17,7 +18,7 @@ ec2_metadata_tokens_required: yes
 
 servers:
   - server_name: "control_a0-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.medium
     network_tier: "app-private"
     az: "c"
     volume_size: 20
@@ -25,7 +26,7 @@ servers:
     os: jammy
 
   - server_name: "djangomanage_a0-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.large
     network_tier: "app-private"
     az: "c"
     volume_size: 20
@@ -33,7 +34,7 @@ servers:
     os: jammy
 
   - server_name: "web_a{i}-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.large
     network_tier: "app-private"
     az: "c"
     volume_size: 20
@@ -43,7 +44,7 @@ servers:
     count: 2
 
   - server_name: "web_b{i}-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.large
     network_tier: "app-private"
     az: "b"
     volume_size: 20
@@ -52,7 +53,7 @@ servers:
     count: 2
     server_auto_recovery: true
 
-  - server_name: "esmaster_a0-bk-production"
+  - server_name: "esmaster_a1-bk-production"
     server_instance_type: t3a.xlarge
     network_tier: "db-private"
     az: "c"
@@ -60,7 +61,7 @@ servers:
     os: jammy
     volume_size: 20
 
-  - server_name: "esmaster_b0-bk-production"
+  - server_name: "esmaster_b1-bk-production"
     server_instance_type: t3a.xlarge
     network_tier: "db-private"
     az: "b"
@@ -69,7 +70,7 @@ servers:
     volume_size: 20
     volume_encrypted: yes
 
-  - server_name: "esmaster_c0-bk-production"
+  - server_name: "esmaster_c1-bk-production"
     server_instance_type: t3a.xlarge
     network_tier: "db-private"
     az: "c"
@@ -78,7 +79,7 @@ servers:
     volume_size: 20
     volume_encrypted: yes
 
-  - server_name: "es_a1{i}-bk-production"
+  - server_name: "es_a2{i}-bk-production"
     server_instance_type: t3a.xlarge
     network_tier: "db-private"
     az: "c"
@@ -88,19 +89,43 @@ servers:
       volume_size: 20
     group: "elasticsearch"
     os: jammy
-    count: 5
+    count: 4
 
-  - server_name: "es_b1{i}-bk-production"
+  - server_name: "es_b2{i}-bk-production"
     server_instance_type: t3a.xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 20
     volume_encrypted: yes
     block_device:
+      volume_size: 2800
+    group: "elasticsearch"
+    os: jammy
+    count: 4
+
+  - server_name: "es_a3{i}-bk-production"
+    server_instance_type: t3a.xlarge
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 20
+    volume_encrypted: yes
+    block_device:
       volume_size: 20
     group: "elasticsearch"
     os: jammy
-    count: 5
+    count: 3
+
+  - server_name: "es_b3{i}-bk-production"
+    server_instance_type: t3a.xlarge
+    network_tier: "db-private"
+    az: "b"
+    volume_size: 20
+    volume_encrypted: yes
+    block_device:
+      volume_size: 2800
+    group: "elasticsearch"
+    os: jammy
+    count: 3
 
   - server_name: "couch_a0-bk-production"
     server_instance_type: t3a.small
@@ -171,7 +196,7 @@ servers:
 
 proxy_servers:
   - server_name: "proxy_a0-bk-production"
-    server_instance_type: t3a.small
+    server_instance_type: t3a.large
     network_tier: "public"
     az: "c"
     volume_size: 20

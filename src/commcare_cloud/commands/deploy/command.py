@@ -1,7 +1,3 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
-
 from datetime import datetime
 from textwrap import dedent
 
@@ -11,8 +7,8 @@ from commcare_cloud.commands.ansible.run_module import BadAnsibleResult
 from commcare_cloud.const import DATE_FMT
 from commcare_cloud.commands import shared_args
 from commcare_cloud.commands.command_base import Argument, CommandBase
-from commcare_cloud.commands.deploy.commcare import deploy_commcare
-from commcare_cloud.commands.deploy.formplayer import deploy_formplayer
+from commcare_cloud.commands.deploy.commcare import deploy_commcare, get_commcare_deploy_diff
+from commcare_cloud.commands.deploy.formplayer import deploy_formplayer, get_formplayer_deploy_diff
 from commcare_cloud.environment.main import get_environment
 
 
@@ -94,6 +90,31 @@ class Deploy(CommandBase):
             else:
                 rc = deploy_formplayer(environment, args)
         return rc
+
+
+class DeployDiff(CommandBase):
+    command = 'deploy-diff'
+    help = (
+        "Display pull requests that would be deployed on master now."
+    )
+
+    arguments = (
+        Argument('component', nargs='?', choices=['commcare', 'formplayer'], default='commcare', help="""
+            Component to check deploy diff for. Default is 'commcare'.
+        """),
+        shared_args.QUIET_ARG,
+        shared_args.BRANCH_ARG,
+    )
+
+    def run(self, args, unknown_args):
+        check_branch(args)
+        environment = get_environment(args.env_name)
+        environment.release_name = 'deploy-diff'
+        if args.component == 'formplayer':
+            diff = get_formplayer_deploy_diff(environment)
+        else:
+            diff = get_commcare_deploy_diff(environment, args)
+        diff.print_deployer_diff()
 
 
 def _warn_about_non_formplayer_args(args):

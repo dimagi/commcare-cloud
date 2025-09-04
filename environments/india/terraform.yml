@@ -15,7 +15,6 @@ az_codes:
   - c
 vpc_begin_range: "10.203"
 
-openvpn_image: ami-085d67fbfe42a25e7
 
 vpn_connections: []
 
@@ -65,42 +64,42 @@ servers:
     os: jammy
     server_auto_recovery: true
 
-  - server_name: "celery7-india"
+  - server_name: "celerybeat_a2-india"
     server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: celery
     os: jammy
 
-  - server_name: "celery8-india"
+  - server_name: "celery14-india"
+    server_instance_type: "t3a.xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 60
+    volume_encrypted: yes
+    volume_type: "gp3"
+    group: celery
+    os: jammy
+
+  - server_name: "celery15-india"
     server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "b"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: celery
     os: jammy
 
-  - server_name: "celery9-india"
-    server_instance_type: "t3a.xlarge"
-    network_tier: "app-private"
-    az: "c"
-    volume_size: 60
-    volume_encrypted: no
-    volume_type: "gp3"
-    group: celery
-    os: jammy
- 
   - server_name: "couch10-india"
     server_instance_type: "r5a.xlarge"
     network_tier: "db-private"
     az: "a"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     block_device:
       volume_size: 80
@@ -114,7 +113,7 @@ servers:
     network_tier: "db-private"
     az: "b"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     block_device: 
       volume_size: 80
@@ -128,7 +127,7 @@ servers:
     network_tier: "db-private"
     az: "c"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     block_device:
       volume_size: 80
@@ -208,7 +207,7 @@ servers:
     os: jammy 
 
   - server_name: "formplayer3-india"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "r6a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 200
@@ -217,16 +216,6 @@ servers:
     group: formplayer
     os: jammy
     server_auto_recovery: true
-
-  - server_name: "pillow4-india"
-    server_instance_type: "t3a.xlarge"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 60
-    volume_encrypted: no
-    volume_type: "gp3"
-    group: pillowtop
-    os: jammy
 
   - server_name: "pillow5-india"
     server_instance_type: "t3a.xlarge"
@@ -288,12 +277,12 @@ servers:
     group: "postgresql"
     os: jammy
 
-  - server_name: "pgbouncer7-india"
+  - server_name: "pgbouncer8-india"
     server_instance_type: t3a.small
     network_tier: "db-private"
     az: "a"
     volume_size: 80
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     group: "postgresql"
     os: jammy
@@ -320,7 +309,7 @@ servers:
 
 proxy_servers:
   - server_name: "proxy_a1-india"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -330,7 +319,7 @@ proxy_servers:
     os: jammy
 
   - server_name: "proxy_b1-india"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
@@ -346,6 +335,9 @@ rds_instances:
     storage_type: gp3
     multi_az: true
     engine_version: "14.4"
+    params:
+      max_connections: "125"
+
 
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-india
@@ -358,7 +350,7 @@ pgbouncer_nlbs:
       - pgbouncer6-india
   - name: pgucr_nlb-india
     targets:
-      - pgbouncer7-india
+      - pgbouncer8-india
   - name: pgsynclogs_nlb-india
     targets:
       - pgbouncer5-india
@@ -408,3 +400,11 @@ efs_file_systems:
     create_record: yes
     domain_name: "india.commcare.local"
     route_names: "shared-efs"
+
+terraform_imports:
+  - to: module.logshipping.aws_cloudwatch_event_rule.config-changes
+    id: default/config-changes
+  - to: module.logshipping.aws_cloudwatch_event_target.config-changes
+    id: default/config-changes/Id5885852165010
+  - to: module.logshipping.aws_cloudwatch_log_group.config-changes
+    id: /aws/events/config-changes

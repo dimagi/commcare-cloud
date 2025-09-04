@@ -2,9 +2,9 @@
 {{ __djangomanage3__ }}
 {{ __web6__ }}
 {{ __web7__ }}
-{{ __celery7__ }} swap_size=4G
-{{ __celery8__ }} swap_size=4G
-{{ __celery9__ }} swap_size=4G
+{{ __celerybeat_a2__ }} swap_size=4G
+{{ __celery14__ }} swap_size=4G
+{{ __celery15__ }} swap_size=4G
 {{ __couch10__ }} swap_size=8G
 {{ __couch11__ }} swap_size=8G
 {{ __couch12__ }} swap_size=8G
@@ -51,7 +51,7 @@ elasticsearch_data=false
 {{ __rabbit_c7__ }}
 {{ __pgbouncer5__ }} pgbouncer_processes=2
 {{ __pgbouncer6__ }} pgbouncer_processes=2
-{{ __pgbouncer7__ }}
+{{ __pgbouncer8__ }}
 {{ __proxy_a1__ }}
 {{ __proxy_b1__ }}
 {{ __rds_pgmain0__ }}
@@ -80,7 +80,7 @@ web7
 
 [postgresql:children]
 remote_postgresql
-pgbouncer7
+pgbouncer8
 
 [pgbouncer:children]
 pgbouncer5
@@ -106,9 +106,9 @@ kafka_b2
 kafka_b3
 
 [celery:children]
-celery7
-celery8
-celery9
+celerybeat_a2
+celery14
+celery15
 
 [pillowtop:children]
 pillow5

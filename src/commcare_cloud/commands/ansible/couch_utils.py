@@ -1,13 +1,9 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
-
 import itertools
 from collections import defaultdict
 from operator import attrgetter
+from urllib.parse import quote
 
 from couchdb_cluster_admin.suggest_shard_allocation import get_db_info
-from six.moves import urllib_parse, zip_longest, map
 
 import jsonobject
 from couchdb_cluster_admin.utils import do_node_local_request, get_membership, NodeDetails, humansize
@@ -34,7 +30,7 @@ def get_node_shards(node_details, databases=None):
 
 
 def get_shard_details(node_name, node_details, shard_name):
-    data = do_node_local_request(node_details, urllib_parse.quote(shard_name, safe=""))
+    data = do_node_local_request(node_details, quote(shard_name, safe=""))
     data["node"] = node_name
     data["shard_name"] = data["db_name"]
     data["db_name"] = _get_db_name(shard_name)
@@ -95,7 +91,7 @@ def print_shard_table(shard_allocation_docs, shard_details):
     if single_db:
         headers, rows = list(tables.items())[0]
         data = [("",) + headers] + rows
-        transposed = list(map(list, zip_longest(*data, fillvalue=None)))
+        transposed = list(map(list, itertools.zip_longest(*data, fillvalue=None)))
         print(tabulate(transposed[1:], headers=["Shard", "Nodes", "Doc Counts", "Doc Deletion Counts"]))
     else:
         for header, rows in tables.items():
@@ -159,7 +155,7 @@ def print_db_info(config, databases=None):
     if len(rows) == 1:
         # swap
         data = [headers] + rows
-        print(tabulate(list(map(list, zip_longest(*data, fillvalue=None)))))
+        print(tabulate(list(map(list, itertools.zip_longest(*data, fillvalue=None)))))
     else:
         print(tabulate(rows, headers))
 

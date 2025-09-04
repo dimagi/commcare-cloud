@@ -6,7 +6,6 @@ Below docs contain how to instructions for special operations.
 .. toctree::
    :maxdepth: 1
 
-   /reference/howto/transfer-domain
    /reference/howto/white-label
    /reference/howto/firewall
    /reference/howto/new-machine

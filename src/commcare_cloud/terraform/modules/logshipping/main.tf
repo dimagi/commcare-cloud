@@ -22,9 +22,18 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "log_bucket" {
   }
 }
 
+resource "aws_s3_bucket_ownership_controls" "log_bucket" {
+  bucket = aws_s3_bucket.log_bucket.id
+
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
+
 resource "aws_s3_bucket_acl" "log_bucket" {
   bucket = aws_s3_bucket.log_bucket.id
   acl    = "private"
+  depends_on = [aws_s3_bucket_ownership_controls.log_bucket]
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "log_bucket" {
@@ -121,7 +130,7 @@ resource "aws_lambda_function" "check_file_lambda" {
     function_name = "check_file_lambda"
     role = aws_iam_role.check_file_lambda.arn
     handler = "check_file_lambda.handler"
-    runtime = "python3.8"
+    runtime = "python3.12"
     timeout = 30
     source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
@@ -144,4 +153,29 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_check_file" {
     function_name = aws_lambda_function.check_file_lambda.function_name
     principal = "events.amazonaws.com"
     source_arn = aws_cloudwatch_event_rule.check-file-event.arn
+}
+
+resource "aws_cloudwatch_event_rule" "config-changes" {
+  name = "config-changes"
+  event_pattern = jsonencode({
+    source = ["aws.config"],
+    detail-type = ["Config Configuration Item Change"]
+  })
+  lifecycle {
+    ignore_changes = [name]
+  }
+}
+
+resource "aws_cloudwatch_log_group" "config-changes" {
+  name = "/aws/events/config-changes"
+  retention_in_days = 0
+}
+
+resource "aws_cloudwatch_event_target" "config-changes" {
+  target_id = "config-changes"
+  rule = aws_cloudwatch_event_rule.config-changes.name
+  arn = aws_cloudwatch_log_group.config-changes.arn
+  lifecycle {
+    ignore_changes = [target_id]
+  }
 }

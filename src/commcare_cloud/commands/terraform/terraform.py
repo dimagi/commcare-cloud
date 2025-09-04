@@ -1,13 +1,12 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
+from itertools import islice
 import json
 import os
+import shlex
 import subprocess
 from collections import defaultdict
 from io import open
 
 from clint.textui import puts
-from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_error
@@ -99,7 +98,7 @@ class Terraform(CommandBase):
         all_env_vars = os.environ.copy()
         all_env_vars.update(env_vars)
         cmd_parts = ['terraform'] + unknown_args
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command('cd {}; {} {}; cd -'.format(
             run_dir,
             ' '.join('{}={}'.format(key, value) for key, value in env_vars.items()),
@@ -167,11 +166,13 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
         'postgresql_params': get_postgresql_params_by_rds_instance(environment),
-        'commcarehq_xml_post_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_POST_URLS_REGEX),
         'commcarehq_xml_querystring_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX),
         's3_blob_db_s3_bucket': environment.public_vars.get('s3_blob_db_s3_bucket'),
         'release_bucket': environment.public_vars.get('release_bucket'),
     })
+
+    waf_regex_maps = create_waf_regex_lists(COMMCAREHQ_XML_POST_URLS_REGEX)
+    context.update(waf_regex_maps)
 
     context.update({
         'apply_immediately': apply_immediately
@@ -184,9 +185,26 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
             ('variables.tf.j2', 'variables.tf'),
             ('terraform.tfvars.j2', 'terraform.tfvars'),
             ('terraform.lock.hcl.j2', '.terraform.lock.hcl'),
+            ('imports.tf.j2', 'imports.tf'),
     ):
         with open(os.path.join(run_dir, output_file), 'w', encoding='utf-8') as f:
             f.write(render_template(template_file, context, template_root))
+
+
+def create_waf_regex_lists(patterns, compactible_affixes=None, max_length=200, max_group_size=10):
+    groups = create_waf_regex_groupings(patterns, compactible_affixes, max_length, max_group_size)
+    terraform_groups = {}
+    for (index, group) in enumerate(groups):
+        terraform_groups[f'commcarehq_xml_post_urls_regex_{index}'] = group
+
+    return terraform_groups
+
+
+def create_waf_regex_groupings(patterns, compactible_affixes=None, max_length=200, max_group_size=10):
+    regexes = compact_waf_regexes(patterns, compactible_affixes, max_length)
+    iterator = iter(regexes)
+    while batch := tuple(islice(iterator, max_group_size)):
+        yield batch
 
 
 def compact_waf_regexes(patterns, compactible_affixes=None, max_length=200):

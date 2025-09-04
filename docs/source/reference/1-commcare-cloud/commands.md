@@ -1206,6 +1206,22 @@ release.
 
 ---
 
+#### ``deploy-diff`` Command
+
+Display pull requests that would be deployed on master now.
+
+```
+commcare-cloud <env> deploy-diff [{commcare,formplayer}]
+```
+
+##### Positional Arguments
+
+###### `{commcare,formplayer}`
+
+Component to check deploy diff for. Default is 'commcare'.
+
+---
+
 #### ``list-releases`` Command
 
 List names that can be passed to `deploy --resume=RELEASE_NAME`
@@ -1693,72 +1709,18 @@ have been made to our actual resources in AWS.
 
 ---
 
-#### ``openvpn-activate-user`` Command
-
-Give a OpenVPN user a temporary password (the ansible user password)
-
-```
-commcare-cloud <env> openvpn-activate-user [--use-factory-auth] vpn_user
-```
-
-to allow the user to connect to the VPN, log in, and change their password using
-
-```
-cchq <env> openvpn-claim-user
-```
-
-##### Positional Arguments
-
-###### `vpn_user`
-
-The user to activate.
-
-Must be one of the defined ssh users defined for the environment.
-
-##### Options
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
-
----
-
-#### ``openvpn-claim-user`` Command
-
-Claim an OpenVPN user as your own, setting its password
-
-```
-commcare-cloud <env> openvpn-claim-user [--use-factory-auth] vpn_user
-```
-
-##### Positional Arguments
-
-###### `vpn_user`
-
-The user to claim.
-
-Must be one of the defined ssh users defined for the environment.
-
-##### Options
-
-###### `--use-factory-auth`
-
-authenticate using the pem file (or prompt for root password if there is no pem file)
-
----
-
 #### ``forward-port`` Command
 
 Port forward to access a remote admin console
 
 ```
-commcare-cloud <env> forward-port {flower,couch,elasticsearch}
+commcare-cloud <env> forward-port {couch,elasticsearch,flower,rabbit}
 ```
 
 ##### Positional Arguments
 
-###### `{flower,couch,elasticsearch}`
+###### `{couch,elasticsearch,flower,rabbit}`
 
-The remote service to port forward. Must be one of couch,elasticsearch,flower.
+The remote service to port forward. Must be one of couch,elasticsearch,flower,rabbit.
 
 ---

@@ -11,7 +11,6 @@ azs:
   - "us-east-1c"
 vpc_begin_range: "10.201"
 
-openvpn_image: ami-5e73b923
 
 backup_plan:
   local_vault_name: "BusinessContinuity_Staging_East-1"
@@ -36,7 +35,7 @@ servers:
     os: jammy 
 
   - server_name: "web13-staging"
-    server_instance_type: "t3a.large"
+    server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -47,7 +46,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web14-staging"
-    server_instance_type: "t3a.large"
+    server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
@@ -154,6 +153,15 @@ servers:
     group: celery
     os: jammy 
 
+  - server_name: "celery_a2-staging"
+    server_instance_type: "t3a.2xlarge"
+    network_tier: "app-private"
+    az: "a"
+    volume_size: 60
+    volume_type: "gp3"
+    group: celery
+    os: jammy
+
   - server_name: "formplayer9-staging"
     server_instance_type: "t3a.large"
     network_tier: "app-private"
@@ -192,7 +200,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 30
+      volume_size: 35
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
@@ -206,7 +214,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 30
+      volume_size: 35
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
@@ -220,7 +228,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 30
+      volume_size: 35
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
@@ -254,7 +262,7 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
-      volume_size: 5
+      volume_size: 10
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
@@ -268,7 +276,7 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
-      volume_size: 5
+      volume_size: 10
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
@@ -282,7 +290,7 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
-      volume_size: 5
+      volume_size: 10
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
@@ -314,7 +322,7 @@ servers:
 
 proxy_servers:
   - server_name: "proxy6-staging"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
@@ -324,7 +332,7 @@ proxy_servers:
     os: jammy
 
   - server_name: "proxy8-staging"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -335,7 +343,7 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pg0-staging"
-    instance_type: "db.t3.small"
+    instance_type: "db.t4g.small"
     storage: 160
     storage_type: gp3
     multi_az: yes
@@ -346,7 +354,7 @@ rds_instances:
     enable_cross_region_backup: yes
 
   - identifier: "pgformplayer0-staging"
-    instance_type: "db.t3.small"
+    instance_type: "db.t4g.small"
     storage: 160
     storage_type: gp3
     multi_az: yes
@@ -414,3 +422,6 @@ efs_file_systems:
     domain_name: "staging.commcare.local"
     route_names: "shared-efs"
 
+terraform_imports:
+  - to: aws_guardduty_detector.detector
+    id: CBEA74BFAc3fcfdeB82cEF1FFDEc9DEE

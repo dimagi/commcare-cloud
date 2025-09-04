@@ -3,8 +3,8 @@ monitor_celery_heartbeat: False
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_cluster_name: 'staginges'
-elasticsearch_version: 5.6.16
-elasticsearch_download_sha256: 6b035a59337d571ab70cea72cc55225c027ad142fbb07fd8984e54261657c77f.
+elasticsearch_version: 6.8.23
+elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
 elasticsearch_delete_old_logs: True
 
 kafka_version: 3.2.3
@@ -16,16 +16,13 @@ kafka_log_message_format_version: 3.2
 zookeeper_version: 3.7.1
 zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
 zookeeper_cluster: True
-amqp: False
-AMQP_HOST: "{% if amqp == true %}{{ groups.awsmq.0 }}{%else%}{{ groups.rabbitmq.0}}{% endif %}"
+AMQP_HOST: "{{ groups.rabbitmq.0}}"
 TWO_FACTOR_GATEWAY_ENABLED: True
 erlang: 1:24.3.3-1
 rabbitmq_version: 3.10.13-1
 
 #RabbitMQ Broker URL
-BROKER_URL: "{% if amqp == true %}amqps://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5671{% else %}amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}{% endif %}"
-
-run_websockets_wsgi: True
+BROKER_URL: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}"
 
 backup_blobdb: False
 backup_postgres: plain
@@ -64,14 +61,13 @@ server_admin_email: commcarehq-ops+admins@dimagi.com
 default_from_email: commcarehq-noreply-staging@dimagi.com
 return_path_email: commcarehq-bounces+staging@dimagi.com
 support_email: support@dimagi.com
-probono_support_email: pro-bono@dimagi.com
 accounts_email: commcarehq-ops+accounts@dimagi.com
 data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
 internal_subscription_change_email: accounts+subchange+internal@dimagi.com
 billing_email: sales@dimagi.com
 invoicing_contact_email: accounts@dimagi.com
-growth_email: growth@dimagi.com
+growth_email: saas-revenue-team@dimagi.com
 saas_ops_email: saas-ops@dimagi.com
 master_list_email: master-list@dimagi.com
 sales_email: sales@dimagi.com
@@ -81,6 +77,7 @@ eula_change_email: eula-notifications@dimagi.com
 contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
+solutions_aes_email: solutions-tech-app-engineers@dimagi.com
 show_maintenance_updates_on_deploy: False
 
 couch_dbs:
@@ -127,16 +124,18 @@ localsettings:
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
   CELERY_PERIODIC_QUEUE: 'celery_null'
+  CELERY_REPEAT_RECORD_DATASOURCE_QUEUE: "repeat_record_datasource_queue"
   COMMCARE_ANALYTICS_HOST: "https://commcare-analytics-staging.dimagi.com"
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
   COUCH_PASSWORD: "{{ COUCH_PASSWORD }}"
   COUCH_USERNAME: "{{ COUCH_USERNAME }}"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
-  ELASTICSEARCH_MAJOR_VERSION: 5
+  ELASTICSEARCH_MAJOR_VERSION: 6
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
+  ENABLE_BHA_CASE_SEARCH_ADAPTER: True
   ENABLE_SOFT_ASSERT_EMAILS: True
   IS_DIMAGI_ENVIRONMENT: True
   ENFORCE_TWO_FACTOR_FOR_SUPERUSERS: False
@@ -175,7 +174,6 @@ localsettings:
   SMS_QUEUE_ENABLED: True
   SUMOLOGIC_URL: "{{ SUMOLOGIC_URL }}"
   USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER: True
-  WS4REDIS_CONNECTION_HOST: "redis.staging.commcare.local"
   ENABLE_NEW_TRIAL_EXPERIENCE: True
   STATIC_ROOT:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
@@ -189,14 +187,14 @@ localsettings:
   ES_USERS_INDEX_MULTIPLEXED: False
   ES_GROUPS_INDEX_MULTIPLEXED: False
   ES_DOMAINS_INDEX_MULTIPLEXED: False
-  ES_APPS_INDEX_SWAPPED: False
-  ES_CASE_SEARCH_INDEX_SWAPPED: False
-  ES_CASES_INDEX_SWAPPED: False
-  ES_DOMAINS_INDEX_SWAPPED: False
-  ES_FORMS_INDEX_SWAPPED: False
-  ES_GROUPS_INDEX_SWAPPED: False
-  ES_SMS_INDEX_SWAPPED: False
-  ES_USERS_INDEX_SWAPPED: False
+  ES_APPS_INDEX_SWAPPED: True
+  ES_CASE_SEARCH_INDEX_SWAPPED: True
+  ES_CASES_INDEX_SWAPPED: True
+  ES_DOMAINS_INDEX_SWAPPED: True
+  ES_FORMS_INDEX_SWAPPED: True
+  ES_GROUPS_INDEX_SWAPPED: True
+  ES_SMS_INDEX_SWAPPED: True
+  ES_USERS_INDEX_SWAPPED: True
   CASE_SEARCH_SUB_INDICES: {
       'co-carecoordination-test': {
           'index_cname': 'case_search_bha',
@@ -205,9 +203,16 @@ localsettings:
       'gherceg': {
           'index_cname': 'case_search_bha',
           'multiplex_writes': True,
+      },
+      'co-carecoordination-perf': {
+        'index_cname': 'case_search_cc_perf',
+        'multiplex_writes': True,
       }
   }
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
+  CONNECTID_CHANNEL_URL: 'https://connectid.dimagi.com/messaging/create_channel/'
+  CONNECTID_MESSAGE_URL: 'https://connectid.dimagi.com/messaging/send_fcm/'
+  CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
 
 
 # comment these two lines out to make a new rackspace machine
@@ -228,14 +233,10 @@ celery_hours_before_soft_kill: 36
 efs_shared_mount_dir: "shared{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 efs_shared_mount_endpoint: "shared-efs.staging.commcare.local:/"
 efs_shared_mount_options: "_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
-shared_dir_gid: 1500
 
 # for better time syncronization on aws servers
 # replace ntp with chrony.
 use_chrony: True
-
-python_version: '3.9'
-use_deadsnakes: yes
 
 allow_aws_ssm_proxy: true
 
@@ -248,5 +249,3 @@ formplayer_java_version: "{{ java_17_bin_path }}/java"
 maintenance_start_time: "06:00"
 
 maintenance_end_time: "08:00"
-
-use_webpack: true

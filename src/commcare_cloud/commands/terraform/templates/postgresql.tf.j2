@@ -10,6 +10,8 @@ module "postgresql__{{ rds_instance.identifier }}" {
     storage = {{ rds_instance.storage|tojson }}
     max_storage = {{ rds_instance.max_storage|tojson }}
     storage_type = {{ rds_instance.storage_type|tojson }}
+    iops = {{ rds_instance.iops|tojson }}
+    storage_throughput = {{ rds_instance.storage_throughput|tojson }}
     create = {{ rds_instance.create|tojson }}
     username = {{ rds_instance.username|tojson }}
     backup_window = {{ rds_instance.backup_window|tojson }}
@@ -28,6 +30,7 @@ module "postgresql__{{ rds_instance.identifier }}" {
     },
     {%- endfor %}
   ]
+  rds_monitoring_role_arn = module.Users.rds_monitoring_role_arn
   subnet_ids = values(module.network.subnets-db-private)
   vpc_security_group_ids = compact([module.network.rds-sg, module.network.vpn-connections-sg])
   create = "true"

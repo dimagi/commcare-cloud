@@ -63,7 +63,6 @@ localsettings:
   EMAIL_SMTP_PORT: '1025'
   # use True in prod!
   EMAIL_USE_TLS: no
-  FULLSTORY_ID:
   HQ_INSTANCE: 'dev'
   J2ME_ADDRESS: ''
   REDIS_DB: '0'

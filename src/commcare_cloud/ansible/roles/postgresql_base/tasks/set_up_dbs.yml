@@ -132,9 +132,7 @@
       GRANT USAGE ON FOREIGN DATA WRAPPER postgres_fdw TO {{ postgres_users.commcare.username }};
   when: postgresql_dbs.repeaters and postgresql_host == postgresql_dbs.main.host
 
-- name: Create repeaters_fdw_user in repeaters database
-  # for postgres_fdw because it changes session settings like
-  # search_path that interfere with other pgbouncer clients
+- name: Drop unused repeaters_fdw_user in repeaters database
   become: yes
   become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
   postgresql_query:
@@ -145,10 +143,6 @@
     login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
     query: |
       DO $$ BEGIN
-        IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'repeaters_fdw_user') THEN
-          CREATE USER repeaters_fdw_user
-            WITH PASSWORD '{{ postgres_users.commcare.password }}'
-            IN ROLE "{{ postgres_users.commcare.username }}";
-        END IF;
+        DROP USER IF EXISTS repeaters_fdw_user;
       END $$;
   when: postgresql_dbs.repeaters and postgresql_host == postgresql_dbs.repeaters.host

@@ -31,7 +31,7 @@ Backup to Amazon S3 or a compatible service
 S3 credentials
 ^^^^^^^^^^^^^^
 
-In order to use this service, you will need to add your S3 credentials to the ``localsettings_private`` section of your **\ `vault file <https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md#managing-secrets-with-vault>`_\ **\ :
+In order to use this service, you will need to add your S3 credentials to the ``localsettings_private`` section of your `vault file <https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md#managing-secrets-with-vault>`_:
 
 
 * ``AMAZON_S3_ACCESS_KEY``\ : Your aws access key id
@@ -77,8 +77,8 @@ PostgreSQL backups are made daily and weekly by default and can be made hourly o
   * ``plain`` - uses the `pg_basebackup <https://www.postgresql.org/docs/9.6/app-pgbasebackup.html>`_ command to write a backup to the ``postgresql_backup_dir``. 
   * ``dump`` - uses the `pg_dumpall <https://www.postgresql.org/docs/9.6/app-pg-dumpall.html>`_ command to write a dump of the database to the ``postgresql_backup_dir``.
 
-* `postgresql_backup_days`: The number of days to keep daily backups (Default: 1)
-* `postgresql_backup_weeks`: The number of weeks to keep weekly backups (Default: 1)
+* `postgresql_backup_days`: The number of days to keep daily backups (Default: 2)
+* `postgresql_backup_weeks`: The number of weeks to keep weekly backups (Default: 2)
 * `postgres_backup_hourly`: Boolean value to enable or disable hourly backups. (Default: false)
 * `postgresql_backup_hours`: The number of hours to keep hourly backups (Default: 1).
 
@@ -223,9 +223,9 @@ CouchDB backups are made daily and weekly and optionally hourly. Old backups are
 
 * ``backup_couch: True`` to enable couchdb backups (Default: ``False``\ )
 * ``couch_s3: True`` to enable sending couchdb backups to your S3 provider (Default: ``False``\ )
-* `couch_backup_dir`: the directory to save backups in (Default: ``/opt/data/backups/couchdb2``\ )
-* `couchdb_backup_days`: The number of days to keep daily backups (Default: 1)
-* `couchdb_backup_weeks`: The number of weeks to keep weekly backups (Default: 1)
+* `couch_backup_dir`: The directory to save backups in (Default: ``/opt/data/backups/couchdb2``\ )
+* `couchdb_backup_days`: The number of days to keep daily backups (Default: 2)
+* `couchdb_backup_weeks`: The number of weeks to keep weekly backups (Default: 2)
 * `couch_backup_hourly`: Boolean value to enable or disable hourly backups. (Default: false)
 * `couchdb_backup_hours`: The number of hours to keep hourly backups (Default: 1).
 

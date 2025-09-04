@@ -40,8 +40,8 @@
     # delete any empty directories so they don't just build up (to literally 100,000+)
     # but leaving any that have been modified in the last 20m
     # (to avoid a race condition on newly created dirs)
-    # Also never delete {{ formplayer_access_log_dir }}
-    job: 'find {{ formplayer_data_dir }} -path {{ formplayer_access_log_dir }} -prune -o -empty -type d -mmin +20 -delete'
+    # and skip {{ formplayer_access_log_dir }} and its contents
+    job: "find {{ formplayer_data_dir }} -mindepth 1 -not -path {{ formplayer_access_log_dir }} -not -path '{{ formplayer_access_log_dir }}/*' -empty -type d -mmin +20 -delete"
     user: '{{ cchq_user }}'
     state: present
   tags:
@@ -166,6 +166,16 @@
     - formplayer_deploy
   when: not _should_update_formplayer_in_place and current_stat.stat.exists
 
+- name: Register current formplayer release
+  shell: "readlink {{ formplayer_current_dir }}"
+  check_mode: no
+  register: current_release_result
+  changed_when: no
+  failed_when: no
+  tags:
+    - localsettings
+    - formplayer_deploy
+
 - name: Update formplayer config files
   become: yes
   template:
@@ -179,6 +189,13 @@
       filename: application.properties
     - template: logback-spring.xml.j2
       filename: logback-spring.xml
+  vars:
+    current_formplayer_release: >-
+      {{
+      (("%s-%s" % (current_release_result.stdout, env_monitoring_id)) | basename)
+      if current_release_result.stdout and _should_update_formplayer_in_place
+      else formplayer_release_name
+      }}
   tags:
     - localsettings
     - formplayer_deploy

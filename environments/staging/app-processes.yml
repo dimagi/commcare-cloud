@@ -1,9 +1,9 @@
-formplayer_command_args: ''
-# Use the following to enable datadog tracing
-# formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.java.org.javarosa.enableOpenTracing=true'
+# Use the following to enable datadog tracing for formplayer
+formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.java.org.javarosa.enableOpenTracing=true -Ddd.service=formplayer -Ddd.env=staging -Ddd.trace.sample.rate=1.0'
 
-django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
-datadog_pythonagent: True
+# Use the following to enable datadog tracing for webworkers aka hq
+# django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
+# datadog_pythonagent: True
 
 management_commands:
   celery_a1:
@@ -40,9 +40,17 @@ celery_processes:
     malt_generation_queue:
       pooling: gevent
       concurrency: 1
-    reminder_case_update_queue,reminder_queue,repeat_record_queue:
+    reminder_case_update_queue,reminder_queue:
+      pooling: gevent
+      concurrency: 2
+    repeat_record_queue:
       pooling: gevent
       concurrency: 4
+      prefetch_multiplier: 1
+    repeat_record_datasource_queue:
+      pooling: gevent
+      concurrency: 2
+      prefetch_multiplier: 1
     reminder_case_update_bulk_queue,reminder_rule_queue:
       concurrency: 1
     send_report_throttled:
@@ -54,8 +62,60 @@ celery_processes:
       prefetch_multiplier: 1
     ush_background_tasks:
       concurrency: 2
+    geospatial_queue:
+      concurrency: 1
     beat: {}
     flower: {}
+  celery_a2:
+    analytics_queue,sms_queue,sumologic_logs_queue:
+      pooling: gevent
+      concurrency: 2
+    email_queue:
+      pooling: gevent
+      concurrency: 2
+    async_restore_queue:
+      concurrency: 2
+    background_queue:
+      concurrency: 2
+    case_import_queue,user_import_queue,export_download_queue:
+      concurrency: 2
+      prefetch_multiplier: 1
+    case_rule_queue,saved_exports_queue,ucr_indicator_queue:
+      concurrency: 2
+      prefetch_multiplier: 1
+    celery:
+      concurrency: 2
+    celery_periodic:
+      concurrency: 2
+    linked_domain_queue,logistics_background_queue,logistics_reminder_queue:
+      concurrency: 1
+    malt_generation_queue:
+      pooling: gevent
+      concurrency: 1
+    reminder_case_update_queue,reminder_queue:
+      pooling: gevent
+      concurrency: 2
+    repeat_record_queue:
+      pooling: gevent
+      concurrency: 2
+      prefetch_multiplier: 1
+    repeat_record_datasource_queue:
+      pooling: gevent
+      concurrency: 2
+      prefetch_multiplier: 1
+    reminder_case_update_bulk_queue,reminder_rule_queue:
+      concurrency: 1
+    send_report_throttled:
+      concurrency: 1
+    submission_reprocessing_queue:
+      concurrency: 1
+    ucr_queue:
+      concurrency: 2
+      prefetch_multiplier: 1
+    ush_background_tasks:
+      concurrency: 2
+    geospatial_queue:
+      concurrency: 1
 pillows:
   'pillow5':
     AppDbChangeFeedPillow:

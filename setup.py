@@ -1,36 +1,31 @@
-from __future__ import absolute_import
-
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 install_deps = [
     'ansible-vault==2.1.0',
     'ansible~=4.3',
     'ansible-inventory==0.6.4',
     'argparse>=1.4',
-    'attrs>=18.1.0',
-    'boto3>=1.9.131',
+    'boto3',
+    'attrs',
     'clint',
     'couchdb-cluster-admin',
-    'cryptography~=42.0',
+    'cryptography',
     'datadog>=0.2.0',
     'dimagi-memoized>=1.1.0',
     'dnspython',
     'gitpython',
-    'importlib-metadata==3.1.0',
     'jinja2-cli',
     'jsonobject',
     'netaddr',
     'passlib',
     'pycryptodome>=3.6.6',  # security update
-    'PyGithub>=1.43.3',
+    'PyGithub',
     'pytz',
     'simplejson',
-    'six',
     'tabulate'
 ]
 test_deps = [
     'docopt',
-    'modernize',
     'nose @ git+https://github.com/dimagi/nose.git@06dff28bbe661b9d032ce839ea0ec8e9eaf6f337',
     'parameterized>=0.6.1',
     'requests-mock',

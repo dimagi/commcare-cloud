@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 import hashlib
 import os
 import shutil
@@ -143,7 +141,6 @@ class CopyFiles(CommandBase):
 
 def read_plan(plan_path, target_env, limit=None):
     with open(plan_path, 'r', encoding='utf-8') as f:
-        # PY2: yaml.safe_load returns byte strings when the content is ASCII-only bytes
         plan_dict = yaml.safe_load(f)
 
     source_env = None
@@ -202,7 +199,6 @@ def prepare_file_copy_scripts(target_host, source_file_configs, script_root):
             filename = get_file_list_filename(config)
             path = os.path.join(target_script_root, filename)
             with open(path, 'w', encoding='utf-8') as f:
-                # PY2: unicode literals will coerce bytes -> unicode on py2
                 f.write('{}\n'.format('\n'.join(files)))
 
             files_for_node.append((config, filename))

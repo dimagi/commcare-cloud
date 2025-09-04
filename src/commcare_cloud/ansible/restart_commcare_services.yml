@@ -42,3 +42,9 @@
   vars:
     webworker_hosts: 'mobile_webworkers'
   when: "'mobile_webworkers' in groups"
+
+- name: "Restart api_webworkers (if split)"
+  import_playbook: restart_webworker_services.yml
+  vars:
+    webworker_hosts: 'api_webworkers'
+  when: "'api_webworkers' in groups"

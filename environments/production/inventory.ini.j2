@@ -9,6 +9,10 @@ proxy_b3
 
 {{ __web_b2__ }}
 
+{{ __web_a_a__ }}
+
+{{ __web_a_b__ }}
+
 {{ __web_m_a2__ }}
 
 {{ __web_m_b2__ }}
@@ -20,12 +24,17 @@ proxy
 web_a2
 web_b2
 
+[api_webworkers:children]
+web_a_a
+web_a_b
+
 [mobile_webworkers:children]
 web_m_a2
 web_m_b2
 
 [webworkers:children]
 hq_webworkers
+api_webworkers
 mobile_webworkers
 
 {{ __pgbouncer_a4__ }} pgbouncer_processes=2
@@ -154,11 +163,9 @@ pillow_a2
 pillow_b2
 
 {{ __formplayer_a1__ }}
-{{ __formplayer_a2__ }}
 
 [formplayer:children]
 formplayer_a1
-formplayer_a2
 
 [formplayer:vars]
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
@@ -247,15 +254,11 @@ elasticsearch_data=false
 {{ __couch12__ }}
 
 {{ __couch_a0__ }}
-{{ __couch_a1__ }}
-{{ __couch_b0__ }}
 
 [couchdb2:children]
 couch11
 couch12
 couch_a0
-couch_a1
-couch_b0
 
 [couchdb2:vars]
 swap_size=2G
