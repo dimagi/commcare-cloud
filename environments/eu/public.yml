@@ -107,9 +107,6 @@ contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
 
-ALTERNATE_HOSTS:
-  - nu2sk6wk2n.eu.commcarehq.org
-
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 localsettings:
