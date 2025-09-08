@@ -424,6 +424,7 @@ redis_cache = {
     'LOCATION': '{{ redis_url }}',
 {% endif %}
     'OPTIONS': {
+        'IGNORE_EXCEPTIONS': True, # https://dimagi.atlassian.net/browse/SAAS-14429
         'REDIS_CLIENT_KWARGS': {
             'health_check_interval': 15,
         },
