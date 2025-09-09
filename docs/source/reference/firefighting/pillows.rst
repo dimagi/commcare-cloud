@@ -131,4 +131,4 @@ TODO: link to read the docs
 Decrease allowed global usage
 *****************************
 
-TODO: link to rate limiting docs
+If available, consider rate limiting as an option to keep the system functional.
