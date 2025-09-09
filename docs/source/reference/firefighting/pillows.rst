@@ -85,9 +85,14 @@ In either case, if we decide that waiting for the issue to resolve is not an opt
 Check pillow processing time
 ****************************
 
-Use the average pillow processing time graph to determine if there is a steady increase in processing time that correlates with when the lag began. This can be due to the load being processed including multiple processors. For example, some cases will only need to be saved to elasticsearch, while others might also involve updating a UCR datasource and/or running a deduplication rule.
+See `average pillow processing time <https://app.datadoghq.com/s/5c4af2ac8/3e7-rzn-zg6>`_
+to determine if there is a steady increase in processing time that correlates with when the lag
+began. This can be due to current load requiring multiple processors. For example, some cases will
+only need to be saved to elasticsearch, while others might also involve updating a UCR datasource
+and/or running a deduplication rule.
 
-There aren’t necessarily followup actions to take here, but it is useful information.
+There aren't any quick followup actions to take here, but seeing frequent increases in processing time
+can be a sign that one or more processors needs to be optimized to increase throughput.
 
 Check pillow errors
 *******************
