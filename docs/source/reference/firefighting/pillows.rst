@@ -99,11 +99,12 @@ Check pillow errors
 
 Pillow errors can be found in:
 
-Django Admin’s pillow errors. See if there is any new pillow error created recently.
+- Django Admin’s pillow errors
+- Sentry by filtering by the pillow_name, eg. “pillow_name: case-pillow“
 
-Sentry by filtering by the pillow_name, eg. “pillow_name: case-pillow“
-
-You should look for pillow errors that have been created recently. This could be an indication of a recent code change that is causing errors when processing changes in pillows. You can use the stacktrace available in each pillow error to diagnose and resolve the bug.
+You should look for pillow errors that have been created recently. This could be an indication of a recent
+code change that is causing errors when processing changes in pillows. You can use the stacktrace available
+in each pillow error to diagnose and resolve the bug.
 
 Check pillow logs
 *****************
