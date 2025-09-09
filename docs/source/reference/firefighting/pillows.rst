@@ -72,17 +72,15 @@ Check status of pillow processes
 Check load on impacted pillow
 *****************************
 
-See the load dashboard to correlate recent increases in load with increases in pillow lag.
+Check the `load dashboard <https://app.datadoghq.com/dashboard/hqu-2az-y2y/hq-load-forms-cases-ledgers-sms-ucr?fromUser=false&refresh_mode=sliding&from_ts=1749584335998&to_ts=1752003535998&live=true>`_
+to determine if the pillow issues are caused by increased activity on a specific project.
 
 If there is correlated load activity, is the activity ongoing or complete?
 
-If ongoing, try to get more information about that activity
+- If ongoing, try to get more information about that activity.
+- If complete, try to estimate the time to recovery by understanding the throughput/rate of changes processed, and how many changes still need to be processed.
 
-Is there an internal team member who has context on the project
-
-If complete, try to estimate the time to recovery. How to estimate?
-
-In either case, if we decide that waiting for the issue to resolve is not an option, see section on “Increasing pillow processing capacity”
+In either case, if we decide that waiting for the issue to resolve is not an option, see section on `Increase pillow processing capacity`_.
 
 Check pillow processing time
 ****************************
