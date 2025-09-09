@@ -109,14 +109,11 @@ in each pillow error to diagnose and resolve the bug.
 Check pillow logs
 *****************
 
-1. Before viewing logs, you need to determine which pillowtop machine contains the logs you are interested in.
+Before viewing logs, you need to determine which pillowtop machine contains the logs you are interested in.
+You can find out which machine(s) a pillow process runs on by viewing the `<env>/app_processes.yml` file.
 
-   You can find out which machine(s) a pillow process runs on by viewing the `<env>/app_processes.yml`
-
-2. You can view logs in cloudwatch or directly on the machine
-
-   To see where logs live on the machine, run: `cchq <env> service pillowtop logs`
-
+You can view logs in cloudwatch or directly on the machine. To view logs directly on the machine,
+run: `cchq <env> service pillowtop logs` to see where logs live.
 
 
 Resolve pillow issues
