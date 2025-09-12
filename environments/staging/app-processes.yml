@@ -142,6 +142,7 @@ pillows:
       num_processes: 1
     case-pillow:
       num_processes: 2
+      gevent_workers: 4
       processor_chunk_size: 1
       dedicated_migration_process: True
     xform-pillow:
