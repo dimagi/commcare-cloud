@@ -486,13 +486,13 @@ class Webworker(SingleSupervisorService):
         return super().run(action, host_pattern=host_pattern, process_pattern=process_pattern)
 
 
-def _restart_commcare_services(environment, limit, name="commcare"):
-    from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
+def _restart_commcare_services(environment, limit):
+    from commcare_cloud.commands.ansible.ansible_playbook import (
+        run_ansible_playbook,
+    )
     return run_ansible_playbook(
-        # grep:
-        # restart_commcare_services.yml
-        # restart_webworker_services.yml
-        playbook=f'restart_{name}_services.yml',
+
+        playbook='restart_commcare_services.yml',
         ansible_context=AnsibleContext(None, environment),
         limit=limit,
         skip_check=True,
