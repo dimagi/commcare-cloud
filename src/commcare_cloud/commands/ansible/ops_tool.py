@@ -241,6 +241,7 @@ class PillowTopicAssignments(CommandBase):
         args.server = "django_manage[0]"
         args.tmux = None
         args.tee_file = None
+        args.quiet = None
         return DjangoManage(self.parser).run(args, manage_args)
 
 

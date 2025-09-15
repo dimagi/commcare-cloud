@@ -11,6 +11,8 @@ command={{ django_bash_runner if prometheus_monitoring_enabled else django_direc
     {% if params.get('dedicated_migration_process') %}--dedicated-migration-process{% endif %}
     {% if params.get('processor_chunk_size') %}--processor-chunk-size={{params.get('processor_chunk_size')}}{% endif %}
     {% if params.get('exclude_ucrs') %}--exclude-ucrs={{params.get('exclude_ucrs') | join(", ") }}{% endif %}
+    {% if params.get('gevent_workers') and (num_process > 0 or not params.get('dedicated_migration_process'))
+    %}--gevent-workers={{ params.get('gevent_workers') }}{% endif %}
 
 directory={{ code_home }}
 user=cchq
