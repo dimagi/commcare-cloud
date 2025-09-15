@@ -482,7 +482,7 @@ class Webworker(SingleSupervisorService):
         if action == 'restart':
             if process_pattern:
                 raise NotImplementedError("restart --only=... is not supported")
-            return _restart_commcare_services(self.environment, host_pattern, 'webworker')
+            return _restart_webworker_services(self.environment, host_pattern)
         return super().run(action, host_pattern=host_pattern, process_pattern=process_pattern)
 
 
