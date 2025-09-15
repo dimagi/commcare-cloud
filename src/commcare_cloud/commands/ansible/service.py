@@ -354,7 +354,9 @@ class Elasticsearch(ServiceBase):
             sys.exit(1)
 
     def _run_rolling_restart_yml(self, tags, limit):
-        from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
+        from commcare_cloud.commands.ansible.ansible_playbook import (
+            run_ansible_playbook,
+        )
         extra_args = ['--tags={}'.format(tags)]
         if limit:
             extra_args.extend(['--limit={}'.format(limit)])
@@ -495,6 +497,21 @@ def _restart_commcare_services(environment, limit, name="commcare"):
         limit=limit,
         skip_check=True,
         quiet=True,
+    )
+
+
+def _restart_webworker_services(environment, limit):
+    from commcare_cloud.commands.ansible.ansible_playbook import (
+        run_ansible_playbook,
+    )
+
+    return run_ansible_playbook(
+        playbook='restart_webworker_services.yml',
+        ansible_context=AnsibleContext(None, environment),
+        limit=limit,
+        skip_check=True,
+        quiet=True,
+        unknown_args=['-e', 'webworker_hosts=webworkers'],
     )
 
 
