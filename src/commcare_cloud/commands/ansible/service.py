@@ -1,22 +1,24 @@
 import re
-from abc import ABCMeta, abstractmethod, abstractproperty
-from collections import defaultdict, OrderedDict
-from itertools import groupby
 import sys
+from abc import ABCMeta, abstractmethod, abstractproperty
+from collections import OrderedDict, defaultdict
+from itertools import groupby
 
 import attr
-from clint.textui import puts, indent
+from clint.textui import indent, puts
 
+from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_error
 from commcare_cloud.commands.ansible.helpers import (
-    AnsibleContext, get_django_webworker_name,
-    get_formplayer_spring_instance_name,
+    AnsibleContext,
+    get_all_supervisor_processes_by_host,
     get_celery_workers,
+    get_django_webworker_name,
+    get_formplayer_spring_instance_name,
     get_pillowtop_processes,
-    get_all_supervisor_processes_by_host)
-from commcare_cloud.cli_utils import ask
+)
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
-from commcare_cloud.commands.command_base import CommandBase, Argument
+from commcare_cloud.commands.command_base import Argument, CommandBase
 from commcare_cloud.environment.paths import get_role_defaults
 
 ACTIONS = ['start', 'stop', 'restart', 'status', 'logs', 'help']
