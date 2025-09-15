@@ -491,7 +491,6 @@ def _restart_commcare_services(environment, limit):
         run_ansible_playbook,
     )
     return run_ansible_playbook(
-
         playbook='restart_commcare_services.yml',
         ansible_context=AnsibleContext(None, environment),
         limit=limit,
