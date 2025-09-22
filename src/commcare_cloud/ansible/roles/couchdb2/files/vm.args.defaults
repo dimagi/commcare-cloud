@@ -3,3 +3,6 @@
 
 # Set maximum SSL session lifetime to reap terminated replication readers
 -ssl session_lifetime 300
+
+-kernel inet_dist_listen_min 9100
+-kernel inet_dist_listen_max 9200
