@@ -7,11 +7,11 @@ environment: "bk-production"
 skip_ebs_snapshots: "yes"
 ssl_policy: 'ELBSecurityPolicy-FS-1-2-Res-2020-10'
 azs:
+  - "us-east-2a"
   - "us-east-2b"
-  - "us-east-2c"
 az_codes:
+  - a
   - b
-  - c
 vpc_begin_range: "10.212"
 
 ec2_metadata_tokens_required: yes
@@ -20,7 +20,7 @@ servers:
   - server_name: "control_a0-bk-production"
     server_instance_type: t3a.medium
     network_tier: "app-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     group: "control"
     os: jammy
@@ -28,7 +28,7 @@ servers:
   - server_name: "djangomanage_a0-bk-production"
     server_instance_type: t3a.large
     network_tier: "app-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     group: "django_manage"
     os: jammy
@@ -36,7 +36,7 @@ servers:
   - server_name: "web_a{i}-bk-production"
     server_instance_type: t3a.large
     network_tier: "app-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     volume_encrypted: yes
     group: "hq_webworkers"
@@ -56,7 +56,7 @@ servers:
   - server_name: "esmaster_a1-bk-production"
     server_instance_type: t3a.xlarge
     network_tier: "db-private"
-    az: "c"
+    az: "a"
     group: "elasticsearch"
     os: jammy
     volume_size: 20
@@ -73,7 +73,7 @@ servers:
   - server_name: "esmaster_c1-bk-production"
     server_instance_type: t3a.xlarge
     network_tier: "db-private"
-    az: "c"
+    az: "a"
     group: "elasticsearch"
     os: jammy
     volume_size: 20
@@ -82,7 +82,7 @@ servers:
   - server_name: "es_a2{i}-bk-production"
     server_instance_type: t3a.xlarge
     network_tier: "db-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     volume_encrypted: yes
     block_device:
@@ -106,7 +106,7 @@ servers:
   - server_name: "es_a3{i}-bk-production"
     server_instance_type: t3a.xlarge
     network_tier: "db-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     volume_encrypted: yes
     block_device:
@@ -130,7 +130,7 @@ servers:
   - server_name: "couch_a0-bk-production"
     server_instance_type: t3a.small
     network_tier: "db-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     volume_encrypted: yes
     block_device:
@@ -142,7 +142,7 @@ servers:
   - server_name: "rabbit_a0-bk-production"
     server_instance_type: t3a.small
     network_tier: "db-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     volume_encrypted: yes
     group: "rabbitmq"
@@ -151,7 +151,7 @@ servers:
   - server_name: "celery_a{i}-bk-production"
     server_instance_type: t3a.medium
     network_tier: "app-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     volume_encrypted: yes
     group: "celery"
@@ -161,7 +161,7 @@ servers:
   - server_name: "pillow_a{i}-bk-production"
     server_instance_type: t3a.medium
     network_tier: "app-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     group: "pillowtop"
     os: jammy
@@ -170,7 +170,7 @@ servers:
   - server_name: "formplayer_a{i}-bk-production"
     server_instance_type: t3a.small
     network_tier: "app-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     group: "formplayer"
     os: jammy
@@ -179,7 +179,7 @@ servers:
   - server_name: "kafka_a0-bk-production"
     server_instance_type: t3a.small
     network_tier: "db-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     volume_encrypted: no
     group: "kafka"
@@ -188,7 +188,7 @@ servers:
   - server_name: "pgbouncer_a0-bk-production"
     server_instance_type: t3a.small
     network_tier: "db-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     volume_encrypted: yes
     group: "postgresql"
@@ -198,7 +198,7 @@ proxy_servers:
   - server_name: "proxy_a0-bk-production"
     server_instance_type: t3a.large
     network_tier: "public"
-    az: "c"
+    az: "a"
     volume_size: 20
     group: "proxy"
     os: jammy
