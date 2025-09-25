@@ -147,6 +147,7 @@ pillows:
       dedicated_migration_process: True
     xform-pillow:
       num_processes: 2
+      gevent_workers: 4
       dedicated_migration_process: True
     group-pillow:
       num_processes: 1
