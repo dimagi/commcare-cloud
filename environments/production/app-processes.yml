@@ -140,8 +140,8 @@ pillows:
     UserGroupsDbKafkaPillow:
       num_processes: 1
   pillow_b2000:
-  # case-sql partitions: 96
+  # case-sql partitions: 96 = 4 * 24 (one greenlet per partition)
     case-pillow:
-      num_processes: 49
-      total_processes: 49
+      num_processes: 5
+      gevent_workers: 24
       dedicated_migration_process: True
