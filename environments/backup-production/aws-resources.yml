@@ -6,6 +6,12 @@ couch_a1-bk-production: 10.212.41.62
 couch_a1-bk-production.instance_id: i-0dde79ea855218d9f
 couch_a2-bk-production: 10.212.41.29
 couch_a2-bk-production.instance_id: i-06d41c8d2726ca675
+couch_a3-bk-production: 10.212.41.164
+couch_a3-bk-production.instance_id: i-03a02355e6a300329
+couch_a4-bk-production: 10.212.41.77
+couch_a4-bk-production.instance_id: i-04b818049fe6b9aef
+couch_a5-bk-production: 10.212.41.113
+couch_a5-bk-production.instance_id: i-09389818f56087850
 couch_alb-bk-production: internal-couch-alb-bk-production-62333703.us-east-2.elb.amazonaws.com
 formplayer-efs: fs-0287582bff16a9a0b.efs.us-east-2.amazonaws.com
 frontend_alb-bk-production: internal-frontend-alb-bk-production-194015126.us-east-2.elb.amazonaws.com
