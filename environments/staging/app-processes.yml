@@ -145,6 +145,10 @@ pillows:
       gevent_workers: 4
       processor_chunk_size: 1
       dedicated_migration_process: True
+    demo-case-pillow:
+      # add include_demo_topic: True to case-pillow if you remove this to drain the demo topic
+      num_processes: 1
+      processor_chunk_size: 1
     xform-pillow:
       num_processes: 2
       gevent_workers: 4
