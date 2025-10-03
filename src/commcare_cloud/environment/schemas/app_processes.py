@@ -45,7 +45,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     formplayer_maxmetaspacesize = MemorySpecProperty()
     formplayer_g1heapregionsize = MemorySpecProperty()
     http_proxy = IpAddressAndPortProperty()
-    django_command_prefix = jsonobject.StringProperty()
+    django_command_prefix = jsonobject.StringProperty()  # obsolete for ddtrace-run; use DD_TRACE_ENABLED=True
     celery_command_prefix = jsonobject.StringProperty()
     formplayer_command_args = jsonobject.StringProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()

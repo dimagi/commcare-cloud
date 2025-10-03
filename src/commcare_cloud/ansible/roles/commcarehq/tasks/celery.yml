@@ -41,5 +41,7 @@
         DD_SERVICE: "celery"
         # Set app-processes.yml:celery_processes.<host>.<proc>.env_vars.DD_TRACE_ENABLED=True
         # to enable APM on celery processes.
+        # NOTE: celery_command_prefix must also be set to enable APM on celery processes
+        # because automatic command prefix in celery_bash_runner.sh.j2 is too complicated.
         DD_TRACE_ENABLED: False
         DD_INSTRUMENTATION_TELEMETRY_ENABLED: False
