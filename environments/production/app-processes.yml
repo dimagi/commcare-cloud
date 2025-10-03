@@ -1,4 +1,4 @@
-# datadog_pythonagent: True
+datadog_pythonagent: True
 # django_command_prefix: '{% if inventory_hostname in groups["mobile_webworkers"] %}{{ virtualenv_home }}/bin/ddtrace-run {% endif %}'
 celery_command_prefix: ''
 gunicorn_workers_static_factor: 0
