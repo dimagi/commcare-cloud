@@ -98,6 +98,7 @@ datadog_patch_modules:
   - redis:true
   - sqlalchemy:true
   - elasticsearch:true
+datadog_profiling_enabled: false
 
 root_email: commcarehq-ops+root@example.com
 server_email: commcarehq-noreply@example.com

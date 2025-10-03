@@ -16,3 +16,8 @@
         DD_TRACE_DJANGO_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
         DD_TRACE_DEBUG: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
         DD_INSTRUMENTATION_TELEMETRY_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
+        DD_ENV: "{{ env_monitoring_id }}"
+        DD_SERVICE: "pillowtop"
+        DD_VERSION: "unknown"
+        DD_PROFILING_ENABLED: "{{'true' if datadog_profiling_enabled else 'false'}}"
+        #DD_DYNAMIC_INSTRUMENTATION_ENABLED: "{{'true' if datadog_continuous_profiling_enabled else 'false'}}"
