@@ -26,7 +26,6 @@ solutions_aes_email: solutions-tech-app-engineers@dimagi.com
 ALTERNATE_HOSTS:
   - rec-mobile.sante.gov.bf
   - onse-iss.commcarehq.org
-  - sic.snis-sante.mg
   - almanachhq.adsphcda.org.ng
 show_maintenance_updates_on_deploy: False
 
