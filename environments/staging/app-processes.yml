@@ -145,6 +145,10 @@ pillows:
       gevent_workers: 4
       processor_chunk_size: 1
       dedicated_migration_process: True
+    demo-case-pillow:
+      # when removing, use the DEMO_CASE_PILLOW ff to stop publishing new changes to this topic
+      num_processes: 1
+      processor_chunk_size: 1
     xform-pillow:
       num_processes: 2
       gevent_workers: 4
