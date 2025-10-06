@@ -105,4 +105,6 @@ internal_albs:
     health_check_interval: 30
     targets:
       - couch_a3-bk-production
+      - couch_a4-bk-production
+      - couch_a5-bk-production
 
