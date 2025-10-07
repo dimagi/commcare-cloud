@@ -39,8 +39,8 @@
   replace:
     path: "{{ snuba_virtualenv_path }}/snuba/snuba/settings.py"
     regexp: "^REDIS_PASSWORD = None"
-    replace: "REDIS_PASSWORD = '{{ localsettings_private.REDIS_PASSWORD }}'"
-  when: localsettings_private.REDIS_PASSWORD is defined
+    replace: "REDIS_PASSWORD = '{{ REDIS_PASSWORD }}'"
+  when: REDIS_PASSWORD is defined
 
 - name: Create supervisor file
   template:
