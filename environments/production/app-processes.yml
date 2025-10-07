@@ -152,6 +152,6 @@ pillows:
       num_processes: 33
       gevent_workers: 3
       dedicated_migration_process: True
-      env_vars:
-        DD_TRACE_ENABLED: True
-        DD_PROFILING_ENABLED: True
+      #env_vars:
+      #  DD_TRACE_ENABLED: True
+      #  DD_PROFILING_ENABLED: True
