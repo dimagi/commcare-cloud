@@ -37,7 +37,11 @@
         no_proxy: "{% if http_proxy_address is defined %}{{ groups['all'] | join(',') }},{{ app_processes_config.additional_no_proxy_hosts }}{% endif %}"
         PROMETHEUS_PUSHGATEWAY_HOST: "{% if prometheus_celery_pushgateway is defined %}{{ prometheus_celery_pushgateway }}{% endif %}"
         TMPDIR: '{{ encrypted_tmp }}'
-        DD_TRACE_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
-        DD_TRACE_DJANGO_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
-        DD_TRACE_DEBUG: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
-        DD_INSTRUMENTATION_TELEMETRY_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
+        DD_ENV: "{{ env_monitoring_id }}"
+        DD_SERVICE: "celery"
+        # Set app-processes.yml:celery_processes.<host>.<proc>.env_vars.DD_TRACE_ENABLED=True
+        # to enable APM on celery processes.
+        # NOTE: celery_command_prefix must also be set to enable APM on celery processes
+        # because automatic command prefix in celery_bash_runner.sh.j2 is too complicated.
+        DD_TRACE_ENABLED: False
+        DD_INSTRUMENTATION_TELEMETRY_ENABLED: False

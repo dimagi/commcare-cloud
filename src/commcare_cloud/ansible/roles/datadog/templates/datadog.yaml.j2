@@ -25,7 +25,7 @@ proxy_port: {{ http_proxy_port }}
 hostname: {{ alt_hostname }}.{{ internal_domain_name }}
 {% endif %}
 
-{% if 'webworkers' in group_names and app_processes_config.datadog_pythonagent %}
+{% if 'webworkers' in group_names and app_processes_config.webworkers.DD_TRACE_ENABLED|bool|default(False) %}
 apm_config:
   enabled: true
   replace_tags:

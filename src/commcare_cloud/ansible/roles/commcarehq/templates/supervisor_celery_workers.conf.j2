@@ -3,7 +3,7 @@
 
 {% if queue_names not in ("flower", "beat") %}
 [program:{{ project }}-{{ deploy_env }}-celery_{{ queue_names }}_{{worker_num}}]
-environment={% for name, value in item.env_vars.items() %}{% if value|string|length > 0 %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
+environment={% for name, value in [item, celery_params]|env_vars %}{{ name }}="{{ value }}",{% endfor %}
 
 command=/bin/bash {{ service_home }}/{{ deploy_env }}_celery_bash_runner.sh
     --events --loglevel=INFO --without-gossip
