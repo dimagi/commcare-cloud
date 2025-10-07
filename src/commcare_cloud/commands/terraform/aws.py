@@ -451,6 +451,8 @@ def _sync_sso_to_v1_credentials(aws_session_profile):
                 data = json.load(f)
             except JSONDecodeError:
                 continue
+            except UnicodeDecodeError:
+                continue
 
             if data.get('ProviderType') != 'sso':
                 continue
