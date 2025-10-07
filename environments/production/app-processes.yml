@@ -14,11 +14,18 @@ management_commands:
     run_sms_queue:
   pillow_a2000:
     run_pillow_retry_queue:
+
+# NOTE: to enable APM on celery, `celery_command_prefix`` must be set in
+# addition to `DD_TRACE_ENABLED=True` because automatic command prefix in
+# celery_bash_runner.sh.j2 is too complicated.
+#celery_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
 celery_processes:
   celery_a2000,celery_a2001,celery_b2000,celery_b2001:
     analytics_queue:
       pooling: gevent
       concurrency: 4
+      #env_vars:
+      #  DD_TRACE_ENABLED: True
     async_restore_queue:
       concurrency: 8
     background_queue:
