@@ -3,7 +3,6 @@ formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.jav
 
 # Use the following to enable datadog tracing for webworkers aka hq
 # django_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
-# datadog_pythonagent: True
 
 management_commands:
   celery_a1:

@@ -1,4 +1,3 @@
-# datadog_pythonagent: True
 # django_command_prefix: '{% if inventory_hostname in groups["mobile_webworkers"] %}{{ virtualenv_home }}/bin/ddtrace-run {% endif %}'
 celery_command_prefix: ''
 gunicorn_workers_static_factor: 0
@@ -6,6 +5,9 @@ gunicorn_workers_factor: 2
 formplayer_memory: "31g"
 formplayer_g1heapregionsize: "16m"
 formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.java.org.javarosa.enableOpenTracing=true -Ddd.profiling.enabled=true -XX:FlightRecorderOptions=stackdepth=256 -Ddd.service=formplayer -Ddd.env=production -Ddd.trace.sample.rate=1.0'
+#webworkers:
+#  env_vars:
+#    DD_TRACE_ENABLED: True
 management_commands:
   celerybeat_a0:
     run_submission_reprocessing_queue:

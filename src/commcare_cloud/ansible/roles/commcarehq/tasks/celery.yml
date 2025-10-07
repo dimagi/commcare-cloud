@@ -39,5 +39,7 @@
         TMPDIR: '{{ encrypted_tmp }}'
         DD_ENV: "{{ env_monitoring_id }}"
         DD_SERVICE: "celery"
-        DD_TRACE_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
-        DD_INSTRUMENTATION_TELEMETRY_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
+        # Set app-processes.yml:celery_processes.<host>.<proc>.env_vars.DD_TRACE_ENABLED=True
+        # to enable APM on celery processes.
+        DD_TRACE_ENABLED: False
+        DD_INSTRUMENTATION_TELEMETRY_ENABLED: False

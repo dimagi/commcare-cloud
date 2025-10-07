@@ -19,6 +19,7 @@ class CeleryOptions(jsonobject.JsonObject):
     max_tasks_per_child = jsonobject.IntegerProperty(default=None)
     num_workers = jsonobject.IntegerProperty(default=1)
     prefetch_multiplier = jsonobject.IntegerProperty(default=4)
+    env_vars = jsonobject.DictProperty()
 
 
 class PillowOptions(jsonobject.JsonObject):
@@ -30,6 +31,7 @@ class PillowOptions(jsonobject.JsonObject):
     total_processes = jsonobject.IntegerProperty(default=None, exclude_if_none=True)
     processor_chunk_size = jsonobject.IntegerProperty(default=None, exclude_if_none=True)
     exclude_ucrs = jsonobject.StringProperty(default=None, exclude_if_none=True)
+    env_vars = jsonobject.DictProperty()
 
 
 class AppProcessesConfig(jsonobject.JsonObject):
@@ -46,13 +48,13 @@ class AppProcessesConfig(jsonobject.JsonObject):
     django_command_prefix = jsonobject.StringProperty()
     celery_command_prefix = jsonobject.StringProperty()
     formplayer_command_args = jsonobject.StringProperty()
-    datadog_pythonagent = jsonobject.BooleanProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
     service_blacklist = jsonobject.ListProperty(str)
     management_commands = jsonobject.DictProperty(jsonobject.DictProperty())
     celery_processes = jsonobject.DictProperty(jsonobject.DictProperty(CeleryOptions))
     pillows = jsonobject.DictProperty(jsonobject.DictProperty(PillowOptions))
+    webworkers = jsonobject.DictProperty()
 
     celery_heartbeat_thresholds = jsonobject.DictProperty(int)
 
