@@ -51,8 +51,8 @@ redis.clusterString={{ groups.redis_cluster_master | join(":" + localsettings.RE
 redis.hostname={{ localsettings.REDIS_HOST }}
 {% endif %}
 
-{% if localsettings_private.get('REDIS_PASSWORD') %}
-redis.Password={{ localsettings_private.REDIS_PASSWORD }}
+{% if REDIS_PASSWORD %}
+redis.Password={{ REDIS_PASSWORD }}
 {% endif %}
 
 {% if formplayer_sensitive_data_logging %}
