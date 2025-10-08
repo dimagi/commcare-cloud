@@ -155,3 +155,8 @@ pillows:
       #env_vars:
       #  DD_TRACE_ENABLED: True
       #  DD_PROFILING_ENABLED: True
+      process:
+        "1":
+          env_vars:
+            DD_TRACE_ENABLED: True
+            DD_PROFILING_ENABLED: True
