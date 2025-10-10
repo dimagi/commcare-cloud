@@ -631,7 +631,7 @@ internal_albs:
     target_port: 15984
     health_check_interval: 30
     targets:
-      - couch11-production
+      # - couch11-production
       - couch12-production
       - couch_a0-production
 
