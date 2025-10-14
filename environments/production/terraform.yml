@@ -580,7 +580,7 @@ rds_instances:
 
   - identifier: "pgauditcare1-production"
     instance_type: "db.m6g.xlarge"
-    storage: 7000
+    storage: 7500
     storage_type: gp3
     multi_az: true
     engine_version: "14.18"
