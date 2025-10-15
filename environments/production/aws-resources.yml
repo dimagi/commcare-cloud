@@ -16,6 +16,10 @@ couch12-production: 10.202.40.52
 couch12-production.instance_id: i-0e9aaeea3a117206e
 couch_a0-production: 10.202.40.200
 couch_a0-production.instance_id: i-0451df80fe9da4eef
+couch_a1-production: 10.202.42.137
+couch_a1-production.instance_id: i-0462e4f254288af7b
+couch_a2-production: 10.202.40.87
+couch_a2-production.instance_id: i-0e11e09294c289a55
 couch_alb-production: internal-couch-alb-production-4251727.us-east-1.elb.amazonaws.com
 djangomanage_a1-production: 10.202.10.13
 djangomanage_a1-production.instance_id: i-05287a83c6f4dfc10
