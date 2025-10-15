@@ -277,7 +277,7 @@ def _run_auth_playbook(plan, ansible_context, action, working_directory):
         auth_pairs.update({
             (target_host, config.source_host, config.source_user) for config in source_configs
         })
-
+    keys_to_delete = set()
     for target_host, source_host, source_user in auth_pairs:
         _set_auth_key(
             AnsibleContext(None, plan.source_env),
@@ -288,6 +288,13 @@ def _run_auth_playbook(plan, ansible_context, action, working_directory):
             working_directory,
             remove=(action == 'remove'),
         )
+        if action == 'remove':
+            keys_to_delete.add(os.path.join(working_directory, 'id_rsa_{}.pub'.format(target_host)))
+
+    # Delete key files only after all authorized_key removals are complete
+    for key_file in keys_to_delete:
+        if os.path.exists(key_file):
+            os.remove(key_file)
 
 
 def _set_auth_key(source_context, source_host, source_user,
@@ -303,6 +310,3 @@ def _set_auth_key(source_context, source_host, source_user,
     state = 'absent' if remove else 'present'
     args = "user={} state={} key={{{{ lookup('file', '{}') }}}}".format(source_user, state, key_path)
     run_ansible_module(source_context, source_host, 'authorized_key', args)
-
-    if remove:
-        os.remove(key_path)
