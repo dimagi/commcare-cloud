@@ -2,7 +2,8 @@ gunicorn_workers_static_factor: 0
 gunicorn_workers_factor: 2
 formplayer_memory: "31g"
 formplayer_g1heapregionsize: "16m"
-formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.java.org.javarosa.enableOpenTracing=true -Ddd.profiling.enabled=true -XX:FlightRecorderOptions=stackdepth=256 -Ddd.service=formplayer -Ddd.env=production -Ddd.trace.sample.rate=1.0'
+# to enable profling, add `-Ddd.profiling.enabled=true -XX:FlightRecorderOptions=stackdepth=256` to formplayer_command_args
+formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.java.org.javarosa.enableOpenTracing=true -Ddd.service=formplayer -Ddd.env=production -Ddd.trace.sample.rate=1.0'
 #webworkers:
 #  env_vars:
 #    DD_TRACE_ENABLED: True
