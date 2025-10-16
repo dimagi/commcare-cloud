@@ -252,13 +252,13 @@ servers:
     os: jammy
   
   - server_name: "couch_a2-production"
-    server_instance_type: t3a.xlarge
+    server_instance_type: c6a.8xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 80
     volume_encrypted: yes
     block_device:
-      volume_size: 10
+      volume_size: 1000
       encrypted: yes
     group: "couchdb2"
     os: jammy
