@@ -304,5 +304,5 @@ def _set_auth_key(source_context, source_host, source_user,
     args = "user={} state={} key={{{{ lookup('file', '{}') }}}}".format(source_user, state, key_path)
     run_ansible_module(source_context, source_host, 'authorized_key', args)
 
-    if remove:
+    if remove and os.path.exists(key_path):
         os.remove(key_path)
