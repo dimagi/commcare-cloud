@@ -655,9 +655,9 @@ internal_albs:
     target_port: 15984
     health_check_interval: 30
     targets:
-      - couch12-production
       - couch_a0-production
       - couch_a1-production
+      - couch_a2-production
 
 elasticache_cluster:
   create: yes
