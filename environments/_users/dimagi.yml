@@ -30,6 +30,7 @@ dev_users:
     - skelly
     - sravfeyn
     - zeng
+    - jtank
   absent:
     - akjain
     - astone
