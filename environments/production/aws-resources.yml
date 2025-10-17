@@ -10,10 +10,6 @@ celerybeat_a0-production: 10.202.10.254
 celerybeat_a0-production.instance_id: i-01f0c88bdcd6cd42e
 control4-production: 10.202.10.11
 control4-production.instance_id: i-05a9ed9fd13fabd55
-couch11-production: 10.202.42.190
-couch11-production.instance_id: i-0aef627c2e6abe669
-couch12-production: 10.202.40.52
-couch12-production.instance_id: i-0e9aaeea3a117206e
 couch_a0-production: 10.202.40.200
 couch_a0-production.instance_id: i-0451df80fe9da4eef
 couch_a1-production: 10.202.42.137
