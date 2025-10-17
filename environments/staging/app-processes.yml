@@ -137,8 +137,7 @@ pillows:
     UserGroupsDbKafkaPillow:
       num_processes: 1
     case-pillow:
-      num_processes: 3
-      gevent_workers: 2
+      num_processes: 5
       dedicated_migration_process: True
     demo-case-pillow:
       # Turn off the DEMO_CASE_PILLOW feature flag and wait for pending messages
