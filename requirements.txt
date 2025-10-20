@@ -85,7 +85,7 @@ markupsafe==2.0.1
     # via jinja2
 netaddr==0.8.0
     # via commcare-cloud (setup.py)
-packaging==21.3
+packaging==25.0
     # via ansible-core
 passlib==1.7.4
     # via commcare-cloud (setup.py)
