@@ -56,6 +56,5 @@ setup(
         ],
     },
     install_requires=install_deps,
-    tests_require=test_deps,
     extras_require=extras,
 )
