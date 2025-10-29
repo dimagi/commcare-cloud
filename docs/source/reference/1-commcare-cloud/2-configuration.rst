@@ -86,10 +86,9 @@ Each of these files should contain YAML of the following format:
        - <username4>
        ...
 
-The ``present`` section will have a list of users who have access to your servers. The name you add here should be their desired system username, and should correspond to the name of their public key in ``<username>.pub`` under `\ ``_authorized_keys`` <#_authorized_keys>`_.
+The ``present`` section will have a list of users who have access to your servers. The name you add here should be their desired system username, and should correspond to the name of their public key in ``<username>.pub`` under `_authorized_keys`_.
 
-Each ``<username>`` must correspond to that used in a ``<username>.pub``
-under .
+Each ``<username>`` must correspond to that used in a ``<username>.pub`` under `_authorized_keys`_.
 
 The ``absent`` section lists those users whose access you want to remove from your servers when running the user update scripts.
 
@@ -241,6 +240,22 @@ For all features to work, each of these ETL processors
 for no good reason beyond historical accident) just listed must appear
 at least once, and up to once per host. An ETL processor not mentioned
 will not be run at all.
+
+ETL processor parameters:
+
+* ``num_processes``: the number of processes to create for this ETL processor on
+  this host.
+* ``total_processes``: default 1; the total number of processes for this ETL
+  processor across all hosts. This is used to calculate the ``--process-number``
+  option for each process.
+* ``gevent_workers``: default 0; the number of in-process concurrent workers to
+  create consuming from this queue on this host. Gevent is not used with the
+  default value of 0. If specified the value must be 2 or more. A single gevent
+  worker is not allowed since it would have no benefit. NOTE: if
+  ``dedicated_migration_process`` is true, ``gevent_workers`` will be ignored
+  for process number 0.
+* ``dedicated_migration_process``: default False; if True, this ETL processor
+  will be run in a dedicated process for database migrations.
 
 ``fab-settings.yml``
 ^^^^^^^^^^^^^^^^^^^^^^^^

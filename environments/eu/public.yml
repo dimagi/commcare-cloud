@@ -107,9 +107,6 @@ contact_email: info@dimagi.com
 soft_assert_email: commcarehq-ops+soft_asserts@dimagi.com
 new_domain_email: inquiries@dimagi.com
 
-ALTERNATE_HOSTS:
-  - nu2sk6wk2n.eu.commcarehq.org
-
 TWO_FACTOR_GATEWAY_ENABLED: True
 
 localsettings:
@@ -170,10 +167,10 @@ localsettings:
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     "name": "Dimagi, Inc."
-    "first_line": "585 Massachusetts Ave"
+    "first_line": "245 Main St, 2nd Floor"
     "city": "Cambridge"
     "region": "MA"
-    "postal_code": "02139"
+    "postal_code": "02142"
     "country": "US"
     "phone_number": "(617) 649-2214"
     "email": "accounts@dimagi.com"
@@ -203,6 +200,7 @@ localsettings:
   #  STATIC_ROOT:
   WS4REDIS_CONNECTION_HOST: "redis.eu.commcare.local"
   USER_REPORTING_METADATA_BATCH_ENABLED: True
+  CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
 
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa

@@ -1,5 +1,5 @@
 account_alias: commcare-staging
-terraform_version: '1.5'
+terraform_version: '1.13'
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-1"
@@ -135,7 +135,7 @@ servers:
     os: jammy
 
   - server_name: "pillow5-staging"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "m6a.2xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -154,7 +154,7 @@ servers:
     os: jammy 
 
   - server_name: "celery_a2-staging"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "t3a.2xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 60
@@ -343,11 +343,11 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pg0-staging"
-    instance_type: "db.t4g.small"
+    instance_type: "db.t4g.large"
     storage: 160
     storage_type: gp3
     multi_az: yes
-    engine_version: "14"
+    engine_version: "14.18"
     params:
       shared_preload_libraries: pg_stat_statements
       track_io_timing: 1
@@ -358,7 +358,7 @@ rds_instances:
     storage: 160
     storage_type: gp3
     multi_az: yes
-    engine_version: "14.4"
+    engine_version: "14.18"
     params:
       shared_preload_libraries: pg_stat_statements
       track_io_timing: 1

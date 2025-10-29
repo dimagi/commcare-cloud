@@ -1,9 +1,12 @@
 [program:{{ project }}-{{ deploy_env }}-django]
 directory={{ code_home }}/
 ; gunicorn
-environment={% for name, value in item.env_vars.items() %}{% if value|string|length > 0 %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
+environment={% for name, value in [item, app_processes_config.webworkers]|env_vars %}{{ name }}="{{ value }}",{% endfor %}
 
-command={{ app_processes_config.django_command_prefix }}{{ virtualenv_home }}/bin/gunicorn
+command={{ app_processes_config.django_command_prefix }}
+    {%- if app_processes_config.webworkers.env_vars.DD_TRACE_ENABLED|default(False) -%}
+    {{ virtualenv_home }}/bin/ddtrace-run {% endif -%}
+    {{ virtualenv_home }}/bin/gunicorn
     deployment.gunicorn.commcarehq_wsgi:application
     -c deployment/gunicorn/gunicorn_conf.py
     -k gevent

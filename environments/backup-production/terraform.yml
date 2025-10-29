@@ -7,11 +7,11 @@ environment: "bk-production"
 skip_ebs_snapshots: "yes"
 ssl_policy: 'ELBSecurityPolicy-FS-1-2-Res-2020-10'
 azs:
+  - "us-east-2a"
   - "us-east-2b"
-  - "us-east-2c"
 az_codes:
+  - a
   - b
-  - c
 vpc_begin_range: "10.212"
 
 ec2_metadata_tokens_required: yes
@@ -20,7 +20,7 @@ servers:
   - server_name: "control_a0-bk-production"
     server_instance_type: t3a.medium
     network_tier: "app-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     group: "control"
     os: jammy
@@ -28,7 +28,7 @@ servers:
   - server_name: "couch_a0-bk-production"
     server_instance_type: t3a.large
     network_tier: "db-private"
-    az: "c"
+    az: "a"
     volume_size: 20
     volume_encrypted: yes
     block_device:

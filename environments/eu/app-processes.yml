@@ -56,7 +56,6 @@ pillows:
       num_processes: 1
     SqlSMSPillow:
       num_processes: 1
-      processor_chunk_size: 1
     UpdateUserSyncHistoryPillow:
       num_processes: 1
     UserCacheInvalidatePillow:
@@ -66,7 +65,6 @@ pillows:
     case-pillow:
       num_processes: 2
       dedicated_migration_process: True
-      processor_chunk_size: 1
     xform-pillow:
       num_processes: 2
       dedicated_migration_process: True
@@ -74,4 +72,3 @@ pillows:
       num_processes: 1
     user-pillow:
       num_processes: 1
-      processor_chunk_size: 1

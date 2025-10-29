@@ -40,7 +40,7 @@ charset-normalizer==2.0.6
     # via requests
 clint==0.5.1
     # via commcare-cloud (setup.py)
-couchdb-cluster-admin==0.7.2
+couchdb-cluster-admin==0.7.4
     # via commcare-cloud (setup.py)
 cryptography==45.0.5
     # via
@@ -85,7 +85,7 @@ markupsafe==2.0.1
     # via jinja2
 netaddr==0.8.0
     # via commcare-cloud (setup.py)
-packaging==21.3
+packaging==25.0
     # via ansible-core
 passlib==1.7.4
     # via commcare-cloud (setup.py)

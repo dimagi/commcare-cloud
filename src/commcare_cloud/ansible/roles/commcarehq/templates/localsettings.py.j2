@@ -415,8 +415,8 @@ REPORT_CACHE = 'redis'
 redis_cache = {
     'BACKEND': 'django_redis.cache.RedisCache',
 {% set redis_url = 'redis://' ~ localsettings.REDIS_HOST ~ ':' ~ localsettings.REDIS_PORT %}
-{% if localsettings.get('REDIS_PASSWORD') %}
-{% set redis_url = 'redis://:' ~ localsettings.REDIS_PASSWORD ~ '@' ~ localsettings.REDIS_HOST ~ ':' ~ localsettings.REDIS_PORT %}
+{% if REDIS_PASSWORD %}
+{% set redis_url = 'redis://:' ~ REDIS_PASSWORD ~ '@' ~ localsettings.REDIS_HOST ~ ':' ~ localsettings.REDIS_PORT %}
 {% endif %}
 {% if 'REDIS_DB' in localsettings %}
     'LOCATION': '{{ redis_url }}/{{ localsettings.REDIS_DB }}',
@@ -1207,6 +1207,18 @@ CONNECTID_CHANNEL_URL = "{{ localsettings.CONNECTID_CHANNEL_URL }}"
 
 {% if localsettings.CONNECTID_MESSAGE_URL is defined %}
 CONNECTID_MESSAGE_URL = "{{ localsettings.CONNECTID_MESSAGE_URL }}"
+{% endif %}
+
+{% if localsettings.CONNECTID_CREDENTIALS_URL is defined %}
+CONNECTID_CREDENTIALS_URL = "{{ localsettings.CONNECTID_CREDENTIALS_URL }}"
+{% endif %}
+
+{% if CONNECTID_CREDENTIALS_CLIENT_ID is defined %}
+CONNECTID_CREDENTIALS_CLIENT_ID = "{{ CONNECTID_CREDENTIALS_CLIENT_ID }}"
+{% endif %}
+
+{% if CONNECTID_CREDENTIALS_SECRET_KEY is defined %}
+CONNECTID_CREDENTIALS_SECRET_KEY = "{{ CONNECTID_CREDENTIALS_SECRET_KEY }}"
 {% endif %}
 
 {% if localsettings.MAX_MOBILE_UCR_LIMIT is defined %}

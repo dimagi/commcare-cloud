@@ -26,7 +26,6 @@ solutions_aes_email: solutions-tech-app-engineers@dimagi.com
 ALTERNATE_HOSTS:
   - rec-mobile.sante.gov.bf
   - onse-iss.commcarehq.org
-  - sic.snis-sante.mg
   - almanachhq.adsphcda.org.ng
 show_maintenance_updates_on_deploy: False
 
@@ -207,10 +206,10 @@ localsettings:
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
-    'first_line': "585 Massachusetts Ave"
+    'first_line': "245 Main St, 2nd Floor"
     'city': "Cambridge"
     'region': "MA"
-    'postal_code': "02139"
+    'postal_code': "02142"
     'country': "US"
     'phone_number': "(617) 649-2214"
     'email': "accounts@dimagi.com"
@@ -254,6 +253,7 @@ localsettings:
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
   CONNECTID_CHANNEL_URL: 'https://connectid.dimagi.com/messaging/create_channel/'
   CONNECTID_MESSAGE_URL: 'https://connectid.dimagi.com/messaging/send_fcm/'
+  CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
   ASYNC_INDICATORS_TO_QUEUE: 100000
 
 # comment these two lines out to make a new rackspace machine

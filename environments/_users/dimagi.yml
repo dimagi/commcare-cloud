@@ -6,6 +6,7 @@ dev_users:
     - biyeun
     - cellowitz
     - chrissmit
+    - conroyricketts
     - csmit
     - ctsims
     - czue
@@ -30,6 +31,7 @@ dev_users:
     - skelly
     - sravfeyn
     - zeng
+    - jtank
   absent:
     - akjain
     - astone

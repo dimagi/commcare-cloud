@@ -19,16 +19,20 @@ class CeleryOptions(jsonobject.JsonObject):
     max_tasks_per_child = jsonobject.IntegerProperty(default=None)
     num_workers = jsonobject.IntegerProperty(default=1)
     prefetch_multiplier = jsonobject.IntegerProperty(default=4)
+    env_vars = jsonobject.DictProperty()
 
 
 class PillowOptions(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     start_process = jsonobject.IntegerProperty(default=0)
     num_processes = jsonobject.IntegerProperty(default=1)
+    gevent_workers = jsonobject.IntegerProperty(default=0)
     dedicated_migration_process = jsonobject.BooleanProperty(default=False)
     total_processes = jsonobject.IntegerProperty(default=None, exclude_if_none=True)
     processor_chunk_size = jsonobject.IntegerProperty(default=None, exclude_if_none=True)
     exclude_ucrs = jsonobject.StringProperty(default=None, exclude_if_none=True)
+    env_vars = jsonobject.DictProperty()
+    process = jsonobject.DictProperty()
 
 
 class AppProcessesConfig(jsonobject.JsonObject):
@@ -42,16 +46,16 @@ class AppProcessesConfig(jsonobject.JsonObject):
     formplayer_maxmetaspacesize = MemorySpecProperty()
     formplayer_g1heapregionsize = MemorySpecProperty()
     http_proxy = IpAddressAndPortProperty()
-    django_command_prefix = jsonobject.StringProperty()
+    django_command_prefix = jsonobject.StringProperty()  # obsolete for ddtrace-run; use DD_TRACE_ENABLED=True
     celery_command_prefix = jsonobject.StringProperty()
     formplayer_command_args = jsonobject.StringProperty()
-    datadog_pythonagent = jsonobject.BooleanProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
     service_blacklist = jsonobject.ListProperty(str)
     management_commands = jsonobject.DictProperty(jsonobject.DictProperty())
     celery_processes = jsonobject.DictProperty(jsonobject.DictProperty(CeleryOptions))
     pillows = jsonobject.DictProperty(jsonobject.DictProperty(PillowOptions))
+    webworkers = jsonobject.DictProperty()
 
     celery_heartbeat_thresholds = jsonobject.DictProperty(int)
 

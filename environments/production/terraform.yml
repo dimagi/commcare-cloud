@@ -1,5 +1,5 @@
 account_alias: commcare-production
-terraform_version: '1.5'
+terraform_version: '1.13'
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-1"
@@ -200,32 +200,6 @@ servers:
     group: "elasticsearch"
     os: jammy 
 
-  - server_name: "couch11-production"
-    server_instance_type: c6a.8xlarge
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 90
-    volume_encrypted: yes
-    block_device:
-      volume_size: 1000
-      encrypted: yes
-      enable_cross_region_backup: yes
-    group: "couchdb2"
-    os: bionic
-
-  - server_name: "couch12-production"
-    server_instance_type: c6a.8xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 90
-    volume_encrypted: yes
-    block_device:
-      volume_size: 1000
-      encrypted: yes
-      enable_cross_region_backup: yes
-    group: "couchdb2"
-    os: bionic
-
   - server_name: "couch_a0-production"
     server_instance_type: c6a.8xlarge
     network_tier: "db-private"
@@ -236,6 +210,30 @@ servers:
       volume_size: 1000
       encrypted: yes
       enable_cross_region_backup: yes
+    group: "couchdb2"
+    os: jammy
+  
+  - server_name: "couch_a1-production"
+    server_instance_type: c6a.8xlarge
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 80
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1000
+      encrypted: yes
+    group: "couchdb2"
+    os: jammy
+  
+  - server_name: "couch_a2-production"
+    server_instance_type: c6a.8xlarge
+    network_tier: "db-private"
+    az: "a"
+    volume_size: 80
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1000
+      encrypted: yes
     group: "couchdb2"
     os: jammy
 
@@ -287,7 +285,7 @@ servers:
     count: 2
 
   - server_name: "pillow_a2{i}-production"
-    server_instance_type: r6a.4xlarge
+    server_instance_type: r6a.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 100
@@ -296,7 +294,7 @@ servers:
     count: 1
 
   - server_name: "pillow_b2{i}-production"
-    server_instance_type: r6a.12xlarge
+    server_instance_type: r6a.8xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 50
@@ -423,7 +421,7 @@ rds_instances:
     storage_type: gp3
     storage_throughput: 500
     multi_az: true
-    engine_version: "14"
+    engine_version: "14.18"
     backup_window: "23:00-01:00"
     backup_retention: 7
     iops: 12000
@@ -447,7 +445,7 @@ rds_instances:
     max_storage: 5000
     storage_type: gp3
     multi_az: true
-    engine_version: "14"
+    engine_version: "14.18"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -461,7 +459,7 @@ rds_instances:
     storage_type: gp3
     iops: 12000
     multi_az: true
-    engine_version: "14"
+    engine_version: "14.18"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -477,7 +475,7 @@ rds_instances:
     storage_type: gp3
     iops: 12000
     multi_az: true
-    engine_version: "14"
+    engine_version: "14.18"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -493,7 +491,7 @@ rds_instances:
     storage_type: gp3
     iops: 12000
     multi_az: true
-    engine_version: "14"
+    engine_version: "14.18"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -509,7 +507,7 @@ rds_instances:
     storage_type: gp3
     iops: 12000
     multi_az: true
-    engine_version: "14"
+    engine_version: "14.18"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -525,7 +523,7 @@ rds_instances:
     storage_type: gp3
     iops: 12000
     multi_az: true
-    engine_version: "14"
+    engine_version: "14.18"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -539,7 +537,7 @@ rds_instances:
     storage: 1000
     storage_type: gp3
     multi_az: true
-    engine_version: "14"
+    engine_version: "14.18"
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
@@ -561,7 +559,7 @@ rds_instances:
     storage: 200
     storage_type: gp3
     multi_az: true
-    engine_version: "14"
+    engine_version: "14.18"
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
@@ -580,10 +578,10 @@ rds_instances:
 
   - identifier: "pgauditcare1-production"
     instance_type: "db.m6g.xlarge"
-    storage: 7000
+    storage: 7700
     storage_type: gp3
     multi_az: true
-    engine_version: "14"
+    engine_version: "14.18"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -631,9 +629,9 @@ internal_albs:
     target_port: 15984
     health_check_interval: 30
     targets:
-      - couch11-production
-      - couch12-production
       - couch_a0-production
+      - couch_a1-production
+      - couch_a2-production
 
 elasticache_cluster:
   create: yes
