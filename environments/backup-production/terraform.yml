@@ -1,5 +1,5 @@
 account_alias: commcare-backup-production
-terraform_version: '1.5'
+terraform_version: '1.13'
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-2"
@@ -7,11 +7,13 @@ environment: "bk-production"
 skip_ebs_snapshots: "yes"
 ssl_policy: 'ELBSecurityPolicy-FS-1-2-Res-2020-10'
 azs:
-  - "us-east-2a"
+  - "us-east-2c"
   - "us-east-2b"
+  - "us-east-2a"
 az_codes:
-  - a
+  - c
   - b
+  - a
 vpc_begin_range: "10.212"
 
 ec2_metadata_tokens_required: yes
@@ -25,41 +27,6 @@ servers:
     group: "control"
     os: jammy
 
-  - server_name: "couch_a0-bk-production"
-    server_instance_type: t3a.large
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 20
-    volume_encrypted: yes
-    block_device:
-      volume_size: 1000
-      encrypted: yes
-    group: "couchdb2"
-    os: jammy
-
-  - server_name: "couch_a1-bk-production"
-    server_instance_type: t3a.large
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 20
-    volume_encrypted: yes
-    block_device:
-      volume_size: 1000
-      encrypted: yes
-    group: "couchdb2"
-    os: jammy
-
-  - server_name: "couch_a2-bk-production"
-    server_instance_type: t3a.large
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 20
-    volume_encrypted: yes
-    block_device:
-      volume_size: 1000
-      encrypted: yes
-    group: "couchdb2"
-    os: jammy
 
   - server_name: "couch_a3-bk-production"
     server_instance_type: t3a.large
