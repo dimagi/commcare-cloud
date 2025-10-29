@@ -78,24 +78,28 @@
 
 - name: Install Erlang dependencies (Jammy)
   block:
-    - name: Add Erlang apt repo
-      block:
-        - apt_key: url=https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc state=present
-        - apt_repository: repo="deb https://packages.erlang-solutions.com/ubuntu jammy contrib" state=present
+    - name: Download Erlang Solutions GPG key
+      get_url:
+        url: https://binaries2.erlang-solutions.com/GPG-KEY-pmanager.asc
+        dest: /tmp/erlang-solutions-gpg.asc
+        mode: '0644'
 
-    - name: Install Erlang dependencies
+    - name: Add Erlang Solutions GPG key
+      apt_key:
+        file: /tmp/erlang-solutions-gpg.asc
+        state: present
+
+    - name: Add Erlang Solutions repository
+      apt_repository:
+        repo: "deb http://binaries2.erlang-solutions.com/ubuntu/ jammy-esl-erlang-26 contrib"
+        state: present
+        filename: erlang-solutions
+
+    - name: Install esl-erlang package
       apt:
-        name: esl-erlang={{ couchdb_erlang_version }}
+        name: esl-erlang
+        state: present
         update_cache: yes
-        force: yes
-      register: couchdb_erlang_apt_install_result
-      ignore_errors: true
-
-    - name: Install Erlang dependencies (alternate method)
-      apt:
-        deb: "https://packages.erlang-solutions.com/ubuntu/pool/esl-erlang_{{ couchdb_erlang_version | regex_replace('^[0-9]+:(.*)$', '\\1') }}~ubuntu~jammy_amd64.deb"
-        force: yes
-      when: couchdb_erlang_apt_install_result is failed
   when: ansible_distribution_version == '22.04'
 
 - name: Install couchdb (Jammy)
