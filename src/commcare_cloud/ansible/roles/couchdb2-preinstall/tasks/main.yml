@@ -83,6 +83,7 @@
         url: https://binaries2.erlang-solutions.com/GPG-KEY-pmanager.asc
         dest: /tmp/erlang-solutions-gpg.asc
         mode: '0644'
+      check_mode: false
 
     - name: Add Erlang Solutions GPG key
       apt_key:
@@ -91,7 +92,7 @@
 
     - name: Add Erlang Solutions repository
       apt_repository:
-        repo: "deb http://binaries2.erlang-solutions.com/ubuntu/ jammy-esl-erlang-26 contrib"
+        repo: "deb http://binaries2.erlang-solutions.com/ubuntu/ jammy-esl-erlang-{{ couchdb_erlang_version }} contrib"
         state: present
         filename: erlang-solutions
 
