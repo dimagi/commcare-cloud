@@ -161,3 +161,4 @@ pillows:
           env_vars:
             DD_TRACE_ENABLED: True
             DD_PROFILING_ENABLED: True
+            DD_PROFILING_LOCK_ENABLED: false
