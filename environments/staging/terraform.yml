@@ -262,7 +262,7 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
-      volume_size: 10
+      volume_size: 20
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
@@ -276,7 +276,7 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
-      volume_size: 10
+      volume_size: 20
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
@@ -290,7 +290,7 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
-      volume_size: 10
+      volume_size: 20
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
