@@ -1,0 +1,31 @@
+title: upgrade-to-nginx-1-28
+key: upgrade-to-nginx-1-28
+date: 2025-11-05
+optional_per_env: no
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version:
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  Updates nginx to 1.28.
+
+details: |
+  Nginx 1.28 is a major release with many new features and improvements. This changelog outlines the steps required to upgrade Nginx to 1.28 on CommCare HQ.
+
+update_steps: |
+  To upgrade Nginx to 1.28 on CommCare HQ, please run the following command:
+
+  Pull the latest version of commcare-cloud:
+  ```bash
+  git pull origin master
+  ```
+
+  Then run the deploy-proxy.yml playbook:
+
+  ```bash
+  cchq <env> ap deploy-proxy.yml
+  ```
+
+  Please note that with this upgrade we are removing support for TLSv1.0 and TLSv1.1 which are no longer considered secure and are deprecated.
+
+  If any of your connections are using TLSv1.0 or TLSv1.1, you will need to upgrade to a supported version.
