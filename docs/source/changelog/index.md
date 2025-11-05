@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2025-11-05** [upgrade-to-nginx-1-28](0091-upgrade-to-nginx-1-28.md)
+Updates nginx to 1.28.
+
+
+---
 #### **2025-10-08** [Enabling Datadog tracing (APM)](0090-Enabling_Datadog_tracing_APM.md)
 Configuration for enabling Datadog tracing with APM has changed. If you
 use this feature you may need to update your configuration.
