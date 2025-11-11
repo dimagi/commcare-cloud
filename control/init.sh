@@ -60,6 +60,7 @@ fi
 
 # Upgrade pip to required version before any pip operations
 # This must happen in both CI and local environments
+# This pin can be removed when https://github.com/jazzband/pip-tools/issues/2252 is resolved
 pip install --upgrade pip==25.2
 
 # check for unsupported python version after virtual env is activated
