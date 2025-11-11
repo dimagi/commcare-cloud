@@ -58,6 +58,10 @@ if [ -z ${CI_TEST} ]; then
     fi
 fi
 
+# Upgrade pip to required version before any pip operations
+# This must happen in both CI and local environments
+pip install --upgrade pip==25.2
+
 # check for unsupported python version after virtual env is activated
 python_version=`python --version 2>&1 | awk '{print $2}'`
 if [[ $python_version = 3.6* ]]; then
@@ -97,8 +101,7 @@ if [ -z "$(which manage-commcare-cloud)" ]; then
     # first time install need requirements installed in serial
     # installs strictly what's in requirements.txt, so versions are pre-pinned
     cd ${COMMCARE_CLOUD_REPO}
-    pip install --upgrade pip-tools
-
+    pip install --quiet --upgrade pip-tools
     uninstall-lowerversion-ansible
     pip-sync requirements.txt
     pip install --editable .
@@ -118,7 +121,7 @@ fi
 
 echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
-COMMCARE= pip install --quiet --upgrade pip &
+# COMMCARE= pip install --quiet --upgrade pip &
 COMMCARE= manage-commcare-cloud install & # includes ansible-galaxy install
 
 # wait for all processes that _we_ started
