@@ -45,7 +45,9 @@
       apt:
         name: esl-erlang
         state: present
-  when: ansible_distribution_version == '22.04'
+  when:
+   - ansible_distribution_version == '22.04'
+   - not ansible_check_mode
 
 - name: Install couchdb (Jammy)
   block:
