@@ -131,6 +131,7 @@ localsettings:
   BANK_SWIFT_CODE: 'CTZIUS33'
   CELERY_PERIODIC_QUEUE: 'celery_null'
   CELERY_REPEAT_RECORD_DATASOURCE_QUEUE: "repeat_record_datasource_queue"
+  CELERY_BROKER_POOL_LIMIT: 1
   COMMCARE_ANALYTICS_HOST: "https://commcare-analytics-staging.dimagi.com"
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
