@@ -21,8 +21,14 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 erlang: 1:24.3.3-1
 rabbitmq_version: 3.10.13-1
 
+# Elasticache Broker Info
+ELASTICACHE_BROKER_DB: '0'
+ELASTICACHE_BROKER_HOST: "broker.staging.commcare.local"
+ELASTICACHE_BROKER_PORT: '6379'
+
 #RabbitMQ Broker URL
-BROKER_URL: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}"
+BROKER_URL: "redis://{{ ELASTICACHE_BROKER_HOST }}:{{ ELASTICACHE_BROKER_PORT }}/{{ ELASTICACHE_BROKER_DB }}"
+OLD_BROKER_URL: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}"
 
 backup_blobdb: False
 backup_postgres: plain
@@ -125,6 +131,7 @@ localsettings:
   BANK_SWIFT_CODE: 'CTZIUS33'
   CELERY_PERIODIC_QUEUE: 'celery_null'
   CELERY_REPEAT_RECORD_DATASOURCE_QUEUE: "repeat_record_datasource_queue"
+  CELERY_BROKER_POOL_LIMIT: 1
   COMMCARE_ANALYTICS_HOST: "https://commcare-analytics-staging.dimagi.com"
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
