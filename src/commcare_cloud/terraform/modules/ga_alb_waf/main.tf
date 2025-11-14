@@ -23,6 +23,21 @@ locals {
 data "aws_region" "current" {
 }
 
+resource "aws_wafv2_regex_pattern_set" "allow_ssrf_urls" {
+  name        = "SSRF_urls"
+  description = "URLs that should circumvent EC2MetaDataSSRF_BODY rule"
+  scope       = "REGIONAL"
+
+  dynamic "regular_expression" {
+    for_each = var.commcarehq_ssrf_urls_regex
+    content {
+      regex_string = regular_expression.value.regex_string
+    }
+  }
+
+  tags = {}
+}
+
 resource "aws_wafv2_regex_pattern_set" "allow_xml_post_urls_0" {
   name        = "XML_POST_urls_0"
   description = "URLs that should circumvent CrossSiteScripting_BODY rule"
