@@ -18,6 +18,7 @@ from commcare_cloud.commands.terraform.aws import (
 from commcare_cloud.user_utils import get_default_username, \
     print_help_message_about_the_commcare_cloud_default_username_env_var
 from commcare_cloud.commands.terraform.constants import (
+    COMMCAREHQ_SSRF_URLS_REGEX,
     COMMCAREHQ_XML_POST_URLS_REGEX,
     COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX,
 )
@@ -166,6 +167,7 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
         'postgresql_params': get_postgresql_params_by_rds_instance(environment),
+        'commcarehq_ssrf_urls_regex': compact_waf_regexes(COMMCAREHQ_SSRF_URLS_REGEX),
         'commcarehq_xml_querystring_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX),
         's3_blob_db_s3_bucket': environment.public_vars.get('s3_blob_db_s3_bucket'),
         'release_bucket': environment.public_vars.get('release_bucket'),
