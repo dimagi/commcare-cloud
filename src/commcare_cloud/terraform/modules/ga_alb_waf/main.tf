@@ -124,7 +124,7 @@ resource "aws_wafv2_ip_set" "permanent_block" {
 
 resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
   name     = "CommCareWhitelistRules"
-  capacity = "75"
+  capacity = "100"
   scope    = "REGIONAL"
   visibility_config {
     cloudwatch_metrics_enabled = true
@@ -218,6 +218,36 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "AllowXMLBody"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "AllowSSRFBody"
+    priority = 3
+
+    action {
+      allow {
+      }
+    }
+
+    statement {
+      regex_pattern_set_reference_statement {
+        arn = aws_wafv2_regex_pattern_set.allow_ssrf_urls.arn
+        field_to_match {
+          uri_path {
+          }
+        }
+        text_transformation {
+          priority = 0
+          type     = "NONE"
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AllowSSRFBody"
       sampled_requests_enabled   = true
     }
   }
