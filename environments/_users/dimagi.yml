@@ -19,10 +19,8 @@ dev_users:
     - jingcheng
     - jschweers
     - jtang
-    - matthewriley
     - mkangia
     - mriese
-    - mriley
     - nhooper
     - pverma
     - rcostello
@@ -45,7 +43,9 @@ dev_users:
     - jmiller
     - jroth
     - knguyen
+    - matthewriley
     - mlee
+    - mriley
     - mperosa
     - npellegrino
     - nsharma
