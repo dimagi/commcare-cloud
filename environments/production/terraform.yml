@@ -247,7 +247,7 @@ servers:
     os: jammy
 
   - server_name: "rabbit15-production"
-    server_instance_type: t3a.2xlarge
+    server_instance_type: t3a.xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
