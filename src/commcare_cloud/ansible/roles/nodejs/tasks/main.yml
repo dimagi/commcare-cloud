@@ -5,7 +5,7 @@
 
 - name: Add nodejs repo
   apt_repository:
-    repo: 'deb http://deb.nodesource.com/node_20.x {{ ansible_distribution_release }} main'
+    repo: 'deb http://deb.nodesource.com/node_24.x {{ ansible_distribution_release }} main'
     state: present
   become: yes
 
@@ -31,7 +31,7 @@
     - npm
 
 - name: Update Node
-  command: 'n 20.11'
+  command: 'n 24.11'
   become: yes
   tags:
     - npm
@@ -40,6 +40,6 @@
   npm: name="{{ item.name }}" version="{{ item.version }}" state=present global=yes
   become: yes
   with_items:
-    - {name: 'npm', version: '10.2.*'}
+    - {name: 'npm', version: '11.6.*'}
   tags:
     - npm
