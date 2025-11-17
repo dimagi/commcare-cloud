@@ -18,11 +18,8 @@ dev_users:
     - gherceg
     - jingcheng
     - jschweers
-    - jtang
-    - matthewriley
     - mkangia
     - mriese
-    - mriley
     - nhooper
     - pverma
     - rcostello
@@ -44,8 +41,11 @@ dev_users:
     - jemord
     - jmiller
     - jroth
+    - jtang
     - knguyen
+    - matthewriley
     - mlee
+    - mriley
     - mperosa
     - npellegrino
     - nsharma
