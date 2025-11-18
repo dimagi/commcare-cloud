@@ -32,6 +32,10 @@ variable "account_id" {
 variable "ssl_policy" {
 }
 
+variable "commcarehq_ssrf_urls_regex" {
+  type = list(map(string))
+}
+
 variable "commcarehq_xml_post_urls_regex_0" {
   type = list(map(string))
 }
