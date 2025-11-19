@@ -26,8 +26,8 @@ datadog_custom_integrations:
     checksum: sha256:1541fb41ae12b6e115eb0fc151d98f2823390ad26643795a64180a4bbb82ad05
     enabled: "{{ app_processes_config is defined and app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"
   - name: couch_custom
-    url: https://raw.githubusercontent.com/dimagi/datadog-checks/ce1179c6a5bb621e464770b436e49ab502c0ea33/couchdb_custom/couchdb_custom.py
-    checksum: sha256:a9698756d363dd20b89e2e4e15c5b0c0f6d4acc5ac812e31951fc51acd928d52
+    url: https://raw.githubusercontent.com/dimagi/datadog-checks/1ce990a8950c807c65c2e44766671ba33c31792a/couchdb_custom/couchdb_custom.py
+    checksum: sha256:8dfb232e032a9bea24fd18faddffe283c74687b005ccb74c4fefb3e2e8774534
     enabled: "{{ inventory_hostname == couchdb2_first_host }}"
 
 monitoring_groups:
