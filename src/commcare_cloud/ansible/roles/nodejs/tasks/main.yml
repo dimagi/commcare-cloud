@@ -1,13 +1,6 @@
-- name: Add nodejs apt key
-  apt_key:
-    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
-  become: yes
-
-- name: Add nodejs repo
-  apt_repository:
-    repo: 'deb http://deb.nodesource.com/node_24.x {{ ansible_distribution_release }} main'
-    state: present
-  become: yes
+- name: Run NodeSource install script
+  ansible.builtin.shell: |
+    curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
 
 - name: Install nodejs packages
   apt: name="nodejs" state=present
