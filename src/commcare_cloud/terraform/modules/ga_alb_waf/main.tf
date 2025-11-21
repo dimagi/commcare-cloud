@@ -278,7 +278,7 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
             }
             statement {
                 regex_match_statement {
-                    regex_string = "redirect_uri=[^&]*localhost"
+                    regex_string = "redirect_uris?=[^&]*localhost"
 
                     field_to_match {
                         body {
@@ -329,7 +329,7 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
             }
             statement {
                 regex_match_statement {
-                    regex_string = "redirect_uri=[^&]*localhost"
+                    regex_string = "redirect_uris?=[^&]*localhost"
 
                     field_to_match {
                         query_string {}
