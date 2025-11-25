@@ -193,6 +193,7 @@ localsettings:
 #  STATIC_ROOT:
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
+  CONNECTID_ADD_USER_ANALYTICS_URL: 'https://connectid.dimagi.com/users/add_user_analytics/'
   STATIC_TOGGLE_STATES:
     ucr_sum_when_templates:
       always_enabled:
