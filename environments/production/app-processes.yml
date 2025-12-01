@@ -55,7 +55,7 @@ celery_processes:
       num_workers: 5
     reminder_case_update_bulk_queue:
       pooling: gevent
-      concurrency: 4
+      concurrency: 20
     reminder_queue:
       pooling: gevent
       concurrency: 40
