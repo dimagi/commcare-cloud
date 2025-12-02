@@ -5,9 +5,6 @@ command={{ virtualenv_home }}/bin/celery
     -A corehq flower
     --address=0.0.0.0
     --port={{ app_processes_config.flower_port }}
-    {% if 'rabbitmq' in groups and groups.rabbitmq %}
-    --broker_api=http://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.0 }}:15672/api/
-    {% endif %}
 directory={{ code_home }}
 user={{ cchq_user }}
 numprocs=1
