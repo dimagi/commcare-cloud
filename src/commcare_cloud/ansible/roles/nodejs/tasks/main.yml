@@ -1,13 +1,6 @@
-- name: Add nodejs apt key
-  apt_key:
-    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
-  become: yes
-
-- name: Add nodejs repo
-  apt_repository:
-    repo: 'deb http://deb.nodesource.com/node_20.x {{ ansible_distribution_release }} main'
-    state: present
-  become: yes
+- name: Run NodeSource install script
+  ansible.builtin.shell: |
+    curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
 
 - name: Install nodejs packages
   apt: name="nodejs" state=present
@@ -21,17 +14,17 @@
   npm: name="{{ item.name }}" version="{{ item.version }}" state=present global=yes
   become: yes
   with_items:
-    - {name: 'n', version: '2.1.12'}
-    - {name: 'less', version: '3.10.3'}
+    - {name: 'n', version: '10.2.0'}
+    - {name: 'less', version: '4.4.2'}
     - {name: 'yarn', version: '1.22.4'}
-    - {name: 'bower', version: '1.8.4'}
-    - {name: 'uglify-js', version: '2.6.1'}
-    - {name: 'sass', version: '1.57.1'}
+    - {name: 'bower', version: '1.8.14'}
+    - {name: 'uglify-js', version: '3.19.3'}
+    - {name: 'sass', version: '1.94.0'}
   tags:
     - npm
 
 - name: Update Node
-  command: 'n 20.11'
+  command: 'n 24.11'
   become: yes
   tags:
     - npm
@@ -40,6 +33,6 @@
   npm: name="{{ item.name }}" version="{{ item.version }}" state=present global=yes
   become: yes
   with_items:
-    - {name: 'npm', version: '10.2.*'}
+    - {name: 'npm', version: '11.6.*'}
   tags:
     - npm
