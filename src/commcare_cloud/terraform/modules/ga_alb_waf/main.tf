@@ -124,7 +124,7 @@ resource "aws_wafv2_ip_set" "permanent_block" {
 
 resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
   name     = "CommCareWhitelistRules"
-  capacity = "100"
+  capacity = "112"
   scope    = "REGIONAL"
   visibility_config {
     cloudwatch_metrics_enabled = true
@@ -249,6 +249,105 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
       cloudwatch_metrics_enabled = true
       metric_name                = "AllowSSRFBody"
       sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    name     = "AllowLocalhostInOAuthBody"
+    priority = 4
+
+    action {
+        allow {
+        }
+    }
+
+    statement {
+        and_statement {
+            statement {
+                regex_match_statement {
+                    regex_string = "^/oauth/*"
+
+                    field_to_match {
+                        uri_path {}
+                    }
+
+                    text_transformation {
+                        priority = 0
+                        type     = "NONE"
+                    }
+                }
+            }
+            statement {
+                regex_match_statement {
+                    regex_string = "redirect_uri=[^&]*localhost"
+
+                    field_to_match {
+                        body {
+                            oversize_handling = "NO_MATCH"
+                        }
+                    }
+
+                    text_transformation {
+                        priority = 0
+                        type     = "NONE"
+                    }
+                }
+            }
+        }
+    }
+
+    visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "AllowLocalhostInOAuthBody"
+        sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "AllowLocalhostInOAuthQuery"
+    priority = 5
+
+    action {
+        allow {
+        }
+    }
+
+    statement {
+        and_statement {
+            statement {
+                regex_match_statement {
+                    regex_string = "^/oauth/*"
+
+                    field_to_match {
+                        uri_path {}
+                    }
+
+                    text_transformation {
+                        priority = 0
+                        type     = "NONE"
+                    }
+                }
+            }
+            statement {
+                regex_match_statement {
+                    regex_string = "redirect_uri=[^&]*localhost"
+
+                    field_to_match {
+                        query_string {}
+                    }
+
+                    text_transformation {
+                        priority = 0
+                        type     = "NONE"
+                    }
+                }
+            }
+        }
+    }
+
+    visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "AllowLocalhostInOAuthQuery"
+        sampled_requests_enabled   = true
     }
   }
 }

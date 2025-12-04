@@ -148,10 +148,10 @@ pillows:
     UserGroupsDbKafkaPillow:
       num_processes: 1
   pillow_b2000:
-  # case-sql partitions: 96 = 32 * 3 (one process per core)
+  # case-sql partitions: 96 = 6 * 16
     case-pillow:
-      num_processes: 33
-      gevent_workers: 3
+      num_processes: 7
+      gevent_workers: 16
       dedicated_migration_process: True
       #env_vars:
       #  DD_TRACE_ENABLED: True
