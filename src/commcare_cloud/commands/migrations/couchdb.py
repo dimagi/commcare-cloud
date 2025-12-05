@@ -456,7 +456,9 @@ def start_stop_service(ansible_context, service_state, check_mode=False):
     if check_mode:
         extra_args.append('--check')
 
-    for service in ('monit', 'couchdb2'):
+    # Use Ansible variable 'couchdb_service_name' which resolves per-host based on Ubuntu version
+    # Ubuntu 18.04 uses 'couchdb2', Ubuntu 22.04+ uses 'couchdb'
+    for service in ('monit', "{{ couchdb_service_name }}"):
         args = 'name={} state={}'.format(service, service_state)
         run_ansible_module(ansible_context, 'couchdb2', 'service', args, extra_args=extra_args)
 
