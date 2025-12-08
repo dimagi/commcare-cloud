@@ -25,10 +25,10 @@ Pull the latest version of commcare-cloud:
 git pull origin master
 ```
 
-Then run the deploy-proxy.yml playbook:
+Then run the deploy_proxy.yml playbook:
 
 ```bash
-cchq <env> ap deploy-proxy.yml
+cchq <env> ap deploy_proxy.yml
 ```
 
 Please note that with this upgrade we are removing support for TLSv1.0 and TLSv1.1 which are no longer considered secure and are deprecated.
