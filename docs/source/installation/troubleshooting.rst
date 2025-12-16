@@ -4,10 +4,10 @@ Troubleshooting first time setup
 ================================
 
 This document is intended to help you troubleshoot issues that may arise
-when setting up a new CommCareHQ instance.
+when setting up a new CommCare HQ instance.
 
 Login as the user "ubuntu" rather than the user "root"
-------------------------------------------------
+------------------------------------------------------------------------------
 
 https://askubuntu.com/questions/1156830/please-login-as-the-user-ubuntu-rather-than-the-user-root
 
