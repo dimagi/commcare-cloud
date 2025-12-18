@@ -1241,3 +1241,13 @@ MAX_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MAX_REPEATER_RATE_LIMIT_DELAY }
 AI_CHATBOT_ID = "{{ AI_CHATBOT_ID }}"
 AI_CHATBOT_TOKEN = "{{ AI_CHATBOT_TOKEN }}"
 {% endif %}
+
+ORANGE_CAMEROON_CONNECTION_SETTINGS = {
+    'url': 'https://dev.api.chenosis.io/',
+    'token_url': 'https://dev.api.chenosis.io/oauth/client/accesstoken',
+    'client_id': '{{ ORANGE_CAMEROON_CLIENT_ID }}',
+    'client_secret': '{{ ORANGE_CAMEROON_CLIENT_SECRET }}',
+    'x-auth-token': '{{ ORANGE_CAMEROON_X_AUTH_TOKEN }}',
+    'channel_msisdn': '{{ ORANGE_CAMEROON_CHANNEL_MSISDN }}',
+    'channel_pin': '{{ ORANGE_CAMEROON_CHANNEL_PIN }}',
+}
