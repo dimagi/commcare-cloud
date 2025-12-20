@@ -382,8 +382,7 @@ OLD_BROKER_URL = '{{ OLD_BROKER_URL }}'
 {% endif %}
 
 {% if OLD_BROKER_URL and rabbitmq_migration_bridge|default(False) %}
-CELERY_BROKER_READ_URL = BROKER_READ_URL = '{{ OLD_BROKER_URL }}'
-CELERY_BROKER_WRITE_URL = BROKER_WRITE_URL = '{{ BROKER_URL }}'
+CELERY_BROKER_URL = BROKER_URL = '{{ OLD_BROKER_URL }}'
 {% else %}
 CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
 {% endif %}
