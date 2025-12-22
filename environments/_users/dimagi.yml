@@ -3,7 +3,6 @@ dev_users:
     - adunn
     - aphulera
     - ayadav
-    - biyeun
     - cellowitz
     - chrissmit
     - conroyricketts
@@ -32,6 +31,7 @@ dev_users:
   absent:
     - akjain
     - astone
+    - biyeun
     - cstahl
     - dchung
     - devanshhooda
