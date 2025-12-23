@@ -344,7 +344,7 @@ proxy_servers:
 rds_instances:
   - identifier: "pg0-staging"
     instance_type: "db.t4g.large"
-    storage: 200
+    storage: 300
     storage_type: gp3
     multi_az: yes
     engine_version: "14.18"
