@@ -5,6 +5,7 @@ command={{ virtualenv_home }}/bin/celery
     -A corehq flower
     --address=0.0.0.0
     --port={{ app_processes_config.flower_port }}
+    --inspect_timeout=10000
 directory={{ code_home }}
 user={{ cchq_user }}
 numprocs=1
