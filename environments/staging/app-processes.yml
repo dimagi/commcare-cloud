@@ -142,7 +142,9 @@ pillows:
     demo-case-pillow:
       # Turn off the DEMO_CASE_PILLOW feature flag and wait for pending messages
       # to be processed before removing this process.
-      num_processes: 1
+    # demo-case-sql partitions: 32 = 4 x 8
+      num_processes: 4
+      gevent_workers: 8
     xform-pillow:
       num_processes: 2
       gevent_workers: 4
