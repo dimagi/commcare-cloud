@@ -391,6 +391,9 @@ CELERY_HEARTBEAT_THRESHOLDS = {
     {{ queue | to_json }}: {% if threshold == None %}None{% else %}{{ threshold | to_json }}{% endif %},
 {% endfor %}
 }
+{% if 'CELERY_BROKER_POOL_LIMIT' in localsettings and localsettings.CELERY_BROKER_POOL_LIMIT %}
+CELERY_BROKER_POOL_LIMIT = {{ localsettings.CELERY_BROKER_POOL_LIMIT }}
+{% endif %}
 
 {% if 'CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE' in localsettings and localsettings.CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE %}
 CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE = '{{ localsettings.CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE }}'
