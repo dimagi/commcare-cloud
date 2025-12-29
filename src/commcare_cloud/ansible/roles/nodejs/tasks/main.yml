@@ -1,3 +1,22 @@
+- name: Find NodeSource apt source files
+  ansible.builtin.find:
+    paths: /etc/apt/sources.list.d
+    patterns:
+      - "deb_nodesource_com_node_*.list"
+      - "nodesource*.list"
+    file_type: file
+  register: nodesource_lists
+  become: yes
+
+- name: Remove NodeSource apt source files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ nodesource_lists.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+  become: yes
+
 - name: Run NodeSource install script
   ansible.builtin.shell: |
     curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
