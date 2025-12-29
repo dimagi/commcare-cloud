@@ -1,14 +1,19 @@
 {% for queue_names, celery_params in app_processes_config.celery_processes.get(inventory_hostname).items() | sort %}
+
+{# flower does not handle commas in worker names well #}
+{% set queue_names_dashed = queue_names | replace(',', '-') %}
+
 {% for worker_num in range(celery_params.num_workers) %}
 
+
 {% if queue_names not in ("flower", "beat") %}
-[program:{{ project }}-{{ deploy_env }}-celery_{{ queue_names }}_{{worker_num}}]
+[program:{{ project }}-{{ deploy_env }}-celery__{{ queue_names_dashed }}__{{worker_num}}]
 environment={% for name, value in [item, celery_params]|env_vars %}{{ name }}="{{ value }}",{% endfor %}
 
 command=/bin/bash {{ service_home }}/{{ deploy_env }}_celery_bash_runner.sh
     --events --loglevel=INFO --without-gossip
     --queues={{ queue_names }}
-    --hostname={{ inventory_hostname }}_{{ queue_names }}_{{ worker_num }} {% if celery_params.pooling == 'prefork' %} --autoscale={{ celery_params.concurrency }},0 -Ofair {% if celery_params.max_tasks_per_child %}--maxtasksperchild={{ celery_params.max_tasks_per_child }}{% endif %}{% endif %}{% if celery_params.pooling == 'gevent' %} -P gevent --concurrency={{ celery_params.concurrency }}{% endif %}
+    --hostname={{ inventory_hostname }}__{{ queue_names_dashed }}__{{ worker_num }} {% if celery_params.pooling == 'prefork' %} --autoscale={{ celery_params.concurrency }},0 -Ofair {% if celery_params.max_tasks_per_child %}--maxtasksperchild={{ celery_params.max_tasks_per_child }}{% endif %}{% endif %}{% if celery_params.pooling == 'gevent' %} -P gevent --concurrency={{ celery_params.concurrency }}{% endif %}
     --prefetch-multiplier={{ celery_params.prefetch_multiplier }}
 
 directory={{ code_home }}
@@ -18,9 +23,9 @@ autostart=true
 autorestart=true
 stopasgroup=false
 killasgroup=false
-stdout_logfile={{ log_home }}/celery_{{ queue_names }}_{{ worker_num }}.log
+stdout_logfile={{ log_home }}/celery__{{ queue_names_dashed }}__{{ worker_num }}.log
 redirect_stderr=true
-stderr_logfile={{ log_home }}/celery_{{ queue_names }}_{{ worker_num }}.error.log
+stderr_logfile={{ log_home }}/celery__{{ queue_names_dashed }}__{{ worker_num }}.error.log
 startsecs=10
 ; shutdown only waits for the bash runner to exit
 stopwaitsecs = 30
