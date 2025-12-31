@@ -377,12 +377,22 @@ GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
 MAPBOX_ACCESS_TOKEN = '{{ MAPBOX_ACCESS_TOKEN }}'
 FORMTRANSLATE_TIMEOUT = 5
 
-{% if OLD_BROKER_URL and rabbitmq_migration_bridge|default(False) %}
+
+{% set BROKER_MIGRATION_MODE = celery_broker_migration_mode|default(None) %}
+{% if BROKER_MIGRATION_MODE is none and rabbitmq_migration_bridge|default(False) %}
+{% set BROKER_MIGRATION_MODE = "drain" %}
+{% endif %}
+
+{% if OLD_BROKER_URL and BROKER_MIGRATION_MODE == "legacy" %}
+CELERY_BROKER_URL = BROKER_URL = '{{ OLD_BROKER_URL }}'
+{% elif OLD_BROKER_URL and BROKER_MIGRATION_MODE == "drain" %}
 CELERY_BROKER_READ_URL = BROKER_READ_URL = '{{ OLD_BROKER_URL }}'
 CELERY_BROKER_WRITE_URL = BROKER_WRITE_URL = '{{ BROKER_URL }}'
 {% else %}
 CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
 {% endif %}
+
+
 {% if 'CELERY_BROKER_HEARTBEAT' in localsettings and localsettings.CELERY_BROKER_HEARTBEAT %}
 CELERY_BROKER_HEARTBEAT = {{ localsettings.CELERY_BROKER_HEARTBEAT }}
 {% endif %}
