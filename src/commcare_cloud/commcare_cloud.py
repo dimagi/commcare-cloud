@@ -40,7 +40,7 @@ from .commands.ansible.run_module import (
     SendDatadogEvent,
 )
 from .commands.fab import Fab
-from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Scp, DjangoManage, Tmux, ForwardPort
+from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Scp, Rsync, DjangoManage, Tmux, ForwardPort
 from .commands.ansible.ops_tool import ListDatabases, CeleryResourceReport, PillowResourceReport, \
     CouchDBClusterInfo, AuditEnvironment, UpdateLocalKnownHosts, PillowTopicAssignments
 from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
@@ -59,6 +59,7 @@ COMMAND_GROUPS = OrderedDict([
         Ssh,
         AuditEnvironment,
         Scp,
+        Rsync,
         RunAnsibleModule,
         RunShellCommand,
         SendDatadogEvent,
