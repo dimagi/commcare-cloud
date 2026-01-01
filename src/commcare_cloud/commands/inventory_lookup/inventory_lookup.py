@@ -231,6 +231,7 @@ class Scp(Ssh):
             scp_args = [args.source, address + ":" + args.target]
         return [self.command] + ssh_args + scp_args
 
+
 class Rsync(Ssh):
     command = 'rsync'
     help = """
