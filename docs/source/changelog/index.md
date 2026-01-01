@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-01-01** [Remove Old NodeSource Files](0093-remove-old-nodesource-files.md)
+Remove no longer needed NodeSource files that break ``apt``.
+
+
+---
 #### **2025-12-03** [Upgrade To NodeJS 24](0092-upgrade-to-node-24.md)
 Node.js 20.x LTS is reaching its end of life 30th April 2026, so node and npm must be upgraded on all machines.
 
