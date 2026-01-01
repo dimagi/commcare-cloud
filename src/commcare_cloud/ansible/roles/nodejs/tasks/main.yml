@@ -1,14 +1,14 @@
-- name: Find NodeSource apt source files
+- name: Find Old NodeSource files
   ansible.builtin.find:
     paths: /etc/apt/sources.list.d
     patterns:
-      - "deb_nodesource_com_node_*.list"
-      - "nodesource*.list"
+      - "deb_nodesource_com_node_16_x.list"
+      - "deb_nodesource_com_node_20_x.list"
     file_type: file
   register: nodesource_lists
   become: yes
 
-- name: Remove NodeSource apt source files
+- name: Remove Old NodeSource files
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: absent
