@@ -1,3 +1,22 @@
+- name: Find Old NodeSource files
+  ansible.builtin.find:
+    paths: /etc/apt/sources.list.d
+    patterns:
+      - "deb_nodesource_com_node_16_x.list"
+      - "deb_nodesource_com_node_20_x.list"
+    file_type: file
+  register: nodesource_lists
+  become: yes
+
+- name: Remove Old NodeSource files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ nodesource_lists.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+  become: yes
+
 - name: Run NodeSource install script
   ansible.builtin.shell: |
     curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
