@@ -39,7 +39,7 @@ servers:
     server_instance_type: r6a.large
     network_tier: "app-private"
     az: "a"
-    volume_size: 60
+    volume_size: 110
     group: "django_manage"
     os: jammy 
 
