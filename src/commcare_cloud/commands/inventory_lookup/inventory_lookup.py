@@ -237,6 +237,12 @@ class Rsync(Ssh):
     help = """
     Copy file(s) over SSH with the ability to resume if disconnected.
 
+    By default, the following rsync options are used:
+    - archive: preserve file structure, symlinks, etc
+    - progress: shows progress
+    - partial: keep partially transferred files if disrupted
+    - append-verify: append to partially trasnferred files and verify checksum once complete
+
     If a remote host is not specified in either the `source` or
     `target`, the `source` host defaults to `django_manage[0]`.
 
@@ -295,7 +301,7 @@ class Rsync(Ssh):
     def assemble_command(self, address, args, ssh_args):
         # the entire ssh cmd needs to be passed in with the -e arg for rsync
         ssh_cmd = "ssh " + " ".join(shlex.quote(a) for a in ssh_args)
-        rsync_args = ["-e", ssh_cmd, "--archive", "--progress", "--partial", "--apend-verify"]
+        rsync_args = ["-e", ssh_cmd, "--archive", "--progress", "--partial", "--append-verify"]
         if self.remote_source:
             rsync_args += [address + ":" + args.source, args.target]
         else:
