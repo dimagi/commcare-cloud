@@ -295,9 +295,9 @@ class Rsync(Ssh):
     def assemble_command(self, address, args, ssh_args):
         # the entire ssh cmd needs to be passed in with the -e arg for rsync
         ssh_cmd = "ssh " + " ".join(shlex.quote(a) for a in ssh_args)
-        rsync_args = ["-e", ssh_cmd]
+        rsync_args = ["-e", ssh_cmd, "--archive", "--progress", "--partial", "--apend-verify"]
         if self.remote_source:
-            rsync_args += ["-aP", "--append-verify", address + ":" + args.source, args.target]
+            rsync_args += [address + ":" + args.source, args.target]
         else:
             rsync_args += [args.source, address + ":" + args.target]
         return [self.command] + rsync_args
