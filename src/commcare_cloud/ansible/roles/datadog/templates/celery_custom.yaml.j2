@@ -2,6 +2,6 @@ init_config:
 
 instances:
   - flower_url: "{{ CELERY_FLOWER_URL }}"
-    timeout: 30
+    timeout: 10
     tags:
       - environment:{{ env_monitoring_id }}
