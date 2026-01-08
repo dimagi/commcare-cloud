@@ -37,6 +37,7 @@ class TerraformConfig(jsonobject.JsonObject):
     pgbouncer_nlbs = jsonobject.ListProperty(lambda: PgbouncerNlbs)
     internal_albs = jsonobject.ListProperty(lambda: InternalAlbs)
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
+    elasticache_celery_broker = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
     r53_private_zone = jsonobject.ObjectProperty(lambda: RoutePrivateZoneConfig, default=None)
     efs_file_systems = jsonobject.ListProperty(lambda: EfsFileSystem, default=None)
     ec2_auto_recovery = jsonobject.ListProperty(lambda: Ec2AutoRecovery, default=None)
