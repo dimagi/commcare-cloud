@@ -232,6 +232,83 @@ class Scp(Ssh):
         return [self.command] + ssh_args + scp_args
 
 
+class Rsync(Ssh):
+    command = 'rsync'
+    help = """
+    Copy file(s) over SSH with the ability to resume if disconnected.
+
+    By default, the following rsync options are used:
+    - archive: preserve file structure, symlinks, etc
+    - progress: shows progress
+    - partial: keep partially transferred files if disrupted
+    - append-verify: append to partially trasnferred files and verify checksum once complete
+
+    If a remote host is not specified in either the `source` or
+    `target`, the `source` host defaults to `django_manage[0]`.
+
+    Examples:
+
+    Copy remote `django_manage` file to local current directory
+    ```
+    cchq <env> rsync /tmp/file.txt .
+    ```
+
+    Copy remote .txt files to local /texts/ directory
+    ```
+    cchq <env> rsync webworkers[0]:'/tmp/*.txt' /texts/
+    ```
+
+    Copy local file to remote path
+    ```
+    cchq <env> rsync file.txt control:/tmp/other.txt
+    ```
+
+    Limitations:
+
+    - Multiple `source` arguments are not supported.
+    - File paths do not auto-complete.
+    - Unlike normal `rsync`, options with values are most easily passed
+      after the `target` argument.
+    - Copy from remote to remote is not supported.
+    - Probably many more.
+    """
+
+    arguments = (
+        Argument("source", help="""
+            Local pathname or remote host with optional path in the form [user@]host:[path].
+        """),
+        Argument("target", help="""
+            Local pathname or remote host with optional path in the form [user@]host:[path].
+        """),
+        Argument("--quiet", action='store_true', default=False, help="""
+            Don't output the command to be run.
+        """),
+    )
+
+    def run(self, args, ssh_args, env_vars=None):
+        if ":" in args.source and ":" in args.target:
+            sys.exit("Remote to remote copy not implemented")
+        self.remote_source = True
+        if ":" in args.source:
+            args.server, args.source = args.source.split(":", 1)
+        elif ":" in args.target:
+            self.remote_source = False
+            args.server, args.target = args.target.split(":", 1)
+        else:
+            args.server = 'django_manage[0]'
+        return super().run(args, ssh_args)
+
+    def assemble_command(self, address, args, ssh_args):
+        # the entire ssh cmd needs to be passed in with the -e arg for rsync
+        ssh_cmd = "ssh " + " ".join(shlex.quote(a) for a in ssh_args)
+        rsync_args = ["-e", ssh_cmd, "--archive", "--progress", "--partial", "--append-verify"]
+        if self.remote_source:
+            rsync_args += [address + ":" + args.source, args.target]
+        else:
+            rsync_args += [args.source, address + ":" + args.target]
+        return [self.command] + rsync_args
+
+
 class Tmux(_Ssh):
     command = 'tmux'
     help = """

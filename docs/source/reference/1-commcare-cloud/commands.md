@@ -298,6 +298,76 @@ Don't output the command to be run.
 
 ---
 
+#### ``rsync`` Command
+
+Copy file(s) over SSH with the ability to resume if disconnected.
+
+```
+commcare-cloud <env> rsync [--quiet] source target
+```
+
+##### By default, the following rsync options are used
+```
+- archive: preserve file structure, symlinks, etc
+- progress: shows progress
+- partial: keep partially transferred files if disrupted
+- append-verify: append to partially trasnferred files and verify checksum once complete
+
+If a remote host is not specified in either the `source` or
+`target`, the `source` host defaults to `django_manage[0]`.
+
+```
+##### Examples
+```
+
+Copy remote `django_manage` file to local current directory
+```
+cchq <env> rsync /tmp/file.txt .
+```
+
+Copy remote .txt files to local /texts/ directory
+```
+cchq <env> rsync webworkers[0]:'/tmp/*.txt' /texts/
+```
+
+Copy local file to remote path
+```
+cchq <env> rsync file.txt control:/tmp/other.txt
+```
+
+```
+##### Limitations
+```
+
+- Multiple `source` arguments are not supported.
+- File paths do not auto-complete.
+- Unlike normal `rsync`, options with values are most easily passed
+  after the `target` argument.
+- Copy from remote to remote is not supported.
+- Probably many more.
+
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
+```
+
+##### Positional Arguments
+
+###### `source`
+
+Local pathname or remote host with optional path in the form [user@]host:[path].
+
+###### `target`
+
+Local pathname or remote host with optional path in the form [user@]host:[path].
+
+##### Options
+
+###### `--quiet`
+
+Don't output the command to be run.
+
+---
+
 #### ``run-module`` Command
 
 Run an arbitrary Ansible module.
