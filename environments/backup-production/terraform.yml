@@ -1,5 +1,5 @@
 account_alias: commcare-backup-production
-terraform_version: '1.5'
+terraform_version: '1.13'
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-2"
@@ -7,11 +7,13 @@ environment: "bk-production"
 skip_ebs_snapshots: "yes"
 ssl_policy: 'ELBSecurityPolicy-FS-1-2-Res-2020-10'
 azs:
-  - "us-east-2a"
+  - "us-east-2c"
   - "us-east-2b"
+  - "us-east-2a"
 az_codes:
-  - a
+  - c
   - b
+  - a
 vpc_begin_range: "10.212"
 
 ec2_metadata_tokens_required: yes
@@ -25,275 +27,43 @@ servers:
     group: "control"
     os: jammy
 
-  - server_name: "djangomanage_a0-bk-production"
+
+  - server_name: "couch_a3-bk-production"
     server_instance_type: t3a.large
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 20
-    group: "django_manage"
-    os: jammy
-
-  - server_name: "web_a{i}-bk-production"
-    server_instance_type: t3a.large
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 20
-    volume_encrypted: yes
-    group: "hq_webworkers"
-    os: jammy
-    count: 2
-
-  - server_name: "web_b{i}-bk-production"
-    server_instance_type: t3a.large
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 20
-    group: "mobile_webworkers"
-    os: jammy
-    count: 2
-    server_auto_recovery: true
-
-  - server_name: "esmaster_a1-bk-production"
-    server_instance_type: t3a.xlarge
     network_tier: "db-private"
-    az: "a"
-    group: "elasticsearch"
-    os: jammy
-    volume_size: 20
-
-  - server_name: "esmaster_b1-bk-production"
-    server_instance_type: t3a.xlarge
-    network_tier: "db-private"
-    az: "b"
-    group: "elasticsearch"
-    os: jammy
-    volume_size: 20
-    volume_encrypted: yes
-
-  - server_name: "esmaster_c1-bk-production"
-    server_instance_type: t3a.xlarge
-    network_tier: "db-private"
-    az: "a"
-    group: "elasticsearch"
-    os: jammy
-    volume_size: 20
-    volume_encrypted: yes
-
-  - server_name: "es_a2{i}-bk-production"
-    server_instance_type: t3a.xlarge
-    network_tier: "db-private"
-    az: "a"
+    az: "c"
     volume_size: 20
     volume_encrypted: yes
     block_device:
-      volume_size: 20
-    group: "elasticsearch"
-    os: jammy
-    count: 4
-
-  - server_name: "es_b2{i}-bk-production"
-    server_instance_type: t3a.xlarge
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 20
-    volume_encrypted: yes
-    block_device:
-      volume_size: 2800
-    group: "elasticsearch"
-    os: jammy
-    count: 4
-
-  - server_name: "es_a3{i}-bk-production"
-    server_instance_type: t3a.xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 20
-    volume_encrypted: yes
-    block_device:
-      volume_size: 20
-    group: "elasticsearch"
-    os: jammy
-    count: 3
-
-  - server_name: "es_b3{i}-bk-production"
-    server_instance_type: t3a.xlarge
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 20
-    volume_encrypted: yes
-    block_device:
-      volume_size: 2800
-    group: "elasticsearch"
-    os: jammy
-    count: 3
-
-  - server_name: "couch_a0-bk-production"
-    server_instance_type: t3a.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 20
-    volume_encrypted: yes
-    block_device:
-      volume_size: 20
+      volume_size: 1000
       encrypted: yes
     group: "couchdb2"
     os: jammy
 
-  - server_name: "rabbit_a0-bk-production"
-    server_instance_type: t3a.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 20
-    volume_encrypted: yes
-    group: "rabbitmq"
-    os: jammy
-
-  - server_name: "celery_a{i}-bk-production"
-    server_instance_type: t3a.medium
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 20
-    volume_encrypted: yes
-    group: "celery"
-    os: jammy
-    count: 1
-
-  - server_name: "pillow_a{i}-bk-production"
-    server_instance_type: t3a.medium
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 20
-    group: "pillowtop"
-    os: jammy
-    count: 1
-
-  - server_name: "formplayer_a{i}-bk-production"
-    server_instance_type: t3a.small
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 20
-    group: "formplayer"
-    os: jammy
-    count: 1
-
-  - server_name: "kafka_a0-bk-production"
-    server_instance_type: t3a.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 20
-    volume_encrypted: no
-    group: "kafka"
-    os: jammy
-
-  - server_name: "pgbouncer_a0-bk-production"
-    server_instance_type: t3a.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 20
-    volume_encrypted: yes
-    group: "postgresql"
-    os: jammy
-
-proxy_servers:
-  - server_name: "proxy_a0-bk-production"
+  - server_name: "couch_a4-bk-production"
     server_instance_type: t3a.large
-    network_tier: "public"
-    az: "a"
+    network_tier: "db-private"
+    az: "c"
     volume_size: 20
-    group: "proxy"
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1000
+      encrypted: yes
+    group: "couchdb2"
     os: jammy
 
-rds_instances:
-  - identifier: "pgmain0-bk-production"
-    instance_type: db.t3.micro
-    storage: 20
-    multi_az: false
-    engine_version: "14"
-    monitoring_interval: 0
+  - server_name: "couch_a5-bk-production"
+    server_instance_type: t3a.large
+    network_tier: "db-private"
+    az: "c"
+    volume_size: 20
+    volume_encrypted: yes
+    block_device:
+      volume_size: 1000
+      encrypted: yes
+    group: "couchdb2"
+    os: jammy
 
-  - identifier: "pgucr0-bk-production"
-    instance_type: db.t3.micro
-    storage: 20
-    multi_az: false
-    engine_version: "14"
-    monitoring_interval: 0
-
-  - identifier: "pgshard1-bk-production"
-    instance_type: db.t3.micro
-    storage: 20
-    multi_az: false
-    engine_version: "14"
-    monitoring_interval: 0
-
-  - identifier: "pgshard2-bk-production"
-    instance_type: db.t3.micro
-    storage: 20
-    multi_az: false
-    engine_version: "14"
-    monitoring_interval: 0
-
-  - identifier: "pgshard3-bk-production"
-    instance_type: db.t3.micro
-    storage: 20
-    multi_az: false
-    engine_version: "14"
-    monitoring_interval: 0
-
-  - identifier: "pgshard4-bk-production"
-    instance_type: db.t3.micro
-    storage: 20
-    multi_az: false
-    engine_version: "14"
-    monitoring_interval: 0
-
-  - identifier: "pgshard5-bk-production"
-    instance_type: db.t3.micro
-    storage: 20
-    multi_az: false
-    engine_version: "14"
-    monitoring_interval: 0
-
-  - identifier: "pgsynclog0-bk-production"
-    instance_type: db.t3.micro
-    storage: 20
-    multi_az: false
-    engine_version: "14"
-    monitoring_interval: 0
-
-  - identifier: "pgformplayer0-bk-production"
-    instance_type: db.t3.micro
-    storage: 20
-    multi_az: false
-    engine_version: "14"
-    monitoring_interval: 0
-
-  - identifier: "pgauditcare0-bk-production"
-    instance_type: db.t3.micro
-    storage: 20
-    multi_az: false
-    engine_version: "14"
-    monitoring_interval: 0
-
-pgbouncer_nlbs:
-  - name: pgformplayer_nlb-bk-production
-    targets:
-      - pgbouncer_a0-bk-production
-
-  - name: pgmain_nlb-bk-production
-    targets:
-      - pgbouncer_a0-bk-production
-
-  - name: pgucr_nlb-bk-production
-    targets:
-      - pgbouncer_a0-bk-production
-
-  - name: pgsynclogs_nlb-bk-production
-    targets:
-      - pgbouncer_a0-bk-production
-
-  - name: pgshard_nlb-bk-production
-    targets:
-      - pgbouncer_a0-bk-production
 
 internal_albs:
   - name: "couch_alb-bk-production"
@@ -301,31 +71,7 @@ internal_albs:
     target_port: 15984
     health_check_interval: 30
     targets:
-      - couch_a0-bk-production
+      - couch_a3-bk-production
+      - couch_a4-bk-production
+      - couch_a5-bk-production
 
-elasticache_cluster:
-  create: yes
-  cache_node_type: "cache.t3.micro"
-  cache_engine_version: "7.0"
-  automatic_failover: true
-  transit_encryption: false
-  at_rest_encryption: true
-  auto_minor_version: false
-  cluster_size: 2
-  maintenance_window: "sun:08:30-sun:09:30"
-
-r53_private_zone:
-  create: yes
-  domain_name:  "bk-production.commcare.local"
-  create_record: yes
-  route_names:  "redis"
-
-efs_file_systems:
-  - efs_name: "efs_bk-production"
-    create: yes
-    transition_to_ia:  "AFTER_14_DAYS"
-    create_access: no
-    create_mount: yes
-    create_record: yes
-    domain_name: "bk-production.commcare.local"
-    route_names: "shared-efs"
