@@ -398,7 +398,7 @@ backups. General steps once nodes are setup with snapshots of production data:
   `couch_node_standalone_fix.py <https://gist.github.com/snopoke/f5c81497f6cbf3937dce2734e2b354a5>`_
   script can be used to do this.
 
-DefaultChangeFeedPillow is millions of changes behind
+
 -----------------------------------------------------
 
 Background
@@ -406,7 +406,7 @@ Background
 
 Most of our change feed processors (pillows) read from Kafka, but a small number of them serve
 to copy changes from the CouchDB ``_changes`` feeds *into* Kafka,
-the main such pillow being ``DefaultChangeFeedPillow``.
+the other such pillow being ``AppDbChangeFeedPillow``.
 These pillows store as a checkpoint a CouchDB "seq", a long string that references a place
 in the _changes feed. While these ``seq``\ s have the illusion of durability
 (that is, if couch gives you one, then couch will remember it when you pass it back)
@@ -438,7 +438,7 @@ Figure out when the rewind happened
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Look at https://app.datadoghq.com/dashboard/ewu-jyr-udt/change-feeds-pillows for the right
-environment, and look for a huge jump in needs_processed for DefaultChangeFeedPillow.
+environment, and look for a huge jump in needs_processed for AppDbChangeFeedPillow.
 
 Find a recent ``seq``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -475,7 +475,7 @@ and manually change the checkpoint using something like the following lines
    # in django shell
    seq = '131585621-g1AAAAKzeJzLYWBg4MhgTmEQTc4vTc5ISXIwNNAzMjDSMzHQMzQ2zQFKMyUyJMn___8_K4M5ieFXGmMuUIw9JdkkxdjEMoVBBFOfqTkuA40MwAYmKQDJJHu4mb_cwWamJZumpiaa49JKyFAHkKHxcEP31oMNNTJMSbIwSCbX0ASQofUwQ3_-uQI21MwkKcnYxAyfoVjCxdIcbGYeC5BkaABSQGPnQxw7yQZibpJpooGFGQ7dxBi7AGLsfrCxfxKPg401MDI2MzClxNgDEGPvQ1zrWwA2NsnCyCItLYkCYx9AjIUE7p8qSDIAutXQwMwAV5LMAgCrhbmz'
    from pillowtop.utils import get_pillow_by_name
-   p = get_pillow_by_name('DefaultChangeFeedPillow')
+   p = get_pillow_by_name('AppDbChangeFeedPillow')
    p.checkpoint.update_to(seq)
 
 Nginx
@@ -1204,15 +1204,15 @@ Run pillowtop status again to confirm the pillow is now running. If it is not, c
 
     The elements returned by the ``status`` command are the names of processes, not the names of the pillows themselves.
 
-    For example, if the status command identified that ``commcare-hq-cluster-pillowtop-DefaultChangeFeedPillow-0`` was not running, start the pillow using:
+    For example, if the status command identified that ``commcare-hq-cluster-pillowtop-AppDbChangeFeedPillow-0`` was not running, start the pillow using:
 
     .. code-block::
 
         #Correct - Restarting by pillow name
-        cchq cluster service pillowtop start --only=DefaultChangeFeedPillow
+        cchq cluster service pillowtop start --only=AppDbChangeFeedPillow
 
         #Incorrect - Restarting by process name
-        cchq cluster service pillowtop start --only=commcare-hq-cluster-pillowtop-DefaultChangeFeedPillow-0
+        cchq cluster service pillowtop start --only=commcare-hq-cluster-pillowtop-AppDbChangeFeedPillow-0
 
 
 Formplayer / Cloudcare / Webapps

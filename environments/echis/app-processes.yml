@@ -93,9 +93,6 @@ pillows:
     CacheInvalidatePillow:
       num_processes: 10
       processor_chunk_size: 0
-    DefaultChangeFeedPillow:
-      num_processes: 10
-      processor_chunk_size: 0
     group-pillow:
       num_processes: 1
       processor_chunk_size: 0
