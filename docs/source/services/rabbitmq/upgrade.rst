@@ -93,7 +93,7 @@ with the target version and gracefully drain the old one while directing traffic
 
    .. code-block::
 
-       rabbitmq_migration_bridge=true
+       celery_broker_migration=true
 
 #. Edit public.yml to have
 
@@ -109,7 +109,7 @@ with the target version and gracefully drain the old one while directing traffic
        cchq <env> update-config
 
    but don't restart services yet.
-   Adding ``OLD_AMQP_HOST`` will make celery machines with ``rabbitmq_migration_bridge=true`` get different
+   Adding ``OLD_AMQP_HOST`` will make celery machines with ``celery_broker_migration=true`` get different
    broker settings in ``localsettings.py`` that make it read from the old and write to the new rabbitmq. 
 #. Check to make sure the connection to the new rabbitmq machine is working by running
    .. code-block::
@@ -132,5 +132,5 @@ with the target version and gracefully drain the old one while directing traffic
 
        cchq <env> update-config
 
-   You can leave ``rabbitmq_migration_bridge=true`` on the portion of celery machines you added it to
+   You can leave ``celery_broker_migration=true`` on the portion of celery machines you added it to
    for the next time, or you can remove it now. When ``OLD_AMQP_HOST`` is not set, it has no effect.
