@@ -7,6 +7,12 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-01-06** [Deprecating rabbitmq_migration_bridge var](0094-deprecating-rabbitmq-migration-bridge.md)
+``rabbitmq_migration_bridge`` var is being replaced by
+``celery_broker_migration``
+
+
+---
 #### **2026-01-01** [Remove Old NodeSource Files](0093-remove-old-nodesource-files.md)
 Remove no longer needed NodeSource files that break ``apt``.
 
