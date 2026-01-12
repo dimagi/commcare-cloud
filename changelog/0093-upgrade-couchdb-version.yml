@@ -1,0 +1,14 @@
+title: Upgrade CouchDB Version to 3.5.0
+key: upgrade-couchdb-version
+date: 2026-01-10
+optional_per_env: no
+context: |
+  We have updated CouchDB version from 3.4.3 to 3.5.0.
+details: |
+  This upgrade includes performance improvements and bug fixes from CouchDB 3.5.0.
+  CouchDB 3.5.0 Release Notes: https://docs.couchdb.org/en/stable/whatsnew/3.5.html
+update_steps: |
+  To upgrade CouchDB on your machines please run:
+  ```bash
+  cchq <env> ap deploy_couchdb2.yml
+  ```

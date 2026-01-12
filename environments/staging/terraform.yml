@@ -77,7 +77,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 120
+      volume_size: 140
       volume_type: "gp3"
     group: "elasticsearch"
     os: jammy
@@ -90,7 +90,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 120
+      volume_size: 140
       volume_type: "gp3"
     group: "elasticsearch"
     os: jammy
@@ -103,7 +103,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 80
+      volume_size: 100
       volume_type: "gp3"
     group: "elasticsearch"
     os: jammy
@@ -116,7 +116,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 120
+      volume_size: 140
       volume_type: "gp3"
     group: "elasticsearch"
     os: jammy
@@ -129,7 +129,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 120
+      volume_size: 140
       volume_type: "gp3"
     group: "elasticsearch"
     os: jammy
