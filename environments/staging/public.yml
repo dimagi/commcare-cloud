@@ -28,7 +28,6 @@ ELASTICACHE_BROKER_PORT: '6379'
 
 #RabbitMQ Broker URL
 BROKER_URL: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}"
-OLD_BROKER_URL: "redis://{{ ELASTICACHE_BROKER_HOST }}:{{ ELASTICACHE_BROKER_PORT }}/{{ ELASTICACHE_BROKER_DB }}"
 
 backup_blobdb: False
 backup_postgres: plain
