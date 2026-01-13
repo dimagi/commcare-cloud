@@ -227,7 +227,7 @@ Each `<ETL-processor-name>` must be correspond to the `name` fields specified in
 ``AppDbChangeFeedPillow``, ``ApplicationToElasticsearchPillow``,
 ``CacheInvalidatePillow``, ``case-pillow``, ``case_messaging_sync_pillow``,
 ``CaseSearchToElasticsearchPillow``, ``CaseToElasticsearchPillow``,
-``DefaultChangeFeedPillow``, ``DomainDbKafkaPillow``,
+``DomainDbKafkaPillow``,
 ``FormSubmissionMetadataTrackerPillow``, ``group-pillow``, ``GroupPillow``,
 ``GroupToUserPillow``, ``kafka-ucr-main``, ``kafka-ucr-static``,
 ``KafkaDomainPillow``, ``LedgerToElasticsearchPillow``, ``location-ucr-pillow``,
