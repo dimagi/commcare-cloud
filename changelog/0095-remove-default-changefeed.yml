@@ -1,0 +1,25 @@
+title: Remove DefaultChangeFeedPillow From CommCareHQ
+key: remove-default-changefeed
+date: 2026-01-13
+optional_per_env: no
+min_commcare_version:
+max_commcare_version:
+context: |
+  Remove the DefaultChangeFeedPillow from CommCareHQ.
+
+details: |
+  The DefaultChangeFeedPillow is no longer used in CommCareHQ.
+  It should be removed from all environments.
+
+update_steps: |
+  To remove the DefaultChangeFeedPillow from all environments, run the following commands:
+  
+  Pull the latest version of commcare-cloud
+  ```bash
+  git pull origin master
+  ```
+
+  Then run the update-supervisor-confs command:
+  ```bash
+  cchq <env> update-supervisor-confs --limit=pillowtop
+  ```
