@@ -142,7 +142,6 @@ pillows:
       # to be processed before removing this process.
     # demo-case-sql partitions: 32 = 4 x 8
       num_processes: 4
-      gevent_workers: 8
     xform-pillow:
       num_processes: 2
       gevent_workers: 4
