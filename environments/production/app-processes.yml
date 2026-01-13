@@ -119,8 +119,10 @@ celery_processes:
 
 pillows:
   pillow_a2000:
+  # form-sql partitions: 32 = 4 * 8
     xform-pillow:
-      num_processes: 33
+      num_processes: 9
+      gevent_workers: 4
       dedicated_migration_process: True
     user-pillow:
       num_processes: 1
