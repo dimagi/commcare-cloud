@@ -428,6 +428,11 @@ elasticache_celery_broker:
   maintenance_window: "sun:00:30-sun:01:30"
   snapshot_retention: 0
 
+r53_records:
+  - domain_name: "staging.commcare.local"
+    route_name: "broker"
+    records: ["${module.elasticache-celery-broker.primary_configuration_endpoint_address}"]
+
 efs_file_systems:
   - efs_name: "efs_staging"
     create: yes
