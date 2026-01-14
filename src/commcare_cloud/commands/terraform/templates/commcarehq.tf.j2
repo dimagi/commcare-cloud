@@ -272,6 +272,22 @@ module "r53-private-zone-create" {
 }
 {% endif %}
 
+{% for record in r53_records %}
+module "r53_record__{{ record.route_name }}" {
+  source = "./modules/r53-record-create-update"
+  domain_name = {{ record.domain_name|tojson }}
+  route_names = {{ record.route_name|tojson }}
+  records = flatten({{ record.records|tojson }})
+  record_type = {{ record.record_type|tojson }}
+  ttl = {{ record.ttl|tojson }}
+
+  {% if r53_private_zone %}
+  # Ensure we wait for the zone if we are creating it in this same run
+  depends_on = [module.r53-private-zone-create]
+  {% endif %}
+}
+{% endfor %}
+
 module "Users" {
   source = "./modules/iam"
   account_alias = var.account_alias

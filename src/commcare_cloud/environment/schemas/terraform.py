@@ -39,6 +39,7 @@ class TerraformConfig(jsonobject.JsonObject):
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
     elasticache_celery_broker = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
     r53_private_zone = jsonobject.ObjectProperty(lambda: RoutePrivateZoneConfig, default=None)
+    r53_records = jsonobject.ListProperty(lambda: Route53RecordConfig, default=list)
     efs_file_systems = jsonobject.ListProperty(lambda: EfsFileSystem, default=None)
     ec2_auto_recovery = jsonobject.ListProperty(lambda: Ec2AutoRecovery, default=None)
     fsx_file_systems = jsonobject.ListProperty(lambda: FsxFileSystem, default=None)
@@ -287,6 +288,14 @@ class RoutePrivateZoneConfig(jsonobject.JsonObject):
     domain_name = jsonobject.StringProperty()
     create_record = jsonobject.BooleanProperty(default=True)
     route_names = jsonobject.StringProperty()
+
+class Route53RecordConfig(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    domain_name = jsonobject.StringProperty(required=True)
+    route_name = jsonobject.StringProperty(required=True)
+    record_type = jsonobject.StringProperty(default='CNAME')
+    ttl = jsonobject.IntegerProperty(default=300)
+    records = jsonobject.ListProperty(str, required=True)
 
 
 class EfsFileSystem(jsonobject.JsonObject):
