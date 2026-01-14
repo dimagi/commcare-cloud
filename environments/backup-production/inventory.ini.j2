@@ -1,216 +1,22 @@
-{{ __proxy_a0__ }}
-
-[proxy:children]
-proxy_a0
-
-{{ __web_a__ }}
-
-{{ __web_b__ }}
-
-[logproxy:children]
-proxy
-
-[logproxy:vars]
-swap_size=2G
-
-[hq_webworkers:children]
-web_a
-
-[mobile_webworkers:children]
-web_b
-
-[webworkers:children]
-hq_webworkers
-mobile_webworkers
-
-[webworkers:vars]
-swap_size=2G
-
-{{ __pgbouncer_a0__ }} pgbouncer_processes=2 swap_size=2G
-
-{{ __rds_pgmain0__ }}
-
-{{ __rds_pgformplayer0__ }}
-
-{{ __rds_pgucr0__ }}
-
-{{ __rds_pgshard1__ }}
-
-{{ __rds_pgshard2__ }}
-
-{{ __rds_pgshard3__ }}
-
-{{ __rds_pgshard4__ }}
-
-{{ __rds_pgshard5__ }}
-
-{{ __rds_pgsynclog0__ }}
-
-{{ __rds_pgauditcare0__ }}
-
-{{ __pgformplayer_nlb__ }}
-
-{{ __pgmain_nlb__ }}
-
-{{ __pgucr_nlb__ }}
-
-{{ __pgsynclogs_nlb__ }}
-
-{{ __pgshard_nlb__ }}
-
-{{ __couch_alb__ }}
-
-[remote_postgresql:children]
-rds_pgmain0
-rds_pgformplayer0
-rds_pgucr0
-rds_pgshard1
-rds_pgshard2
-rds_pgshard3
-rds_pgshard4
-rds_pgshard5
-rds_pgsynclog0
-rds_pgauditcare0
-
-[postgresql:children]
-pgbouncer_a0
-remote_postgresql
-
-[pgbouncer:children]
-pgbouncer_a0
-pgformplayer_nlb
-pgmain_nlb
-pgucr_nlb
-pgsynclogs_nlb
-pgshard_nlb
-
-[ansible_skip:children]
-remote_postgresql
-pgformplayer_nlb
-pgmain_nlb
-pgucr_nlb
-pgsynclogs_nlb
-pgshard_nlb
-couch_alb
-
-{{ __rabbit_a0__ }}
-
-[rabbitmq:children]
-rabbit_a0
-
-[rabbitmq:vars]
-swap_size=2G
-
-{{ __kafka_a0__ }} kafka_broker_id=1 zookeeper_server_id=2
-
-[zookeeper:children]
-kafka_a0
-
-[kafka:children]
-kafka_a0
-
-[kafka:vars]
-swap_size=2G
-
-{{ __celery_a__ }}
-
-[celery:children]
-celery_a
-
-[celery:vars]
-swap_size=8G
-
-{{ __pillow_a__ }}
-
-[pillowtop:children]
-pillow_a
-
-[pillowtop:vars]
-swap_size=2G
-
-{{ __formplayer_a__ }}
-
-[formplayer:children]
-formplayer_a
-
-[formplayer:vars]
-formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
-cchq_uid=3002
-cchq_gid=3002
-swap_size=2G
-
-[formplayer_debug:vars]
-use_formplayer_debug_options=true
-
-[formplayer_debug:children]
-
-[formplayer_with_monit:vars]
-use_monit_for_formplayer=true
-
-[formplayer_with_monit:children]
-
-[shared_efs_client_host:children]
-celery
-django_manage
-proxy
-pillowtop
-webworkers
-
-{{ __es_a2__ }}
-
-{{ __es_b2__ }}
-
-{{ __es_a3__ }}
-
-{{ __es_b3__ }}
-
-{{ __esmaster_a1__ }} elasticsearch_node_name=esmaster_a1
-
-{{ __esmaster_b1__ }} elasticsearch_node_name=esmaster_b1
-
-{{ __esmaster_c1__ }} elasticsearch_node_name=esmaster_c1
-
-[es_master:children]
-esmaster_a1
-esmaster_b1
-esmaster_c1
-
-[es_master:vars]
-elasticsearch_master=true
-elasticsearch_data=false
-
-[es_data:children]
-es_a2
-es_b2
-es_a3
-es_b3
-
-[es_a2:vars]
-elasticsearch_node_zone=us-east-2c
-
-[es_b2:vars]
-elasticsearch_node_zone=us-east-2b
-
-[es_a3:vars]
-elasticsearch_node_zone=us-east-2c
-
-[es_b3:vars]
-elasticsearch_node_zone=us-east-2b
-
-[elasticsearch:children]
-es_master
-es_data
-
-[elasticsearch:vars]
-swap_size=2G
-
 {{ __couch_a0__ }}
+{{ __couch_a1__ }}
+{{ __couch_a2__ }}
+{{ __couch_a3__ }}
+{{ __couch_a4__ }}
+{{ __couch_a5__ }}
 
 [couchdb2:children]
 couch_a0
+couch_a1
+couch_a2
+couch_a3
+couch_a4
+couch_a5
 
 [couchdb2:vars]
 swap_size=8G
+
+{{ __couch_alb__ }}
 
 [couchdb2_proxy:children]
 couch_alb
@@ -226,10 +32,41 @@ control_a0
 [control:vars]
 swap_size=2G
 
-{{ __djangomanage_a0__ }}
+[proxy:children]
+control_a0
+
+[ansible_skip:children]
+couch_alb
+
+[rabbitmq:children]
+control_a0
+
+[zookeeper:children]
+control_a0
+
+[kafka:children]
+control_a0
+
+[elasticsearch:children]
+control_a0
+
+[elasticsearch:vars]
+number_of_replicas=0
+
+[celery:children]
+control_a0
+
+[celery:vars]
+celery_command_prefix='celery -A commcare.celery_tasks.tasks'
 
 [django_manage:children]
-djangomanage_a0
+control_a0
 
-[django_manage:vars]
-swap_size=2G
+[pillowtop:children]
+control_a0
+
+[formplayer:children]
+control_a0
+
+[webworkers:children]
+control_a0

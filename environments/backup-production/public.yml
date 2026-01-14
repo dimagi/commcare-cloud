@@ -97,9 +97,9 @@ couchdb_os_process_limit: 1000
 couchdb_reduce_limit: False
 couchdb_cluster_settings:
   q: 8
-  r: 1
-  w: 1
-  n: 1
+  r: 2
+  w: 2
+  n: 3
 
 kafka_version: 3.2.3
 kafka_scala_version: 2.13

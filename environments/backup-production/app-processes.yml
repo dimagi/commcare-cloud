@@ -3,10 +3,10 @@ gunicorn_workers_factor: 4
 formplayer_memory: "1g"
 formplayer_g1heapregionsize: "2m"
 management_commands:
-  celery_a000:
-  pillow_a000:
+  control_a0:
+  control_a0:
 celery_processes:
-  celery_a000:
+  control_a0:
     background_queue:
       concurrency: 1
     email_queue,repeat_record_queue,analytics_queue,reminder_case_update_queue:
@@ -20,7 +20,7 @@ celery_processes:
     beat: {}
 
 pillows:
-  pillow_a000:
+  control_a0:
     case-pillow:
       num_processes: 1
       dedicated_migration_process: True
