@@ -22,7 +22,7 @@ erlang: 1:24.3.3-1
 rabbitmq_version: 3.10.13-1
 
 # Celery Broker URLs
-BROKER_URL: "{{ REDIS_BROKER_URL }}"
+BROKER_URL: "redis://{{ REDIS_BROKER_HOST }}:{{ REDIS_BROKER_PORT }}/{{ REDIS_BROKER_DB }}"
 OLD_BROKER_URL: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}"
 
 backup_blobdb: False

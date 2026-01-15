@@ -381,7 +381,6 @@ FORMTRANSLATE_TIMEOUT = 5
 REDIS_BROKER_HOST = {{ REDIS_BROKER_HOST }}
 REDIS_BROKER_PORT = {{ REDIS_BROKER_PORT }}
 REDIS_BROKER_DB = {{ REDIS_BROKER_DB }}
-REDIS_BROKER_URL = "redis://{{ REDIS_BROKER_HOST }}:{{ REDIS_BROKER_PORT }}/{{ REDIS_BROKER_DB }}"
 {% endif %}
 
 {% if OLD_BROKER_URL and (celery_broker_migration|default(False) or rabbitmq_migration_bridge|default(False)) %}
