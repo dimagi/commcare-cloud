@@ -451,6 +451,8 @@ rds_instances:
     enable_cross_region_backup: true
     params:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
+      # five minutes
+      log_min_duration_statement: 300000
 
   - identifier: "pgshard1-production"
     instance_type: "db.m6g.2xlarge"
