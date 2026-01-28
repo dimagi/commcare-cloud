@@ -285,7 +285,7 @@ servers:
     count: 2
 
   - server_name: "pillow_a2{i}-production"
-    server_instance_type: r6a.2xlarge
+    server_instance_type: r8a.xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 100
