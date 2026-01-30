@@ -40,6 +40,9 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 110
+    block_device:
+      volume_size: 500
+      enable_cross_region_backup: no
     group: "django_manage"
     os: jammy 
 
