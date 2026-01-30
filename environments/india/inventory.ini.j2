@@ -8,6 +8,7 @@
 {{ __couch10__ }} swap_size=8G
 {{ __couch11__ }} swap_size=8G
 {{ __couch12__ }} swap_size=8G
+{{ __couch13__ }} swap_size=8G
 {{ __esmaster8__ }} elasticsearch_node_name=esmaster8 elasticsearch_node_zone=ap-south-1a
 {{ __esmaster9__ }} elasticsearch_node_name=esmaster9 elasticsearch_node_zone=ap-south-1b
 {{ __esmaster10__ }} elasticsearch_node_name=esmaster10 elasticsearch_node_zone=ap-south-1c
@@ -131,6 +132,7 @@ webworkers
 couch10
 couch11
 couch12
+couch13
 
 [couchdb2_proxy:children]
 couch_alb
