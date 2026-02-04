@@ -47,7 +47,7 @@ servers:
     os: jammy 
 
   - server_name: "web_a2{i}-production"
-    server_instance_type: r8a.xlarge
+    server_instance_type: m8a.xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -58,7 +58,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_b2{i}-production"
-    server_instance_type: r8a.xlarge
+    server_instance_type: m8a.xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
