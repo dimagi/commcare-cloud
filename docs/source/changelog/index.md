@@ -7,6 +7,13 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-01-22** [Added CouchDB Upgrade Guide](0095-couchdb-upgrade-guide.md)
+Added a new step-by-step documentation guide for upgrading CouchDB nodes.
+This guide covers the process for taking nodes out of the load balancer,
+performing the upgrade, and verifying the changes.
+
+
+---
 #### **2026-01-06** [Deprecating rabbitmq_migration_bridge var](0094-deprecating-rabbitmq-migration-bridge.md)
 ``rabbitmq_migration_bridge`` var is being replaced by
 ``celery_broker_migration``

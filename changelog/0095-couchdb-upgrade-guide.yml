@@ -1,0 +1,23 @@
+title: Added CouchDB Upgrade Guide
+key: couchdb_upgrade_guide
+date: 2026-01-22
+optional_per_env: yes
+min_commcare_version:
+max_commcare_version:
+context: |
+  Added a new step-by-step documentation guide for upgrading CouchDB nodes.
+  This guide covers the process for taking nodes out of the load balancer,
+  performing the upgrade, and verifying the changes.
+details: |
+  The guide involves:
+  - Setting up environment variables.
+  - Deregistering the node from the application load balancer (ALB).
+  - Stopping pillows and putting the node in maintenance mode.
+  - Creating a snapshot.
+  - Running the deployment playbook.
+  - Verifying the upgrade.
+  - Restoring the node to service.
+
+  The guide is available at `docs/source/services/couchdb/upgrade.rst`.
+update_steps: |
+  No action needed.
