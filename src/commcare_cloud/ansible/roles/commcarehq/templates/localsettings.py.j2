@@ -1171,24 +1171,17 @@ USE_PHONE_ENTRIES = {{ localsettings.USE_PHONE_ENTRIES }}
 CHECK_REPEATERS_PARTITION_COUNT = {{ localsettings.CHECK_REPEATERS_PARTITION_COUNT }}
 {% endif %}
 
-{% if localsettings.ABDM_ABHA_URL is defined %}
-ABDM_ABHA_URL = {{ localsettings.ABDM_ABHA_URL }}
-{% endif %}
-
-{% if localsettings.ABDM_GATEWAY_URL is defined %}
-ABDM_GATEWAY_URL = {{ localsettings.ABDM_GATEWAY_URL }}
-{% endif %}
-
 {% if localsettings.ABDM_X_CM_ID is defined %}
-ABDM_X_CM_ID = {{ localsettings.ABDM_X_CM_ID }}
-{% endif %}
-
-{% if ABDM_CLIENT_ID %}
-ABDM_CLIENT_ID = {{ ABDM_CLIENT_ID }}
-{% endif %}
-
-{% if ABDM_CLIENT_SECRET %}
-ABDM_CLIENT_SECRET = {{ ABDM_CLIENT_SECRET }}
+ABDM_INTEGRATOR = {
+    "CLIENT_ID": {% if ABDM_CLIENT_ID %}'{{ ABDM_CLIENT_ID }}',{% else %}None{% endif %},
+    "CLIENT_SECRET": {% if ABDM_CLIENT_SECRET %}'{{ ABDM_CLIENT_SECRET }}',{% else %}None{% endif %},
+    'X_CM_ID': {% if localsettings.ABDM_X_CM_ID is defined %}'{{ localsettings.ABDM_X_CM_ID }}'{% else %}None{% endif %},
+    'ABHA_URL': {% if localsettings.ABDM_ABHA_URL is defined %}'{{ localsettings.ABDM_ABHA_URL }}'{% else %}None{% endif %},
+    'GATEWAY_URL': {% if localsettings.ABDM_GATEWAY_URL is defined %}'{{ localsettings.ABDM_GATEWAY_URL }}'{% else %}None{% endif %},
+    "USER_MODEL": "abdm.ABDMUser",
+    "AUTHENTICATION_CLASS": "custom.abdm.auth.ABDMUserAuthentication",
+    "HRP_ABHA_REGISTERED_CHECK_CLASS": "custom.abdm.integrations.AbhaRegisteredCheck",
+}
 {% endif %}
 
 {% if FCM_CREDS %}
