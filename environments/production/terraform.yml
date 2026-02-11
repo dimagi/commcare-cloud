@@ -580,7 +580,7 @@ rds_instances:
       track_io_timing: 1
 
   - identifier: "pgauditcare1-production"
-    instance_type: "db.m6g.xlarge"
+    instance_type: "db.r8g.large"
     storage: 7700
     storage_type: gp3
     multi_az: true
