@@ -558,7 +558,7 @@ rds_instances:
       autovacuum_vacuum_cost_limit: 2000
 
   - identifier: "pgformplayer2-production"
-    instance_type: "db.m6g.large"
+    instance_type: "db.t4g.large"
     storage: 200
     storage_type: gp3
     multi_az: true
