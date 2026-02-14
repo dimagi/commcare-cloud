@@ -1,0 +1,76 @@
+title: Rolling Upgrade of CouchDB Nodes
+key: couchdb-upgrade
+date: 2026-02-14
+optional_per_env: no
+
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version:
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+
+context: |
+  This changelog outlines the steps for a rolling upgrade of CouchDB nodes. 
+  It ensures the cluster remains available by upgrading one node at a time using maintenance mode to prevent downtime.
+
+details: |
+  To maintain cluster health and data integrity, CouchDB nodes must be upgraded individually. 
+  The process involves stopping change feed pillows to prevent lag, placing the node in maintenance mode so the cluster knows it is intentionally offline, and running the deployment playbook. 
+  This approach prevents the cluster from trying to over-replicate or rebalance while a node is being serviced.
+
+update_steps: |
+  Perform these steps for *each CouchDB node* in your cluster, one at a time.
+
+  ### 1. Pre-Upgrade Variables & Traffic Management
+  1. Set your node variables on the control machine:
+     sh
+     node_to_upgrade="<IP_OF_NODE>"
+     node_name_to_upgrade="<NODE_NAME_IN_INVENTORY>"
+     couch_coordinator="<IP_OF_ANY_OTHER_NODE>"
+     
+  2. If the node is behind a Load Balancer, deregister it from the target group now to stop incoming traffic.
+  3. Stop the Pillowtop services on the control machine:
+     sh
+     cchq <env> service pillowtop stop --only=AppDbChangeFeedPillow,DefaultChangeFeedPillow,DomainDbKafkaPillow,UserGroupsDbKafkaPillow
+     
+
+  ### 2. Maintenance Mode & Service Stop
+  1. Put the node into maintenance mode via the coordinator:
+     sh
+     curl -X PUT -H "Content-type: application/json" \
+     http://${username}:${password}@${couch_coordinator}:15984/_node/couchdb@${node_to_upgrade}/_config/couchdb/maintenance_mode -d '"true"'
+     
+  2. Verify the status (the /_up endpoint should reflect the maintenance state):
+     sh
+     curl http://${username}:${password}@${node_to_upgrade}:15984/_up
+     
+  3. Stop CouchDB and Monit:
+     sh
+     cchq <env> run-shell-command ${node_name_to_upgrade} 'systemctl stop monit && systemctl stop couchdb' -b
+     
+  4. *Recommended:* Take a manual snapshot of the data volume/disk before proceeding.
+
+  ### 3. Deploy the Upgrade
+  1. Run the deployment playbook, limited to the specific node:
+     sh
+     cchq <env> ap deploy_couchdb2.yml --limit=${node_name_to_upgrade}
+     
+  2. Verify the new version:
+     sh
+     curl -s http://${node_to_upgrade}:15984/ | jq .version
+     
+  3. Check cluster membership to ensure it has rejoined:
+     sh
+     curl http://${username}:${password}@${node_to_upgrade}:15984/_membership
+     
+
+  ### 4. Restore Traffic & Pillows
+  1. If using a Load Balancer, register the node back into the target group.
+  2. Take the node out of maintenance mode:
+     sh
+     curl -X PUT -H "Content-type: application/json" \
+     http://${username}:${password}@${couch_coordinator}:15984/_node/couchdb@${node_to_upgrade}/_config/couchdb/maintenance_mode -d '"false"'
+     
+  3. Verify health: curl http://${username}:${password}@${node_to_upgrade}:15984/_up
+  4. Restart the Pillows:
+     sh
+     cchq <env> service pillowtop start --only=AppDbChangeFeedPillow,DefaultChangeFeedPillow,DomainDbKafkaPillow,UserGroupsDbKafkaPillow
