@@ -7,6 +7,12 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-02-14** [Rolling Upgrade of CouchDB Nodes](0095-couchdb-upgrade.md)
+This changelog outlines the steps for a rolling upgrade of CouchDB nodes. 
+It ensures the cluster remains available by upgrading one node at a time using maintenance mode to prevent downtime.
+
+
+---
 #### **2026-01-06** [Deprecating rabbitmq_migration_bridge var](0094-deprecating-rabbitmq-migration-bridge.md)
 ``rabbitmq_migration_bridge`` var is being replaced by
 ``celery_broker_migration``
