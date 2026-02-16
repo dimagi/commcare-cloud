@@ -23,7 +23,6 @@ dev_users:
     - pverma
     - rcostello
     - sgoyal
-    - sherbers
     - skelly
     - sravfeyn
     - zeng
@@ -55,6 +54,7 @@ dev_users:
     - rpietersen
     - sbansal
     - schauhan
+    - sherbers
     - sgoswami
     - spokhriyal
     - wpride
