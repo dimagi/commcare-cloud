@@ -32,7 +32,7 @@ botocore==1.39.3
     #   s3transfer
 certifi==2024.7.4
     # via requests
-cffi==1.14.6
+cffi==2.0.0
     # via
     #   cryptography
     #   pynacl
@@ -101,8 +101,6 @@ pyjwt[crypto]==2.4.0
     # via pygithub
 pynacl==1.5.0
     # via pygithub
-pyparsing==3.0.9
-    # via packaging
 python-dateutil==2.8.2
     # via botocore
 pytz==2022.1
@@ -132,8 +130,10 @@ smmap==5.0.0
     # via gitdb
 tabulate==0.8.9
     # via commcare-cloud (setup.py)
-typing-extensions==4.12.2
-    # via pygithub
+typing-extensions==4.15.0
+    # via
+    #   cryptography
+    #   pygithub
 urllib3==2.6.3
     # via
     #   botocore
