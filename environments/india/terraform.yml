@@ -75,7 +75,7 @@ servers:
     os: jammy
 
   - server_name: "celery14-india"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "r6a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 60
@@ -85,7 +85,7 @@ servers:
     os: jammy
 
   - server_name: "celery15-india"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "r6a.large"
     network_tier: "app-private"
     az: "b"
     volume_size: 60
