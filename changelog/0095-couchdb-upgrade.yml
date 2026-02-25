@@ -58,7 +58,7 @@ The version number would be used later to figure out the version that we want to
      couch_coordinator="<IP_OF_ANY_OTHER_NODE>"
 
      Note:
-     - If this is a single-node cluster, set couch_coordinator equal to node_to_upgrade.
+     - If this is a single-node cluster, the `couch_coordinator` would be same as  `node_to_upgrade`.
 
   2. Fetch CouchDB credentials securely from secrets:
      sh
