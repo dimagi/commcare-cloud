@@ -114,7 +114,7 @@ Note - If you have configured a different port for couch db, please replace 1598
 
   ### 4. Restore Traffic & Pillows
 
-  1. If using a Load Balancer, register the node back into the target group.
+  1. If using a Load Balancer, register the node back into the load balancer config.
 
   2. Take the node out of maintenance mode:
      sh
