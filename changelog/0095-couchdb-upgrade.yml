@@ -80,6 +80,8 @@ The version number would be used later to figure out the version that we want to
      curl -X PUT -H "Content-type: application/json" \
      http://${username}:${password}@${couch_coordinator}:15984/_node/couchdb@${node_to_upgrade}/_config/couchdb/maintenance_mode -d '"true"'
 
+Note - If you have configured a different port for couch db, please replace 15984. 
+
   2. Verify the status:
      sh
      curl http://${username}:${password}@${node_to_upgrade}:15984/_up
