@@ -45,10 +45,7 @@ update_steps: |
      git commit -am "Update CouchDB version to 3.4.3"
      git push
 
-  3. The version change will be applied during the rolling deployment step
-     using:
-     sh
-     cchq <env> ap deploy_couchdb2.yml --limit=${node_name_to_upgrade}
+The version number would be used later to figure out the version that we want to deploy.
 
   ----------------------------------------------------------------------
 
