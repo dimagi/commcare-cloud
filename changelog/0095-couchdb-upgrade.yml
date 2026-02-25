@@ -65,7 +65,7 @@ The version number would be used later to figure out the version that we want to
      username=$(cchq <env> secrets view COUCH_USERNAME)
      password=$(cchq <env> secrets view COUCH_PASSWORD)
 
-  3. If the node is behind a Load Balancer (ALB), deregister it from the target group to stop incoming traffic.
+  3. If you have put couch db behind a load balancer, you can remove the node from node from load balancer. It would stop any incoming traffic to that node.
 
   4. Stop the Pillowtop services on the control machine:
      sh
