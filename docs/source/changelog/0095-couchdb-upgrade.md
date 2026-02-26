@@ -15,8 +15,8 @@ This change is not known to be dependent on any particular version of CommCare.
 This changelog outlines the steps for a rolling upgrade of CouchDB nodes.
 
 The upgrade must be performed in two stages:
-1. Upgrade from 3.3.x to 3.4.3
-2. Upgrade from 3.4.3 to 3.5.0
+  1. Upgrade from 3.3.x to 3.4.3
+  2. Upgrade from 3.4.3 to 3.5.0
 
 The rolling upgrade process remains the same for both stages.
 The only difference is updating the `couchdb_version` variable in
@@ -41,97 +41,129 @@ Perform these steps for *each CouchDB node* in your cluster, one at a time.
    environments/<env>/public.yml
 
    Set:
-   couchdb_version: "3.4.3"
+     couchdb_version: "3.4.3"
 
 2. Commit and push the change:
-   sh
+
+   ```sh
    git commit -am "Update CouchDB version to 3.4.3"
    git push
+   ```
 
-3. The version change will be applied during the rolling deployment step
-   using:
-   sh
-   cchq <env> ap deploy_couchdb2.yml --limit=${node_name_to_upgrade}
+The version number will be used later to determine the version to deploy.
 
 ----------------------------------------------------------------------
 
 ### 1. Pre-Upgrade Variables & Traffic Management
 
 1. Set your node variables on the control machine:
-   sh
+
+   ```sh
    node_to_upgrade="<IP_OF_NODE>"
    node_name_to_upgrade="<NODE_NAME_IN_INVENTORY>"
    couch_coordinator="<IP_OF_ANY_OTHER_NODE>"
+   ```
 
    Note:
-   - If this is a single-node cluster, set couch_coordinator equal to node_to_upgrade.
+   - If this is a single-node cluster, the `couch_coordinator`
+     will be the same as `node_to_upgrade`.
 
 2. Fetch CouchDB credentials securely from secrets:
-   sh
+
+   ```sh
    username=$(cchq <env> secrets view COUCH_USERNAME)
    password=$(cchq <env> secrets view COUCH_PASSWORD)
+   ```
 
-3. If the node is behind a Load Balancer (ALB), deregister it from the target group to stop incoming traffic.
+3. If CouchDB is behind a load balancer, remove the node from the load balancer.
+   This will stop incoming traffic to that node.
 
 4. Stop the Pillowtop services on the control machine:
-   sh
+
+   ```sh
    cchq <env> service pillowtop stop --only=AppDbChangeFeedPillow,DefaultChangeFeedPillow,DomainDbKafkaPillow,UserGroupsDbKafkaPillow
+   ```
 
 ----------------------------------------------------------------------
 
 ### 2. Maintenance Mode & Service Stop
 
 1. Put the node into maintenance mode via the coordinator:
-   sh
+
+   ```sh
    curl -X PUT -H "Content-type: application/json" \
-   http://${username}:${password}@${couch_coordinator}:15984/_node/couchdb@${node_to_upgrade}/_config/couchdb/maintenance_mode -d '"true"'
+     http://${username}:${password}@${couch_coordinator}:15984/_node/couchdb@${node_to_upgrade}/_config/couchdb/maintenance_mode \
+     -d '"true"'
+   ```
+
+   Note:
+   - If you have configured a different CouchDB port, replace `15984`.
 
 2. Verify the status:
-   sh
+
+   ```sh
    curl http://${username}:${password}@${node_to_upgrade}:15984/_up
+   ```
 
 3. Stop CouchDB and Monit:
-   sh
+
+   ```sh
    cchq <env> run-shell-command ${node_name_to_upgrade} 'systemctl stop monit && systemctl stop couchdb' -b
+   ```
 
 4. Take a manual snapshot of the attached data volume before proceeding.
-   This is a mandatory step to ensure rollback is possible if needed.
-   Ensure you take a backup of the volume mounted at /opt/data (device: /dev/nvme1n1) before continuing.
+   This is mandatory to ensure rollback is possible if needed.
+
+   Ensure you take a backup of the volume mounted at `/opt/data`
+   (device: `/dev/nvme1n1`) before continuing.
 
 ----------------------------------------------------------------------
 
 ### 3. Deploy the Upgrade
 
 1. Run the deployment playbook, limited to the specific node:
-   sh
+
+   ```sh
    cchq <env> ap deploy_couchdb2.yml --limit=${node_name_to_upgrade}
+   ```
 
 2. Verify the new version:
-   sh
+
+   ```sh
    curl -s http://${node_to_upgrade}:15984/ | jq .version
+   ```
 
 3. Check cluster membership:
-   sh
+
+   ```sh
    curl http://${username}:${password}@${node_to_upgrade}:15984/_membership
+   ```
 
 ----------------------------------------------------------------------
 
 ### 4. Restore Traffic & Pillows
 
-1. If using a Load Balancer, register the node back into the target group.
+1. If using a load balancer, register the node back into the load balancer configuration.
 
 2. Take the node out of maintenance mode:
-   sh
+
+   ```sh
    curl -X PUT -H "Content-type: application/json" \
-   http://${username}:${password}@${couch_coordinator}:15984/_node/couchdb@${node_to_upgrade}/_config/couchdb/maintenance_mode -d '"false"'
+     http://${username}:${password}@${couch_coordinator}:15984/_node/couchdb@${node_to_upgrade}/_config/couchdb/maintenance_mode \
+     -d '"false"'
+   ```
 
 3. Verify health:
-   sh
+
+   ```sh
    curl http://${username}:${password}@${node_to_upgrade}:15984/_up
+   ```
 
 4. Restart the Pillowtop services:
-   sh
+
+   ```sh
    cchq <env> service pillowtop start --only=AppDbChangeFeedPillow,DefaultChangeFeedPillow,DomainDbKafkaPillow,UserGroupsDbKafkaPillow
+   ```
 
 5. After confirming the node is healthy and has rejoined the cluster,
    repeat Steps 1–4 for the next CouchDB node.
@@ -145,7 +177,7 @@ Perform these steps for *each CouchDB node* in your cluster, one at a time.
    update environments/<env>/public.yml again:
 
    Set:
-   couchdb_version: "3.5.0"
+     couchdb_version: "3.5.0"
 
 2. Commit and push the change.
 

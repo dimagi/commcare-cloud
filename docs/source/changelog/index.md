@@ -11,8 +11,8 @@ need to be applied on your environment to keep it up to date.
 This changelog outlines the steps for a rolling upgrade of CouchDB nodes.
 
 The upgrade must be performed in two stages:
-1. Upgrade from 3.3.x to 3.4.3
-2. Upgrade from 3.4.3 to 3.5.0
+  1. Upgrade from 3.3.x to 3.4.3
+  2. Upgrade from 3.4.3 to 3.5.0
 
 The rolling upgrade process remains the same for both stages.
 The only difference is updating the `couchdb_version` variable in
