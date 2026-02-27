@@ -52,10 +52,11 @@ zookeeper_cluster: True
 erlang: 1:24.3.3-1
 rabbitmq_version: 3.10.13-1
 
-#RabbitMQ Broker URL
-BROKER_URL: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}"
-
+# Celery Broker URLs
 AMQP_HOST: "{{ groups.rabbitmq.0 }}"
+REDIS_BROKER_PORT: '6379'
+BROKER_URL: "redis://{{ REDIS_BROKER_HOST }}:{{ REDIS_BROKER_PORT }}/{{ REDIS_BROKER_DB }}"
+OLD_BROKER_URL: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}"
 
 control_machine_ip: 10.204.10.141
 
