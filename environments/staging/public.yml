@@ -56,7 +56,6 @@ formplayer_fsx_dns: "fs-0ffde07db112793e4.fsx.us-east-1.amazonaws.com:/fsx"
 fsx_shared_mount_dir: "shared_fsx{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
 fsx_shared_mount_endpoint: "fs-01fe0af927cf0c331.fsx.us-east-1.amazonaws.com:/fsx"
 fsx_shared_mount_options: "nfsvers=4.2"
-shared_dir_gid: 1500
 
 KSPLICE_ACTIVE: yes
 
