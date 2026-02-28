@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-01-13** [Remove DefaultChangeFeedPillow From CommCareHQ](0095-remove-default-changefeed.md)
+Remove the DefaultChangeFeedPillow from CommCareHQ.
+
+
+---
 #### **2026-01-06** [Deprecating rabbitmq_migration_bridge var](0094-deprecating-rabbitmq-migration-bridge.md)
 ``rabbitmq_migration_bridge`` var is being replaced by
 ``celery_broker_migration``
