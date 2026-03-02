@@ -70,3 +70,5 @@ pillows:
       num_processes: 1
     user-pillow:
       num_processes: 1
+    ush_background_tasks:
+      num_processes: 1
