@@ -58,7 +58,6 @@ REDIS_BROKER_DB: '0'
 REDIS_BROKER_HOST: "broker.eu.commcare.local"
 REDIS_BROKER_PORT: '6379'
 BROKER_URL: "redis://{{ REDIS_BROKER_HOST }}:{{ REDIS_BROKER_PORT }}/{{ REDIS_BROKER_DB }}"
-OLD_BROKER_URL: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}"
 
 control_machine_ip: 10.204.10.141
 
