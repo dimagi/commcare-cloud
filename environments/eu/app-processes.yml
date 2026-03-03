@@ -39,7 +39,7 @@ celery_processes:
     geospatial_queue:
       concurrency: 1
     ush_background_tasks:
-      num_processes: 1
+      concurrency: 1
 pillows:
   pillow_a1:
     AppDbChangeFeedPillow:
