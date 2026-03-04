@@ -1,6 +1,5 @@
 dev_users:
   present:
-    - adunn
     - aphulera
     - ayadav
     - cellowitz
@@ -28,6 +27,7 @@ dev_users:
     - zeng
     - jtank
   absent:
+    - adunn
     - akjain
     - astone
     - biyeun
