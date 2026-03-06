@@ -39,6 +39,7 @@ def create_datasync_destination_location(ctx: S3MigrationContext) -> Optional[st
     try:
         response = ctx.source_datasync.create_location_s3(
             S3BucketArn=f"arn:aws:s3:::{cfg.dest_bucket}",
+            S3StorageClass='INTELLIGENT_TIERING',
             S3Config={
                 'BucketAccessRoleArn': datasync_role_arn
             }

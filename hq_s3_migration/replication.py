@@ -21,6 +21,7 @@ def enable_live_replication(ctx: S3MigrationContext) -> bool:
         'Destination': {
             'Bucket': f'arn:aws:s3:::{cfg.dest_bucket}',
             'Account': cfg.dest_account_id,
+            'StorageClass': 'INTELLIGENT_TIERING',
             'AccessControlTranslation': {
                 'Owner': 'Destination'
             }
