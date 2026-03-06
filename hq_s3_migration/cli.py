@@ -121,6 +121,17 @@ def _create_destination_bucket(ctx: S3MigrationContext) -> bool:
         )
         print(f"  Enabled versioning")
 
+        env_name = ACCOUNT_NAMES.get(cfg.dest_account_id, 'unknown')
+        ctx.dest_s3.put_bucket_tagging(
+            Bucket=cfg.dest_bucket,
+            Tagging={
+                'TagSet': [
+                    {'Key': 'Environment', 'Value': env_name},
+                ]
+            }
+        )
+        print(f"  Tagged with Environment={env_name}")
+
         return True
     except ClientError as e:
         if e.response['Error']['Code'] == 'BucketAlreadyOwnedByYou':
