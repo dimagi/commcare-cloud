@@ -68,11 +68,10 @@ def _check_prerequisites(ctx: S3MigrationContext) -> dict:
 
     print(f"\nChecking source bucket '{cfg.source_bucket}'...")
     try:
-        ctx.source_s3.head_bucket(Bucket=cfg.source_bucket)
+        versioning = ctx.source_s3.get_bucket_versioning(Bucket=cfg.source_bucket)
         results['source_bucket_exists'] = True
         print(f"  Bucket exists")
 
-        versioning = ctx.source_s3.get_bucket_versioning(Bucket=cfg.source_bucket)
         status = versioning.get('Status', 'Disabled')
         results['source_versioning'] = status == 'Enabled'
         print(f"  Versioning: {status}")
@@ -81,16 +80,15 @@ def _check_prerequisites(ctx: S3MigrationContext) -> dict:
 
     print(f"\nChecking destination bucket '{cfg.dest_bucket}'...")
     try:
-        ctx.dest_s3.head_bucket(Bucket=cfg.dest_bucket)
+        versioning = ctx.dest_s3.get_bucket_versioning(Bucket=cfg.dest_bucket)
         results['dest_bucket_exists'] = True
         print(f"  Bucket exists")
 
-        versioning = ctx.dest_s3.get_bucket_versioning(Bucket=cfg.dest_bucket)
         status = versioning.get('Status', 'Disabled')
         results['dest_versioning'] = status == 'Enabled'
         print(f"  Versioning: {status}")
     except ClientError as e:
-        if e.response['Error']['Code'] == '404':
+        if e.response['Error']['Code'] in ('404', 'NoSuchBucket'):
             print(f"  Bucket does not exist (will be created)")
         else:
             print(f"  ERROR: {e}")
