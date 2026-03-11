@@ -171,7 +171,7 @@ def _confirm_translated(environment, quiet=False):
         return True
     github_update_translations_pr_link = \
         "https://github.com/dimagi/commcare-hq/pulls?" \
-        "q=is%3Apr+Update+Translations+author%3Aapp%2Fgithub-actions+is%3Aopen"
+        "q=is%3Apr+Update+Translations+is%3Aopen"
     return ask(
         "It's the weekly Wednesday deploy, did you update the translations "
         "from transifex?\n"
