@@ -167,7 +167,7 @@ def _get_code_diff(environment, deploy_revs, is_resume):
 
 
 def _confirm_translated(environment, quiet=False):
-    if datetime.now().isoweekday() != 3 or environment.meta_config.deploy_env != 'production':
+    if datetime.now().isoweekday() != 3 or environment.meta_config.deploy_env not in ['production', 'india', 'eu']:
         return True
     github_update_translations_pr_link = \
         "https://github.com/dimagi/commcare-hq/pulls?" \
