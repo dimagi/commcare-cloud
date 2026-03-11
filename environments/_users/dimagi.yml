@@ -1,6 +1,5 @@
 dev_users:
   present:
-    - adunn
     - aphulera
     - ayadav
     - cellowitz
@@ -23,12 +22,12 @@ dev_users:
     - pverma
     - rcostello
     - sgoyal
-    - sherbers
     - skelly
     - sravfeyn
     - zeng
     - jtank
   absent:
+    - adunn
     - akjain
     - astone
     - biyeun
@@ -55,6 +54,7 @@ dev_users:
     - rpietersen
     - sbansal
     - schauhan
+    - sherbers
     - sgoswami
     - spokhriyal
     - wpride

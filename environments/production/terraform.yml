@@ -40,11 +40,14 @@ servers:
     network_tier: "app-private"
     az: "a"
     volume_size: 110
+    block_device:
+      volume_size: 500
+      enable_cross_region_backup: no
     group: "django_manage"
     os: jammy 
 
   - server_name: "web_a2{i}-production"
-    server_instance_type: r6a.xlarge
+    server_instance_type: m8a.xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -55,7 +58,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_b2{i}-production"
-    server_instance_type: r6a.xlarge
+    server_instance_type: m8a.xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
@@ -88,7 +91,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_m_a2{i}-production"
-    server_instance_type: r6a.xlarge
+    server_instance_type: r8a.xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -98,7 +101,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_m_b2{i}-production"
-    server_instance_type: r6a.xlarge
+    server_instance_type: r8a.xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
@@ -285,7 +288,7 @@ servers:
     count: 2
 
   - server_name: "pillow_a2{i}-production"
-    server_instance_type: r6a.2xlarge
+    server_instance_type: r8a.xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 100
@@ -555,7 +558,7 @@ rds_instances:
       autovacuum_vacuum_cost_limit: 2000
 
   - identifier: "pgformplayer2-production"
-    instance_type: "db.m6g.large"
+    instance_type: "db.t4g.large"
     storage: 200
     storage_type: gp3
     multi_az: true
@@ -577,7 +580,7 @@ rds_instances:
       track_io_timing: 1
 
   - identifier: "pgauditcare1-production"
-    instance_type: "db.m6g.xlarge"
+    instance_type: "db.r8g.large"
     storage: 7700
     storage_type: gp3
     multi_az: true
@@ -653,6 +656,27 @@ r53_private_zone:
   domain_name:  "production.commcare.local"
   create_record: yes
   route_names:  "redis"
+
+elasticache_celery_broker:
+  create: yes
+  cache_engine: "redis"
+  cache_engine_version: "7.0"
+  cache_node_type: "cache.r6g.large"
+  params:
+    maxmemory-policy: "noeviction"
+  automatic_failover: true
+  transit_encryption: false
+  at_rest_encryption: true
+  auto_minor_version: false
+  cluster_size: 2
+  multi_az: true
+  maintenance_window: "sun:00:30-sun:01:30"
+  snapshot_retention: 0
+
+r53_records:
+  - domain_name: "production.commcare.local"
+    route_name: "broker"
+    records: ["${module.elasticache-celery-broker.primary_configuration_endpoint_address}"]
 
 efs_file_systems: 
   - efs_name: "efs_production"
