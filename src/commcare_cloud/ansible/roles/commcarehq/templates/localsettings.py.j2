@@ -1159,6 +1159,10 @@ NO_DEVICE_LOG_ENVS = []
 NO_DEVICE_LOG_ENVS = [{{ env_monitoring_id|to_json }}]
 {% endif %}
 
+{% if 'DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY' in localsettings and localsettings.DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY %}
+DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY = {{ localsettings.DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY }}
+{% endif %}
+
 {% if localsettings.IGNORE_ALL_DEMO_USER_SUBMISSIONS is defined %}
 IGNORE_ALL_DEMO_USER_SUBMISSIONS = {{ localsettings.IGNORE_ALL_DEMO_USER_SUBMISSIONS }}
 {% endif %}
