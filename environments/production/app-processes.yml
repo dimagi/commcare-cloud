@@ -92,19 +92,6 @@ celery_processes:
       concurrency: 8
     geospatial_queue:
       concurrency: 1
-    # Temporarily add to ensure redundancy during broker migration
-    logistics_background_queue:
-      concurrency: 1
-    logistics_reminder_queue:
-      concurrency: 1
-    send_report_throttled:
-      concurrency: 1
-    malt_generation_queue:
-      pooling: gevent
-      concurrency: 2
-    sumologic_logs_queue:
-      pooling: gevent
-      concurrency: 2
 
   celerybeat_a0:
     # not really queues
