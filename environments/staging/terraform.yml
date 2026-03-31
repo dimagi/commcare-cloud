@@ -234,26 +234,6 @@ servers:
     group: "couchdb2"
     os: jammy
 
-  - server_name: "rabbit_a3-staging"
-    server_instance_type: "t3a.medium"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 80
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: jammy
-
-  - server_name: "rabbit_b2-staging"
-    server_instance_type: "t3a.medium"
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 80
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: jammy
-
   - server_name: "kafka15-staging"
     server_instance_type: t3a.medium
     network_tier: "db-private"
