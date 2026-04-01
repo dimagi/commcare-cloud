@@ -327,7 +327,7 @@ rds_instances:
     storage: 300
     storage_type: gp3
     multi_az: yes
-    engine_version: "14.18"
+    engine_version: "14.20"
     params:
       shared_preload_libraries: pg_stat_statements
       track_io_timing: 1
