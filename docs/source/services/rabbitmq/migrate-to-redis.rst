@@ -8,6 +8,19 @@ Migrating from RabbitMQ to Redis as the Celery Broker
    commcare-cloud. All environments must migrate to Redis before upgrading
    to the next release.
 
+Does this apply to me?
+----------------------
+
+Check your ``<env>/public.yml`` for the ``BROKER_URL`` setting:
+
+- If ``BROKER_URL`` starts with ``redis://`` — you are already using Redis
+  and **do not need to do anything**.
+- If ``BROKER_URL`` starts with ``amqp://`` or is not set — you are using
+  RabbitMQ and must follow this migration guide.
+
+Migration steps
+---------------
+
 This guide walks through migrating your CommCare environment from RabbitMQ
 to Redis as the Celery message broker.
 
