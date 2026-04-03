@@ -91,7 +91,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_m_a2{i}-production"
-    server_instance_type: r8a.xlarge
+    server_instance_type: m8a.2xlarge
     network_tier: "app-private"
     az: "a"
     volume_size: 40
@@ -101,7 +101,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web_m_b2{i}-production"
-    server_instance_type: r8a.xlarge
+    server_instance_type: m8a.2xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 40
@@ -188,7 +188,7 @@ servers:
     count: 3
 
   - server_name: "escoordinator_a1-production"
-    server_instance_type: r6a.2xlarge
+    server_instance_type: r8a.2xlarge
     network_tier: "db-private"
     az: "a"
     volume_size: 30
@@ -196,7 +196,7 @@ servers:
     os: jammy 
 
   - server_name: "escoordinator_b1-production"
-    server_instance_type: r6a.2xlarge
+    server_instance_type: r8a.2xlarge
     network_tier: "db-private"
     az: "b"
     volume_size: 30
@@ -240,24 +240,6 @@ servers:
     group: "couchdb2"
     os: jammy
 
-  - server_name: "rabbit14-production"
-    server_instance_type: c6a.xlarge
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 30
-    volume_encrypted: yes
-    group: "rabbitmq"
-    os: jammy
-
-  - server_name: "rabbit15-production"
-    server_instance_type: t3a.xlarge
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    group: "rabbitmq"
-    os: jammy
-
   - server_name: "celerybeat_a0-production"
     server_instance_type: r6a.xlarge
     network_tier: "app-private"
@@ -297,7 +279,7 @@ servers:
     count: 1
 
   - server_name: "pillow_b2{i}-production"
-    server_instance_type: r6a.2xlarge
+    server_instance_type: r8a.2xlarge
     network_tier: "app-private"
     az: "b"
     volume_size: 50
@@ -656,6 +638,27 @@ r53_private_zone:
   domain_name:  "production.commcare.local"
   create_record: yes
   route_names:  "redis"
+
+elasticache_celery_broker:
+  create: yes
+  cache_engine: "redis"
+  cache_engine_version: "7.0"
+  cache_node_type: "cache.r6g.large"
+  params:
+    maxmemory-policy: "noeviction"
+  automatic_failover: true
+  transit_encryption: false
+  at_rest_encryption: true
+  auto_minor_version: false
+  cluster_size: 2
+  multi_az: true
+  maintenance_window: "sun:00:30-sun:01:30"
+  snapshot_retention: 0
+
+r53_records:
+  - domain_name: "production.commcare.local"
+    route_name: "broker"
+    records: ["${module.elasticache-celery-broker.primary_configuration_endpoint_address}"]
 
 efs_file_systems: 
   - efs_name: "efs_production"

@@ -1,6 +1,5 @@
 dev_users:
   present:
-    - adunn
     - aphulera
     - ayadav
     - cellowitz
@@ -16,7 +15,6 @@ dev_users:
     - esoergel
     - gherceg
     - jingcheng
-    - jschweers
     - mkangia
     - mriese
     - nhooper
@@ -28,6 +26,7 @@ dev_users:
     - zeng
     - jtank
   absent:
+    - adunn
     - akjain
     - astone
     - biyeun
@@ -40,6 +39,7 @@ dev_users:
     - jemord
     - jmiller
     - jroth
+    - jschweers
     - jtang
     - knguyen
     - matthewriley

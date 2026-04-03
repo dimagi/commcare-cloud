@@ -383,7 +383,7 @@ REDIS_BROKER_PORT = {{ REDIS_BROKER_PORT }}
 REDIS_BROKER_DB = {{ REDIS_BROKER_DB }}
 {% endif %}
 
-{% if OLD_BROKER_URL and (celery_broker_migration|default(False) or rabbitmq_migration_bridge|default(False)) %}
+{% if OLD_BROKER_URL and celery_broker_migration|default(False) %}
 CELERY_BROKER_READ_URL = BROKER_READ_URL = '{{ OLD_BROKER_URL }}'
 CELERY_BROKER_WRITE_URL = BROKER_WRITE_URL = '{{ BROKER_URL }}'
 {% else %}
@@ -1159,6 +1159,10 @@ NO_DEVICE_LOG_ENVS = []
 NO_DEVICE_LOG_ENVS = [{{ env_monitoring_id|to_json }}]
 {% endif %}
 
+{% if 'DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY' in localsettings and localsettings.DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY %}
+DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY = {{ localsettings.DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY }}
+{% endif %}
+
 {% if localsettings.IGNORE_ALL_DEMO_USER_SUBMISSIONS is defined %}
 IGNORE_ALL_DEMO_USER_SUBMISSIONS = {{ localsettings.IGNORE_ALL_DEMO_USER_SUBMISSIONS }}
 {% endif %}
@@ -1227,7 +1231,7 @@ CONNECTID_CREDENTIALS_CLIENT_ID = "{{ CONNECTID_CREDENTIALS_CLIENT_ID }}"
 CONNECTID_CREDENTIALS_SECRET_KEY = "{{ CONNECTID_CREDENTIALS_SECRET_KEY }}"
 {% endif %}
 
-{% if CONNECTID_ADD_USER_ANALYTICS_URL is defined %}
+{% if localsettings.CONNECTID_ADD_USER_ANALYTICS_URL is defined %}
 CONNECTID_ADD_USER_ANALYTICS_URL = "{{ localsettings.CONNECTID_ADD_USER_ANALYTICS_URL }}"
 {% endif %}
 
