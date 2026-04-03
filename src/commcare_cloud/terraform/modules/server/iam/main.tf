@@ -233,27 +233,7 @@ resource "aws_iam_role_policy" "control_access_s3_commcare_blobdb" {
   POLICY
 }
 
-resource "aws_iam_role_policy" "control_access_s3_kiss_upload" {
-  name = "AccessS3KissUploads"
-  role = aws_iam_role.commcare_control_server_role.id
 
-  policy = <<POLICY
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor1",
-            "Effect": "Allow",
-            "Action": "s3:*",
-            "Resource": [
-                "arn:aws:s3:::kiss-uploads/*",
-                "arn:aws:s3:::kiss-uploads"
-            ]
-        }
-    ]
-}
-  POLICY
-}
 
 resource "aws_iam_role_policy" "ec2_instance_control_policy" {
   name = "EC2InstanceControlPolicy"
