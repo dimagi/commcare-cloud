@@ -26,7 +26,12 @@ Pull the latest version of commcare-cloud
 git pull origin master
 ```
 
-Then run the update-supervisor-confs command:
+Run the update-supervisor-confs command:
 ```bash
 cchq <env> update-supervisor-confs --limit=pillowtop
+```
+
+Run update-config command
+```bash
+cchq <env> update-config
 ```
