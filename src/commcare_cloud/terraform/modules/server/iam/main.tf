@@ -171,28 +171,7 @@ resource "aws_iam_role_policy_attachment" "control_role_attach_awsmanagedinstanc
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_iam_role_policy" "control_request_response_stream_put_policy" {
-  name = "RequestResponseStreamPutPolicy"
-  role = aws_iam_role.commcare_control_server_role.id
 
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "firehose:PutRecord",
-        "firehose:PutRecordBatch"
-      ],
-      "Resource": [
-        "${var.formplayer_request_response_logs_firehose_stream_arn}"
-      ]
-    }
-  ]
-}
-  POLICY
-}
 
 resource "aws_iam_role_policy" "control_commcare_secrets_access_policy" {
   name = "CommCareSecretsAccess"
