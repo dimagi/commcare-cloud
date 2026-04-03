@@ -1364,14 +1364,14 @@ first thing after logging in.
 Some Short Write-ups and Examples
 =================================
 
-See `Troubleshooting Pasteboard / HQ chat dumping ground <https://confluence.dimagi.com/pages/viewpage.action?pageId=29559520>`_. There is also some `ElasticSearch material <https://docs.google.com/a/dimagi.com/document/d/1EMy-m-Q3aia43q_TqeJdAFVLEx6UfEu3vRqSXskpQ_Y/edit#heading=h.xygb2bpkcfie>`_
+See internal Dimagi `Troubleshooting Pasteboard / HQ chat dumping ground <https://confluence.dimagi.com/pages/viewpage.action?pageId=29559520>`_. There is also some `ElasticSearch material <https://docs.google.com/a/dimagi.com/document/d/1EMy-m-Q3aia43q_TqeJdAFVLEx6UfEu3vRqSXskpQ_Y/edit#heading=h.xygb2bpkcfie>`_
 
 Backups
 =======
 
-Information for restoring elasticsearch and postgres from a backup are at `Restoring From Backups <https://confluence.dimagi.com/display/commcarehq/Restoring+From+Backups>`_
+Internal Dimagi processes for restoring Elasticsearch and Postgres from a backup are documented at `Restoring From Backups <https://dimagi.atlassian.net/wiki/spaces/cc/pages/2146603111/Restoring+From+Backups>`_
 
 SMS Gateways
 ============
 
-See the page on `SMS Gateway Technical Info <https://confluence.dimagi.com/display/commcarehq/SMS+Gateway+Technical+Info>`_ for API docs and support contacts for each gateway.
+See the internal Dimagi page on `SMS Gateway Technical Info <https://dimagi.atlassian.net/wiki/spaces/cc/pages/2146603000>`_ for API docs and support contacts for each gateway.

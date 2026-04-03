@@ -14,5 +14,5 @@ Review https://github.com/dimagi/commcare-cloud/tree/master/changelog#determinin
 to determine if a changelog entry is necessary if not already created.
 -->
 <!-- Delete this section if the PR does not contain any new changelog entries -->
-- [ ] After merging, I will follow [these instructions](https://confluence.dimagi.com/display/saas/Announcing+changes+affecting+third+parties#Announcingchangesaffectingthirdparties-announcing)
+- [ ] (Dimagi only) After merging, I will follow [these instructions](https://confluence.dimagi.com/display/saas/Announcing+changes+affecting+third+parties#Announcingchangesaffectingthirdparties-announcing)
 to announce a new commcare-cloud release. 

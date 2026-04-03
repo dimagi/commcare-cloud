@@ -33,7 +33,7 @@ servers:
     os: jammy
 
   - server_name: "djangomanage3-india"
-    server_instance_type: "t3a.small"
+    server_instance_type: "t3a.medium"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -75,7 +75,7 @@ servers:
     os: jammy
 
   - server_name: "celery14-india"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "r6a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 60
@@ -85,7 +85,7 @@ servers:
     os: jammy
 
   - server_name: "celery15-india"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "r6a.large"
     network_tier: "app-private"
     az: "b"
     volume_size: 60
@@ -287,26 +287,6 @@ servers:
     group: "postgresql"
     os: jammy
 
-  - server_name: "rabbit_a6-india"
-    server_instance_type: t3a.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: jammy 
-
-  - server_name: "rabbit_c7-india"
-    server_instance_type: t3a.small
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: jammy 
-
 proxy_servers:
   - server_name: "proxy_a1-india"
     server_instance_type: "t3a.large"
@@ -330,7 +310,7 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain0-india"
-    instance_type: "db.t3.medium"
+    instance_type: "db.t4g.medium"
     storage: 500
     storage_type: gp3
     multi_az: true
@@ -390,6 +370,27 @@ r53_private_zone:
   domain_name:  "india.commcare.local"
   create_record: yes
   route_names:  "redis"
+
+elasticache_celery_broker:
+  create: yes
+  cache_engine: "redis"
+  cache_engine_version: "7.0"
+  cache_node_type: "cache.r6g.large"
+  params:
+    maxmemory-policy: "noeviction"
+  automatic_failover: true
+  transit_encryption: false
+  at_rest_encryption: true
+  auto_minor_version: false
+  cluster_size: 2
+  multi_az: true
+  maintenance_window: "sun:00:30-sun:01:30"
+  snapshot_retention: 0
+
+r53_records:
+  - domain_name: "india.commcare.local"
+    route_name: "broker"
+    records: ["${module.elasticache-celery-broker.primary_configuration_endpoint_address}"]
 
 efs_file_systems:
   - efs_name: "efs_india"

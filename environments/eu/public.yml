@@ -49,13 +49,11 @@ zookeeper_version: 3.7.1
 zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
 zookeeper_cluster: True
 
-erlang: 1:24.3.3-1
-rabbitmq_version: 3.10.13-1
-
-#RabbitMQ Broker URL
-BROKER_URL: "amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}"
-
-AMQP_HOST: "{{ groups.rabbitmq.0 }}"
+# Celery Broker URL
+REDIS_BROKER_DB: '0'
+REDIS_BROKER_HOST: "broker.eu.commcare.local"
+REDIS_BROKER_PORT: '6379'
+BROKER_URL: "redis://{{ REDIS_BROKER_HOST }}:{{ REDIS_BROKER_PORT }}/{{ REDIS_BROKER_DB }}"
 
 control_machine_ip: 10.204.10.141
 
@@ -201,7 +199,7 @@ localsettings:
   WS4REDIS_CONNECTION_HOST: "redis.eu.commcare.local"
   USER_REPORTING_METADATA_BATCH_ENABLED: True
   CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
-  CONNECTID_ADD_USER_ANALYTICS_URL: 'https://connectid.dimagi.com/users/add_user_analytics/'
+  CONNECTID_ADD_USER_ANALYTICS_URL: 'https://connectid.dimagi.com/users/add_user_analytics'
 
 commcare_cloud_root_user: ubuntu
 commcare_cloud_pem: ~/.ssh/id_rsa

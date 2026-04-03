@@ -119,17 +119,16 @@ zookeeper_cluster: True
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
-erlang: 1:24.3.3-1
-rabbitmq_version: 3.10.13-1
-
-#RabbitMQ Broker URL
-BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
+# Celery Broker URL
+REDIS_BROKER_DB: '0'
+REDIS_BROKER_HOST: 'broker.production.commcare.local'
+REDIS_BROKER_PORT: '6379'
+BROKER_URL: "redis://{{ REDIS_BROKER_HOST }}:{{ REDIS_BROKER_PORT }}/{{ REDIS_BROKER_DB }}"
 
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-production-blobdb'
 
-AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 
 localsettings:
   ALLOWED_HOSTS:
@@ -156,6 +155,7 @@ localsettings:
   CUSTOM_SYNCLOGS_DB: "synclogs_2017-11-01"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   DEVICE_LOGS_ENABLED: no
+  DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY: 999
   EULA_COMPLIANCE: True
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
@@ -254,7 +254,7 @@ localsettings:
   CONNECTID_CHANNEL_URL: 'https://connectid.dimagi.com/messaging/create_channel/'
   CONNECTID_MESSAGE_URL: 'https://connectid.dimagi.com/messaging/send_fcm/'
   CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
-  CONNECTID_ADD_USER_ANALYTICS_URL: 'https://connectid.dimagi.com/users/add_user_analytics/'
+  CONNECTID_ADD_USER_ANALYTICS_URL: 'https://connectid.dimagi.com/users/add_user_analytics'
   ASYNC_INDICATORS_TO_QUEUE: 100000
 
 # comment these two lines out to make a new rackspace machine

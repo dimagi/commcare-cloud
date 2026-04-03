@@ -37,10 +37,11 @@ class TerraformConfig(jsonobject.JsonObject):
     pgbouncer_nlbs = jsonobject.ListProperty(lambda: PgbouncerNlbs)
     internal_albs = jsonobject.ListProperty(lambda: InternalAlbs)
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
+    elasticache_celery_broker = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
     r53_private_zone = jsonobject.ObjectProperty(lambda: RoutePrivateZoneConfig, default=None)
+    r53_records = jsonobject.ListProperty(lambda: Route53RecordConfig, default=list)
     efs_file_systems = jsonobject.ListProperty(lambda: EfsFileSystem, default=None)
     ec2_auto_recovery = jsonobject.ListProperty(lambda: Ec2AutoRecovery, default=None)
-    fsx_file_systems = jsonobject.ListProperty(lambda: FsxFileSystem, default=None)
     terraform_imports = jsonobject.ListProperty(lambda: TerraformImportsConfig, default=list)
     skip_ebs_snapshots = jsonobject.StringProperty(default="no")
 
@@ -288,6 +289,15 @@ class RoutePrivateZoneConfig(jsonobject.JsonObject):
     route_names = jsonobject.StringProperty()
 
 
+class Route53RecordConfig(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    domain_name = jsonobject.StringProperty(required=True)
+    route_name = jsonobject.StringProperty(required=True)
+    record_type = jsonobject.StringProperty(default='CNAME')
+    ttl = jsonobject.IntegerProperty(default=300)
+    records = jsonobject.ListProperty(str, required=True)
+
+
 class EfsFileSystem(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     create = jsonobject.BooleanProperty(default=True)
@@ -305,14 +315,6 @@ class Ec2AutoRecovery(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     targets = jsonobject.ListProperty(str)
     name_prefix = jsonobject.StringProperty(required=True)
-
-
-class FsxFileSystem(jsonobject.JsonObject):
-    _allow_dynamic_properties = False
-    create = jsonobject.BooleanProperty(default=True)
-    fsx_name = jsonobject.StringProperty(required=True)
-    storage_capacity = jsonobject.IntegerProperty(required=True)
-    throughput_capacity = jsonobject.IntegerProperty(required=True)
 
 
 class TerraformImportsConfig(jsonobject.JsonObject):
