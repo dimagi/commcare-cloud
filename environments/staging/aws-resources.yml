@@ -4,6 +4,8 @@ celery_a2-staging: 10.201.10.163
 celery_a2-staging.instance_id: i-0fcf2866598d1a9a6
 control3-staging: 10.201.10.21
 control3-staging.instance_id: i-0764b662e2e2637c3
+couch-prod-backup-staging: 10.201.40.22
+couch-prod-backup-staging.instance_id: i-0e5b5851c6c20f0e5
 couch24-staging: 10.201.42.45
 couch24-staging.instance_id: i-0caec26b9cfd45ee5
 couch25-staging: 10.201.42.181
@@ -53,7 +55,6 @@ proxy6-staging: 10.201.11.133
 proxy6-staging.instance_id: i-03426413ed3c925f1
 proxy8-staging: 10.201.10.72
 proxy8-staging.instance_id: i-053e8c3dd100eb276
-proxy_alb-staging: internal-proxy-alb-staging-1025146289.us-east-1.elb.amazonaws.com
 web13-staging: 10.201.10.244
 web13-staging.instance_id: i-0fb86252d8c3490e9
 web14-staging: 10.201.11.231
