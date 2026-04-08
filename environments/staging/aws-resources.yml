@@ -54,10 +54,6 @@ proxy6-staging.instance_id: i-03426413ed3c925f1
 proxy8-staging: 10.201.10.72
 proxy8-staging.instance_id: i-053e8c3dd100eb276
 proxy_alb-staging: internal-proxy-alb-staging-1025146289.us-east-1.elb.amazonaws.com
-rabbit_a3-staging: 10.201.10.231
-rabbit_a3-staging.instance_id: i-0054851ab37af66d6
-rabbit_b2-staging: 10.201.11.253
-rabbit_b2-staging.instance_id: i-0ab4cfe0c9ddc9c70
 web13-staging: 10.201.10.244
 web13-staging.instance_id: i-0fb86252d8c3490e9
 web14-staging: 10.201.11.231

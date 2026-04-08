@@ -116,15 +116,7 @@ pgsynclogs_nlb
 pgshard_nlb
 couch_alb
 
-{{ __rabbit14__ }}
-{{ __rabbit15__ }}
-
 [rabbitmq:children]
-rabbit14
-rabbit15
-
-[rabbitmq:vars]
-swap_size=2G
 
 {{ __kafka_a1__ }} kafka_broker_id=10 zookeeper_server_id=10
 {{ __kafka_b1__ }} kafka_broker_id=11 zookeeper_server_id=11
