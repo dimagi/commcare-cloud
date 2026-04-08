@@ -56,11 +56,15 @@ pgbouncer2
 {{ __couch24__ }}
 {{ __couch25__ }}
 {{ __couch27__ }}
+{{ __couch_prod_backup__ }}
 
 [couchdb2:children]
 couch24
 couch25
 couch27
+
+[couchdb2_standby:children]
+couch_prod_backup
 
 [couchdb2_proxy:children]
 couch_alb
