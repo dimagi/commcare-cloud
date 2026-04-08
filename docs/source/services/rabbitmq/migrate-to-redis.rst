@@ -279,3 +279,10 @@ Your final ``<env>/public.yml`` broker configuration should look like:
    REDIS_BROKER_HOST: '<your_redis_broker_host>'
    REDIS_BROKER_PORT: '6379'
    BROKER_URL: "redis://{{ REDIS_BROKER_HOST }}:{{ REDIS_BROKER_PORT }}/{{ REDIS_BROKER_DB }}"
+
+
+Getting help
+------------
+
+If you run into any issues during the migration, please reach out on the
+`Developers section of the CommCare forum <https://forum.dimagi.com/c/developers/>`_.
