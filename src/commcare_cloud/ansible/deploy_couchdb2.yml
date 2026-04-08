@@ -2,19 +2,24 @@
 - name: Common Database Machine Setup
   hosts:
     - couchdb2
+    - couchdb2_standby
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
     - {role: backups, tags: 'backups'}
 
 - name: Couchdb 2.0
-  hosts: couchdb2
+  hosts:
+    - couchdb2
+    - couchdb2_standby
   become: true
   roles:
     - {role: couchdb2, tags: 'couchdb2'}
 
 - name: Couchdb2 log rolling configurations
-  hosts: couchdb2
+  hosts:
+    - couchdb2
+    - couchdb2_standby
   become: true
   roles:
     - role: ansible-logrotate
