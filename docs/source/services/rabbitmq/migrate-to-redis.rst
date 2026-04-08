@@ -66,8 +66,9 @@ being drained, but no messages will be dropped.
       REDIS_BROKER_PORT: '6379'
       BROKER_URL: "redis://{{ REDIS_BROKER_HOST }}:{{ REDIS_BROKER_PORT }}/{{ REDIS_BROKER_DB }}"
 
-2. Set ``celery_broker_migration=true`` in ``<env>/inventory.ini`` and
-   ``<env>/inventory.ini.j2`` on the monolith's celery group:
+2. Set ``celery_broker_migration=true`` in ``<env>/inventory.ini.j2``
+   on the monolith's celery group, then regenerate the inventory file
+   (``cchq <env> aws-fill-inventory``):
 
    .. code-block:: ini
 
@@ -88,8 +89,8 @@ being drained, but no messages will be dropped.
 
 4. Monitor RabbitMQ until all queues are empty (see :ref:`confirm-drained`).
 
-5. Remove ``celery_broker_migration=true`` from ``<env>/inventory.ini`` and
-   ``<env>/inventory.ini.j2``.
+5. Remove ``celery_broker_migration=true`` from ``<env>/inventory.ini.j2``
+   and regenerate the inventory file (``cchq <env> aws-fill-inventory``).
 
 6. Apply changes and restart again:
 
@@ -137,8 +138,9 @@ Step 1: Configure the new broker
    - (Optional) Avoid selecting the machine running Flower as a bridge machine, as
      Flower will not work properly in bridge mode.
 
-3. Set ``celery_broker_migration=true`` on the bridge machine in both
-   ``<env>/inventory.ini`` and ``<env>/inventory.ini.j2``:
+3. Set ``celery_broker_migration=true`` on the bridge machine in
+   ``<env>/inventory.ini.j2``, then regenerate the inventory file
+   (``cchq <env> aws-fill-inventory``):
 
    .. code-block:: ini
 
@@ -202,8 +204,8 @@ Step 3: Confirm drained and cut over
 
 1. Monitor RabbitMQ until all queues are empty (see :ref:`confirm-drained`).
 
-2. Remove ``celery_broker_migration=true`` from ``<env>/inventory.ini``
-   and ``<env>/inventory.ini.j2``.
+2. Remove ``celery_broker_migration=true`` from ``<env>/inventory.ini.j2``
+   and regenerate the inventory file (``cchq <env> aws-fill-inventory``).
 
 3. Apply changes to bridge machines. Note that active processes on bridge machines
    may not respond to ``service celery stop`` at this point, so ensure memory
@@ -245,8 +247,9 @@ Post-migration cleanup
 After confirming everything is working on Redis, clean up the remaining
 RabbitMQ references from your environment configuration:
 
-1. **Remove machines/groups from the** ``[rabbitmq]`` **inventory group** in ``<env>/inventory.ini``
-   and ``<env>/inventory.ini.j2``. For example, remove sections like:
+1. **Remove machines/groups from the** ``[rabbitmq]`` **inventory group** in
+   ``<env>/inventory.ini.j2`` and regenerate the inventory file
+   (``cchq <env> aws-fill-inventory``). For example, remove sections like:
 
    .. code-block:: ini
 
