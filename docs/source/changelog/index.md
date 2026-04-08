@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-04-08** [Migrate Celery Broker to Redis](0095-migrate-celery-broker-to-redis.md)
+We are dropping support for RabbitMQ as a broker for celery.
+
+
+---
 #### **2026-01-06** [Deprecating rabbitmq_migration_bridge var](0094-deprecating-rabbitmq-migration-bridge.md)
 ``rabbitmq_migration_bridge`` var is being replaced by
 ``celery_broker_migration``
