@@ -151,7 +151,11 @@ module "server__{{ server_name }}" {
   secondary_volume_encrypted = {{ server_spec.block_device.encrypted|default(False)|tojson }}
   secondary_volume_enable_cross_region_backup = {{ server_spec.block_device.enable_cross_region_backup|default(False)|tojson }}
   server_auto_recovery = {{ server_spec.server_auto_recovery|default(False)|tojson }}
+{% if server_spec.group == "control" %}
+  iam_instance_profile = module.server_iam_role.commcare_control_server_instance_profile
+{% else %}
   iam_instance_profile = module.server_iam_role.commcare_server_instance_profile
+{% endif %}
   metadata_tokens = "{{ 'required' if ec2_metadata_tokens_required else 'optional' }}"
   enable_cross_region_backup = {{ server_spec.enable_cross_region_backup|tojson }}
 
