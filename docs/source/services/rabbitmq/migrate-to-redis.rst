@@ -18,12 +18,6 @@ Check your ``<env>/public.yml`` for the ``BROKER_URL`` setting:
 - If ``BROKER_URL`` starts with ``amqp://`` or is not set — you are using
   RabbitMQ and must follow this migration guide.
 
-Migration steps
----------------
-
-This guide walks through migrating your CommCare environment from RabbitMQ
-to Redis as the Celery message broker.
-
 Prerequisites
 -------------
 
@@ -85,7 +79,7 @@ being drained, but no messages will be dropped.
 
    The monolith will now read tasks from RabbitMQ and write new tasks to
    Redis, effectively draining the old broker. However notably, new tasks
-   written to Redis will not be read until remove ``celery_broker_migration=true``.
+   written to Redis will not be read until you remove ``celery_broker_migration=true``.
 
 4. Monitor RabbitMQ until all queues are empty (see :ref:`confirm-drained`).
 
@@ -129,7 +123,7 @@ Step 1: Configure the new broker
 
    This overrides the default AMQP ``BROKER_URL`` with a Redis URL.
 
-2. Choose one celery machine to act as a "bridge" machine. These will
+2. Choose one celery machine to act as a "bridge" machine. It will
    drain remaining messages from RabbitMQ while writing new messages to Redis.
 
    - You need one bridge machine consuming **all** queues.
