@@ -39,17 +39,13 @@ You will need a Redis instance to use as the broker. This can be:
    At a minimum, use a different Redis database number.
 
 
-Choose your migration path
----------------------------
+Migration steps
+---------------
 
-The right approach depends on your deployment topology:
+Follow the steps for your deployment topology:
 
-- **Monolith:** You can either do a zero-downtime migration
-  using the bridge mechanism, or simply take a brief maintenance window to
-  switch the broker URL directly. See :ref:`monolith-migration`.
-
-- **Cluster:** Use the bridge mechanism to drain RabbitMQ
-  with zero downtime. See :ref:`cluster-migration`.
+- **Monolith:** See :ref:`monolith-migration`.
+- **Cluster:** See :ref:`cluster-migration`.
 
 
 .. _monolith-migration:
@@ -57,54 +53,9 @@ The right approach depends on your deployment topology:
 Monolith migration
 ------------------
 
-Option A: Maintenance window (simplest)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If you can tolerate a brief maintenance window, this is the simplest path.
-Once you bring the site down, you will need to wait for messages from RabbitMQ
-to be processed. There is a chance that some messages take a long time to process,
-leaving you with the choice between a longer downtime period, or ending downtime before
-all messages have been drained from RabbitMQ.
-
-1. Update ``<env>/public.yml`` with the Redis broker configuration:
-
-   .. code-block:: yaml
-
-      REDIS_BROKER_DB: '0'
-      REDIS_BROKER_HOST: '<redis_broker_host>'
-      REDIS_BROKER_PORT: '6379'
-      BROKER_URL: "redis://{{ REDIS_BROKER_HOST }}:{{ REDIS_BROKER_PORT }}/{{ REDIS_BROKER_DB }}"
-
-2. Start downtime:
-
-   .. code-block:: bash
-
-      cchq <env> downtime start
-
-3. Monitor RabbitMQ until all queues are empty (see :ref:`confirm-drained`).
-
-4. Apply the new configuration:
-
-   .. code-block:: bash
-
-      cchq <env> update-config
-      cchq <env> update-supervisor-confs
-
-4. Start services:
-
-   .. code-block:: bash
-
-      cchq <env> downtime end
-
-5. Proceed to :ref:`post-migration-cleanup`.
-
-
-Option B: Drain RabbitMQ with no downtime
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If you can tolerate delays in async processing (celery), this option
-can ensure all messages are drained from RabbitMQ before cutting over
-and does not require downtime:
+The migration drains all messages from RabbitMQ before cutting over to Redis.
+You will experience delays in async processing (celery) while messages are
+being drained, but no messages will be dropped.
 
 1. Update ``<env>/public.yml`` with the Redis broker configuration:
 
@@ -153,15 +104,14 @@ and does not require downtime:
 
 .. _cluster-migration:
 
-Cluster migration (zero-downtime)
----------------------------------
+Cluster migration
+-----------------
 
-For multi-machine deployments, the migration uses a "bridge" mechanism.
-If your cluster has multiple celery machines, designate one as the bridge.
-If your cluster only has one celery machine, performing this maintenance will
-result in delays in async processing since there will be a period of time where
-messages are being written to the new broker, but no workers are processing
-messages from the new worker.
+For multi-machine deployments, designate one celery machine as the "bridge"
+to drain messages from RabbitMQ while other machines read from Redis. If you
+only have one celery machine, it is fine to make that the "bridge" machine, but
+you will experience delays in async processing (celery) while messages are
+being drained.
 
 
 Step 1: Configure the new broker
