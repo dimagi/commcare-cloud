@@ -66,7 +66,7 @@ being drained, but no messages will be dropped.
 
    .. code-block:: ini
 
-      [<celery_group>:vars]
+      [celery:vars]
       celery_broker_migration=true
 
 3. Apply changes and restart:
@@ -138,7 +138,7 @@ Step 1: Configure the new broker
 
    .. code-block:: ini
 
-      [<bridge_celery_group>:vars]
+      [<bridge_celery_machine>:vars]
       celery_broker_migration=true
 
 
