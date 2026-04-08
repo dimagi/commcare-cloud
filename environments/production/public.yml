@@ -119,11 +119,7 @@ zookeeper_cluster: True
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
-erlang: 1:24.3.3-1
-rabbitmq_version: 3.10.13-1
-
-# Celery Broker URLs
-AMQP_HOST: "{{ groups.rabbitmq.0 }}"
+# Celery Broker URL
 REDIS_BROKER_DB: '0'
 REDIS_BROKER_HOST: 'broker.production.commcare.local'
 REDIS_BROKER_PORT: '6379'

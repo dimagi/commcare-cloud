@@ -113,16 +113,6 @@ def get_aws_resources(environment):
         "--region", config.region,
     ])]
 
-    fsx_info = [{
-        'name': name,
-        'fsx_id': fsx_id,
-        'fsx_dns': '{fsx_id}.fsx.{config.region}.amazonaws.com'.format(fsx_id=fsx_id, config=config)
-    } for (name,), fsx_id in aws_cli(environment, [
-        'aws', 'fsx', 'describe-file-systems', '--query', "FileSystems[*][Tags[?Key=='Name'].Value,FileSystemId]",
-        "--output", "json",
-        "--region", config.region,
-    ])]
-
     resources = {}
     for info in ec2_instances_info:
         name = info['name']
@@ -145,9 +135,6 @@ def get_aws_resources(environment):
 
     for info in efs_info:
         resources['{name}-efs'.format(**info)] = info['efs_dns']
-
-    for info in fsx_info:
-        resources['{name}-fsx'.format(**info)] = info['fsx_dns']
 
     return resources
 

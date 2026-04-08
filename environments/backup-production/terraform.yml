@@ -139,15 +139,6 @@ servers:
     group: "couchdb2"
     os: jammy
 
-  - server_name: "rabbit_a0-bk-production"
-    server_instance_type: t3a.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 20
-    volume_encrypted: yes
-    group: "rabbitmq"
-    os: jammy
-
   - server_name: "celery_a{i}-bk-production"
     server_instance_type: t3a.medium
     network_tier: "app-private"
@@ -319,6 +310,28 @@ r53_private_zone:
   domain_name:  "bk-production.commcare.local"
   create_record: yes
   route_names:  "redis"
+
+elasticache_celery_broker:
+  create: yes
+  cache_engine: "redis"
+  cache_engine_version: "7.0"
+  cache_node_type: "cache.r6g.large"
+  params:
+    maxmemory-policy: "noeviction"
+  automatic_failover: true
+  transit_encryption: false
+  at_rest_encryption: true
+  auto_minor_version: false
+  cluster_size: 2
+  multi_az: true
+  maintenance_window: "sun:00:30-sun:01:30"
+  snapshot_retention: 0
+
+r53_records:
+  - domain_name: "bk-production.commcare.local"
+    route_name: "broker"
+    records: ["${module.elasticache-celery-broker.primary_configuration_endpoint_address}"]
+
 
 efs_file_systems:
   - efs_name: "efs_bk-production"
