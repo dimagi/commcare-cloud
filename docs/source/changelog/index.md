@@ -7,7 +7,7 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
-#### **2026-04-08** [Migrate Celery Broker to Redis](0095-migrate-celery-broker-to-redis.md)
+#### **2026-04-08** [Migrate Celery Broker to Redis](0096-migrate-celery-broker-to-redis.md)
 We are dropping support for RabbitMQ as a broker for celery.
 
 
