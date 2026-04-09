@@ -7,12 +7,13 @@ min_commcare_version:
 # (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
 max_commcare_version:
 context: |
-   We are dropping support for RabbitMQ as a broker for celery.
+   On June 1st, 2026, we will be dropping support for RabbitMQ as a broker for celery.
 
 details: |
   In an effort to simplify the CommCare tech stack, we have decided
   to drop support for RabbitMQ as a broker for celery, relying solely
-  on Redis. Since Redis is already used for caching, this reduces the
+  on Redis. This change will take effect on June 1st, 2026.
+  Since Redis is already used for caching, this reduces the
   number of backing services needed to run CommCare.
 
 update_steps: |

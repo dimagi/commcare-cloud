@@ -12,12 +12,13 @@ This change is not known to be dependent on any particular version of CommCare.
 
 
 ## Change Context
-We are dropping support for RabbitMQ as a broker for celery.
+On June 1st, 2026, we will be dropping support for RabbitMQ as a broker for celery.
 
 ## Details
 In an effort to simplify the CommCare tech stack, we have decided
 to drop support for RabbitMQ as a broker for celery, relying solely
-on Redis. Since Redis is already used for caching, this reduces the
+on Redis. This change will take effect on June 1st, 2026.
+Since Redis is already used for caching, this reduces the
 number of backing services needed to run CommCare.
 
 ## Steps to update
