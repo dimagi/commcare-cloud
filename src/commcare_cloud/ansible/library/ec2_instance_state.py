@@ -111,7 +111,7 @@ diff:
 
 
 VALID_STATES = ['started', 'stopped', 'restarted', 'described']
-INSTANCE_ID_RE = re.compile(r'^i-[0-9a-f]{8,17}$')
+INSTANCE_ID_RE = re.compile(r'^i-([0-9a-f]{8}|[0-9a-f]{17})$')
 # EC2 instance states from which we cannot recover to 'running'/'stopped'.
 # 'terminated' is permanent; 'shutting-down' is a one-way transition to 'terminated'
 # (AWS rejects StartInstances/StopInstances on either). Compare to 'stopping' which

@@ -128,6 +128,7 @@ class TestArgumentValidation(unittest.TestCase):
         self.assertTrue(ec2_instance_state.INSTANCE_ID_RE.match('i-12345678'))
         self.assertFalse(ec2_instance_state.INSTANCE_ID_RE.match('i-XYZ'))
         self.assertFalse(ec2_instance_state.INSTANCE_ID_RE.match('foo'))
+        self.assertFalse(ec2_instance_state.INSTANCE_ID_RE.match('i-123456789'))  # 9-char is invalid
 
 
 if __name__ == '__main__':
