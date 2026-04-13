@@ -291,5 +291,97 @@ class TestDescribed(unittest.TestCase):
         self.assertIn('NotFound', result['result']['msg'])
 
 
+class TestStarted(unittest.TestCase):
+
+    def setUp(self):
+        os.environ['AWS_REGION'] = 'us-east-1'
+
+    def tearDown(self):
+        os.environ.pop('AWS_REGION', None)
+
+    def test_started_already_running_is_noop(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'started'},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        self.assertFalse(result['result']['changed'])
+        self.assertEqual(result['result']['skipped_instance_ids'], ['i-0aaaaaaaaaaaaaaaa'])
+        # No StartInstances call recorded.
+        self.assertNotIn('start_instances', [c[0] for c in fake.calls])
+
+    def test_started_stopped_invokes_start_and_waiter(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopped'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'started'},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        self.assertTrue(result['result']['changed'])
+        # StartInstances was called with our id.
+        start_calls = [c for c in fake.calls if c[0] == 'start_instances']
+        self.assertEqual(len(start_calls), 1)
+        self.assertEqual(start_calls[0][1]['InstanceIds'], ['i-0aaaaaaaaaaaaaaaa'])
+        # instance_running waiter was invoked.
+        self.assertEqual(fake.waiters_invoked, [('instance_running', ['i-0aaaaaaaaaaaaaaaa'])])
+        # current_state reflects post-wait state.
+        self.assertEqual(result['result']['instances'][0]['current_state'], 'running')
+        self.assertEqual(result['result']['instances'][0]['previous_state'], 'stopped')
+
+    def test_started_no_wait_skips_waiter(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopped'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'started', 'wait': False},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        self.assertTrue(result['result']['changed'])
+        self.assertEqual(fake.waiters_invoked, [])
+        # current_state reflects transitional API response.
+        self.assertEqual(result['result']['instances'][0]['current_state'], 'pending')
+
+    def test_started_mixed_batch_only_targets_what_needs_change(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},   # already running
+            'i-0bbbbbbbbbbbbbbbb': {'state': 'stopped'},   # needs start
+            'i-0cccccccccccccccc': {'state': 'stopped'},   # needs start
+        })
+        result = run_module(
+            {'instance_ids': [
+                'i-0aaaaaaaaaaaaaaaa',
+                'i-0bbbbbbbbbbbbbbbb',
+                'i-0cccccccccccccccc',
+            ], 'state': 'started'},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        self.assertTrue(result['result']['changed'])
+        start_calls = [c for c in fake.calls if c[0] == 'start_instances']
+        self.assertEqual(len(start_calls), 1)
+        self.assertEqual(
+            sorted(start_calls[0][1]['InstanceIds']),
+            ['i-0bbbbbbbbbbbbbbbb', 'i-0cccccccccccccccc'],
+        )
+        self.assertEqual(result['result']['skipped_instance_ids'], ['i-0aaaaaaaaaaaaaaaa'])
+
+    def test_started_terminated_fails(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'terminated'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'started'},
+            fake_client=fake,
+        )
+        self.assertTrue(result['failed'])
+        self.assertIn('terminated', result['result']['msg'].lower())
+
+
 if __name__ == '__main__':
     unittest.main()

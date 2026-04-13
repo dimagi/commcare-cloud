@@ -194,6 +194,101 @@ def _describe_and_format(client, instance_ids, module):
     return formatted, states  # list of (id, raw, state); dict id->state
 
 
+def _check_no_terminal(formatted, action_state, module):
+    """Fail the module if any instance is terminated/shutting-down."""
+    bad = [(iid, state) for (iid, _raw, state) in formatted if state in TERMINAL_STATES]
+    if bad:
+        module.fail_json(msg=(
+            "Cannot {} terminated/shutting-down instances: {}".format(
+                action_state, ', '.join('{}={}'.format(i, s) for i, s in bad)
+            )
+        ))
+        return
+
+
+def _wait_for(client, waiter_name, instance_ids, timeout, module):
+    if not instance_ids:
+        return
+    waiter = client.get_waiter(waiter_name)
+    # boto3 waiter config: Delay (per-poll) * MaxAttempts ~= timeout.
+    delay = 15
+    max_attempts = max(1, timeout // delay)
+    try:
+        waiter.wait(
+            InstanceIds=list(instance_ids),
+            WaiterConfig={'Delay': delay, 'MaxAttempts': max_attempts},
+        )
+    except Exception as e:  # noqa: BLE001 - surface any waiter failure as module failure
+        module.fail_json(msg="Waiter {!r} failed: {}".format(waiter_name, e))
+        return
+
+
+def _emit_result(module, client, instance_ids, before_states, after_states,
+                 state, changed, skipped, refresh):
+    """Build and emit the module's exit_json payload.
+
+    refresh=True: re-describe to compute after_states from live data.
+    refresh=False: use the supplied after_states (used for check_mode and no-op fast paths).
+    """
+    if refresh:
+        formatted, after_states = _describe_and_format(client, instance_ids, module)
+        raw_by_id = {iid: raw for (iid, raw, _state) in formatted}
+    else:
+        formatted, _ = _describe_and_format(client, instance_ids, module)
+        raw_by_id = {iid: raw for (iid, raw, _state) in formatted}
+
+    instances = [
+        _format_instance(raw_by_id[iid], before_states[iid], after_states[iid])
+        for iid in instance_ids
+    ]
+    module.exit_json(
+        changed=changed,
+        state=state,
+        instances=instances,
+        skipped_instance_ids=skipped,
+        diff={'before': {'states': before_states},
+              'after': {'states': after_states}},
+    )
+
+
+def _do_start(module, client, instance_ids, wait, timeout):
+    formatted, before_states = _describe_and_format(client, instance_ids, module)
+    _check_no_terminal(formatted, 'start', module)
+
+    targets_needing_start = [iid for (iid, _raw, state) in formatted
+                             if state in ('stopped', 'stopping')]
+    skipped = [iid for iid in instance_ids if iid not in targets_needing_start]
+
+    # If any instance is currently 'stopping' and we'll need to start it, wait for stopped first.
+    stopping_now = [iid for (iid, _raw, state) in formatted if state == 'stopping']
+    if wait and stopping_now:
+        _wait_for(client, 'instance_stopped', stopping_now, timeout, module)
+
+    changed = bool(targets_needing_start)
+
+    if module.check_mode:
+        # Don't actually call StartInstances; predict end states.
+        after_states = dict(before_states)
+        for iid in targets_needing_start:
+            after_states[iid] = 'running' if wait else 'pending'
+        _emit_result(module, client, instance_ids, before_states, after_states,
+                     state='started', changed=changed, skipped=skipped, refresh=False)
+        return
+
+    if targets_needing_start:
+        try:
+            client.start_instances(InstanceIds=targets_needing_start)
+        except Exception as e:  # noqa: BLE001
+            module.fail_json(msg="StartInstances failed: {}".format(e))
+            return
+
+        if wait:
+            _wait_for(client, 'instance_running', targets_needing_start, timeout, module)
+
+    _emit_result(module, client, instance_ids, before_states, after_states=None,
+                 state='started', changed=changed, skipped=skipped, refresh=True)
+
+
 def _do_describe(module, client, instance_ids):
     formatted, states = _describe_and_format(client, instance_ids, module)
     instances = [_format_instance(raw, state, state) for (_iid, raw, state) in formatted]
@@ -239,8 +334,9 @@ def main():
 
     if state == 'described':
         _do_describe(module, client, instance_ids)
+    elif state == 'started':
+        _do_start(module, client, instance_ids, params['wait'], params['wait_timeout'])
     else:
-        # Other states implemented in subsequent tasks; placeholder fail.
         module.fail_json(msg="State {!r} not yet implemented.".format(state))
 
 
