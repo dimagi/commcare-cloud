@@ -4,6 +4,7 @@ import os
 import re
 
 from ansible.module_utils.basic import AnsibleModule
+from botocore.exceptions import ClientError
 
 
 DOCUMENTATION = """
@@ -174,11 +175,11 @@ def _format_instance(raw, previous_state, current_state):
 
 def _describe_and_format(client, instance_ids, module):
     """Describe + format. Fails the module on AWS errors."""
-    from botocore.exceptions import ClientError
     try:
         raw_by_id = _describe_instances(client, instance_ids)
     except ClientError as e:
         module.fail_json(msg="AWS DescribeInstances failed: {}".format(e))
+        return
     # Order output to match input.
     formatted = []
     states = {}
@@ -186,6 +187,7 @@ def _describe_and_format(client, instance_ids, module):
         raw = raw_by_id.get(iid)
         if raw is None:
             module.fail_json(msg="Instance {} missing from DescribeInstances response.".format(iid))
+            return None, None
         state = raw['State']['Name']
         states[iid] = state
         formatted.append((iid, raw, state))
