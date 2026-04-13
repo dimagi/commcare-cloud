@@ -141,6 +141,69 @@ def _get_ec2_client(region):
     return boto3.client('ec2', region_name=region)
 
 
+def _describe_instances(client, instance_ids):
+    """Return dict[instance_id -> raw_instance] preserving caller-required keys.
+
+    Raises ClientError as-is on InvalidInstanceID.NotFound (caller decides how to surface).
+    """
+    resp = client.describe_instances(InstanceIds=list(instance_ids))
+    out = {}
+    for reservation in resp.get('Reservations', []):
+        for inst in reservation.get('Instances', []):
+            out[inst['InstanceId']] = inst
+    return out
+
+
+def _format_instance(raw, previous_state, current_state):
+    tags = {t['Key']: t['Value'] for t in raw.get('Tags', []) or []}
+    launch_time = raw.get('LaunchTime')
+    if hasattr(launch_time, 'isoformat'):
+        launch_time = launch_time.isoformat()
+    return {
+        'instance_id': raw['InstanceId'],
+        'previous_state': previous_state,
+        'current_state': current_state,
+        'instance_type': raw.get('InstanceType'),
+        'availability_zone': (raw.get('Placement') or {}).get('AvailabilityZone'),
+        'private_ip': raw.get('PrivateIpAddress'),
+        'public_ip': raw.get('PublicIpAddress'),
+        'tags': tags,
+        'launch_time': launch_time,
+    }
+
+
+def _describe_and_format(client, instance_ids, module):
+    """Describe + format. Fails the module on AWS errors."""
+    from botocore.exceptions import ClientError
+    try:
+        raw_by_id = _describe_instances(client, instance_ids)
+    except ClientError as e:
+        module.fail_json(msg="AWS DescribeInstances failed: {}".format(e))
+    # Order output to match input.
+    formatted = []
+    states = {}
+    for iid in instance_ids:
+        raw = raw_by_id.get(iid)
+        if raw is None:
+            module.fail_json(msg="Instance {} missing from DescribeInstances response.".format(iid))
+        state = raw['State']['Name']
+        states[iid] = state
+        formatted.append((iid, raw, state))
+    return formatted, states  # list of (id, raw, state); dict id->state
+
+
+def _do_describe(module, client, instance_ids):
+    formatted, states = _describe_and_format(client, instance_ids, module)
+    instances = [_format_instance(raw, state, state) for (_iid, raw, state) in formatted]
+    module.exit_json(
+        changed=False,
+        state='described',
+        instances=instances,
+        skipped_instance_ids=[],
+        diff={'before': {'states': states}, 'after': {'states': states}},
+    )
+
+
 def main():
     module_args = {
         'instance_ids': {'type': 'list', 'elements': 'str', 'required': True},
@@ -163,16 +226,20 @@ def main():
     if params['wait_timeout'] <= 0:
         module.fail_json(msg="'wait_timeout' must be > 0.")
 
-    _get_region(module)  # validates region availability; raises via fail_json otherwise
+    region = _get_region(module)
 
-    # Stub: actual dispatch added in later tasks.
-    module.exit_json(
-        changed=False,
-        state=params['state'],
-        instances=[],
-        skipped_instance_ids=[],
-        diff={'before': {'states': {}}, 'after': {'states': {}}},
-    )
+    try:
+        client = _get_ec2_client(region)
+    except RuntimeError as e:
+        module.fail_json(msg=str(e))
+
+    state = params['state']
+
+    if state == 'described':
+        _do_describe(module, client, instance_ids)
+    else:
+        # Other states implemented in subsequent tasks; placeholder fail.
+        module.fail_json(msg="State {!r} not yet implemented.".format(state))
 
 
 if __name__ == '__main__':

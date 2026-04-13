@@ -131,5 +131,166 @@ class TestArgumentValidation(unittest.TestCase):
         self.assertFalse(ec2_instance_state.INSTANCE_ID_RE.match('i-123456789'))  # 9-char is invalid
 
 
+class FakeEC2Client:
+    """
+    Minimal stand-in for boto3.client('ec2') used in tests.
+
+    - instances_by_id: dict mapping instance id -> dict of fields used by the module.
+                       Required field: 'state' (one of running/stopped/pending/stopping/terminated/...).
+                       Optional fields: instance_type, availability_zone, private_ip,
+                       public_ip, tags, launch_time. Sensible defaults supplied.
+    - missing_ids:    set of IDs that should raise InvalidInstanceID.NotFound when described.
+    - calls:          ordered list of (method_name, kwargs) recorded for assertions.
+    """
+
+    def __init__(self, instances_by_id=None, missing_ids=None):
+        self.instances_by_id = dict(instances_by_id or {})
+        self.missing_ids = set(missing_ids or [])
+        self.calls = []
+        self.waiters_invoked = []  # list of (waiter_name, instance_ids)
+
+    # ---- describe ----
+    def describe_instances(self, InstanceIds):
+        self.calls.append(('describe_instances', {'InstanceIds': list(InstanceIds)}))
+        bad = [i for i in InstanceIds if i in self.missing_ids]
+        if bad:
+            from botocore.exceptions import ClientError
+            raise ClientError(
+                error_response={
+                    'Error': {
+                        'Code': 'InvalidInstanceID.NotFound',
+                        'Message': 'Instances not found: {}'.format(bad),
+                    }
+                },
+                operation_name='DescribeInstances',
+            )
+        reservations = []
+        for iid in InstanceIds:
+            data = self.instances_by_id.get(iid, {})
+            inst = {
+                'InstanceId': iid,
+                'State': {'Name': data.get('state', 'running')},
+                'InstanceType': data.get('instance_type', 't3.micro'),
+                'Placement': {'AvailabilityZone': data.get('availability_zone', 'us-east-1a')},
+                'PrivateIpAddress': data.get('private_ip', '10.0.0.1'),
+                'PublicIpAddress': data.get('public_ip'),
+                'Tags': [{'Key': k, 'Value': v} for k, v in data.get('tags', {}).items()],
+                'LaunchTime': data.get('launch_time', '2026-04-13T12:00:00+00:00'),
+            }
+            reservations.append({'Instances': [inst]})
+        return {'Reservations': reservations}
+
+    # ---- mutate ----
+    def start_instances(self, InstanceIds):
+        self.calls.append(('start_instances', {'InstanceIds': list(InstanceIds)}))
+        starts = []
+        for iid in InstanceIds:
+            prev = self.instances_by_id.get(iid, {}).get('state', 'stopped')
+            self.instances_by_id.setdefault(iid, {})['state'] = 'pending'
+            starts.append({
+                'InstanceId': iid,
+                'CurrentState': {'Name': 'pending'},
+                'PreviousState': {'Name': prev},
+            })
+        return {'StartingInstances': starts}
+
+    def stop_instances(self, InstanceIds):
+        self.calls.append(('stop_instances', {'InstanceIds': list(InstanceIds)}))
+        stops = []
+        for iid in InstanceIds:
+            prev = self.instances_by_id.get(iid, {}).get('state', 'running')
+            self.instances_by_id.setdefault(iid, {})['state'] = 'stopping'
+            stops.append({
+                'InstanceId': iid,
+                'CurrentState': {'Name': 'stopping'},
+                'PreviousState': {'Name': prev},
+            })
+        return {'StoppingInstances': stops}
+
+    # ---- waiters ----
+    def get_waiter(self, name):
+        client = self
+        end_state = {'instance_running': 'running', 'instance_stopped': 'stopped'}[name]
+
+        class _Waiter:
+            def wait(self, InstanceIds, WaiterConfig=None):
+                client.waiters_invoked.append((name, list(InstanceIds)))
+                # Simulate state advance.
+                for iid in InstanceIds:
+                    client.instances_by_id.setdefault(iid, {})['state'] = end_state
+        return _Waiter()
+
+
+class TestDescribed(unittest.TestCase):
+
+    def setUp(self):
+        os.environ['AWS_REGION'] = 'us-east-1'
+
+    def tearDown(self):
+        os.environ.pop('AWS_REGION', None)
+
+    def test_described_returns_instance_shape(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0123456789abcdef0': {
+                'state': 'running',
+                'instance_type': 't3.medium',
+                'availability_zone': 'us-east-1b',
+                'private_ip': '10.201.10.31',
+                'public_ip': '34.1.2.3',
+                'tags': {'Name': 'proxy6-staging', 'Env': 'staging'},
+            },
+        })
+        result = run_module(
+            {'instance_ids': ['i-0123456789abcdef0'], 'state': 'described'},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        r = result['result']
+        self.assertFalse(r['changed'])
+        self.assertEqual(r['state'], 'described')
+        self.assertEqual(len(r['instances']), 1)
+        inst = r['instances'][0]
+        self.assertEqual(inst['instance_id'], 'i-0123456789abcdef0')
+        self.assertEqual(inst['previous_state'], 'running')
+        self.assertEqual(inst['current_state'], 'running')
+        self.assertEqual(inst['instance_type'], 't3.medium')
+        self.assertEqual(inst['availability_zone'], 'us-east-1b')
+        self.assertEqual(inst['private_ip'], '10.201.10.31')
+        self.assertEqual(inst['public_ip'], '34.1.2.3')
+        self.assertEqual(inst['tags'], {'Name': 'proxy6-staging', 'Env': 'staging'})
+
+    def test_described_preserves_input_order(self):
+        ids = ['i-0aaaaaaaaaaaaaaaa', 'i-0bbbbbbbbbbbbbbbb', 'i-0cccccccccccccccc']
+        fake = FakeEC2Client(instances_by_id={i: {'state': 'running'} for i in ids})
+        result = run_module(
+            {'instance_ids': ids, 'state': 'described'},
+            fake_client=fake,
+        )
+        self.assertEqual(
+            [i['instance_id'] for i in result['result']['instances']],
+            ids,
+        )
+
+    def test_described_terminated_is_reported_not_failed(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0123456789abcdef0': {'state': 'terminated'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0123456789abcdef0'], 'state': 'described'},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        self.assertEqual(result['result']['instances'][0]['current_state'], 'terminated')
+
+    def test_described_invalid_id_fails(self):
+        fake = FakeEC2Client(missing_ids={'i-0deadbeefdeadbeef'})
+        result = run_module(
+            {'instance_ids': ['i-0deadbeefdeadbeef'], 'state': 'described'},
+            fake_client=fake,
+        )
+        self.assertTrue(result['failed'])
+        self.assertIn('NotFound', result['result']['msg'])
+
+
 if __name__ == '__main__':
     unittest.main()
