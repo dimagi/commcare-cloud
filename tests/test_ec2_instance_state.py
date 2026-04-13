@@ -604,6 +604,7 @@ class TestCheckMode(unittest.TestCase):
         self.assertFalse(result['failed'])
         self.assertTrue(result['result']['changed'])
         self.assertNotIn('start_instances', [c[0] for c in fake.calls])
+        self.assertEqual(fake.waiters_invoked, [])
 
     def test_stopped_check_mode_no_api_mutation(self):
         fake = FakeEC2Client(instances_by_id={
@@ -617,6 +618,7 @@ class TestCheckMode(unittest.TestCase):
         self.assertFalse(result['failed'])
         self.assertTrue(result['result']['changed'])
         self.assertNotIn('stop_instances', [c[0] for c in fake.calls])
+        self.assertEqual(fake.waiters_invoked, [])
 
 
 class TestInvalidIdMutating(unittest.TestCase):
@@ -653,7 +655,7 @@ class TestWaiterTimeout(unittest.TestCase):
         # Patch get_waiter to return a waiter that always raises.
         from botocore.exceptions import WaiterError
         class _BoomWaiter:
-            def wait(self, **kwargs):
+            def wait(self, InstanceIds, WaiterConfig=None):
                 raise WaiterError(name='instance_running', reason='timeout', last_response={})
         fake.get_waiter = lambda name: _BoomWaiter()
 
@@ -663,6 +665,7 @@ class TestWaiterTimeout(unittest.TestCase):
         )
         self.assertTrue(result['failed'])
         self.assertIn('Waiter', result['result']['msg'])
+        self.assertIn('instance_running', result['result']['msg'])
 
 
 if __name__ == '__main__':
