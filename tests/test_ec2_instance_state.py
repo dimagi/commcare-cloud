@@ -398,5 +398,84 @@ class TestStarted(unittest.TestCase):
         self.assertNotIn('start_instances', [c[0] for c in fake.calls])
 
 
+class TestStopped(unittest.TestCase):
+
+    def setUp(self):
+        os.environ['AWS_REGION'] = 'us-east-1'
+
+    def tearDown(self):
+        os.environ.pop('AWS_REGION', None)
+
+    def test_stopped_already_stopped_is_noop(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopped'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'stopped'},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        self.assertFalse(result['result']['changed'])
+        self.assertEqual(result['result']['skipped_instance_ids'], ['i-0aaaaaaaaaaaaaaaa'])
+        self.assertNotIn('stop_instances', [c[0] for c in fake.calls])
+
+    def test_stopped_running_invokes_stop_and_waiter(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'stopped'},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        self.assertTrue(result['result']['changed'])
+        stop_calls = [c for c in fake.calls if c[0] == 'stop_instances']
+        self.assertEqual(len(stop_calls), 1)
+        self.assertEqual(stop_calls[0][1]['InstanceIds'], ['i-0aaaaaaaaaaaaaaaa'])
+        self.assertEqual(fake.waiters_invoked, [('instance_stopped', ['i-0aaaaaaaaaaaaaaaa'])])
+        self.assertEqual(result['result']['instances'][0]['current_state'], 'stopped')
+        self.assertEqual(result['result']['instances'][0]['previous_state'], 'running')
+
+    def test_stopped_no_wait_skips_waiter(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'stopped', 'wait': False},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        self.assertTrue(result['result']['changed'])
+        self.assertEqual(fake.waiters_invoked, [])
+        self.assertEqual(result['result']['instances'][0]['current_state'], 'stopping')
+
+    def test_stopped_already_stopping_waits_but_changed_false(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopping'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'stopped'},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        # We did not initiate the stop, so changed=false.
+        self.assertFalse(result['result']['changed'])
+        # No stop_instances call.
+        self.assertNotIn('stop_instances', [c[0] for c in fake.calls])
+        # We did wait for it to reach stopped.
+        self.assertEqual(fake.waiters_invoked, [('instance_stopped', ['i-0aaaaaaaaaaaaaaaa'])])
+
+    def test_stopped_terminated_fails(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'terminated'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'stopped'},
+            fake_client=fake,
+        )
+        self.assertTrue(result['failed'])
+        self.assertIn('terminated', result['result']['msg'].lower())
+
+
 if __name__ == '__main__':
     unittest.main()

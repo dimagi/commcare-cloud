@@ -297,6 +297,51 @@ def _do_start(module, client, instance_ids, wait, timeout):
                  state='started', changed=changed, skipped=skipped, refresh=True)
 
 
+def _do_stop(module, client, instance_ids, wait, timeout):
+    formatted, before_states = _describe_and_format(client, instance_ids, module)
+    _check_no_terminal(formatted, 'stop', module)
+
+    targets_needing_stop = [iid for (iid, _raw, state) in formatted
+                            if state in ('running', 'pending')]
+    # 'stopping' instances are mid-transition; we wait for them but don't initiate.
+    already_stopping = [iid for (iid, _raw, state) in formatted if state == 'stopping']
+    skipped = [iid for iid in instance_ids
+               if iid not in targets_needing_stop and iid not in already_stopping]
+
+    # If any instance is 'pending', wait for it to be 'running' before stopping.
+    pending_now = [iid for (iid, _raw, state) in formatted if state == 'pending']
+    if wait and pending_now:
+        _wait_for(client, 'instance_running', pending_now, timeout, module)
+
+    changed = bool(targets_needing_stop)
+
+    if module.check_mode:
+        after_states = dict(before_states)
+        for iid in targets_needing_stop:
+            after_states[iid] = 'stopped' if wait else 'stopping'
+        for iid in already_stopping:
+            after_states[iid] = 'stopped' if wait else 'stopping'
+        _emit_result(module, client, instance_ids, before_states, after_states,
+                     state='stopped', changed=changed, skipped=skipped, refresh=False)
+        return
+
+    if targets_needing_stop:
+        try:
+            client.stop_instances(InstanceIds=targets_needing_stop)
+        except Exception as e:  # noqa: BLE001
+            module.fail_json(msg="StopInstances failed: {}".format(e))
+            return
+
+    # Wait for both initiated and already-in-progress stops if wait=True.
+    if wait:
+        wait_for = list(targets_needing_stop) + list(already_stopping)
+        if wait_for:
+            _wait_for(client, 'instance_stopped', wait_for, timeout, module)
+
+    _emit_result(module, client, instance_ids, before_states, after_states=None,
+                 state='stopped', changed=changed, skipped=skipped, refresh=True)
+
+
 def _do_describe(module, client, instance_ids):
     formatted, states = _describe_and_format(client, instance_ids, module)
     instances = [_format_instance(raw, state, state) for (_iid, raw, state) in formatted]
@@ -344,6 +389,8 @@ def main():
         _do_describe(module, client, instance_ids)
     elif state == 'started':
         _do_start(module, client, instance_ids, params['wait'], params['wait_timeout'])
+    elif state == 'stopped':
+        _do_stop(module, client, instance_ids, params['wait'], params['wait_timeout'])
     else:
         module.fail_json(msg="State {!r} not yet implemented.".format(state))
 
