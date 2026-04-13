@@ -531,6 +531,11 @@ class TestRestarted(unittest.TestCase):
         self.assertEqual(result['result']['instances'][0]['previous_state'], 'running')
         self.assertEqual(result['result']['instances'][0]['current_state'], 'running')
         self.assertEqual(result['result']['state'], 'restarted')
+        self.assertEqual(
+            result['result']['diff'],
+            {'before': {'states': {'i-0aaaaaaaaaaaaaaaa': 'running'}},
+             'after':  {'states': {'i-0aaaaaaaaaaaaaaaa': 'running'}}},
+        )
 
     def test_restarted_stopped_just_starts(self):
         # Mixed-state semantics: an already-stopped instance still ends up running

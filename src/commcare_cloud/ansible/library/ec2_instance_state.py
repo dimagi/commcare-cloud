@@ -224,14 +224,21 @@ def _wait_for(client, waiter_name, instance_ids, timeout, module):
 
 
 def _result_or_emit(module, client, instance_ids, before_states, after_states,
-                    state, changed, skipped, refresh, emit):
-    """Build the result payload. If emit is True, call exit_json; else return the dict."""
+                    state, changed, skipped, refresh, emit, raw_by_id=None):
+    """Build the result payload. If emit is True, call exit_json; else return the dict.
+
+    When refresh=True, re-describe to compute after_states from live data and
+    extract raw_by_id.
+    When refresh=False, the caller must pass raw_by_id (already available from
+    the describe that classified instance states) to avoid a redundant API call.
+    """
     if refresh:
         formatted, after_states = _describe_and_format(client, instance_ids, module)
         raw_by_id = {iid: raw for (iid, raw, _state) in formatted}
     else:
-        formatted, _ = _describe_and_format(client, instance_ids, module)
-        raw_by_id = {iid: raw for (iid, raw, _state) in formatted}
+        assert raw_by_id is not None, (
+            "_result_or_emit called with refresh=False must receive raw_by_id"
+        )
 
     instances = [
         _format_instance(raw_by_id[iid], before_states[iid], after_states[iid])
@@ -278,9 +285,10 @@ def _do_start(module, client, instance_ids, wait, timeout, emit=True):
         after_states = dict(before_states)
         for iid in targets_needing_start:
             after_states[iid] = 'running' if wait else 'pending'
+        raw_by_id = {iid: raw for (iid, raw, _state) in formatted}
         return _result_or_emit(module, client, instance_ids, before_states, after_states,
                                state='started', changed=changed, skipped=skipped,
-                               refresh=False, emit=emit)
+                               refresh=False, emit=emit, raw_by_id=raw_by_id)
 
     if targets_needing_start:
         try:
@@ -327,9 +335,10 @@ def _do_stop(module, client, instance_ids, wait, timeout, emit=True):
             after_states[iid] = 'stopped' if wait else 'stopping'
         for iid in already_stopping:
             after_states[iid] = 'stopped' if wait else 'stopping'
+        raw_by_id = {iid: raw for (iid, raw, _state) in formatted}
         return _result_or_emit(module, client, instance_ids, before_states, after_states,
                                state='stopped', changed=changed, skipped=skipped,
-                               refresh=False, emit=emit)
+                               refresh=False, emit=emit, raw_by_id=raw_by_id)
 
     if targets_needing_stop:
         try:
@@ -350,15 +359,16 @@ def _do_stop(module, client, instance_ids, wait, timeout, emit=True):
 
 
 def _do_restart(module, client, instance_ids, wait, timeout):
-    if not wait:
-        module.warn(
-            "wait=False ignored for the stop phase of 'restarted'; "
-            "stop must complete before start can be issued."
-        )
-
-    # Phase 1: stop, always wait.
+    # Phase 1: stop, always wait (required because StartInstances rejects
+    # still-stopping instances; we must let stop complete before starting).
     stop_payload = _do_stop(module, client, instance_ids, wait=True,
                             timeout=timeout, emit=False)
+
+    if not wait and stop_payload['changed']:
+        module.warn(
+            "wait=False was overridden to wait=True for the stop phase of 'restarted'; "
+            "stop must complete before start can be issued."
+        )
 
     # Phase 2: start, with the user's wait choice.
     start_payload = _do_start(module, client, instance_ids, wait=wait,
@@ -370,14 +380,15 @@ def _do_restart(module, client, instance_ids, wait, timeout):
     before_states = stop_payload['diff']['before']['states']
     after_states = start_payload['diff']['after']['states']
 
-    # Re-fetch instance metadata for the combined output.
-    formatted, _ = _describe_and_format(client, instance_ids, module)
-    raw_by_id = {iid: raw for (iid, raw, _state) in formatted}
-
-    instances = [
-        _format_instance(raw_by_id[iid], before_states[iid], after_states[iid])
-        for iid in instance_ids
-    ]
+    # Reuse the freshly-described instance list from the start phase; the only
+    # field that needs to change is 'previous_state' (which in start_payload
+    # reflects the state before start, not the state before stop).
+    instances = []
+    for inst in start_payload['instances']:
+        iid = inst['instance_id']
+        merged = dict(inst)
+        merged['previous_state'] = before_states[iid]
+        instances.append(merged)
 
     # 'changed' is True if either phase mutated state.
     changed = bool(stop_payload['changed'] or start_payload['changed'])
