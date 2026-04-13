@@ -290,15 +290,22 @@ def _do_start(module, client, instance_ids, wait, timeout, emit=True):
                                state='started', changed=changed, skipped=skipped,
                                refresh=False, emit=emit, raw_by_id=raw_by_id)
 
-    if targets_needing_start:
-        try:
-            client.start_instances(InstanceIds=targets_needing_start)
-        except Exception as e:  # noqa: BLE001
-            module.fail_json(msg="StartInstances failed: {}".format(e))
-            return
+    if not targets_needing_start:
+        # No-op: nothing was mutated. Use the describe we already did.
+        raw_by_id = {iid: raw for (iid, raw, _state) in formatted}
+        return _result_or_emit(module, client, instance_ids, before_states,
+                               after_states=dict(before_states),
+                               state='started', changed=False, skipped=skipped,
+                               refresh=False, emit=emit, raw_by_id=raw_by_id)
 
-        if wait:
-            _wait_for(client, 'instance_running', targets_needing_start, timeout, module)
+    try:
+        client.start_instances(InstanceIds=targets_needing_start)
+    except Exception as e:  # noqa: BLE001
+        module.fail_json(msg="StartInstances failed: {}".format(e))
+        return
+
+    if wait:
+        _wait_for(client, 'instance_running', targets_needing_start, timeout, module)
 
     return _result_or_emit(module, client, instance_ids, before_states, after_states=None,
                            state='started', changed=changed, skipped=skipped,
@@ -340,6 +347,14 @@ def _do_stop(module, client, instance_ids, wait, timeout, emit=True):
                                state='stopped', changed=changed, skipped=skipped,
                                refresh=False, emit=emit, raw_by_id=raw_by_id)
 
+    if not targets_needing_stop and not already_stopping:
+        # No-op: nothing to stop and nothing to wait on. Use the cached describe.
+        raw_by_id = {iid: raw for (iid, raw, _state) in formatted}
+        return _result_or_emit(module, client, instance_ids, before_states,
+                               after_states=dict(before_states),
+                               state='stopped', changed=False, skipped=skipped,
+                               refresh=False, emit=emit, raw_by_id=raw_by_id)
+
     if targets_needing_stop:
         try:
             client.stop_instances(InstanceIds=targets_needing_stop)
@@ -347,7 +362,6 @@ def _do_stop(module, client, instance_ids, wait, timeout, emit=True):
             module.fail_json(msg="StopInstances failed: {}".format(e))
             return
 
-    # Wait for both initiated and already-in-progress stops if wait=True.
     if wait:
         wait_for = list(targets_needing_stop) + list(already_stopping)
         if wait_for:
@@ -359,16 +373,17 @@ def _do_stop(module, client, instance_ids, wait, timeout, emit=True):
 
 
 def _do_restart(module, client, instance_ids, wait, timeout):
+    if not wait:
+        module.warn(
+            "For 'restarted', wait=False applies only to the start phase; "
+            "the stop phase always waits internally so that StartInstances does not "
+            "race a still-stopping instance."
+        )
+
     # Phase 1: stop, always wait (required because StartInstances rejects
     # still-stopping instances; we must let stop complete before starting).
     stop_payload = _do_stop(module, client, instance_ids, wait=True,
                             timeout=timeout, emit=False)
-
-    if not wait and stop_payload['changed']:
-        module.warn(
-            "wait=False was overridden to wait=True for the stop phase of 'restarted'; "
-            "stop must complete before start can be issued."
-        )
 
     # Phase 2: start, with the user's wait choice.
     start_payload = _do_start(module, client, instance_ids, wait=wait,

@@ -404,6 +404,18 @@ class TestStarted(unittest.TestCase):
         # No StartInstances call should have been made.
         self.assertNotIn('start_instances', [c[0] for c in fake.calls])
 
+    def test_started_noop_does_single_describe(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'started'},
+            fake_client=fake,
+        )
+        describe_calls = [c for c in fake.calls if c[0] == 'describe_instances']
+        self.assertEqual(len(describe_calls), 1,
+                         "no-op path should only describe once, not twice")
+
 
 class TestStopped(unittest.TestCase):
 
@@ -482,6 +494,18 @@ class TestStopped(unittest.TestCase):
         )
         self.assertTrue(result['failed'])
         self.assertIn('terminated', result['result']['msg'].lower())
+
+    def test_stopped_noop_does_single_describe(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopped'},
+        })
+        run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'stopped'},
+            fake_client=fake,
+        )
+        describe_calls = [c for c in fake.calls if c[0] == 'describe_instances']
+        self.assertEqual(len(describe_calls), 1,
+                         "no-op path should only describe once, not twice")
 
     def test_stopped_pending_waits_for_running_first(self):
         fake = FakeEC2Client(instances_by_id={
