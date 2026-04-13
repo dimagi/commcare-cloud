@@ -223,13 +223,9 @@ def _wait_for(client, waiter_name, instance_ids, timeout, module):
         return
 
 
-def _emit_result(module, client, instance_ids, before_states, after_states,
-                 state, changed, skipped, refresh):
-    """Build and emit the module's exit_json payload.
-
-    refresh=True: re-describe to compute after_states from live data.
-    refresh=False: use the supplied after_states (used for check_mode and no-op fast paths).
-    """
+def _result_or_emit(module, client, instance_ids, before_states, after_states,
+                    state, changed, skipped, refresh, emit):
+    """Build the result payload. If emit is True, call exit_json; else return the dict."""
     if refresh:
         formatted, after_states = _describe_and_format(client, instance_ids, module)
         raw_by_id = {iid: raw for (iid, raw, _state) in formatted}
@@ -241,17 +237,20 @@ def _emit_result(module, client, instance_ids, before_states, after_states,
         _format_instance(raw_by_id[iid], before_states[iid], after_states[iid])
         for iid in instance_ids
     ]
-    module.exit_json(
-        changed=changed,
-        state=state,
-        instances=instances,
-        skipped_instance_ids=skipped,
-        diff={'before': {'states': before_states},
-              'after': {'states': after_states}},
-    )
+    payload = {
+        'changed': changed,
+        'state': state,
+        'instances': instances,
+        'skipped_instance_ids': skipped,
+        'diff': {'before': {'states': before_states},
+                 'after': {'states': after_states}},
+    }
+    if emit:
+        module.exit_json(**payload)
+    return payload
 
 
-def _do_start(module, client, instance_ids, wait, timeout):
+def _do_start(module, client, instance_ids, wait, timeout, emit=True):
     formatted, before_states = _describe_and_format(client, instance_ids, module)
     _check_no_terminal(formatted, 'start', module)
 
@@ -279,9 +278,9 @@ def _do_start(module, client, instance_ids, wait, timeout):
         after_states = dict(before_states)
         for iid in targets_needing_start:
             after_states[iid] = 'running' if wait else 'pending'
-        _emit_result(module, client, instance_ids, before_states, after_states,
-                     state='started', changed=changed, skipped=skipped, refresh=False)
-        return
+        return _result_or_emit(module, client, instance_ids, before_states, after_states,
+                               state='started', changed=changed, skipped=skipped,
+                               refresh=False, emit=emit)
 
     if targets_needing_start:
         try:
@@ -293,11 +292,12 @@ def _do_start(module, client, instance_ids, wait, timeout):
         if wait:
             _wait_for(client, 'instance_running', targets_needing_start, timeout, module)
 
-    _emit_result(module, client, instance_ids, before_states, after_states=None,
-                 state='started', changed=changed, skipped=skipped, refresh=True)
+    return _result_or_emit(module, client, instance_ids, before_states, after_states=None,
+                           state='started', changed=changed, skipped=skipped,
+                           refresh=True, emit=emit)
 
 
-def _do_stop(module, client, instance_ids, wait, timeout):
+def _do_stop(module, client, instance_ids, wait, timeout, emit=True):
     formatted, before_states = _describe_and_format(client, instance_ids, module)
     _check_no_terminal(formatted, 'stop', module)
 
@@ -327,9 +327,9 @@ def _do_stop(module, client, instance_ids, wait, timeout):
             after_states[iid] = 'stopped' if wait else 'stopping'
         for iid in already_stopping:
             after_states[iid] = 'stopped' if wait else 'stopping'
-        _emit_result(module, client, instance_ids, before_states, after_states,
-                     state='stopped', changed=changed, skipped=skipped, refresh=False)
-        return
+        return _result_or_emit(module, client, instance_ids, before_states, after_states,
+                               state='stopped', changed=changed, skipped=skipped,
+                               refresh=False, emit=emit)
 
     if targets_needing_stop:
         try:
@@ -344,8 +344,57 @@ def _do_stop(module, client, instance_ids, wait, timeout):
         if wait_for:
             _wait_for(client, 'instance_stopped', wait_for, timeout, module)
 
-    _emit_result(module, client, instance_ids, before_states, after_states=None,
-                 state='stopped', changed=changed, skipped=skipped, refresh=True)
+    return _result_or_emit(module, client, instance_ids, before_states, after_states=None,
+                           state='stopped', changed=changed, skipped=skipped,
+                           refresh=True, emit=emit)
+
+
+def _do_restart(module, client, instance_ids, wait, timeout):
+    if not wait:
+        module.warn(
+            "wait=False ignored for the stop phase of 'restarted'; "
+            "stop must complete before start can be issued."
+        )
+
+    # Phase 1: stop, always wait.
+    stop_payload = _do_stop(module, client, instance_ids, wait=True,
+                            timeout=timeout, emit=False)
+
+    # Phase 2: start, with the user's wait choice.
+    start_payload = _do_start(module, client, instance_ids, wait=wait,
+                              timeout=timeout, emit=False)
+
+    # Build a combined payload:
+    #   previous_state = state before stop
+    #   current_state  = state after start
+    before_states = stop_payload['diff']['before']['states']
+    after_states = start_payload['diff']['after']['states']
+
+    # Re-fetch instance metadata for the combined output.
+    formatted, _ = _describe_and_format(client, instance_ids, module)
+    raw_by_id = {iid: raw for (iid, raw, _state) in formatted}
+
+    instances = [
+        _format_instance(raw_by_id[iid], before_states[iid], after_states[iid])
+        for iid in instance_ids
+    ]
+
+    # 'changed' is True if either phase mutated state.
+    changed = bool(stop_payload['changed'] or start_payload['changed'])
+
+    # 'skipped' = ids that were no-ops in BOTH phases.
+    stopped_skipped = set(stop_payload['skipped_instance_ids'])
+    started_skipped = set(start_payload['skipped_instance_ids'])
+    skipped = sorted(stopped_skipped & started_skipped)
+
+    module.exit_json(
+        changed=changed,
+        state='restarted',
+        instances=instances,
+        skipped_instance_ids=skipped,
+        diff={'before': {'states': before_states},
+              'after': {'states': after_states}},
+    )
 
 
 def _do_describe(module, client, instance_ids):
@@ -397,8 +446,10 @@ def main():
         _do_start(module, client, instance_ids, params['wait'], params['wait_timeout'])
     elif state == 'stopped':
         _do_stop(module, client, instance_ids, params['wait'], params['wait_timeout'])
+    elif state == 'restarted':
+        _do_restart(module, client, instance_ids, params['wait'], params['wait_timeout'])
     else:
-        module.fail_json(msg="State {!r} not yet implemented.".format(state))
+        module.fail_json(msg="Unknown state {!r}.".format(state))
 
 
 if __name__ == '__main__':

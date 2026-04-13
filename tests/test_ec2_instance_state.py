@@ -34,16 +34,22 @@ def run_module(args, fake_client=None):
     Returns the dict that would have been passed to exit_json or fail_json.
     """
     captured = {}
+    warnings_collected = []
 
-    def fake_exit(**kwargs):
+    def fake_exit(self, **kwargs):
+        kwargs.setdefault('warnings', list(warnings_collected))
         captured['result'] = kwargs
         captured['failed'] = False
         raise ModuleExitException(kwargs)
 
-    def fake_fail(**kwargs):
+    def fake_fail(self, **kwargs):
+        kwargs.setdefault('warnings', list(warnings_collected))
         captured['result'] = kwargs
         captured['failed'] = True
         raise ModuleExitException(kwargs)
+
+    def fake_warn(self, msg):
+        warnings_collected.append(msg)
 
     # Ansible (2.x+, Python 3) reads module args from the module_utils.basic._ANSIBLE_ARGS
     # global (bytes) rather than stdin.  Patch that directly, which is the same approach
@@ -59,8 +65,9 @@ def run_module(args, fake_client=None):
 
     with patch.object(sys, 'argv', ['ec2_instance_state']), \
          patch.object(basic, '_ANSIBLE_ARGS', encoded_args), \
-         patch.object(ec2_instance_state.AnsibleModule, 'exit_json', side_effect=fake_exit), \
-         patch.object(ec2_instance_state.AnsibleModule, 'fail_json', side_effect=fake_fail):
+         patch.object(ec2_instance_state.AnsibleModule, 'exit_json', new=fake_exit), \
+         patch.object(ec2_instance_state.AnsibleModule, 'fail_json', new=fake_fail), \
+         patch.object(ec2_instance_state.AnsibleModule, 'warn', new=fake_warn):
 
         if fake_client is not None:
             with patch.object(ec2_instance_state, '_get_ec2_client', return_value=fake_client):
@@ -495,6 +502,81 @@ class TestStopped(unittest.TestCase):
         stop_calls = [c for c in fake.calls if c[0] == 'stop_instances']
         self.assertEqual(len(stop_calls), 1)
         self.assertEqual(stop_calls[0][1]['InstanceIds'], ['i-0aaaaaaaaaaaaaaaa'])
+
+
+class TestRestarted(unittest.TestCase):
+
+    def setUp(self):
+        os.environ['AWS_REGION'] = 'us-east-1'
+
+    def tearDown(self):
+        os.environ.pop('AWS_REGION', None)
+
+    def test_restarted_running_does_stop_then_start(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'restarted'},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        self.assertTrue(result['result']['changed'])
+        # Order: stop_instances came before start_instances.
+        method_order = [c[0] for c in fake.calls if c[0] in ('stop_instances', 'start_instances')]
+        self.assertEqual(method_order, ['stop_instances', 'start_instances'])
+        # Both waiters fired in the right order.
+        waiter_order = [w[0] for w in fake.waiters_invoked]
+        self.assertEqual(waiter_order, ['instance_stopped', 'instance_running'])
+        self.assertEqual(result['result']['instances'][0]['previous_state'], 'running')
+        self.assertEqual(result['result']['instances'][0]['current_state'], 'running')
+        self.assertEqual(result['result']['state'], 'restarted')
+
+    def test_restarted_stopped_just_starts(self):
+        # Mixed-state semantics: an already-stopped instance still ends up running
+        # after a 'restarted' call.
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopped'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'restarted'},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        self.assertTrue(result['result']['changed'])
+        method_order = [c[0] for c in fake.calls if c[0] in ('stop_instances', 'start_instances')]
+        # No stop call (already stopped); start was issued.
+        self.assertEqual(method_order, ['start_instances'])
+        self.assertEqual(result['result']['instances'][0]['current_state'], 'running')
+
+    def test_restarted_with_wait_false_emits_warning(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'],
+             'state': 'restarted', 'wait': False},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        # Stop phase still waits despite wait=False.
+        self.assertIn(('instance_stopped', ['i-0aaaaaaaaaaaaaaaa']), fake.waiters_invoked)
+        # Start phase did not wait.
+        self.assertNotIn(('instance_running', ['i-0aaaaaaaaaaaaaaaa']), fake.waiters_invoked)
+        # A warning was emitted on the result.
+        self.assertIn('warnings', result['result'])
+        self.assertTrue(any('wait' in w.lower() for w in result['result']['warnings']))
+
+    def test_restarted_terminated_fails(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'terminated'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'restarted'},
+            fake_client=fake,
+        )
+        self.assertTrue(result['failed'])
+        self.assertIn('terminated', result['result']['msg'].lower())
 
 
 if __name__ == '__main__':
