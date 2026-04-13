@@ -261,6 +261,14 @@ def _do_start(module, client, instance_ids, wait, timeout):
 
     # If any instance is currently 'stopping' and we'll need to start it, wait for stopped first.
     stopping_now = [iid for (iid, _raw, state) in formatted if state == 'stopping']
+    if stopping_now and not wait:
+        module.fail_json(msg=(
+            "Cannot start instances that are currently 'stopping' with wait=False: "
+            "{}. Either set wait=true (so the module can wait for them to reach "
+            "'stopped' first), or retry once the instances have finished stopping."
+            .format(', '.join(stopping_now))
+        ))
+        return
     if wait and stopping_now:
         _wait_for(client, 'instance_stopped', stopping_now, timeout, module)
 

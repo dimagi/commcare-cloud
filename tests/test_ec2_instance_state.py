@@ -382,6 +382,21 @@ class TestStarted(unittest.TestCase):
         self.assertTrue(result['failed'])
         self.assertIn('terminated', result['result']['msg'].lower())
 
+    def test_started_stopping_with_no_wait_fails_fast(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopping'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'],
+             'state': 'started', 'wait': False},
+            fake_client=fake,
+        )
+        self.assertTrue(result['failed'])
+        self.assertIn('stopping', result['result']['msg'].lower())
+        self.assertIn('wait', result['result']['msg'].lower())
+        # No StartInstances call should have been made.
+        self.assertNotIn('start_instances', [c[0] for c in fake.calls])
+
 
 if __name__ == '__main__':
     unittest.main()
