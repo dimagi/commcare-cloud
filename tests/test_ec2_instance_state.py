@@ -584,5 +584,86 @@ class TestRestarted(unittest.TestCase):
         self.assertIn('terminated', result['result']['msg'].lower())
 
 
+class TestCheckMode(unittest.TestCase):
+
+    def setUp(self):
+        os.environ['AWS_REGION'] = 'us-east-1'
+
+    def tearDown(self):
+        os.environ.pop('AWS_REGION', None)
+
+    def test_started_check_mode_no_api_mutation(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopped'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'],
+             'state': 'started', '_ansible_check_mode': True},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        self.assertTrue(result['result']['changed'])
+        self.assertNotIn('start_instances', [c[0] for c in fake.calls])
+
+    def test_stopped_check_mode_no_api_mutation(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'],
+             'state': 'stopped', '_ansible_check_mode': True},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        self.assertTrue(result['result']['changed'])
+        self.assertNotIn('stop_instances', [c[0] for c in fake.calls])
+
+
+class TestInvalidIdMutating(unittest.TestCase):
+
+    def setUp(self):
+        os.environ['AWS_REGION'] = 'us-east-1'
+
+    def tearDown(self):
+        os.environ.pop('AWS_REGION', None)
+
+    def test_started_invalid_id_fails_cleanly(self):
+        fake = FakeEC2Client(missing_ids={'i-0deadbeefdeadbeef'})
+        result = run_module(
+            {'instance_ids': ['i-0deadbeefdeadbeef'], 'state': 'started'},
+            fake_client=fake,
+        )
+        self.assertTrue(result['failed'])
+        self.assertIn('NotFound', result['result']['msg'])
+
+
+class TestWaiterTimeout(unittest.TestCase):
+
+    def setUp(self):
+        os.environ['AWS_REGION'] = 'us-east-1'
+
+    def tearDown(self):
+        os.environ.pop('AWS_REGION', None)
+
+    def test_waiter_timeout_fails_cleanly(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopped'},
+        })
+
+        # Patch get_waiter to return a waiter that always raises.
+        from botocore.exceptions import WaiterError
+        class _BoomWaiter:
+            def wait(self, **kwargs):
+                raise WaiterError(name='instance_running', reason='timeout', last_response={})
+        fake.get_waiter = lambda name: _BoomWaiter()
+
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'started'},
+            fake_client=fake,
+        )
+        self.assertTrue(result['failed'])
+        self.assertIn('Waiter', result['result']['msg'])
+
+
 if __name__ == '__main__':
     unittest.main()
