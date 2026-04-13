@@ -167,11 +167,11 @@ def _get_code_diff(environment, deploy_revs, is_resume):
 
 
 def _confirm_translated(environment, quiet=False):
-    if datetime.now().isoweekday() != 3 or environment.meta_config.deploy_env != 'production':
+    if datetime.now().isoweekday() != 3 or environment.meta_config.deploy_env not in ['production', 'india', 'eu']:
         return True
     github_update_translations_pr_link = \
         "https://github.com/dimagi/commcare-hq/pulls?" \
-        "q=is%3Apr+Update+Translations+author%3Aapp%2Fgithub-actions+is%3Aopen"
+        "q=is%3Apr+Update+Translations+is%3Aopen"
     return ask(
         "It's the weekly Wednesday deploy, did you update the translations "
         "from transifex?\n"

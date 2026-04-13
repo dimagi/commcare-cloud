@@ -33,7 +33,7 @@ servers:
     os: jammy
 
   - server_name: "djangomanage3-india"
-    server_instance_type: "t3a.small"
+    server_instance_type: "t3a.medium"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -286,26 +286,6 @@ servers:
     volume_type: "gp3"
     group: "postgresql"
     os: jammy
-
-  - server_name: "rabbit_a6-india"
-    server_instance_type: t3a.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: jammy 
-
-  - server_name: "rabbit_c7-india"
-    server_instance_type: t3a.small
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: jammy 
 
 proxy_servers:
   - server_name: "proxy_a1-india"

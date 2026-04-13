@@ -12,4 +12,5 @@ For our setup in production, the virtual host is always “commcarehq”. Locall
 Guides
 ------
 
+* :ref:`services/rabbitmq/migrate-to-redis:Migrating from RabbitMQ to Redis as the Celery Broker`
 * :ref:`services/rabbitmq/upgrade:Upgrading RabbitMQ`
