@@ -310,6 +310,12 @@ def _do_stop(module, client, instance_ids, wait, timeout):
 
     # If any instance is 'pending', wait for it to be 'running' before stopping.
     pending_now = [iid for (iid, _raw, state) in formatted if state == 'pending']
+    # 'pending' + wait=False: we call StopInstances directly. AWS accepts stopping a
+    # pending instance, so (unlike _do_start's 'stopping' + wait=False case, where
+    # AWS would reject the StartInstances call) there is no need to fail-fast here.
+    # With wait=True we still wait for 'running' first, purely to normalise the
+    # contract (so 'current_state' in the return value is a deterministic post-stop
+    # state rather than depending on how far AWS's state machine has progressed).
     if wait and pending_now:
         _wait_for(client, 'instance_running', pending_now, timeout, module)
 

@@ -476,6 +476,26 @@ class TestStopped(unittest.TestCase):
         self.assertTrue(result['failed'])
         self.assertIn('terminated', result['result']['msg'].lower())
 
+    def test_stopped_pending_waits_for_running_first(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'pending'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'state': 'stopped'},
+            fake_client=fake,
+        )
+        self.assertFalse(result['failed'])
+        self.assertTrue(result['result']['changed'])
+        # First waiter: wait for running; second: wait for stopped.
+        self.assertEqual(
+            fake.waiters_invoked,
+            [('instance_running', ['i-0aaaaaaaaaaaaaaaa']),
+             ('instance_stopped', ['i-0aaaaaaaaaaaaaaaa'])],
+        )
+        stop_calls = [c for c in fake.calls if c[0] == 'stop_instances']
+        self.assertEqual(len(stop_calls), 1)
+        self.assertEqual(stop_calls[0][1]['InstanceIds'], ['i-0aaaaaaaaaaaaaaaa'])
+
 
 if __name__ == '__main__':
     unittest.main()
