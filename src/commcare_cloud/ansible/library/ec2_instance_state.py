@@ -4,7 +4,7 @@ import os
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-from botocore.exceptions import ClientError
+
 
 
 DOCUMENTATION = """
@@ -175,6 +175,7 @@ def _format_instance(raw, previous_state, current_state):
 
 def _describe_and_format(client, instance_ids, module):
     """Describe + format. Fails the module on AWS errors."""
+    from botocore.exceptions import ClientError
     try:
         raw_by_id = _describe_instances(client, instance_ids)
     except ClientError as e:
