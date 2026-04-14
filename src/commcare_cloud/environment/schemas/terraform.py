@@ -179,6 +179,13 @@ class BlockDevice(jsonobject.JsonObject):
     enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
 
 
+RDS_DEFAULT_PARAMS = {
+    'pg_stat_statements.track': 'all',
+    'pg_stat_statements.max': 10000,
+    'track_activity_query_size': 2048,
+}
+
+
 class RdsInstanceConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     identifier = jsonobject.StringProperty(required=True)
@@ -200,18 +207,12 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     port = 5432
     params = jsonobject.DictProperty()
 
-    _default_params = {
-        'pg_stat_statements.track': 'all',
-        'pg_stat_statements.max': 10000,
-        'track_activity_query_size': 2048,
-    }
-
     @classmethod
     def wrap(cls, data):
         if 'params' not in data:
             data['params'] = {}
         params = data['params']
-        for name, value in cls._default_params.items():
+        for name, value in RDS_DEFAULT_PARAMS.items():
             if name not in params:
                 params[name] = value
         return super(RdsInstanceConfig, cls).wrap(data)
