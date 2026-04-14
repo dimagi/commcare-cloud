@@ -34,6 +34,7 @@ class TerraformConfig(jsonobject.JsonObject):
     servers = jsonobject.ListProperty(lambda: ServerConfig)
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)
+    rds_parameter_groups = jsonobject.ListProperty(lambda: RdsParameterGroupConfig, default=list)
     pgbouncer_nlbs = jsonobject.ListProperty(lambda: PgbouncerNlbs)
     internal_albs = jsonobject.ListProperty(lambda: InternalAlbs)
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
@@ -206,6 +207,7 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     maintenance_window = "sat:08:27-sat:08:57"
     port = 5432
     params = jsonobject.DictProperty()
+    parameter_group = jsonobject.StringProperty(default=None)
 
     @classmethod
     def wrap(cls, data):
@@ -216,6 +218,19 @@ class RdsInstanceConfig(jsonobject.JsonObject):
             if name not in params:
                 params[name] = value
         return super(RdsInstanceConfig, cls).wrap(data)
+
+
+class RdsParameterGroupConfig(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    name = jsonobject.StringProperty(required=True)
+    family = jsonobject.StringProperty(required=True)
+    params = jsonobject.DictProperty()
+
+    @classmethod
+    def wrap(cls, data):
+        params = data.get('params', {})
+        data['params'] = {**RDS_DEFAULT_PARAMS, **params}
+        return super(RdsParameterGroupConfig, cls).wrap(data)
 
 
 class PgbouncerNlbs(jsonobject.JsonObject):
