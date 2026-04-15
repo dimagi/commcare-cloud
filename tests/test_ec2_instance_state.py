@@ -1,14 +1,14 @@
 import json
-import sys
-import unittest
-from unittest.mock import patch
-
 # Add the library directory to sys.path so we can import the module by name.
 # We must also ensure that the tests/ directory does NOT appear before the
 # library dir on sys.path, because tests/ansible.py would otherwise shadow
 # the real `ansible` package when ec2_instance_state does
 # `from ansible.module_utils.basic import AnsibleModule`.
 import os
+import sys
+import unittest
+from unittest.mock import patch
+
 LIBRARY_DIR = os.path.abspath(os.path.join(
     os.path.dirname(__file__), '..', 'src', 'commcare_cloud', 'ansible', 'library'
 ))
@@ -56,6 +56,7 @@ def run_module(args, fake_client=None):
     # used by tests/ansible.py in this repo.
     from ansible.module_utils import basic
     from ansible.module_utils.common.text.converters import to_bytes
+
     # Ensure _ansible_remote_tmp and _ansible_keep_remote_files are present to
     # avoid unrelated AnsibleModule init failures.
     full_args = dict(args)
@@ -558,7 +559,7 @@ class TestRestarted(unittest.TestCase):
         self.assertEqual(
             result['result']['diff'],
             {'before': {'states': {'i-0aaaaaaaaaaaaaaaa': 'running'}},
-             'after':  {'states': {'i-0aaaaaaaaaaaaaaaa': 'running'}}},
+             'after': {'states': {'i-0aaaaaaaaaaaaaaaa': 'running'}}},
         )
 
     def test_restarted_stopped_just_starts(self):
@@ -678,6 +679,7 @@ class TestWaiterTimeout(unittest.TestCase):
 
         # Patch get_waiter to return a waiter that always raises.
         from botocore.exceptions import WaiterError
+
         class _BoomWaiter:
             def wait(self, InstanceIds, WaiterConfig=None):
                 raise WaiterError(name='instance_running', reason='timeout', last_response={})

@@ -6,7 +6,6 @@ import re
 from ansible.module_utils.basic import AnsibleModule
 
 
-
 DOCUMENTATION = """
 ---
 module: ec2_instance_state
