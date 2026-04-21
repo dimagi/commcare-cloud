@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 import os
 import signal
+from collections import namedtuple
 from configparser import ConfigParser
 from os.path import basename
 from pathlib import Path
@@ -8,6 +9,8 @@ from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
 
 __metaclass__ = type
+
+CommandResult = namedtuple("CommandResult", ["rc", "stdout", "stderr"])
 
 
 DOCUMENTATION = """
@@ -193,19 +196,18 @@ class Release:
         for section in modules.sections():
             mod = modules[section]
             cmd = ["git", "ls-tree", "-z", "-d", "HEAD", "--", mod["path"]]
-            version = self.run(cmd, cwd=repo_path).split()[2]
+            version = self.run(cmd, cwd=repo_path).stdout.split()[2]
             yield mod["path"], mod["url"], version
 
     def get_version(self, git_repo):
-        return self.run(["git", "rev-parse", "HEAD"], cwd=git_repo).strip()
+        return self.run(["git", "rev-parse", "HEAD"], cwd=git_repo).stdout.strip()
 
     def run(self, args, **kw):
         kw.setdefault("check_rc", True)
         if self.key_file:
             ssh = f"ssh -i {self.key_file}"
             kw.setdefault("environ_update", {})["GIT_SSH_COMMAND"] = ssh
-        rc, stdout, stderr = self.run_command(args, **kw)
-        return stdout
+        return CommandResult(*self.run_command(args, **kw))
 
 
 def incomplete_release(dest_tmp, module, result):
