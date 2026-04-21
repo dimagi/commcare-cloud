@@ -176,6 +176,13 @@ class Release:
         else:
             self.run(["git", "remote", "update", "--prune"], cwd=repo_mirror)
 
+        # Ensure the requested commit is present even if its branch moved
+        # mid-deploy (e.g. autostaging rebuilt between SHA resolution and
+        # the mirror update), which would leave the SHA unreachable from
+        # any ref and absent after `remote update`.
+        if not self.has_commit(repo_mirror, version):
+            self.run(["git", "fetch", "--no-tags", "origin", version], cwd=repo_mirror)
+
         self.run(["git", "clone", "--no-checkout", "--reference", repo_mirror, repo_url, release_path])
         self.run(["git", "checkout", version], cwd=release_path)
         self.diff['after'][repo_url] = self.get_version(release_path)
@@ -201,6 +208,10 @@ class Release:
 
     def get_version(self, git_repo):
         return self.run(["git", "rev-parse", "HEAD"], cwd=git_repo).stdout.strip()
+
+    def has_commit(self, git_repo, version):
+        return self.run(["git", "cat-file", "-e", f"{version}^{{commit}}"],
+                        cwd=git_repo, check_rc=False).rc == 0
 
     def run(self, args, **kw):
         kw.setdefault("check_rc", True)
