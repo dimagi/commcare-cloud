@@ -146,7 +146,7 @@ def get_env_default_params(environment):
     }
 
 
-def get_postgresql_params_by_rds_instance(environment):
+def get_rds_parameters_by_instance(environment):
     """
     Returns a map from rds_instance identifier to postgresql parameters as accepted by terraform
 
@@ -200,7 +200,7 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
             'public_key': environment.get_authorized_key(username)
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
-        'postgresql_params': get_postgresql_params_by_rds_instance(environment),
+        'rds_parameters_by_instance': get_rds_parameters_by_instance(environment),
         'rds_parameters_by_group': get_rds_parameters_by_parameter_group(environment),
         'commcarehq_ssrf_urls_regex': compact_waf_regexes(COMMCAREHQ_SSRF_URLS_REGEX),
         'commcarehq_xml_querystring_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX),
