@@ -1,8 +1,6 @@
-# To generate a Github apikey follow these instructions: https://github.com/blog/1509-personal-api-tokens
-# Minimally you will need a key with repo -> public_repo
-
-# On a control machine shared with others,
-# leave this as None to be prompted for a token each time instead,
-# to avoid storing private github token where others could access it.
+# Optional GitHub API token used to get a higher rate limit on read-only
+# diff/compare calls during deploy. The GITHUB_TOKEN environment variable
+# is also honored. A token is no longer required for deploy tagging,
+# which is now done via SSH using the user's forwarded agent credentials.
 
 GITHUB_APIKEY = None

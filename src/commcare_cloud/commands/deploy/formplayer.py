@@ -53,8 +53,7 @@ class VersionInfo(namedtuple("VersionInfo", "commit, message, time, build_time")
 
 
 def get_formplayer_deploy_diff(environment):
-    tag_commits = environment.fab_settings_config.tag_deploy_commits
-    repo = github_repo('dimagi/formplayer', require_write_permissions=tag_commits)
+    repo = github_repo('dimagi/formplayer')
     return get_deploy_diff(environment, repo)
 
 

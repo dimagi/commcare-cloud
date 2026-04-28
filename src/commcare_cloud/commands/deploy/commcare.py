@@ -141,8 +141,7 @@ def _get_code_diff(environment, deploy_revs, is_resume):
     if DEPLOY_DIFF is not None:
         return DEPLOY_DIFF
 
-    tag_commits = environment.fab_settings_config.tag_deploy_commits
-    repo = github_repo('dimagi/commcare-hq', require_write_permissions=tag_commits)
+    repo = github_repo('dimagi/commcare-hq')
 
     deployed_version = get_deployed_version(environment)
     if is_resume:
