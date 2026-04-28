@@ -1,7 +1,9 @@
+import shutil
+import subprocess
+import tempfile
 from datetime import datetime
 
 import attr
-from github.GithubException import GithubException
 import pytz
 from memoized import memoized
 
@@ -36,16 +38,33 @@ class DeployContext:
 
 
 def create_release_tag(environment, repo, diff):
-    if environment.fab_settings_config.tag_deploy_commits:
-        try:
-            repo.create_git_ref(
-                ref='refs/tags/{}-{}-deploy'.format(
-                    environment.release_name,
-                    environment.name),
-                sha=diff.deploy_commit,
-            )
-        except GithubException as e:
-            print(color_error(f"Error creating release tag: {e}"))
+    if not environment.fab_settings_config.tag_deploy_commits:
+        return
+    remote_url = f"git@github.com:{repo.full_name}.git"
+    tag_name = f"{environment.release_name}-{environment.name}-deploy"
+    try:
+        _push_release_tag(remote_url, diff.deploy_commit, tag_name)
+    except (subprocess.CalledProcessError, OSError) as e:
+        print(color_error(f"Error creating release tag: {e}"))
+
+
+def _push_release_tag(remote_url, sha, tag_name):
+    tmp = tempfile.mkdtemp(prefix="cchq-tag-")
+    try:
+        subprocess.run(
+            ["git", "-C", tmp, "init", "--bare", "-q"],
+            check=True,
+        )
+        subprocess.run(
+            ["git", "-C", tmp, "fetch", "--depth=1", "--no-tags", remote_url, sha],
+            check=True,
+        )
+        subprocess.run(
+            ["git", "-C", tmp, "push", remote_url, f"{sha}:refs/tags/{tag_name}"],
+            check=True,
+        )
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def record_deploy_start(environment, context):
