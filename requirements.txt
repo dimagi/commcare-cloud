@@ -97,7 +97,7 @@ pygithub==2.6.1
     # via commcare-cloud (setup.py)
 pygments==2.15.0
     # via ansible-inventory
-pyjwt[crypto]==2.4.0
+pyjwt[crypto]==2.12.0
     # via pygithub
 pynacl==1.6.2
     # via pygithub
