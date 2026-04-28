@@ -87,3 +87,12 @@ class TestCreateReleaseTag(TestCase):
                 _fake_diff(),
             )
         self.assertIn("Error creating release tag", out.getvalue())
+
+    def test_disabled_flag_skips_push(self):
+        with patch("commcare_cloud.commands.deploy.utils._push_release_tag") as push:
+            create_release_tag(
+                _fake_environment(tag_deploy_commits=False),
+                _fake_repo(),
+                _fake_diff(),
+            )
+        push.assert_not_called()
