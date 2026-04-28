@@ -22,6 +22,8 @@ es21-staging: 10.201.40.13
 es21-staging.instance_id: i-0c5137e706cc30e8b
 es22-staging: 10.201.41.68
 es22-staging.instance_id: i-08eed79af34c48103
+es24-staging: 10.201.40.186
+es24-staging.instance_id: i-0bac7b3b90330e24c
 formplayer-efs: fs-ba70cd39.efs.us-east-1.amazonaws.com
 formplayer11-staging: 10.201.10.202
 formplayer11-staging.instance_id: i-04ea09168ac760aab
