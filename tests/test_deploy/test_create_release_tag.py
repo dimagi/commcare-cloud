@@ -48,3 +48,46 @@ class TestPushReleaseTag(TestCase):
                 capture_output=True, text=True, check=True,
             ).stdout.strip()
             self.assertEqual(ref, sha)
+
+
+from io import StringIO
+from unittest.mock import MagicMock, patch
+
+from commcare_cloud.commands.deploy.utils import create_release_tag
+
+
+def _fake_environment(tag_deploy_commits, release_name="r1", env_name="testenv"):
+    env = MagicMock()
+    env.fab_settings_config.tag_deploy_commits = tag_deploy_commits
+    env.release_name = release_name
+    env.name = env_name
+    return env
+
+
+def _fake_repo(full_name="dimagi/commcare-hq"):
+    repo = MagicMock()
+    repo.full_name = full_name
+    return repo
+
+
+def _fake_diff(sha="abc1234"):
+    diff = MagicMock()
+    diff.deploy_commit = sha
+    return diff
+
+
+class TestCreateReleaseTag(TestCase):
+
+    def test_push_failure_is_swallowed(self):
+        # Point at a non-existent file:// URL so git fetch fails.
+        with tempdir() as tmp:
+            bad_url = f"file://{tmp}/does-not-exist.git"
+            with patch("commcare_cloud.commands.deploy.utils._push_release_tag",
+                       side_effect=subprocess.CalledProcessError(128, ["git"])), \
+                 patch("sys.stdout", new_callable=StringIO) as out:
+                create_release_tag(
+                    _fake_environment(tag_deploy_commits=True),
+                    _fake_repo(),
+                    _fake_diff(),
+                )
+            self.assertIn("Error creating release tag", out.getvalue())
