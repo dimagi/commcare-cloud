@@ -20,7 +20,7 @@ def _init_bare_with_commit(repo_dir):
     """Build a bare repo with one commit; return (file_url, sha)."""
     work = repo_dir.parent / "work"
     work.mkdir()
-    _git(work, "init", "--initial-branch=main", "-q")
+    _git(work, "init", "-q")
     _git(work, "config", "user.email", "test@example.com")
     _git(work, "config", "user.name", "Test")
     (work / "README").write_text("hello\n")
