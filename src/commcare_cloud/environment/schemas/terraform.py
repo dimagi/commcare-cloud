@@ -211,13 +211,18 @@ class RdsInstanceConfig(jsonobject.JsonObject):
 
     @classmethod
     def wrap(cls, data):
-        if 'params' not in data:
-            data['params'] = {}
-        params = data['params']
-        for name, value in RDS_DEFAULT_PARAMS.items():
-            if name not in params:
-                params[name] = value
-        return super(RdsInstanceConfig, cls).wrap(data)
+        if data.get('params') and data.get('parameter_group'):
+            raise ValueError(
+                f"RDS instance '{data.get('identifier')}' sets both 'parameter_group' "
+                "and 'params'. These are mutually exclusive — when 'parameter_group' "
+                "is set, parameters must be defined on the standalone group."
+            )
+        elif data.get('parameter_group'):
+            return super(RdsInstanceConfig, cls).wrap(data)
+        else:
+            params = data.get('params', {})
+            data['params'] = {**RDS_DEFAULT_PARAMS, **params}
+            return super(RdsInstanceConfig, cls).wrap(data)
 
 
 class RdsParameterGroupConfig(jsonobject.JsonObject):
