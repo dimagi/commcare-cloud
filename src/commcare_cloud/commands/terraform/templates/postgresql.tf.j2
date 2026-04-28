@@ -21,6 +21,10 @@ module "postgresql__{{ rds_instance.identifier }}" {
     monitoring_interval = {{ rds_instance.monitoring_interval|tojson }}
     enable_cross_region_backup = {{ rds_instance.enable_cross_region_backup|tojson }}
   }
+  {%- if rds_instance.parameter_group %}
+  parameter_group_name = module.rds_parameter_group__{{ rds_instance.parameter_group }}.name
+  parameters = []
+  {%- else %}
   parameters = [
     {%- for param in postgresql_params[rds_instance.identifier] %}
     {
@@ -30,6 +34,7 @@ module "postgresql__{{ rds_instance.identifier }}" {
     },
     {%- endfor %}
   ]
+  {%- endif %}
   rds_monitoring_role_arn = module.Users.rds_monitoring_role_arn
   subnet_ids = values(module.network.subnets-db-private)
   vpc_security_group_ids = compact([module.network.rds-sg, module.network.vpn-connections-sg])
