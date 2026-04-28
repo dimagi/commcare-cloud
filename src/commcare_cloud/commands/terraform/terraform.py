@@ -155,12 +155,7 @@ def get_postgresql_params_by_rds_instance(environment):
     environment_default_params = get_env_default_params(environment)
     rds_instance_to_params = {}
     for rds_instance in environment.terraform_config.rds_instances:
-        param_names = set(environment_default_params.keys()) | set(rds_instance.params.keys())
-        combined_params = {
-            param_name: (rds_instance.params[param_name] if param_name in rds_instance.params
-                         else environment_default_params[param_name])
-            for param_name in param_names
-        }
+        combined_params = {**environment_default_params, **rds_instance.params}
         rds_instance_to_params[rds_instance.identifier] = [
             format_param_for_terraform(param_name, param_value)
             for param_name, param_value in combined_params.items()
