@@ -134,17 +134,25 @@ def validate_references_to_parameter_groups(groups_by_name, rds_instances):
             )
 
 
+def get_env_default_params(environment):
+    """
+    This function "hand picks" which defaults we have defined in the default and environment postgres
+    configs that we want to bring over to RDS too
+    """
+    postgresql_variables = get_role_defaults('postgresql_base')
+    postgresql_variables.update(environment.postgresql_config.postgres_override)
+    return {
+        'max_connections': postgresql_variables['postgresql_max_connections'],
+    }
+
+
 def get_postgresql_params_by_rds_instance(environment):
     """
     Returns a map from rds_instance identifier to postgresql parameters as accepted by terraform
 
     See aws db_parameter_group "parameter" argument.
     """
-    postgresql_variables = get_role_defaults('postgresql_base')
-    postgresql_variables.update(environment.postgresql_config.postgres_override)
-    environment_default_params = {
-        'max_connections': postgresql_variables['postgresql_max_connections'],
-    }
+    environment_default_params = get_env_default_params(environment)
     rds_instance_to_params = {}
     for rds_instance in environment.terraform_config.rds_instances:
         param_names = set(environment_default_params.keys()) | set(rds_instance.params.keys())
@@ -172,13 +180,7 @@ def get_rds_parameters_by_parameter_group(environment):
         environment.terraform_config.rds_instances,
     )
 
-    # lifted from get_postgresql_params_by_rds_instance
-    postgresql_variables = get_role_defaults('postgresql_base')
-    postgresql_variables.update(environment.postgresql_config.postgres_override)
-    environment_default_params = {
-        'max_connections': postgresql_variables['postgresql_max_connections'],
-    }
-
+    environment_default_params = get_env_default_params(environment)
     rds_params_by_group = {}
     for group in groups:
         parameters = {**environment_default_params, **group.params}
