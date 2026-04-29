@@ -8,6 +8,7 @@ from commcare_cloud.colors import color_warning, color_notice
 from commcare_cloud.commands.command_base import CommandError
 
 PROJECT_ROOT = Path(__file__).parent
+GITHUB_KNOWN_HOSTS = PROJECT_ROOT / "github_known_hosts"
 GITHUB_TOKEN = None
 
 

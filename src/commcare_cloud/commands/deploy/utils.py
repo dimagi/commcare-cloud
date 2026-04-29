@@ -1,3 +1,4 @@
+import os
 import shutil
 import subprocess
 import tempfile
@@ -11,6 +12,7 @@ from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_summary, color_error
 from commcare_cloud.commands.deploy.slack import notify_slack_deploy_start, notify_slack_deploy_end
+from commcare_cloud.github import GITHUB_KNOWN_HOSTS
 from commcare_cloud.user_utils import get_default_username
 
 
@@ -50,6 +52,13 @@ def create_release_tag(environment, repo, diff):
 
 def _push_release_tag(remote_url, sha, tag_name):
     tmp = tempfile.mkdtemp(prefix="cchq-tag-")
+    env = {
+        **os.environ,
+        "GIT_SSH_COMMAND": (
+            f"ssh -o UserKnownHostsFile={GITHUB_KNOWN_HOSTS} "
+            f"-o StrictHostKeyChecking=yes"
+        ),
+    }
     try:
         subprocess.run(
             ["git", "-C", tmp, "init", "--bare", "-q"],
@@ -57,11 +66,11 @@ def _push_release_tag(remote_url, sha, tag_name):
         )
         subprocess.run(
             ["git", "-C", tmp, "fetch", "--depth=1", "--no-tags", remote_url, sha],
-            check=True,
+            check=True, env=env,
         )
         subprocess.run(
             ["git", "-C", tmp, "push", remote_url, f"{sha}:refs/tags/{tag_name}"],
-            check=True,
+            check=True, env=env,
         )
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
