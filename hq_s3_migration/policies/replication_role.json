@@ -1,0 +1,43 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "GetSourceBucketConfiguration",
+      "Effect": "Allow",
+      "Action": [
+        "s3:InitiateReplication",
+        "s3:ListBucket",
+        "s3:GetBucketLocation",
+        "s3:GetBucketAcl",
+        "s3:GetReplicationConfiguration",
+        "s3:GetObjectVersionForReplication",
+        "s3:GetObjectVersionAcl",
+        "s3:GetObjectVersionTagging",
+        "s3:PutInventoryConfiguration"
+      ],
+      "Resource": [
+        "arn:aws:s3:::{source_bucket}",
+        "arn:aws:s3:::{source_bucket}/*"
+      ]
+    },
+    {
+      "Sid": "ReplicateToDestinationBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:List*",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:PutObjectTagging",
+        "s3:ReplicateObject",
+        "s3:ReplicateDelete",
+        "s3:ReplicateTags",
+        "s3:ObjectOwnerOverrideToBucketOwner"
+      ],
+      "Resource": [
+        "arn:aws:s3:::{dest_bucket}",
+        "arn:aws:s3:::{dest_bucket}/*"
+      ]
+    }
+  ]
+}
