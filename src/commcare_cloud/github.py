@@ -27,11 +27,15 @@ def github_repo(repo_name, prompt_if_missing=False):
 
 @memoized
 def _warn_legacy_location():
-    print(color_notice(f"[Deprecation Warning] Config file has moved."))
-    print(color_notice(f"New location is {PROJECT_ROOT}/config.py or else use the "
-                       f"'GITHUB_TOKEN' environment variable."))
-    print(color_notice(f"\nYou can move the config to the new location as follows:"))
-    print(color_notice(f"    $ mv {PROJECT_ROOT}/fab/config.py {PROJECT_ROOT}/config.py\n"))
+    print(color_notice("[Deprecation Warning] Config file has moved."))
+    print(color_notice(
+        f"New location is {PROJECT_ROOT}/config.py or else use the "
+        f"'GITHUB_TOKEN' environment variable."
+    ))
+    print(color_notice("\nYou can move the config to the new location as follows:"))
+    print(color_notice(
+        f"    $ mv {PROJECT_ROOT}/fab/config.py {PROJECT_ROOT}/config.py\n"
+    ))
 
 
 @memoized
