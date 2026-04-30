@@ -16,11 +16,11 @@ class GithubException(CommandError):
     pass
 
 
-def github_repo(repo_name, repo_is_private=False, require_write_permissions=False):
+def github_repo(repo_name, require_write_permissions=False):
     # optimistically get the token to get higher rate limit from Github
     token, _ = get_github_credentials_no_prompt()
-    if not token and (repo_is_private or require_write_permissions):
-        token = get_github_credentials(repo_name, repo_is_private, require_write_permissions)
+    if not token and require_write_permissions:
+        token = get_github_credentials(repo_name, require_write_permissions)
         if not token:
             raise GithubException("Github token is required.")
 
@@ -30,7 +30,7 @@ def github_repo(repo_name, repo_is_private=False, require_write_permissions=Fals
     return repo
 
 
-def get_github_credentials(repo_name, repo_is_private, require_write_permissions):
+def get_github_credentials(repo_name, require_write_permissions):
     global GITHUB_TOKEN
 
     token, found_in_legacy_location = get_github_credentials_no_prompt()
@@ -44,8 +44,7 @@ def get_github_credentials(repo_name, repo_is_private, require_write_permissions
 
     if token is None:
         print(color_warning("Github credentials not found!"))
-        private = "private " if repo_is_private else ""
-        print(f"Github token is required for {private}repository {repo_name}.")
+        print(f"Github token is required for repository {repo_name}.")
         if require_write_permissions:
             print("The token must have write permissions to the repository to create release tags.")
         print(
