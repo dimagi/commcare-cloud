@@ -4,7 +4,7 @@ from pathlib import Path
 
 from github import Github
 
-from commcare_cloud.colors import color_warning, color_notice
+from commcare_cloud.colors import color_notice
 
 PROJECT_ROOT = Path(__file__).parent
 GITHUB_KNOWN_HOSTS = PROJECT_ROOT / "github_known_hosts"
@@ -32,18 +32,16 @@ def get_github_credentials(repo_name):
         print(color_notice(f"    $ mv {PROJECT_ROOT}/fab/config.py {PROJECT_ROOT}/config.py\n"))
 
     if token is None:
-        print(color_warning("Github credentials not found!"))
-        print(f"Github token is required for repository {repo_name}.")
-        print(
-            "\nYou can add a config file to automate this step:\n"
-            f"    $ cp {PROJECT_ROOT}/config.example.py {PROJECT_ROOT}/config.py\n"
-            f"Then edit {PROJECT_ROOT}/config.py"
-        )
         print(color_notice(
-            "To generate a GitHub access token, follow these instructions: https://github.com/blog/1509-personal-api-tokens\n"
-            "For permissions choose repo > public_repo"
+            "GitHub token not found. A token is recommended so the deploy diff "
+            "can show PR details (titles, labels, authors). Read-only scope is "
+            "sufficient — no write permissions needed."
         ))
-        token = getpass('Github Token: ')
+        print(color_notice(
+            "Generate a token at https://github.com/settings/tokens "
+            "(scope: public_repo)."
+        ))
+        token = getpass("Github token (or Enter to continue without): ")
 
     os.environ["GITHUB_TOKEN"] = token  # set in env for access by subprocesses
     GITHUB_TOKEN = token
