@@ -5,32 +5,21 @@ from pathlib import Path
 from github import Github
 
 from commcare_cloud.colors import color_warning, color_notice
-from commcare_cloud.commands.command_base import CommandError
 
 PROJECT_ROOT = Path(__file__).parent
 GITHUB_KNOWN_HOSTS = PROJECT_ROOT / "github_known_hosts"
 GITHUB_TOKEN = None
 
 
-class GithubException(CommandError):
-    pass
-
-
-def github_repo(repo_name, require_write_permissions=False):
+def github_repo(repo_name, prompt_if_missing=False):
     # optimistically get the token to get higher rate limit from Github
     token, _ = get_github_credentials_no_prompt()
-    if not token and require_write_permissions:
-        token = get_github_credentials(repo_name, require_write_permissions)
-        if not token:
-            raise GithubException("Github token is required.")
-
-    repo = Github(login_or_token=token).get_repo(repo_name)
-    if require_write_permissions and not (repo.permissions and repo.permissions.push):
-        raise GithubException(f"Supplied token does not have write permissions for '{repo_name}'")
-    return repo
+    if not token and prompt_if_missing:
+        token = get_github_credentials(repo_name)
+    return Github(login_or_token=token).get_repo(repo_name)
 
 
-def get_github_credentials(repo_name, require_write_permissions):
+def get_github_credentials(repo_name):
     global GITHUB_TOKEN
 
     token, found_in_legacy_location = get_github_credentials_no_prompt()
@@ -45,8 +34,6 @@ def get_github_credentials(repo_name, require_write_permissions):
     if token is None:
         print(color_warning("Github credentials not found!"))
         print(f"Github token is required for repository {repo_name}.")
-        if require_write_permissions:
-            print("The token must have write permissions to the repository to create release tags.")
         print(
             "\nYou can add a config file to automate this step:\n"
             f"    $ cp {PROJECT_ROOT}/config.example.py {PROJECT_ROOT}/config.py\n"
