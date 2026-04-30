@@ -42,7 +42,6 @@ class TerraformConfig(jsonobject.JsonObject):
     r53_records = jsonobject.ListProperty(lambda: Route53RecordConfig, default=list)
     efs_file_systems = jsonobject.ListProperty(lambda: EfsFileSystem, default=None)
     ec2_auto_recovery = jsonobject.ListProperty(lambda: Ec2AutoRecovery, default=None)
-    fsx_file_systems = jsonobject.ListProperty(lambda: FsxFileSystem, default=None)
     terraform_imports = jsonobject.ListProperty(lambda: TerraformImportsConfig, default=list)
     skip_ebs_snapshots = jsonobject.StringProperty(default="no")
 
@@ -316,14 +315,6 @@ class Ec2AutoRecovery(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     targets = jsonobject.ListProperty(str)
     name_prefix = jsonobject.StringProperty(required=True)
-
-
-class FsxFileSystem(jsonobject.JsonObject):
-    _allow_dynamic_properties = False
-    create = jsonobject.BooleanProperty(default=True)
-    fsx_name = jsonobject.StringProperty(required=True)
-    storage_capacity = jsonobject.IntegerProperty(required=True)
-    throughput_capacity = jsonobject.IntegerProperty(required=True)
 
 
 class TerraformImportsConfig(jsonobject.JsonObject):

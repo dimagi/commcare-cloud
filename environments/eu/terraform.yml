@@ -284,26 +284,6 @@ servers:
     group: "postgresql"
     os: jammy
 
-  - server_name: "rabbit_a1-eu"
-    server_instance_type: t3a.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: jammy
-
-  - server_name: "rabbit_b1-eu"
-    server_instance_type: t3a.small
-    network_tier: "db-private"
-    az: "b"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: jammy
-
 proxy_servers:
   - server_name: "proxy_a1-eu"
     server_instance_type: "t3a.large"

@@ -383,7 +383,7 @@ REDIS_BROKER_PORT = {{ REDIS_BROKER_PORT }}
 REDIS_BROKER_DB = {{ REDIS_BROKER_DB }}
 {% endif %}
 
-{% if OLD_BROKER_URL and (celery_broker_migration|default(False) or rabbitmq_migration_bridge|default(False)) %}
+{% if OLD_BROKER_URL and celery_broker_migration|default(False) %}
 CELERY_BROKER_READ_URL = BROKER_READ_URL = '{{ OLD_BROKER_URL }}'
 CELERY_BROKER_WRITE_URL = BROKER_WRITE_URL = '{{ BROKER_URL }}'
 {% else %}
