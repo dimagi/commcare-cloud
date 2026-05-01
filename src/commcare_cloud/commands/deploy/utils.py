@@ -1,11 +1,11 @@
 import os
 import shutil
-import subprocess
 import tempfile
 from datetime import datetime
 
 import attr
 import pytz
+import sh
 from memoized import memoized
 
 from commcare_cloud.alias import commcare_cloud
@@ -46,7 +46,7 @@ def create_release_tag(environment, repo, diff):
     tag_name = f"{environment.release_name}-{environment.name}-deploy"
     try:
         _push_release_tag(remote_url, diff.deploy_commit, tag_name)
-    except (subprocess.CalledProcessError, OSError) as e:
+    except (sh.ErrorReturnCode, sh.CommandNotFound) as e:
         print(color_error(f"Error creating release tag: {e}"))
 
 
@@ -59,20 +59,12 @@ def _push_release_tag(remote_url, sha, tag_name):
             f"-o StrictHostKeyChecking=yes"
         ),
     }
+    git = sh.git.bake("-C", tmp)
     try:
-        subprocess.run(
-            ["git", "-C", tmp, "init", "--bare", "-q"],
-            check=True,
-        )
-        subprocess.run(
-            ["git", "-C", tmp, "fetch", "--depth=1", "--no-tags",
-             "--filter=blob:none", remote_url, sha],
-            check=True, env=env,
-        )
-        subprocess.run(
-            ["git", "-C", tmp, "push", remote_url, f"{sha}:refs/tags/{tag_name}"],
-            check=True, env=env,
-        )
+        git.init("--bare", "-q")
+        git.fetch("--depth=1", "--no-tags", "--filter=blob:none",
+                  remote_url, sha, _env=env)
+        git.push(remote_url, f"{sha}:refs/tags/{tag_name}", _env=env)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 

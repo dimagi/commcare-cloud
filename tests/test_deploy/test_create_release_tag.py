@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
+import sh
 from testil import tempdir
 
 from commcare_cloud.commands.deploy.utils import (
@@ -78,8 +79,9 @@ class TestPushReleaseTag(TestCase):
 class TestCreateReleaseTag(TestCase):
 
     def test_push_failure_is_swallowed(self):
+        err = sh.ErrorReturnCode_1("git", b"", b"boom")
         with patch("commcare_cloud.commands.deploy.utils._push_release_tag",
-                   side_effect=subprocess.CalledProcessError(1, ["git"])), \
+                   side_effect=err), \
              patch("sys.stdout", new_callable=StringIO) as out:
             create_release_tag(
                 _fake_environment(tag_deploy_commits=True),
