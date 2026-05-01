@@ -65,7 +65,8 @@ def _push_release_tag(remote_url, sha, tag_name):
             check=True,
         )
         subprocess.run(
-            ["git", "-C", tmp, "fetch", "--depth=1", "--no-tags", remote_url, sha],
+            ["git", "-C", tmp, "fetch", "--depth=1", "--no-tags",
+             "--filter=blob:none", remote_url, sha],
             check=True, env=env,
         )
         subprocess.run(
