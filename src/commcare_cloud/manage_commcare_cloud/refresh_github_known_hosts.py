@@ -3,6 +3,12 @@ import subprocess
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.github import GITHUB_KNOWN_HOSTS
 
+HEADER = (
+    "# Bundled with commcare-cloud. Refresh with:\n"
+    "#     manage-commcare-cloud refresh-github-known-hosts\n"
+    "# (run this if GitHub rotates its SSH host keys)\n"
+)
+
 
 class RefreshGithubKnownHosts(CommandBase):
     command = 'refresh-github-known-hosts'
@@ -21,7 +27,7 @@ class RefreshGithubKnownHosts(CommandBase):
             line for line in result.stdout.splitlines()
             if line and not line.startswith("#")
         )
-        GITHUB_KNOWN_HOSTS.write_text("".join(line + "\n" for line in keys))
+        GITHUB_KNOWN_HOSTS.write_text(HEADER + "".join(line + "\n" for line in keys))
         self.log(f"Wrote {GITHUB_KNOWN_HOSTS}")
         fingerprints = subprocess.run(
             ["ssh-keygen", "-lf", str(GITHUB_KNOWN_HOSTS)],
