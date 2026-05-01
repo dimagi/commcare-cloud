@@ -12,12 +12,13 @@ GITHUB_KNOWN_HOSTS = PROJECT_ROOT / "github_known_hosts"
 
 
 def github_repo(repo_name, prompt_if_missing=False):
-    """Return the PyGithub Repository for ``repo_name``.
+    """
+    Return the PyGithub Repository for repo_name.
 
-    The optional token authenticates API calls (5,000/hr instead of 60/hr
-    unauthenticated, and unlocks repo permissions metadata used by deploy
-    diff). When ``prompt_if_missing`` is True and no token is found via
-    env or config, ask interactively. Empty input continues unauthenticated.
+    The optional token authenticates API calls for a higher rate limit
+    and unlocks repo permissions metadata used by the deploy diff. When
+    prompt_if_missing is True and no token is found via env or config,
+    ask for a token and optionally continue without authentication.
     """
     token = get_github_credentials_no_prompt()
     if not token and prompt_if_missing:
