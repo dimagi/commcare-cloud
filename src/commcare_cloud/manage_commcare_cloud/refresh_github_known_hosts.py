@@ -12,9 +12,6 @@ class RefreshGithubKnownHosts(CommandBase):
         "Run this if GitHub rotates its host keys."
     )
 
-    def make_parser(self):
-        pass
-
     def run(self, args, unknown_args):
         result = subprocess.run(
             ["ssh-keyscan", "-t", "rsa,ecdsa,ed25519", "github.com"],
