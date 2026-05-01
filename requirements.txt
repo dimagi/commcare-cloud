@@ -120,6 +120,8 @@ resolvelib==0.5.4
     # via ansible-core
 s3transfer==0.13.0
     # via boto3
+sh==2.2.2
+    # via commcare-cloud (setup.py)
 simplejson==3.17.5
     # via commcare-cloud (setup.py)
 six==1.16.0
