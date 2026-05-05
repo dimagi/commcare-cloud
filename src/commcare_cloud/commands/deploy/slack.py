@@ -81,6 +81,12 @@ class SlackClient:
                     "text": {"type": "mrkdwn", "text": chunked_diff_text}
                 }]
                 self._post_message("Deploy diff", diff_blocks, thread_ts=response["ts"])
+        else:
+            diff_blocks = [{
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": "Complete diff: " + context.diff.url}
+            }]
+            self._post_message("Deploy diff", diff_blocks, thread_ts=response["ts"])
 
     def _chunk_diff(self, diff_text, chunk_size=2800):
         # Slack has a limit of 3000 characters per message block
