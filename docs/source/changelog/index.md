@@ -7,6 +7,13 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-05-05** [Set minimum git version to 2.49](0097-min-git-version.md)
+commcare-cloud now requires git 2.49 or later on all machines that install git
+via the `git` ansible role (control machines and any other host that runs git
+for commcare-cloud purposes).
+
+
+---
 #### **2026-04-08** [Migrate Celery Broker to Redis](0096-migrate-celery-broker-to-redis.md)
 On June 1st, 2026, we will be dropping support for RabbitMQ as a broker for celery.
 

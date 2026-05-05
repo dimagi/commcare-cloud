@@ -10,7 +10,7 @@
   become: yes
   apt:
     name:
-      - git
+      - git>=1:2.49.0
     state: latest
   tags:
     - install_git
