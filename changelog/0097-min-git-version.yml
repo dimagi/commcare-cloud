@@ -1,0 +1,34 @@
+title: Set minimum git version to 2.49
+key: min-git-version
+date: 2026-05-05
+optional_per_env: no
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version:
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  commcare-cloud now requires git 2.49 or later on all machines that install git
+  via the `git` ansible role (control machines and any other host that runs git
+  for commcare-cloud purposes).
+
+details: |
+  Pinning a minimum git version lets us rely on features from recent git
+  releases without having to first check what's installed on each machine.
+  The `ppa:git-core/ppa` repository (already configured by this role) ships
+  versions well past 2.49 for all supported Ubuntu releases, so the upgrade
+  is just a matter of running the install_git tag.
+
+update_steps: |
+  Update git on all machines in your environment:
+
+  ```bash
+  cchq <env> deploy-stack --tags=install_git
+  ```
+
+  Then verify:
+
+  ```bash
+  cchq <env> run-shell-command all 'git --version'
+  ```
+
+  Output should show `git version 2.49.x` or later on every host.
