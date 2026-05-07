@@ -7,11 +7,13 @@ Usage:
 
 Subcommands:
     list                    Output a JSON list of the user's access keys, including last-used info.
+    create                  Create a new access key and print its credentials as CSV.
     deactivate <key-id>     Set the key status to Inactive and print the updated key info.
     reactivate <key-id>     Set the key status to Active and print the updated key info.
 """
 
 import argparse
+import csv
 import json
 import sys
 from datetime import datetime
@@ -26,6 +28,10 @@ def main():
     subparsers = parser.add_subparsers(dest='subcommand', required=True)
 
     subparsers.add_parser('list', help="List the user's access keys as JSON.")
+
+    subparsers.add_parser(
+        'create', help='Create a new access key and print its credentials as CSV.'
+    )
 
     deactivate_parser = subparsers.add_parser(
         'deactivate', help='Set the given access key to Inactive.'
@@ -44,6 +50,8 @@ def main():
 
     if args.subcommand == 'list':
         print_json(list_keys(iam, args.iam_user))
+    elif args.subcommand == 'create':
+        print_keyfile(create_key(iam, args.iam_user))
     elif args.subcommand == 'deactivate':
         print_json(set_key_active(iam, args.iam_user, args.key_id, active=False))
     elif args.subcommand == 'reactivate':
@@ -59,6 +67,14 @@ def list_keys(iam, iam_user):
         )['AccessKeyLastUsed']
         result.append(_format_key_info(key, last_used))
     return result
+
+
+def create_key(iam, iam_user):
+    key = iam.create_access_key(UserName=iam_user)['AccessKey']
+    return {
+        'AccessKeyId': key['AccessKeyId'],
+        'SecretAccessKey': key['SecretAccessKey'],
+    }
 
 
 def set_key_active(iam, iam_user, access_key_id, active):
@@ -92,6 +108,12 @@ def _format_key_info(key, last_used):
 def print_json(data):
     json.dump(data, sys.stdout, indent=2, default=_json_default)
     sys.stdout.write('\n')
+
+
+def print_keyfile(key):
+    writer = csv.writer(sys.stdout)
+    writer.writerow(['Access key ID', 'Secret access key'])
+    writer.writerow([key['AccessKeyId'], key['SecretAccessKey']])
 
 
 def _json_default(value):
