@@ -1,5 +1,6 @@
 import getpass
 import json
+import sys
 
 import yaml
 from clint.textui import puts
@@ -20,14 +21,20 @@ class Secrets(CommandBase):
     arguments = (
         Argument(dest='subcommand', choices=['view', 'edit', 'list-append', 'list-remove']),
         Argument(dest='secret_name'),
+        Argument('--from-stdin', action='store_true', help="""
+            Read the new secret value from stdin instead of prompting interactively.
+            Can only be used with the 'edit' subcommand.
+        """),
     )
 
     def run(self, args, unknown_args):
+        if args.from_stdin and args.subcommand != 'edit':
+            self.parser.error("--from-stdin can only be used with the 'edit' subcommand")
         environment = get_environment(args.env_name)
         if args.subcommand == 'view':
             return self._secrets_view(environment, args.secret_name)
         if args.subcommand == 'edit':
-            return self._secrets_edit(environment, args.secret_name)
+            return self._secrets_edit(environment, args.secret_name, from_stdin=args.from_stdin)
         if args.subcommand == 'list-append':
             return self._secrets_append_to_list(environment, args.secret_name)
         if args.subcommand == 'list-remove':
@@ -40,9 +47,12 @@ class Secrets(CommandBase):
         else:
             print(yaml.safe_dump(secret))
 
-    def _secrets_edit(self, environment, secret_name):
-        environment.secrets_backend.prompt_user_input()
-        secret_value = getpass.getpass("New value for '{}' secret '{}': ".format(environment.name, secret_name))
+    def _secrets_edit(self, environment, secret_name, from_stdin=False):
+        if from_stdin:
+            secret_value = sys.stdin.read().strip()
+        else:
+            environment.secrets_backend.prompt_user_input()
+            secret_value = getpass.getpass(f"New value for '{environment.name}' secret '{secret_name}': ")
         try:
             secret_value = json.loads(secret_value)
         except ValueError:
