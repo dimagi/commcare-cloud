@@ -10,13 +10,16 @@ Subcommands:
     create                  Create a new access key and print its credentials as CSV.
     deactivate <key-id>     Set the key status to Inactive and print the updated key info.
     reactivate <key-id>     Set the key status to Active and print the updated key info.
+    remove <key-id>         Remove the key and print the information of the removed key. Without --force,
+                            requires the key to be deactivated and last used date to be at least 24 hours
+                            in the past.
 """
 
 import argparse
 import csv
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 import boto3
 
@@ -43,6 +46,15 @@ def main():
     )
     reactivate_parser.add_argument('key_id', help='Access key ID to reactivate.')
 
+    remove_parser = subparsers.add_parser(
+        'remove', help='Remove the given access key.'
+    )
+    remove_parser.add_argument('key_id', help='Access key ID to remove.')
+    remove_parser.add_argument(
+        '--force', action='store_true',
+        help='Skip the deactivated/24h-since-last-used safety check.'
+    )
+
     args = parser.parse_args()
 
     session = boto3.session.Session(profile_name=args.aws_profile)
@@ -56,6 +68,8 @@ def main():
         print_json(set_key_active(iam, args.iam_user, args.key_id, active=False))
     elif args.subcommand == 'reactivate':
         print_json(set_key_active(iam, args.iam_user, args.key_id, active=True))
+    elif args.subcommand == 'remove':
+        print_json(remove_key(iam, args.iam_user, args.key_id, force=args.force))
 
 
 def list_keys(iam, iam_user):
@@ -81,6 +95,23 @@ def set_key_active(iam, iam_user, access_key_id, active):
     status = 'Active' if active else 'Inactive'
     iam.update_access_key(UserName=iam_user, AccessKeyId=access_key_id, Status=status)
     return _get_key_info(iam, iam_user, access_key_id)
+
+
+def remove_key(iam, iam_user, access_key_id, force):
+    info = _get_key_info(iam, iam_user, access_key_id)
+    if not force:
+        if info['Status'] != 'Inactive':
+            raise SystemExit(
+                f"Key {access_key_id} is {info['Status']}; deactivate it first or pass --force."
+            )
+        last_used = info['LastUsedDate']
+        if last_used is not None and (datetime.now(timezone.utc) - last_used).total_seconds() < 24 * 3600:
+            raise SystemExit(
+                f"Key {access_key_id} was last used at {last_used.isoformat()} "
+                f"(less than 24 hours ago); pass --force to remove anyway."
+            )
+    iam.delete_access_key(UserName=iam_user, AccessKeyId=access_key_id)
+    return info
 
 
 def _get_key_info(iam, iam_user, access_key_id):
