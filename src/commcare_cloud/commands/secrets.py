@@ -54,7 +54,9 @@ class Secrets(CommandBase):
                 secret_value = secret_value[:-1]
         else:
             environment.secrets_backend.prompt_user_input()
-            secret_value = getpass.getpass("New value for '{}' secret '{}': ".format(environment.name, secret_name))
+            secret_value = getpass.getpass(
+                "New value for '{}' secret '{}': ".format(environment.name, secret_name)
+            )
         try:
             secret_value = json.loads(secret_value)
         except ValueError:
