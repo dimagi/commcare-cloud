@@ -126,6 +126,8 @@ def confirm_deploy(environment, deploy_revs, rev_diffs, args):
     code_diff.print_deployer_diff()
     if code_diff.deployed_commit_matches_latest_commit and not args.quiet:
         _print_same_code_warning(deploy_revs['commcare'])
+    elif environment.name == 'staging':
+        return True
     return _ask_to_deploy(environment.name, args.quiet)
 
 
