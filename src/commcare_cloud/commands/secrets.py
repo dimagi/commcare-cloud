@@ -49,9 +49,7 @@ class Secrets(CommandBase):
 
     def _secrets_edit(self, environment, secret_name, from_stdin=False):
         if from_stdin:
-            secret_value = sys.stdin.read()
-            if secret_value.endswith('\n'):
-                secret_value = secret_value[:-1]
+            secret_value = sys.stdin.read().strip()
         else:
             environment.secrets_backend.prompt_user_input()
             secret_value = getpass.getpass(f"New value for '{environment.name}' secret '{secret_name}': ")
