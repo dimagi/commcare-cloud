@@ -142,6 +142,10 @@ This will let the secrets management system know that that secret exists,
 and will let you give it a default value (usually `None`).
 This is especially important for maintaining compatibility between different secrets backends.
 
+The "legacy_namespace" key in `secrets.yml` tells the loader where to
+find the secret in the old nested structure of `vault.yml`. New secrets
+can omit "legacy_namespace".
+
 
 ### Managing secrets with Vault
 **IMPORTANT**: Install the git hooks to help ensure you never commit secrets into the repo: `./git-hooks/install.sh`
