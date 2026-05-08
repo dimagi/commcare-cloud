@@ -398,7 +398,7 @@ def _aws_sign_in_with_sso(environment):
     :return: The name of temp session profile.
              (Always the passed in profile followed by ':session')
     """
-    aws_session_profile = '{}:session'.format(environment.terraform_config.aws_profile)
+    aws_session_profile = f'{environment.terraform_config.aws_profile}:session'
     sso_config = environment.aws_config.sso_config
     _ensure_sso_profile_signed_in(
         aws_session_profile,
@@ -425,10 +425,9 @@ def aws_sign_in_for_ses(environment):
     ses_config = environment.aws_config.ses_config
     if not ses_config or not ses_config.account_id:
         raise ValueError(
-            "ses_config is not set in aws.yml for environment {}".format(
-                environment.name))
+            f"ses_config is not set in aws.yml for environment {environment.name}")
 
-    aws_ses_profile = '{}:ses'.format(environment.terraform_config.aws_profile)
+    aws_ses_profile = f'{environment.terraform_config.aws_profile}:ses'
     sso_config = environment.aws_config.sso_config
     _ensure_sso_profile_signed_in(
         aws_ses_profile,
@@ -451,8 +450,8 @@ def _ensure_sso_profile_signed_in(
     # todo: add `... or if _date_modified(AWS_CONFIG_PATH) > _date_modified(AWS_CREDENTIALS_PATH)`
     if not _has_profile_for_sso(profile_name):
         puts(color_notice(
-            "Configuring SSO. To further customize, run `aws configure sso "
-            "--profile {}`".format(profile_name)))
+            "Configuring SSO. To further customize, run "
+            f"`aws configure sso --profile {profile_name}`"))
         _write_profile_for_sso(
             profile_name,
             sso_start_url=sso_start_url,
