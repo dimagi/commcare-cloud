@@ -311,13 +311,20 @@ class AwsSignIn(CommandBase):
     arguments = [
         Argument('--duration-minutes', type=int, default=DEFAULT_SIGN_IN_DURATION_MINUTES, help="""
             Stay signed in for this many minutes
-        """)
+        """),
+        Argument('--ses', action='store_true', default=False, help="""
+            Sign in with the SES profile (used for rotating SES IAM users)
+            instead of the default profile. Requires `ses_config` to be set
+            in aws.yml.
+        """),
     ]
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
-        duration_minutes = args.duration_minutes
-        aws_sign_in(environment, duration_minutes, force_new=True)
+        if args.ses:
+            aws_sign_in_for_ses(environment)
+        else:
+            aws_sign_in(environment, args.duration_minutes, force_new=True)
 
 
 AWS_CREDENTIALS_PATH = os.path.expanduser('~/.aws/credentials')
@@ -406,6 +413,32 @@ def _aws_sign_in_with_sso(environment):
         _sync_sso_to_v1_credentials(aws_session_profile)
 
     return aws_session_profile
+
+
+def aws_sign_in_for_ses(environment):
+    """
+    Create or update an SSO profile named "<aws_profile>:ses" for managing SES IAM users.
+
+    Unlike the default profile, this assumes an EmailAdmin role in the central account
+    where SES IAM users live (defined in the env's `ses_config`).
+    """
+    ses_config = environment.aws_config.ses_config
+    if not ses_config or not ses_config.account_id:
+        raise ValueError(
+            "ses_config is not set in aws.yml for environment {}".format(
+                environment.name))
+
+    aws_ses_profile = '{}:ses'.format(environment.terraform_config.aws_profile)
+    sso_config = environment.aws_config.sso_config
+    _ensure_sso_profile_signed_in(
+        aws_ses_profile,
+        sso_start_url=sso_config.sso_start_url,
+        sso_region=sso_config.sso_region,
+        sso_account_id=ses_config.account_id,
+        sso_role_name=ses_config.role_name,
+        region=ses_config.region,
+    )
+    return aws_ses_profile
 
 
 def _ensure_sso_profile_signed_in(
