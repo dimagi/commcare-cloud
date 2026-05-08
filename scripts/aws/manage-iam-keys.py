@@ -6,7 +6,9 @@ Usage:
     ./scripts/aws/manage-iam-keys.py <aws-profile> <iam-user> <subcommand>
 
 Subcommands:
-    list    Output a JSON list of the user's access keys, including last-used info.
+    list                    Output a JSON list of the user's access keys, including last-used info.
+    deactivate <key-id>     Set the key status to Inactive and print the updated key info.
+    reactivate <key-id>     Set the key status to Active and print the updated key info.
 """
 
 import argparse
@@ -25,6 +27,16 @@ def main():
 
     subparsers.add_parser('list', help="List the user's access keys as JSON.")
 
+    deactivate_parser = subparsers.add_parser(
+        'deactivate', help='Set the given access key to Inactive.'
+    )
+    deactivate_parser.add_argument('key_id', help='Access key ID to deactivate.')
+
+    reactivate_parser = subparsers.add_parser(
+        'reactivate', help='Set the given access key to Active.'
+    )
+    reactivate_parser.add_argument('key_id', help='Access key ID to reactivate.')
+
     args = parser.parse_args()
 
     session = boto3.session.Session(profile_name=args.aws_profile)
@@ -32,6 +44,10 @@ def main():
 
     if args.subcommand == 'list':
         print_json(list_keys(iam, args.iam_user))
+    elif args.subcommand == 'deactivate':
+        print_json(set_key_active(iam, args.iam_user, args.key_id, active=False))
+    elif args.subcommand == 'reactivate':
+        print_json(set_key_active(iam, args.iam_user, args.key_id, active=True))
 
 
 def list_keys(iam, iam_user):
@@ -43,6 +59,22 @@ def list_keys(iam, iam_user):
         )['AccessKeyLastUsed']
         result.append(_format_key_info(key, last_used))
     return result
+
+
+def set_key_active(iam, iam_user, access_key_id, active):
+    status = 'Active' if active else 'Inactive'
+    iam.update_access_key(UserName=iam_user, AccessKeyId=access_key_id, Status=status)
+    return _get_key_info(iam, iam_user, access_key_id)
+
+
+def _get_key_info(iam, iam_user, access_key_id):
+    for key in iam.list_access_keys(UserName=iam_user)['AccessKeyMetadata']:
+        if key['AccessKeyId'] == access_key_id:
+            last_used = iam.get_access_key_last_used(
+                AccessKeyId=access_key_id
+            )['AccessKeyLastUsed']
+            return _format_key_info(key, last_used)
+    raise SystemExit(f"Access key {access_key_id} not found for user {iam_user}.")
 
 
 def _format_key_info(key, last_used):
