@@ -3,87 +3,73 @@ from getpass import getpass
 from pathlib import Path
 
 from github import Github
+from memoized import memoized
 
-from commcare_cloud.colors import color_warning, color_notice
-from commcare_cloud.commands.command_base import CommandError
+from commcare_cloud.colors import color_notice
 
 PROJECT_ROOT = Path(__file__).parent
-GITHUB_TOKEN = None
+GITHUB_KNOWN_HOSTS = PROJECT_ROOT / "github_known_hosts"
 
 
-class GithubException(CommandError):
-    pass
+def github_repo(repo_name, prompt_if_missing=False):
+    """
+    Return the PyGithub Repository for repo_name.
+
+    The optional token authenticates API calls for a higher rate limit
+    and unlocks repo permissions metadata used by the deploy diff. When
+    prompt_if_missing is True and no token is found via env or config,
+    ask for a token and optionally continue without authentication.
+    """
+    token = get_github_credentials_no_prompt()
+    if not token and prompt_if_missing:
+        token = _prompt_for_github_token()
+    return Github(login_or_token=token).get_repo(repo_name)
 
 
-def github_repo(repo_name, repo_is_private=False, require_write_permissions=False):
-    # optimistically get the token to get higher rate limit from Github
-    token, _ = get_github_credentials_no_prompt()
-    if not token and (repo_is_private or require_write_permissions):
-        token = get_github_credentials(repo_name, repo_is_private, require_write_permissions)
-        if not token:
-            raise GithubException("Github token is required.")
-
-    repo = Github(login_or_token=token).get_repo(repo_name)
-    if require_write_permissions and not (repo.permissions and repo.permissions.push):
-        raise GithubException(f"Supplied token does not have write permissions for '{repo_name}'")
-    return repo
-
-
-def get_github_credentials(repo_name, repo_is_private, require_write_permissions):
-    global GITHUB_TOKEN
-
-    token, found_in_legacy_location = get_github_credentials_no_prompt()
-
-    if found_in_legacy_location:
-        print(color_notice(f"[Deprecation Warning] Config file has moved."))
-        print(color_notice(f"New location is {PROJECT_ROOT}/config.py or else use the "
-                           f"'GITHUB_TOKEN' environment variable."))
-        print(color_notice(f"\nYou can move the config to the new location as follows:"))
-        print(color_notice(f"    $ mv {PROJECT_ROOT}/fab/config.py {PROJECT_ROOT}/config.py\n"))
-
-    if token is None:
-        print(color_warning("Github credentials not found!"))
-        private = "private " if repo_is_private else ""
-        print(f"Github token is required for {private}repository {repo_name}.")
-        if require_write_permissions:
-            print("The token must have write permissions to the repository to create release tags.")
-        print(
-            "\nYou can add a config file to automate this step:\n"
-            f"    $ cp {PROJECT_ROOT}/config.example.py {PROJECT_ROOT}/config.py\n"
-            f"Then edit {PROJECT_ROOT}/config.py"
-        )
-        print(color_notice(
-            "To generate a GitHub access token, follow these instructions: https://github.com/blog/1509-personal-api-tokens\n"
-            "For permissions choose repo > public_repo"
-        ))
-        token = getpass('Github Token: ')
-
-    os.environ["GITHUB_TOKEN"] = token  # set in env for access by subprocesses
-    GITHUB_TOKEN = token
-    return token or None
-
-
+@memoized
 def get_github_credentials_no_prompt():
-    """
-    :return: tuple(token, found_in_legacy_location)
-    """
-    global GITHUB_TOKEN
-
-    if GITHUB_TOKEN is None:
-        GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
-
-    if GITHUB_TOKEN is not None:
-        return GITHUB_TOKEN, False
+    token = os.environ.get("GITHUB_TOKEN")
+    if token:
+        return token
 
     try:
         from .config import GITHUB_APIKEY
-        return GITHUB_APIKEY, False
+        return GITHUB_APIKEY
     except ImportError:
-        # check legacy location
-        try:
-            from .fab.config import GITHUB_APIKEY
-            return GITHUB_APIKEY, True
-        except ImportError:
-            pass
+        pass
 
-    return None, False
+    try:
+        from .fab.config import GITHUB_APIKEY
+    except ImportError:
+        return None
+
+    if GITHUB_APIKEY:
+        _warn_legacy_location()
+    return GITHUB_APIKEY
+
+
+@memoized
+def _prompt_for_github_token():
+    print(color_notice(
+        "GitHub token not found. A token is recommended so the deploy diff "
+        "can show PR details (titles, labels, authors). Read-only scope is "
+        "sufficient — no write permissions needed."
+    ))
+    print(color_notice(
+        "Generate a token at https://github.com/settings/tokens "
+        "(scope: public_repo)."
+    ))
+    return getpass("Github token (or Enter to continue without): ") or None
+
+
+@memoized
+def _warn_legacy_location():
+    print(color_notice("[Deprecation Warning] Config file has moved."))
+    print(color_notice(
+        f"New location is {PROJECT_ROOT}/config.py or else use the "
+        f"'GITHUB_TOKEN' environment variable."
+    ))
+    print(color_notice("\nYou can move the config to the new location as follows:"))
+    print(color_notice(
+        f"    $ mv {PROJECT_ROOT}/fab/config.py {PROJECT_ROOT}/config.py\n"
+    ))

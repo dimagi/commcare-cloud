@@ -1,5 +1,6 @@
 locals {
   create = (var.create && lookup(var.rds_instance, "create", true)) ? true : false
+  use_external_parameter_group = var.parameter_group_name != null
 
   version_parts = regex("^(?P<major>[0-9]+)(?:\\.(?P<minor>[0-9]+))?", var.rds_instance["engine_version"])
   version_parts_number = {
@@ -18,7 +19,8 @@ module "postgresql" {
   create_random_password = false
   create_db_instance = local.create
   create_db_option_group = local.create
-  create_db_parameter_group = local.create
+  create_db_parameter_group = local.use_external_parameter_group ? false : local.create
+  parameter_group_name = var.parameter_group_name
   create_db_subnet_group = local.create
   identifier = var.rds_instance["identifier"]
 

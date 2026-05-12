@@ -827,7 +827,7 @@ Output as CSV
 View and edit secrets through the CLI
 
 ```
-commcare-cloud <env> secrets {view,edit,list-append,list-remove} secret_name
+commcare-cloud <env> secrets [--from-stdin] {view,edit,list-append,list-remove} secret_name
 ```
 
 ##### Positional Arguments
@@ -835,6 +835,13 @@ commcare-cloud <env> secrets {view,edit,list-append,list-remove} secret_name
 ###### `{view,edit,list-append,list-remove}`
 
 ###### `secret_name`
+
+##### Options
+
+###### `--from-stdin`
+
+Read the new secret value from stdin instead of prompting interactively.
+Can only be used with the 'edit' subcommand.
 
 ---
 

@@ -12,6 +12,7 @@ from commcare_cloud.manage_commcare_cloud.install import Install
 from commcare_cloud.manage_commcare_cloud.make_docs import MakeDocs
 from commcare_cloud.manage_commcare_cloud.make_changelog import MakeChangelogIndex, \
     MakeChangelog, NewChangelog
+from commcare_cloud.manage_commcare_cloud.refresh_github_known_hosts import RefreshGithubKnownHosts
 
 COMMAND_TYPES = [
     Configure,
@@ -25,6 +26,7 @@ COMMAND_TYPES = [
     TestEnvironments,
     UpdateDatadogMonitors,
     ListDatadogMonitors,
+    RefreshGithubKnownHosts,
 ]
 
 
