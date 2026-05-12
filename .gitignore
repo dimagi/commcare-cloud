@@ -17,6 +17,7 @@ DimagiKeyStore
 *~
 /build
 /dist
+/.claude
 /.vscode
 couchdb@*_files
 **/config.py
