@@ -23,6 +23,23 @@ class SecretSpec(jsonobject.JsonObject):
         self = super(SecretSpec, cls).wrap(data)
         if self.required:
             assert self.default is None, "A required secret cannot also have a default."
+        if not self.legacy_namespace and (
+            self.default is not None
+            or self.default_overrides_falsy_values
+            or self.fall_back_to_vars
+        ):
+            # Without a legacy_namespace, the generated Ansible expression
+            # references the secret's bare name (the same variable in vault.yml
+            # at top level). Appending `| default(...)` or a `fall_back_to_vars`
+            # filter produces a self-referential template like
+            # `X: "{{ X | default('') }}"`, which Ansible evaluates as an
+            # infinite recursion the moment any consumer reads the value.
+            raise AssertionError(
+                f"Secret {self.name!r}: a secret without `legacy_namespace` "
+                "cannot define `default`,  `default_overrides_falsy_values`, "
+                "or `fall_back_to_vars`. Add `legacy_namespace: secrets` to "
+                "use defaults/fallbacks."
+            )
         return self
 
     def get_legacy_reference(self):
