@@ -443,8 +443,7 @@ def aws_sign_in_for_ses(environment):
 def _ensure_sso_profile_signed_in(
         profile_name, sso_start_url, sso_region, sso_account_id, sso_role_name, region):
     """Make sure ~/.aws/config has a [profile <profile_name>] section, and that we have a valid SSO session."""
-    _ensure_all_dirs(AWS_DOT_DIR)
-    for path in (AWS_SSO_CACHE_DIR, AWS_CLI_CACHE_DIR):
+    for path in (AWS_DOT_DIR, AWS_SSO_CACHE_DIR, AWS_CLI_CACHE_DIR):
         _ensure_all_dirs(path)
 
     # todo: add `... or if _date_modified(AWS_CONFIG_PATH) > _date_modified(AWS_CREDENTIALS_PATH)`
