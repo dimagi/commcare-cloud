@@ -70,8 +70,8 @@ fi
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ${COMMCARE_CLOUD_REPO}/control/init.sh ~/init-ansible
 ./control/check_install.sh
-alias update-code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
-alias update_code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
+alias update-code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && (cd ${COMMCARE_CLOUD_REPO} && uv sync --quiet)'
+alias update_code=update-code
 
 source ${COMMCARE_CLOUD_REPO}/src/commcare_cloud/.bash_completion
 
