@@ -56,7 +56,7 @@ def _prompt_for_github_token():
         "sufficient — no write permissions needed."
     ))
     print(color_notice(
-        "Generate a token at https://github.com/settings/tokens "
+        "Generate a token at https://github.com/settings/personal-access-tokens "
         "(scope: public_repo)."
     ))
     return getpass("Github token (or Enter to continue without): ") or None
