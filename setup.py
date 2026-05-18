@@ -17,6 +17,7 @@ install_deps = [
     'jinja2-cli',
     'jsonobject',
     'netaddr',
+    'packaging',
     'passlib',
     'pycryptodome>=3.6.6',  # security update
     'PyGithub',

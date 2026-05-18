@@ -11,7 +11,7 @@ from collections import defaultdict
 from datetime import datetime
 from io import open
 from operator import attrgetter, itemgetter
-from distutils.version import LooseVersion
+from packaging.version import Version
 from commcare_cloud.commands.ansible.service import SERVICE_NAMES, SERVICES_BY_NAME, ElasticsearchClassic
 from commcare_cloud.commands.ansible.ansible_playbook import _AnsiblePlaybookAlias, AnsiblePlaybook
 from commcare_cloud.commands.deploy.commcare import get_deployed_version
@@ -333,7 +333,7 @@ def get_couch_config(environment, nodes=None, port=15984, local_port=15986, couc
     couch_nodes = nodes or environment.groups['couchdb2']
     if couchdb_version is None:
         couchdb_version = environment.public_vars.get('couchdb_version', '2.3.1')
-    if LooseVersion(couchdb_version) >= LooseVersion('3.0.0'):
+    if Version(couchdb_version) >= Version('3.0.0'):
         local_port = port
     config = Config(
         control_node_ip=couch_nodes[0],
