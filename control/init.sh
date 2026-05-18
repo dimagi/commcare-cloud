@@ -40,30 +40,6 @@ else
     COMMCARE_CLOUD_REPO=${COMMCARE_CLOUD_REPO:-${HOME}/commcare-cloud}
 fi
 
-if [ -z ${CI_TEST} ]; then
-    # attempt to activate
-    source "${COMMCARE_CLOUD_REPO}/control/activate_venv.sh"
-    if [ "$VIRTUALENV_NOT_FOUND" == "true" ]; then
-        # check if a virtualenv at $VENV exists yet, and create if not
-        if [[ ! -f $VENV/bin/activate ]]; then
-            if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null; then
-                echo "Creating a python3.10 virtual environment named ${CCHQ_VIRTUALENV}"
-                if [ -n "$CCHQ_VENV_PATH_OLD" ]; then
-                    echo "Your old virtual environment will remain at ${CCHQ_VENV_PATH_OLD}"
-                    echo "If you wish to delete it, run 'rm -rf ${CCHQ_VENV_PATH_OLD}'"
-                fi
-                # use venv because 3.10 setup includes installing python3.10-venv
-                python3.10 -m venv "$VENV"
-            else
-                # use virtualenv because `python3 -m venv` requires python3-venv
-                python3 -m pip install --user --upgrade virtualenv
-                python3 -m virtualenv "$VENV"
-            fi
-        fi
-        source "$VENV/bin/activate"
-    fi
-fi
-
 if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
     # Used by docs/source/reference/1-commcare-cloud/1-installation.rst
     # Manual Installation: source <(curl -s https://.../control/init.sh)
@@ -75,6 +51,14 @@ export ANSIBLE_ROLES_PATH=~/.ansible/roles
 cd ${COMMCARE_CLOUD_REPO}
 uv sync
 uv run --no-sync manage-commcare-cloud install
+
+# Put the project venv on PATH so `cchq`, `commcare-cloud`, `ansible-playbook` etc.
+# are directly invokable without `uv run`.
+if [ -n "${UV_PROJECT_ENVIRONMENT}" ] && [ -d "${UV_PROJECT_ENVIRONMENT}/bin" ]; then
+    export PATH="${UV_PROJECT_ENVIRONMENT}/bin:${PATH}"
+elif [ -d "${COMMCARE_CLOUD_REPO}/.venv/bin" ]; then
+    export PATH="${COMMCARE_CLOUD_REPO}/.venv/bin:${PATH}"
+fi
 
 # git-hook install to protect the commit of unencrypted vault.yml file
 if [ ! -f "${COMMCARE_CLOUD_REPO}/.git/hooks/pre-commit" ]
