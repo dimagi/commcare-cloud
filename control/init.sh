@@ -66,11 +66,6 @@ if [[ $python_version = 3.6* ]]; then
     echo "   https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#upgrade-to-python-3-10"
 fi
 
-if [ -d ~/commcarehq-ansible ]; then
-    echo "Moving repo to ~/commcare-cloud"
-    mv ~/commcarehq-ansible ~/commcare-cloud
-fi
-
 # remove broken links
 [ ! -f ~/init-ansible ] && rm -f ~/init-ansible
 
