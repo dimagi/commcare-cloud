@@ -58,14 +58,6 @@ if [ -z ${CI_TEST} ]; then
     fi
 fi
 
-# check for unsupported python version after virtual env is activated
-python_version=`python --version 2>&1 | awk '{print $2}'`
-if [[ $python_version = 3.6* ]]; then
-    echo "commcare-cloud no longer supports Python 3.6."
-    echo "To upgrade, follow the instructions in:"
-    echo "   https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#upgrade-to-python-3-10"
-fi
-
 function uninstall-lowerversion-ansible() {
     ANSIBLE_VERSION=`pip show ansible | grep Version | awk '{print $2}'`
     if [[ ${ANSIBLE_VERSION:0:3} < "4.0" ]] && [[ ! -z ${ANSIBLE_VERSION} ]]; then
