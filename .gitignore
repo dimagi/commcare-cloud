@@ -24,9 +24,6 @@ couchdb@*_files
 **/migrations/*/migration_build_*/
 **/migrations/*/copy_file_scripts_*/
  
- # pyenv
-.python-version
-
  # direnv
 .envrc
 .direnv
