@@ -74,11 +74,6 @@ if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
     git clone https://github.com/dimagi/commcare-cloud.git
 fi
 
-if [ -d ${COMMCARE_CLOUD_REPO}/commcare-cloud ]; then
-    # we are on an old version of commcare-cloud before it was moved to src/
-    rm -rf ${COMMCARE_CLOUD_REPO}/commcare-cloud
-fi
-
 function uninstall-lowerversion-ansible() {
     ANSIBLE_VERSION=`pip show ansible | grep Version | awk '{print $2}'`
     if [[ ${ANSIBLE_VERSION:0:3} < "4.0" ]] && [[ ! -z ${ANSIBLE_VERSION} ]]; then
