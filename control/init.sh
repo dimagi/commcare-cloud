@@ -66,9 +66,6 @@ if [[ $python_version = 3.6* ]]; then
     echo "   https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#upgrade-to-python-3-10"
 fi
 
-# remove broken links
-[ ! -f ~/init-ansible ] && rm -f ~/init-ansible
-
 function uninstall-lowerversion-ansible() {
     ANSIBLE_VERSION=`pip show ansible | grep Version | awk '{print $2}'`
     if [[ ${ANSIBLE_VERSION:0:3} < "4.0" ]] && [[ ! -z ${ANSIBLE_VERSION} ]]; then
