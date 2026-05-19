@@ -17,14 +17,13 @@ This will make sure you never commit an unencrypted vault.yml file.
 To run tests, first install the test dependencies
 
 ```
-pip install -e .[test]
+uv sync --group test
 ```
-- if running on zsh `pip install -e '.[test]'`
 
 and then run
 
 ```
-nosetests
+uv run nosetests
 ```
 
 Tests include tests of your own specific environments dir.

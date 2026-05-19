@@ -18,29 +18,28 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-22.04"]
-        python-version: ["3.10"]
 
     runs-on: ${{ matrix.os }}
 
     env:
-      ANSIBLE_ROLES_PATH: "~/.ansible/roles"
       CI_TEST: 1
       TEST: main
 
     steps:
     - uses: actions/checkout@v5
-    - name: Set Up Commcare-Cloud Python Version
-      uses: actions/setup-python@v6
+    - name: Install uv
+      uses: astral-sh/setup-uv@v7
       with:
-        python-version: ${{ matrix.python-version }}
+        enable-cache: true
 
     - name: Install dependencies
       run: |
         source control/init.sh
-        # Note: the installs must be done in the following order, otherwise the installation of commcare-cloud
-        # tries to install from the commcare-cloud-bootstrap.egg_info directory
-        pip install -e .[test]
+        # Install test dependencies second to prevent them from being
+        # uninstalled by `uv sync` in init.sh
+        uv sync --locked --group test
 
     - name: Run tests
       run: |
+        source .venv/bin/activate
         .tests/tests.sh
