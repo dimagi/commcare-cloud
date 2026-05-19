@@ -1738,7 +1738,7 @@ Set the last applied migration value to this number before running. Will begin r
 Use your MFA device to "sign in" to AWS for &lt;duration&gt; minutes (default 30)
 
 ```
-commcare-cloud <env> aws-sign-in [--duration-minutes DURATION_MINUTES]
+commcare-cloud <env> aws-sign-in [--duration-minutes DURATION_MINUTES] [--ses]
 ```
 
 This will store the temporary session credentials in ~/.aws/credentials
@@ -1751,6 +1751,12 @@ before having to sign in again.
 ###### `--duration-minutes DURATION_MINUTES`
 
 Stay signed in for this many minutes
+
+###### `--ses`
+
+Sign in with the SES profile (used for rotating SES IAM users)
+instead of the default profile. Requires `ses_config` to be set
+in aws.yml.
 
 ---
 

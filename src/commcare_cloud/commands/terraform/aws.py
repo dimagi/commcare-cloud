@@ -311,13 +311,20 @@ class AwsSignIn(CommandBase):
     arguments = [
         Argument('--duration-minutes', type=int, default=DEFAULT_SIGN_IN_DURATION_MINUTES, help="""
             Stay signed in for this many minutes
-        """)
+        """),
+        Argument('--ses', action='store_true', default=False, help="""
+            Sign in with the SES profile (used for rotating SES IAM users)
+            instead of the default profile. Requires `ses_config` to be set
+            in aws.yml.
+        """),
     ]
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
-        duration_minutes = args.duration_minutes
-        aws_sign_in(environment, duration_minutes, force_new=True)
+        if args.ses:
+            aws_sign_in_for_ses(environment)
+        else:
+            aws_sign_in(environment, args.duration_minutes, force_new=True)
 
 
 AWS_CREDENTIALS_PATH = os.path.expanduser('~/.aws/credentials')
@@ -338,8 +345,6 @@ def aws_sign_in(environment, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES, 
 
     _ensure_all_dirs(AWS_DOT_DIR)
     if environment.aws_config.credential_style == 'sso':
-        for path in (AWS_SSO_CACHE_DIR, AWS_CLI_CACHE_DIR):
-            _ensure_all_dirs(path)
         return _aws_sign_in_with_sso(environment)
     else:
         return _aws_sign_in_with_iam(environment.terraform_config.aws_profile, duration_minutes=duration_minutes,
@@ -393,28 +398,70 @@ def _aws_sign_in_with_sso(environment):
     :return: The name of temp session profile.
              (Always the passed in profile followed by ':session')
     """
-    aws_session_profile = '{}:session'.format(environment.terraform_config.aws_profile)
-    # todo: add `... or if _date_modified(AWS_CONFIG_PATH) > _date_modified(AWS_CREDENTIALS_PATH)`
-    if not _has_profile_for_sso(aws_session_profile):
-        puts(color_notice(
-            "Configuring SSO. To further customize, run `aws configure sso "
-            "--profile {}`".format(
-                aws_session_profile)))
-        _write_profile_for_sso(
-            aws_session_profile,
-            sso_start_url=environment.aws_config.sso_config.sso_start_url,
-            sso_account_id=environment.aws_config.sso_config.sso_account_id,
-            sso_region=environment.aws_config.sso_config.sso_region,
-            region=environment.aws_config.sso_config.region,
-        )
-
-    if not _has_valid_session_credentials_for_sso():
-        _refresh_sso_credentials(aws_session_profile)
+    aws_session_profile = f'{environment.terraform_config.aws_profile}:session'
+    sso_config = environment.aws_config.sso_config
+    _ensure_sso_profile_signed_in(
+        aws_session_profile,
+        sso_start_url=sso_config.sso_start_url,
+        sso_region=sso_config.sso_region,
+        sso_account_id=sso_config.sso_account_id,
+        sso_role_name='PowerUserAccessPlus',
+        region=sso_config.region,
+    )
 
     if not _has_valid_v1_session_credentials(aws_session_profile):
         _sync_sso_to_v1_credentials(aws_session_profile)
 
     return aws_session_profile
+
+
+def aws_sign_in_for_ses(environment):
+    """
+    Create or update an SSO profile named "<aws_profile>:ses" for managing SES IAM users.
+
+    Unlike the default profile, this assumes an EmailAdmin role in the central account
+    where SES IAM users live (defined in the env's `ses_config`).
+    """
+    ses_config = environment.aws_config.ses_config
+    if not ses_config or not ses_config.account_id:
+        raise ValueError(
+            f"ses_config is not set in aws.yml for environment {environment.name}")
+
+    aws_ses_profile = f'{environment.terraform_config.aws_profile}:ses'
+    sso_config = environment.aws_config.sso_config
+    _ensure_sso_profile_signed_in(
+        aws_ses_profile,
+        sso_start_url=sso_config.sso_start_url,
+        sso_region=sso_config.sso_region,
+        sso_account_id=ses_config.account_id,
+        sso_role_name=ses_config.role_name,
+        region=ses_config.region,
+    )
+    return aws_ses_profile
+
+
+def _ensure_sso_profile_signed_in(
+        profile_name, sso_start_url, sso_region, sso_account_id, sso_role_name, region):
+    """Make sure ~/.aws/config has a [profile <profile_name>] section, and that we have a valid SSO session."""
+    for path in (AWS_DOT_DIR, AWS_SSO_CACHE_DIR, AWS_CLI_CACHE_DIR):
+        _ensure_all_dirs(path)
+
+    # todo: add `... or if _date_modified(AWS_CONFIG_PATH) > _date_modified(AWS_CREDENTIALS_PATH)`
+    if not _has_profile_for_sso(profile_name):
+        puts(color_notice(
+            "Configuring SSO. To further customize, run "
+            f"`aws configure sso --profile {profile_name}`"))
+        _write_profile_for_sso(
+            profile_name,
+            sso_start_url=sso_start_url,
+            sso_region=sso_region,
+            sso_account_id=sso_account_id,
+            sso_role_name=sso_role_name,
+            region=region,
+        )
+
+    if not _has_valid_session_credentials_for_sso():
+        _refresh_sso_credentials(profile_name)
 
 
 def _sync_sso_to_v1_credentials(aws_session_profile):
@@ -582,6 +629,7 @@ def _write_profile_for_sso(
         sso_start_url,
         sso_region,
         sso_account_id,
+        sso_role_name,
         region):
     config = configparser.ConfigParser()
     config.read(os.path.realpath(AWS_CONFIG_PATH))
@@ -592,7 +640,7 @@ def _write_profile_for_sso(
     config.set(section, 'sso_start_url', sso_start_url)
     config.set(section, 'sso_region', sso_region)
     config.set(section, 'sso_account_id', sso_account_id)
-    config.set(section, 'sso_role_name', 'PowerUserAccessPlus')
+    config.set(section, 'sso_role_name', sso_role_name)
     config.set(section, 'region', region)
     config.set(section, 'output', 'json')
     with open(AWS_CONFIG_PATH, 'w', encoding='utf-8') as f:
