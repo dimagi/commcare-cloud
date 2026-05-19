@@ -113,7 +113,6 @@ function ansible-control-banner() {
     printf "\n${GREEN}Welcome to commcare-cloud\n\n"
     printf "${GREEN}Available commands:\n"
     printf "${BLUE}update-code${NC} - update the commcare-cloud repositories (safely)\n"
-    printf "${BLUE}source $VENV/bin/activate${NC} - activate the ansible virtual environment\n"
     printf "${BLUE}commcare-cloud${NC} - CLI wrapper for ansible.\n"
     printf "                 See ${YELLOW}commcare-cloud -h${NC} for more details.\n"
     printf "                 See ${YELLOW}commcare-cloud <env> <command> -h${NC} for command details.\n"
