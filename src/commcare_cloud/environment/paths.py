@@ -28,7 +28,7 @@ ANSIBLE_ROLES_PATH = os.path.realpath(os.path.join(_SITE_PACKAGES, '.ansible/rol
 ANSIBLE_COLLECTIONS_PATHS = os.path.realpath(os.path.join(_SITE_PACKAGES, '.ansible/'))
 ANSIBLE_DIR = os.path.join(PACKAGE_BASE, 'ansible')
 TERRAFORM_DIR = os.path.join(PACKAGE_BASE, 'terraform')
-# only works with egg install (`pip install -e .`)
+# only works with an editable install
 DIMAGI_ENVIRONMENTS_DIR = os.path.realpath(os.path.join(PACKAGE_BASE, '..', '..', 'environments'))
 ENVIRONMENTS_DIR = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS', DIMAGI_ENVIRONMENTS_DIR)
 
