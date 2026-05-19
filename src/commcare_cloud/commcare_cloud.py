@@ -112,21 +112,22 @@ COMMAND_TYPES = sorted(
 def run_on_control_instead(args, argv, force_latest_code):
     executable = 'commcare-cloud'
     branch = getattr(args, 'branch', 'master')
-    venv = os.environ.get("CCHQ_VIRTUALENV")
     if force_latest_code:
         bash_commands_template = (
-            '{env}cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
-            '&& git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
+            'cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
+            '&& git reset --hard origin/{branch} && uv run {cchq} {cchq_args}'
         )
     else:
         bash_commands_template = (
-            '{env}source ~/commcare-cloud/control/activate_venv.sh --fail-on-error '
-            '&& {cchq} {cchq_args}'
+            'cd ~/commcare-cloud && if [ ! -f pyproject.toml ]; then '
+            'echo "Migrating control machine to uv-based commcare-cloud." && '
+            'echo "Consider using --control-setup=yes if this fails..." && '
+            'git checkout {branch} && git pull --ff-only; '
+            'fi && uv run {cchq} {cchq_args}'
         )
     cmd_parts = [
         executable, args.env_name, 'ssh', 'control[0]', '-t',
         bash_commands_template.format(
-            env=(f'export CCHQ_VIRTUALENV={venv}; ' if venv else ''),
             branch=branch,
             cchq=executable,
             cchq_args=' '.join(shlex.quote(arg) for arg in argv),
