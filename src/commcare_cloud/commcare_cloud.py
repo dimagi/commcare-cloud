@@ -39,7 +39,6 @@ from .commands.ansible.run_module import (
     RunShellCommand,
     SendDatadogEvent,
 )
-from .commands.fab import Fab
 from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Scp, Rsync, DjangoManage, Tmux, ForwardPort
 from .commands.ansible.ops_tool import ListDatabases, CeleryResourceReport, PillowResourceReport, \
     CouchDBClusterInfo, AuditEnvironment, UpdateLocalKnownHosts, PillowTopicAssignments
@@ -80,7 +79,6 @@ COMMAND_GROUPS = OrderedDict([
         UpdateUsers,
         UpdateUserPublicKey,
         UpdateSupervisorConfs,
-        Fab,
         Deploy,
         DeployDiff,
         ListReleases,

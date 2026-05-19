@@ -58,32 +58,6 @@ if [ -z ${CI_TEST} ]; then
     fi
 fi
 
-# check for unsupported python version after virtual env is activated
-python_version=`python --version 2>&1 | awk '{print $2}'`
-if [[ $python_version = 3.6* ]]; then
-    echo "commcare-cloud no longer supports Python 3.6."
-    echo "To upgrade, follow the instructions in:"
-    echo "   https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#upgrade-to-python-3-10"
-fi
-
-if [ -d ~/commcarehq-ansible ]; then
-    echo "Moving repo to ~/commcare-cloud"
-    mv ~/commcarehq-ansible ~/commcare-cloud
-fi
-
-# remove broken links
-[ ! -f ~/init-ansible ] && rm -f ~/init-ansible
-
-if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
-    echo "Checking out CommCare Cloud Repo"
-    git clone https://github.com/dimagi/commcare-cloud.git
-fi
-
-if [ -d ${COMMCARE_CLOUD_REPO}/commcare-cloud ]; then
-    # we are on an old version of commcare-cloud before it was moved to src/
-    rm -rf ${COMMCARE_CLOUD_REPO}/commcare-cloud
-fi
-
 function uninstall-lowerversion-ansible() {
     ANSIBLE_VERSION=`pip show ansible | grep Version | awk '{print $2}'`
     if [[ ${ANSIBLE_VERSION:0:3} < "4.0" ]] && [[ ! -z ${ANSIBLE_VERSION} ]]; then

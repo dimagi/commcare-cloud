@@ -86,7 +86,9 @@ markupsafe==2.0.1
 netaddr==0.8.0
     # via commcare-cloud (setup.py)
 packaging==25.0
-    # via ansible-core
+    # via
+    #   ansible-core
+    #   commcare-cloud (setup.py)
 passlib==1.7.4
     # via commcare-cloud (setup.py)
 pycparser==2.20
