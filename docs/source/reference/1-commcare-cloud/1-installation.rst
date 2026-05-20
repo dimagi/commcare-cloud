@@ -3,7 +3,9 @@
 Installation
 ============
 
-commcare-cloud can be installed on a local machine or on a remote control machine that's part of the CommCare HQ environment. We recommend installing on a control machine.
+``commcare-cloud`` can be installed on a local machine or on a remote control
+machine that's part of the CommCare HQ environment. We recommend installing on a
+control machine.
 
 Installation using a script
 ---------------------------
@@ -28,105 +30,24 @@ You should see a prompt like
 
    admin@control.example.com:~$
 
-Run this command to verify that you are in the home directory of the ``admin`` user.
+Step 2. Install uv
+^^^^^^^^^^^^^^^^^^
+
+You may skip this step if uv is already installed.
+
+``commcare-cloud`` uses `uv <https://docs.astral.sh/uv/>`_ to manage its Python
+environment. See the `uv install docs <https://docs.astral.sh/uv/getting-started/installation/>`_
+for your platform. We recommend using ``snap`` on Ubuntu to get a system-wide
+installation with automatic updates:
 
 .. code-block:: bash
 
-   admin@control.example.com:~$ pwd
-   /home/admin
+   sudo snap install astral-uv --classic
 
-Step 2.
-^^^^^^^
+Step 3. Install ``commcare-cloud``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Pull commcare-cloud source code.
-
-.. code-block:: bash
-
-   admin@control.example.com:~$ git clone https://github.com/dimagi/commcare-cloud.git
-
-Verify that created a directory called ``commcare-cloud``\ :
-
-.. code-block:: bash
-
-   admin@control.example.com:~$ ls commcare-cloud/
-   commcare-cloud-bootstrap  environments  MANIFEST.in   setup.py
-   control                   fabfile.py    provisioning  src
-   dev_requirements.txt      git-hooks     README.md     tests
-   docs                      Makefile      scripts       Vagrantfile
-
-If you see something like
-
-.. code-block:: bash
-
-   ls: cannot access commcare-cloud: No such file or directory
-
-then the ``git clone`` command did not run correctly.
-Make sure you have git installed and run it again
-with ``--verbose`` to give more logging output.
-
-If you see
-
-.. code-block:: bash
-
-   fatal: destination path 'commcare-cloud' already exists and is not an empty directory.
-
-Run the following commands to update the existing commcare-cloud repository
-
-.. code-block:: bash
-
-   admin@control.example.com:~$ cd commcare-cloud
-   admin@control.example.com:~$ git checkout master
-   admin@control.example.com:~$ git pull
-   admin@control.example.com:~$ cd ..
-
-Step 3.
-^^^^^^^
-
-Run the install script.
-
-.. code-block:: bash
-
-   admin@control.example.com:~$ source commcare-cloud/control/init.sh
-
-and when you see it ask you this:
-
-.. code-block:: bash
-
-   Do you want to have the CommCare Cloud environment setup on login?
-   (y/n):
-
-answer with ``y``.
-This will make ``commcare-cloud`` available to run every time you log in.
-
-To check that commcare-cloud is now installed, run
-
-.. code-block:: bash
-
-   admin@control.example.com:~$ commcare-cloud -h
-   usage: commcare-cloud [-h] [--control]
-
-                         {development,echis,icds,icds-new,pna,production,softlayer,staging}
-                         {bootstrap-users,ansible-playbook,django-manage,aps,tmux,ap,validate-environment-settings,deploy-stack,service,update-supervisor-confs,update-users,ping,migrate_couchdb,lookup,run-module,update-config,mosh,after-reboot,ssh,downtime,fab,update-local-known-hosts,migrate-couchdb,run-shell-command}
-                         ...
-
-...and then much more help output describing each possible command.
-
-
-If you get to this point, congratulations! ``commcare-cloud`` is installed.
-
-Manual Installation
--------------------
-
-You will need python 3.10 installed to follow these instructions. See changelog
-:ref:`changelog/0060-upgrade-to-python-3-10:60. Upgrade to Python 3.10` for instructions on
-getting it installed on Ubuntu 22.04. Steps for other operating systems may
-differ.
-
-
-Setup
-^^^^^
-
-Download and run the ``control/init.sh`` script. This should be run from your home directory:
+Download and run the ``control/init.sh`` script.
 
 .. code-block::
 
@@ -139,66 +60,92 @@ You will see the following prompt
    Do you want to have the CommCare Cloud environment setup on login?
    (y/n):
 
-If you answer 'y' then a line will be added to your .profile that will automatically run ``source ~/init-ansible``
-when you log in, sets up the commcare-cloud environment.
-Otherwise, you can choose to run ``source ~/init-ansible`` manually to setup the environment during future sessions.
+If you answer 'y' then a line will be added to your .profile that will
+automatically run the init script when you log in, which sets up the
+``commcare-cloud`` environment. Otherwise, you can choose to run
+``source ~/init-ansible`` manually to setup the environment during future
+sessions.
 
-You may now use ``commcare-cloud`` or its shorter alias ``cchq`` whenever you're in the virtualenv.
+To verify that ``commcare-cloud`` is now installed, run
 
-Manual setup
-^^^^^^^^^^^^
+.. code-block:: bash
 
-If you'd rather use your own virtualenv name or a different commcare-cloud repo
-location, or if the script above did not work.
+   commcare-cloud -h
 
-Setup and activate the virtualenv
-"""""""""""""""""""""""""""""""""
+You should see output like
 
-**NOTE**: *The virtualenv name and location may be customized, below example uses ``cchq``
-and ``~/.virtualenvs/cchq``. Adjust according to your preferred configuration.*
+.. code-block::
 
-.. code-block:: sh
+   usage: commcare-cloud [-h] [--control] [--control-setup {yes,no}] <env> <command> ...
+   ...
 
-   # using venv
-   python3.10 -m venv ~/.virtualenvs/cchq
-   source ~/.virtualenvs/cchq/bin/activate
-
-   # -- or --
-
-   # using pyenv
-   pyenv virtualenv 3.10 cchq
-   pyenv activate cchq
+...and much more help output describing each command. If you get to this point,
+congratulations! ``commcare-cloud`` is installed. You may now use
+``commcare-cloud`` or its shorter alias ``cchq`` in any new shell.
 
 
-Install commcare-cloud with pip
-"""""""""""""""""""""""""""""""
+Manual Installation
+-------------------
 
-.. code-block:: sh
 
-   # IMPORTANT: ensure the virtual environment is activated
+First, install ``uv`` (see `Step 2. Install uv`_). Then clone the source code.
+
+
+.. code-block:: bash
+
    git clone https://github.com/dimagi/commcare-cloud.git
-   cd ./commcare-cloud
-   pip install --upgrade pip-tools
-   pip-sync requirements.txt
-   pip install -e .
-   manage-commcare-cloud install
 
-   # (Optional) To use commcare-cloud (cchq) without needing an active virtual
-   # environment, run the following and respond to the prompts.
-   manage-commcare-cloud configure
+
+Option 1: automatic
+^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+   cd commcare-cloud
+   source control/init.sh
+
+When prompted:
+
+.. code-block:: bash
+
+   Do you want to have the CommCare Cloud environment setup on login?
+   (y/n):
+
+If you answer 'y', a line will be added to your .profile that will automatically
+run the init script each time a new shell is launched. Otherwise, you can run
+``source ~/init-ansible`` manually to setup the environment as needed during
+future sessions.
+
+
+Option 2: fully manual
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+   cd commcare-cloud
+   uv sync
+   uv run manage-commcare-cloud install
+
+   # (Optional) To use commcare-cloud (cchq) directly without `uv run`
+   uv run manage-commcare-cloud configure
+
 
 If you opted out of the final ``manage-commcare-cloud configure`` step and you
 have a local environments directory or cloned the repo somewhere other than
 ``~/commcare-cloud`` you should set one or both of the following in your bash
 profile (\ ``~/.profile``\ ) as needed:
 
-.. code-block:: sh
+.. code-block:: bash
 
    # for non-standard commcare-cloud repo location
    export COMMCARE_CLOUD_REPO=/path/to/your/commcare-cloud
 
    # for local environments (other than $COMMCARE_CLOUD_REPO/environments)
    export COMMCARE_CLOUD_ENVIRONMENTS=/path/to/your/environments
+
+You will need to either use ``uv run`` to run ``commcare-cloud`` commands inside
+the ``COMMCARE_CLOUD_REPO`` directory, or activate the virtualenv using a
+command like ``source $COMMCARE_CLOUD_REPO/.venv/bin/activate``.
 
 Initialize log file
 ^^^^^^^^^^^^^^^^^^^
@@ -220,9 +167,9 @@ git-hook setup
 After completing the manual setup, make sure you install the git hooks.
 From the ~/commcare-cloud directory, run the following:
 
-.. code-block::
+.. code-block:: bash
 
-   (cchq)$ ./git-hooks/install.sh
+   ./git-hooks/install.sh
 
 This will make sure you never commit an unencrypted vault.yml file.
 
