@@ -62,7 +62,7 @@ if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
     # Used by docs/source/reference/1-commcare-cloud/1-installation.rst
     # Manual Installation: source <(curl -s https://.../control/init.sh)
     echo "Checking out CommCare Cloud Repo"
-    git clone https://github.com/dimagi/commcare-cloud.git
+    git clone https://github.com/dimagi/commcare-cloud.git $COMMCARE_CLOUD_REPO
 fi
 
 function uninstall-lowerversion-ansible() {
