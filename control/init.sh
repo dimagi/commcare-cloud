@@ -1,8 +1,7 @@
 #! /bin/bash
 NO_INPUT=${NO_INPUT:-0}
 
-if [[ $_ == $0 ]]
-then
+if [[ $_ == $0 ]]; then
     echo "Please run this script as follows:"
     echo "    $ source /path/to/repo/control/init.sh"
     exit 1
@@ -15,18 +14,12 @@ if ! command -v uv > /dev/null; then
     return 1
 fi
 
-function realpath() {
-    python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
-}
-
-if [ -n "${BASH_SOURCE[0]}" ] && [ -z "${BASH_SOURCE[0]##*init.sh*}" ]
-then
+if [[ "${BASH_SOURCE[0]}" == *init.sh ]]; then
     # this script is being run from a file on disk, presumably from within commcare-cloud repo
-    COMMCARE_CLOUD_REPO=$(dirname $(dirname $(realpath ${BASH_SOURCE[0]})))
+    COMMCARE_CLOUD_REPO=$(cd -- "$(dirname -- "$(dirname -- "${BASH_SOURCE[0]}")")" &> /dev/null && pwd)
 
     # check for expected file to verify we've got the right place
-    if [ ! -f ${COMMCARE_CLOUD_REPO}/control/update_code.sh ]
-    then
+    if [ ! -f ${COMMCARE_CLOUD_REPO}/control/update_code.sh ]; then
         echo "It looks like you're running this script from an unexpected location."
         echo "Please check the README for installation instructions:"
         echo "    https://github.com/dimagi/commcare-cloud/blob/master/README.md"
@@ -57,8 +50,7 @@ elif [ -d "${COMMCARE_CLOUD_REPO}/.venv/bin" ]; then
 fi
 
 # git-hook install to protect the commit of unencrypted vault.yml file
-if [ ! -f "${COMMCARE_CLOUD_REPO}/.git/hooks/pre-commit" ]
-then
+if [ ! -f .git/hooks/pre-commit ]; then
     echo " Installing git-hook precommit to protect the commit of unprotected vault.yml file"
     ./git-hooks/install.sh && echo "Installed git-hook precommit" || echo "Failed to Install git-hook precommit, Install manually ./git-hooks/install.sh"
 fi
