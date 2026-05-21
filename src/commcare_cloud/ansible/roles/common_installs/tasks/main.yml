@@ -97,10 +97,21 @@
       - ufw
   when: ansible_distribution_version == '22.04'
 
+- name: Install uv
+  # snap does a system-wide install with automatic updates
+  become: yes
+  community.general.snap:
+    name: [astral-uv]
+
 - name: Install pip packages
+  become: yes
   pip:
     name:
-      - uv>=0.7
       - sh
     umask: "0022"
+
+- name: Remove pip-installed uv
   become: yes
+  pip:
+    name: [uv]
+    absent: true
