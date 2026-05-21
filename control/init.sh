@@ -11,6 +11,12 @@ then
     exit 1
 fi
 
+if ! command -v uv > /dev/null; then
+    echo "uv is required. See https://docs.astral.sh/uv/getting-started/installation/"
+    printf "For example:\n    sudo snap install astral-uv --classic\n\n"
+    # snap does a system-wide install with automatic updates
+    return 1
+fi
 
 function realpath() {
     python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
@@ -65,71 +71,21 @@ if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
     git clone https://github.com/dimagi/commcare-cloud.git $COMMCARE_CLOUD_REPO
 fi
 
-function uninstall-lowerversion-ansible() {
-    ANSIBLE_VERSION=`pip show ansible | grep Version | awk '{print $2}'`
-    if [[ ${ANSIBLE_VERSION:0:3} < "4.0" ]] && [[ ! -z ${ANSIBLE_VERSION} ]]; then
-        echo "installed version of ansible is: ${ANSIBLE_VERSION:0:3}"
-        echo "ansible version ${ANSIBLE_VERSION} is uninstalling"
-        pip uninstall ansible --yes
-    fi
-}
-
-if [ -z "$(which manage-commcare-cloud)" ]; then
-    # first time install need requirements installed in serial
-    # installs strictly what's in requirements.txt, so versions are pre-pinned
-    cd ${COMMCARE_CLOUD_REPO}
-    pip install --upgrade pip-tools
-
-    uninstall-lowerversion-ansible
-    pip-sync requirements.txt
-    pip install --editable .
-    cd -
-else
-    {
-        COMMCARE=
-        cd ${COMMCARE_CLOUD_REPO}
-        pip install --quiet --upgrade pip-tools
-
-        uninstall-lowerversion-ansible
-        pip-sync --quiet requirements.txt
-        pip install --quiet --editable .
-        cd -
-    } &
-fi
-
-echo "Downloading dependencies from galaxy and pip"
 export ANSIBLE_ROLES_PATH=~/.ansible/roles
-COMMCARE= pip install --quiet --upgrade pip &
-COMMCARE= manage-commcare-cloud install & # includes ansible-galaxy install
-
-# wait for all processes that _we_ started
-for pid in `jobs | grep 'COMMCARE=' | cut -d'[' -f2 | cut -d']' -f1`
-do
-    wait %${pid}
-done
-
-# workaround for some envs that got in a bad state
-python -c 'import Crypto' || {
-    echo "^--- Looks like there's an issue with the pycryptodome install,"
-    echo "     but don't worry, we'll fix that for you."
-    cd ${COMMCARE_CLOUD_REPO} \
-        && pip uninstall --quiet --yes pycryptodome pycrypto \
-        && pip-sync --quiet \
-        && pip install --quiet -editable . \
-        && cd - ;
-}
+cd ${COMMCARE_CLOUD_REPO}
+uv sync
+uv run --no-sync manage-commcare-cloud install
 
 # git-hook install to protect the commit of unencrypted vault.yml file
 if [ ! -f "${COMMCARE_CLOUD_REPO}/.git/hooks/pre-commit" ]
 then
-echo " Installing git-hook precommit to protect the commit of unprotected vault.yml file"
-cd ${COMMCARE_CLOUD_REPO} && ./git-hooks/install.sh && echo "Installed git-hook precommit" || echo "Failed to Install git-hook precommit, Install manually ./git-hooks/install.sh"
-cd -
+    echo " Installing git-hook precommit to protect the commit of unprotected vault.yml file"
+    ./git-hooks/install.sh && echo "Installed git-hook precommit" || echo "Failed to Install git-hook precommit, Install manually ./git-hooks/install.sh"
 fi
 
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ${COMMCARE_CLOUD_REPO}/control/init.sh ~/init-ansible
-cd ${COMMCARE_CLOUD_REPO} && ./control/check_install.sh && cd -
+./control/check_install.sh
 alias update-code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
 alias update_code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
 
