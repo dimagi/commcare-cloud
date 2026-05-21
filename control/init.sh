@@ -1,5 +1,5 @@
 #! /bin/bash
-NO_INPUT=0
+NO_INPUT=${NO_INPUT:-0}
 
 if [[ $_ == $0 ]]
 then
