@@ -38,6 +38,7 @@ if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
 fi
 
 cd ${COMMCARE_CLOUD_REPO}
+[ -n "$COMMCARE_CLOUD_BRANCH" ] && git checkout $COMMCARE_CLOUD_BRANCH
 uv sync
 uv run --no-sync manage-commcare-cloud install
 
