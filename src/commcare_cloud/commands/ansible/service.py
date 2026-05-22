@@ -164,6 +164,13 @@ class SupervisorService(SubServicesMixin, ServiceBase):
         for hosts, processes in process_host_mapping.items():
             if action == 'status' and 'all' in processes:
                 command = 'supervisorctl status'
+            elif action in ('start', 'stop', 'restart') and 'all' not in processes:
+                # Call supervisorctl {action} for each process concurrently
+                # In the event we can't issue an {action} all request, this
+                # is the next best option
+                command = 'echo {} | xargs -n 1 -P 10 supervisorctl {}'.format(
+                    ' '.join(processes), action
+                )
             else:
                 command = 'supervisorctl {} {}'.format(
                     action,
