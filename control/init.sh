@@ -165,31 +165,6 @@ if [ -z ${CI_TEST} ]; then
   fi
 fi
 
-# It aint pretty, but it gets the job done
-function ansible-deploy-control() {
-    if [ -z "$1" ]; then
-        echo "Usage:"
-        echo "  ansible-deploy-control [environment]"
-        return
-    fi
-    env="$1"
-    echo "You must be root to deploy the control machine"
-    echo "Run \`su\` to become the root user, then paste in this command to deploy:"
-    echo 'ENV='$env' \
-    && USER='`whoami`' \
-    && ANSIBLE_DIR=/home/$USER/commcare-cloud/src/commcare_cloud/ansible \
-    && ANSIBLE_CONFIG=$ANSIBLE_DIR/ansible.cfg \
-    && ENV_DIR=/home/$USER/commcare-cloud/environments \
-    && ANSIBLE_COLLECTIONS_PATHS='$SITE_PACKAGES'/.ansible/ \
-    && ANSIBLE_ROLES_PATH='$SITE_PACKAGES'/.ansible/roles \
-    '$VENV'/bin/ansible-playbook \
-    -i localhost, $ANSIBLE_DIR/deploy_control.yml \
-    -e @$ENV_DIR/$ENV/vault.yml \
-    -e @$ENV_DIR/$ENV/public.yml \
-    -e @$ENV_DIR/$ENV/.generated.yml \
-    -e target=localhost --connection=local --diff --ask-vault-pass'
-}
-
 function ansible-control-banner() {
     GREEN='\033[0;32m'
     BLUE='\033[0;34m'
@@ -199,7 +174,6 @@ function ansible-control-banner() {
     printf "${GREEN}Available commands:\n"
     printf "${BLUE}update-code${NC} - update the commcare-cloud repositories (safely)\n"
     printf "${BLUE}source $VENV/bin/activate${NC} - activate the ansible virtual environment\n"
-    printf "${BLUE}ansible-deploy-control [environment]${NC} - deploy changes to users on this control machine\n"
     printf "${BLUE}commcare-cloud${NC} - CLI wrapper for ansible.\n"
     printf "                 See ${YELLOW}commcare-cloud -h${NC} for more details.\n"
     printf "                 See ${YELLOW}commcare-cloud <env> <command> -h${NC} for command details.\n"
