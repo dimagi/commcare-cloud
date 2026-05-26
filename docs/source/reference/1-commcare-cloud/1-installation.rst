@@ -200,6 +200,20 @@ profile (\ ``~/.profile``\ ) as needed:
    # for local environments (other than $COMMCARE_CLOUD_REPO/environments)
    export COMMCARE_CLOUD_ENVIRONMENTS=/path/to/your/environments
 
+Initialize log file
+^^^^^^^^^^^^^^^^^^^
+
+Required for Ansible log output. Ansible is a tool used internally by commcare-cloud.
+
+.. code-block:: bash
+
+    sudo touch /var/log/ansible.log
+    sudo chmod 666 /var/log/ansible.log
+
+Permissions will be tightened later by `commcare-cloud <env> bootstrap-users` or
+`deploy_stack`, whichever is run first, if there is a machine in the `control`
+group.
+
 git-hook setup
 ^^^^^^^^^^^^^^
 

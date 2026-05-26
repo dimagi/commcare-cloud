@@ -146,6 +146,10 @@ To be used in the installation process.
     $ sudo touch /var/log/ansible.log
     $ sudo chmod 666 /var/log/ansible.log
 
+Permissions will be tightened later by `commcare-cloud <env> bootstrap-users` or
+`deploy_stack`, whichever is run first, if there is a machine in the `control`
+group.
+
 Prepare control machine for automated deploy
 --------------------------------------------
 The following steps only need to be done on the control machine. In the case of a monolith,

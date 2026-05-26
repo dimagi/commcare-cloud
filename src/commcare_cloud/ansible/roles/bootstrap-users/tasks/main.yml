@@ -74,6 +74,16 @@
     append: yes
   tags: commcarehq
 
+- name: Create and/or set permissions on ansible log
+  become: true
+  file:
+    path: /var/log/ansible.log
+    mode: 0775
+    owner: ansible
+    group: "{{ dev_group }}"
+    state: touch
+  when: inventory_hostname in groups.get('control', [])
+
 - name: Add users for current devs
   user:
     name: "{{ item }}"
