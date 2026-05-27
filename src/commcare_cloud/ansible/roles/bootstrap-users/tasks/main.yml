@@ -74,6 +74,34 @@
     append: yes
   tags: commcarehq
 
+- name: Create and/or set permissions on ansible log
+  become: true
+  file:
+    path: /var/log/ansible.log
+    mode: 0664
+    owner: ansible
+    group: "{{ dev_group }}"
+    state: touch
+  when: inventory_hostname in groups.get('control', [])
+
+- name: Rotate ansible log
+  include_role:
+    name: ansible-logrotate
+  vars:
+    logrotate_scripts:
+      - name: control_ansible
+        path: /var/log/ansible.log
+        options:
+          - size 10M
+          - rotate 5
+          - missingok
+          - compress
+          - delaycompress
+          - copytruncate
+          - create
+          - notifempty
+  when: inventory_hostname in groups.get('control', [])
+
 - name: Add users for current devs
   user:
     name: "{{ item }}"
