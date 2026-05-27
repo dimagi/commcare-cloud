@@ -1,8 +1,5 @@
 #! /bin/bash
-CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
-VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
 NO_INPUT=0
-BIONIC_USE_SYSTEM_PYTHON=${BIONIC_USE_SYSTEM_PYTHON:-false}
 
 if [[ $_ == $0 ]]
 then
@@ -47,7 +44,6 @@ if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
     git clone https://github.com/dimagi/commcare-cloud.git $COMMCARE_CLOUD_REPO
 fi
 
-export ANSIBLE_ROLES_PATH=~/.ansible/roles
 cd ${COMMCARE_CLOUD_REPO}
 uv sync
 uv run --no-sync manage-commcare-cloud install
@@ -78,7 +74,6 @@ source ${COMMCARE_CLOUD_REPO}/src/commcare_cloud/.bash_completion
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
-SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
 
 if [ -z ${CI_TEST} ]; then
   if ! grep -q init-ansible ~/.profile 2>/dev/null; then
