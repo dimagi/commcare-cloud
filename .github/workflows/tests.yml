@@ -32,6 +32,12 @@ jobs:
       with:
         enable-cache: true
 
+    - name: Create ansible log file
+      run: |
+        sudo touch /var/log/ansible.log
+        sudo chown $USER:$USER /var/log/ansible.log
+        sudo chmod 644 /var/log/ansible.log
+
     - name: Install dependencies
       run: |
         source control/init.sh
