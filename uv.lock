@@ -578,14 +578,12 @@ wheels = [
 
 [[package]]
 name = "jsonobject"
-version = "2.0.0"
+version = "2.3.1"
 source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "six" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ce/c3/2712dfac9630a393bb501e2666d07b215bd42e94d5a21203a77af33d11dc/jsonobject-2.0.0.tar.gz", hash = "sha256:a869af98879cd62fe738f9ca3b7a32c521261787c4229823c0cbccc5e54702d2", size = 402955, upload-time = "2022-04-08T18:41:50.979Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/97/1e/eaa7426dc6499a5cc0699155d48020bbab06de3e8c48fcea003281d084bc/jsonobject-2.3.1.tar.gz", hash = "sha256:d771ca4d055acd3843b60ef58eb26322bc2094809cf0f9643846fc628083e8a5", size = 569957, upload-time = "2025-02-27T21:46:52.819Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e9/02/1ac8c372cdee46c1aa0097ef1eaff9b4e09437022c1a044c07e6533aeb5d/jsonobject-2.0.0-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:9ed5700bfbbe045632c647b56455b42e5bb957f22a07f647a654fcfdd83d4aa4", size = 360919, upload-time = "2022-04-08T18:41:48.419Z" },
+    { url = "https://files.pythonhosted.org/packages/6c/12/93fdcf8188fec09179f20771b6a32be5b87db662c1461454bdfd3008d4da/jsonobject-2.3.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:39b21d9bc1be813387081fbf8cf3554f78f1a28cad212f7b044095de5a499021", size = 2484135, upload-time = "2025-02-27T21:46:32.409Z" },
+    { url = "https://files.pythonhosted.org/packages/6b/e3/de9b3520d7368a19399e13e79b47a3c09fa128abcec783ee1da9d89fa6fe/jsonobject-2.3.1-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:4cd5f4541b8aa209803dc146657c0f454a3992dd730df4786c2b458408f62e57", size = 2507119, upload-time = "2025-02-27T21:46:34.895Z" },
 ]
 
 [[package]]
