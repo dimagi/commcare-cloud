@@ -1,0 +1,60 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "commcare-cloud"
+version = "0.0.0"
+description = "A tool for managing commcare deploys."
+license = "BSD-3-Clause"
+requires-python = "~=3.10.0"
+dependencies = [
+    "ansible~=4.3",
+    "ansible-inventory==0.6.4",
+    "ansible-vault==2.1.0",
+    "attrs",
+    "boto3",
+    "clint",
+    "couchdb-cluster-admin",
+    "cryptography",
+    "datadog>=0.2.0",
+    "dimagi-memoized>=1.1.0",
+    "dnspython",
+    "gitpython",
+    "jinja2-cli",
+    "jsonobject",
+    "netaddr",
+    "packaging",
+    "passlib",
+    "pycryptodome>=3.6.6",
+    "PyGithub",
+    "pytz",
+    "setuptools<81",
+    "sh",
+    "simplejson",
+    "tabulate",
+]
+
+[project.optional-dependencies]
+aws = ["awscli"]
+
+[project.scripts]
+commcare-cloud = "commcare_cloud.commcare_cloud:main"
+cchq = "commcare_cloud.commcare_cloud:main"
+manage-commcare-cloud = "commcare_cloud.manage_commcare_cloud.manage_commcare_cloud:main"
+
+[dependency-groups]
+test = [
+    "docopt",
+    "nose @ git+https://github.com/dimagi/nose.git@06dff28bbe661b9d032ce839ea0ec8e9eaf6f337",
+    "parameterized>=0.6.1",
+    "requests-mock",
+    "testil",
+]
+dev = ["ipdb"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/commcare_cloud"]
+artifacts = [
+    "src/commcare_cloud/.bash_completion",
+]
