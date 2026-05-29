@@ -7,6 +7,19 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-02-14** [Rolling Upgrade of CouchDB Nodes](0098-couchdb-upgrade.md)
+This changelog outlines the steps for a rolling upgrade of CouchDB nodes.
+
+The upgrade must be performed in two stages:
+  1. Upgrade from 3.3.x to 3.4.3
+  2. Upgrade from 3.4.3 to 3.5.0
+
+The rolling upgrade process remains the same for both stages.
+The only difference is updating the `couchdb_version` variable in
+environments/<env>/public.yml.
+
+
+---
 #### **2026-05-05** [Set minimum git version to 2.49](0097-min-git-version.md)
 commcare-cloud now requires git 2.49 or later on all machines that install git
 via the `git` ansible role (control machines and any other host that runs git
