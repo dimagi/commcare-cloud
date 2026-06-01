@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 """Custom Ansible module to start/stop/stop_and_start/describe EC2 instances."""
+import os
 import re
 from enum import Enum
 
@@ -117,6 +118,29 @@ class InstanceState(str, Enum):
 
 TERMINATED_STATES = {InstanceState.TERMINATED, InstanceState.SHUTTING_DOWN}
 
+
+def _get_region(module):
+    """Return the region from params, falling back to AWS_REGION env var."""
+    region = module.params.get('region') or os.environ.get('AWS_REGION')
+    if not region:
+        module.fail_json(msg=(
+            "AWS region not provided. Pass 'region' to the module, "
+            "or set the AWS_REGION environment variable."
+        ))
+    return region
+
+
+def _get_ec2_client(region):
+    """Return a boto3 EC2 client. Defined as a module-level function so tests can patch it."""
+    try:
+        import boto3
+    except ImportError:
+        raise RuntimeError(
+            "boto3 is required by ec2_instance_state but is not installed."
+        )
+    return boto3.client('ec2', region_name=region)
+
+
 def main():
     module_args = {
         'instance_ids': {'type': 'list', 'elements': 'str', 'required': True},
@@ -133,7 +157,15 @@ def main():
 
     bad = [i for i in instance_ids if not INSTANCE_ID_RE.match(i)]
     if bad:
-        module.fail_json(msg=f"Malformed instance IDs: {bad!r}")  
+        module.fail_json(msg=f"Malformed instance IDs: {bad!r}")
+
+    region = _get_region(module)
+
+    try:
+        client = _get_ec2_client(region)
+    except RuntimeError as e:
+        module.fail_json(msg=str(e))
+
     module.exit_json()
 
 
