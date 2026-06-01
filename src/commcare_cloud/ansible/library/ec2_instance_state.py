@@ -140,6 +140,17 @@ def _get_ec2_client(region):
         )
     return boto3.client('ec2', region_name=region)
 
+class _Ctx:
+    """Per-run context shared by the flow helpers.
+
+    Bundles the EC2 client, the AnsibleModule, so these don't have to be
+    passed as arguments to every helper.
+    """
+
+    def __init__(self, client, module):
+        self.client = client
+        self.module = module
+
 
 def main():
     module_args = {
@@ -165,6 +176,8 @@ def main():
         client = _get_ec2_client(region)
     except RuntimeError as e:
         module.fail_json(msg=str(e))
+
+    ctx = _Ctx(client, module)
 
     module.exit_json()
 
