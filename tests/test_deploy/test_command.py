@@ -6,7 +6,6 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
-from testil import eq
 
 from commcare_cloud.commands.deploy import command, commcare
 from commcare_cloud.commands.deploy.deploy_diff import DeployDiff
@@ -17,8 +16,8 @@ from commcare_cloud.environment.main import Environment, get_environment
 
 def test_deploy_commcare_happy_path():
     def run_playbook(playbook, context, *args, unknown_args={}, **kw):
-        eq(unknown_args, ["-e", "code_version=def456"])
-        eq(context.environment.release_name, "2020-01-02_03.04")
+        assert unknown_args == ["-e", "code_version=def456"]
+        assert context.environment.release_name == "2020-01-02_03.04"
         log.append(playbook)
         return 0
 
@@ -32,13 +31,13 @@ def test_deploy_commcare_happy_path():
     ):
         _deploy_commcare()
 
-    eq(log, ["deploy_hq.yml"])
+    assert log == ["deploy_hq.yml"]
 
 
 def test_resume_deploy_with_release_name():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, ["-e", "code_version=def456"])
-        eq(context.environment.release_name, "FRANK")
+        assert unknown_args == ["-e", "code_version=def456"]
+        assert context.environment.release_name == "FRANK"
         log.append(playbook)
         return 0
 
@@ -52,7 +51,7 @@ def test_resume_deploy_with_release_name():
     ):
         _deploy_commcare("--resume=FRANK")
 
-    eq(log, ["deploy_hq.yml"])
+    assert log == ["deploy_hq.yml"]
 
 
 def test_resume_deploy_without_release_name_raises():
@@ -69,13 +68,13 @@ def test_resume_deploy_without_release_name_raises():
 
 def test_deploy_limited_release():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, [
+        assert unknown_args == [
             "-e", "code_version=def456",
             "-e", "keep_until=2020-01-03_03.04",
             "--tags=private_release",
-        ])
-        eq(context.environment.release_name, "2020-01-02_03.04")
-        eq(kw.get("limit"), "django_manage")
+        ]
+        assert context.environment.release_name == "2020-01-02_03.04"
+        assert kw.get("limit") == "django_manage"
         log.append(playbook)
         return 0
 
@@ -87,18 +86,18 @@ def test_deploy_limited_release():
     ):
         _deploy_commcare("--private")
 
-    eq(log, ["deploy_hq.yml"])
+    assert log == ["deploy_hq.yml"]
 
 
 def test_deploy_limited_release_to_webworker():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, [
+        assert unknown_args == [
             "-e", "code_version=def456",
             "-e", "keep_until=2020-01-03_03.04",
             "--tags=private_release",
-        ])
-        eq(context.environment.release_name, "2020-01-02_03.04")
-        eq(kw.get("limit"), "webworkers[0]")
+        ]
+        assert context.environment.release_name == "2020-01-02_03.04"
+        assert kw.get("limit") == "webworkers[0]"
         log.append(playbook)
         return 0
 
@@ -110,18 +109,18 @@ def test_deploy_limited_release_to_webworker():
     ):
         _deploy_commcare("--private", "--limit=webworkers[0]")
 
-    eq(log, ["deploy_hq.yml"])
+    assert log == ["deploy_hq.yml"]
 
 
 def test_deploy_private_release_to_all_applicable_hosts():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, [
+        assert unknown_args == [
             "-e", "code_version=def456",
             "-e", "keep_until=2020-01-03_03.04",
             "--tags=private_release",
-        ])
-        eq(context.environment.release_name, "2020-01-02_03.04")
-        eq(kw.get("limit"), "all")
+        ]
+        assert context.environment.release_name == "2020-01-02_03.04"
+        assert kw.get("limit") == "all"
         log.append(playbook)
         return 0
 
@@ -135,22 +134,22 @@ def test_deploy_private_release_to_all_applicable_hosts():
     ):
         _deploy_commcare("--private", "--limit=all")
 
-    eq(log, ["deploy_hq.yml"])
-    eq(summary, [
+    assert log == ["deploy_hq.yml"]
+    assert summary == [
         "Your private release is located here:",
         "/home/cchq/www/small_cluster/releases/2020-01-02_03.04",
-    ])
+    ]
 
 
 def test_deploy_limited_release_with_keep_days():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, [
+        assert unknown_args == [
             "-e", "code_version=def456",
             "-e", "keep_until=2020-01-12_03.04",
             "--tags=private_release",
-        ])
-        eq(context.environment.release_name, "2020-01-02_03.04")
-        eq(kw.get("limit"), "django_manage")
+        ]
+        assert context.environment.release_name == "2020-01-02_03.04"
+        assert kw.get("limit") == "django_manage"
         log.append(playbook)
         return 0
 
@@ -162,18 +161,18 @@ def test_deploy_limited_release_with_keep_days():
     ):
         _deploy_commcare("--private", "--keep-days=10")
 
-    eq(log, ["deploy_hq.yml"])
+    assert log == ["deploy_hq.yml"]
 
 
 def test_preindex_views():
     def run_playbook(playbook, context, *args, unknown_args=None, **kw):
-        eq(unknown_args, [
+        assert unknown_args == [
             "-e", "code_version=def456",
             "-e", "keep_until=2020-01-03_03.04",
             "--tags=private_release",
-        ])
-        eq(context.environment.release_name, "2020-01-02_03.04")
-        eq(kw.get("limit"), "pillowtop[0]")
+        ]
+        assert context.environment.release_name == "2020-01-02_03.04"
+        assert kw.get("limit") == "pillowtop[0]"
         log.append(playbook)
         return 0
 
@@ -192,10 +191,10 @@ def test_preindex_views():
     ):
         _deploy_commcare(cmd=("preindex-views",))
 
-    eq(log, [
+    assert log == [
         "deploy_hq.yml",
         "django-manage preindex_everything --server=pillowtop[0] --release=2020-01-02_03.04 --tmux --mail",
-    ])
+    ]
 
 
 def _deploy_commcare(*argv, cmd=("deploy", "commcare")):
