@@ -1,7 +1,17 @@
 #! /bin/bash
 NO_INPUT=${NO_INPUT:-0}
 
-if [[ $_ == $0 ]]; then
+# Resolve this script's path in both bash and zsh
+is_sourced=0
+if [ -n "$ZSH_VERSION" ]; then
+    [[ $ZSH_EVAL_CONTEXT == *:file* ]] && is_sourced=1
+    script_path="$0"
+elif [ -n "$BASH_VERSION" ]; then
+    (return 0 2>/dev/null) && is_sourced=1
+    script_path="${BASH_SOURCE[0]}"
+fi
+
+if [ "$is_sourced" != 1 ]; then
     echo "Please run this script as follows:"
     echo "    $ source /path/to/repo/control/init.sh"
     exit 1
@@ -14,9 +24,9 @@ if ! command -v uv > /dev/null; then
     return 1
 fi
 
-if [[ "${BASH_SOURCE[0]}" == *init.sh ]]; then
+if [[ "$script_path" == *init.sh ]]; then
     # this script is being run from a file on disk, presumably from within commcare-cloud repo
-    COMMCARE_CLOUD_REPO=$(cd -- "$(dirname -- "$(dirname -- "${BASH_SOURCE[0]}")")" &> /dev/null && pwd)
+    COMMCARE_CLOUD_REPO=$(cd -- "$(dirname -- "$(dirname -- "$script_path")")" &> /dev/null && pwd)
 
     # check for expected file to verify we've got the right place
     if [ ! -f ${COMMCARE_CLOUD_REPO}/control/update_code.sh ]; then
