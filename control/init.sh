@@ -72,11 +72,20 @@ fi
 alias update-code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && (cd ${COMMCARE_CLOUD_REPO} && uv sync --quiet)'
 alias update_code=update-code
 
-source ${COMMCARE_CLOUD_REPO}/src/commcare_cloud/.bash_completion
-
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
+
+# The completion script uses bash's `complete` builtin, which zsh only provides
+# after `bashcompinit` is loaded. Detect it and tell the user how to enable it.
+if command -v complete >/dev/null 2>&1; then
+    source ${COMMCARE_CLOUD_REPO}/src/commcare_cloud/.bash_completion
+elif [ -n "$ZSH_VERSION" ]; then
+    printf "${YELLOW}Skipping cchq tab-completion: requires bash-completion compatibility in zsh.\n"
+    printf "${YELLOW}To enable it, add the following to your ~/.zshrc before sourcing init.sh again:\n"
+    printf "${YELLOW}   autoload -Uz compinit && compinit\n"
+    printf "${YELLOW}   autoload -Uz bashcompinit && bashcompinit\n${NC}"
+fi
 
 if [ -z ${CI_TEST} ]; then
   if ! grep -q init-ansible ~/.profile 2>/dev/null; then
