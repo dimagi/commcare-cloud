@@ -1,7 +1,7 @@
 import os
 
+import pytest
 from unittest.mock import patch
-from nose.tools import assert_raises
 from parameterized import parameterized
 
 from commcare_cloud.commands.inventory_lookup.getinventory import (
@@ -46,7 +46,7 @@ def test_get_server_address(pattern, expected):
 ])
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENV_DIR)
 def test_get_server_address_errors(pattern):
-    with assert_raises(HostMatchException):
+    with pytest.raises(HostMatchException):
         get_server_address("2018-04-04-icds-new-snapshot", pattern)
 
 

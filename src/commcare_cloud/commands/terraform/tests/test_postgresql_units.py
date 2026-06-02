@@ -1,4 +1,4 @@
-from nose.tools import assert_raises
+import pytest
 
 from commcare_cloud.commands.terraform.postgresql_units import convert_to_unit, SECOND, \
     BLOCK_8KB, MS, convert_to_standard_unit
@@ -18,16 +18,16 @@ def test_convert_to_unit__bytes():
 
 def test_convert_to_unit__bad_input():
     # number part must be an int
-    with assert_raises(ValueError) as context:
+    with pytest.raises(ValueError) as context:
         convert_to_unit('12.5 GB', BLOCK_8KB)
-    assert_contains(context.exception.args[0], '12.5 GB')
+    assert_contains(context.value.args[0], '12.5 GB')
 
 
 def test_convert_to_unit__mixed_units():
-    with assert_raises(ValueError) as context:
+    with pytest.raises(ValueError) as context:
         convert_to_unit('1kB', MS)
-    assert_contains(context.exception.args[0], '1kB')
-    assert_contains(context.exception.args[0], 'TimeInMilliseconds')
+    assert_contains(context.value.args[0], '1kB')
+    assert_contains(context.value.args[0], 'TimeInMilliseconds')
 
 
 def test_convert_to_standard_unit__time():
@@ -43,11 +43,11 @@ def test_convert_to_standard_unit__bytes():
 
 def test_convert_to_standard_unit__mixed_units():
     # authentication_timeout is measured in seconds
-    with assert_raises(ValueError) as context:
+    with pytest.raises(ValueError) as context:
         convert_to_standard_unit('authentication_timeout', '1kB')
-    assert_contains(context.exception.args[0], '1kB')
-    assert_contains(context.exception.args[0], 'TimeInMilliseconds')
-    assert_contains(context.exception.args[0], ' (authentication_timeout)')
+    assert_contains(context.value.args[0], '1kB')
+    assert_contains(context.value.args[0], 'TimeInMilliseconds')
+    assert_contains(context.value.args[0], ' (authentication_timeout)')
 
 
 def assert_contains(haystack, needle):
