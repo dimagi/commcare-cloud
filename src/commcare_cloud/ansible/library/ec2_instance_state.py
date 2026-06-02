@@ -140,6 +140,72 @@ def _get_ec2_client(region):
         )
     return boto3.client('ec2', region_name=region)
 
+class Instance:
+
+    def __init__(self, instance_id, raw):
+        self.instance_id = instance_id
+        self.raw = raw
+        self.previous_state = self.state
+        self.current_state = self.state
+
+    @property
+    def state(self):
+        return self.raw['State']['Name']
+
+    @property
+    def is_terminal(self):
+        return self.state in TERMINATED_STATES
+
+    @property
+    def name(self):
+        """The 'Name' tag value, if the instance has one. Otherwise return the private IP address."""
+        for tag in self.raw.get('Tags', []):
+            if tag['Key'] == 'Name':
+                return tag['Value']
+        return self.raw.get('PrivateIpAddress')
+
+    @property
+    def label(self):
+        """Human-friendly identifier for error messages."""
+        return f"{self.instance_id} ({self.name})"
+
+    @property
+    def can_start(self):
+        """True if a StartInstances call is required to reach 'running'.
+
+        A 'stopping' instance is included: it must first be awaited to 'stopped',
+        then started.
+        """
+        return self.state in (InstanceState.STOPPED, InstanceState.STOPPING)
+
+    @property
+    def can_stop(self):
+        """True if a StopInstances call is required to reach 'stopped'.
+
+        A 'stopping' instance is excluded: it is already heading to 'stopped',
+        so we wait for it but never issue StopInstances.
+        """
+        return self.state in (InstanceState.RUNNING, InstanceState.PENDING)
+
+    def to_result(self):
+        tags = {t['Key']: t['Value'] for t in self.raw.get('Tags', []) or []}
+        launch_time = self.raw.get('LaunchTime')
+        if hasattr(launch_time, 'isoformat'):
+            launch_time = launch_time.isoformat()
+        return {
+            'instance_id': self.instance_id,
+            'previous_state': self.previous_state,
+            'current_state': self.current_state,
+            'name': self.name,
+            'instance_type': self.raw.get('InstanceType'),
+            'availability_zone': (self.raw.get('Placement') or {}).get('AvailabilityZone'),
+            'private_ip': self.raw.get('PrivateIpAddress'),
+            'public_ip': self.raw.get('PublicIpAddress'),
+            'tags': tags,
+            'launch_time': launch_time,
+        }
+
+
 
 def _do_describe(ctx, instance_ids):
     return {}
