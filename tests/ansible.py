@@ -27,6 +27,7 @@ def run(module, args):
     """
     def exit_json(*args, **kw):
         raise Exit(kw)
+
     def fail_json(*args, **kw):
         raise Fail(kw.get("msg", repr(kw)), kw)
     if isinstance(module, (str, Path)):
