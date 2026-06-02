@@ -5,7 +5,8 @@ from datetime import datetime
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from testil import assert_raises, eq
+import pytest
+from testil import eq
 
 from commcare_cloud.commands.deploy import command, commcare
 from commcare_cloud.commands.deploy.deploy_diff import DeployDiff
@@ -60,7 +61,7 @@ def test_resume_deploy_without_release_name_raises():
 
     with (
         patch.object(commcare, "run_ansible_playbook", run_playbook),
-        assert_raises(SystemExit),
+        pytest.raises(SystemExit),
         patch("sys.stderr", sys.stdout)
     ):
         _deploy_commcare("--resume")
