@@ -321,7 +321,52 @@ def _wait_for(ctx, waiter_name, wait_instances):
 
 
 def _do_stop(ctx, instance_ids, wait):
-    return {}
+    instances = _describe_instances(ctx, instance_ids)
+    _check_not_terminated(ctx, instances, InstanceCommand.STOP)
+
+    targets = [iid for iid, inst in instances.items() if inst.can_stop]
+    # 'stopping' instances are mid-transition: we wait for them but don't initiate.
+    already_stopping = [iid for iid, inst in instances.items()
+                        if inst.state == InstanceState.STOPPING]
+    unchanged = [iid for iid in instance_ids
+                 if iid not in targets and iid not in already_stopping]
+    changed = bool(targets)
+
+    if ctx.module.check_mode:
+        for iid in targets + already_stopping:
+            instances[iid].current_state = InstanceState.STOPPED
+        return _build_payload(instances, InstanceCommand.STOP, changed, unchanged)
+
+    if not targets and not already_stopping:
+        return _build_payload(instances, InstanceCommand.STOP, False, unchanged)
+
+    before_states = {iid: inst.state for iid, inst in instances.items()}
+
+    # Precondition (always, regardless of `wait`): a 'pending' instance must
+    # reach 'running' before it can be deterministically stopped.
+    pending = [instances[iid] for iid in targets if instances[iid].state == InstanceState.PENDING]
+    _wait_for(ctx, 'instance_running', pending)
+
+    if targets:
+        try:
+            ctx.client.stop_instances(InstanceIds=targets)
+        except Exception as e:  # noqa: BLE001
+            labels = _labels(instances[iid] for iid in targets)
+            ctx.module.fail_json(msg=f"StopInstances failed for {labels}: {e}")
+            return
+
+    wait_for_stopped = list(targets) + list(already_stopping)
+    if wait:
+        _wait_for(ctx, 'instance_stopped', [instances[iid] for iid in wait_for_stopped])
+        instances = _describe_instances(ctx, instance_ids)
+        for iid, inst in instances.items():
+            inst.previous_state = before_states[iid]
+    else:
+        for iid in wait_for_stopped:
+            instances[iid].current_state = InstanceState.STOPPING
+
+    return _build_payload(instances, InstanceCommand.STOP, changed, unchanged)
+
 
 
 def _do_stop_and_start(ctx, instance_ids, wait):

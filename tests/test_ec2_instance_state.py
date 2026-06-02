@@ -424,3 +424,155 @@ class TestStart(unittest.TestCase):
         # No StartInstances call and no waiter fired.
         assert 'start_instances' not in [c[0] for c in fake.calls]
         assert fake.waiters_invoked == []
+
+
+class TestStopped(unittest.TestCase):
+
+    def setUp(self):
+        self._orig_region = os.environ.get('AWS_REGION')
+        os.environ['AWS_REGION'] = 'us-east-1'
+
+    def tearDown(self):
+        if self._orig_region is None:
+            os.environ.pop('AWS_REGION', None)
+        else:
+            os.environ['AWS_REGION'] = self._orig_region
+
+    def test_stopped_already_stopped_is_noop(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopped'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'stop'},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        assert not result['result']['changed']
+        assert result['result']['command'] == 'stop', result['result']['command']
+        assert result['result']['unchanged_instance_ids'] == ['i-0aaaaaaaaaaaaaaaa']
+        assert 'stop_instances' not in [c[0] for c in fake.calls]
+
+    def test_stopped_running_invokes_stop_and_waiter(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'stop'},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        assert result['result']['changed']
+        stop_calls = [c for c in fake.calls if c[0] == 'stop_instances']
+        assert len(stop_calls) == 1
+        assert stop_calls[0][1]['InstanceIds'] == ['i-0aaaaaaaaaaaaaaaa']
+        assert fake.waiters_invoked == [('instance_stopped', ['i-0aaaaaaaaaaaaaaaa'])]
+        assert result['result']['command'] == 'stop', result['result']['command']
+        assert result['result']['instances'][0]['current_state'] == 'stopped'
+        assert result['result']['instances'][0]['previous_state'] == 'running'
+
+    def test_stopped_no_wait_skips_waiter(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'stop', 'wait': False},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        assert result['result']['changed']
+        assert fake.waiters_invoked == []
+        assert result['result']['instances'][0]['current_state'] == 'stopping'
+
+    def test_stopped_already_stopping_waits_but_changed_false(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopping'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'stop'},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        # We did not initiate the stop, so changed=false.
+        assert not result['result']['changed']
+        # No stop_instances call.
+        assert 'stop_instances' not in [c[0] for c in fake.calls]
+        # We did wait for it to reach stopped.
+        assert fake.waiters_invoked == [('instance_stopped', ['i-0aaaaaaaaaaaaaaaa'])]
+
+    def test_stopped_terminated_fails(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'terminated'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'stop'},
+            fake_client=fake,
+        )
+        assert result['failed']
+        expected_msg="Cannot stop terminated/shutting-down instances: i-0aaaaaaaaaaaaaaaa (10.0.0.1)=terminated"
+        assert result['result']['msg'] == expected_msg, result['result']['msg']
+
+    def test_stopped_noop_does_single_describe(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopped'},
+        })
+        run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'stop'},
+            fake_client=fake,
+        )
+        describe_calls = [c for c in fake.calls if c[0] == 'describe_instances']
+        assert len(describe_calls) == 1, \
+            "no-op path should only describe once, not twice"
+
+    def test_stopped_pending_waits_for_running_first(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'pending'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'stop'},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        assert result['result']['changed']
+        # First waiter: wait for running; second: wait for stopped.
+        assert fake.waiters_invoked == [
+            ('instance_running', ['i-0aaaaaaaaaaaaaaaa']),
+            ('instance_stopped', ['i-0aaaaaaaaaaaaaaaa']),
+        ]
+        stop_calls = [c for c in fake.calls if c[0] == 'stop_instances']
+        assert len(stop_calls) == 1
+        assert stop_calls[0][1]['InstanceIds'] == ['i-0aaaaaaaaaaaaaaaa']
+
+    def test_stopped_pending_with_no_wait_waits_for_running_then_stops(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'pending'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'],
+             'command': 'stop', 'wait': False},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        assert result['result']['changed']
+        assert ('instance_running', ['i-0aaaaaaaaaaaaaaaa']) in fake.waiters_invoked
+        assert ('instance_stopped', ['i-0aaaaaaaaaaaaaaaa']) not in fake.waiters_invoked
+        assert 'stop_instances' in [c[0] for c in fake.calls]
+        assert result['result']['instances'][0]['current_state'] == 'stopping'
+
+    def test_stopped_check_mode_does_not_wait_or_stop(self):
+        # In check mode the module predicts the end state but must never call
+        # StopInstances nor invoke any waiter.
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'stop',
+             '_ansible_check_mode': True},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        # Predicted as changed, with the projected stopped state.
+        assert result['result']['changed']
+        assert result['result']['instances'][0]['current_state'] == 'stopped'
+        # No StopInstances call and no waiter fired.
+        assert 'stop_instances' not in [c[0] for c in fake.calls]
+        assert fake.waiters_invoked == []
