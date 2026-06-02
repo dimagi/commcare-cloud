@@ -23,7 +23,7 @@ uv sync --group test
 and then run
 
 ```
-uv run nosetests
+uv run pytest
 ```
 
 Tests include tests of your own specific environments dir.
