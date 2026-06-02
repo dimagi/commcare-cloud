@@ -185,3 +185,82 @@ class FakeEC2Client:
                 for iid in InstanceIds:
                     client.instances_by_id.setdefault(iid, {})['state'] = end_state
         return _Waiter()
+
+
+class TestDescribe(unittest.TestCase):
+
+    def setUp(self):
+        self._orig_region = os.environ.get('AWS_REGION')
+        os.environ['AWS_REGION'] = 'us-east-1'
+
+    def tearDown(self):
+        if self._orig_region is None:
+            os.environ.pop('AWS_REGION', None)
+        else:
+            os.environ['AWS_REGION'] = self._orig_region
+
+    def test_described_returns_instance_shape(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0123456789abcdef0': {
+                'state': 'running',
+                'instance_type': 't3.medium',
+                'availability_zone': 'us-east-1b',
+                'private_ip': '10.201.10.31',
+                'public_ip': '34.1.2.3',
+                'tags': {'Name': 'proxy6-staging', 'Env': 'staging'},
+            },
+        })
+        result = run_module(
+            {'instance_ids': ['i-0123456789abcdef0'], 'command': 'describe'},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        r = result['result']
+        assert not r['changed']
+        assert r['command'] == 'describe', r['command']
+        assert len(r['instances']) == 1, len(r['instances'])
+        assert r['instances'][0] == {
+            'instance_id': 'i-0123456789abcdef0',
+            'previous_state': 'running',
+            'current_state': 'running',
+            'name': 'proxy6-staging',
+            'instance_type': 't3.medium',
+            'availability_zone': 'us-east-1b',
+            'private_ip': '10.201.10.31',
+            'public_ip': '34.1.2.3',
+            'tags': {'Name': 'proxy6-staging', 'Env': 'staging'},
+            'launch_time': '2026-04-13T12:00:00+00:00',
+        }, r['instances'][0]
+
+    def test_described_preserves_input_order(self):
+        ids = ['i-0aaaaaaaaaaaaaaaa', 'i-0bbbbbbbbbbbbbbbb', 'i-0cccccccccccccccc']
+        fake = FakeEC2Client(instances_by_id={i: {'state': 'running'} for i in ids})
+        result = run_module(
+            {'instance_ids': ids, 'command': 'describe'},
+            fake_client=fake,
+        )
+        assert [i['instance_id'] for i in result['result']['instances']] == ids
+
+    def test_described_invalid_id_fails(self):
+        fake = FakeEC2Client(missing_ids={'i-0deadbeefdeadbeef'})
+        result = run_module(
+            {'instance_ids': ['i-0deadbeefdeadbeef'], 'command': 'describe'},
+            fake_client=fake,
+        )
+        expected_msg = "AWS DescribeInstances failed: An error occurred (InvalidInstanceID.NotFound) when calling the DescribeInstances operation: Instances not found: ['i-0deadbeefdeadbeef']"
+        assert result['failed']
+        assert result['result']['msg'] == expected_msg, result['result']['msg']
+
+    def test_described_reorders_out_of_order_response(self):
+        ids = ['i-0aaaaaaaaaaaaaaaa', 'i-0bbbbbbbbbbbbbbbb', 'i-0cccccccccccccccc']
+        fake = FakeEC2Client(instances_by_id={i: {'state': 'running'} for i in ids})
+        orig = fake.describe_instances
+        # Return the reservations in reversed order.
+        fake.describe_instances = lambda InstanceIds: {
+            'Reservations': list(reversed(orig(InstanceIds)['Reservations']))
+        }
+        result = run_module(
+            {'instance_ids': ids, 'command': 'describe'},
+            fake_client=fake,
+        )
+        assert [i['instance_id'] for i in result['result']['instances']] == ids

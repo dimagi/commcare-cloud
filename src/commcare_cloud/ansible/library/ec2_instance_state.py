@@ -208,8 +208,49 @@ class Instance:
 
 
 def _do_describe(ctx, instance_ids):
-    return {}
+    instances = _describe_instances(ctx, instance_ids)
+    return _build_payload(instances, InstanceCommand.DESCRIBE, changed=False,
+                          unchanged_instance_ids=[])
 
+
+def _describe_instances(ctx, instance_ids):
+    """Return OrderedDict[id -> Instance] in input order.
+
+    Fails the module on AWS errors
+    """
+    from botocore.exceptions import ClientError
+    try:
+        resp = ctx.client.describe_instances(InstanceIds=list(instance_ids))
+    except ClientError as e:
+        ctx.module.fail_json(msg=f"AWS DescribeInstances failed: {e}")
+        return
+    by_id = {}
+    for reservation in resp.get('Reservations', []):
+        for raw in reservation.get('Instances', []):
+            by_id[raw['InstanceId']] = Instance(raw['InstanceId'], raw)
+
+    # Reservations are not returned in the order of the requested ids, so
+    # rebuild the map in input order to honor the documented contract.
+    return {iid: by_id[iid] for iid in instance_ids}
+
+
+def _build_payload(instances, command, changed, unchanged_instance_ids):
+    """Build the module result dict from a {id -> Instance} map.
+
+    Per-instance previous/current states (and the diff) are read from the
+    Instance objects, which the flow functions have updated for this run.
+    """
+    members = list(instances.values())
+    return {
+        'changed': changed,
+        'command': command,
+        'instances': [m.to_result() for m in members],
+        'unchanged_instance_ids': unchanged_instance_ids,
+        'diff': {
+            'before': {'states': {m.instance_id: m.previous_state for m in members}},
+            'after': {'states': {m.instance_id: m.current_state for m in members}},
+        },
+    }
 
 def _do_start(ctx, instance_ids, wait):
     return {}
