@@ -370,7 +370,47 @@ def _do_stop(ctx, instance_ids, wait):
 
 
 def _do_stop_and_start(ctx, instance_ids, wait):
-    return {}
+    stop_payload = _do_stop(ctx, instance_ids, wait=True)
+
+    # Honor the user's `wait` choice for the final running wait.
+    start_payload = _do_start(ctx, instance_ids, wait=wait)
+
+    # Combine: previous_state = state before the stop; current_state = after start.
+    before_states = stop_payload['diff']['before']['states']
+    after_states = start_payload['diff']['after']['states']
+
+    instances = []
+    for inst in start_payload['instances']:
+        merged = dict(inst)
+        merged['previous_state'] = before_states[inst['instance_id']]
+        instances.append(merged)
+
+    # A successful stop_and_start always restarts every non-terminal instance:
+    # the stop phase leaves them all stopped, so the start phase must report a
+    # change. In check mode nothing is actually stopped, so the start phase sees
+    # the original running instances and reports no change — skip the invariant
+    # check there.
+    changed = True
+    if not ctx.module.check_mode and not start_payload['changed']:
+        ctx.module.fail_json(
+            msg="stop_and_start invariant violated: start phase reported no "
+                "change after a completed stop phase.",
+            start_payload=start_payload)
+
+    # unchanged = ids that were no-ops in BOTH phases.
+    # Highly unlikely to happen in practice, but we sort to make the result deterministic.
+    unchanged = sorted(set(stop_payload['unchanged_instance_ids'])
+                       & set(start_payload['unchanged_instance_ids']))
+
+    return {
+        'changed': changed,
+        'command': InstanceCommand.STOP_AND_START,
+        'instances': instances,
+        'unchanged_instance_ids': unchanged,
+        'diff': {'before': {'states': before_states},
+                 'after': {'states': after_states}},
+    }
+
 
 class _Ctx:
     """Per-run context shared by the flow helpers.

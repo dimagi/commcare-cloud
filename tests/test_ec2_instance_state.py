@@ -576,3 +576,105 @@ class TestStopped(unittest.TestCase):
         # No StopInstances call and no waiter fired.
         assert 'stop_instances' not in [c[0] for c in fake.calls]
         assert fake.waiters_invoked == []
+
+
+class TestStopAndStart(unittest.TestCase):
+
+    def setUp(self):
+        self._orig_region = os.environ.get('AWS_REGION')
+        os.environ['AWS_REGION'] = 'us-east-1'
+
+    def tearDown(self):
+        if self._orig_region is None:
+            os.environ.pop('AWS_REGION', None)
+        else:
+            os.environ['AWS_REGION'] = self._orig_region
+
+    def test_stop_and_start_running_does_stop_then_start(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'stop_and_start'},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        assert result['result']['changed']
+        # Order: stop_instances came before start_instances.
+        method_order = [c[0] for c in fake.calls if c[0] in ('stop_instances', 'start_instances')]
+        assert method_order == ['stop_instances', 'start_instances']
+        # Both waiters fired in the right order.
+        waiter_order = [w[0] for w in fake.waiters_invoked]
+        assert waiter_order == ['instance_stopped', 'instance_running']
+        assert result['result']['instances'][0]['previous_state'] == 'running'
+        assert result['result']['instances'][0]['current_state'] == 'running'
+        assert result['result']['command'] == 'stop_and_start'
+        assert result['result']['diff'] == {
+            'before': {'states': {'i-0aaaaaaaaaaaaaaaa': 'running'}},
+            'after': {'states': {'i-0aaaaaaaaaaaaaaaa': 'running'}},
+        }
+
+    def test_stop_and_start_stopped_just_starts(self):
+        # Mixed-state semantics: an already-stopped instance still ends up running
+        # after a 'stop_and_start' call.
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopped'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'stop_and_start'},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        assert result['result']['changed']
+        method_order = [c[0] for c in fake.calls if c[0] in ('stop_instances', 'start_instances')]
+        # No stop call (already stopped); start was issued.
+        assert method_order == ['start_instances']
+        assert result['result']['instances'][0]['current_state'] == 'running'
+
+    def test_stop_and_start_with_wait_false_still_waits_for_stop(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'],
+             'command': 'stop_and_start', 'wait': False},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        # Stop phase still waits despite wait=False.
+        assert ('instance_stopped', ['i-0aaaaaaaaaaaaaaaa']) in fake.waiters_invoked
+        # Start phase did not wait.
+        assert ('instance_running', ['i-0aaaaaaaaaaaaaaaa']) not in fake.waiters_invoked
+        # No warning is emitted (the always-wait-for-stop behavior is documented).
+        assert not result['result'].get('warnings')
+
+    def test_stop_and_start_terminated_fails(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'terminated'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'stop_and_start'},
+            fake_client=fake,
+        )
+        assert result['failed']
+        expected_msg = "Cannot stop terminated/shutting-down instances: i-0aaaaaaaaaaaaaaaa (10.0.0.1)=terminated"
+        assert result['result']['msg'] == expected_msg, result['result']['msg']
+
+    def test_stop_and_start_check_mode_does_not_wait_or_mutate(self):
+        # In check mode neither phase mutates AWS: no stop/start calls and no
+        # waiters fire, but the run is still reported as changed.
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'stop_and_start',
+             '_ansible_check_mode': True},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        assert result['result']['changed']
+        assert result['result']['command'] == 'stop_and_start'
+        # No StopInstances/StartInstances calls and no waiter fired.
+        method_calls = [c[0] for c in fake.calls if c[0] in ('stop_instances', 'start_instances')]
+        assert method_calls == []
+        assert fake.waiters_invoked == []
