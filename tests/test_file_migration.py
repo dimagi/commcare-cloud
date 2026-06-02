@@ -12,7 +12,7 @@ TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'file_migration_data')
 SCRIPT_ROOT = os.path.join(TEST_DATA_DIR, '.generated_data')
 
 
-def tearDown():
+def teardown_module():
     # delete generated files
     shutil.rmtree(SCRIPT_ROOT)
 

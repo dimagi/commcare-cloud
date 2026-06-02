@@ -23,7 +23,7 @@ PLANS_DIR = os.path.join(TEST_ENVIRONMENTS_DIR, 'plans')
 TEST_PLANS = os.listdir(PLANS_DIR)
 
 
-def tearDown():
+def teardown_module():
     # delete generated files
     for plan_name in TEST_PLANS:
         migration = _get_migration(plan_name)
