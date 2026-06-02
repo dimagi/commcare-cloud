@@ -80,11 +80,12 @@ NC='\033[0m' # No Color
 
 if [ -z ${CI_TEST} ]; then
   if ! grep -q init-ansible ~/.profile 2>/dev/null; then
-    if [ $NO_INPUT == 1 ]; then
+    if [[ $NO_INPUT == 1 ]]; then
       yn='y'
     else
       printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
-      read -t 30 -p "(y/n): " yn
+      printf "(y/n): "
+      read -t 30 yn
     fi
     case $yn in
         [Yy]* )
