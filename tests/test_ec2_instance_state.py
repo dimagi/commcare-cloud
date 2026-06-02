@@ -264,3 +264,163 @@ class TestDescribe(unittest.TestCase):
             fake_client=fake,
         )
         assert [i['instance_id'] for i in result['result']['instances']] == ids
+
+class TestStart(unittest.TestCase):
+
+    def setUp(self):
+        self._orig_region = os.environ.get('AWS_REGION')
+        os.environ['AWS_REGION'] = 'us-east-1'
+
+    def tearDown(self):
+        if self._orig_region is None:
+            os.environ.pop('AWS_REGION', None)
+        else:
+            os.environ['AWS_REGION'] = self._orig_region
+
+    def test_started_already_running_is_noop(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'start'},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        assert not result['result']['changed']
+        assert result['result']['unchanged_instance_ids'] == ['i-0aaaaaaaaaaaaaaaa']
+        
+        assert 'start_instances' not in [c[0] for c in fake.calls]
+
+    def test_started_stopped_invokes_start_and_waiter(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopped'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'start'},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        assert result['result']['changed']
+        # StartInstances was called with our id.
+        start_calls = [c for c in fake.calls if c[0] == 'start_instances']
+        assert len(start_calls) == 1
+        assert start_calls[0][1]['InstanceIds'] == ['i-0aaaaaaaaaaaaaaaa']
+        # instance_running waiter was invoked.
+        assert fake.waiters_invoked == [('instance_running', ['i-0aaaaaaaaaaaaaaaa'])]
+        # current_state reflects post-wait state.
+        assert result['result']['instances'][0]['current_state'] == 'running'
+        assert result['result']['instances'][0]['previous_state'] == 'stopped'
+
+    def test_started_no_wait_skips_waiter(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopped'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'start', 'wait': False},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        assert result['result']['changed']
+        assert fake.waiters_invoked == []
+        # current_state reflects transitional API response.
+        assert result['result']['instances'][0]['current_state'] == 'pending'
+
+    def test_started_mixed_batch_only_targets_what_needs_change(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},   # already running
+            'i-0bbbbbbbbbbbbbbbb': {'state': 'stopped'},   # needs start
+            'i-0cccccccccccccccc': {'state': 'stopped'},   # needs start
+        })
+        result = run_module(
+            {'instance_ids': [
+                'i-0aaaaaaaaaaaaaaaa',
+                'i-0bbbbbbbbbbbbbbbb',
+                'i-0cccccccccccccccc',
+            ], 'command': 'start'},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        assert result['result']['changed']
+        start_calls = [c for c in fake.calls if c[0] == 'start_instances']
+        assert len(start_calls) == 1
+        assert sorted(start_calls[0][1]['InstanceIds']) == [
+            'i-0bbbbbbbbbbbbbbbb', 'i-0cccccccccccccccc',
+        ]
+        assert result['result']['unchanged_instance_ids'] == ['i-0aaaaaaaaaaaaaaaa']
+
+    def test_started_terminated_fails(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'terminated'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'start'},
+            fake_client=fake,
+        )
+        assert result['failed']
+        expected_msg = "Cannot start terminated/shutting-down instances: i-0aaaaaaaaaaaaaaaa (10.0.0.1)=terminated"
+        assert result['result']['msg'] == expected_msg, result['result']['msg']
+
+    def test_error_message_includes_name_tag(self):
+        # Errors that reference described instances surface the Name tag
+        # alongside the id for readability.
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'terminated', 'tags': {'Name': 'webworker0'}},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'start'},
+            fake_client=fake,
+        )
+        assert result['failed']
+        assert 'webworker0' in result['result']['msg']
+        assert 'i-0aaaaaaaaaaaaaaaa' in result['result']['msg']
+
+    def test_started_stopping_with_no_wait_waits_for_stopped_then_starts(self):
+        # A 'stopping' instance is awaited to 'stopped'
+        # (precondition), then started; wait=False only skips the final
+        # 'running' wait.
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopping'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'],
+             'command': 'start', 'wait': False},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        assert result['result']['changed']
+        # Precondition waiter fired for 'stopped'; final 'running' waiter did NOT.
+        assert ('instance_stopped', ['i-0aaaaaaaaaaaaaaaa']) in fake.waiters_invoked
+        assert ('instance_running', ['i-0aaaaaaaaaaaaaaaa']) not in fake.waiters_invoked
+        assert 'start_instances' in [c[0] for c in fake.calls]
+        assert result['result']['instances'][0]['current_state'] == 'pending'
+
+    def test_started_noop_does_single_describe(self):
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'running'},
+        })
+        run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'start'},
+            fake_client=fake,
+        )
+        describe_calls = [c for c in fake.calls if c[0] == 'describe_instances']
+        assert len(describe_calls) == 1, \
+            "no-op path should only describe once, not twice"
+
+    def test_started_check_mode_does_not_wait_or_start(self):
+        # In check mode the module predicts the end state but must never call
+        # StartInstances nor invoke any waiter.
+        fake = FakeEC2Client(instances_by_id={
+            'i-0aaaaaaaaaaaaaaaa': {'state': 'stopped'},
+        })
+        result = run_module(
+            {'instance_ids': ['i-0aaaaaaaaaaaaaaaa'], 'command': 'start',
+             '_ansible_check_mode': True},
+            fake_client=fake,
+        )
+        assert not result['failed']
+        # Predicted as changed, with the projected running state.
+        assert result['result']['changed']
+        assert result['result']['instances'][0]['current_state'] == 'running'
+        # No StartInstances call and no waiter fired.
+        assert 'start_instances' not in [c[0] for c in fake.calls]
+        assert fake.waiters_invoked == []

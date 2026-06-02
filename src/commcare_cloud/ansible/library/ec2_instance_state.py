@@ -253,7 +253,71 @@ def _build_payload(instances, command, changed, unchanged_instance_ids):
     }
 
 def _do_start(ctx, instance_ids, wait):
-    return {}
+    instances = _describe_instances(ctx, instance_ids)
+    _check_not_terminated(ctx, instances, InstanceCommand.START)
+
+    targets = [iid for iid, inst in instances.items() if inst.can_start]
+    unchanged = [iid for iid, inst in instances.items() if not inst.can_start]
+    changed = bool(targets)
+
+    if ctx.module.check_mode:
+        # Predict end states; never wait, never call StartInstances.
+        for iid in targets:
+            instances[iid].current_state = InstanceState.RUNNING
+        return _build_payload(instances, InstanceCommand.START, changed, unchanged)
+
+    if not targets:
+        return _build_payload(instances, InstanceCommand.START, False, unchanged)
+
+    before_states = {iid: inst.state for iid, inst in instances.items()}
+
+    # Precondition (always, regardless of `wait`): a 'stopping' instance must
+    # reach 'stopped' before StartInstances will accept it.
+    stopping = [instances[iid] for iid in targets if instances[iid].state == InstanceState.STOPPING]
+    _wait_for(ctx, 'instance_stopped', stopping)
+
+    try:
+        ctx.client.start_instances(InstanceIds=targets)
+    except Exception as e:  # noqa: BLE001
+        labels = _labels(instances[iid] for iid in targets)
+        ctx.module.fail_json(msg=f"StartInstances failed for {labels}: {e}")
+        return
+
+    if wait:
+        _wait_for(ctx, 'instance_running', [instances[iid] for iid in targets])
+        instances = _describe_instances(ctx, instance_ids)
+        for iid, inst in instances.items():
+            inst.previous_state = before_states[iid]
+    else:
+        for iid in targets:
+            instances[iid].current_state = InstanceState.PENDING
+
+    return _build_payload(instances, InstanceCommand.START, changed, unchanged)
+
+def _labels(instances):
+    """Render a comma-separated list of human-friendly labels for the Instances."""
+    return ', '.join(i.label for i in instances)
+
+
+def _check_not_terminated(ctx, instances, action):
+    """Fail the module if any instance is terminated/shutting-down."""
+    bad = [i for i in instances.values() if i.is_terminal]
+    if bad:
+        bad_instances = ', '.join(f'{i.label}={i.state}' for i in bad)
+        ctx.module.fail_json(
+            msg=f"Cannot {action} terminated/shutting-down instances: {bad_instances}")
+
+
+def _wait_for(ctx, waiter_name, wait_instances):
+    if not wait_instances or ctx.module.check_mode:
+        return
+    waiter = ctx.client.get_waiter(waiter_name)
+    try:
+        waiter.wait(InstanceIds=[i.instance_id for i in wait_instances])
+    except Exception as e:  # noqa: BLE001 - surface any waiter failure as module failure
+        ctx.module.fail_json(
+            msg=f"Waiter {waiter_name!r} failed for {_labels(wait_instances)}: {e}")
+        return
 
 
 def _do_stop(ctx, instance_ids, wait):
