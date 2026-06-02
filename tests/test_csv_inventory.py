@@ -1,6 +1,6 @@
 import os
 
-from parameterized import parameterized
+import pytest
 
 from commcare_cloud.environment.main import Environment
 from commcare_cloud.environment.paths import DefaultPaths
@@ -129,7 +129,7 @@ INTERNAL_HOST_VARS = (
 )
 
 
-@parameterized(TEST_ENVIRONMENTS)
+@pytest.mark.parametrize("env_name", TEST_ENVIRONMENTS)
 def test_csv_inventory(env_name):
     env = Environment(DefaultPaths(env_name, environments_dir=TEST_ENVIRONMENTS_DIR))
 

@@ -2,7 +2,6 @@ import os
 
 import pytest
 from unittest.mock import patch
-from parameterized import parameterized
 
 from commcare_cloud.commands.inventory_lookup.getinventory import (
     HostMatchException, HostPattern, get_server_address, split_host_group)
@@ -10,7 +9,7 @@ from commcare_cloud.commands.inventory_lookup.getinventory import (
 TEST_ENV_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
 
 
-@parameterized([
+@pytest.mark.parametrize("pattern,expected", [
     ("control", HostPattern(None, "control", None)),
     ("control[0]", HostPattern(None, "control", 0)),
     ("user@control[0]", HostPattern("user@", "control", 0)),
@@ -23,7 +22,7 @@ def test_split_host_group(pattern, expected):
     assert split_host_group(pattern) == expected
 
 
-@parameterized([
+@pytest.mark.parametrize("pattern,expected", [
     ("pgsynclog", "10.247.164.70"),
     ("postgresql[0]", "10.247.164.70"),
     ("user@postgresql[3]", "user@10.247.164.20"),
@@ -38,11 +37,11 @@ def test_get_server_address(pattern, expected):
     assert address == expected
 
 
-@parameterized([
-    ("postgresql:a",),
-    ("postgresql[a]",),
-    ("postgresql",),
-    ("pgsynclog[1]",),
+@pytest.mark.parametrize("pattern", [
+    "postgresql:a",
+    "postgresql[a]",
+    "postgresql",
+    "pgsynclog[1]",
 ])
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENV_DIR)
 def test_get_server_address_errors(pattern):

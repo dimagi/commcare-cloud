@@ -4,7 +4,7 @@ from io import open
 from unittest import SkipTest
 
 import yaml
-from parameterized import parameterized
+import pytest
 
 from commcare_cloud.environment.main import Environment
 from commcare_cloud.environment.paths import DefaultPaths
@@ -14,7 +14,7 @@ TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
 TEST_ENVIRONMENTS = os.listdir(TEST_ENVIRONMENTS_DIR)
 
 
-@parameterized(TEST_ENVIRONMENTS)
+@pytest.mark.parametrize("env_name", TEST_ENVIRONMENTS)
 def test_postgresql_config(env_name):
     # To update test configs when they get outdated:
     # python tests/test_postgresql_config.py

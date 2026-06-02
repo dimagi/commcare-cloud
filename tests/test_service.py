@@ -1,4 +1,4 @@
-from parameterized import parameterized
+import pytest
 
 from commcare_cloud.commands.ansible.helpers import ProcessDescriptor
 from commcare_cloud.commands.ansible.service import get_managed_service_options, get_processes_by_host, \
@@ -23,7 +23,7 @@ def test_get_managed_service_options():
     ], options
 
 
-@parameterized([
+@pytest.mark.parametrize("all_hosts,process_descriptors,process_pattern,expected_response", [
     # no filtering
     (['h1', 'h2', 'h3', 'h4'], process_descriptors, None, {
         'h1': ['p1-0', 'p1-1', 'p2-0'],
