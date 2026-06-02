@@ -1,7 +1,7 @@
 import os
 
 from unittest.mock import patch
-from nose.tools import assert_equal, assert_raises
+from nose.tools import assert_raises
 from parameterized import parameterized
 
 from commcare_cloud.commands.inventory_lookup.getinventory import (
@@ -20,7 +20,7 @@ TEST_ENV_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
     ("user@192.168.3.1", HostPattern("user@", "192.168.3.1", None)),
 ])
 def test_split_host_group(pattern, expected):
-    assert_equal(split_host_group(pattern), expected)
+    assert split_host_group(pattern) == expected
 
 
 @parameterized([
@@ -35,7 +35,7 @@ def test_split_host_group(pattern, expected):
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENV_DIR)
 def test_get_server_address(pattern, expected):
     address = get_server_address("2018-04-04-icds-new-snapshot", pattern)
-    assert_equal(address, expected)
+    assert address == expected
 
 
 @parameterized([
@@ -53,7 +53,7 @@ def test_get_server_address_errors(pattern):
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENV_DIR)
 def test_get_server_address_with_groups():
     address = get_server_address("2018-04-04-icds-new-snapshot", "postgresql", allow_multiple=True)
-    assert_equal(address, "\n".join([
+    assert address == "\n".join([
         "10.247.164.26 - pgmain, postgresql, all",
         "10.247.164.20 - pgshard1, postgresql, all",
         "10.247.164.21 - pgshard2, postgresql, all",
@@ -63,13 +63,13 @@ def test_get_server_address_with_groups():
         "10.247.164.70 - pgsynclog, postgresql, all",
         "10.247.164.25 - pgucr, postgresql, all",
         "10.247.164.56 - plproxy1, postgresql, all",
-    ]))
+    ])
 
 
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENV_DIR)
 def test_get_server_address_for_monolith_with_groups():
     address = get_server_address("small_cluster", "all", allow_multiple=True)
-    assert_equal(address, "\n".join([
+    assert address == "\n".join([
         (
             "172.19.3.0 - demo_server0, proxy, webworkers, couchdb2_proxy, "
             "formplayer, shared_dir_host, control, mailrelay, django_manage, "
@@ -81,4 +81,4 @@ def test_get_server_address_for_monolith_with_groups():
         ),
         "172.19.3.2 - demo_server2, celery, all",
         "172.19.3.3 - demo_server3, pg_standby, pillowtop, couchdb2, all",
-    ]))
+    ])

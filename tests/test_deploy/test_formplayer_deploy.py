@@ -1,7 +1,7 @@
 import inspect
 
 import requests_mock
-from nose.tools import assert_equals, assert_is_none
+from nose.tools import assert_is_none
 
 from commcare_cloud.commands.deploy.formplayer import (
     get_latest_formplayer_version, get_info_urls, VersionInfo, strip_escapes
@@ -50,12 +50,12 @@ def test_get_latest_formplayer_version():
         m.get(build_info_url, text=EXAMPLE_BUILD_PROPERTIES)
         version = get_latest_formplayer_version("env1")
 
-    assert_equals(version, VersionInfo(
+    assert version == VersionInfo(
         commit=COMMIT,
         message=strip_escapes(MESSAGE),
         time=strip_escapes(TIME),
         build_time=strip_escapes(BUILD_TIME),
-    ))
+    )
 
 
 def test_get_latest_formplayer_version_error():

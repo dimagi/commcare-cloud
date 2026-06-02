@@ -1,6 +1,5 @@
 import datetime
 
-from nose.tools import assert_equals
 from parameterized import parameterized
 
 from commcare_cloud.commands.utils import timeago
@@ -31,4 +30,4 @@ YEAR = MONTH * 12
     (datetime.timedelta(seconds=YEAR * 2.1), '2 years ago'),
 ])
 def test_timeago(delta, expected):
-    assert_equals(timeago(delta), expected)
+    assert timeago(delta) == expected

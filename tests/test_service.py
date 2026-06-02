@@ -1,4 +1,4 @@
-from nose.tools import assert_equal, assert_dict_equal
+from nose.tools import assert_dict_equal
 from parameterized import parameterized
 
 from commcare_cloud.commands.ansible.helpers import ProcessDescriptor
@@ -68,7 +68,7 @@ def test_get_processes_by_host(all_hosts, process_descriptors, process_pattern, 
         hosts: sorted(process)
         for hosts, process in processes_by_host.items()
     }
-    assert_equal(processes_by_host, expected_response)
+    assert processes_by_host == expected_response
 
 
 def test_optimized_process_operations():

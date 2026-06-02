@@ -5,7 +5,6 @@ from io import open
 import yaml
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
 from unittest.mock import patch
-from nose.tools import assert_equal
 from parameterized import parameterized
 
 from commcare_cloud.commands.migrations.config import (COUCH_SHARD_PLAN,
@@ -55,7 +54,7 @@ def test_couch_config(plan_name):
 
     expected_couch_config_json = _get_expected_yml(plan_name, 'expected_couch_config.yml')
 
-    assert_equal(expected_couch_config_json, migration.target_couch_config.to_json())
+    assert expected_couch_config_json == migration.target_couch_config.to_json()
 
 
 @parameterized(TEST_PLANS)
