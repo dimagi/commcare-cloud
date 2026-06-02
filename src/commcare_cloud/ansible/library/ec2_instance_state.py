@@ -140,6 +140,22 @@ def _get_ec2_client(region):
         )
     return boto3.client('ec2', region_name=region)
 
+
+def _do_describe(ctx, instance_ids):
+    return {}
+
+
+def _do_start(ctx, instance_ids, wait):
+    return {}
+
+
+def _do_stop(ctx, instance_ids, wait):
+    return {}
+
+
+def _do_stop_and_start(ctx, instance_ids, wait):
+    return {}
+
 class _Ctx:
     """Per-run context shared by the flow helpers.
 
@@ -179,7 +195,21 @@ def main():
 
     ctx = _Ctx(client, module)
 
-    module.exit_json()
+    command = params['command']
+
+    if command == InstanceCommand.DESCRIBE:
+        payload = _do_describe(ctx, instance_ids)
+    elif command == InstanceCommand.START:
+        payload = _do_start(ctx, instance_ids, params['wait'])
+    elif command == InstanceCommand.STOP:
+        payload = _do_stop(ctx, instance_ids, params['wait'])
+    elif command == InstanceCommand.STOP_AND_START:
+        payload = _do_stop_and_start(ctx, instance_ids, params['wait'])
+    else:
+        module.fail_json(msg=f"Unknown command {command!r}.")
+        return
+
+    module.exit_json(**payload)
 
 
 if __name__ == '__main__':
