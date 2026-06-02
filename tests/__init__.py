@@ -1,6 +1,10 @@
 from unittest.mock import patch
 
+from unmagic import autouse
+
 from commcare_cloud.user_utils import StringIsGuess
+
+from .fixtures import package_patches
 
 
 def setup_package():
@@ -21,6 +25,9 @@ def setup_package():
 def teardown_package():
     for patch_ in patches:
         patch_.stop()
+
+
+autouse(package_patches, __file__)
 
 
 def _install_nose_plugins():
