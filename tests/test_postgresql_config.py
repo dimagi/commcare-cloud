@@ -1,7 +1,6 @@
 import difflib
 import os
 from io import open
-from unittest import SkipTest
 
 import yaml
 import pytest
@@ -11,7 +10,10 @@ from commcare_cloud.environment.paths import DefaultPaths
 from commcare_cloud.yaml import PreserveUnsafeDumper
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
-TEST_ENVIRONMENTS = os.listdir(TEST_ENVIRONMENTS_DIR)
+TEST_ENVIRONMENTS = [
+    name for name in os.listdir(TEST_ENVIRONMENTS_DIR)
+    if name != 'small_cluster'  # small_cluster does not have a postgres config
+]
 
 
 @pytest.mark.parametrize("env_name", TEST_ENVIRONMENTS)
@@ -20,9 +22,6 @@ def test_postgresql_config(env_name):
     # python tests/test_postgresql_config.py
 
     env = Environment(DefaultPaths(env_name, environments_dir=TEST_ENVIRONMENTS_DIR))
-
-    if not os.path.exists(env.paths.generated_yml):
-        raise SkipTest
 
     with open(env.paths.generated_yml, encoding='utf-8') as f:
         generated = yaml.safe_load(f)
