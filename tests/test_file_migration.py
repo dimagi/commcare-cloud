@@ -2,7 +2,6 @@ import os
 import shutil
 
 from unittest.mock import patch
-from nose.tools import assert_multi_line_equal
 
 from commcare_cloud.commands.migrations.copy_files import prepare_file_copy_scripts, SourceFiles, \
     FILE_MIGRATION_RSYNC_SCRIPT, get_file_list_filename, read_plan, Plan
@@ -95,5 +94,4 @@ def test_parse_plan():
 def _check_file_contents(generated_path, expected_path):
     expected_script = get_file_contents(expected_path)
     script_source = get_file_contents(generated_path)
-    assert_multi_line_equal.__self__.maxDiff = None
-    assert_multi_line_equal(expected_script.strip(), script_source.strip())
+    assert expected_script.strip() == script_source.strip()

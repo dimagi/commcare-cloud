@@ -1,4 +1,3 @@
-from nose.tools import assert_dict_equal
 from parameterized import parameterized
 
 from commcare_cloud.commands.ansible.helpers import ProcessDescriptor
@@ -83,4 +82,4 @@ def test_optimized_process_operations():
         'h3': ['p5', ],
     }
     opt_process_host_mapping = optimize_process_operations(all_processes_by_host, process_host_mapping)
-    assert_dict_equal(opt_process_host_mapping, {('h2',): ['p3'], ('h1', 'h3'): ['all']})
+    assert opt_process_host_mapping == {('h2',): ['p3'], ('h1', 'h3'): ['all']}
