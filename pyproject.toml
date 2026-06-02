@@ -53,7 +53,7 @@ test = [
     "requests-mock",
     "testil",
 ]
-dev = ["ipdb"]
+dev = ["ipdb", "pdbp"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "src/commcare_cloud"]
