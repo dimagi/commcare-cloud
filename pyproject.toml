@@ -53,7 +53,7 @@ test = [
 dev = ["ipdb", "pdbp"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "src/commcare_cloud"]
+testpaths = ["tests", "src"]
 python_files = ["test_*.py"]
 pythonpath = ["."]  # makes top-level `tests` package importable
 addopts = [
