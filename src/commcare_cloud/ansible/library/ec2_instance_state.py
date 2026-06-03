@@ -16,7 +16,10 @@ description:
     - Manages the running state of EC2 instances given an explicit list of
       instance IDs. Supports four commands - describe, start, stop, stop_and_start,
       and is idempotent (no API call is made if the instance is already in the requested state).
-    - Designed to run with delegate_to localhost. AWS credentials and the target region are picked up from the standard boto3 credential chain; in the commcare-cloud workflow the AWS_PROFILE and AWS_REGION environment variables are exported automatically before ansible runs.
+    - Designed to run with delegate_to localhost. AWS credentials and the target
+      region are picked up from the standard boto3 credential chain; in the
+      commcare-cloud workflow the AWS_PROFILE and AWS_REGION environment variables
+      are exported automatically before ansible runs.
 
 version_added: "1.0.0"
 
@@ -105,7 +108,9 @@ class InstanceCommand(str, Enum):
     STOP = 'stop'
     STOP_AND_START = 'stop_and_start'
 
+
 INSTANCE_ID_RE = re.compile(r'^i-([0-9a-f]{8}|[0-9a-f]{17})$')
+
 
 # EC2 instance lifecycle states as returned by DescribeInstances (State.Name).
 class InstanceState(str, Enum):
@@ -115,6 +120,7 @@ class InstanceState(str, Enum):
     STOPPED = 'stopped'
     SHUTTING_DOWN = 'shutting-down'
     TERMINATED = 'terminated'
+
 
 TERMINATED_STATES = {InstanceState.TERMINATED, InstanceState.SHUTTING_DOWN}
 
@@ -139,6 +145,7 @@ def _get_ec2_client(region):
             "boto3 is required by ec2_instance_state but is not installed."
         )
     return boto3.client('ec2', region_name=region)
+
 
 class Instance:
 
@@ -206,7 +213,6 @@ class Instance:
         }
 
 
-
 def _do_describe(ctx, instance_ids):
     instances = _describe_instances(ctx, instance_ids)
     return _build_payload(instances, InstanceCommand.DESCRIBE, changed=False,
@@ -252,6 +258,7 @@ def _build_payload(instances, command, changed, unchanged_instance_ids):
         },
     }
 
+
 def _do_start(ctx, instance_ids, wait):
     instances = _describe_instances(ctx, instance_ids)
     _check_not_terminated(ctx, instances, InstanceCommand.START)
@@ -293,6 +300,7 @@ def _do_start(ctx, instance_ids, wait):
             instances[iid].current_state = InstanceState.PENDING
 
     return _build_payload(instances, InstanceCommand.START, changed, unchanged)
+
 
 def _labels(instances):
     """Render a comma-separated list of human-friendly labels for the Instances."""
@@ -366,7 +374,6 @@ def _do_stop(ctx, instance_ids, wait):
             instances[iid].current_state = InstanceState.STOPPING
 
     return _build_payload(instances, InstanceCommand.STOP, changed, unchanged)
-
 
 
 def _do_stop_and_start(ctx, instance_ids, wait):

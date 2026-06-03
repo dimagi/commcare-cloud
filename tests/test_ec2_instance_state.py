@@ -58,8 +58,12 @@ class TestArgumentValidation(unittest.TestCase):
             'command': 'describe',
         })
         assert result['failed']
-        expected_msg = "AWS region not provided. Pass 'region' to the module, or set the AWS_REGION environment variable."
-        assert result['result']['msg'] == expected_msg, f"Expected {expected_msg} but got {result['result']['msg']}"
+        expected_msg = (
+            "AWS region not provided. Pass 'region' to the module, "
+            "or set the AWS_REGION environment variable."
+        )
+        assert result['result']['msg'] == expected_msg, \
+            f"Expected {expected_msg} but got {result['result']['msg']}"
 
     def test_invalid_command_fails(self):
         os.environ['AWS_REGION'] = 'us-east-1'
@@ -69,7 +73,9 @@ class TestArgumentValidation(unittest.TestCase):
         })
         assert result['failed']
         expected_msg = "value of command must be one of: describe, start, stop, stop_and_start, got: bogus"
-        assert result['result']['msg'] == expected_msg, "Expected {expected_msg} but got {result_msg}".format(expected_msg=expected_msg, result_msg=result['result']['msg'])
+        assert result['result']['msg'] == expected_msg, \
+            "Expected {expected_msg} but got {result_msg}".format(
+                expected_msg=expected_msg, result_msg=result['result']['msg'])
 
     def test_empty_instance_ids_fails(self):
         os.environ['AWS_REGION'] = 'us-east-1'
@@ -79,7 +85,9 @@ class TestArgumentValidation(unittest.TestCase):
         })
         expected_msg = "'instance_ids' must be a non-empty list."
         assert result['failed']
-        assert result['result']['msg'] == expected_msg, "Expected {expected_msg} but got {result_msg}".format(expected_msg=expected_msg, result_msg=result['result']['msg'])
+        assert result['result']['msg'] == expected_msg, \
+            "Expected {expected_msg} but got {result_msg}".format(
+                expected_msg=expected_msg, result_msg=result['result']['msg'])
 
     def test_malformed_instance_id_fails(self):
         os.environ['AWS_REGION'] = 'us-east-1'
@@ -89,7 +97,9 @@ class TestArgumentValidation(unittest.TestCase):
         })
         assert result['failed']
         expected_msg = "Malformed instance IDs: ['not-an-id']"
-        assert result['result']['msg'] == expected_msg, "Expected {expected_msg} but got {result_msg}".format(expected_msg=expected_msg, result_msg=result['result']['msg'])
+        assert result['result']['msg'] == expected_msg, \
+            "Expected {expected_msg} but got {result_msg}".format(
+                expected_msg=expected_msg, result_msg=result['result']['msg'])
 
     def test_valid_instance_id_pattern(self):
         assert ec2_instance_state.INSTANCE_ID_RE.match('i-0123456789abcdef0')
@@ -147,7 +157,6 @@ class FakeEC2Client:
             reservations.append({'Instances': [inst]})
         return {'Reservations': reservations}
 
-    
     def start_instances(self, InstanceIds):
         self.calls.append(('start_instances', {'InstanceIds': list(InstanceIds)}))
         starts = []
@@ -247,7 +256,11 @@ class TestDescribe(unittest.TestCase):
             {'instance_ids': ['i-0deadbeefdeadbeef'], 'command': 'describe'},
             fake_client=fake,
         )
-        expected_msg = "AWS DescribeInstances failed: An error occurred (InvalidInstanceID.NotFound) when calling the DescribeInstances operation: Instances not found: ['i-0deadbeefdeadbeef']"
+        expected_msg = (
+            "AWS DescribeInstances failed: An error occurred (InvalidInstanceID.NotFound) "
+            "when calling the DescribeInstances operation: "
+            "Instances not found: ['i-0deadbeefdeadbeef']"
+        )
         assert result['failed']
         assert result['result']['msg'] == expected_msg, result['result']['msg']
 
@@ -264,6 +277,7 @@ class TestDescribe(unittest.TestCase):
             fake_client=fake,
         )
         assert [i['instance_id'] for i in result['result']['instances']] == ids
+
 
 class TestStart(unittest.TestCase):
 
@@ -288,7 +302,6 @@ class TestStart(unittest.TestCase):
         assert not result['failed']
         assert not result['result']['changed']
         assert result['result']['unchanged_instance_ids'] == ['i-0aaaaaaaaaaaaaaaa']
-        
         assert 'start_instances' not in [c[0] for c in fake.calls]
 
     def test_started_stopped_invokes_start_and_waiter(self):
@@ -508,7 +521,10 @@ class TestStopped(unittest.TestCase):
             fake_client=fake,
         )
         assert result['failed']
-        expected_msg="Cannot stop terminated/shutting-down instances: i-0aaaaaaaaaaaaaaaa (10.0.0.1)=terminated"
+        expected_msg = (
+            "Cannot stop terminated/shutting-down instances: "
+            "i-0aaaaaaaaaaaaaaaa (10.0.0.1)=terminated"
+        )
         assert result['result']['msg'] == expected_msg, result['result']['msg']
 
     def test_stopped_noop_does_single_describe(self):

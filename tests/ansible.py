@@ -26,12 +26,15 @@ def run(module, args):
     object is expected.
     """
     warnings = []
+
     def exit_json(*args, **kw):
         kw.setdefault("warnings", list(warnings))
         raise Exit(kw)
+
     def fail_json(*args, **kw):
         kw.setdefault("warnings", list(warnings))
         raise Fail(kw.get("msg", repr(kw)), kw)
+
     def warn(self, msg):
         warnings.append(msg)
     if isinstance(module, (str, Path)):
