@@ -17,14 +17,11 @@ def test_validate_references_to_parameter_groups():
     )
 
     # assert invalid reference
-    with pytest.raises(ValueError) as context:
+    with pytest.raises(ValueError, match=r".*pg0.*nonexistent.*") as context:
         validate_references_to_parameter_groups(
             {},
             [type("Instance", (), {"identifier": "pg0", "parameter_group": "nonexistent"})],
         )
-        message = str(context.value)
-        assert "pg0" in message
-        assert "nonexistent" in message
 
     # assert parameter_group not required
     validate_references_to_parameter_groups(
