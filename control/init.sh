@@ -1,7 +1,17 @@
 #! /bin/bash
 NO_INPUT=${NO_INPUT:-0}
 
-if [[ $_ == $0 ]]; then
+# Resolve this script's path in both bash and zsh
+is_sourced=0
+if [ -n "$ZSH_VERSION" ]; then
+    [[ $ZSH_EVAL_CONTEXT == *:file* ]] && is_sourced=1
+    script_path="$0"
+elif [ -n "$BASH_VERSION" ]; then
+    (return 0 2>/dev/null) && is_sourced=1
+    script_path="${BASH_SOURCE[0]}"
+fi
+
+if [ "$is_sourced" != 1 ]; then
     echo "Please run this script as follows:"
     echo "    $ source /path/to/repo/control/init.sh"
     exit 1
@@ -14,9 +24,9 @@ if ! command -v uv > /dev/null; then
     return 1
 fi
 
-if [[ "${BASH_SOURCE[0]}" == *init.sh ]]; then
+if [[ "$script_path" == *init.sh ]]; then
     # this script is being run from a file on disk, presumably from within commcare-cloud repo
-    COMMCARE_CLOUD_REPO=$(cd -- "$(dirname -- "$(dirname -- "${BASH_SOURCE[0]}")")" &> /dev/null && pwd)
+    COMMCARE_CLOUD_REPO=$(cd -- "$(dirname -- "$(dirname -- "$script_path")")" &> /dev/null && pwd)
 
     # check for expected file to verify we've got the right place
     if [ ! -f ${COMMCARE_CLOUD_REPO}/control/update_code.sh ]; then
@@ -62,19 +72,29 @@ fi
 alias update-code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && (cd ${COMMCARE_CLOUD_REPO} && uv sync --quiet)'
 alias update_code=update-code
 
-source ${COMMCARE_CLOUD_REPO}/src/commcare_cloud/.bash_completion
-
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# The completion script uses bash's `complete` builtin, which zsh only provides
+# after `bashcompinit` is loaded. Detect it and tell the user how to enable it.
+if command -v complete >/dev/null 2>&1; then
+    source ${COMMCARE_CLOUD_REPO}/src/commcare_cloud/.bash_completion
+elif [ -n "$ZSH_VERSION" ]; then
+    printf "${YELLOW}Skipping cchq tab-completion: requires bash-completion compatibility in zsh.\n"
+    printf "${YELLOW}To enable it, add the following to your ~/.zshrc before sourcing init.sh again:\n"
+    printf "${YELLOW}   autoload -Uz compinit && compinit\n"
+    printf "${YELLOW}   autoload -Uz bashcompinit && bashcompinit\n${NC}"
+fi
+
 if [ -z ${CI_TEST} ]; then
   if ! grep -q init-ansible ~/.profile 2>/dev/null; then
-    if [ $NO_INPUT == 1 ]; then
+    if [[ $NO_INPUT == 1 ]]; then
       yn='y'
     else
       printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
-      read -t 30 -p "(y/n): " yn
+      printf "(y/n): "
+      read -t 30 yn
     fi
     case $yn in
         [Yy]* )
