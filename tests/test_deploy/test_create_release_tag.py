@@ -1,12 +1,12 @@
 import shutil
 import subprocess
+from tempfile import TemporaryDirectory as tempdir
 from io import StringIO
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
 import sh
-from testil import tempdir
 
 from commcare_cloud.commands.deploy.utils import (
     _push_release_tag,

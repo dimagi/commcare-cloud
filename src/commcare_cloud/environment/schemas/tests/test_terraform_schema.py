@@ -1,4 +1,5 @@
-from nose.tools import assert_raises
+import pytest
+
 from commcare_cloud.environment.schemas.terraform import (
     ServerConfig, RdsInstanceConfig, RdsParameterGroupConfig, RDS_DEFAULT_PARAMS,
 )
@@ -67,7 +68,7 @@ def test_rds_instance_config():
     })
     assert instance_with_param_group.parameter_group == 'pg18-params-staging'
 
-    with assert_raises(ValueError) as context:
+    with pytest.raises(ValueError) as context:
         RdsInstanceConfig.wrap({
             'identifier': 'pg0-staging',
             'instance_type': 'db.t4g.large',
@@ -76,6 +77,6 @@ def test_rds_instance_config():
             'parameter_group': 'pg18-params-staging',
             'params': {'shared_preload_libraries': 'pg_stat_statements'},
         })
-    message = str(context.exception)
+    message = str(context.value)
     assert 'pg0-staging' in message
     assert 'mutually exclusive' in message

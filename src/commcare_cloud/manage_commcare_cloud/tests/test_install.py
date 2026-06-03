@@ -1,7 +1,7 @@
 import os
 
+import pytest
 import yaml
-from testil import assert_raises
 
 from commcare_cloud.manage_commcare_cloud.install import (
     parse_collections,
@@ -90,5 +90,5 @@ def test_required_collections():
 
 def test_required_collections_without_version_raises():
     requirements = {'collections': [{'name': 'community.general'}]}
-    with assert_raises(ValueError):
+    with pytest.raises(ValueError):
         required_collections(requirements)

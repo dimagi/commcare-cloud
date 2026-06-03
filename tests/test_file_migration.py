@@ -2,7 +2,6 @@ import os
 import shutil
 
 from unittest.mock import patch
-from nose.tools import assert_multi_line_equal, assert_equal
 
 from commcare_cloud.commands.migrations.copy_files import prepare_file_copy_scripts, SourceFiles, \
     FILE_MIGRATION_RSYNC_SCRIPT, get_file_list_filename, read_plan, Plan
@@ -13,7 +12,7 @@ TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'file_migration_data')
 SCRIPT_ROOT = os.path.join(TEST_DATA_DIR, '.generated_data')
 
 
-def tearDown():
+def teardown_module():
     # delete generated files
     shutil.rmtree(SCRIPT_ROOT)
 
@@ -54,7 +53,7 @@ def test_prepare_migration_scripts():
         file_list_filename = get_file_list_filename(config)
         file_path = os.path.join(SCRIPT_ROOT, target_host, file_list_filename)
         file_list = get_file_contents(file_path).splitlines()
-        assert_equal(file_list, config.files)
+        assert file_list == config.files
 
 
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_DATA_DIR)
@@ -86,14 +85,13 @@ def test_parse_plan():
 
     pla_path = os.path.join(TEST_DATA_DIR, 'test_plan.yml')
     plan = read_plan(pla_path, target_env)
-    assert_equal(plan, expected)
+    assert plan == expected
 
     plan = read_plan(pla_path, target_env, 'target_host2')
-    assert_equal(list(plan.configs), ['10.0.0.2'])
+    assert list(plan.configs) == ['10.0.0.2']
 
 
 def _check_file_contents(generated_path, expected_path):
     expected_script = get_file_contents(expected_path)
     script_source = get_file_contents(generated_path)
-    assert_multi_line_equal.__self__.maxDiff = None
-    assert_multi_line_equal(expected_script.strip(), script_source.strip())
+    assert expected_script.strip() == script_source.strip()
