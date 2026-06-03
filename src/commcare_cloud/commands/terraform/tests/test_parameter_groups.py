@@ -17,7 +17,7 @@ def test_validate_references_to_parameter_groups():
     )
 
     # assert invalid reference
-    with pytest.raises(ValueError, match=r".*pg0.*nonexistent.*") as context:
+    with pytest.raises(ValueError, match=r".*pg0.*nonexistent.*"):
         validate_references_to_parameter_groups(
             {},
             [type("Instance", (), {"identifier": "pg0", "parameter_group": "nonexistent"})],
