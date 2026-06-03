@@ -35,9 +35,6 @@ dependencies = [
     "tabulate",
 ]
 
-[project.optional-dependencies]
-aws = ["awscli"]
-
 [project.scripts]
 commcare-cloud = "commcare_cloud.commcare_cloud:main"
 cchq = "commcare_cloud.commcare_cloud:main"
