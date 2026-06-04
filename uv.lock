@@ -252,7 +252,7 @@ dev = [
 test = [
     { name = "docopt" },
     { name = "pytest" },
-    { name = "pytest-unmagic" },
+    { name = "pytest-unmagic", specifier = ">=1.1.0" },
     { name = "requests-mock" },
 ]
 
@@ -818,14 +818,14 @@ wheels = [
 
 [[package]]
 name = "pytest-unmagic"
-version = "1.0.1"
+version = "1.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pytest" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4f/53/7aef49cbf746057d6021d78085c6a7f03aced1c332e725ae1156057edcec/pytest_unmagic-1.0.1.tar.gz", hash = "sha256:5f73e96b31a13041bcd46c3e990f4fb4cedb5b555660d0cb78d8d5d9bc99064a", size = 10439, upload-time = "2025-07-14T13:05:36.183Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c0/6c/9e38b289b61686169ef3941f4f11958047ed055f34b54ac8f90e5901654d/pytest_unmagic-1.1.0.tar.gz", hash = "sha256:cdde56c72296c2269e4d9eec8cdc67c84c82a431bef0114457ec4800a72ad84c", size = 9255, upload-time = "2026-06-04T20:20:06.171Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/21/9b/e2c66454df73d1ecbb18089f026666743ef52480e295eb6f9c77998b1a63/pytest_unmagic-1.0.1-py3-none-any.whl", hash = "sha256:54a02d746d20943240c9b84e212a9a7e19bc2707cb176f9b1d66677b28260a13", size = 10909, upload-time = "2025-07-14T13:05:35.177Z" },
+    { url = "https://files.pythonhosted.org/packages/24/74/0ad96f4701284205fdefc4cefc711eb7ef593d559d13b4cbbf06b3969bd8/pytest_unmagic-1.1.0-py3-none-any.whl", hash = "sha256:8e98d551e9b165e1e8250299108e87a5f752a13c745f819df7a5f0ee9d4d4144", size = 10262, upload-time = "2026-06-04T20:20:04.998Z" },
 ]
 
 [[package]]
