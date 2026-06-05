@@ -136,14 +136,12 @@ def _get_region(module):
     return region
 
 
-def _get_ec2_client(region):
+def _get_ec2_client(module, region):
     """Return a boto3 EC2 client. Defined as a module-level function so tests can patch it."""
     try:
         import boto3
     except ImportError:
-        raise RuntimeError(
-            "boto3 is required by ec2_instance_state but is not installed."
-        )
+        module.fail_json(msg="boto3 is required by ec2_instance_state but is not installed.")
     return boto3.client('ec2', region_name=region)
 
 
@@ -451,10 +449,7 @@ def main():
 
     region = _get_region(module)
 
-    try:
-        client = _get_ec2_client(region)
-    except RuntimeError as e:
-        module.fail_json(msg=str(e))
+    client = _get_ec2_client(module, region)
 
     ctx = _Ctx(client, module)
 
