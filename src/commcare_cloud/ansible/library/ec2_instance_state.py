@@ -176,20 +176,10 @@ class Instance:
 
     @property
     def can_start(self):
-        """True if a StartInstances call is required to reach 'running'.
-
-        A 'stopping' instance is included: it must first be awaited to 'stopped',
-        then started.
-        """
         return self.state in (InstanceState.STOPPED, InstanceState.STOPPING)
 
     @property
     def can_stop(self):
-        """True if a StopInstances call is required to reach 'stopped'.
-
-        A 'stopping' instance is excluded: it is already heading to 'stopped',
-        so we wait for it but never issue StopInstances.
-        """
         return self.state in (InstanceState.RUNNING, InstanceState.PENDING)
 
     def to_result(self):
@@ -380,7 +370,6 @@ def _do_stop_and_start(ctx, instance_ids, wait):
     # Honor the user's `wait` choice for the final running wait.
     start_payload = _do_start(ctx, instance_ids, wait=wait)
 
-    # Combine: previous_state = state before the stop; current_state = after start.
     before_states = stop_payload['diff']['before']['states']
     after_states = start_payload['diff']['after']['states']
 
