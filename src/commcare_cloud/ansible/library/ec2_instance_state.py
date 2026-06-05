@@ -172,7 +172,7 @@ class Instance:
     @property
     def label(self):
         """Human-friendly identifier for error messages."""
-        return f"{self.instance_id} ({self.name})"
+        return f"{self.name} ({self.instance_id})"
 
     @property
     def can_start(self):
@@ -304,15 +304,15 @@ def _check_not_terminated(ctx, instances, action):
             msg=f"Cannot {action} terminated/shutting-down instances: {bad_instances}")
 
 
-def _wait_for(ctx, waiter_name, wait_instances):
-    if not wait_instances or ctx.module.check_mode:
+def _wait_for(ctx, waiter_name, instances):
+    if not instances or ctx.module.check_mode:
         return
     waiter = ctx.client.get_waiter(waiter_name)
     try:
-        waiter.wait(InstanceIds=[i.instance_id for i in wait_instances])
+        waiter.wait(InstanceIds=[i.instance_id for i in instances])
     except Exception as e:  # noqa: BLE001 - surface any waiter failure as module failure
         ctx.module.fail_json(
-            msg=f"Waiter {waiter_name!r} failed for {_labels(wait_instances)}: {e}")
+            msg=f"Waiter {waiter_name!r} failed for {_labels(instances)}: {e}")
         return
 
 
@@ -407,10 +407,8 @@ def _do_stop_and_start(ctx, instance_ids, wait):
 
 
 class _Ctx:
-    """Per-run context shared by the flow helpers.
-
-    Bundles the EC2 client, the AnsibleModule, so these don't have to be
-    passed as arguments to every helper.
+    """
+     Bundles the EC2 client and Ansible module for convenience
     """
 
     def __init__(self, client, module):
@@ -432,9 +430,9 @@ def main():
     if not instance_ids:
         module.fail_json(msg="'instance_ids' must be a non-empty list.")
 
-    bad = [i for i in instance_ids if not INSTANCE_ID_RE.match(i)]
-    if bad:
-        module.fail_json(msg=f"Malformed instance IDs: {bad!r}")
+    bad_ids = [i for i in instance_ids if not INSTANCE_ID_RE.match(i)]
+    if bad_ids:
+        module.fail_json(msg=f"Malformed instance IDs: {bad_ids!r}")
 
     region = _get_region(module)
 
