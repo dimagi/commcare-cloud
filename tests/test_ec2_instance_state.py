@@ -5,7 +5,6 @@ from unittest.mock import patch
 
 from . import ansible
 
-
 ec2_instance_state = ansible.import_module("ec2_instance_state")
 
 
@@ -656,7 +655,8 @@ class TestStopAndStart(unittest.TestCase):
             fake_client=fake,
         )
         assert result['failed']
-        expected_msg = "Cannot stop terminated/shutting-down instances: 10.0.0.1 (i-0aaaaaaaaaaaaaaaa)=terminated"
+        expected_msg = ("Cannot stop_and_start terminated/shutting-down instances: "
+                        "10.0.0.1 (i-0aaaaaaaaaaaaaaaa)=terminated")
         assert result['result']['msg'] == expected_msg, result['result']['msg']
 
     def test_stop_and_start_check_mode_does_not_wait_or_mutate(self):
