@@ -60,8 +60,7 @@ class TestArgumentValidation(unittest.TestCase):
         assert result['failed']
         expected_msg = "value of command must be one of: describe, start, stop, stop_and_start, got: bogus"
         assert result['result']['msg'] == expected_msg, \
-            "Expected {expected_msg} but got {result_msg}".format(
-                expected_msg=expected_msg, result_msg=result['result']['msg'])
+            f"Expected {expected_msg} but got {result['result']['msg']}"
 
     def test_empty_instance_ids_fails(self):
         os.environ['AWS_REGION'] = 'us-east-1'
@@ -72,8 +71,7 @@ class TestArgumentValidation(unittest.TestCase):
         expected_msg = "'instance_ids' must be a non-empty list."
         assert result['failed']
         assert result['result']['msg'] == expected_msg, \
-            "Expected {expected_msg} but got {result_msg}".format(
-                expected_msg=expected_msg, result_msg=result['result']['msg'])
+            f"Expected {expected_msg} but got {result['result']['msg']}"
 
     def test_malformed_instance_id_fails(self):
         os.environ['AWS_REGION'] = 'us-east-1'
@@ -84,8 +82,7 @@ class TestArgumentValidation(unittest.TestCase):
         assert result['failed']
         expected_msg = "Malformed instance IDs: ['not-an-id']"
         assert result['result']['msg'] == expected_msg, \
-            "Expected {expected_msg} but got {result_msg}".format(
-                expected_msg=expected_msg, result_msg=result['result']['msg'])
+            f"Expected {expected_msg} but got {result['result']['msg']}"
 
     def test_valid_instance_id_pattern(self):
         assert ec2_instance_state.INSTANCE_ID_RE.match('i-0123456789abcdef0')
