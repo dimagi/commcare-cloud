@@ -371,7 +371,7 @@ def is_ec2_instance_in_account(account_id):
         else:
             return False
 
-    except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
+    except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
         return False
 
     return aws_instance_identity_doc.get('accountId') == account_id
