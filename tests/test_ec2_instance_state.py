@@ -356,7 +356,7 @@ class TestStart(unittest.TestCase):
             fake_client=fake,
         )
         assert result['failed']
-        expected_msg = "Cannot start terminated/shutting-down instances: i-0aaaaaaaaaaaaaaaa (10.0.0.1)=terminated"
+        expected_msg = "Cannot start terminated/shutting-down instances: 10.0.0.1 (i-0aaaaaaaaaaaaaaaa)=terminated"
         assert result['result']['msg'] == expected_msg, result['result']['msg']
 
     def test_error_message_includes_name_tag(self):
@@ -509,7 +509,7 @@ class TestStopped(unittest.TestCase):
         assert result['failed']
         expected_msg = (
             "Cannot stop terminated/shutting-down instances: "
-            "i-0aaaaaaaaaaaaaaaa (10.0.0.1)=terminated"
+            "10.0.0.1 (i-0aaaaaaaaaaaaaaaa)=terminated"
         )
         assert result['result']['msg'] == expected_msg, result['result']['msg']
 
@@ -659,7 +659,7 @@ class TestStopAndStart(unittest.TestCase):
             fake_client=fake,
         )
         assert result['failed']
-        expected_msg = "Cannot stop terminated/shutting-down instances: i-0aaaaaaaaaaaaaaaa (10.0.0.1)=terminated"
+        expected_msg = "Cannot stop terminated/shutting-down instances: 10.0.0.1 (i-0aaaaaaaaaaaaaaaa)=terminated"
         assert result['result']['msg'] == expected_msg, result['result']['msg']
 
     def test_stop_and_start_check_mode_does_not_wait_or_mutate(self):
