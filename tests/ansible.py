@@ -28,11 +28,11 @@ def run(module, args):
     warnings = []
 
     def exit_json(*args, **kw):
-        kw.setdefault("warnings", list(warnings))
+        kw.setdefault("warnings", warnings)
         raise Exit(kw)
 
     def fail_json(*args, **kw):
-        kw.setdefault("warnings", list(warnings))
+        kw.setdefault("warnings", warnings)
         raise Fail(kw.get("msg", repr(kw)), kw)
 
     def warn(self, msg):
