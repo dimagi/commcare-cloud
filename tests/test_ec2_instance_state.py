@@ -1,26 +1,12 @@
-# Add the library directory to sys.path so we can import the module by name.
-# We must also ensure that the tests/ directory does NOT appear before the
-# library dir on sys.path, because tests/ansible.py would otherwise shadow
-# the real `ansible` package when ec2_instance_state does
-# `from ansible.module_utils.basic import AnsibleModule`.
 import os
-import sys
 import unittest
 from contextlib import nullcontext
 from unittest.mock import patch
 
 from . import ansible
 
-TESTS_DIR = os.path.abspath(os.path.dirname(__file__))
-LIBRARY_DIR = os.path.abspath(os.path.join(
-    TESTS_DIR, '..', 'src', 'commcare_cloud', 'ansible', 'library'
-))
-# Remove any existing entry for the tests/ directory from sys.path so that
-# tests/ansible.py cannot shadow the real ansible package.
-sys.path = [p for p in sys.path if os.path.abspath(p) != TESTS_DIR]
-sys.path.insert(0, LIBRARY_DIR)
 
-import ec2_instance_state  # noqa: E402
+ec2_instance_state = ansible.import_module("ec2_instance_state")
 
 
 def run_module(args, fake_client=None):
