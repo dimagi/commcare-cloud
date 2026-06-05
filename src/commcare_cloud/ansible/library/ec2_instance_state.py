@@ -201,39 +201,7 @@ class Instance:
         }
 
 
-def _do_describe(ctx, instance_ids):
-    instances = _describe_instances(ctx, instance_ids)
-    return _build_payload(instances, InstanceCommand.DESCRIBE, changed=False,
-                          unchanged_instance_ids=[])
-
-
-def _describe_instances(ctx, instance_ids):
-    """Return OrderedDict[id -> Instance] in input order.
-
-    Fails the module on AWS errors
-    """
-    from botocore.exceptions import ClientError
-    try:
-        resp = ctx.client.describe_instances(InstanceIds=list(instance_ids))
-    except ClientError as e:
-        ctx.module.fail_json(msg=f"AWS DescribeInstances failed: {e}")
-        return
-    by_id = {}
-    for reservation in resp.get('Reservations', []):
-        for raw in reservation.get('Instances', []):
-            by_id[raw['InstanceId']] = Instance(raw['InstanceId'], raw)
-
-    # Reservations are not returned in the order of the requested ids, so
-    # rebuild the map in input order to honor the documented contract.
-    return {iid: by_id[iid] for iid in instance_ids}
-
-
 def _build_payload(instances, command, changed, unchanged_instance_ids):
-    """Build the module result dict from a {id -> Instance} map.
-
-    Per-instance previous/current states (and the diff) are read from the
-    Instance objects, which the flow functions have updated for this run.
-    """
     members = list(instances.values())
     return {
         'changed': changed,
@@ -247,173 +215,188 @@ def _build_payload(instances, command, changed, unchanged_instance_ids):
     }
 
 
-def _do_start(ctx, instance_ids, wait):
-    instances = _describe_instances(ctx, instance_ids)
-    _check_not_terminated(ctx, instances, InstanceCommand.START)
-
-    targets = [iid for iid, inst in instances.items() if inst.can_start]
-    unchanged = [iid for iid, inst in instances.items() if not inst.can_start]
-    changed = bool(targets)
-
-    if ctx.module.check_mode:
-        # Predict end states; never wait, never call StartInstances.
-        for iid in targets:
-            instances[iid].current_state = InstanceState.RUNNING
-        return _build_payload(instances, InstanceCommand.START, changed, unchanged)
-
-    if not targets:
-        return _build_payload(instances, InstanceCommand.START, False, unchanged)
-
-    before_states = {iid: inst.state for iid, inst in instances.items()}
-
-    # Precondition (always, regardless of `wait`): a 'stopping' instance must
-    # reach 'stopped' before StartInstances will accept it.
-    stopping = [instances[iid] for iid in targets if instances[iid].state == InstanceState.STOPPING]
-    _wait_for(ctx, 'instance_stopped', stopping)
-
-    try:
-        ctx.client.start_instances(InstanceIds=targets)
-    except Exception as e:  # noqa: BLE001
-        labels = _labels(instances[iid] for iid in targets)
-        ctx.module.fail_json(msg=f"StartInstances failed for {labels}: {e}")
-        return
-
-    if wait:
-        _wait_for(ctx, 'instance_running', [instances[iid] for iid in targets])
-        instances = _describe_instances(ctx, instance_ids)
-        for iid, inst in instances.items():
-            inst.previous_state = before_states[iid]
-    else:
-        for iid in targets:
-            instances[iid].current_state = InstanceState.PENDING
-
-    return _build_payload(instances, InstanceCommand.START, changed, unchanged)
-
-
-def _labels(instances):
-    """Render a comma-separated list of human-friendly labels for the Instances."""
-    return ', '.join(i.label for i in instances)
-
-
-def _check_not_terminated(ctx, instances, action):
-    """Fail the module if any instance is terminated/shutting-down."""
-    bad = [i for i in instances.values() if i.is_terminated]
-    if bad:
-        bad_instances = ', '.join(f'{i.label}={i.state}' for i in bad)
-        ctx.module.fail_json(
-            msg=f"Cannot {action} terminated/shutting-down instances: {bad_instances}")
-
-
-def _wait_for(ctx, waiter_name, instances):
-    if not instances or ctx.module.check_mode:
-        return
-    waiter = ctx.client.get_waiter(waiter_name)
-    try:
-        waiter.wait(InstanceIds=[i.instance_id for i in instances])
-    except Exception as e:  # noqa: BLE001 - surface any waiter failure as module failure
-        ctx.module.fail_json(
-            msg=f"Waiter {waiter_name!r} failed for {_labels(instances)}: {e}")
-        return
-
-
-def _do_stop(ctx, instance_ids, wait):
-    instances = _describe_instances(ctx, instance_ids)
-    _check_not_terminated(ctx, instances, InstanceCommand.STOP)
-
-    targets = [iid for iid, inst in instances.items() if inst.can_stop]
-    # 'stopping' instances are mid-transition: we wait for them but don't initiate.
-    already_stopping = [iid for iid, inst in instances.items()
-                        if inst.state == InstanceState.STOPPING]
-    wait_for_stopped = targets + already_stopping
-    unchanged = [iid for iid in instance_ids
-                 if iid not in targets and iid not in already_stopping]
-    changed = bool(targets)
-
-    if ctx.module.check_mode:
-        for iid in wait_for_stopped:
-            instances[iid].current_state = InstanceState.STOPPED
-        return _build_payload(instances, InstanceCommand.STOP, changed, unchanged)
-
-    if not wait_for_stopped:
-        return _build_payload(instances, InstanceCommand.STOP, False, unchanged)
-
-    before_states = {iid: inst.state for iid, inst in instances.items()}
-
-    # Precondition (always, regardless of `wait`): a 'pending' instance must
-    # reach 'running' before it can be deterministically stopped.
-    pending = [instances[iid] for iid in targets if instances[iid].state == InstanceState.PENDING]
-    _wait_for(ctx, 'instance_running', pending)
-
-    if targets:
-        try:
-            ctx.client.stop_instances(InstanceIds=targets)
-        except Exception as e:  # noqa: BLE001
-            labels = _labels(instances[iid] for iid in targets)
-            ctx.module.fail_json(msg=f"StopInstances failed for {labels}: {e}")
-            return
-
-    if wait:
-        _wait_for(ctx, 'instance_stopped', [instances[iid] for iid in wait_for_stopped])
-        instances = _describe_instances(ctx, instance_ids)
-        for iid, inst in instances.items():
-            inst.previous_state = before_states[iid]
-    else:
-        for iid in wait_for_stopped:
-            instances[iid].current_state = InstanceState.STOPPING
-
-    return _build_payload(instances, InstanceCommand.STOP, changed, unchanged)
-
-
-def _do_stop_and_start(ctx, instance_ids, wait):
-    stop_payload = _do_stop(ctx, instance_ids, wait=True)
-
-    # Honor the user's `wait` choice for the final running wait.
-    start_payload = _do_start(ctx, instance_ids, wait=wait)
-
-    before_states = stop_payload['diff']['before']['states']
-    after_states = start_payload['diff']['after']['states']
-
-    instances = []
-    for inst in start_payload['instances']:
-        merged = dict(inst)
-        merged['previous_state'] = before_states[inst['instance_id']]
-        instances.append(merged)
-
-    # A successful stop_and_start always restarts every non-terminal instance:
-    # the stop phase leaves them all stopped, so the start phase must report a
-    # change. In check mode nothing is actually stopped, so the start phase sees
-    # the original running instances and reports no change — skip the invariant
-    # check there.
-    changed = True
-    if not ctx.module.check_mode and not start_payload['changed']:
-        ctx.module.fail_json(
-            msg="stop_and_start invariant violated: start phase reported no "
-                "change after a completed stop phase.",
-            start_payload=start_payload)
-
-    # unchanged = ids that were no-ops in BOTH phases.
-    # Highly unlikely to happen in practice, but we sort to make the result deterministic.
-    unchanged = sorted(set(stop_payload['unchanged_instance_ids'])
-                       & set(start_payload['unchanged_instance_ids']))
-
-    return {
-        'changed': changed,
-        'command': InstanceCommand.STOP_AND_START,
-        'instances': instances,
-        'unchanged_instance_ids': unchanged,
-        'diff': {'before': {'states': before_states},
-                 'after': {'states': after_states}},
-    }
-
-
-class _Ctx:
-    """
-     Bundles the EC2 client and Ansible module for convenience
-    """
+class EC2InstanceManager:
 
     def __init__(self, client, module):
         self.client = client
         self.module = module
+
+    def describe(self, instance_ids):
+        instances = self._describe_instances(instance_ids)
+        return _build_payload(instances, InstanceCommand.DESCRIBE, changed=False,
+                              unchanged_instance_ids=[])
+
+    def _describe_instances(self, instance_ids):
+        """Return OrderedDict[id -> Instance] in input order.
+
+        Fails the module on AWS errors
+        """
+        from botocore.exceptions import ClientError
+        try:
+            resp = self.client.describe_instances(InstanceIds=list(instance_ids))
+        except ClientError as e:
+            self.module.fail_json(msg=f"AWS DescribeInstances failed: {e}")
+            return
+        by_id = {}
+        for reservation in resp.get('Reservations', []):
+            for raw in reservation.get('Instances', []):
+                by_id[raw['InstanceId']] = Instance(raw['InstanceId'], raw)
+
+        # Reservations are not returned in the order of the requested ids, so
+        # rebuild the map in input order to honor the documented contract.
+        return {iid: by_id[iid] for iid in instance_ids}
+
+    def start(self, instance_ids, wait):
+        instances = self._describe_instances(instance_ids)
+        self._check_not_terminated(instances)
+
+        targets = [iid for iid, inst in instances.items() if inst.can_start]
+        unchanged = [iid for iid, inst in instances.items() if not inst.can_start]
+        changed = bool(targets)
+
+        if self.module.check_mode:
+            # Predict end states; never wait, never call StartInstances.
+            for iid in targets:
+                instances[iid].current_state = InstanceState.RUNNING
+            return _build_payload(instances, InstanceCommand.START, changed, unchanged)
+
+        if not targets:
+            return _build_payload(instances, InstanceCommand.START, False, unchanged)
+
+        before_states = {iid: inst.state for iid, inst in instances.items()}
+
+        # Precondition (always, regardless of `wait`): a 'stopping' instance must
+        # reach 'stopped' before StartInstances will accept it.
+        stopping = [instances[iid] for iid in targets if instances[iid].state == InstanceState.STOPPING]
+        self._wait_for('instance_stopped', stopping)
+
+        try:
+            self.client.start_instances(InstanceIds=targets)
+        except Exception as e:  # noqa: BLE001
+            labels = self._labels(instances[iid] for iid in targets)
+            self.module.fail_json(msg=f"StartInstances failed for {labels}: {e}")
+            return
+
+        if wait:
+            self._wait_for('instance_running', [instances[iid] for iid in targets])
+            instances = self._describe_instances(instance_ids)
+            for iid, inst in instances.items():
+                inst.previous_state = before_states[iid]
+        else:
+            for iid in targets:
+                instances[iid].current_state = InstanceState.PENDING
+
+        return _build_payload(instances, InstanceCommand.START, changed, unchanged)
+
+    def stop(self, instance_ids, wait):
+        instances = self._describe_instances(instance_ids)
+        self._check_not_terminated(instances)
+
+        targets = [iid for iid, inst in instances.items() if inst.can_stop]
+        # 'stopping' instances are mid-transition: we wait for them but don't initiate.
+        already_stopping = [iid for iid, inst in instances.items()
+                            if inst.state == InstanceState.STOPPING]
+        wait_for_stopped = targets + already_stopping
+        unchanged = [iid for iid in instance_ids
+                     if iid not in targets and iid not in already_stopping]
+        changed = bool(targets)
+
+        if self.module.check_mode:
+            for iid in wait_for_stopped:
+                instances[iid].current_state = InstanceState.STOPPED
+            return _build_payload(instances, InstanceCommand.STOP, changed, unchanged)
+
+        if not wait_for_stopped:
+            return _build_payload(instances, InstanceCommand.STOP, False, unchanged)
+
+        before_states = {iid: inst.state for iid, inst in instances.items()}
+
+        # Precondition (always, regardless of `wait`): a 'pending' instance must
+        # reach 'running' before it can be deterministically stopped.
+        pending = [instances[iid] for iid in targets if instances[iid].state == InstanceState.PENDING]
+        self._wait_for('instance_running', pending)
+
+        if targets:
+            try:
+                self.client.stop_instances(InstanceIds=targets)
+            except Exception as e:  # noqa: BLE001
+                labels = self._labels(instances[iid] for iid in targets)
+                self.module.fail_json(msg=f"StopInstances failed for {labels}: {e}")
+                return
+
+        if wait:
+            self._wait_for('instance_stopped', [instances[iid] for iid in wait_for_stopped])
+            instances = self._describe_instances(instance_ids)
+            for iid, inst in instances.items():
+                inst.previous_state = before_states[iid]
+        else:
+            for iid in wait_for_stopped:
+                instances[iid].current_state = InstanceState.STOPPING
+
+        return _build_payload(instances, InstanceCommand.STOP, changed, unchanged)
+
+    def stop_and_start(self, instance_ids, wait):
+        stop_payload = self.stop(instance_ids, wait=True)
+
+        # Honor the user's `wait` choice for the final running wait.
+        start_payload = self.start(instance_ids, wait=wait)
+
+        before_states = stop_payload['diff']['before']['states']
+        after_states = start_payload['diff']['after']['states']
+
+        instances = []
+        for inst in start_payload['instances']:
+            merged = dict(inst)
+            merged['previous_state'] = before_states[inst['instance_id']]
+            instances.append(merged)
+
+        # A successful stop_and_start always restarts every non-terminal instance:
+        # the stop phase leaves them all stopped, so the start phase must report a
+        # change. In check mode nothing is actually stopped, so the start phase sees
+        # the original running instances and reports no change — skip the invariant
+        # check there.
+        changed = True
+        if not self.module.check_mode and not start_payload['changed']:
+            self.module.fail_json(
+                msg="stop_and_start invariant violated: start phase reported no "
+                    "change after a completed stop phase.",
+                start_payload=start_payload)
+
+        # unchanged = ids that were no-ops in BOTH phases.
+        # Highly unlikely to happen in practice, but we sort to make the result deterministic.
+        unchanged = sorted(set(stop_payload['unchanged_instance_ids'])
+                           & set(start_payload['unchanged_instance_ids']))
+
+        return {
+            'changed': changed,
+            'command': InstanceCommand.STOP_AND_START,
+            'instances': instances,
+            'unchanged_instance_ids': unchanged,
+            'diff': {'before': {'states': before_states},
+                     'after': {'states': after_states}},
+        }
+
+    def _check_not_terminated(self, instances):
+        """Fail the module if any instance is terminated/shutting-down."""
+        bad = [i for i in instances.values() if i.is_terminated]
+        if bad:
+            bad_instances = ', '.join(f'{i.label}={i.state}' for i in bad)
+            self.module.fail_json(
+                msg=f"Cannot {self.module.params['command']} terminated/shutting-down instances: {bad_instances}")
+
+    def _wait_for(self, waiter_name, instances):
+        if not instances or self.module.check_mode:
+            return
+        waiter = self.client.get_waiter(waiter_name)
+        try:
+            waiter.wait(InstanceIds=[i.instance_id for i in instances])
+        except Exception as e:  # noqa: BLE001 - surface any waiter failure as module failure
+            self.module.fail_json(
+                msg=f"Waiter {waiter_name!r} failed for {self._labels(instances)}: {e}")
+            return
+
+    def _labels(self, instances):
+        return ', '.join(i.label for i in instances)
 
 
 def main():
@@ -438,18 +421,18 @@ def main():
 
     client = _get_ec2_client(module, region)
 
-    ctx = _Ctx(client, module)
+    manager = EC2InstanceManager(client, module)
 
     command = params['command']
 
     if command == InstanceCommand.DESCRIBE:
-        payload = _do_describe(ctx, instance_ids)
+        payload = manager.describe(instance_ids)
     elif command == InstanceCommand.START:
-        payload = _do_start(ctx, instance_ids, params['wait'])
+        payload = manager.start(instance_ids, params['wait'])
     elif command == InstanceCommand.STOP:
-        payload = _do_stop(ctx, instance_ids, params['wait'])
+        payload = manager.stop(instance_ids, params['wait'])
     elif command == InstanceCommand.STOP_AND_START:
-        payload = _do_stop_and_start(ctx, instance_ids, params['wait'])
+        payload = manager.stop_and_start(instance_ids, params['wait'])
     else:
         module.fail_json(msg=f"Unknown command {command!r}.")
         return
