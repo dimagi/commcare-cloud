@@ -324,16 +324,17 @@ def _do_stop(ctx, instance_ids, wait):
     # 'stopping' instances are mid-transition: we wait for them but don't initiate.
     already_stopping = [iid for iid, inst in instances.items()
                         if inst.state == InstanceState.STOPPING]
+    wait_for_stopped = targets + already_stopping
     unchanged = [iid for iid in instance_ids
                  if iid not in targets and iid not in already_stopping]
     changed = bool(targets)
 
     if ctx.module.check_mode:
-        for iid in targets + already_stopping:
+        for iid in wait_for_stopped:
             instances[iid].current_state = InstanceState.STOPPED
         return _build_payload(instances, InstanceCommand.STOP, changed, unchanged)
 
-    if not targets and not already_stopping:
+    if not wait_for_stopped:
         return _build_payload(instances, InstanceCommand.STOP, False, unchanged)
 
     before_states = {iid: inst.state for iid, inst in instances.items()}
@@ -351,7 +352,6 @@ def _do_stop(ctx, instance_ids, wait):
             ctx.module.fail_json(msg=f"StopInstances failed for {labels}: {e}")
             return
 
-    wait_for_stopped = list(targets) + list(already_stopping)
     if wait:
         _wait_for(ctx, 'instance_stopped', [instances[iid] for iid in wait_for_stopped])
         instances = _describe_instances(ctx, instance_ids)
