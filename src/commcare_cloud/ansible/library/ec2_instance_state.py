@@ -158,7 +158,7 @@ class Instance:
         return self.raw['State']['Name']
 
     @property
-    def is_terminal(self):
+    def is_terminated(self):
         return self.state in TERMINATED_STATES
 
     @property
@@ -307,7 +307,7 @@ def _labels(instances):
 
 def _check_not_terminated(ctx, instances, action):
     """Fail the module if any instance is terminated/shutting-down."""
-    bad = [i for i in instances.values() if i.is_terminal]
+    bad = [i for i in instances.values() if i.is_terminated]
     if bad:
         bad_instances = ', '.join(f'{i.label}={i.state}' for i in bad)
         ctx.module.fail_json(
