@@ -275,7 +275,6 @@ class EC2InstanceManager:
         except Exception as e:  # noqa: BLE001
             labels = self._labels(instances[iid] for iid in targets)
             self.module.fail_json(msg=f"StartInstances failed for {labels}: {e}")
-            return
 
         if wait:
             self._wait_for('instance_running', [instances[iid] for iid in targets])
@@ -322,7 +321,6 @@ class EC2InstanceManager:
             except Exception as e:  # noqa: BLE001
                 labels = self._labels(instances[iid] for iid in targets)
                 self.module.fail_json(msg=f"StopInstances failed for {labels}: {e}")
-                return
 
         if wait:
             self._wait_for('instance_stopped', [instances[iid] for iid in wait_for_stopped])
@@ -393,7 +391,6 @@ class EC2InstanceManager:
         except Exception as e:  # noqa: BLE001 - surface any waiter failure as module failure
             self.module.fail_json(
                 msg=f"Waiter {waiter_name!r} failed for {self._labels(instances)}: {e}")
-            return
 
     def _labels(self, instances):
         return ', '.join(i.label for i in instances)
@@ -435,7 +432,6 @@ def main():
         payload = manager.stop_and_start(instance_ids, params['wait'])
     else:
         module.fail_json(msg=f"Unknown command {command!r}.")
-        return
 
     module.exit_json(**payload)
 
