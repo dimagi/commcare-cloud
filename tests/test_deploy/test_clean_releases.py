@@ -1,10 +1,9 @@
 import os
 from datetime import datetime, timedelta
+from tempfile import TemporaryDirectory as tempdir
 from hashlib import sha1
 from pathlib import Path
 from unittest import TestCase
-
-from testil import tempdir
 
 from .. import ansible
 from ..utils import set_log_level, test_context

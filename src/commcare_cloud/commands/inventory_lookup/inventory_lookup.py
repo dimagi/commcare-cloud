@@ -25,17 +25,17 @@ class Lookup(CommandBase):
     help = """
     Lookup remote hostname or IP address
     """
-    arguments = (
-        Argument("server", nargs="?", help="""
-            Server name/group: postgresql, proxy, webworkers, ... The server
-            name/group may be prefixed with 'username@' to login as a
-            specific user and may be terminated with '[<n>]' to choose one of
-            multiple servers if there is more than one in the group. For
-            example: webworkers[0] will pick the first webworker. May also be
-            omitted for environments with only a single server.
+    SERVER_HELP = """
+        Server name/group: postgresql, proxy, webworkers, ... The server
+        name/group may be prefixed with 'username@' to login as a
+        specific user and may be terminated with '[<n>]' to choose one of
+        multiple servers if there is more than one in the group. For
+        example: webworkers[0] will pick the first webworker.
 
-            Use '-' for default (django_manage[0])
-        """),
+        Use '-' for default (django_manage[0])
+    """
+    arguments = (
+        Argument("server", nargs="?", help=SERVER_HELP),
     )
 
     def lookup_server_address(self, args, allow_multiple=False):
@@ -58,7 +58,8 @@ def lookup_server_address(env_name, server, allow_multiple=False):
 
 class _Ssh(Lookup):
 
-    arguments = Lookup.arguments + (
+    arguments = (
+        Argument("server", help=Lookup.SERVER_HELP),
         Argument("--quiet", action='store_true', default=False, help="""
             Don't output the command to be run.
         """),

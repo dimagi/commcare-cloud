@@ -1,4 +1,4 @@
-from nose.tools import assert_raises
+import pytest
 
 from commcare_cloud.environment.schemas.terraform import RdsParameterGroupConfig
 from commcare_cloud.commands.terraform.terraform import validate_references_to_parameter_groups
@@ -17,14 +17,11 @@ def test_validate_references_to_parameter_groups():
     )
 
     # assert invalid reference
-    with assert_raises(ValueError) as context:
+    with pytest.raises(ValueError, match=r".*pg0.*nonexistent.*"):
         validate_references_to_parameter_groups(
             {},
             [type("Instance", (), {"identifier": "pg0", "parameter_group": "nonexistent"})],
         )
-        message = str(context.exception)
-        assert "pg0" in message
-        assert "nonexistent" in message
 
     # assert parameter_group not required
     validate_references_to_parameter_groups(

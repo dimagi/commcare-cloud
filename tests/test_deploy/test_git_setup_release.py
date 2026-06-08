@@ -1,12 +1,12 @@
 import shutil
 import tarfile
+from tempfile import TemporaryDirectory as tempdir
 from configparser import ConfigParser
 from contextlib import contextmanager
 from pathlib import Path
 from unittest import TestCase
 
 import sh
-from testil import tempdir
 
 from .. import ansible
 from ..utils import set_log_level, test_context

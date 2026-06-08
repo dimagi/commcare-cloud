@@ -1,29 +1,27 @@
 import difflib
 import os
 from io import open
-from unittest import SkipTest
 
 import yaml
-from nose.tools import assert_equal
-from parameterized import parameterized
+import pytest
 
 from commcare_cloud.environment.main import Environment
 from commcare_cloud.environment.paths import DefaultPaths
 from commcare_cloud.yaml import PreserveUnsafeDumper
 
 TEST_ENVIRONMENTS_DIR = os.path.join(os.path.dirname(__file__), 'test_envs')
-TEST_ENVIRONMENTS = os.listdir(TEST_ENVIRONMENTS_DIR)
+TEST_ENVIRONMENTS = [
+    name for name in os.listdir(TEST_ENVIRONMENTS_DIR)
+    if name != 'small_cluster'  # small_cluster does not have a postgres config
+]
 
 
-@parameterized(TEST_ENVIRONMENTS)
+@pytest.mark.parametrize("env_name", TEST_ENVIRONMENTS)
 def test_postgresql_config(env_name):
     # To update test configs when they get outdated:
     # python tests/test_postgresql_config.py
 
     env = Environment(DefaultPaths(env_name, environments_dir=TEST_ENVIRONMENTS_DIR))
-
-    if not os.path.exists(env.paths.generated_yml):
-        raise SkipTest
 
     with open(env.paths.generated_yml, encoding='utf-8') as f:
         generated = yaml.safe_load(f)
@@ -33,21 +31,17 @@ def test_postgresql_config(env_name):
 
     actual_json = env.postgresql_config.to_generated_variables(env)['postgresql_dbs']
 
-    assert_equal(
-        actual_json,
-        expected_json,
-        msg=(
-            "\n\n"
-            + "\n".join(
-                difflib.unified_diff(
-                    list(yaml.dump(actual_json, Dumper=PreserveUnsafeDumper).splitlines()),
-                    list(yaml.dump(expected_json, Dumper=PreserveUnsafeDumper).splitlines()),
-                    "Actual",
-                    "Expected",
-                    lineterm="",
-                )
+    assert actual_json == expected_json, (
+        "\n\n"
+        + "\n".join(
+            difflib.unified_diff(
+                list(yaml.dump(actual_json, Dumper=PreserveUnsafeDumper).splitlines()),
+                list(yaml.dump(expected_json, Dumper=PreserveUnsafeDumper).splitlines()),
+                "Actual",
+                "Expected",
+                lineterm="",
             )
-        ),
+        )
     )
 
 

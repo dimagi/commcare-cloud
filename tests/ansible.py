@@ -12,7 +12,7 @@ def run(module, args):
     Callers are responsible for cleanup of changed system state.
     Arguments (paths, etc.) should reference temporary resources that
     can later be cleaned up by the caller. For example, utilities like
-    ``testil.tempdir()`` can be used to create temporary directories in
+    ``tempfile.TemporaryDirectory()`` can be used to create temporary directories in
     which the module can safely work without affecting other parts of
     the system on which the test is running.
 
