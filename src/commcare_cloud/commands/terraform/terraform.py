@@ -205,6 +205,7 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
         'commcarehq_ssrf_urls_regex': compact_waf_regexes(COMMCAREHQ_SSRF_URLS_REGEX),
         'commcarehq_xml_querystring_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX),
         's3_blob_db_s3_bucket': environment.public_vars.get('s3_blob_db_s3_bucket'),
+        'old_s3_blob_db_s3_bucket': environment.public_vars.get('old_s3_blob_db_s3_bucket') or '',
         'release_bucket': environment.public_vars.get('release_bucket'),
     })
 
