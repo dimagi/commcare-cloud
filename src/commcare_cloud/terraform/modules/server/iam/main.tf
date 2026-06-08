@@ -83,32 +83,36 @@ resource "aws_iam_role_policy" "access_s3_commcare_blobdb" {
   name = "AccessS3CommcareBlobdb"
   role = aws_iam_role.commcare_server_role.id
 
-  policy = <<POLICY
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "s3:DeleteObjectTagging",
-                "s3:PutObject",
-                "s3:GetObject",
-                "s3:ListBucketVersions",
-                "s3:GetObjectTagging",
-                "s3:ListBucket",
-                "s3:PutObjectTagging",
-                "s3:DeleteObject",
-                "s3:GetObjectVersion"
-            ],
-            "Resource": [
-                "arn:aws:s3:::${var.s3_blob_db_s3_bucket}/*",
-                "arn:aws:s3:::${var.s3_blob_db_s3_bucket}"
-            ]
-        }
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "VisualEditor0"
+        Effect = "Allow"
+        Action = [
+          "s3:DeleteObjectTagging",
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:ListBucketVersions",
+          "s3:GetObjectTagging",
+          "s3:ListBucket",
+          "s3:PutObjectTagging",
+          "s3:DeleteObject",
+          "s3:GetObjectVersion"
+        ]
+        Resource = concat(
+          [
+            "arn:aws:s3:::${var.s3_blob_db_s3_bucket}/*",
+            "arn:aws:s3:::${var.s3_blob_db_s3_bucket}",
+          ],
+          var.old_s3_blob_db_s3_bucket != "" ? [
+            "arn:aws:s3:::${var.old_s3_blob_db_s3_bucket}/*",
+            "arn:aws:s3:::${var.old_s3_blob_db_s3_bucket}",
+          ] : []
+        )
+      }
     ]
-}
-  POLICY
+  })
 }
 
 resource "aws_iam_role_policy" "access_s3_kiss_upload" {
@@ -205,32 +209,36 @@ resource "aws_iam_role_policy" "control_access_s3_commcare_blobdb" {
   name = "AccessS3CommcareBlobdb"
   role = aws_iam_role.commcare_control_server_role.id
 
-  policy = <<POLICY
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "s3:DeleteObjectTagging",
-                "s3:PutObject",
-                "s3:GetObject",
-                "s3:ListBucketVersions",
-                "s3:GetObjectTagging",
-                "s3:ListBucket",
-                "s3:PutObjectTagging",
-                "s3:DeleteObject",
-                "s3:GetObjectVersion"
-            ],
-            "Resource": [
-                "arn:aws:s3:::${var.s3_blob_db_s3_bucket}/*",
-                "arn:aws:s3:::${var.s3_blob_db_s3_bucket}"
-            ]
-        }
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "VisualEditor0"
+        Effect = "Allow"
+        Action = [
+          "s3:DeleteObjectTagging",
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:ListBucketVersions",
+          "s3:GetObjectTagging",
+          "s3:ListBucket",
+          "s3:PutObjectTagging",
+          "s3:DeleteObject",
+          "s3:GetObjectVersion"
+        ]
+        Resource = concat(
+          [
+            "arn:aws:s3:::${var.s3_blob_db_s3_bucket}/*",
+            "arn:aws:s3:::${var.s3_blob_db_s3_bucket}",
+          ],
+          var.old_s3_blob_db_s3_bucket != "" ? [
+            "arn:aws:s3:::${var.old_s3_blob_db_s3_bucket}/*",
+            "arn:aws:s3:::${var.old_s3_blob_db_s3_bucket}",
+          ] : []
+        )
+      }
     ]
-}
-  POLICY
+  })
 }
 
 
