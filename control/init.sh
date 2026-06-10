@@ -6,9 +6,12 @@ is_sourced=0
 if [ -n "$ZSH_VERSION" ]; then
     [[ $ZSH_EVAL_CONTEXT == *:file* ]] && is_sourced=1
     script_path="$0"
-elif [ -n "$BASH_VERSION" ]; then
+elif [ -n "${BASH_SOURCE[0]}" ]; then
     (return 0 2>/dev/null) && is_sourced=1
     script_path="${BASH_SOURCE[0]}"
+else
+    echo "Script path cannot be found. Exiting"
+    return 1
 fi
 
 if [ "$is_sourced" != 1 ]; then
