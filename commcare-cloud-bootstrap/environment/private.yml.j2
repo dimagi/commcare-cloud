@@ -9,6 +9,12 @@ secrets:
   SUPERVISOR_HTTP_USERNAME: 'supervisor_http'
   SUPERVISOR_HTTP_PASSWORD: '{{ generate_password() }}'
   POSTGRES_USERS:
+    root:
+      username: 'root'
+      password: '{{ generate_password() }}'
+      privs:
+        - objs: commcarehq
+          type: group
     commcare:
       username: 'commcarehq'
       password: '{{ generate_password() }}'
