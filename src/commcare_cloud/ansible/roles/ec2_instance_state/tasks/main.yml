@@ -1,0 +1,30 @@
+---
+
+- name: Fail for hosts without an ec2_instance_id host var
+  run_once: true
+  delegate_to: localhost
+  fail:
+    msg: >-
+      No ec2_instance_id host var for: {{ _hosts_without_instance_id | join(', ') }}.
+      Run 'commcare-cloud <env> aws-fill-inventory' to populate it from AWS.
+  when: _hosts_without_instance_id | length > 0
+  vars:
+    _hosts_without_instance_id: >-
+      {{ ansible_play_batch
+         | map('extract', hostvars)
+         | selectattr('ec2_instance_id', 'undefined')
+         | map(attribute='inventory_hostname')
+         | list }}
+
+- name: "Run EC2 {{ ec2_instance_state_command }} on the play's instances"
+  run_once: true
+  delegate_to: localhost
+  become: false
+  ec2_instance_state:
+    instance_ids: >-
+      {{ ansible_play_batch
+         | map('extract', hostvars, 'ec2_instance_id')
+         | list }}
+    command: "{{ ec2_instance_state_command }}"
+    wait: "{{ ec2_instance_state_wait | default(omit) }}"
+    region: "{{ ec2_instance_state_region | default(omit) }}"
