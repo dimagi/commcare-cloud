@@ -1735,6 +1735,49 @@ have been made to our actual resources in AWS.
 
 ---
 
+#### ``ec2-instance-state`` Command
+
+Manage the EC2 instance state (start/stop/describe) of hosts in an AWS environment.
+
+```
+commcare-cloud <env> ec2-instance-state [--no-wait]
+                                        {describe,start,stop,stop_and_start} inventory_group [inventory_group ...]
+```
+
+
+##### Example
+
+```
+commcare-cloud <env> ec2-instance-state describe webworkers
+commcare-cloud <env> ec2-instance-state stop celery:pillowtop
+commcare-cloud <env> ec2-instance-state stop_and_start 10.201.11.133 10.201.11.134
+```
+
+##### Positional Arguments
+
+###### `{describe,start,stop,stop_and_start}`
+
+What to do to the matched instances.
+`describe` reports their current state without changing anything;
+`start`/`stop` are idempotent;
+`stop_and_start` stops the instances (if running) and starts them again.
+
+###### `inventory_group`
+
+One or more inventory items to act on. Each can be a group
+(e.g. `webworkers`), an individual host name or private IP
+(e.g. `10.201.11.133`), or any valid ansible host pattern
+(e.g. `celery:pillowtop`).
+
+##### Options
+
+###### `--no-wait`
+
+Return as soon as the state change is issued instead of waiting
+for instances to reach their final state.
+
+---
+
 #### ``forward-port`` Command
 
 Port forward to access a remote admin console
