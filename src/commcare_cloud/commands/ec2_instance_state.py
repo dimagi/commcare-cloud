@@ -77,7 +77,6 @@ class Ec2InstanceState(CommandBase):
                 "Target a specific group, host, or pattern instead.")
 
         self.log("Matched hosts:")
-        print(instance_ids_by_host)
         for host, instance_id in instance_ids_by_host.items():
             puts("  {} ({})".format(host, instance_id))
 
