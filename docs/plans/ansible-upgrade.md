@@ -12,9 +12,9 @@ with thin automated coverage today. CI (`.tests/tests.sh`) `--syntax-check`s
 `py3,commcarehq`-tagged subset of it against a `localhost`/`local`-connection
 test env, then byte-compiles the rendered `localsettings.py`. So most roles are
 parse-checked but never run, and standalone playbooks outside `deploy_stack.yml`
-(`deploy_hq.yml`, `deploy_postgres.yml`, the
-`restart_*`/`deploy_citusdb`/`deploy_proxy` set, etc.) get neither. That
-coverage gap is the upgrade's biggest risk, so the test tickets come first.
+(`deploy_hq.yml`, `deploy_postgres.yml`, the `restart_*` / `deploy_citusdb` /
+`deploy_proxy` set, etc.) get neither. That coverage gap is the upgrade's
+biggest risk, so the test tickets come first.
 
 Sequence: clean up deprecations and build a test safety net first, then step
 through versions. The interpreter may move in two hops: **3.10 → 3.12** (spans
@@ -27,18 +27,8 @@ tests pass early — #26 optional).
    conditionals (v5), arithmetic outside `{{ }}` (v6), embedded-template
    conditionals (v8/CVE-2023-5764), and non-boolean `when:` as an error + native
    Jinja + inverted trust model (v12). → tickets 17–19.
-2. **Collection removals** in every major — in-use ones must be pinned and
-   installed explicitly. → #7–10.
-3. **The monitoring-install automation is removed** — see
-   Appendix B. The archived `cloudalchemy.*` roles, the 2020-vintage
-   `dimagi.commcare_prometheus` collection, and their transitive
-   `gantsign.golang` + `bdellegrazie.postgres_exporter` were the biggest cluster
-   of incompatible/abandoned deps. Rather than vendor or re-base them, #12
-   *deletes* the Prometheus install automation outright and documents
-   user-managed Prometheus, keeping only the app-level metrics integration. This
-   clears the cluster before the Ansible-10 bump (#24) in one move.
-4. **Python floor jumps** (3.10 @ v9, 3.12 @ v13) and **UTF-8 locale enforced at
-   startup** (v7).
+2. **Collection removals** in every major version. Pin and explicitly install
+   collectinos that were removed from Ansible. → #7–10.
 
 ---
 
@@ -67,12 +57,12 @@ Acceptance: none remain; 22.04 path unaffected.
 #### 3. CI lint + syntax for all playbooks
 Add `ansible-lint` (dev dep) and extend `--syntax-check` to cover the
 top-level playbooks *not* reached by the existing `deploy_stack.yml` check —
-`deploy_hq.yml`, `deploy_postgres.yml`, the
-`restart_*`/`deploy_citusdb`/`deploy_proxy` set, etc. (`deploy_stack.yml` and
-its ~18 imports are already syntax-checked by `.tests/tests.sh`; `deploy_prometheus.yml`
-is excluded — it's being removed in #12); capture existing violations as a
-baseline. Full FQCN module normalization is low-priority baseline debt (short
-names resolve fine; collection moves are handled by #7–8).
+`deploy_hq.yml`, `deploy_postgres.yml`, the `restart_*` / `deploy_citusdb` /
+`deploy_proxy` set, etc. (`deploy_stack.yml` and its ~18 imports are already
+syntax-checked by `.tests/tests.sh`; `deploy_prometheus.yml` is excluded — it's
+being removed in #12); capture existing violations as a baseline. Full FQCN
+module normalization is low-priority baseline debt (short names resolve fine;
+collection moves are handled by #7–8).
 Acceptance: new non-blocking `lint.yml` fails on new violations; green on day one.
 
 #### 4. Refresh Vagrant harness to 22.04
@@ -89,7 +79,7 @@ Acceptance: `molecule test` converge + idempotence green locally and in CI on 22
 
 #### 6. Molecule coverage for critical roles
 Add Molecule converge/idempotence scenarios for the operationally critical,
-untested roles: postgresql(_base), pgbouncer, couchdb2, kafka, redis, rabbitmq,
+untested roles: postgresql(_base), pgbouncer, couchdb2, kafka, redis,
 elasticsearch, nginx, proxy/haproxy. Likely one Jira ticket per role/group.
 Acceptance: each converges twice with no changes; basic service-up asserts.
 Depends: 5.
@@ -107,7 +97,7 @@ Acceptance: `ansible-galaxy install -r` resolves the collection; Molecule
 postgres (#6) + syntax clean.
 Depends: ideally 6.
 
-#### 8. Adopt `ansible.posix` (declare + migrate `synchronize`/`authorized_key`)
+#### 8. Adopt `ansible.posix`
 Add `ansible.posix` to `requirements.yml`, then FQCN-ify `synchronize` /
 `authorized_key` in `roles/deploy_hq/tasks/staticfiles_*` and
 `roles/setup_auth_keys.yml`.
@@ -138,62 +128,36 @@ covers the survivors: `DavidWittman.redis`, `sansible.logstash`, the
 `andrewrothstein.*` couchdb roles.
 Acceptance: role compat matrix complete; orphaned pins removed or justified.
 
-#### 12. Remove the Prometheus install automation (keep app-level metrics integration)
-**Decision (Slack thread below):** commcare-cloud will no longer *install* the
-Prometheus monitoring stack. Operators who want Prometheus/Grafana stand it up
-themselves following Prometheus' own docs. This deletes the largest cluster of
-archived/incompatible dependencies in one move — so none of it needs vendoring,
-version-bumping, or an upstream cutover.
-Grafana is in scope: it's confirmed to be exclusively the Prometheus dashboard
-front-end here (`cloudalchemy.grafana`, the `grafana` inventory group, and
-`grafana_*` vars are referenced only by `deploy_prometheus.yml`), with no
-standalone use — so it's removed along with everything else that playbook owns.
-**Remove (each confirmed referenced only by `deploy_prometheus.yml`):**
-- `deploy_prometheus.yml` (the whole server-install playbook — prometheus,
-  alertmanager, grafana, node_exporter, and the dimagi collection's ~18 exporter
-  roles). It is not imported by `deploy_stack.yml` and is not a CLI subcommand,
-  so removal is self-contained.
-- `requirements.yml` pins: `dimagi.commcare_prometheus`,
-  `cloudalchemy.prometheus` / `.alertmanager` / `.grafana` / `.node_exporter`,
-  `bdellegrazie.postgres_exporter`, `gantsign.golang`.
-- `group_vars/prometheus.yml` and `group_vars/alertmanager.yml` (server
-  scrape/alert config).
-- `environment/schemas/prometheus.py` + its wiring in `environment/main.py` (the
-  `prometheus_config` property/import). **Caveat:** this schema also carries
-  `prometheus_monitoring_enabled`, the toggle for the *kept* app-level feature —
-  so preserve a supported way to set that flag (keep just that field, or document
-  the override) while dropping the server-only `grafana_security` + scrape config.
-- The orphaned `grafana_nginx_ssl_cert` / `grafana_nginx_ssl_key` defs in
-  `roles/nginx/vars/main.yml` (defined, never rendered).
-- The `dimagi.commcare_prometheus` expectations in
-  `manage_commcare_cloud/tests/test_install.py` (update so the suite stays green).
+#### 12. Remove the Prometheus install automation
+Remove `deploy_prometheus.yml` and all dependencies used only by it from
+`requirements.yml`.
+- Check references to `prometheus` / `grafana` / `alertmanager` /
+  `node_exporter` / `bdellegrazie.postgres_exporter` / `gantsign.golang`.
+- Check relevance of `group_vars/prometheus.yml`, `group_vars/alertmanager.yml`,
+  `environment/schemas/prometheus.py` + its wiring in `environment/main.py`.
+  **Caveat:** this schema also carries `prometheus_monitoring_enabled`, the
+  toggle for the *kept* app-level feature, so preserve a supported way to set
+  that flag
 - The `prometheus`/`alertmanager`/`grafana`/`prometheus_proxy` inventory groups
-  become unused — drop them from example environments where present (minor).
-**Keep** (app-level, gated by `prometheus_monitoring_enabled`, independent of the
-server install — boundary confirmed clean): the `localsettings.py.j2`
-metrics-provider injection; `supervisor_prometheus.conf.j2` +
-`django_bash_runner.sh.j2`; the `PROMETHEUS_MULTIPROC_DIR` /
-`PROMETHEUS_PUSHGATEWAY_HOST` env wiring in the `commcarehq` role tasks
-(webworkers/pillowtop/management_commands/celery); the gated "Prometheus
-Supervisor Config" / "Prometheus Django runner" plays in `deploy_commcarehq.yml`;
-and `prometheus_monitoring_enabled` / `metrics_home` in `group_vars/all.yml`. HQ
-still exposes `/metrics`; an operator-run Prometheus scrapes it. (The pushgateway
-host becomes operator-supplied, since its config left with the server vars.)
-**Docs:** rewrite the Prometheus install section of
-`docs/source/operations/3-monitoring.rst` (the `cchq <env> aps deploy_prometheus.yml`
-instructions) to say Prometheus/Grafana setup is the operator's responsibility
-(link Prometheus' docs); drop the now-moot changelog
-`docs/source/changelog/0057-update-prometheus-variable.md`. The Datadog metrics
-listing in that rst is unrelated and stays.
-`dimagi.commcare_logstash` / `deploy_logstash.yml` are unrelated and stay.
+  become unused — drop them from example environments where present.
+- Remove Prometheus installation docs.
+- Keep app-level, gated by `prometheus_monitoring_enabled`, independent of the
+  server install: the `localsettings.py.j2` metrics-provider injection;
+  `supervisor_prometheus.conf.j2` + `django_bash_runner.sh.j2`; the
+  `PROMETHEUS_MULTIPROC_DIR` / `PROMETHEUS_PUSHGATEWAY_HOST` env wiring in the
+  `commcarehq` role tasks (webworkers/pillowtop/management_commands/celery); the
+  gated "Prometheus Supervisor Config" / "Prometheus Django runner" plays in
+  `deploy_commcarehq.yml`; and `prometheus_monitoring_enabled` / `metrics_home`
+  in `group_vars/all.yml`. HQ still exposes `/metrics`; Prometheus scrapes it.
+- Publish a change log entry: while Prometheus is still supported for
+  monitoring, commcare-cloud will no longer install the Prometheus monitoring
+  stack. Operators who want Prometheus/Grafana can stand it up themselves
+  following Prometheus' own docs.
 Prior art — both **close here**, superseded by removal:
 [#6520](https://github.com/dimagi/commcare-cloud/pull/6520) /
-[#6524](https://github.com/dimagi/commcare-cloud/pull/6524) (the cloudalchemy
-bump attempts).
-Acceptance: `deploy_prometheus.yml`, the seven monitoring pins,
-`group_vars/{prometheus,alertmanager}.yml`, and `schemas/prometheus.py` are gone;
-no `cloudalchemy.*` / `dimagi.commcare_prometheus` / `gantsign.golang` /
-`bdellegrazie.postgres_exporter` ref remains anywhere; `test_install.py` and the
+[#6524](https://github.com/dimagi/commcare-cloud/pull/6524) — the cloudalchemy
+upgrade attempts.
+Acceptance: `deploy_prometheus.yml` et al are gone; `test_install.py` and the
 monitoring docs are updated; `deploy-stack` is unaffected; and with
 `prometheus_monitoring_enabled` still settable + set to `True`, the
 `deploy_commcarehq` path renders localsettings + supervisor configs
@@ -202,18 +166,18 @@ Depends: ideally 6.
 Decision thread:
 https://dimagi.slack.com/archives/CNQ636095/p1781277055592099?thread_ts=1781210489.586889&cid=CNQ636095
 
-#### 13. Vendor or replace `tmpreaper` (`ANXS/tmpreaper`, dead since 2017)
-Abandoned but trivial; used in several playbooks. Risk is removed syntax
-(`with_items`, bare `warn:`, string-bool `when:`) failing on the target core.
-Fork into the repo as a local role under `roles/` (preferred — a maintainable
-copy we can fix forward) or replace with a few inline tasks; re-point
-`requirements.yml` / refs.
+#### 13. Vendor or replace `tmpreaper`
+Abandoned but trivial (`ANXS/tmpreaper`, dead since 2017); used in several
+playbooks. Risk is removed syntax (`with_items`, bare `warn:`, string-bool
+`when:`) failing on the target core. Fork into the repo as a local role under
+`roles/` (preferred — a maintainable copy we can fix forward) or replace with a
+few inline tasks; re-point `requirements.yml` / refs.
 Acceptance: resolves to a repo-local role (or inline tasks); no abandoned pin
 remains; touched-role Molecule green on the target core.
 
-#### 14. Vendor or replace `ansible-logrotate` (`nickhammond`, dead since 2018)
-Same approach as #13. Heavily used — it's a `meta` dependency of `common`, so
-nearly every host pulls it; test broadly.
+#### 14. Vendor or replace `ansible-logrotate`
+Same approach as #13 (`nickhammond`, dead since 2018). Heavily used — it's a
+`meta` dependency of `common`, so nearly every host pulls it; test broadly.
 Acceptance: resolves to a repo-local role (or inline tasks); no abandoned pin
 remains; `common`-dependent role Molecules green on the target core.
 
@@ -223,11 +187,12 @@ remains; `common`-dependent role Molecules green on the target core.
 ~15, mostly `ping.yml`; removed in core 2.14.
 Acceptance: none remain; lint clean.
 
-#### 16. Convert `with_*` to `loop:` — largest change (~125 across ~21 files)
-Add appropriate filters/`lookup`. Mechanical; split on playbook and role.
+#### 16. Convert `with_*` to `loop:`
+Largest change: ~125 across ~21 files. Add appropriate filters/`lookup`.
+Mechanical; split on playbook and role.
 Prior art: [#6209](https://github.com/dimagi/commcare-cloud/pull/6209) /
 [#6235](https://github.com/dimagi/commcare-cloud/pull/6235) carry the same kind
-of mechanical loop/`include_tasks` rewrite, but they close in #17 (see there).
+of mechanical loop/`include_tasks` rewrite; they close in #17.
 Acceptance: no `with_*` keys remain; touched role Molecules green.
 Depends: 6 (interleave with 7–8, 15).
 
@@ -289,28 +254,23 @@ Acceptance: CLI imports succeed on each target core; verified at 12→14 (#28).
 ### Version bumps — sequential, after cleanup + a full test pass
 
 #### 24. Ansible 4 → 10 (core 2.11→2.17)
-The core/package bump. Ansible 10 is the highest reachable on Python 3.10.
+The core/package upgrade. Ansible 10 is the highest reachable on Python 3.10.
 Raise the `ansible` pin and `min_ansible_version`; re-pin collections to
-core-2.17-compatible versions. Because all removed syntax was fixed on 4.10 in
-the cleanup band — and the archived monitoring stack was removed outright (#12)
-rather than carried forward — this is a pure pin change with nothing left to
-break, and can be green and merged on its own. The surviving-role re-pins (#25)
-are a version-coupled follow-on that depends on this step but is *not* a
-precondition of declaring it done.
+core-2.17-compatible versions.
 Prior art: Dependabot [#6895](https://github.com/dimagi/commcare-cloud/pull/6895)
 (ansible 4→10.7.0) and [#6444](https://github.com/dimagi/commcare-cloud/pull/6444)
 (ansible-core 2.11→2.17.7) — **close both here** (they only touch the pin, so
 can't merge until the cleanup band is done).
-Acceptance: core 2.17 installs; `deploy_hq.yml` syntax-check green on 2.17;
-full Molecule suite green on 10.
+Acceptance: core 2.17 installs; `deploy_hq.yml` syntax-check green; full
+Molecule suite green on Ansible 10.
 Fallback: bisect via 6/8 if failures are hard to localize.
-Depends: 7–23 (incl. 12).
+Depends: 7–23
 
 #### 25. Re-pin surviving standalone roles + re-test
 Bump the still-maintained roles to their newest releases and re-test on core
 2.17: `DavidWittman.redis`, `sansible.logstash`, the `andrewrothstein.*` SHAs
 (couchdb, couchdb-cluster). Done here because verification needs the new core.
-Acceptance: each touched role's Molecule (#6) green on 10; pins updated.
+Acceptance: each touched role's Molecule (#6) green on Ansible 10; pins updated.
 Depends: 24.
 
 #### 26. Controller Python 3.10 → 3.12
@@ -324,8 +284,7 @@ Depends: 24 (with 25 green).
 Isolates the v12 templating overhaul, where #19 gets exercised and most breakage
 is expected. Re-pin collections.
 Prior art: Dependabot [#6758](https://github.com/dimagi/commcare-cloud/pull/6758)
-(ansible 4→12.2.0) is the pin diff for this jump — **close it here** (rebased
-onto the #24 result).
+**close it here**.
 Acceptance: full suite green on 12 with zero templating/conditional errors.
 Depends: 26, 19.
 
@@ -353,9 +312,7 @@ Acceptance: clean monolith install + re-converge with zero unexpected changes.
 Depends: 29, 5.
 
 #### 31. Docs
-New minimum Python, upgrade outcome, Molecule/Vagrant workflows,
-changelog. (The Prometheus "operator-managed" doc change lands with #12; this
-ticket covers the rest.)
+New minimum Python, upgrade outcome, Molecule/Vagrant workflows, changelog.
 Acceptance: a new contributor can run the ansible test suite from docs alone.
 Depends: 30.
 
@@ -439,30 +396,6 @@ against GitHub archived flag + last push, June 2026):
 | `ansible-logrotate` | nickhammond/ansible-logrotate | **DEAD** | **2018-10** (v0.0.5) | trivial role — vendor or replace (#14) |
 | `dimagi.commcare_logstash` | dimagi/commcare-logstash | Dimagi | 2022-01 (0.9.5) | re-test; we own it (#9) |
 | `community.general` | (collection) | active | pinned 7.4.0 | bump in lockstep with core (#9) |
-
-**Why the monitoring stack is removed rather than upgraded (#12):**
-`deploy_prometheus.yml` is the only consumer of the whole monitoring dependency
-chain. It imports `dimagi.commcare_prometheus.prometheus` / `.alertmanager`
-(whose `meta` declare `dependencies: [cloudalchemy.prometheus]` /
-`[cloudalchemy.alertmanager]`), and imports `cloudalchemy.grafana` /
-`cloudalchemy.node-exporter` **directly** (note the legacy hyphen); the dimagi
-collection's exporter roles pull `bdellegrazie.postgres_exporter` and
-`gantsign.golang` transitively. **All four cloudalchemy roles are archived and
-frozen** (the #6524 "0.21.5 → 0.21.5" no-op proved node_exporter can't move),
-their maintained successors floor at core 2.12 / 2.14, and the dimagi collection
-last released in 2020 — so carrying them forward meant vendoring and
-cross-version-fixing a stack we don't otherwise need. Since `deploy_prometheus.yml`
-is **not** part of `deploy-stack` and **not** a CLI subcommand, deleting it (plus
-the seven pins and the two server `group_vars` files) is self-contained and
-removes the entire cluster at once. The app-level metrics integration is a
-*separate*, cleanly-decoupled concern (gated by `prometheus_monitoring_enabled`
-in `group_vars/all.yml`, never touching the install roles), so it stays and HQ
-keeps exposing `/metrics` for an operator-managed Prometheus to scrape.
-
-If managed monitoring is ever wanted back, the modern upstream successors are
-`prometheus.prometheus` (`requires_ansible >=2.14.0,<=2.21.99`, bundles
-prometheus/alertmanager/node_exporter/postgres_exporter) and `grafana.grafana`
-(`>=2.12.0,<3.0.0`) — both core-2.14+, so only adoptable post-bump.
 
 ---
 
