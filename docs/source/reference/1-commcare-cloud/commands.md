@@ -1744,6 +1744,13 @@ commcare-cloud <env> ec2-instance-state [--no-wait]
                                         {describe,start,stop,stop_and_start} inventory_group [inventory_group ...]
 ```
 
+`start` and `stop` show a check-mode preview of the state transitions
+and ask for confirmation before applying; `stop_and_start` asks for
+confirmation directly (a check-mode preview of a full cycle would show
+no net state change); `describe` just runs.
+
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
 
 ##### Example
 
@@ -1766,7 +1773,7 @@ What to do to the matched instances.
 
 One or more inventory items to act on. Each can be a group
 (e.g. `webworkers`), an individual host name or private IP
-(e.g. `10.201.11.133`), or any valid ansible host pattern
+(e.g. `10.201.11.133`), or any ansible host pattern
 (e.g. `celery:pillowtop`).
 
 ##### Options
