@@ -59,9 +59,6 @@ Remove `deploy_prometheus.yml` and all dependencies used only by it from
   `node_exporter` / `bdellegrazie.postgres_exporter` / `gantsign.golang`.
 - Check relevance of `group_vars/prometheus.yml`, `group_vars/alertmanager.yml`,
   `environment/schemas/prometheus.py` + its wiring in `environment/main.py`.
-  **Caveat:** this schema also carries `prometheus_monitoring_enabled`, the
-  toggle for the *kept* app-level feature, so preserve a supported way to set
-  that flag
 - The `prometheus`/`alertmanager`/`grafana`/`prometheus_proxy` inventory groups
   become unused — drop them from example environments where present.
 - Remove Prometheus installation docs.
@@ -86,7 +83,6 @@ monitoring docs are updated; `deploy-stack` is unaffected; and with
 `prometheus_monitoring_enabled` still settable + set to `True`, the
 `deploy_commcarehq` path renders localsettings + supervisor configs
 (syntax/Molecule green with the flag both on and off).
-Depends: ideally 7.
 Decision thread:
 https://dimagi.slack.com/archives/CNQ636095/p1781277055592099?thread_ts=1781210489.586889&cid=CNQ636095
 
