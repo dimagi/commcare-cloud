@@ -65,7 +65,7 @@ class Ec2InstanceState(CommandBase):
         if not is_aws_env(environment):
             raise CommandError(
                 "ec2-instance-state can only be used in AWS environments "
-                "(no terraform config found for {!r})".format(environment.name))
+                f"(no terraform config found for {environment.name!r})")
 
         instance_ids_by_host = get_instance_ids_by_host(environment, args.inventory_group)
 
@@ -73,8 +73,8 @@ class Ec2InstanceState(CommandBase):
                      if not host.implicit}
         if set(instance_ids_by_host) >= all_hosts:
             raise CommandError(
-                "Refusing to run ec2-instance-state against all hosts in {!r}. "
-                "Target a specific group, host, or pattern instead.".format(environment.name))
+                f"Refusing to run ec2-instance-state against all hosts in {environment.name!r}. "
+                "Target a specific group, host, or pattern instead.")
 
         self.log("Matched hosts:")
         print(instance_ids_by_host)
