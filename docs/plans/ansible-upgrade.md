@@ -1,5 +1,7 @@
 # Ansible Upgrade + Test Coverage — Jira Backlog
 
+**Epic:** [SAAS-19886](https://dimagi.atlassian.net/browse/SAAS-19886)
+
 ## Context
 
 commcare-cloud is pinned to **Ansible 4.10 (core 2.11)** on **controller Python
@@ -46,11 +48,13 @@ on its own, so that each bump (26/29/30) is a pin change with nothing left to fi
 Used once in `ops_tool.py` (`git.Repo(search_parent_directories=True)`); replace
 with a `subprocess` git call and remove from `pyproject.toml`/`uv.lock`.
 Acceptance: repo root still resolves; dep gone; tests green.
+Ticket: [SAAS-19887](https://dimagi.atlassian.net/browse/SAAS-19887)
 
 #### 2. Remove stale Ubuntu 18.04 references
 18.04 is unsupported. Search `18.04|bionic`.
 Delete `ansible_distribution_version == '18.04'` branches.
 Acceptance: none remain; 22.04 path unaffected.
+Ticket: [SAAS-19888](https://dimagi.atlassian.net/browse/SAAS-19888)
 
 #### 3. Remove the CitusDB automation
 CitusDB is no longer used; remove its install/management automation.
@@ -73,6 +77,7 @@ CitusDB is no longer used; remove its install/management automation.
 - Remove CitusDB docs (`docs/source/services/postgresql/upgrade_citusdb.rst`;
   trim citus from `postgresql.rst`) and publish a changelog entry.
 Acceptance: no `citus` references remain; `deploy-stack` unaffected.
+Ticket: [SAAS-19889](https://dimagi.atlassian.net/browse/SAAS-19889)
 
 #### 4. Remove the RabbitMQ automation
 The Celery broker has migrated to Redis (changelog `0096`; RabbitMQ support
@@ -97,6 +102,7 @@ ended 2026-06-01), so RabbitMQ is no longer used — remove its automation.
   action: remove `[rabbitmq]` from inventory.
 Acceptance: no rabbitmq/AMQP install references remain; `deploy-stack` and
 Celery (on the Redis broker) are unaffected; `test_getinventory.py` is updated.
+Ticket: [SAAS-19890](https://dimagi.atlassian.net/browse/SAAS-19890)
 
 #### 5. Remove the Prometheus install automation
 Remove `deploy_prometheus.yml` and all dependencies used only by it from
@@ -131,6 +137,7 @@ monitoring docs are updated; `deploy-stack` is unaffected; and with
 (syntax/Molecule green with the flag both on and off).
 Decision thread:
 https://dimagi.slack.com/archives/CNQ636095/p1781277055592099?thread_ts=1781210489.586889&cid=CNQ636095
+Ticket: [SAAS-19891](https://dimagi.atlassian.net/browse/SAAS-19891)
 
 ### Safety net — build verification before touching versions
 
