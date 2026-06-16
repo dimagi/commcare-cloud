@@ -20,6 +20,7 @@
   run_once: true
   delegate_to: localhost
   become: false
+  register: _ec2_instance_state_result
   ec2_instance_state:
     instance_ids: >-
       {{ ansible_play_batch
@@ -28,3 +29,14 @@
     command: "{{ ec2_instance_state_command }}"
     wait: "{{ ec2_instance_state_wait | default(omit) }}"
     region: "{{ ec2_instance_state_region | default(omit) }}"
+
+- name: Show EC2 instance state
+  run_once: true
+  delegate_to: localhost
+  loop: "{{ _ec2_instance_state_result.instances }}"
+  loop_control:
+    label: "{{ item.instance_id }}"
+  debug:
+    msg: >-
+      {{ item.name }} ({{ item.instance_id }}) [{{ item.private_ip }}]:
+      {{ item.previous_state }} -> {{ item.current_state }}
