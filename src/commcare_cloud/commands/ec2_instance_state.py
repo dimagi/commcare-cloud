@@ -111,9 +111,15 @@ def get_instance_ids_by_host(environment, inventory_items):
         raise CommandError("No hosts in inventory match {!r}".format(pattern))
 
     instance_ids_by_host = {}
+    hosts_without_instance_id = []
     for host in hosts:
         instance_id = host.vars.get('ec2_instance_id')
         if instance_id:
             instance_ids_by_host[host.name] = instance_id
-    
+        else:
+            hosts_without_instance_id.append(host.name)
+
+    if hosts_without_instance_id:
+        raise CommandError(f"No 'ec2_instance_id' host var for: {', '.join(hosts_without_instance_id)}")
+
     return instance_ids_by_host
