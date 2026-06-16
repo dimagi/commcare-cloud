@@ -28,16 +28,16 @@ tests pass early — #26 optional).
    conditionals (v8/CVE-2023-5764), and non-boolean `when:` as an error + native
    Jinja + inverted trust model (v12). → tickets 17–19.
 2. **Collection removals** in every major version. Pin and explicitly install
-   collectinos that were removed from Ansible. → #7–10.
+   collectinos that were removed from Ansible. → #8–11.
 
 ---
 
 ## Backlog
 
-"Depends" = ticket numbers. 1–2 are housekeeping; 3–6 build the test safety net;
-7–23 are version-agnostic cleanup (7–14 dependency work; 15–23 deprecation
+"Depends" = ticket numbers. 1–3 are housekeeping; 4–7 build the test safety net;
+8–23 are version-agnostic cleanup (8–14 dependency work; 15–23 deprecation
 edits) and parallelize within their bands; 24–31 are mostly sequential version
-bumps + rollout. Every cleanup ticket (7–23) must leave the tree green on 4.10
+bumps + rollout. Every cleanup ticket (8–23) must leave the tree green on 4.10
 on its own, so that each bump (24/27/28) is a pin change with nothing left to fix.
 
 ### Housekeeping — independent, do first
@@ -52,83 +52,7 @@ Acceptance: repo root still resolves; dep gone; tests green.
 Delete `ansible_distribution_version == '18.04'` branches.
 Acceptance: none remain; 22.04 path unaffected.
 
-### Safety net — build verification before touching versions
-
-#### 3. CI lint + syntax for all playbooks
-Add `ansible-lint` (dev dep) and extend `--syntax-check` to cover the
-top-level playbooks *not* reached by the existing `deploy_stack.yml` check —
-`deploy_hq.yml`, `deploy_postgres.yml`, the `restart_*` / `deploy_citusdb` /
-`deploy_proxy` set, etc. (`deploy_stack.yml` and its ~18 imports are already
-syntax-checked by `.tests/tests.sh`; `deploy_prometheus.yml` is excluded — it's
-being removed in #12); capture existing violations as a baseline. Full FQCN
-module normalization is low-priority baseline debt (short names resolve fine;
-collection moves are handled by #7–8).
-Acceptance: new non-blocking `lint.yml` fails on new violations; green on day one.
-
-#### 4. Refresh Vagrant harness to 22.04
-`Vagrantfile` is `ubuntu/bionic64` (18.04); upgrade it, verify provisioning,
-document the local full-stack flow.
-Acceptance: `vagrant up` + `deploy-stack` completes on 22.04 on current Ansible.
-
-#### 5. Molecule scaffolding + one reference role
-Add Molecule (docker driver) with a shared base config and a worked example for
-one simple role (e.g. `swap` or `logrotate`, which already has a `tests/` stub).
-Wire a Molecule job into CI. Document "how to add a Molecule scenario." Keep
-test code separate from production code.
-Acceptance: `molecule test` converge + idempotence green locally and in CI on 22.04.
-
-#### 6. Molecule coverage for critical roles
-Add Molecule converge/idempotence scenarios for the operationally critical,
-untested roles: postgresql(_base), pgbouncer, couchdb2, kafka, redis,
-elasticsearch, nginx, proxy/haproxy. Likely one Jira ticket per role/group.
-Acceptance: each converges twice with no changes; basic service-up asserts.
-Depends: 5.
-
-### Dependency work — collections + roles, version-agnostic, run on 4.10
-
-#### 7. Adopt `community.postgresql` (declare + migrate `postgresql_*`)
-Add `community.postgresql` to `requirements.yml`, then FQCN-ify
-`postgresql_user/db/privs/set/query` and drop `encrypted:` (removed in core 2.15).
-Files:
-- `roles/postgresql_base/tasks/set_up_dbs.yml`
-- `roles/postgresql_base/tasks/main.yml`
-- any playbook needing a `collections:` entry.
-Acceptance: `ansible-galaxy install -r` resolves the collection; Molecule
-postgres (#6) + syntax clean.
-Depends: ideally 6.
-
-#### 8. Adopt `ansible.posix`
-Add `ansible.posix` to `requirements.yml`, then FQCN-ify `synchronize` /
-`authorized_key` in `roles/deploy_hq/tasks/staticfiles_*` and
-`roles/setup_auth_keys.yml`.
-Acceptance: collection installs; refs resolve to `ansible.posix.*`; lint clean.
-
-#### 9. Audit `community.general` + `dimagi.commcare_logstash`
-Decide whether `community.general 7.4.0` is still required and at what version,
-and confirm `dimagi.commcare_logstash` loads on the target cores. (The other
-Dimagi collection, `dimagi.commcare_prometheus`, is removed in #12, so it drops
-out of this audit.) Record each collection's `requires_ansible` and confirm it
-admits core 2.21 (v14 excludes incompatible collections by default).
-Acceptance: necessity decision recorded; a compat-matrix entry per surviving
-collection.
-
-#### 10. Removed-collection audit (collections dropped v5–v14)
-The repo uses short module names (FQCN is ~6 tasks total), so grep the *short
-module names* of every collection removed from the `ansible` package across
-v5–v14 (per each version's changelog). Pin and explicitly install any still in
-use.
-Acceptance: nothing in-use silently disappears at any version step; pins added.
-
-#### 11. Standalone-role maintenance audit; drop orphaned roles
-Use the Appendix B matrix as the baseline: for each *role* in `requirements.yml`
-record archived flag, last activity, target-core compatibility. The monitoring
-roles (`cloudalchemy.*`, plus the transitive `gantsign.golang` /
-`bdellegrazie.postgres_exporter`) are removed wholesale in #12, so this ticket
-covers the survivors: `DavidWittman.redis`, `sansible.logstash`, the
-`andrewrothstein.*` couchdb roles.
-Acceptance: role compat matrix complete; orphaned pins removed or justified.
-
-#### 12. Remove the Prometheus install automation
+#### 3. Remove the Prometheus install automation
 Remove `deploy_prometheus.yml` and all dependencies used only by it from
 `requirements.yml`.
 - Check references to `prometheus` / `grafana` / `alertmanager` /
@@ -162,9 +86,85 @@ monitoring docs are updated; `deploy-stack` is unaffected; and with
 `prometheus_monitoring_enabled` still settable + set to `True`, the
 `deploy_commcarehq` path renders localsettings + supervisor configs
 (syntax/Molecule green with the flag both on and off).
-Depends: ideally 6.
+Depends: ideally 7.
 Decision thread:
 https://dimagi.slack.com/archives/CNQ636095/p1781277055592099?thread_ts=1781210489.586889&cid=CNQ636095
+
+### Safety net — build verification before touching versions
+
+#### 4. CI lint + syntax for all playbooks
+Add `ansible-lint` (dev dep) and extend `--syntax-check` to cover the
+top-level playbooks *not* reached by the existing `deploy_stack.yml` check —
+`deploy_hq.yml`, `deploy_postgres.yml`, the `restart_*` / `deploy_citusdb` /
+`deploy_proxy` set, etc. (`deploy_stack.yml` and its ~18 imports are already
+syntax-checked by `.tests/tests.sh`; `deploy_prometheus.yml` is excluded — it's
+being removed in #3); capture existing violations as a baseline. Full FQCN
+module normalization is low-priority baseline debt (short names resolve fine;
+collection moves are handled by #8–9).
+Acceptance: new non-blocking `lint.yml` fails on new violations; green on day one.
+
+#### 5. Refresh Vagrant harness to 22.04
+`Vagrantfile` is `ubuntu/bionic64` (18.04); upgrade it, verify provisioning,
+document the local full-stack flow.
+Acceptance: `vagrant up` + `deploy-stack` completes on 22.04 on current Ansible.
+
+#### 6. Molecule scaffolding + one reference role
+Add Molecule (docker driver) with a shared base config and a worked example for
+one simple role (e.g. `swap` or `logrotate`, which already has a `tests/` stub).
+Wire a Molecule job into CI. Document "how to add a Molecule scenario." Keep
+test code separate from production code.
+Acceptance: `molecule test` converge + idempotence green locally and in CI on 22.04.
+
+#### 7. Molecule coverage for critical roles
+Add Molecule converge/idempotence scenarios for the operationally critical,
+untested roles: postgresql(_base), pgbouncer, couchdb2, kafka, redis,
+elasticsearch, nginx, proxy/haproxy. Likely one Jira ticket per role/group.
+Acceptance: each converges twice with no changes; basic service-up asserts.
+Depends: 6.
+
+### Dependency work — collections + roles, version-agnostic, run on 4.10
+
+#### 8. Adopt `community.postgresql` (declare + migrate `postgresql_*`)
+Add `community.postgresql` to `requirements.yml`, then FQCN-ify
+`postgresql_user/db/privs/set/query` and drop `encrypted:` (removed in core 2.15).
+Files:
+- `roles/postgresql_base/tasks/set_up_dbs.yml`
+- `roles/postgresql_base/tasks/main.yml`
+- any playbook needing a `collections:` entry.
+Acceptance: `ansible-galaxy install -r` resolves the collection; Molecule
+postgres (#7) + syntax clean.
+Depends: ideally 7.
+
+#### 9. Adopt `ansible.posix`
+Add `ansible.posix` to `requirements.yml`, then FQCN-ify `synchronize` /
+`authorized_key` in `roles/deploy_hq/tasks/staticfiles_*` and
+`roles/setup_auth_keys.yml`.
+Acceptance: collection installs; refs resolve to `ansible.posix.*`; lint clean.
+
+#### 10. Audit `community.general` + `dimagi.commcare_logstash`
+Decide whether `community.general 7.4.0` is still required and at what version,
+and confirm `dimagi.commcare_logstash` loads on the target cores. (The other
+Dimagi collection, `dimagi.commcare_prometheus`, is removed in #3, so it drops
+out of this audit.) Record each collection's `requires_ansible` and confirm it
+admits core 2.21 (v14 excludes incompatible collections by default).
+Acceptance: necessity decision recorded; a compat-matrix entry per surviving
+collection.
+
+#### 11. Removed-collection audit (collections dropped v5–v14)
+The repo uses short module names (FQCN is ~6 tasks total), so grep the *short
+module names* of every collection removed from the `ansible` package across
+v5–v14 (per each version's changelog). Pin and explicitly install any still in
+use.
+Acceptance: nothing in-use silently disappears at any version step; pins added.
+
+#### 12. Standalone-role maintenance audit; drop orphaned roles
+Use the Appendix B matrix as the baseline: for each *role* in `requirements.yml`
+record archived flag, last activity, target-core compatibility. The monitoring
+roles (`cloudalchemy.*`, plus the transitive `gantsign.golang` /
+`bdellegrazie.postgres_exporter`) are removed wholesale in #3, so this ticket
+covers the survivors: `DavidWittman.redis`, `sansible.logstash`, the
+`andrewrothstein.*` couchdb roles.
+Acceptance: role compat matrix complete; orphaned pins removed or justified.
 
 #### 13. Vendor or replace `tmpreaper`
 Abandoned but trivial (`ANXS/tmpreaper`, dead since 2017); used in several
@@ -194,7 +194,7 @@ Prior art: [#6209](https://github.com/dimagi/commcare-cloud/pull/6209) /
 [#6235](https://github.com/dimagi/commcare-cloud/pull/6235) carry the same kind
 of mechanical loop/`include_tasks` rewrite; they close in #17.
 Acceptance: no `with_*` keys remain; touched role Molecules green.
-Depends: 6 (interleave with 7–8, 15).
+Depends: 7 (interleave with 8–9, 15).
 
 #### 17. Normalize shorthand, boolean, and string-boolean conditionals
 - Convert `action:`/`debug: msg=` to mapping form
@@ -213,7 +213,7 @@ Acceptance: lint clean; no `when:` relies on implicit string→bool.
 Arithmetic and concatenation are no longer allowed *outside* a Jinja template.
 `'[1] + {{ [2] }}'` → `'{{ [1] + [2] }}'`. Grep `}}` adjacent to operators.
 Acceptance: lint clean. Hard to fully detect on 4.10, so re-verify at 4→10.
-Depends: 6.
+Depends: 7.
 
 #### 19. Harden conditional templating — highest-risk (the v8 + v12 arc)
 - **v8/CVE-2023-5764** (core 2.15): embedded-template conditionals fail "unsafe"
@@ -225,7 +225,7 @@ Depends: 6.
 Build the candidate list from a repo-wide grep of `when:` / `failed_when:` /
 `changed_when:` / `assert`.
 Acceptance: triaged on 4.10; full verification only on core 2.15 & 2.19 (see #27).
-Depends: 6.
+Depends: 7.
 
 #### 20. Fix ansible.cfg Galaxy URL
 `old-galaxy.ansible.com` → `galaxy.ansible.com`.
@@ -264,13 +264,13 @@ can't merge until the cleanup band is done).
 Acceptance: core 2.17 installs; `deploy_hq.yml` syntax-check green; full
 Molecule suite green on Ansible 10.
 Fallback: bisect via 6/8 if failures are hard to localize.
-Depends: 7–23
+Depends: 8–23
 
 #### 25. Re-pin surviving standalone roles + re-test
 Bump the still-maintained roles to their newest releases and re-test on core
 2.17: `DavidWittman.redis`, `sansible.logstash`, the `andrewrothstein.*` SHAs
 (couchdb, couchdb-cluster). Done here because verification needs the new core.
-Acceptance: each touched role's Molecule (#6) green on Ansible 10; pins updated.
+Acceptance: each touched role's Molecule (#7) green on Ansible 10; pins updated.
 Depends: 24.
 
 #### 26. Controller Python 3.10 → 3.12
@@ -289,7 +289,7 @@ Acceptance: full suite green on 12 with zero templating/conditional errors.
 Depends: 26, 19.
 
 #### 28. Ansible 12 → 14 (core 2.19→2.21)
-Confirm #23 changes and the per-collection `requires_ansible` gate (#9); final
+Confirm #23 changes and the per-collection `requires_ansible` gate (#10); final
 collection re-pin. Runs on the #26 interpreter (3.12, or 3.14 if the #26
 optional was taken).
 Acceptance: full suite green on 14.
@@ -309,7 +309,7 @@ Depends: 28.
 End-to-end `deploy-stack` on Vagrant and the `tests/cloud/` Docker harness
 against the final stack; idempotence pass.
 Acceptance: clean monolith install + re-converge with zero unexpected changes.
-Depends: 29, 5.
+Depends: 29, 6.
 
 #### 31. Docs
 New minimum Python, upgrade outcome, Molecule/Vagrant workflows, changelog.
@@ -323,9 +323,9 @@ Depends: 30.
 - **Converge** (Ansible/Molecule): apply a role/playbook to a target host. A run
   *converges* when it completes with no errors. Paired with **idempotence** — a
   second run reports **zero changes** — this is the standard pass condition for
-  Molecule scenarios (#5, #6) and full-stack re-runs (#30).
+  Molecule scenarios (#6, #7) and full-stack re-runs (#30).
 - **Scrape** (Prometheus): Prometheus' pull model — it periodically fetches the
-  `/metrics` HTTP endpoint a target exposes. After #12, HQ still exposes its
+  `/metrics` HTTP endpoint a target exposes. After #3, HQ still exposes its
   metrics endpoint (the kept app-level integration), but the Prometheus server
   that scrapes it is operator-managed, not installed by commcare-cloud.
 
@@ -373,7 +373,7 @@ artifacts are still open and may be useful prior art:
   [SAAS-16650](https://dimagi.atlassian.net/browse/SAAS-16650)) — the attempt to
   move the monitoring roles forward. #6524 bumps node_exporter "0.21.5 → 0.21.5"
   — a no-op, because the role is frozen at its final release. That dead end is
-  what motivates removing the monitoring install outright (#12) instead of
+  what motivates removing the monitoring install outright (#3) instead of
   upgrading it.
 
 **Maintenance audit of every dependency in `ansible/requirements.yml`** (checked
@@ -381,21 +381,21 @@ against GitHub archived flag + last push, June 2026):
 
 | Dependency | Repo | State | Last activity | Verdict |
 |--|--|--|--|--|
-| `cloudalchemy.prometheus` | cloudalchemy/ansible-prometheus | **ARCHIVED 2023-03** | rel 4.0.0 (2021-05) | **DEAD** → removed with the Prometheus install automation (#12) |
-| `cloudalchemy.alertmanager` | cloudalchemy/ansible-alertmanager | **ARCHIVED 2023-03** | rel 0.19.1 (2020-09) | **DEAD** → removed (#12) |
-| `cloudalchemy.grafana` | cloudalchemy/ansible-grafana | **ARCHIVED 2023-05** | rel 0.17.0 (2020-03) | **DEAD** → removed (#12) |
-| `cloudalchemy.node_exporter` | cloudalchemy/ansible-node-exporter | **ARCHIVED 2023-03** | rel 2.0.0 (2021-04) | **DEAD** → removed (#12) |
-| `bdellegrazie.postgres_exporter` | bdellegrazie/ansible-role-postgres_exporter | stale | 2022-12 | transitive dep of `dimagi.commcare_prometheus.postgres_exporter` — removed with it (#12) |
-| `gantsign.golang` | gantsign/ansible-role-golang | active | rel 3.5.0 (2025-04) | transitive dep of the collection's Go-exporter roles — removed with it (#12); only the monitoring stack used it |
-| `dimagi.commcare_prometheus` | dimagi/commcare-prometheus | Dimagi, stale | rel 0.1.10 (**2020-10**) | only consumed by `deploy_prometheus.yml` → removed (#12) |
+| `cloudalchemy.prometheus` | cloudalchemy/ansible-prometheus | **ARCHIVED 2023-03** | rel 4.0.0 (2021-05) | **DEAD** → removed with the Prometheus install automation (#3) |
+| `cloudalchemy.alertmanager` | cloudalchemy/ansible-alertmanager | **ARCHIVED 2023-03** | rel 0.19.1 (2020-09) | **DEAD** → removed (#3) |
+| `cloudalchemy.grafana` | cloudalchemy/ansible-grafana | **ARCHIVED 2023-05** | rel 0.17.0 (2020-03) | **DEAD** → removed (#3) |
+| `cloudalchemy.node_exporter` | cloudalchemy/ansible-node-exporter | **ARCHIVED 2023-03** | rel 2.0.0 (2021-04) | **DEAD** → removed (#3) |
+| `bdellegrazie.postgres_exporter` | bdellegrazie/ansible-role-postgres_exporter | stale | 2022-12 | transitive dep of `dimagi.commcare_prometheus.postgres_exporter` — removed with it (#3) |
+| `gantsign.golang` | gantsign/ansible-role-golang | active | rel 3.5.0 (2025-04) | transitive dep of the collection's Go-exporter roles — removed with it (#3); only the monitoring stack used it |
+| `dimagi.commcare_prometheus` | dimagi/commcare-prometheus | Dimagi, stale | rel 0.1.10 (**2020-10**) | only consumed by `deploy_prometheus.yml` → removed (#3) |
 | `DavidWittman.redis` | DavidWittman/ansible-redis | semi-active | rel 1.2.12 (2024-01), 57 open issues | re-test on target core; bump if needed (#25) |
 | `sansible.logstash` | sansible/logstash | low activity | v2.4.4 | re-test on target core (#25) |
 | `andrewrothstein.couchdb` | andrewrothstein/ansible-couchdb | maintained | 2024-06 (SHA-pinned, no releases) | re-test; keep SHA pin (#25) |
 | `andrewrothstein.couchdb-cluster-*` | dimagi/ansible-couchdb-cluster | Dimagi fork | 2023-03 (SHA-pinned) | we own it — fix forward if it breaks (#25) |
 | `tmpreaper` (`ANXS/tmpreaper`) | ANXS/tmpreaper | **DEAD** | **2017-07** | trivial role — vendor or replace (#13) |
 | `ansible-logrotate` | nickhammond/ansible-logrotate | **DEAD** | **2018-10** (v0.0.5) | trivial role — vendor or replace (#14) |
-| `dimagi.commcare_logstash` | dimagi/commcare-logstash | Dimagi | 2022-01 (0.9.5) | re-test; we own it (#9) |
-| `community.general` | (collection) | active | pinned 7.4.0 | bump in lockstep with core (#9) |
+| `dimagi.commcare_logstash` | dimagi/commcare-logstash | Dimagi | 2022-01 (0.9.5) | re-test; we own it (#10) |
+| `community.general` | (collection) | active | pinned 7.4.0 | bump in lockstep with core (#10) |
 
 ---
 
@@ -403,8 +403,8 @@ against GitHub archived flag + last push, June 2026):
 
 - **Depends** should be encoded as ticket links in the ticket description.
 - **Acceptance** should include ticket links where appropriate.
-- **Verification layers:** lint + syntax (CI, #3); Molecule converge/idempotence
-  (#5, #6); Vagrant + `tests/cloud/` full-stack (#4, #30); pytest CLI suite on
+- **Verification layers:** lint + syntax (CI, #4); Molecule converge/idempotence
+  (#6, #7); Vagrant + `tests/cloud/` full-stack (#5, #30); pytest CLI suite on
   the target Python/core.
 - **Local constraint:** ansible is never run on the dev machine — bumps are
   validated in CI and on Vagrant/Docker targets only.
@@ -412,6 +412,6 @@ against GitHub archived flag + last push, June 2026):
   - 14.x has a stable collection set at execution.
   - whether `community.general 7.4.0` needs bumping in lockstep with the cores.
   - ~~whether we need to maintain prometheus/grafana automation at all~~ —
-    **resolved:** no; #12 removes it and documents operator-managed Prometheus.
+    **resolved:** no; #3 removes it and documents operator-managed Prometheus.
   - add an Ansible 11 stop only if the SSH/Windows or docker-default changes
     prove relevant (unlikely — commcare-cloud targets Linux).
