@@ -72,12 +72,11 @@ CitusDB is no longer used; remove its install/management automation.
   unused — drop them from example environments where present.
 - Remove CitusDB docs (`docs/source/services/postgresql/upgrade_citusdb.rst`;
   trim citus from `postgresql.rst`) and publish a changelog entry.
-Acceptance: no `citus` references remain; `deploy_postgres` / `deploy_db` and the
-postgres Molecule (#9) are green without them; `deploy-stack` unaffected.
+Acceptance: no `citus` references remain; `deploy-stack` unaffected.
 
 #### 4. Remove the RabbitMQ automation
-The Celery broker has migrated to Redis (changelog `0096`; RabbitMQ support ended
-2026-06-01), so RabbitMQ is no longer used — remove its automation.
+The Celery broker has migrated to Redis (changelog `0096`; RabbitMQ support
+ended 2026-06-01), so RabbitMQ is no longer used — remove its automation.
 - Delete `deploy_rabbitmq.yml` and the `roles/rabbitmq/` role.
 - Remove the rabbitmq import/host blocks from `deploy_db.yml` and the rabbitmq
   plays in `ping.yml`, `stop_servers.yml`, `status_check.yml`, and
@@ -91,13 +90,13 @@ The Celery broker has migrated to Redis (changelog `0096`; RabbitMQ support ende
 - The `rabbitmq` inventory group becomes unused — drop the `[rabbitmq:children]`
   blocks from the example/inventory templates and the `AMQP_*` / `OLD_AMQP_*`
   env wiring from example environments.
+- Graham: something failed on removing the `[rabbitmq]` group from inventory.ini
+  Since then, he's done it again and can't reproduce the issue.
 - Remove RabbitMQ docs (`docs/source/services/rabbitmq/*`) and the
-  commcare-ports / firefighting references; publish a changelog entry.
-- **Caveat:** confirm no live environment still points `BROKER_URL` at AMQP
-  before removing — the localsettings broker wiring is shared with the (kept)
-  Redis broker, so touch only the AMQP-specific paths.
-Acceptance: no rabbitmq/AMQP install references remain; `deploy-stack` and Celery
-(on the Redis broker) are unaffected; `test_getinventory.py` is updated.
+  commcare-ports / firefighting references; publish a changelog entry  with
+  action: remove `[rabbitmq]` from inventory.
+Acceptance: no rabbitmq/AMQP install references remain; `deploy-stack` and
+Celery (on the Redis broker) are unaffected; `test_getinventory.py` is updated.
 
 #### 5. Remove the Prometheus install automation
 Remove `deploy_prometheus.yml` and all dependencies used only by it from
