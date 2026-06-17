@@ -11,8 +11,7 @@
   apt: update_cache=yes
   when: |
     add_postgres_repo is defined and add_postgres_repo is changed or
-    add_pango_repo is defined and add_pango_repo is changed or
-    add_python_ppa_bionic is defined and add_python_ppa_bionic is changed
+    add_pango_repo is defined and add_pango_repo is changed
   tags:
     - python
 
@@ -77,16 +76,6 @@
     line: server 169.254.169.123 prefer iburst
   notify: restart chrony
   when: use_chrony
-
-- name: Install common packages (Bionic)
-  become: yes
-  apt:
-    name:
-      - python-minimal
-      - python3-pip
-      - software-properties-common
-      - ufw
-  when: ansible_distribution_version == '18.04'
 
 - name: Install common packages (Jammy)
   become: yes

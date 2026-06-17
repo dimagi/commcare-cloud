@@ -1,10 +1,4 @@
 ---
-
-# Once we're entirely on bionic
-# we might be able install from the default bionic apt repo
-# and not add the official nginx repo.
-# See: https://github.com/dimagi/commcare-cloud/pull/2901#pullrequestreview-250517794
-
 - name: Add Nginx apt key
   become: yes
   apt_key: url=https://nginx.org/keys/nginx_signing.key state=present
