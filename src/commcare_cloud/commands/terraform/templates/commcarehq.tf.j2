@@ -160,9 +160,7 @@ module "server__{{ server_name }}" {
   metadata_tokens = "{{ 'required' if ec2_metadata_tokens_required else 'optional' }}"
   enable_cross_region_backup = {{ server_spec.enable_cross_region_backup|tojson }}
 
-{% if server_spec.os == 'bionic' %}
-  server_image = "deprecated"
-{% elif server_spec.os == 'jammy' %}
+{% if server_spec.os == 'jammy' %}
   server_image = data.aws_ami.ubuntu_jammy.id
 {% else %}
   server_image = data.aws_ami.ubuntu_jammy.id

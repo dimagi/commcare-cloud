@@ -8,7 +8,7 @@ from commcare_cloud.environment.schemas.terraform import (
 def test_single_server():
     server_spec = ServerConfig.wrap({
         'server_name': 'server0-test',
-        'os': 'bionic'
+        'os': 'jammy'
     })
     try:
         server_spec.get_host_group_name()
@@ -27,7 +27,7 @@ def test_multi_server():
     server_spec = ServerConfig.wrap({
         'server_name': 'server_a{i}-test',
         'count': 2,
-        'os': 'bionic',
+        'os': 'jammy',
     })
     assert server_spec.get_host_group_name() == 'server_a'
     assert server_spec.get_all_server_names() == ['server_a000-test', 'server_a001-test']
