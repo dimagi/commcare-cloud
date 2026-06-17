@@ -40,7 +40,7 @@ def deploy_commcare(environment, args, unknown_args):
     context = DeployContext(
         service_name="CommCare HQ",
         revision=args.commcare_rev,
-        diff=_get_code_diff(environment, deploy_revs, args.resume),
+        diff=_get_code_diff(environment, deploy_revs, args.resume, skip_token_prompt=args.private),
         start_time=datetime.utcnow(),
         resume=args.resume
     )
@@ -126,6 +126,8 @@ def confirm_deploy(environment, deploy_revs, rev_diffs, args):
     code_diff.print_deployer_diff()
     if code_diff.deployed_commit_matches_latest_commit and not args.quiet:
         _print_same_code_warning(deploy_revs['commcare'])
+    elif environment.name == 'staging':
+        return True
     return _ask_to_deploy(environment.name, args.quiet)
 
 
@@ -136,13 +138,15 @@ def _ask_to_deploy(env_name, quiet):
 DEPLOY_DIFF = None
 
 
-def _get_code_diff(environment, deploy_revs, is_resume):
+def _get_code_diff(environment, deploy_revs, is_resume, skip_token_prompt=False):
     global DEPLOY_DIFF
     if DEPLOY_DIFF is not None:
         return DEPLOY_DIFF
 
-    tag_commits = environment.fab_settings_config.tag_deploy_commits
-    repo = github_repo('dimagi/commcare-hq', require_write_permissions=tag_commits)
+    repo = github_repo(
+        'dimagi/commcare-hq',
+        prompt_if_missing=not skip_token_prompt and environment.fab_settings_config.generate_deploy_diffs,
+    )
 
     deployed_version = get_deployed_version(environment)
     if is_resume:
@@ -167,11 +171,11 @@ def _get_code_diff(environment, deploy_revs, is_resume):
 
 
 def _confirm_translated(environment, quiet=False):
-    if datetime.now().isoweekday() != 3 or environment.meta_config.deploy_env != 'production':
+    if datetime.now().isoweekday() != 3 or environment.meta_config.deploy_env not in ['production', 'india', 'eu']:
         return True
     github_update_translations_pr_link = \
         "https://github.com/dimagi/commcare-hq/pulls?" \
-        "q=is%3Apr+Update+Translations+author%3Aapp%2Fgithub-actions+is%3Aopen"
+        "q=is%3Apr+Update+Translations+is%3Aopen"
     return ask(
         "It's the weekly Wednesday deploy, did you update the translations "
         "from transifex?\n"

@@ -17,15 +17,13 @@ DimagiKeyStore
 *~
 /build
 /dist
+/.claude
 /.vscode
 couchdb@*_files
 **/config.py
 **/migrations/*/migration_build_*/
 **/migrations/*/copy_file_scripts_*/
  
- # pyenv
-.python-version
-
  # direnv
 .envrc
 .direnv

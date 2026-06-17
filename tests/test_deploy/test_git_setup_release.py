@@ -1,12 +1,12 @@
 import shutil
 import tarfile
+from tempfile import TemporaryDirectory as tempdir
 from configparser import ConfigParser
 from contextlib import contextmanager
 from pathlib import Path
 from unittest import TestCase
 
 import sh
-from testil import tempdir
 
 from .. import ansible
 from ..utils import set_log_level, test_context
@@ -181,7 +181,7 @@ class TestGitSetupRelease(TestCase):
     def test_bad_version(self):
         release = self.releases / "one"
         refs = self.releases / "refs"
-        with self.assertRaisesRegex(ansible.Fail, f"error: pathspec 'bad-version' did not match"):
+        with self.assertRaisesRegex(ansible.Fail, "couldn't find remote ref bad-version"):
             ansible.run("git_setup_release", {
                 "repo": self.src_repo,
                 "version": "bad-version",

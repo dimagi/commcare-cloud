@@ -14,3 +14,23 @@
     state: latest
   tags:
     - install_git
+
+- name: Check installed git version
+  command: git --version
+  register: git_version_check
+  changed_when: false
+  check_mode: false
+  tags:
+    - install_git
+
+- name: Assert minimum git version
+  assert:
+    that:
+      - (git_version_check.stdout | regex_search('\d+\.\d+\.\d+')) is version('2.49.0', '>=')
+    success_msg: '{{ git_version_check.stdout }} (>= 2.49.0)'
+    fail_msg: >-
+      git must be >= 2.49.0 (got "{{ git_version_check.stdout }}").
+      The ppa:git-core/ppa repo should provide a new enough version;
+      check that the PPA is reachable and apt cache is up to date.
+  tags:
+    - install_git

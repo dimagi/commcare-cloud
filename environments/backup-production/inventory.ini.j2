@@ -93,13 +93,7 @@ pgsynclogs_nlb
 pgshard_nlb
 couch_alb
 
-{{ __rabbit_a0__ }}
-
 [rabbitmq:children]
-rabbit_a0
-
-[rabbitmq:vars]
-swap_size=2G
 
 {{ __kafka_a0__ }} kafka_broker_id=1 zookeeper_server_id=2
 

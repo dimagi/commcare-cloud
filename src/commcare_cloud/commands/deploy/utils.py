@@ -1,14 +1,18 @@
+import os
+import shutil
+import tempfile
 from datetime import datetime
 
 import attr
-from github.GithubException import GithubException
 import pytz
+import sh
 from memoized import memoized
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_summary, color_error
 from commcare_cloud.commands.deploy.slack import notify_slack_deploy_start, notify_slack_deploy_end
+from commcare_cloud.github import GITHUB_KNOWN_HOSTS
 from commcare_cloud.user_utils import get_default_username
 
 
@@ -36,16 +40,33 @@ class DeployContext:
 
 
 def create_release_tag(environment, repo, diff):
-    if environment.fab_settings_config.tag_deploy_commits:
-        try:
-            repo.create_git_ref(
-                ref='refs/tags/{}-{}-deploy'.format(
-                    environment.release_name,
-                    environment.name),
-                sha=diff.deploy_commit,
-            )
-        except GithubException as e:
-            print(color_error(f"Error creating release tag: {e}"))
+    if not environment.fab_settings_config.tag_deploy_commits:
+        return
+    remote_url = f"git@github.com:{repo.full_name}.git"
+    tag_name = f"{environment.release_name}-{environment.name}-deploy"
+    try:
+        _push_release_tag(remote_url, diff.deploy_commit, tag_name)
+    except (sh.ErrorReturnCode, sh.CommandNotFound) as e:
+        print(color_error(f"Error creating release tag: {e}"))
+
+
+def _push_release_tag(remote_url, sha, tag_name):
+    tmp = tempfile.mkdtemp(prefix="cchq-tag-")
+    env = {
+        **os.environ,
+        "GIT_SSH_COMMAND": (
+            f"ssh -o UserKnownHostsFile={GITHUB_KNOWN_HOSTS} "
+            f"-o StrictHostKeyChecking=yes"
+        ),
+    }
+    git = sh.git.bake("-C", tmp)
+    try:
+        git.init("--bare", "-q")
+        git.fetch("--depth=1", "--no-tags", "--filter=blob:none",
+                  remote_url, sha, _env=env)
+        git.push(remote_url, f"{sha}:refs/tags/{tag_name}", _env=env)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def record_deploy_start(environment, context):

@@ -6,6 +6,12 @@ variable "rds_instance" {
 variable "parameters" {
   type = list
 }
+
+variable "parameter_group_name" {
+  description = "Name of an externally managed DB parameter group. When set, inline parameter group creation is disabled."
+  type        = string
+  default     = null
+}
 variable "vpc_security_group_ids" {
   type = list
 }

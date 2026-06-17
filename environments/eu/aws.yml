@@ -4,3 +4,8 @@ sso_config:
   sso_region: us-east-1
   sso_account_id: "940482413124"
   region: eu-west-1
+ses_config:
+  iam_username: ses-eu
+  account_id: '437781348816'
+  role_name: EmailAdmin
+  region: us-east-1

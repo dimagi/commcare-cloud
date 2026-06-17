@@ -70,8 +70,6 @@ pillow_a000-bk-production.instance_id: i-0b23885a5a4daf320
 proxy_a0-bk-production: 10.212.21.205
 proxy_a0-bk-production.instance_id: i-0c277b935dc317b2a
 proxy_a0-bk-production.public_ip: 52.15.147.217
-rabbit_a0-bk-production: 10.212.41.209
-rabbit_a0-bk-production.instance_id: i-01640329a616749b0
 web_a000-bk-production: 10.212.11.103
 web_a000-bk-production.instance_id: i-09e2b15106899013a
 web_a001-bk-production: 10.212.11.64

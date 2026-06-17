@@ -58,10 +58,6 @@ proxy_a1-eu: 10.204.10.227
 proxy_a1-eu.instance_id: i-07c7021d56f7242fe
 proxy_b1-eu: 10.204.11.16
 proxy_b1-eu.instance_id: i-0e0d3f2695b8aa2e0
-rabbit_a1-eu: 10.204.40.208
-rabbit_a1-eu.instance_id: i-0f3ccdbe3910a7c39
-rabbit_b1-eu: 10.204.41.68
-rabbit_b1-eu.instance_id: i-0bed8295c48b35df3
 web_a1-eu: 10.204.10.187
 web_a1-eu.instance_id: i-02b75bbb789f0cff9
 web_b1-eu: 10.204.11.250

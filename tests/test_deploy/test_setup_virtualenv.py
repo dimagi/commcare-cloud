@@ -1,10 +1,9 @@
 import os
 import shutil
+from tempfile import TemporaryDirectory as tempdir
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch
-
-from testil import tempdir
 
 from .. import ansible
 from ..utils import set_log_level, test_context

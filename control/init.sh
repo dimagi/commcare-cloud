@@ -1,29 +1,38 @@
 #! /bin/bash
-CCHQ_VIRTUALENV=${CCHQ_VIRTUALENV:-cchq}
-VENV=~/.virtualenvs/$CCHQ_VIRTUALENV
-NO_INPUT=0
-BIONIC_USE_SYSTEM_PYTHON=${BIONIC_USE_SYSTEM_PYTHON:-false}
+NO_INPUT=${NO_INPUT:-0}
 
-if [[ $_ == $0 ]]
-then
+# Resolve this script's path in both bash and zsh
+is_sourced=0
+if [ -n "$ZSH_VERSION" ]; then
+    [[ $ZSH_EVAL_CONTEXT == *:file* ]] && is_sourced=1
+    script_path="$0"
+elif [ -n "${BASH_SOURCE[0]}" ]; then
+    (return 0 2>/dev/null) && is_sourced=1
+    script_path="${BASH_SOURCE[0]}"
+else
+    echo "Script path cannot be found. Exiting"
+    return 1
+fi
+
+if [ "$is_sourced" != 1 ]; then
     echo "Please run this script as follows:"
     echo "    $ source /path/to/repo/control/init.sh"
     exit 1
 fi
 
+if ! command -v uv > /dev/null; then
+    echo "uv is required. See https://docs.astral.sh/uv/getting-started/installation/"
+    printf "For example:\n    sudo snap install astral-uv --classic\n\n"
+    # snap does a system-wide install with automatic updates
+    return 1
+fi
 
-function realpath() {
-    python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $1
-}
-
-if [ -n "${BASH_SOURCE[0]}" ] && [ -z "${BASH_SOURCE[0]##*init.sh*}" ]
-then
+if [[ "$script_path" == *init.sh ]]; then
     # this script is being run from a file on disk, presumably from within commcare-cloud repo
-    COMMCARE_CLOUD_REPO=$(dirname $(dirname $(realpath ${BASH_SOURCE[0]})))
+    COMMCARE_CLOUD_REPO=$(cd -- "$(dirname -- "$(dirname -- "$script_path")")" &> /dev/null && pwd)
 
     # check for expected file to verify we've got the right place
-    if [ ! -f ${COMMCARE_CLOUD_REPO}/control/update_code.sh ]
-    then
+    if [ ! -f ${COMMCARE_CLOUD_REPO}/control/update_code.sh ]; then
         echo "It looks like you're running this script from an unexpected location."
         echo "Please check the README for installation instructions:"
         echo "    https://github.com/dimagi/commcare-cloud/blob/master/README.md"
@@ -34,138 +43,61 @@ else
     COMMCARE_CLOUD_REPO=${COMMCARE_CLOUD_REPO:-${HOME}/commcare-cloud}
 fi
 
-if [ -z ${CI_TEST} ]; then
-    # attempt to activate
-    source "${COMMCARE_CLOUD_REPO}/control/activate_venv.sh"
-    if [ "$VIRTUALENV_NOT_FOUND" == "true" ]; then
-        # check if a virtualenv at $VENV exists yet, and create if not
-        if [[ ! -f $VENV/bin/activate ]]; then
-            if [[ $BIONIC_USE_SYSTEM_PYTHON == false ]] && hash python3.10 2>/dev/null; then
-                echo "Creating a python3.10 virtual environment named ${CCHQ_VIRTUALENV}"
-                if [ -n "$CCHQ_VENV_PATH_OLD" ]; then
-                    echo "Your old virtual environment will remain at ${CCHQ_VENV_PATH_OLD}"
-                    echo "If you wish to delete it, run 'rm -rf ${CCHQ_VENV_PATH_OLD}'"
-                fi
-                # use venv because 3.10 setup includes installing python3.10-venv
-                python3.10 -m venv "$VENV"
-            else
-                # use virtualenv because `python3 -m venv` requires python3-venv
-                python3 -m pip install --user --upgrade virtualenv
-                python3 -m virtualenv "$VENV"
-            fi
-        fi
-        source "$VENV/bin/activate"
-    fi
-fi
-
-# check for unsupported python version after virtual env is activated
-python_version=`python --version 2>&1 | awk '{print $2}'`
-if [[ $python_version = 3.6* ]]; then
-    echo "commcare-cloud no longer supports Python 3.6."
-    echo "To upgrade, follow the instructions in:"
-    echo "   https://commcare-cloud.readthedocs.io/en/latest/installation/2-manual-install.html#upgrade-to-python-3-10"
-fi
-
-if [ -d ~/commcarehq-ansible ]; then
-    echo "Moving repo to ~/commcare-cloud"
-    mv ~/commcarehq-ansible ~/commcare-cloud
-fi
-
-# remove broken links
-[ ! -f ~/init-ansible ] && rm -f ~/init-ansible
-
 if [ ! -d ${COMMCARE_CLOUD_REPO} ]; then
+    # Used by docs/source/reference/1-commcare-cloud/1-installation.rst
+    # Manual Installation: source <(curl -s https://.../control/init.sh)
     echo "Checking out CommCare Cloud Repo"
-    git clone https://github.com/dimagi/commcare-cloud.git
+    git clone https://github.com/dimagi/commcare-cloud.git $COMMCARE_CLOUD_REPO
 fi
 
-if [ -d ${COMMCARE_CLOUD_REPO}/commcare-cloud ]; then
-    # we are on an old version of commcare-cloud before it was moved to src/
-    rm -rf ${COMMCARE_CLOUD_REPO}/commcare-cloud
+cd ${COMMCARE_CLOUD_REPO}
+[ -n "$COMMCARE_CLOUD_BRANCH" ] && git checkout $COMMCARE_CLOUD_BRANCH
+uv sync
+uv run --no-sync manage-commcare-cloud install
+
+# Put the project venv on PATH so `cchq`, `commcare-cloud`, `ansible-playbook` etc.
+# are directly invokable without `uv run`.
+if [ -n "${UV_PROJECT_ENVIRONMENT}" ] && [ -d "${UV_PROJECT_ENVIRONMENT}/bin" ]; then
+    export PATH="${UV_PROJECT_ENVIRONMENT}/bin:${PATH}"
+elif [ -d "${COMMCARE_CLOUD_REPO}/.venv/bin" ]; then
+    export PATH="${COMMCARE_CLOUD_REPO}/.venv/bin:${PATH}"
 fi
-
-function uninstall-lowerversion-ansible() {
-    ANSIBLE_VERSION=`pip show ansible | grep Version | awk '{print $2}'`
-    if [[ ${ANSIBLE_VERSION:0:3} < "4.0" ]] && [[ ! -z ${ANSIBLE_VERSION} ]]; then
-        echo "installed version of ansible is: ${ANSIBLE_VERSION:0:3}"
-        echo "ansible version ${ANSIBLE_VERSION} is uninstalling"
-        pip uninstall ansible --yes
-    fi
-}
-
-if [ -z "$(which manage-commcare-cloud)" ]; then
-    # first time install need requirements installed in serial
-    # installs strictly what's in requirements.txt, so versions are pre-pinned
-    cd ${COMMCARE_CLOUD_REPO}
-    pip install --upgrade pip-tools
-
-    uninstall-lowerversion-ansible
-    pip-sync requirements.txt
-    pip install --editable .
-    cd -
-else
-    {
-        COMMCARE=
-        cd ${COMMCARE_CLOUD_REPO}
-        pip install --quiet --upgrade pip-tools
-
-        uninstall-lowerversion-ansible
-        pip-sync --quiet requirements.txt
-        pip install --quiet --editable .
-        cd -
-    } &
-fi
-
-echo "Downloading dependencies from galaxy and pip"
-export ANSIBLE_ROLES_PATH=~/.ansible/roles
-COMMCARE= pip install --quiet --upgrade pip &
-COMMCARE= manage-commcare-cloud install & # includes ansible-galaxy install
-
-# wait for all processes that _we_ started
-for pid in `jobs | grep 'COMMCARE=' | cut -d'[' -f2 | cut -d']' -f1`
-do
-    wait %${pid}
-done
-
-# workaround for some envs that got in a bad state
-python -c 'import Crypto' || {
-    echo "^--- Looks like there's an issue with the pycryptodome install,"
-    echo "     but don't worry, we'll fix that for you."
-    cd ${COMMCARE_CLOUD_REPO} \
-        && pip uninstall --quiet --yes pycryptodome pycrypto \
-        && pip-sync --quiet \
-        && pip install --quiet -editable . \
-        && cd - ;
-}
 
 # git-hook install to protect the commit of unencrypted vault.yml file
-if [ ! -f "${COMMCARE_CLOUD_REPO}/.git/hooks/pre-commit" ]
-then
-echo " Installing git-hook precommit to protect the commit of unprotected vault.yml file"
-cd ${COMMCARE_CLOUD_REPO} && ./git-hooks/install.sh && echo "Installed git-hook precommit" || echo "Failed to Install git-hook precommit, Install manually ./git-hooks/install.sh"
-cd -
+if [ ! -f .git/hooks/pre-commit ]; then
+    echo " Installing git-hook precommit to protect the commit of unprotected vault.yml file"
+    ./git-hooks/install.sh && echo "Installed git-hook precommit" || echo "Failed to Install git-hook precommit, Install manually ./git-hooks/install.sh"
 fi
 
 # convenience: . init-ansible
 [ ! -f ~/init-ansible ] && ln -s ${COMMCARE_CLOUD_REPO}/control/init.sh ~/init-ansible
-cd ${COMMCARE_CLOUD_REPO} && ./control/check_install.sh && cd -
-alias update-code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
-alias update_code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && . ~/init-ansible'
-
-source ${COMMCARE_CLOUD_REPO}/src/commcare_cloud/.bash_completion
+./control/check_install.sh
+alias update-code='${COMMCARE_CLOUD_REPO}/control/update_code.sh && (cd ${COMMCARE_CLOUD_REPO} && uv sync --quiet)'
+alias update_code=update-code
 
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
-SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
+
+# The completion script uses bash's `complete` builtin, which zsh only provides
+# after `bashcompinit` is loaded. Detect it and tell the user how to enable it.
+if command -v complete >/dev/null 2>&1; then
+    source ${COMMCARE_CLOUD_REPO}/src/commcare_cloud/.bash_completion
+elif [ -n "$ZSH_VERSION" ]; then
+    printf "${YELLOW}Skipping cchq tab-completion: requires bash-completion compatibility in zsh.\n"
+    printf "${YELLOW}To enable it, add the following to your ~/.zshrc before sourcing init.sh again:\n"
+    printf "${YELLOW}   autoload -Uz compinit && compinit\n"
+    printf "${YELLOW}   autoload -Uz bashcompinit && bashcompinit\n${NC}"
+fi
 
 if [ -z ${CI_TEST} ]; then
   if ! grep -q init-ansible ~/.profile 2>/dev/null; then
-    if [ $NO_INPUT == 1 ]; then
+    if [[ $NO_INPUT == 1 ]]; then
       yn='y'
     else
       printf "${YELLOW}Do you want to have the CommCare Cloud environment setup on login?${NC}\n"
-      read -t 30 -p "(y/n): " yn
+      printf "(y/n): "
+      read -t 30 yn
     fi
     case $yn in
         [Yy]* )
@@ -184,31 +116,6 @@ if [ -z ${CI_TEST} ]; then
   fi
 fi
 
-# It aint pretty, but it gets the job done
-function ansible-deploy-control() {
-    if [ -z "$1" ]; then
-        echo "Usage:"
-        echo "  ansible-deploy-control [environment]"
-        return
-    fi
-    env="$1"
-    echo "You must be root to deploy the control machine"
-    echo "Run \`su\` to become the root user, then paste in this command to deploy:"
-    echo 'ENV='$env' \
-    && USER='`whoami`' \
-    && ANSIBLE_DIR=/home/$USER/commcare-cloud/src/commcare_cloud/ansible \
-    && ANSIBLE_CONFIG=$ANSIBLE_DIR/ansible.cfg \
-    && ENV_DIR=/home/$USER/commcare-cloud/environments \
-    && ANSIBLE_COLLECTIONS_PATHS='$SITE_PACKAGES'/.ansible/ \
-    && ANSIBLE_ROLES_PATH='$SITE_PACKAGES'/.ansible/roles \
-    '$VENV'/bin/ansible-playbook \
-    -i localhost, $ANSIBLE_DIR/deploy_control.yml \
-    -e @$ENV_DIR/$ENV/vault.yml \
-    -e @$ENV_DIR/$ENV/public.yml \
-    -e @$ENV_DIR/$ENV/.generated.yml \
-    -e target=localhost --connection=local --diff --ask-vault-pass'
-}
-
 function ansible-control-banner() {
     GREEN='\033[0;32m'
     BLUE='\033[0;34m'
@@ -217,8 +124,6 @@ function ansible-control-banner() {
     printf "\n${GREEN}Welcome to commcare-cloud\n\n"
     printf "${GREEN}Available commands:\n"
     printf "${BLUE}update-code${NC} - update the commcare-cloud repositories (safely)\n"
-    printf "${BLUE}source $VENV/bin/activate${NC} - activate the ansible virtual environment\n"
-    printf "${BLUE}ansible-deploy-control [environment]${NC} - deploy changes to users on this control machine\n"
     printf "${BLUE}commcare-cloud${NC} - CLI wrapper for ansible.\n"
     printf "                 See ${YELLOW}commcare-cloud -h${NC} for more details.\n"
     printf "                 See ${YELLOW}commcare-cloud <env> <command> -h${NC} for command details.\n"

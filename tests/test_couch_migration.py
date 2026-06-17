@@ -5,8 +5,7 @@ from io import open
 import yaml
 from couchdb_cluster_admin.doc_models import ShardAllocationDoc
 from unittest.mock import patch
-from nose.tools import assert_equal
-from parameterized import parameterized
+import pytest
 
 from commcare_cloud.commands.migrations.config import (COUCH_SHARD_PLAN,
                                                        PRUNE_PLAYBOOK_NAME,
@@ -24,7 +23,7 @@ PLANS_DIR = os.path.join(TEST_ENVIRONMENTS_DIR, 'plans')
 TEST_PLANS = os.listdir(PLANS_DIR)
 
 
-def tearDown():
+def teardown_module():
     # delete generated files
     for plan_name in TEST_PLANS:
         migration = _get_migration(plan_name)
@@ -47,7 +46,7 @@ def get_shard_allocation_func(mock_shard_allocation):
     return _mock_get_shard_allocation
 
 
-@parameterized(TEST_PLANS)
+@pytest.mark.parametrize("plan_name", TEST_PLANS)
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
 def test_couch_config(plan_name):
     migration = _get_migration(plan_name)
@@ -55,10 +54,10 @@ def test_couch_config(plan_name):
 
     expected_couch_config_json = _get_expected_yml(plan_name, 'expected_couch_config.yml')
 
-    assert_equal(expected_couch_config_json, migration.target_couch_config.to_json())
+    assert expected_couch_config_json == migration.target_couch_config.to_json()
 
 
-@parameterized(TEST_PLANS)
+@pytest.mark.parametrize("plan_name", TEST_PLANS)
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
 def test_get_migration_file_configs(plan_name):
     migration = _get_migration(plan_name)
@@ -74,7 +73,7 @@ def test_get_migration_file_configs(plan_name):
             assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
 
 
-@parameterized(TEST_PLANS)
+@pytest.mark.parametrize("plan_name", TEST_PLANS)
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
 def test_generated_plan(plan_name):
     migration = _get_migration(plan_name)
@@ -85,7 +84,7 @@ def test_generated_plan(plan_name):
     assert expected == actual, "file lists mismatch:\n\nExpected\n{}\nActual\n{}".format(expected, actual)
 
 
-@parameterized(TEST_PLANS)
+@pytest.mark.parametrize("plan_name", TEST_PLANS)
 @patch('commcare_cloud.environment.paths.ENVIRONMENTS_DIR', TEST_ENVIRONMENTS_DIR)
 def test_generate_shard_prune_playbook(plan_name):
     migration = _get_migration(plan_name)

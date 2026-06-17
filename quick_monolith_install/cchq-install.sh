@@ -37,15 +37,8 @@ printf "\nStep 1: Installing Requirements \n"
 printf "#################################################"
 printf "\n"
 sudo apt --assume-yes -qq update
-sudo apt --assume-yes -qq install python3-pip sshpass
-sudo -H pip3 -q install --upgrade pip
-sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
-# install python 3.10 if on ubuntu 18.04 and not installed yet
-if ! hash python3.10 2>/dev/null && [[ $( source /etc/os-release; echo $VERSION_ID ) == 18.04 ]]; then
-    sudo add-apt-repository -y ppa:deadsnakes/ppa
-    sudo apt update
-    sudo apt-get --assume-yes -q install python3.10 python3.10-dev python3.10-distutils python3.10-venv libffi-dev
-fi
+sudo apt --assume-yes -qq install sshpass
+command -v uv > /dev/null || sudo snap install astral-uv --classic
 
 printf "\n"
 printf "#################################################"
@@ -55,7 +48,8 @@ printf "\n"
 # install comcare-cloud
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
-NO_INPUT=1 source "$DIR/../control/init.sh"
+REPO_ROOT="$(cd "$DIR/.." && pwd)"
+NO_INPUT=1 source "$REPO_ROOT/control/init.sh"
 sudo touch /var/log/ansible.log && sudo chmod 666 /var/log/ansible.log
 
 printf "\n"
@@ -65,7 +59,7 @@ printf "storing your CommCareHQ instance's configuration \n"
 printf "#################################################"
 printf "\n"
 
-ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$VENV" "$DIR/bootstrap-env-playbook.yml"
+ansible-playbook --connection=local --extra-vars "@$config_file_path" --extra-vars "cchq_venv=$REPO_ROOT/.venv" "$DIR/bootstrap-env-playbook.yml"
 printf "\n Encrypting your environment's passwords file using ansible-vault.\n"
 printf "Please store this password safely as it will be asked multiple times during the install.\n"
 ansible-vault encrypt ~/environments/$env_name/vault.yml

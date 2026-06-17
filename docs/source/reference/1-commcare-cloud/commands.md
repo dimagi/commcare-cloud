@@ -177,8 +177,7 @@ Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
 specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers[0] will pick the first webworker. May also be
-omitted for environments with only a single server.
+example: webworkers[0] will pick the first webworker.
 
 Use '-' for default (django_manage[0])
 
@@ -189,7 +188,7 @@ Use '-' for default (django_manage[0])
 Connect to a remote host with ssh.
 
 ```
-commcare-cloud <env> ssh [--quiet] [server]
+commcare-cloud <env> ssh [--quiet] server
 ```
 
 This will also automatically add the ssh argument `-A`
@@ -208,8 +207,7 @@ Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
 specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers[0] will pick the first webworker. May also be
-omitted for environments with only a single server.
+example: webworkers[0] will pick the first webworker.
 
 Use '-' for default (django_manage[0])
 
@@ -724,7 +722,7 @@ Don't output the command to be run.
 Connect to a remote host with ssh and open a tmux session.
 
 ```
-commcare-cloud <env> tmux [--quiet] [server] [remote_command]
+commcare-cloud <env> tmux [--quiet] server [remote_command]
 ```
 
 When used with --control, this command skips the slow setup.
@@ -746,8 +744,7 @@ Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
 specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers[0] will pick the first webworker. May also be
-omitted for environments with only a single server.
+example: webworkers[0] will pick the first webworker.
 
 Use '-' for default (django_manage[0])
 
@@ -827,7 +824,7 @@ Output as CSV
 View and edit secrets through the CLI
 
 ```
-commcare-cloud <env> secrets {view,edit,list-append,list-remove} secret_name
+commcare-cloud <env> secrets [--from-stdin] {view,edit,list-append,list-remove} secret_name
 ```
 
 ##### Positional Arguments
@@ -835,6 +832,13 @@ commcare-cloud <env> secrets {view,edit,list-append,list-remove} secret_name
 ###### `{view,edit,list-append,list-remove}`
 
 ###### `secret_name`
+
+##### Options
+
+###### `--from-stdin`
+
+Read the new secret value from stdin instead of prompting interactively.
+Can only be used with the 'edit' subcommand.
 
 ---
 
@@ -1161,60 +1165,6 @@ These services are defined in app-processes.yml.
 ###### `--use-factory-auth`
 
 authenticate using the pem file (or prompt for root password if there is no pem file)
-
----
-
-#### ``fab`` Command
-
-Placeholder for obsolete fab commands
-
-```
-commcare-cloud <env> fab [-l] [fab_command]
-```
-
-##### Positional Arguments
-
-###### `fab_command`
-
-The name of the obsolete fab command.
-
-##### Options
-
-###### `-l`
-
-Use `-l` instead of a command to see the full list of commands.
-
-##### Obsolete fab commands
-```
-
-Obsolete fab command       Replaced by 'commcare-cloud ENV ...'
---------------------       --------------------------------------
-check_status               ping all
-                           service postgresql status
-                           service elasticsearch status
-    
-clean_releases             clean-releases [--keep=N]
-deploy_commcare            deploy commcare
-kill_stale_celery_workers  kill-stale-celery-workers
-manage                     django-manage
-perform_system_checks      perform-system-checks
-preindex_views             preindex-views
-restart_services           service commcare restart
-restart_webworkers         service webworker restart
-rollback                   deploy commcare --resume=PREVIOUS_RELEASE
-
-Use the 'list-releases' command to get valid release names.
-    
-rollback_formplayer        ansible-playbook rollback_formplayer.yml --tags=rollback
-setup_limited_release      deploy commcare --private [--keep-days=N] [--commcare-rev=HQ_BRANCH]
-setup_release              deploy commcare --private --limit=all [--keep-days=N] [--commcare-rev=HQ_BRANCH]
-start_celery               service celery start
-start_pillows              service pillowtop start
-stop_celery                service celery stop
-stop_pillows               service pillowtop stop
-supervisorctl              service NAME ACTION
-update_current             deploy commcare --resume=RELEASE_NAME
-```
 
 ---
 
@@ -1731,7 +1681,7 @@ Set the last applied migration value to this number before running. Will begin r
 Use your MFA device to "sign in" to AWS for &lt;duration&gt; minutes (default 30)
 
 ```
-commcare-cloud <env> aws-sign-in [--duration-minutes DURATION_MINUTES]
+commcare-cloud <env> aws-sign-in [--duration-minutes DURATION_MINUTES] [--ses]
 ```
 
 This will store the temporary session credentials in ~/.aws/credentials
@@ -1744,6 +1694,12 @@ before having to sign in again.
 ###### `--duration-minutes DURATION_MINUTES`
 
 Stay signed in for this many minutes
+
+###### `--ses`
+
+Sign in with the SES profile (used for rotating SES IAM users)
+instead of the default profile. Requires `ses_config` to be set
+in aws.yml.
 
 ---
 
