@@ -15,12 +15,20 @@ import sys
 from botocore.exceptions import ClientError
 
 from .config import ACCOUNT_IDS, ACCOUNT_NAMES, MigrationConfig
-from .datasync import (create_datasync_destination_location,
-                       create_datasync_source_location, create_datasync_task,
-                       list_datasync_tasks, monitor_datasync_task,
-                       start_datasync_task)
-from .iam import (apply_destination_bucket_policy, create_datasync_role,
-                  create_replication_role, print_iam_policies)
+from .datasync import (
+    create_datasync_destination_location,
+    create_datasync_source_location,
+    create_datasync_task,
+    list_datasync_tasks,
+    monitor_datasync_task,
+    start_datasync_task,
+)
+from .iam import (
+    apply_destination_bucket_policy,
+    create_datasync_role,
+    create_replication_role,
+    print_iam_policies,
+)
 from .orchestrator import S3MigrationContext
 from .replication import enable_live_replication, get_replication_status
 from .validation import cutover_checklist, validate_migration
@@ -242,9 +250,12 @@ Examples:
     args = parser.parse_args()
 
     # Append environment name to role names for uniqueness across accounts
-    env_name = ACCOUNT_NAMES.get(args.source_account, args.source_account)
-    replication_role = f"s3-cross-account-replication-role-{env_name}"
-    datasync_role = f"datasync-s3-access-role-{env_name}"
+    source_env_name = ACCOUNT_NAMES.get(args.source_account, args.source_account)
+    dest_env_name = ACCOUNT_NAMES.get(args.dest_account, args.dest_account)
+    print(f"Source environment name: {source_env_name}")
+    print(f"Destination environment name: {dest_env_name}")
+    replication_role = f"s3-cross-account-replication-role-for-{source_env_name}-to-{dest_env_name}"
+    datasync_role = f"datasync-s3-access-role-for-{source_env_name}-to-{dest_env_name}"
 
     config = MigrationConfig(
         source_profile=args.source_profile,
