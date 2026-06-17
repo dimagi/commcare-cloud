@@ -1,6 +1,5 @@
 import collections
 import csv
-import git
 import inspect
 import itertools
 import json
@@ -547,8 +546,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
             json.dump(self.env_info_dict, fp=file)
 
     def _collect_commcare_cloud_details(self):
-        repo = git.Repo(search_parent_directories=True)
-        hexsha = repo.head.object.hexsha
+        hexsha = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode("utf-8").strip()
         self.env_info_dict["commcare_cloud"] = {"commit": hexsha}
 
     def _collect_commcare_hq_details(self):
