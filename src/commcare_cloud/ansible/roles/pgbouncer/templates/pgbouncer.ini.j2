@@ -46,7 +46,6 @@ so_reuseport = 1
 ;;; Authentication settings
 ;;;
 {% if pgbouncer_client_tls_key_file and pgbouncer_client_tls_cert_file %}
-;; SSL needed to connect between citus controller and worker machines.
 client_tls_sslmode = prefer
 client_tls_key_file = {{ pgbouncer_client_tls_key_file }}
 client_tls_cert_file = {{ pgbouncer_client_tls_cert_file }}
