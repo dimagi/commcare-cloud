@@ -1,4 +1,3 @@
-import copy
 from collections import defaultdict
 
 import jsonobject
@@ -116,7 +115,6 @@ class PostgresqlConfig(jsonobject.JsonObject):
         all_pgbouncer_hosts = environment.groups.get('postgresql', [])
         if self.DEFAULT_POSTGRESQL_HOST not in all_pgbouncer_hosts:
             all_pgbouncer_hosts.append(self.DEFAULT_POSTGRESQL_HOST)
-        all_pgbouncer_hosts.extend(environment.groups.get('citusdb_master', []))
         all_pgbouncer_hosts.extend(environment.groups.get('pgbouncer', []))
 
         dbs_by_host = defaultdict(list)
@@ -129,27 +127,6 @@ class PostgresqlConfig(jsonobject.JsonObject):
             root_pg_host = self._get_root_pg_host(host, environment)
             dbs_by_host[host] = dbs_by_host[root_pg_host]
 
-        for host in environment.groups.get('citusdb_worker', []):
-            citusdb_masters = set(environment.groups.get('citusdb_master', []))
-            pg_standbys = set(environment.groups.get('pg_standby', []))
-            citusdb_masters = list(citusdb_masters - pg_standbys)
-            if not citusdb_masters:
-                raise PGConfigException('no hosts in the "citusdb_master" group (excluding standbys)')
-            if len(citusdb_masters) > 1:
-                raise PGConfigException('more than one citus master configured (excluding standbys)')
-
-            citusdb_master = citusdb_masters[0]
-            citus_dbs = []
-            for db in sorted_dbs:
-                if db['host'] == citusdb_master:
-                    db_config = copy.deepcopy(db)
-                    db_config['host'] = host
-                    db_config['pgbouncer_hosts'] = [host]
-                    db_config['pgbouncer_endpoint'] = host
-                    citus_dbs.append(db_config)
-
-            dbs_by_host[host] = citus_dbs
-
         data['postgresql_dbs']['by_pgbouncer_host'] = dict(dbs_by_host)
         return data
 
@@ -160,7 +137,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
         if not standby_master:
             raise PGConfigException('{} has not root PG host'.format(standby_host))
         standby_master = env.translate_host(standby_master, env.paths.inventory_source)
-        potential_masters = env.groups['postgresql'] + env.groups.get('citusdb', [])
+        potential_masters = env.groups['postgresql']
         if standby_master in potential_masters:
             return standby_master
         return self._get_root_pg_host(standby_master, env)
