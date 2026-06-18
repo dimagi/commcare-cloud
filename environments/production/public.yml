@@ -27,6 +27,7 @@ ALTERNATE_HOSTS:
   - rec-mobile.sante.gov.bf
   - onse-iss.commcarehq.org
   - almanachhq.adsphcda.org.ng
+  - upscale.misau.gov.mz
 show_maintenance_updates_on_deploy: False
 
 DATADOG_ENABLED: True
