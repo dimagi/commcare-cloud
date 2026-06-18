@@ -18,9 +18,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   {
     'app1'    => '192.168.33.15',
     'db1'   => '192.168.33.16',
-    'citusdb1'   => '192.168.33.31',
-    'citusdb2'   => '192.168.33.32',
-    'citusdb3'   => '192.168.33.33',
     'proxy1' => '192.168.33.17',
   }.each do |short_name, ip|
     config.vm.define short_name do |host|
