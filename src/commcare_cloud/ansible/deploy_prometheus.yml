@@ -104,7 +104,7 @@
   tags: elasticsearch_exporter
 
 - name: Prometheus Postgresql Exporter
-  hosts: postgresql,pg_standby,citusdb
+  hosts: postgresql,pg_standby
   become: true
   vars:
     ansible_service_mgr: "systemd"
@@ -116,7 +116,7 @@
   tags: postgres_exporter
 
 - name: Prometheus Pgbouncer Exporter
-  hosts: postgresql,pg_standby,citusdb
+  hosts: postgresql,pg_standby
   become: true
   tasks:
     - import_role:
