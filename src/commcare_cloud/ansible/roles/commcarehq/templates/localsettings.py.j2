@@ -993,10 +993,6 @@ TRANSIFEX_DETAILS = {
 KAFKA_API_VERSION = tuple({{ localsettings.KAFKA_API_VERSION|default(kafka_version.split('.')|map('int')|list) }})
 {% endif %}
 
-{% if localsettings.ICDS_USE_CITUS is defined %}
-ICDS_USE_CITUS = {{ localsettings.ICDS_USE_CITUS }}
-{% endif %}
-
 {% if localsettings.STATIC_DATA_SOURCE_PROVIDERS is defined %}
 STATIC_DATA_SOURCE_PROVIDERS = [
 {% for provider in localsettings.STATIC_DATA_SOURCE_PROVIDERS %}
