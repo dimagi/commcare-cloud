@@ -51,4 +51,3 @@ monitoring_groups:
   - couchdb2
   - couchdb2_proxy
   - django_manage
-  - citusdb
