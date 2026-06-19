@@ -14,9 +14,6 @@ pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: session
 pgbouncer_kernel_settings: {}
 
-pgbouncer_client_tls_key_file: ~
-pgbouncer_client_tls_cert_file: ~
-
 postgresql_port: 5432
 
 pgbouncer_processes: 1
