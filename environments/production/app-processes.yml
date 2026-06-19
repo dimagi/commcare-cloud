@@ -131,7 +131,7 @@ pillows:
     AppDbChangeFeedPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:
-      num_processes: 1
+      num_processes: 4
     CacheInvalidatePillow:
       num_processes: 1
     DomainDbKafkaPillow:
