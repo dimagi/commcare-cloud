@@ -126,7 +126,7 @@ def run_on_control_instead(args, argv, force_latest_code):
             'fi && uv run {cchq} {cchq_args}'
         )
     cmd_parts = [
-        executable, args.env_name, 'ssh', 'control[0]', '-t',
+        executable, args.env_name, 'ssh', 'control[0]', '-tt',
         bash_commands_template.format(
             branch=branch,
             cchq=executable,
