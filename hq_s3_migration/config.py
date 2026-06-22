@@ -1,5 +1,19 @@
 from dataclasses import dataclass
 
+
+def derive_resource_names(source_env: str, dest_env: str) -> dict:
+    """Derive all per-migration resource names from env-name aliases."""
+    suffix = f"{source_env}-to-{dest_env}"
+    return {
+        "replication_role_name": f"s3-cross-account-replication-role-for-{suffix}",
+        "datasync_role_name": f"datasync-s3-access-role-for-{suffix}",
+        "report_bucket_name": f"s3-migration-{suffix}-datasync-run-reports",
+        "report_role_name": f"datasync-report-access-role-for-{suffix}",
+        "failures_queue_name": f"s3-replication-failures-{suffix}",
+        "threshold_queue_name": f"s3-replication-threshold-{suffix}",
+    }
+
+
 @dataclass
 class MigrationConfig:
     """Configuration for S3 cross-account migration."""
