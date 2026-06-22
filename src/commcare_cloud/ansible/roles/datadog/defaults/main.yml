@@ -9,7 +9,6 @@ datadog_integrations:
   - {"name": "pgbouncer", "enabled": "{{ datadog_integration_pgbouncer }}"}
   - {"name": "postgres", "enabled": "{{ datadog_integration_postgres }}"}
   - {"name": "process", "enabled": "{{ datadog_integration_postgres_receiver }}"}
-  - {"name": "rabbitmq", "enabled": "{{ datadog_integration_rabbitmq }}"}
   - {"name": "redisdb", "enabled": "{{ datadog_integration_redisdb }}"}
   - {"name": "zk", "enabled": "{{ datadog_integration_zk }}"}
   - {"name": "celery_custom", "enabled": "{{ app_processes_config is defined and app_processes_config.celery_processes.get(inventory_hostname).flower is defined }}"}
@@ -45,7 +44,6 @@ monitoring_groups:
   - formplayer
   - pillowtop
   - celery
-  - rabbitmq
   - kafka
   - redis
   - couchdb2
