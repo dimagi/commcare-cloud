@@ -3,8 +3,6 @@ secrets:
   KSPLICE_ACTIVATION_KEY:
   DATADOG_API_KEY: null
   DATADOG_APP_KEY: null
-  AMQP_USER: "{{ deploy_env }}_worker"
-  AMQP_PASSWORD: '******'
   HAPROXY_STATS_PASSWORD: secrete
   POSTGRES_USERS:
     commcare:

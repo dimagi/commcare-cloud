@@ -3,8 +3,6 @@ secrets:
   KSPLICE_ACTIVATION_KEY:
   DATADOG_API_KEY: null
   DATADOG_APP_KEY: null
-  AMQP_USER: "{{ env_name }}_worker"
-  AMQP_PASSWORD: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
   HAPROXY_STATS_PASSWORD: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'
   SUPERVISOR_HTTP_USERNAME: 'supervisor_http'
   SUPERVISOR_HTTP_PASSWORD: '{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}'

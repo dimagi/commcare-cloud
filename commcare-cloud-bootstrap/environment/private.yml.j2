@@ -3,8 +3,6 @@ secrets:
   KSPLICE_ACTIVATION_KEY:
   DATADOG_API_KEY: null
   DATADOG_APP_KEY: null
-  AMQP_USER: "{{ deploy_env }}_worker"
-  AMQP_PASSWORD: '{{ generate_password() }}'
   HAPROXY_STATS_PASSWORD: '{{ generate_password() }}'
   SUPERVISOR_HTTP_USERNAME: 'supervisor_http'
   SUPERVISOR_HTTP_PASSWORD: '{{ generate_password() }}'
