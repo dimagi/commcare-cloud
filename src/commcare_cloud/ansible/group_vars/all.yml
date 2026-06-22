@@ -80,7 +80,6 @@ datadog_integration_nginx: false
 datadog_integration_pgbouncer: false
 datadog_integration_postgres: false
 datadog_integration_postgres_receiver: false
-datadog_integration_rabbitmq: false
 datadog_integration_redisdb: false
 datadog_integration_zk: false
 datadog_integration_http: false
@@ -118,12 +117,6 @@ solutions_aes_email: null
 show_maintenance_updates_on_deploy: true
 
 ALTERNATE_HOSTS: []
-AMQP_HOST: "{{ groups.rabbitmq.0 }}"
-AMQP_NAME: commcarehq
-OLD_AMQP_HOST: null
-OLD_AMQP_NAME: commcarehq
-BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
-OLD_BROKER_URL: "{{ ('amqp://' + OLD_AMQP_USER + ':' + OLD_AMQP_PASSWORD + '@' + OLD_AMQP_HOST + ':5672/' + OLD_AMQP_NAME) if OLD_AMQP_HOST else None }}"
 DROPBOX_APP_NAME: 'CommCareHQFiles'
 ELASTICSEARCH_PORT: 9200
 TWO_FACTOR_GATEWAY_ENABLED: False
