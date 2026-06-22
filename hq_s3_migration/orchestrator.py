@@ -25,5 +25,6 @@ class S3MigrationContext:
         self.source_iam = self.source_session.client('iam')
         self.dest_iam = self.dest_session.client('iam')
         self.source_datasync = self.source_session.client('datasync')
+        self.source_sqs = self.source_session.client('sqs')
         self.source_sts = self.source_session.client('sts')
         self.dest_sts = self.dest_session.client('sts')

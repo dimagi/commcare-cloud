@@ -14,7 +14,7 @@ import sys
 
 from botocore.exceptions import ClientError
 
-from .config import ACCOUNT_IDS, ACCOUNT_NAMES, MigrationConfig
+from .config import ACCOUNT_IDS, ACCOUNT_NAMES, MigrationConfig, derive_resource_names
 from .datasync import (
     create_datasync_destination_location,
     create_datasync_source_location,
@@ -27,7 +27,15 @@ from .iam import (
     apply_destination_bucket_policy,
     create_datasync_role,
     create_replication_role,
+    create_report_bucket,
+    create_report_role,
     print_iam_policies,
+)
+from .monitoring import (
+    configure_bucket_notifications,
+    create_monitoring_queues,
+    drain_queue_to_jsonl,
+    get_monitoring_status,
 )
 from .orchestrator import S3MigrationContext
 from .replication import enable_live_replication, get_replication_status
@@ -221,7 +229,7 @@ Examples:
     parser.add_argument('command', choices=[
         'prepare', 'setup-iam', 'enable-replication', 'create-datasync',
         'start-datasync', 'monitor-datasync', 'validate', 'cutover-check',
-        'status'
+        'status', 'setup-monitoring', 'drain-queue'
     ], help='Command to execute')
 
     parser.add_argument('--source-profile', default='StagingAdminAccess',
@@ -246,16 +254,24 @@ Examples:
                         help='DataSync task ARN (for start-datasync)')
     parser.add_argument('--execution-arn',
                         help='DataSync execution ARN (for monitor-datasync)')
+    parser.add_argument('--create-monitoring', action='store_true',
+                        help='Create monitoring queues and bucket notifications (for setup-monitoring)')
+    parser.add_argument('--queue', default='failures',
+                        help="Queue to drain: 'failures', 'threshold', or an explicit queue URL")
+    parser.add_argument('--output-prefix', default='replication-events',
+                        help='Output filename prefix for drain-queue JSONL files')
+    parser.add_argument('--max-messages', type=int, default=None,
+                        help='Optional cap on messages to drain')
+    parser.add_argument('--delete', action='store_true',
+                        help='Delete messages after writing (destructive drain; default peek)')
 
     args = parser.parse_args()
 
-    # Append environment name to role names for uniqueness across accounts
     source_env_name = ACCOUNT_NAMES.get(args.source_account, args.source_account)
     dest_env_name = ACCOUNT_NAMES.get(args.dest_account, args.dest_account)
     print(f"Source environment name: {source_env_name}")
     print(f"Destination environment name: {dest_env_name}")
-    replication_role = f"s3-cross-account-replication-role-for-{source_env_name}-to-{dest_env_name}"
-    datasync_role = f"datasync-s3-access-role-for-{source_env_name}-to-{dest_env_name}"
+    names = derive_resource_names(source_env_name, dest_env_name)
 
     config = MigrationConfig(
         source_profile=args.source_profile,
@@ -266,8 +282,9 @@ Examples:
         dest_account_id=args.dest_account,
         region=args.region,
         enable_rtc=not args.disable_rtc,
-        replication_role_name=replication_role,
-        datasync_role_name=datasync_role,
+        replication_role_name=names["replication_role_name"],
+        failures_queue_name=names["failures_queue_name"],
+        threshold_queue_name=names["threshold_queue_name"],
     )
 
     ctx = S3MigrationContext(config)
@@ -344,7 +361,33 @@ Examples:
     elif args.command == 'status':
         _check_prerequisites(ctx)
         get_replication_status(ctx)
+        get_monitoring_status(ctx)
         list_datasync_tasks(ctx)
+
+    elif args.command == 'setup-monitoring':
+        if args.create_monitoring:
+            queues = create_monitoring_queues(ctx)
+            if queues.get('failures') and queues.get('threshold'):
+                configure_bucket_notifications(
+                    ctx, queues['failures']['arn'], queues['threshold']['arn'])
+            else:
+                print("\nERROR: queue creation failed; skipping notification config.")
+        else:
+            get_monitoring_status(ctx)
+
+    elif args.command == 'drain-queue':
+        if args.queue == 'failures':
+            queue_url = ctx.source_sqs.get_queue_url(
+                QueueName=config.failures_queue_name)['QueueUrl']
+        elif args.queue == 'threshold':
+            queue_url = ctx.source_sqs.get_queue_url(
+                QueueName=config.threshold_queue_name)['QueueUrl']
+        else:
+            queue_url = args.queue
+        paths, total = drain_queue_to_jsonl(
+            ctx, queue_url, args.output_prefix,
+            delete=args.delete, max_messages=args.max_messages)
+        print(f"\nDrained {total} messages into {len(paths)} file(s)")
 
 
 if __name__ == '__main__':
