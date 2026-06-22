@@ -117,6 +117,9 @@ solutions_aes_email: null
 show_maintenance_updates_on_deploy: true
 
 ALTERNATE_HOSTS: []
+REDIS_BROKER_DB: '0'
+REDIS_BROKER_PORT: '6379'
+BROKER_URL: "redis://{{ REDIS_BROKER_HOST }}:{{ REDIS_BROKER_PORT }}/{{ REDIS_BROKER_DB }}"
 DROPBOX_APP_NAME: 'CommCareHQFiles'
 ELASTICSEARCH_PORT: 9200
 TWO_FACTOR_GATEWAY_ENABLED: False

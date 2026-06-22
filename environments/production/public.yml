@@ -120,11 +120,8 @@ zookeeper_cluster: True
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
-# Celery Broker URL
-REDIS_BROKER_DB: '0'
+# Celery Broker
 REDIS_BROKER_HOST: 'broker.production.commcare.local'
-REDIS_BROKER_PORT: '6379'
-BROKER_URL: "redis://{{ REDIS_BROKER_HOST }}:{{ REDIS_BROKER_PORT }}/{{ REDIS_BROKER_DB }}"
 
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"

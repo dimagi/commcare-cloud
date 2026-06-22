@@ -18,12 +18,8 @@ zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e6
 zookeeper_cluster: True
 TWO_FACTOR_GATEWAY_ENABLED: True
 
-REDIS_BROKER_DB: '0'
+# Celery Broker
 REDIS_BROKER_HOST: "broker.staging.commcare.local"
-REDIS_BROKER_PORT: '6379'
-
-# Celery Broker URL
-BROKER_URL: "redis://{{ REDIS_BROKER_HOST }}:{{ REDIS_BROKER_PORT }}/{{ REDIS_BROKER_DB }}"
 
 backup_blobdb: False
 backup_postgres: plain
