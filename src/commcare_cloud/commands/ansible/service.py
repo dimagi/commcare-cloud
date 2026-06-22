@@ -375,13 +375,6 @@ class Couchdb2(MultiAnsibleService):
     log_location = '/usr/local/couchdb2/couchdb/var/log/'
 
 
-class RabbitMq(AnsibleService):
-    name = 'rabbitmq'
-    inventory_groups = ['rabbitmq']
-    service_name = 'rabbitmq-server'
-    log_location = '/var/log/rabbitmq/rabbit@<rabbitmq machine>.log'
-
-
 class Redis(AnsibleService):
     name = 'redis'
     inventory_groups = ['redis']
@@ -624,7 +617,6 @@ SERVICES = [
     Postgresql,
     Nginx,
     Couchdb2,
-    RabbitMq,
     Elasticsearch,
     ElasticsearchClassic,
     Redis,
