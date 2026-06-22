@@ -36,6 +36,7 @@ from .monitoring import (
     create_monitoring_queues,
     drain_queue_to_jsonl,
     get_monitoring_status,
+    print_queue_messages,
 )
 from .orchestrator import S3MigrationContext
 from .replication import enable_live_replication, get_replication_status
@@ -206,6 +207,8 @@ Commands:
   validate        Validate migration status
   cutover-check   Run pre-cutover checklist
   status          Show current migration status
+  setup-monitoring  Create/inspect SQS replication-event monitoring
+  drain-queue     Drain a monitoring queue to JSONL files
 
 Examples:
   # Check prerequisites
@@ -222,6 +225,21 @@ Examples:
 
   # Create and start DataSync task
   python -m hq_s3_migration create-datasync --source-bucket my-source --dest-bucket my-dest \\
+      --source-account 111111111111 --dest-account 222222222222
+
+  # Create SQS replication-event monitoring (queues + bucket notifications)
+  python -m hq_s3_migration setup-monitoring --create-monitoring \\
+      --source-bucket my-source --dest-bucket my-dest \\
+      --source-account 111111111111 --dest-account 222222222222
+
+  # Inspect monitoring status (omit --create-monitoring)
+  python -m hq_s3_migration setup-monitoring --source-bucket my-source --dest-bucket my-dest \\
+      --source-account 111111111111 --dest-account 222222222222
+
+  # Drain the failures queue to JSONL files (delete as you go)
+  python -m hq_s3_migration drain-queue --queue failures --delete \\
+      --output-prefix replication-failures \\
+      --source-bucket my-source --dest-bucket my-dest \\
       --source-account 111111111111 --dest-account 222222222222
         """
     )
@@ -264,6 +282,8 @@ Examples:
                         help='Optional cap on messages to drain')
     parser.add_argument('--delete', action='store_true',
                         help='Delete messages after writing (destructive drain; default peek)')
+    parser.add_argument('--print', dest='print_console', action='store_true',
+                        help='Print message bodies to the console instead of writing JSONL files (for drain-queue)')
 
     args = parser.parse_args()
 
@@ -389,10 +409,15 @@ Examples:
                 QueueName=config.threshold_queue_name)['QueueUrl']
         else:
             queue_url = args.queue
-        paths, total = drain_queue_to_jsonl(
-            ctx, queue_url, args.output_prefix,
-            delete=args.delete, max_messages=args.max_messages)
-        print(f"\nDrained {total} messages into {len(paths)} file(s)")
+        if args.print_console:
+            print_queue_messages(
+                ctx, queue_url,
+                delete=args.delete, max_messages=args.max_messages)
+        else:
+            paths, total = drain_queue_to_jsonl(
+                ctx, queue_url, args.output_prefix,
+                delete=args.delete, max_messages=args.max_messages)
+            print(f"\nDrained {total} messages into {len(paths)} file(s)")
 
 
 if __name__ == '__main__':

@@ -159,6 +159,57 @@ def get_monitoring_status(ctx: S3MigrationContext) -> dict:
     return status
 
 
+def print_queue_messages(ctx: S3MigrationContext,
+                         queue_url: str,
+                         delete: bool = False,
+                         max_messages=None) -> int:
+    """Print queue message bodies to the console. Returns count printed.
+
+    With delete=False (default) this is a non-destructive peek; full coverage is
+    NOT guaranteed (visibility timeout + duplicates).
+    """
+    if not delete:
+        print("  NOTE: peek mode (no delete) may show duplicates and miss some "
+              "in-flight messages.")
+
+    total = 0
+    while True:
+        if max_messages is not None and total >= max_messages:
+            break
+        resp = ctx.source_sqs.receive_message(
+            QueueUrl=queue_url,
+            MaxNumberOfMessages=10,
+            WaitTimeSeconds=10,
+        )
+        messages = resp.get("Messages", [])
+        if not messages:
+            break
+
+        handles = []
+        for msg in messages:
+            total += 1
+            body = msg.get("Body", "")
+            print("\n" + "-" * 60)
+            print(f"Message {total}:")
+            try:
+                print(json.dumps(json.loads(body), indent=2))
+            except (ValueError, TypeError):
+                print(body)
+            handles.append(msg["ReceiptHandle"])
+            if max_messages is not None and total >= max_messages:
+                break
+
+        if delete and handles:
+            ctx.source_sqs.delete_message_batch(
+                QueueUrl=queue_url,
+                Entries=[{"Id": str(i), "ReceiptHandle": h}
+                         for i, h in enumerate(handles)],
+            )
+
+    print(f"\n  Printed {total} message(s)")
+    return total
+
+
 FILE_ROTATION = 10000
 
 
