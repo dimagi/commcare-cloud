@@ -13,7 +13,6 @@ CommCare HQ uses many services such as Django, PostgreSQL, BlobDB, Kafka and man
    /services/nginx/nginx
    /services/kafka
    /services/pillowtop
-   /services/rabbitmq/rabbitmq
    /services/redis/redis
    /services/bitly.rst
    /services/keepalived.rst

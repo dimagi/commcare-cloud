@@ -204,8 +204,6 @@ Datadog Dashboards
 
 `redis <https://app.datadoghq.com/dash/290868/redis-timeboard>`_
 
-`rabbitmq <https://app.datadoghq.com/screen/487480/rabbitmq---overview>`_
-
 `pillow <https://app.datadoghq.com/dash/256236/change-feeds-pillows>`_
 
 `celery/celerybeat <https://app.datadoghq.com/dash/141098/celery-overview>`_

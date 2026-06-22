@@ -227,7 +227,7 @@ Also note this only temporary; once the worker is restarted on next deploy or ma
    2017-04-09 12:34:19.525830 Revoked 161a7623a3f444e7b361da4b4fa6fc42 corehq.apps.export.tasks.populate_export_download_task
    2017-04-09 12:34:26.803201 Revoked a855bac716ca4850899866cc97076c3d corehq.apps.export.tasks.populate_export_download_task
 
-This command will just keep running, revoking all existing and new tasks that it finds that match the given task name(s). This command is only able to revoke tasks received by the worker from rabbitmq. The worker does not see all the tasks in the queue all at once since the tasks are prefetched by the worker from rabbitmq a little at a time, so to revoke them all you just have to keep it running. When you no longer need it, just stop it with Ctrl+C.
+This command will just keep running, revoking all existing and new tasks that it finds that match the given task name(s). It will keep polling for tasks to revoke, as there are likely to be tasks in the message queue which haven't been received by the worker yet. To revoke them all you just have to keep it running. When you no longer need it, just stop it with Ctrl+C.
 
 Intermittent datadog connection errors
 --------------------------------------
@@ -245,44 +245,6 @@ This is only relevant if these alerts are for the first celery machine ``celery[
 .. code-block::
 
    cchq <env> service celery restart --limit=celery[0]
-
-Common RabbitMQ Firefighting Scenarios
-======================================
-
-RabbitMQ is down
-----------------
-
-RabbitMQ Down Symptoms
-~~~~~~~~~~~~~~~~~~~~~~
-
-There are 500 emails saying Connection Refused to a service running on port 5672
-
-You see errors mentioning a celery worker cannot connect to amqp broker in the celery logs
-
-RabbitMQ Down Resolution
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-See Restarting Services on this :ref:`reference/firefighting/general:Firefighting Guide`.
-
-Disk filling up
----------------
-
-Disk Filling Symptoms
-~~~~~~~~~~~~~~~~~~~~~
-
-Disk usage warning
-
-Disk Filling Resolution
-~~~~~~~~~~~~~~~~~~~~~~~
-
-
-#. Use 'ncdu' on the machine to detemine if it's RabbitMQ that's using up the disk
-#. Check the RabbitMQ dashboard to determine which queue is causing the issue
-   a. https://app.datadoghq.com/screen/integration/237/rabbitmq---overview
-#. Ensure that the celery workers are running and consuming the queue
-#. Purge the queue. *Only do this if the tasks can be re-queued e.g. pillow_retry_queue*
-
-``celery -A corehq purge -Q queue_1,queue_2``
 
 Useful Celery Commands
 ======================
@@ -340,27 +302,6 @@ and then restart it after purging:
 
 ``sudo supervisorctl start <...>``
 
-To purge all messages in a rabbitmq message queue:
+To purge all messages in a celery queue:
 
 ``celery -A corehq purge -Q queue_1,queue_2``
-
-Useful RabbitMQ Commands
-========================
-
-We use rabbitmqctl to inspect RabbitMQ. All rabbitmqctl commands must be run as the root user on the machine hosting RabbitMQ.
-
-Locally you can use sudo to run these commands, but in a production environment you'll need to switch to the root user first.
-
-The ``<vhost name>`` parameter is commcarehq in our production environments. Locally you might have this set to /, but you can check it with the list virtual hosts command.
-
-List Virtual Hosts
-~~~~~~~~~~~~~~~~~~
-
-``rabbitmqctl list_vhosts``
-
-List number of messages in each queue
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This command lists the number of messages in each queue (i.e., the number of tasks in each celery queue) that are either ready to be delivered to a consumer or have been delivered but have not been acknowledged yet.
-
-``rabbitmqctl list_queues -p <vhost name> name messages``
