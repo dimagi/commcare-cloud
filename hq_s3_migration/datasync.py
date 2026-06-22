@@ -69,8 +69,10 @@ def create_datasync_task(ctx: S3MigrationContext,
             TaskMode='ENHANCED',
             Options={
                 'VerifyMode': 'ONLY_FILES_TRANSFERRED',
-                'OverwriteMode': 'ALWAYS',
-                'PreserveDeletedFiles': 'REMOVE',
+                # NEVER + PRESERVE so the backfill never clobbers or deletes
+                # objects that live replication is managing in the destination.
+                'OverwriteMode': 'NEVER',
+                'PreserveDeletedFiles': 'PRESERVE',
                 'PreserveDevices': 'NONE',
                 'PosixPermissions': 'NONE',
                 'Uid': 'NONE',
