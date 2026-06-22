@@ -7,6 +7,13 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-06-22** [Prometheus/Grafana stack installer removed](0099-remove-prometheus-installer.md)
+`commcare-cloud` no longer includes a playbook to install the
+Prometheus/Grafana monitoring stack. Operators who want Prometheus can stand
+it up independently and point it at CommCare HQ's `/metrics` endpoint.
+
+
+---
 #### **2026-02-14** [Rolling Upgrade of CouchDB Nodes](0098-couchdb-upgrade.md)
 This changelog outlines the steps for a rolling upgrade of CouchDB nodes.
 

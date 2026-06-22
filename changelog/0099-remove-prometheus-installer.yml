@@ -1,0 +1,39 @@
+title: Prometheus/Grafana stack installer removed
+key: remove-prometheus-installer
+date: 2026-06-22
+optional_per_env: yes
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version:
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  `commcare-cloud` no longer includes a playbook to install the
+  Prometheus/Grafana monitoring stack. Operators who want Prometheus can stand
+  it up independently and point it at CommCare HQ's `/metrics` endpoint.
+
+details: |
+  Dimagi has not run a Prometheus/Grafana stack internally for a while now,
+  which means we're not exercising the deployment automation in our own
+  environments. An untested installer creates false confidence and is likely to
+  break quietly as upstream roles and exporters drift. Removing it feels more
+  honest than shipping something we can't stand behind.
+
+  `deploy_prometheus.yml` and all associated Ansible roles have been removed
+  from `commcare-cloud`.
+
+  CommCare HQ's own Prometheus integration (controlled by
+  `prometheus_monitoring_enabled: true`) remains intact. When enabled, HQ
+  exposes `/metrics` via a multiprocess aggregation process. See the
+  [monitoring docs](https://commcare-cloud.readthedocs.io/en/latest/operations/3-monitoring.html#prometheus)
+  for guidance on installing the Prometheus stack and service exporters.
+
+update_steps: |
+  If your per-environment `prometheus.yml` file contains
+  `prometheus_monitoring_enabled: true`, move that setting to `public.yml`
+  first, then delete `prometheus.yml` (HQ's metrics endpoint will be disabled if
+  you delete the file without migrating the setting).
+
+  The HQ `/metrics` endpoint is unchanged — existing Prometheus installations
+  will continue working without reconfiguration. Reference the
+  [monitoring docs](https://commcare-cloud.readthedocs.io/en/latest/operations/3-monitoring.html#prometheus)
+  for suggestions for ongoing maintenance of your Prometheus stack.
