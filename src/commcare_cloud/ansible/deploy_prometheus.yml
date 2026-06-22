@@ -77,14 +77,6 @@
         name: dimagi.commcare_prometheus.redis_exporter
   tags: redis_exporter
 
-- name: Prometheus RabbitMQ Exporter
-  hosts: rabbitmq
-  become: true
-  tasks:
-    - import_role:
-        name: dimagi.commcare_prometheus.rabbitmq_exporter
-  tags: rabbitmq_exporter
-
 - name: Prometheus Kafka Exporter
   hosts: kafka
   become: true

@@ -87,15 +87,6 @@
     name: Stop kafka
 
 - hosts:
-  - rabbitmq
-  tasks:
-  - service:
-      name: rabbitmq-server
-      state: stopped
-    name: Stop rabbitmq
-    become: yes
-
-- hosts:
   - elasticsearch
   tasks:
   - service:

@@ -3,7 +3,6 @@
   hosts:
     - redis
     - elasticsearch
-    - rabbitmq
     - formplayer
     - django_manage
   become: true
@@ -24,10 +23,6 @@
   become: true
   roles:
     - {role: elasticsearch, tags: 'elasticsearch'}
-
-- import_playbook: deploy_rabbitmq.yml
-  tags:
-    - rabbitmq
 
 - import_playbook: deploy_kafka.yml
   tags:
