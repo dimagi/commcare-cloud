@@ -37,7 +37,6 @@ def test_parse_collections_keeps_same_name_at_different_versions():
         ('community.general', '3.8.3'),
         ('community.general', '7.4.0'),
         ('dimagi.commcare_logstash', '0.9.5'),
-        ('dimagi.commcare_prometheus', '0.1.10'),
     }
 
 
@@ -53,7 +52,6 @@ Collection                 Version
 -------------------------- -------
 community.general          7.4.0
 dimagi.commcare_logstash   0.9.5
-dimagi.commcare_prometheus 0.1.10
 """
 
 

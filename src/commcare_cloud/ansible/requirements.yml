@@ -20,20 +20,6 @@ roles:
     version: 1.2.12
   - src: sansible.logstash
     version: v2.4.4
-  - name: cloudalchemy.prometheus
-    src: https://github.com/cloudalchemy/ansible-prometheus
-    version: 2.15.5
-  - src: cloudalchemy.alertmanager
-    version: 0.19.1
-  - src: cloudalchemy.grafana
-    version: 0.17.0
-  - src: cloudalchemy.node_exporter
-    version: 0.21.5
-  - src: bdellegrazie.postgres_exporter
-    version: v4.1.0
-  - src: gantsign.golang
-    version: 3.2.1
-
 collections:
   # Unclear if ansible-galaxy uses version on tarball installs. However,
   # version is required here so we can check installed state to avoid the
@@ -41,10 +27,6 @@ collections:
   - name: dimagi.commcare_logstash
     version: 0.9.5
     source: https://github.com/dimagi/commcare-logstash/releases/download/V0.9.5/dimagi-commcare_logstash-0.9.5.tar.gz
-    type: url
-  - name: dimagi.commcare_prometheus
-    version: 0.1.10
-    source: https://github.com/dimagi/commcare-prometheus/releases/download/V0.1.10/dimagi-commcare_prometheus-0.1.10.tar.gz
     type: url
   - name: community.general
     version: 7.4.0
