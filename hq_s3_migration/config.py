@@ -26,6 +26,10 @@ class MigrationConfig:
     region: str
     replication_role_name: str
     datasync_role_name: str
+    report_bucket_name: str
+    report_role_name: str
+    failures_queue_name: str
+    threshold_queue_name: str
     enable_rtc: bool = True  # S3 Replication Time Control (15-min SLA)
     enable_delete_replication: bool = True
 

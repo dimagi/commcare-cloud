@@ -62,6 +62,17 @@ def print_iam_policies(ctx: S3MigrationContext):
     dest_policy['Statement'].append(datasync_stmt)
     print(json.dumps(dest_policy, indent=2))
 
+    print("\n" + "-" * 40)
+    print(f"6. DATASYNC REPORT ROLE POLICY (Source Account: {cfg.source_account_id})")
+    print(f"   Role Name: {cfg.report_role_name}")
+    print(f"   Report Bucket: {cfg.report_bucket_name}")
+    print("-" * 40)
+    print(json.dumps(
+        render_policy("datasync_report_role.json",
+                      report_bucket=cfg.report_bucket_name,
+                      source_account_id=cfg.source_account_id),
+        indent=2))
+
 
 def create_replication_role(ctx: S3MigrationContext) -> Optional[str]:
     """Create IAM role for S3 replication in source account."""
@@ -223,5 +234,61 @@ def apply_destination_bucket_policy(ctx: S3MigrationContext) -> bool:
         print(f"  Applied bucket policy to '{cfg.dest_bucket}'")
         return True
     except ClientError as e:
+        print(f"  ERROR: {e}")
+        return False
+
+
+def create_report_role(ctx: S3MigrationContext) -> Optional[str]:
+    """Create IAM role allowing DataSync to write task reports to the report bucket."""
+    cfg = ctx.config
+    print(f"\nCreating report role '{cfg.report_role_name}'...")
+
+    trust_policy = render_policy("datasync_trust.json")
+    role_policy = render_policy("datasync_report_role.json",
+                                report_bucket=cfg.report_bucket_name,
+                                source_account_id=cfg.source_account_id)
+
+    try:
+        response = ctx.source_iam.create_role(
+            RoleName=cfg.report_role_name,
+            AssumeRolePolicyDocument=json.dumps(trust_policy),
+            Description="Role for DataSync task report writes",
+        )
+        role_arn = response["Role"]["Arn"]
+        print(f"  Created role: {role_arn}")
+        ctx.source_iam.put_role_policy(
+            RoleName=cfg.report_role_name,
+            PolicyName="DataSyncReportPolicy",
+            PolicyDocument=json.dumps(role_policy),
+        )
+        print(f"  Attached report policy")
+        print(f"  Waiting for role propagation...")
+        time.sleep(10)
+        return role_arn
+    except ClientError as e:
+        if e.response["Error"]["Code"] == "EntityAlreadyExists":
+            print(f"  Role already exists, updating policy...")
+            ctx.source_iam.put_role_policy(
+                RoleName=cfg.report_role_name,
+                PolicyName="DataSyncReportPolicy",
+                PolicyDocument=json.dumps(role_policy),
+            )
+            return ctx.source_iam.get_role(RoleName=cfg.report_role_name)["Role"]["Arn"]
+        print(f"  ERROR: {e}")
+        return None
+
+
+def create_report_bucket(ctx: S3MigrationContext) -> bool:
+    """Create the DataSync report bucket in the source account."""
+    cfg = ctx.config
+    print(f"\nCreating report bucket '{cfg.report_bucket_name}'...")
+    try:
+        ctx.source_s3.create_bucket(Bucket=cfg.report_bucket_name)
+        print(f"  Created bucket")
+        return True
+    except ClientError as e:
+        if e.response["Error"]["Code"] in ("BucketAlreadyOwnedByYou", "BucketAlreadyExists"):
+            print(f"  Bucket already exists")
+            return True
         print(f"  ERROR: {e}")
         return False

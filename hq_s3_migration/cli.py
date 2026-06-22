@@ -283,6 +283,9 @@ Examples:
         region=args.region,
         enable_rtc=not args.disable_rtc,
         replication_role_name=names["replication_role_name"],
+        datasync_role_name=names["datasync_role_name"],
+        report_bucket_name=names["report_bucket_name"],
+        report_role_name=names["report_role_name"],
         failures_queue_name=names["failures_queue_name"],
         threshold_queue_name=names["threshold_queue_name"],
     )
@@ -317,6 +320,8 @@ Examples:
             create_replication_role(ctx)
             create_datasync_role(ctx)
             apply_destination_bucket_policy(ctx)
+            create_report_bucket(ctx)
+            create_report_role(ctx)
 
     elif args.command == 'enable-replication':
         enable_live_replication(ctx)

@@ -59,6 +59,8 @@ def create_datasync_task(ctx: S3MigrationContext,
     cfg = ctx.config
     print(f"\nCreating DataSync task...")
 
+    report_role_arn = f"arn:aws:iam::{cfg.source_account_id}:role/{cfg.report_role_name}"
+
     try:
         response = ctx.source_datasync.create_task(
             SourceLocationArn=source_location_arn,
@@ -77,6 +79,17 @@ def create_datasync_task(ctx: S3MigrationContext,
                 'TransferMode': 'CHANGED',
                 'ObjectTags': 'PRESERVE',
                 'LogLevel': 'BASIC',
+            },
+            TaskReportConfig={
+                'Destination': {
+                    'S3': {
+                        'S3BucketArn': f'arn:aws:s3:::{cfg.report_bucket_name}',
+                        'BucketAccessRoleArn': report_role_arn,
+                    }
+                },
+                'OutputType': 'STANDARD',
+                'ReportLevel': 'SUCCESSES_AND_ERRORS',
+                'ObjectVersionIds': 'INCLUDE',
             },
         )
         task_arn = response['TaskArn']
