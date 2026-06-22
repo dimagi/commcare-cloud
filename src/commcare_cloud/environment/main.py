@@ -26,7 +26,6 @@ from commcare_cloud.environment.schemas.elasticsearch import (
 from commcare_cloud.environment.schemas.fab_settings import FabSettingsConfig
 from commcare_cloud.environment.schemas.meta import MetaConfig
 from commcare_cloud.environment.schemas.postgresql import PostgresqlConfig
-from commcare_cloud.environment.schemas.prometheus import PrometheusConfig
 from commcare_cloud.environment.schemas.proxy import ProxyConfig
 from commcare_cloud.environment.schemas.terraform import TerraformConfig
 from commcare_cloud.environment.users import UsersConfig
@@ -158,15 +157,6 @@ class Environment(object):
         proxy_config = ProxyConfig.wrap(proxy_json)
         proxy_config.check()
         return proxy_config
-
-    @memoized_property
-    def prometheus_config(self):
-        try:
-            with open(self.paths.prometheus_yml, encoding='utf-8') as f:
-                prometheus_json = from_yaml(f)
-        except IOError:
-            return None
-        return PrometheusConfig.wrap(prometheus_json)
 
     @memoized_property
     def users_config(self):
@@ -380,8 +370,6 @@ class Environment(object):
             generated_variables.update(self.app_processes_config.to_generated_variables())
             generated_variables.update(self.postgresql_config.to_generated_variables(self))
             generated_variables.update(self.proxy_config.to_generated_variables())
-            if self.prometheus_config:
-                generated_variables.update(self.prometheus_config.to_generated_variables())
 
         generated_variables.update(constants.to_json())
 
