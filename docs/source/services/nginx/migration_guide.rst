@@ -7,7 +7,7 @@ Migrating Nginx
    Install and configure nginx on the new node
 
 
-   * Add the server in inventory and assign it the ``proxy`` group and ``cas_proxy``\ (For ICDS)
+   * Add the server in inventory and assign it the ``proxy`` group
    * Run ``commcare-cloud <env> ap deploy_shared_dir.yml --tags=nfs --limit=shared_dir_host``
    * Run ``commcare-cloud <env> ansible-playbook letsencrypt_cert.yml``
    * Run ``deploy-stack`` for the server.
