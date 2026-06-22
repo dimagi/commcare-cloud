@@ -120,8 +120,6 @@ s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-backup-production-blobdb'
 
-AMQP_HOST: "{{ groups.rabbitmq.0 }}"
-
 localsettings:
   ALLOWED_HOSTS:
     - testserver
