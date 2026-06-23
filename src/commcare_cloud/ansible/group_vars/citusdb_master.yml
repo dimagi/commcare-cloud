@@ -1,3 +1,0 @@
-datadog_integration_pgbouncer: true
-datadog_integration_postgres: true
-is_pg_standby: false

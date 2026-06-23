@@ -13,7 +13,6 @@ PostgreSQL
    /services/postgresql/move-partitioned-database.rst
    /services/postgresql/upgrade.rst
    /services/postgresql/migrating_plproxy.rst
-   /services/postgresql/upgrade_citusdb.rst
 
 
 Usage in CommCare

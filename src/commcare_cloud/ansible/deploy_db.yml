@@ -14,9 +14,6 @@
 - name : PostgreSQL
   import_playbook: deploy_postgres.yml
 
-- name : CitusDB
-  import_playbook: deploy_citusdb.yml
-
 - import_playbook: deploy_couchdb2.yml
 
 - name: Redis

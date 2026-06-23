@@ -1,4 +1,0 @@
-citus_postgresql_data_dir: "{{ encrypted_root }}/postgresql/{{ citus_postgresql_version }}/main"
-pgbouncer_client_tls_key_file: "{{ citus_postgresql_data_dir }}/server.key"
-pgbouncer_client_tls_cert_file: "{{ citus_postgresql_data_dir }}/server.crt"
-pgbouncer_auth_type: trust

@@ -11,10 +11,8 @@
   any_errors_fatal: true
   become: yes
   vars:
-    citus_database: "{{ postgresql_dbs.all | selectattr('host', 'in', groups.get('citusdb_master')) | first }}"
-    is_citus: "{{ inventory_hostname in groups.get('citusdb', []) }}"
-    target_version: "{{ citus_postgresql_version if is_citus else postgresql_version }}"
-    new_pg_port: "{{ citus_postgresql_port if is_citus else postgresql_port }}"
+    target_version: "{{ postgresql_version }}"
+    new_pg_port: "{{ postgresql_port }}"
     old_pg_port: "{{ old_port|default(5432) }}"
     log_file: "/opt/data/postgresql/pg_upgrade_{{old_version}}_{{new_version}}.log"
     is_standby: "{{ inventory_hostname in groups.get('pg_standby', []) }}"
@@ -35,11 +33,10 @@
 
         Preflight checklist:
 
-          1. CitusDB upgraded (where applicable)
-          2. PostgreSQL vars updated with new version and port
-          3. New version of PostgreSQL installed with all dependencies and extensions
-          4. All processes that are connecting to the DB have been stopped
-          5. You have a full backup of all PostgreSQL data
+          1. PostgreSQL vars updated with new version and port
+          2. New version of PostgreSQL installed with all dependencies and extensions
+          3. All processes that are connecting to the DB have been stopped
+          4. You have a full backup of all PostgreSQL data
 
         ===================================================================================
         Respond with [y/N]
@@ -47,10 +44,6 @@
   tasks:
     - assert:
         that: confirm_upgrade == 'y'
-
-    - include_vars:
-        file: roles/citusdb/defaults/main.yml
-      when: is_citus
 
     - name: Check PostgreSQL version
       assert:
@@ -112,50 +105,6 @@
         chdir: /opt/data/postgresql
       register: compatibility
       when: not is_standby
-
-    - block:
-
-        - name: Get installed Citus extension version
-          become: yes
-          become_user: postgres
-          shell: psql {{ citus_database.name }} -q  -t -c "select extversion from pg_extension where extname = 'citus';"
-          register: citus_ext
-          check_mode: no
-          when: inventory_hostname not in groups.get('pg_standby', [])
-
-        - name: Check citus version matches installed version
-          assert:
-            that: citus_ext.stdout | trim is version(citus_version, '>=')
-            msg: "Citus version in DB is lower than in environment config: {{ citus_ext.stdout }} < {{ citus_version }}"
-          when: inventory_hostname not in groups.get('pg_standby', [])
-
-        # https://github.com/citusdata/citus/pull/4225
-        - name: "Clean CitusDB from previous upgrade"
-          become: yes
-          become_user: postgres
-          shell: |
-            psql {{ citus_database.name }} -q  -c "
-            DROP TABLE IF EXISTS public.pg_dist_partition;
-            DROP TABLE IF EXISTS public.pg_dist_shard;
-            DROP TABLE IF EXISTS public.pg_dist_placement;
-            DROP TABLE IF EXISTS public.pg_dist_node_metadata;
-            DROP TABLE IF EXISTS public.pg_dist_node;
-            DROP TABLE IF EXISTS public.pg_dist_local_group;
-            DROP TABLE IF EXISTS public.pg_dist_transaction;
-            DROP TABLE IF EXISTS public.pg_dist_colocation;
-            DROP TABLE IF EXISTS public.pg_dist_authinfo;
-            DROP TABLE IF EXISTS public.pg_dist_poolinfo;
-            DROP TABLE IF EXISTS public.pg_dist_rebalance_strategy;
-            "
-          when: inventory_hostname in (groups.citusdb_master | difference(groups.get('pg_standby', [])))
-
-        - name: "Prepare CitusDB for upgrade"
-          become: yes
-          become_user: postgres
-          shell: psql {{ citus_database.name }} -q  -c "select citus_prepare_pg_upgrade();"
-          when: inventory_hostname in (groups.citusdb_master | difference(groups.get('pg_standby', [])))
-
-      when: is_citus
 
     - name: Get replication delay (>= v10)
       become: yes

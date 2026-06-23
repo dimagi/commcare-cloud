@@ -2,7 +2,7 @@
 - import_playbook: host_group_aliases.yml
 
 - name: PostgreSQL Machine Setup
-  hosts: postgresql:pg_standby:!citusdb
+  hosts: postgresql:pg_standby
   become: true
   roles:
     - {role: ecryptfs, tags: 'ecryptfs'}
@@ -19,13 +19,13 @@
   tags: ecryptfs
 
 - name: PostgreSQL
-  hosts: postgresql:pg_standby:!citusdb
+  hosts: postgresql:pg_standby
   become: true
   roles:
     - {role: postgresql, tags: 'postgresql'}
 
 - name: pgbouncer
-  hosts: pgbouncer:postgresql:pg_standby:!citusdb
+  hosts: pgbouncer:postgresql:pg_standby
   become: true
   roles:
     - {role: pgbouncer, tags: 'pgbouncer'}

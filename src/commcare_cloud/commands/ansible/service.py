@@ -19,7 +19,6 @@ from commcare_cloud.commands.ansible.helpers import (
 )
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
 from commcare_cloud.commands.command_base import Argument, CommandBase
-from commcare_cloud.environment.paths import get_role_defaults
 
 ACTIONS = ['start', 'stop', 'restart', 'status', 'logs', 'help']
 
@@ -413,23 +412,6 @@ class Postgresql(MultiAnsibleService):
         }
 
 
-class Citusdb(Postgresql):
-    name = 'citusdb'
-    log_location = 'Postgres: /opt/data/postgresql/<version>/main/pg_log\n' \
-                   'Pgbouncer: /var/log/postgresql/pgbouncer.log'
-
-    @property
-    def service_process_mapping(self):
-        citus_pg_version = self.environment.public_vars.get('citus_postgresql_version')
-        if not citus_pg_version:
-            citus_pg_version = get_role_defaults('citusdb').get('citus_postgresql_version')
-        monit_name = "postgresql_{}".format(citus_pg_version)
-        return {
-            'citusdb': (monit_name, 'citusdb'),
-            'pgbouncer': ('pgbouncer', 'citusdb')
-        }
-
-
 class SingleSupervisorService(SupervisorService):
     """Single service that is managed by supervisor"""
     managed_services = []
@@ -640,7 +622,6 @@ def optimize_process_operations(all_processes_by_host, process_host_mapping):
 
 SERVICES = [
     Postgresql,
-    Citusdb,
     Nginx,
     Couchdb2,
     RabbitMq,
