@@ -78,13 +78,6 @@ Below are the list of ports for various services required for running CommCare H
      - no
      - depends
      - :sub:`Accessible to private network`
-   * - RabbitMQ
-     - 5672
-     - yes
-     - no
-     - no
-     - depends
-     - :sub:`Accessible to private network`
    * - ElasticSearch ES Cluster
      - 9200 9300
      - yes

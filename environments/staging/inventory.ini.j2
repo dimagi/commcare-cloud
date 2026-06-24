@@ -68,8 +68,6 @@ couch_alb
 [couchdb2_alb:children]
 couch_alb
 
-[rabbitmq:children]
-
 {{ __kafka15__ }} kafka_broker_id=15 zookeeper_server_id=15
 {{ __kafka16__ }} kafka_broker_id=16 zookeeper_server_id=16
 {{ __kafka17__ }} kafka_broker_id=17 zookeeper_server_id=17
@@ -92,9 +90,6 @@ kafka17
 [celery:children]
 celery_a1
 celery_a2
-
-# [celery_a2:vars]
-# celery_broker_migration=true
 
 [celery:vars]
 swap_size=2G

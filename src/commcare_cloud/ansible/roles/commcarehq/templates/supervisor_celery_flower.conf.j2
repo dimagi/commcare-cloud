@@ -5,9 +5,6 @@ command={{ virtualenv_home }}/bin/celery
     -A corehq flower
     --address=0.0.0.0
     --port={{ app_processes_config.flower_port }}
-    {% if 'amqp://' in BROKER_URL %}
-    --broker_api=http://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.0 }}:15672/api/
-    {% endif %}
 directory={{ code_home }}
 user={{ cchq_user }}
 numprocs=1
@@ -20,5 +17,3 @@ startsecs=10
 ; Need to wait for currently executing tasks to finish at shutdown.
 ; Increase this if you have very long running tasks.
 stopwaitsecs = 10
-; if rabbitmq is supervised, set its priority higher
-; so it starts first

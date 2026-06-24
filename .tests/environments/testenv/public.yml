@@ -43,6 +43,8 @@ DATADOG_ENABLED: False
 
 CLOUDANT_CLUSTER_NAME: null
 
+REDIS_BROKER_HOST: "{{ groups.redis.0 }}"
+
 backup_es: False
 backup_postgres: dump
 backup_blobdb: True

@@ -54,7 +54,6 @@
    - pillowtop
    - webworkers
    - formplayer
-   - rabbitmq
   gather_facts: no
   tasks:
 

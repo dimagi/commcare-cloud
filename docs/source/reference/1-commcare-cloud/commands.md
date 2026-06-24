@@ -1306,8 +1306,8 @@ Manage services.
 
 ```
 commcare-cloud <env> service [--only PROCESS_PATTERN]
-                             {celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}
-                             [{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker} ...]
+                             {celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,redis,webworker}
+                             [{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,redis,webworker} ...]
                              {start,stop,restart,status,logs,help}
 ```
 
@@ -1329,7 +1329,7 @@ service and the `pgbouncer` service. We'll call the actual services
 
 ##### Positional Arguments
 
-###### `{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}`
+###### `{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,redis,webworker}`
 
 The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.
@@ -1740,13 +1740,13 @@ have been made to our actual resources in AWS.
 Port forward to access a remote admin console
 
 ```
-commcare-cloud <env> forward-port {couch,elasticsearch,flower,rabbit}
+commcare-cloud <env> forward-port {couch,elasticsearch,flower}
 ```
 
 ##### Positional Arguments
 
-###### `{couch,elasticsearch,flower,rabbit}`
+###### `{couch,elasticsearch,flower}`
 
-The remote service to port forward. Must be one of couch,elasticsearch,flower,rabbit.
+The remote service to port forward. Must be one of couch,elasticsearch,flower.
 
 ---

@@ -74,15 +74,6 @@
       warn: False
 
 - hosts:
-  - rabbitmq
-  tasks:
-  - command: service rabbitmq-server status
-    name: Check rabbitmq status
-    become: True
-    args:
-      warn: False
-
-- hosts:
   - all
   - mailrelay
   tasks:

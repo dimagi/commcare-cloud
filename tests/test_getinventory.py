@@ -76,7 +76,7 @@ def test_get_server_address_for_monolith_with_groups():
         ),
         (
             "172.19.3.1 - demo_server1, postgresql, redis, zookeeper, "
-            "rabbitmq, kafka, elasticsearch, couchdb2, all"
+            "kafka, elasticsearch, couchdb2, all"
         ),
         "172.19.3.2 - demo_server2, celery, all",
         "172.19.3.3 - demo_server3, pg_standby, pillowtop, couchdb2, all",

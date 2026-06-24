@@ -39,7 +39,6 @@ CommCare HQ relies on the following open source technologies:
 -  Riak/Riak CS (mandatory for multi-server environments)
 -  Elasticsearch
 -  Kafka (and Zookeeper)
--  RabbitMQ
 -  Nginx
 
 CommCare HQ also employs different types of application processes each

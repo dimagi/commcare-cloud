@@ -406,9 +406,6 @@ Install and Configure CommCare Cloud
        [formplayer:children]
        webworker2
 
-       [rabbitmq:children]
-       webworker1
-
        [postgresql:children]
        db1
        db2

@@ -1,6 +1,5 @@
 internal_domain_name: null
 
-rabbitmq_create_cluster: true
 internal_network_interface: eth1
 
 http_proxy_address: '192.168.33.14'
