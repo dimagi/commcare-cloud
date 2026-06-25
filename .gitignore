@@ -33,3 +33,4 @@ couchdb@*_files
 
 /quick_monolith_install/install-config.yml
 /docs/build
+/src/commcare_cloud/ansible/deploy_prometheus.yml
