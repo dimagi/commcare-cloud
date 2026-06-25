@@ -151,11 +151,13 @@ etc. (`deploy_stack.yml` and its ~18 imports are already syntax-checked by
 is low-priority baseline debt (short names resolve fine; collection moves are
 handled by #10–11).
 Acceptance: new non-blocking `lint.yml` fails on new violations; green on day one.
+Ticket: [SAAS-19958](https://dimagi.atlassian.net/browse/SAAS-19958)
 
 #### 7. Refresh Vagrant harness to 22.04
 `Vagrantfile` is `ubuntu/bionic64` (18.04); upgrade it, verify provisioning,
 document the local full-stack flow.
 Acceptance: `vagrant up` + `deploy-stack` completes on 22.04 on current Ansible.
+Ticket: [SAAS-19959](https://dimagi.atlassian.net/browse/SAAS-19959)
 
 #### 8. Molecule scaffolding + one reference role
 Add Molecule (docker driver) with a shared base config and a worked example for
@@ -163,6 +165,7 @@ one simple role (e.g. `swap` or `logrotate`, which already has a `tests/` stub).
 Wire a Molecule job into CI. Document "how to add a Molecule scenario." Keep
 test code separate from production code.
 Acceptance: `molecule test` converge + idempotence green locally and in CI on 22.04.
+Ticket: [SAAS-19960](https://dimagi.atlassian.net/browse/SAAS-19960)
 
 #### 9. Molecule coverage for critical roles
 Add Molecule converge/idempotence scenarios for the operationally critical,
@@ -170,6 +173,7 @@ untested roles: postgresql(_base), pgbouncer, couchdb2, kafka, redis,
 elasticsearch, nginx, proxy/haproxy. Likely one Jira ticket per role/group.
 Acceptance: each converges twice with no changes; basic service-up asserts.
 Depends: 8.
+Ticket: [SAAS-19961](https://dimagi.atlassian.net/browse/SAAS-19961)
 
 ### Dependency work — collections + roles, version-agnostic, run on 4.10
 
