@@ -33,10 +33,8 @@ For guidance on standing up the monitoring stack itself, refer to the upstream d
 - `Alertmanager <https://prometheus.io/docs/alerting/latest/alertmanager/>`_
 - `Grafana <https://grafana.com/docs/grafana/latest/setup-grafana/>`_
 
-.. _prometheus-ansible-installation:
-
 Installing the Prometheus stack with Ansible
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------------------
 
 .. note::
 
@@ -98,7 +96,6 @@ Some HQ services are not covered by the ``prometheus.prometheus`` collection and
      - `native metrics <https://zookeeper.apache.org/doc/current/zookeeperMonitor.html>`__
 
 Write a playbook that applies the collection's relevant roles, extra service roles, and exporters to your hosts. See the `collection documentation <https://prometheus-community.github.io/ansible/>`__ for role references and example playbooks. Your playbook may be created or symlinked in ``./src/commcare_cloud/ansible/deploy_prometheus.yml`` (ignored by git) to reuse commcare-cloud Ansible tooling, including inventory and vars.
-
 
 .. _label_commcare-infrastructure-metrics:
 
