@@ -59,12 +59,14 @@ def _push_release_tag(remote_url, sha, tag_name):
             f"-o StrictHostKeyChecking=yes"
         ),
     }
-    git = sh.git.bake("-C", tmp)
     try:
-        git.init("--bare", "-q")
-        git.fetch("--depth=1", "--no-tags", "--filter=blob:none",
-                  remote_url, sha, _env=env)
-        git.push(remote_url, f"{sha}:refs/tags/{tag_name}", _env=env)
+        sh.git.clone(
+            "--bare", "--filter=blob:none", "--depth=1", f"--revision={sha}",
+            remote_url, tmp, _env=env,
+        )
+        sh.git.bake("-C", tmp).push(
+            remote_url, f"{sha}:refs/tags/{tag_name}", _env=env,
+        )
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
