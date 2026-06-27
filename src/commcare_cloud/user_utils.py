@@ -4,6 +4,7 @@ import subprocess
 
 from clint.textui import puts
 from memoized import memoized
+from paramiko import SSHConfig
 
 from commcare_cloud.colors import color_error, color_notice
 from commcare_cloud.environment.main import get_environment
@@ -58,28 +59,26 @@ def get_default_ssh_username(host):
     If is_guess is False, the caller should assume the user wants this value
     and should not give them a chance to change their choice of user interactively.
     """
-    for line in subprocess.check_output(['ssh', host, '-G']).decode('utf8').splitlines():
-        if line.startswith("user "):
-            return StringIsGuess(line.split()[1], is_guess=False)
+    ssh_config_file = "~/.ssh/config"
+    if os.path.isfile(os.path.expanduser(ssh_config_file)):
+        ssh_config = SSHConfig().from_path(os.path.expanduser(ssh_config_file))
+        ssh_values = ssh_config.lookup(host)
+        if 'user' in ssh_values:
+            return StringIsGuess(ssh_values['user'], is_guess=False)
     return StringIsGuess(getpass.getuser(), is_guess=True)
 
 
-DEFAULT_SSH_USERNAME_MESSAGE = """
-Did you know? You can add this to you '~/.ssh/config' to set your username:
-
-Host *
-    User {username}
-"""
-
-
 def get_ssh_username(host, env_name, requested_username=None):
-    """Use `ssh -G <host>` to get the SSH username and verify it against
-    the list of users configured in the environment."""
+    """If the username is not requested or configured, check the local SSH
+    configuration to get the SSH username, and verify it against the list of
+    users configured in the environment."""
     if requested_username:
         username = StringIsGuess(requested_username, is_guess=False)
     else:
-        username = get_default_ssh_username(host)
-    return _check_username(env_name, username, DEFAULT_SSH_USERNAME_MESSAGE)
+        username = get_default_username()
+        if username.is_guess:
+            username = get_default_ssh_username(host)
+    return _check_username(env_name, username, COMMCARE_CLOUD_DEFAULT_USERNAME_ENV_VAR_MESSAGE)
 
 
 def _check_username(env_name, username, message):
