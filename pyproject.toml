@@ -46,7 +46,11 @@ test = [
     "pytest-unmagic>=1.1.0",
     "requests-mock",
 ]
-dev = ["ipdb", "pdbp"]
+dev = [
+    "ipdb",
+    "pdbp",
+    {include-group = "test"},
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "src"]

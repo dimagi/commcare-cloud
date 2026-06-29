@@ -205,8 +205,12 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "docopt" },
     { name = "ipdb" },
     { name = "pdbp" },
+    { name = "pytest" },
+    { name = "pytest-unmagic" },
+    { name = "requests-mock" },
 ]
 test = [
     { name = "docopt" },
@@ -244,8 +248,12 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "docopt" },
     { name = "ipdb" },
     { name = "pdbp" },
+    { name = "pytest" },
+    { name = "pytest-unmagic", specifier = ">=1.1.0" },
+    { name = "requests-mock" },
 ]
 test = [
     { name = "docopt" },
