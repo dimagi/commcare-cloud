@@ -9,7 +9,7 @@
 
 - name: Download pghashlib
   get_url: url=https://github.com/markokr/pghashlib/archive/master.zip dest=/tmp/pghashlib.zip
-  when: hashlib_stat.stat.exists == False
+  when: not hashlib_stat.stat.exists
   tags: pghashlib
 
 - name: Unzip pghashlib
@@ -17,7 +17,7 @@
   args:
      chdir: /tmp
      creates: /tmp/pghashlib-master
-  when: hashlib_stat.stat.exists == False
+  when: not hashlib_stat.stat.exists
   tags: pghashlib
 
 - name: Install pghashlib
@@ -29,7 +29,7 @@
   notify:
     - Run ldconfig
     - Restart postgres
-  when: hashlib_stat.stat.exists == False
+  when: not hashlib_stat.stat.exists
   tags: pghashlib
 
 - name: Setup plproxy

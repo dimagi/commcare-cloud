@@ -9,7 +9,7 @@
 - name: check pg_repack version
   command: "{{ postgres_install_dir }}/bin/pg_repack --version"
   register: pg_repack_installed_version
-  when: pg_repack_stat.stat.exists == True
+  when: pg_repack_stat.stat.exists
   check_mode: no
   changed_when: False
 
