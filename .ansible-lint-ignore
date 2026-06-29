@@ -117,7 +117,6 @@ src/commcare_cloud/ansible/roles/sentry/tasks/sentry.yml risky-file-permissions
 src/commcare_cloud/ansible/roles/sentry/tasks/snuba.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/sentry/tasks/snuba.yml risky-file-permissions
 src/commcare_cloud/ansible/roles/setup_auth_keys.yml deprecated-local-action
-src/commcare_cloud/ansible/roles/shared_dir/tasks/cleanup_host.yml deprecated-bare-vars
 src/commcare_cloud/ansible/roles/ssh/tasks/main.yml no-relative-paths
 src/commcare_cloud/ansible/roles/ssh/tasks/main.yml risky-file-permissions
 src/commcare_cloud/ansible/roles/supervisor/tasks/main.yml no-handler
