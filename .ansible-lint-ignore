@@ -4,7 +4,6 @@ src/commcare_cloud/ansible/roles/aws-efs/tasks/main.yml unnamed-task
 src/commcare_cloud/ansible/roles/bootstrap-machine/meta/main.yml meta-no-info
 src/commcare_cloud/ansible/roles/bootstrap-users/defaults/main.yml var-naming
 src/commcare_cloud/ansible/roles/bootstrap-users/tasks/main.yml command-instead-of-shell
-src/commcare_cloud/ansible/roles/bootstrap-users/tasks/main.yml empty-string-compare
 src/commcare_cloud/ansible/roles/bootstrap-users/tasks/main.yml risky-shell-pipe
 src/commcare_cloud/ansible/roles/bootstrap-users/tasks/remove_users.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/bootstrap-users/tasks/remove_users.yml deprecated-local-action

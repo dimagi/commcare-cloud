@@ -175,7 +175,7 @@
 - name: clear users password valid time
   shell: chage -M -1 "{{ item['item'] }}"
   loop: "{{ users_pw_valid.results }}"
-  when: item.stdout is defined and item.stdout != ''
+  when: item.stdout is defined and item.stdout
 
 
 # This must be the last task in the file
