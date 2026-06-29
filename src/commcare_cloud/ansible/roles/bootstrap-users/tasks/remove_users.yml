@@ -42,7 +42,9 @@
 
 - name: check if key files exist
   become: false
-  local_action: stat path="{{ authorized_keys_dir ~ item ~ '.pub' }}"
+  delegate_to: localhost
+  stat:
+    path: "{{ authorized_keys_dir ~ item ~ '.pub' }}"
   register: absent_user_keys
   with_items: '{{ dev_users.absent }}'
 
