@@ -2,7 +2,7 @@
 # roles/pg_backup/tasks/main.yml
 
 - name: Add PosgreSQL apt repo
-  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename}}-pgdg main' state=present
+  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
   register: add_postgresql_repo
   when: "'pg_backup' in group_names"
 

@@ -3,7 +3,7 @@
 
 - name: check if pghashlib installed
   stat:
-    path: "{{postgres_install_dir}}/lib/hashlib.so"
+    path: "{{ postgres_install_dir }}/lib/hashlib.so"
   register: hashlib_stat
   tags: pghashlib
 
@@ -22,10 +22,10 @@
 
 - name: Install pghashlib
   become: yes
-  shell: "PG_CONFIG={{postgres_install_dir}}/bin/pg_config make install"
+  shell: "PG_CONFIG={{ postgres_install_dir }}/bin/pg_config make install"
   args:
     chdir: /tmp/pghashlib-master
-    creates: "{{postgres_install_dir}}/lib/hashlib.so"
+    creates: "{{ postgres_install_dir }}/lib/hashlib.so"
   notify:
     - Run ldconfig
     - Restart postgres
@@ -46,7 +46,7 @@
     ansible_ssh_pipelining: true
   postgresql_ext:
     name: hashlib
-    db: "{{item.name}}"
+    db: "{{ item.name }}"
     port: "{{ postgresql_port }}"
   with_items: "{{ postgresql_dbs.all }}"
   when: item.create and not is_pg_standby and ((item.host == inventory_hostname) or is_monolith|bool)

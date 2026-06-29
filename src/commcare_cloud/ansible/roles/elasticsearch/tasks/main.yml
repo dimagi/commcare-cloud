@@ -180,7 +180,7 @@
   uri:
     url: 'http://{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
     method: PUT
-    body: ' {"type": "s3", "settings": {"bucket": "{{ es_snapshot_bucket }}", "compress": "true", "server_side_encryption": "true", "endpoint": "{{aws_endpoint}}" }}'
+    body: ' {"type": "s3", "settings": {"bucket": "{{ es_snapshot_bucket }}", "compress": "true", "server_side_encryption": "true", "endpoint": "{{ aws_endpoint }}" }}'
   when: backup_es_s3 and inventory_hostname == groups.elasticsearch.0
   tags:
     - cron
@@ -276,6 +276,6 @@
     weekday: "1,2,3,4,5,6"
     user: root
     cron_file: delete_older_es_logs
-    state: '{{ "present" if elasticsearch_delete_old_logs else "absent"}}'
+    state: '{{ "present" if elasticsearch_delete_old_logs else "absent" }}'
   tags:
     - cron

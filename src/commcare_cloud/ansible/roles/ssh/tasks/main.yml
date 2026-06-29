@@ -16,7 +16,7 @@
 - name: Remove TCL template generated ssh_host_keys
   file:
     state: absent
-    path: "{{item}}"
+    path: "{{ item }}"
   loop:
   - /etc/ssh/ssh_host_rsa_key
   - /etc/ssh/ssh_host_rsa_key.pub

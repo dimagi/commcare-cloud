@@ -19,7 +19,7 @@
 - name: Copy extra config
   template:
     src: extras.ini.j2
-    dest: "{{couchdb_dir}}/etc/local.d/extras.ini"
+    dest: "{{ couchdb_dir }}/etc/local.d/extras.ini"
     owner: '{{ couchdb_user }}'
     group: '{{ couchdb_group }}'
     mode: 0640
@@ -31,7 +31,7 @@
 
 - name: Add placement zone config
   lineinfile:
-    path: "{{couchdb_dir}}/etc/default.ini"
+    path: "{{ couchdb_dir }}/etc/default.ini"
     regexp: '^placement='
     line: "{{ couchdb_placement }}"
     insertafter: '^\[cluster\]'
@@ -166,7 +166,7 @@
     weekday: "1,2,3,4,5,6"
     user: couchdb
     cron_file: backup_couch
-    state: '{{ "present" if backup_couch and couch_backup_hourly else "absent"}}' 
+    state: '{{ "present" if backup_couch and couch_backup_hourly else "absent" }}' 
   tags:
     - cron
     - backups
@@ -180,7 +180,7 @@
     weekday: "1,2,3,4,5,6"
     user: couchdb
     cron_file: backup_couch
-    state: '{{ "present" if backup_couch else "absent"}}'
+    state: '{{ "present" if backup_couch else "absent" }}'
   tags:
     - cron
     - backups
@@ -194,7 +194,7 @@
     weekday: 0
     user: couchdb
     cron_file: backup_couch
-    state: '{{ "present" if backup_couch else "absent"}}'
+    state: '{{ "present" if backup_couch else "absent" }}'
   tags:
     - cron
     - backups

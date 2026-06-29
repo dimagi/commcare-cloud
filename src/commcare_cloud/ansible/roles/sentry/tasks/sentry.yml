@@ -57,7 +57,7 @@
   postgresql_ext:
     name: citext
     db: "{{ sentry_database }}"
-    port: "{{ sentry_dbport | default('5432')}}"
+    port: "{{ sentry_dbport | default('5432') }}"
 
 - name: sentry DB migration
   shell: "SENTRY_CONF={{ sentry_app_config }} {{ sentry_virtualenv_path }}/bin/sentry upgrade --noinput"

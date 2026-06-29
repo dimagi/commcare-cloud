@@ -1,5 +1,5 @@
 ---
-- name: Create {{encrypted_tmp}} to use for as tmp directory.
+- name: Create {{ encrypted_tmp }} to use for as tmp directory.
   become: yes
   file:
     path: "{{ encrypted_tmp }}"

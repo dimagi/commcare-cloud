@@ -28,8 +28,8 @@
   ignore_errors: '{{ ansible_check_mode }}'
 
 - name: Extract lpar2rrd master archive
-  unarchive: src="{{encrypted_root }}/lpar2rrd-agent_{{ lpar2rrd_server_version }}.tar"
-             dest="{{encrypted_root }}"
+  unarchive: src="{{ encrypted_root }}/lpar2rrd-agent_{{ lpar2rrd_server_version }}.tar"
+             dest="{{ encrypted_root }}"
              remote_src=yes 
   when: not lpar2rrd_check_master.stat.exists
   ignore_errors: '{{ ansible_check_mode }}'
