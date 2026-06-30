@@ -28,13 +28,10 @@ src/commcare_cloud/ansible/roles/nginx/defaults/main.yml var-naming
 src/commcare_cloud/ansible/roles/nginx/roles/commcarehq/tasks/www_log_dir.yml load-failure
 src/commcare_cloud/ansible/roles/nodejs/tasks/main.yml command-instead-of-module
 src/commcare_cloud/ansible/roles/nodejs/tasks/main.yml risky-shell-pipe
-src/commcare_cloud/ansible/roles/pg_repack/tasks/main.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/pgbouncer/tasks/main.yml package-latest
 src/commcare_cloud/ansible/roles/postgresql/tasks/main.yml command-instead-of-module
-src/commcare_cloud/ansible/roles/postgresql/tasks/main.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/postgresql_base/tasks/check_standby_in_sync.yml risky-shell-pipe
 src/commcare_cloud/ansible/roles/postgresql_base/tasks/main.yml no-handler
 src/commcare_cloud/ansible/roles/python/tasks/main.yml package-latest
-src/commcare_cloud/ansible/roles/sentry/tasks/sentry.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/supervisor/tasks/main.yml no-handler
 src/commcare_cloud/ansible/roles/zookeeper/tasks/main.yml no-handler

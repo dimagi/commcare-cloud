@@ -22,7 +22,9 @@
 
 - name: Install pghashlib
   become: yes
-  shell: "PG_CONFIG={{ postgres_install_dir }}/bin/pg_config make install"
+  command: make install
+  environment:
+    PG_CONFIG: "{{ postgres_install_dir }}/bin/pg_config"
   args:
     chdir: /tmp/pghashlib-master
     creates: "{{ postgres_install_dir }}/lib/hashlib.so"

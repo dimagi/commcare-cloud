@@ -64,7 +64,9 @@
     port: "{{ sentry_dbport | default('5432') }}"
 
 - name: sentry DB migration
-  shell: "SENTRY_CONF={{ sentry_app_config }} {{ sentry_virtualenv_path }}/bin/sentry upgrade --noinput"
+  command: "{{ sentry_virtualenv_path }}/bin/sentry upgrade --noinput"
+  environment:
+    SENTRY_CONF: "{{ sentry_app_config }}"
   notify: restart sentry
 
 - name: Clean Sentry Database Cron
