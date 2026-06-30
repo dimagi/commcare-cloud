@@ -18,7 +18,6 @@ src/commcare_cloud/ansible/roles/common/tasks/main.yml no-tabs
 src/commcare_cloud/ansible/roles/couchdb2/tasks/main.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/couchdb2/tasks/main.yml ignore-errors
 src/commcare_cloud/ansible/roles/datadog/tasks/main.yml package-latest
-src/commcare_cloud/ansible/roles/datadog/tasks/main.yml risky-file-permissions
 src/commcare_cloud/ansible/roles/ecryptfs/tasks/main.yml command-instead-of-module
 src/commcare_cloud/ansible/roles/ecryptfs/tasks/main.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/ecryptfs/tasks/main.yml risky-shell-pipe

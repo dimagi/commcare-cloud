@@ -76,6 +76,7 @@
     dest: /etc/datadog-agent/datadog.yaml
     owner: dd-agent
     group: dd-agent
+    mode: '0640'
   notify: restart datadog
 
 - name: Make sure datadog agent is started
