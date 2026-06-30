@@ -6,7 +6,7 @@
   when: elasticsearch_version is version('7.0.0', '>=')
 
 - name: Downloads Directory
-  file: path="/home/{{ cchq_user }}/downloads/" state=directory
+  file: path="/home/{{ cchq_user }}/downloads/" state=directory mode=0755
 
 - name: Create elasticsearch user
   user: name=elasticsearch createhome=no password=no state=present
@@ -65,6 +65,7 @@
     state: directory
     owner: elasticsearch
     group: elasticsearch
+    mode: '0755'
 
 - name: Copy Elasticsearch Config
   become: yes
@@ -73,6 +74,7 @@
     dest: "{{ elasticsearch_conf_dir }}/elasticsearch.yml"
     owner: elasticsearch
     group: elasticsearch
+    mode: '0644'
   register: copy_elasticsearch_conf_result
   tags:
     - es_conf
@@ -84,6 +86,7 @@
     dest: "{{ elasticsearch_conf_dir }}/log4j2.properties"
     owner: elasticsearch
     group: elasticsearch
+    mode: '0644'
   register: copy_elasticsearch_logging_result
   tags:
     - es_conf
@@ -95,6 +98,7 @@
     dest: "{{ elasticsearch_conf_dir }}/jvm.options"
     owner: elasticsearch
     group: elasticsearch
+    mode: '0644'
   register: copy_elasticsearch_logging_result
   tags:
     - es_conf
@@ -118,6 +122,7 @@
   template:
     src: systemd/elasticsearch.service.j2
     dest: /etc/systemd/system/elasticsearch.service
+    mode: '0644'
   register: copy_elasticsearch_systemd_result
   tags:
     - es_conf

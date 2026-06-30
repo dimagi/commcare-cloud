@@ -49,7 +49,7 @@
   file: path="{{ kafka_conf_dir }}" state=directory owner=root group=root mode=755
 
 - name: Configure Kafka server
-  template: src=server.properties.j2 dest="{{ kafka_conf_dir }}/server.properties"
+  template: src=server.properties.j2 dest="{{ kafka_conf_dir }}/server.properties" mode=0644
 
 - name: Copy Kafka partition reassign Script
   get_url:

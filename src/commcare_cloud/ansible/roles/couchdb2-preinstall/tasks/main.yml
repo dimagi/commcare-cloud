@@ -57,6 +57,7 @@
         dest: /etc/apt/keyrings/
         owner: root
         group: root
+        mode: '0644'
 
     - name: Add couchdb apt repository
       apt_repository:

@@ -11,6 +11,7 @@
   copy:
     content: "{{ item.content }}"
     dest: "{{ item.dest }}"
+    mode: '0644'
   loop: "{{ rsyslog_configs }}"
   notify: restart rsyslog
 

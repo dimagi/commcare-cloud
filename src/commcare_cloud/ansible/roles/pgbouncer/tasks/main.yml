@@ -25,6 +25,7 @@
   template:
     src: pgbouncer-classic.defaults.j2
     dest: /etc/default/pgbouncer
+    mode: '0644'
 
 - name: pgbouncer configuration (classic)
   template:
@@ -40,6 +41,7 @@
   template:
     src: pgbouncer-multiprocess@.service.j2
     dest: /etc/systemd/system/pgbouncer-multiprocess@.service
+    mode: '0644'
   notify:
    - Reload systemd
    - Restart pgbouncer
@@ -100,6 +102,7 @@
   template:
     src: tmpfiles.postgresql-pgbouncer.conf.j2
     dest: /etc/tmpfiles.d/postgresql-pgbouncer.conf
+    mode: '0644'
   tags:
     - configure
 

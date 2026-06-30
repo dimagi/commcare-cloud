@@ -60,6 +60,7 @@
     copy:
       src: schema_permissions.sql
       dest: /tmp/schema_permissions.sql
+      mode: '0644'
     register: sql_file_path
 
   - name: Run queries from SQL script

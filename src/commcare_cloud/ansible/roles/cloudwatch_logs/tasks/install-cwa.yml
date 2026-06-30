@@ -4,6 +4,7 @@
   copy:
     src: amazon-cloudwatch-agent.gpg
     dest: "{{ aws_cwa_temp_path }}/amazon-cloudwatch-agent.gpg"
+    mode: '0644'
 
 - name: add cwa agent gpg key to gpg
   shell: gpg --import amazon-cloudwatch-agent.gpg

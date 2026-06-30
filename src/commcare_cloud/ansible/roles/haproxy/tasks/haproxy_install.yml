@@ -9,6 +9,7 @@
   file:
     path: "{{ haproxy_hatop_download_path }}"
     state: directory
+    mode: '0755'
 
 - name: Download extra package
   get_url:

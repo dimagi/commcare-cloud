@@ -90,6 +90,7 @@
     state: directory
     owner: postgres
     group: postgres
+    mode: '0755'
 
 - name: assert replication slot config correct
   assert: { that: "replication_slot is not defined or replication_slot in hostvars[hot_standby_master]['postgresql_replication_slots']"}
@@ -114,7 +115,7 @@
     state: "{{ 'present' if postgresql_enable_archive and not is_pg_standby and not disable_archive_cleanup_cron else 'absent' }}"
 
 - name: PostgreSQL app configuration
-  template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
+  template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres" mode=0644
   tags: configure
   notify: Restart postgres
 

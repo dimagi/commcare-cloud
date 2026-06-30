@@ -43,6 +43,7 @@
     dest: /etc/apt/keyrings/
     owner: root
     group: root
+    mode: '0644'
 
 - name: Add new datadog apt repository
   apt_repository:

@@ -5,6 +5,7 @@
     regexp: "{{ item.var }}="
     create: yes
     state: present
+    mode: '0644'
   become: yes
   with_items:
     - {'var': 'http_proxy', 'protocol': 'http'}
@@ -21,6 +22,7 @@
     regexp: "Acquire::{{ item.protocol }}::Proxy"
     create: yes
     state: present
+    mode: '0644'
   become: yes
   with_items:
     - {'protocol': 'http'}
@@ -34,6 +36,7 @@
     regexp: "{{ item.0 }}="
     create: yes
     state: present
+    mode: '0644'
   become: yes
   with_nested:
     - ['no_proxy', 'NO_PROXY']
@@ -50,6 +53,7 @@
     dest: "{{ item.home }}/.bowerrc"
     owner: "{{ item.user }}"
     group: "{{ item.user }}"
+    mode: '0644'
   ignore_errors: True
   with_items:
     - {'user': 'ansible', 'home': '/home/ansible' }

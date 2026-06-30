@@ -47,6 +47,7 @@
       owner: aws-kinesis-agent-user
       group: aws-kinesis-agent-user
       state: directory
+      mode: '0755'
 
   - name: Create kinesis config
     template:

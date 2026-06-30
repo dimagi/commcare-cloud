@@ -12,7 +12,7 @@
     - restart apache2
 
 - name: Configure  Apache2
-  template: src=apache2.conf.j2 dest=/etc/apache2/apache2.conf
+  template: src=apache2.conf.j2 dest=/etc/apache2/apache2.conf mode=0644
   notify: restart apache2
 
 - name: Check if lpar2rrd server is installed 

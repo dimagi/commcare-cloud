@@ -26,4 +26,5 @@
   template:
     src: clickhouse.xml.j2
     dest: "/etc/clickhouse-server/config.d/clickhouse.xml"
+    mode: '0644'
   notify: restart clickhouse-server

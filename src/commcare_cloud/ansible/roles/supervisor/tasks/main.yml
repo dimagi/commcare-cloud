@@ -35,12 +35,13 @@
   file: state=absent path=/etc/supervisor
 
 - name: configure supervisor
-  template: src=supervisord.conf.j2 dest=/etc/supervisord.conf
+  template: src=supervisord.conf.j2 dest=/etc/supervisord.conf mode=0644
 
 - name: Add Systemd Conf
   template:
     src: supervisord.systemd.service.j2
     dest: /etc/systemd/system/supervisord.service
+    mode: '0644'
   register: service_conf
 
 - name: stop supervisor to pick up configuration changes
