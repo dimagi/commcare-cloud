@@ -13,7 +13,7 @@
         pkill cpu_sup
         pkill couchjs
         sleep 60
-      ignore_errors: yes
+      failed_when: false
   when: couchdb_version != couchdb_version_current and couchdb_version_current != "none"
 
 - name: Copy extra config

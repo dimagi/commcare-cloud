@@ -54,7 +54,7 @@
     owner: "{{ item.user }}"
     group: "{{ item.user }}"
     mode: '0644'
-  ignore_errors: True
+  failed_when: false
   with_items:
     - {'user': 'ansible', 'home': '/home/ansible' }
     - {'user': 'root', 'home': '/root' }
@@ -65,7 +65,7 @@
   become_user: "{{ item.user }}"
   vars:
     ansible_ssh_pipelining: true
-  ignore_errors: True
+  failed_when: false
   with_items:
     - {'user': 'ansible', 'var': 'proxy', 'protocol': 'http'}
     - {'user': 'ansible', 'var': 'http-proxy', 'protocol': 'http'}
@@ -83,7 +83,7 @@
   become_user: "{{ item.user }}"
   vars:
     ansible_ssh_pipelining: true
-  ignore_errors: True
+  failed_when: false
   with_items:
     - {'user': 'ansible', 'var': 'http.proxy', 'protocol': 'http'}
     - {'user': 'ansible', 'var': 'https.proxy', 'protocol': 'http'}
@@ -98,7 +98,7 @@
   become_user: "{{ item.user }}"
   vars:
     ansible_ssh_pipelining: true
-  ignore_errors: True
+  failed_when: false
   with_items:
     - {'user': 'ansible', 'var': 'https://github.com/', 'insteadof': 'git@github.com:' }
     - {'user': 'ansible', 'var': 'https://', 'insteadof': 'git://' }
