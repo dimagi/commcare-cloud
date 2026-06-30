@@ -55,7 +55,6 @@ src/commcare_cloud/ansible/roles/postgresql/tasks/plproxy.yml command-instead-of
 src/commcare_cloud/ansible/roles/postgresql_base/tasks/check_standby_in_sync.yml risky-shell-pipe
 src/commcare_cloud/ansible/roles/postgresql_base/tasks/main.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/postgresql_base/tasks/main.yml no-handler
-src/commcare_cloud/ansible/roles/postgresql_base/tasks/main.yml risky-file-permissions
 src/commcare_cloud/ansible/roles/postgresql_base/tasks/standby_progress.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/python/tasks/main.yml package-latest
 src/commcare_cloud/ansible/roles/sentry/tasks/clickhouse.yml risky-file-permissions
