@@ -31,6 +31,9 @@
   template:
     src: pgbouncer-classic.ini.j2
     dest: /etc/pgbouncer/pgbouncer.ini
+    owner: postgres
+    group: postgres
+    mode: '0640'
 
 - name: pgbouncer gather state
   service_facts:
@@ -110,6 +113,9 @@
   template:
     src: pgbouncer.ini.j2
     dest: "{{ pgbouncer_ini }}"
+    owner: postgres
+    group: postgres
+    mode: '0640'
   notify:
     - Start and enable pgbouncer
     - Reload pgbouncer
@@ -121,6 +127,9 @@
   template:
     src: pgbouncer.users.j2
     dest: "{{ pgbouncer_users }}"
+    owner: postgres
+    group: postgres
+    mode: '0640'
   notify:
     - Start and enable pgbouncer
     - Reload pgbouncer

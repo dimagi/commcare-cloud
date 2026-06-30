@@ -51,7 +51,6 @@ src/commcare_cloud/ansible/roles/nodejs/tasks/main.yml risky-shell-pipe
 src/commcare_cloud/ansible/roles/pg_repack/tasks/main.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/pgbouncer/tasks/main.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/pgbouncer/tasks/main.yml package-latest
-src/commcare_cloud/ansible/roles/pgbouncer/tasks/main.yml risky-file-permissions
 src/commcare_cloud/ansible/roles/postgresql/tasks/main.yml command-instead-of-module
 src/commcare_cloud/ansible/roles/postgresql/tasks/main.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/postgresql/tasks/plproxy.yml command-instead-of-shell
