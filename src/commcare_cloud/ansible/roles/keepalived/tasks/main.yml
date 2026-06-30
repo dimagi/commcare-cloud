@@ -16,7 +16,7 @@
   notify: restart keepalived
 
 - name: Configure  keepalived
-  template: src=keepalived.conf.j2 dest=/etc/keepalived/keepalived.conf
+  template: src=keepalived.conf.j2 dest=/etc/keepalived/keepalived.conf owner=root group=root mode=0640
   tags: keepalived
   notify: restart keepalived
 

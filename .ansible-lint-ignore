@@ -38,7 +38,6 @@ src/commcare_cloud/ansible/roles/http_proxy/tasks/main.yml ignore-errors
 src/commcare_cloud/ansible/roles/kafka/tasks/main.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/kafka/tasks/main.yml no-handler
 src/commcare_cloud/ansible/roles/keepalived/tasks/main.yml package-latest
-src/commcare_cloud/ansible/roles/keepalived/tasks/main.yml risky-file-permissions
 src/commcare_cloud/ansible/roles/kinesis_agent/tasks/main.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/lpar2rrd/tasks/install_agent.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/lpar2rrd/tasks/install_master.yml package-latest
