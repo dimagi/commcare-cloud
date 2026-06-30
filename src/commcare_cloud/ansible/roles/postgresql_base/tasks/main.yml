@@ -144,7 +144,7 @@
 
 # Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
 - name: No-op task to support tag-only execution
-  shell: /bin/true
+  command: /bin/true
   changed_when: false
   register: no_tags
 
@@ -198,7 +198,7 @@
   become_user: postgres
   vars:
     ansible_ssh_pipelining: true
-  shell: "{{ postgres_install_dir }}/bin/psql -U postgres -p {{ postgresql_port }} {{ item.name }} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
+  command: "{{ postgres_install_dir }}/bin/psql -U postgres -p {{ postgresql_port }} {{ item.name }} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
   when: item.query_stats and not is_pg_standby and (item.host == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs.all }}"
   tags:
@@ -257,6 +257,6 @@
 
 - name: Create 1GB Dummmy file for Emergency
   become: yes
-  shell: "dd if=/dev/zero of={{ encrypted_root }}/emerg_delete.dummy count=1024 bs=1048576"
+  command: "dd if=/dev/zero of={{ encrypted_root }}/emerg_delete.dummy count=1024 bs=1048576"
   args:
     creates: "{{ encrypted_root }}/emerg_delete.dummy"

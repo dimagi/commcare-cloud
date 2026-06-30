@@ -25,10 +25,9 @@
     remote_src: yes
 
 - name: Rename snuba version directory
-  shell: "mv snuba-{{ snuba_version }} snuba"
+  command: "mv snuba-{{ snuba_version }} snuba"
   args:
     chdir: "{{ snuba_virtualenv_path }}"
-    executable: /bin/bash
 
 - name: Run Make commands for snuba 
   shell: "source {{ snuba_virtualenv_path }}/bin/activate && make install-python-dependencies"

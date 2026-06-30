@@ -21,12 +21,12 @@
     - start
 
 - name: Start chaos
-  shell: "{{ chaos_dir }}/start/{{ strategy }}"
+  command: "{{ chaos_dir }}/start/{{ strategy }}"
   tags:
     - start
 
 - name: "Find stop scripts"
-  shell: "find {{ chaos_dir }}/stop -executable -type f"
+  command: "find {{ chaos_dir }}/stop -executable -type f"
   register: stop_scripts
   changed_when: false
   failed_when: false

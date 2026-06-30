@@ -1,7 +1,7 @@
 ---
 - name: check nginx configuration
   become: yes
-  shell: "nginx -t"
+  command: "nginx -t"
   register: result
   check_mode: no
   failed_when: "result.rc != 0"
@@ -23,7 +23,7 @@
 
 - name: Assert nginx is running
   become: yes
-  shell: 'service nginx status'
+  command: 'service nginx status'
   args:
     warn: no
   register: nginx_status

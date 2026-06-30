@@ -14,7 +14,7 @@
     createhome=yes
 
 - name: clear users password valid time
-  shell: chage -M -1 sentry
+  command: chage -M -1 sentry
 
 - name: Create virtualenv and config directory
   file:

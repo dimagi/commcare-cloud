@@ -74,7 +74,7 @@
   notify: restart couchdb2
 
 - name: Start couchdb2
-  shell: /bin/true
+  command: /bin/true
   notify: start couchdb2
   tags:
     - after-reboot
@@ -237,7 +237,7 @@
     - monit
 
 - name: Start monit
-  shell: /bin/true
+  command: /bin/true
   notify: start monit
 
 - name: Flush handlers

@@ -23,7 +23,7 @@
     shell: /bin/bash
 
 - name: clear users password valid time
-  shell: chage -M -1 lpar2rrd
+  command: chage -M -1 lpar2rrd
 
 - name: Creates a cron for lpar2rrd agent
   cron:

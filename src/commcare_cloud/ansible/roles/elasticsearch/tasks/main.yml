@@ -109,12 +109,12 @@
     name: "elasticsearch>={{ elasticsearch_version.split('.')[0] }}.0.0,<{{ elasticsearch_version.split('.')[0] | int + 1 }}.0.0"
 
 - name: Check for installed plugins
-  shell: "{{ elasticsearch_home }}/bin/elasticsearch-plugin list"
+  command: "{{ elasticsearch_home }}/bin/elasticsearch-plugin list"
   register: installed_plugins
 
 - name: Install elasticsearch phonetic plugin
   become: yes
-  shell: "{{ elasticsearch_home }}/bin/elasticsearch-plugin install analysis-phonetic"
+  command: "{{ elasticsearch_home }}/bin/elasticsearch-plugin install analysis-phonetic"
   when: (installed_plugins.stdout is defined) and ('analysis-phonetic' not in installed_plugins.stdout) and es_plugins_phonetic_enabled
 
 - name: Copy Elasticsearch Systemd Conf

@@ -173,7 +173,7 @@
   changed_when: False
 
 - name: clear users password valid time
-  shell: chage -M -1 "{{ item['item'] }}"
+  command: chage -M -1 "{{ item['item'] }}"
   loop: "{{ users_pw_valid.results }}"
   when: item.stdout is defined and item.stdout
 

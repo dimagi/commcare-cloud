@@ -41,7 +41,7 @@
 
 - block:
     - name: Check for already mounted encrypted drive
-      shell: grep '{{ encrypted_root }} ecryptfs' /etc/mtab
+      command: grep '{{ encrypted_root }} ecryptfs' /etc/mtab
       register: mtab_contents
       failed_when: false
       changed_when: false
@@ -76,7 +76,7 @@
 
     - name: Mount data drive
       become: yes
-      shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 {{ encrypted_root }}/ {{ encrypted_root }}/"
+      command: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 {{ encrypted_root }}/ {{ encrypted_root }}/"
       when: (password_hash.stdout is defined) and (encrypted_root not in mtab_contents.stdout)
       tags:
         - mount-ecryptfs

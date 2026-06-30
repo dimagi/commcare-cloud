@@ -92,7 +92,7 @@
 
 # Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
 - name: No-op task to support tag-only execution
-  shell: /bin/true
+  command: /bin/true
   changed_when: false
   register: no_tags
 

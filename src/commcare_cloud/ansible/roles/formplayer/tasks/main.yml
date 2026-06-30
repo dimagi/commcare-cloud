@@ -167,7 +167,7 @@
   when: not _should_update_formplayer_in_place and current_stat.stat.exists
 
 - name: Register current formplayer release
-  shell: "readlink {{ formplayer_current_dir }}"
+  command: "readlink {{ formplayer_current_dir }}"
   check_mode: no
   register: current_release_result
   changed_when: no

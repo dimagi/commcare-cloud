@@ -147,7 +147,7 @@
   tags: monit
 
 - name: pgbounger stop and disable (classic) and make sure multiprocess is started
-  shell: /bin/true
+  command: /bin/true
   changed_when: true
   notify:
     - Stop and disable pgbouncer (classic)
