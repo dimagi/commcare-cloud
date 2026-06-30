@@ -21,6 +21,7 @@
     state: directory
     owner: clickhouse
     group: clickhouse
+    mode: '0750'
 
 - name: Copy clickhouse config files
   template:
