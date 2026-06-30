@@ -27,12 +27,17 @@ class Ec2InstanceState(CommandBase):
     confirmation directly (a check-mode preview of a full cycle would show
     no net state change); `describe` just runs.
 
+    `stop` and `stop_and_start` will eventually stop the services running
+    on the hosts gracefully before stopping the EC2 instances. Until that
+    is implemented they stop the instances outright, without draining
+    services first, so they must be confirmed by passing `--unsafe`.
+
     Example:
 
     ```
     commcare-cloud <env> ec2 describe webworkers
-    commcare-cloud <env> ec2 stop celery:pillowtop
-    commcare-cloud <env> ec2 stop_and_start 10.201.11.133 10.201.11.134
+    commcare-cloud <env> ec2 stop celery:pillowtop --unsafe
+    commcare-cloud <env> ec2 stop_and_start 10.201.11.133 10.201.11.134 --unsafe
     ```
     """
 
@@ -55,6 +60,11 @@ class Ec2InstanceState(CommandBase):
             Return as soon as the state change is issued instead of waiting
             for instances to reach their final state.
         """),
+        Argument('--unsafe', action='store_true', help="""
+            Required to run `stop` and `stop_and_start`, which currently stop
+            the EC2 instances without gracefully stopping the services running
+            on them first. Has no effect on `describe` or `start`.
+        """),
         shared_args.SKIP_CHECK_ARG,
         shared_args.QUIET_ARG,
     )
@@ -66,6 +76,12 @@ class Ec2InstanceState(CommandBase):
             raise CommandError(
                 "ec2 can only be used in AWS environments "
                 f"(no terraform config found for {environment.name!r})")
+
+        if args.action in ('stop', 'stop_and_start') and not args.unsafe:
+            raise CommandError(
+                f"{args.action!r} currently stops the EC2 instances without "
+                "gracefully stopping the services running on them first. "
+                "Pass --unsafe if you understand this and want to proceed.")
 
         instance_ids_by_host = get_instance_ids_by_host(environment, args.inventory_group)
 
