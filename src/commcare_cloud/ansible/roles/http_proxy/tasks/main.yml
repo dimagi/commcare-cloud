@@ -78,7 +78,10 @@
     - {'user': '{{ cchq_user }}', 'var': 'https-proxy', 'protocol': 'http'}
 
 - name: GIT proxy
-  command: 'git config --global {{ item.var }} {{ item.protocol }}://{{ http_proxy_address }}:{{ http_proxy_port }}/'
+  community.general.git_config:
+    name: "{{ item.var }}"
+    value: "{{ item.protocol }}://{{ http_proxy_address }}:{{ http_proxy_port }}/"
+    scope: global
   become: yes
   become_user: "{{ item.user }}"
   vars:
@@ -93,7 +96,10 @@
     - {'user': '{{ cchq_user }}', 'var': 'https.proxy', 'protocol': 'http'}
 
 - name: Github https insteadOf ssh
-  command: 'git config --global url."{{ item.var }}".insteadOf {{ item.insteadof }}'
+  community.general.git_config:
+    name: 'url.{{ item.var }}.insteadOf'
+    value: "{{ item.insteadof }}"
+    scope: global
   become: yes
   become_user: "{{ item.user }}"
   vars:

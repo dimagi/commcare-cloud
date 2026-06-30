@@ -90,7 +90,10 @@
   register: current_localsettings
 
 - name: allow git file transport
-  command: 'git config --global protocol.file.allow always'
+  community.general.git_config:
+    name: protocol.file.allow
+    value: always
+    scope: global
   become: yes
   become_user: "{{ cchq_user }}"
 
