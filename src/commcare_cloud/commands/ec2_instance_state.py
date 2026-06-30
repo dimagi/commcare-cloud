@@ -18,7 +18,7 @@ ACTIONS = ['describe', 'start', 'stop', 'stop_and_start']
 
 
 class Ec2InstanceState(CommandBase):
-    command = 'ec2-instance-state'
+    command = 'ec2'
     help = """
     Manage the EC2 instance state (start/stop/describe) of hosts in an AWS environment.
 
@@ -30,9 +30,9 @@ class Ec2InstanceState(CommandBase):
     Example:
 
     ```
-    commcare-cloud <env> ec2-instance-state describe webworkers
-    commcare-cloud <env> ec2-instance-state stop celery:pillowtop
-    commcare-cloud <env> ec2-instance-state stop_and_start 10.201.11.133 10.201.11.134
+    commcare-cloud <env> ec2 describe webworkers
+    commcare-cloud <env> ec2 stop celery:pillowtop
+    commcare-cloud <env> ec2 stop_and_start 10.201.11.133 10.201.11.134
     ```
     """
 
@@ -64,7 +64,7 @@ class Ec2InstanceState(CommandBase):
         environment = ansible_context.environment
         if not is_aws_env(environment):
             raise CommandError(
-                "ec2-instance-state can only be used in AWS environments "
+                "ec2 can only be used in AWS environments "
                 f"(no terraform config found for {environment.name!r})")
 
         instance_ids_by_host = get_instance_ids_by_host(environment, args.inventory_group)
@@ -73,7 +73,7 @@ class Ec2InstanceState(CommandBase):
                      if not host.implicit}
         if set(instance_ids_by_host) >= all_hosts:
             raise CommandError(
-                f"Refusing to run ec2-instance-state against all hosts in {environment.name!r}. "
+                f"Refusing to run ec2 command against all hosts in {environment.name!r}. "
                 "Target a specific group, host, or pattern instead.")
 
         self.log("Matched hosts:")

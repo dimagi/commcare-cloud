@@ -1735,13 +1735,12 @@ have been made to our actual resources in AWS.
 
 ---
 
-#### ``ec2-instance-state`` Command
+#### ``ec2`` Command
 
 Manage the EC2 instance state (start/stop/describe) of hosts in an AWS environment.
 
 ```
-commcare-cloud <env> ec2-instance-state [--no-wait]
-                                        {describe,start,stop,stop_and_start} inventory_group [inventory_group ...]
+commcare-cloud <env> ec2 [--no-wait] {describe,start,stop,stop_and_start} inventory_group [inventory_group ...]
 ```
 
 `start` and `stop` show a check-mode preview of the state transitions
@@ -1755,9 +1754,9 @@ To force setup, use --control-setup=yes instead.
 ##### Example
 
 ```
-commcare-cloud <env> ec2-instance-state describe webworkers
-commcare-cloud <env> ec2-instance-state stop celery:pillowtop
-commcare-cloud <env> ec2-instance-state stop_and_start 10.201.11.133 10.201.11.134
+commcare-cloud <env> ec2 describe webworkers
+commcare-cloud <env> ec2 stop celery:pillowtop
+commcare-cloud <env> ec2 stop_and_start 10.201.11.133 10.201.11.134
 ```
 
 ##### Positional Arguments
