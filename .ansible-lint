@@ -6,5 +6,6 @@ exclude_paths:
   - src/commcare_cloud/ansible/requirements.yml
 
 skip_list:
+  - meta-no-info     # local roles are not published on Ansible Galaxy
   - no-changed-when  # command/shell tasks intentionally omit changed_when
   - role-name        # roles use path-style names (nested role directories)
