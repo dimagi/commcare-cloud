@@ -11,7 +11,6 @@ src/commcare_cloud/ansible/roles/cloudwatch_logs/tasks/main.yml command-instead-
 src/commcare_cloud/ansible/roles/commcare-audit/tasks/disk_usage.yml risky-shell-pipe
 src/commcare_cloud/ansible/roles/commcare-audit/tasks/filesystem_health.yml command-instead-of-shell
 src/commcare_cloud/ansible/roles/commcarehq/tasks/main.yml command-instead-of-module
-src/commcare_cloud/ansible/roles/commcarehq/tasks/main.yml risky-file-permissions
 src/commcare_cloud/ansible/roles/common/tasks/logging.yml no-tabs
 src/commcare_cloud/ansible/roles/common/tasks/main.yml no-handler
 src/commcare_cloud/ansible/roles/common/tasks/main.yml no-tabs
