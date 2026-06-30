@@ -135,6 +135,17 @@
 - debug: msg="If you're just updating the ES conf then you sill need to restart the cluster. Use  the 'es_rolling_restart' playbook."
   when: copy_elasticsearch_conf_result.changed
 
+- name: Create Elasticsearch tmp directory
+  become: yes
+  file:
+    path: "{{ elasticsearch_data_dir }}/tmp"
+    state: directory
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0755
+  tags:
+    - es_conf
+
 - name: Check if Elasticsearch data directories exist
   stat:
     path: "{{ item }}"
@@ -143,7 +154,6 @@
     - "{{ elasticsearch_data_dir }}"
     - "{{ elasticsearch_data_dir }}/data"
     - "{{ elasticsearch_data_dir }}/logs"
-    - "{{ elasticsearch_data_dir }}/tmp"
 
 - name: Create Elasticsearch data directories if they do not exist
   become: yes
