@@ -79,7 +79,8 @@
   tags:
     - after-reboot
 
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers
 
 - name: Add nodes
   no_log: true
@@ -239,9 +240,11 @@
   shell: /bin/true
   notify: start monit
 
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers
 
-- monit:
+- name: Enable monit monitoring for couchdb2
+  monit:
     name: couchdb2
     state: monitored
   ignore_errors: "{{ ansible_check_mode }}"

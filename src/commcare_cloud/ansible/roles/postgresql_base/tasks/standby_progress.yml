@@ -9,13 +9,15 @@
   register: standby_size_output
   when: not async_poll_results.get('finished', True)
 
-- debug:
+- name: Show standby restore progress
+  debug:
     msg:
       - "Progress = {{ (100 * standby_size_output.stdout.split()[0]|int / master_size_output.stdout.split()[0]|int)|int }}%"
       - "Master size: {{ master_size_output.stdout.split()[0]|int }}"
       - "Standby size: {{ standby_size_output.stdout.split()[0]|int }}"
   when: not async_poll_results.get('finished', True)
 
-- pause:
+- name: Wait before re-checking restore progress
+  pause:
     seconds: 300
   when: not async_poll_results.get('finished', True)

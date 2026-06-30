@@ -33,7 +33,8 @@
   service: name=elasticsearch state=started
   tags: action_start
 
-- debug: msg="Sometimes we try to start the node too soon. If hung start node manually"
+- name: Note that a hung node may need to be started manually
+  debug: msg="Sometimes we try to start the node too soon. If hung start node manually"
   tags: action_start
 
 - name: wait for node to restart

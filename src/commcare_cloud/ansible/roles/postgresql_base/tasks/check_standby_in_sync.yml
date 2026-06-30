@@ -14,14 +14,17 @@
   check_mode: no
   when: retry_count == 0 or not checkpoints_match
 
-- debug: msg="Primary = {{ primary_checkpoint.stdout }}, Standby = {{ standby_checkpoint.stdout }}"
+- name: Show primary and standby checkpoint locations
+  debug: msg="Primary = {{ primary_checkpoint.stdout }}, Standby = {{ standby_checkpoint.stdout }}"
   when: retry_count == 0 or not checkpoints_match
 
-- set_fact:
+- name: Record whether checkpoints match
+  set_fact:
     checkpoints_match: "{{ primary_checkpoint.stdout == standby_checkpoint.stdout }}"
   when: retry_count == 0 or not checkpoints_match
 
-- pause:
+- name: Wait before re-checking standby sync
+  pause:
     seconds: 5
     prompt: "Primary and standby are out of sync. Waiting 5s before re-checking."
   when: not checkpoints_match and retry_count != 5

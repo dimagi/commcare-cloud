@@ -230,7 +230,8 @@
   tags: monit
   when: use_monit_for_formplayer|bool
 
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers
 
 # NOTE: this check currently fails because of a bug in community.general.monit
 # A PR has been made to fix this, and we can uncomment this once that is merged/released

@@ -125,7 +125,8 @@
     - pg_hba
   notify: Reload postgres
 
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers
 
 - name: Set up PostgreSQL DBs
   import_tasks: set_up_dbs.yml
@@ -136,10 +137,12 @@
     - configure
 
 # restart / reload if necessary to make sure replication slot config updated
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers
 
 # Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
-- shell: /bin/true
+- name: No-op task to support tag-only execution
+  shell: /bin/true
   changed_when: false
   register: no_tags
 
@@ -232,9 +235,11 @@
 
 - import_tasks: cleanup.yml
 
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers
 
-- monit:
+- name: Enable monit monitoring for postgresql
+  monit:
     name: "postgresql_{{ postgresql_version }}"
     state: monitored
   tags: monit
