@@ -35,7 +35,7 @@
     - stop
 
 - name: Stop chaos
-  shell: "{{ item }}"
+  command: "{{ item }}"
   with_items: "{{ stop_scripts.stdout_lines }}"
   tags:
     - debug_stop
