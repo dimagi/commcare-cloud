@@ -1,0 +1,10 @@
+---
+# The skip_list is for rules we never want to enforce, even on new code.
+# Exceptions for other rules are allowed via .ansible-lint-ignore
+
+exclude_paths:
+  - src/commcare_cloud/ansible/requirements.yml
+
+skip_list:
+  - no-changed-when  # command/shell tasks intentionally omit changed_when
+  - role-name        # roles use path-style names (nested role directories)

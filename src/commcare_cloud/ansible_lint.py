@@ -1,0 +1,133 @@
+"""Run ansible-lint on commcare-cloud playbooks and roles.
+
+Runs ansible-lint over every playbook and role and fails only on
+``<file> <rule>`` violations that are not already recorded in the committed
+``.ansible-lint-ignore`` file::
+
+    ansible-lint-cloud                    # check against .ansible-lint-ignore
+    ansible-lint-cloud --generate-ignore  # regenerate .ansible-lint-ignore
+
+This backports the `.ansible-lint-ignore` workflow from ansible-lint 6.2+ onto
+5.4.0 -- the newest release compatible with ansible-core 2.11 (ansible~=4.10).
+It can be removed when ansible-lint has been upgraded to 6.2 or later.
+"""
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+
+from commcare_cloud.environment.paths import (
+    ANSIBLE_COLLECTIONS_PATHS,
+    ANSIBLE_DIR,
+    ANSIBLE_ROLES_PATH,
+)
+
+# ANSIBLE_DIR is <repo>/src/commcare_cloud/ansible; the repo root is three
+# levels up. Lint runs from there so reported paths (and the ignore file) are
+# repo-relative.
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(ANSIBLE_DIR)))
+CONTENT_DIR = os.path.relpath(ANSIBLE_DIR, REPO_ROOT)
+IGNORE_FILE = os.path.join(REPO_ROOT, ".ansible-lint-ignore")
+IGNORE_REL = os.path.relpath(IGNORE_FILE, REPO_ROOT)
+
+
+def lint_env():
+    """Reproduce the ansible environment commcare-cloud's build_env() sets, so
+    role and collection references resolve during ansible-lint's syntax-check.
+    """
+    env = dict(os.environ)
+    env["ANSIBLE_CONFIG"] = os.path.join(ANSIBLE_DIR, "ansible.cfg")
+    env["ANSIBLE_ROLES_PATH"] = ANSIBLE_ROLES_PATH
+    env["ANSIBLE_COLLECTIONS_PATHS"] = ANSIBLE_COLLECTIONS_PATHS
+    return env
+
+
+def run_ansible_lint():
+    """Return the codeclimate report (a list of issue dicts)."""
+    proc = subprocess.run(
+        ["ansible-lint", "-f", "codeclimate", CONTENT_DIR],
+        cwd=REPO_ROOT,
+        env=lint_env(),
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    # ansible-lint exits 0 (clean) or 2 (violations found); both are expected.
+    # Any other exit code is a genuine failure.
+    if proc.returncode not in (0, 2):
+        sys.exit("ansible-lint exited with {}".format(proc.returncode))
+    return json.loads(proc.stdout or "[]")
+
+
+def extract_violations(report):
+    """Reduce the codeclimate report to a sorted list of "<relpath> <rule>".
+    """
+    pairs = set()
+    for issue in report:
+        path = issue.get("location", {}).get("path", "")
+        if os.path.isabs(path):
+            path = os.path.relpath(path, REPO_ROOT)
+        match = re.match(r"\[([^\]]+)\]", issue.get("check_name", ""))
+        rule = match.group(1) if match else "unknown"
+        pairs.add("{} {}".format(path, rule))
+    return sorted(pairs)
+
+
+def read_ignore():
+    """Parse .ansible-lint-ignore into a set of "<path> <rule>" lines, tolerating
+    blank lines and comments the way ansible-lint does.
+    """
+    entries = set()
+    with open(IGNORE_FILE) as f:
+        for line in f:
+            line = line.split("#", 1)[0].strip()
+            if line:
+                entries.add(line)
+    return entries
+
+
+def main():
+    parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
+    parser.add_argument(
+        "--generate-ignore",
+        action="store_true",
+        help="rewrite {} from the current violations".format(IGNORE_REL),
+    )
+    args = parser.parse_args()
+
+    current = extract_violations(run_ansible_lint())
+
+    if args.generate_ignore:
+        with open(IGNORE_FILE, "w") as fh:
+            fh.writelines(line + "\n" for line in current)
+        print("Wrote {} entries to {}".format(len(current), IGNORE_REL))
+        return
+
+    if not os.path.exists(IGNORE_FILE):
+        sys.exit(
+            "{} not found; create it with:\n"
+            "  ansible-lint-cloud --generate-ignore".format(IGNORE_FILE)
+        )
+
+    ignored = read_ignore()
+    new = [v for v in current if v not in ignored]
+    if new:
+        print(
+            "New ansible-lint violations (not in {}):".format(IGNORE_REL),
+            file=sys.stderr,
+        )
+        for violation in new:
+            print("  " + violation, file=sys.stderr)
+        print(
+            "\nFix them, or if intentional refresh the ignore file with:\n"
+            "  ansible-lint-cloud --generate-ignore",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    print("ansible-lint: no new violations ({} ignored).".format(len(ignored)))
+
+
+if __name__ == "__main__":
+    main()
