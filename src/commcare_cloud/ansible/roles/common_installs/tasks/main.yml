@@ -103,4 +103,4 @@
   become: yes
   pip:
     name: [uv]
-    absent: true
+    state: absent
