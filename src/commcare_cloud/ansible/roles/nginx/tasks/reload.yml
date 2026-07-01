@@ -23,10 +23,11 @@
 
 - name: Assert nginx is running
   become: yes
-  command: 'service nginx status'
-  args:
-    warn: no
+  # `systemctl status` is exempt from ansible-lint's command-instead-of-module
+  # rule but `is-active` is not, hence the noqa. is-active is used because it
+  # gives a precise active/inactive result instead of substring-matching on
+  # human-readable status output.
+  command: systemctl is-active nginx  # noqa: command-instead-of-module
   register: nginx_status
   changed_when: false
-  # new versions have `* nginx is running`, old have something containing `start/running`
-  failed_when: nginx_status.rc != 0 or nginx_status.stdout.find('running') == -1
+  failed_when: nginx_status.stdout != "active"
