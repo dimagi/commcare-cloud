@@ -32,5 +32,6 @@
       loop: '{{ groups.proxy }}'
       when: groups.webworkers | length > 1
 
-    - fail:
+    - name: Fail if nginx reload failed
+      fail:
         msg: Nginx reload failed. See previous errors for details.

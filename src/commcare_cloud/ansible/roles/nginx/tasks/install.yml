@@ -16,7 +16,8 @@
   apt: name="nginx={{ nginx_version }}" state=present update_cache=yes cache_valid_time=3600
   notify: 'quick start nginx'
 
-- meta: flush_handlers  # need to start nginx as quickly as possible for minimal downtime
+- name: Flush handlers - start nginx as quickly as possible for minimal downtime
+  meta: flush_handlers
 
 - name: Make sure nofile ulimit is high
   become: yes
@@ -65,5 +66,6 @@
 - name: Make sure the log directory exists
   import_tasks: roles/commcarehq/tasks/www_log_dir.yml
 
-- set_fact: nginx_installed=True
+- name: Mark nginx as installed
+  set_fact: nginx_installed=True
 

@@ -11,5 +11,5 @@
     # works with either vars from site_config or just file_name
     - "{{ nginx_sites|default([{'server': {'file_name': file_name}}]) }}"
   loop_control:
-    label: "{{item.1.server.file_name}}"
+    label: "{{ item.1.server.file_name }}"
   notify: reload nginx

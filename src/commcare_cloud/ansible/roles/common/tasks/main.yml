@@ -83,14 +83,14 @@
 
 
 - name: "Custom host file lines"
-  lineinfile: dest=/etc/hosts regexp='^{{ item }}.*' line="{{item}}" state=present
+  lineinfile: dest=/etc/hosts regexp='^{{ item }}.*' line="{{ item }}" state=present
   with_items: "{{ etc_hosts_lines }}"
   when: etc_hosts_lines is defined
   tags:
     - etc_hosts
 
 - name: "Add host file"
-  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=present
+  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ item }}" state=present
   with_items:
     - "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}\t\t{{ inventory_hostname }}"
   tags:
@@ -99,7 +99,7 @@
   when: not inventory_hostname|ipaddr
 
 - name: "Remove lines from hosts file"
-  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{item}}" state=absent
+  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ item }}" state=absent
   with_items: "{{ etc_hosts_lines_removed }}"
   when: etc_hosts_lines_removed is defined
   tags:

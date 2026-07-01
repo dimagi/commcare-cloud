@@ -49,7 +49,7 @@
   file: path="{{ kafka_conf_dir }}" state=directory owner=root group=root mode=755
 
 - name: Configure Kafka server
-  template: src=server.properties.j2 dest="{{kafka_conf_dir}}/server.properties"
+  template: src=server.properties.j2 dest="{{ kafka_conf_dir }}/server.properties"
 
 - name: Copy Kafka partition reassign Script
   get_url:
@@ -91,7 +91,8 @@
     daemon_reload: yes
 
 # Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
-- shell: /bin/true
+- name: No-op task to support tag-only execution
+  shell: /bin/true
   changed_when: false
   register: no_tags
 
@@ -104,7 +105,7 @@
 # Restarting a service right after it's been started will cause an unnecessary/non-idempotent restart
 - name: Enable and start Kafka service
   service: name=kafka-server enabled=yes state=restarted
-  when: kafka_service_started.changed == False
+  when: not kafka_service_started.changed
 
 - name: Add Kafka binaries to PATH
   copy: src=kafka.sh dest=/etc/profile.d/ owner=root group=root mode=0644

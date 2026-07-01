@@ -1,5 +1,6 @@
 ---
-- include_vars: 'roles/postgresql_base/defaults/main.yml'
+- name: Load postgresql_base defaults
+  include_vars: 'roles/postgresql_base/defaults/main.yml'
 
 - name: check if pg_repack installed
   stat:
@@ -9,11 +10,12 @@
 - name: check pg_repack version
   command: "{{ postgres_install_dir }}/bin/pg_repack --version"
   register: pg_repack_installed_version
-  when: pg_repack_stat.stat.exists == True
+  when: pg_repack_stat.stat.exists
   check_mode: no
   changed_when: False
 
-- debug:
+- name: Report pg_repack version upgrade
+  debug:
     msg: "Updating pg_repack from version {{ pg_repack_installed_version.stdout.split()[1] }}"
   when: pg_repack_stat.stat.exists and pg_repack_installed_version.stdout.split()[1] != pg_repack_version
 

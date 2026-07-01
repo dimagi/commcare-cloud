@@ -82,7 +82,8 @@
     daemon_reload: yes
 
 # Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
-- shell: /bin/true
+- name: No-op task to support tag-only execution
+  shell: /bin/true
   changed_when: false
   register: no_tags
 
@@ -95,7 +96,7 @@
 # Restarting a service right after it's been started will cause an unnecessary/non-idempotent restart
 - name: Restart Zookeeper service
   service: name=zookeeper-server enabled=yes state=restarted
-  when: zookeeper_service_started.changed == False
+  when: not zookeeper_service_started.changed
   tags: zookeeper_cluster_conf
 
 - name: Add Zookeeper binaries to PATH

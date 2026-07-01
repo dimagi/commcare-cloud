@@ -33,11 +33,12 @@
   service: name=elasticsearch state=started
   tags: action_start
 
-- debug: msg="Sometimes we try to start the node too soon. If hung start node manually"
+- name: Note that a hung node may need to be started manually
+  debug: msg="Sometimes we try to start the node too soon. If hung start node manually"
   tags: action_start
 
 - name: wait for node to restart
-  shell: "curl -I -s -m 2 http://{{es_host}}:9200 | head -n 1"
+  shell: "curl -I -s -m 2 http://{{ es_host }}:9200 | head -n 1"
   register: result
   until: result.stdout == "HTTP/1.1 200 OK"
   retries: 200
@@ -45,7 +46,7 @@
   tags: action_start
 
 - name: enable cluster routing
-  shell: "curl -H \"Content-Type: application/json\" -XPUT {{es_host}}:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'"
+  shell: "curl -H \"Content-Type: application/json\" -XPUT {{ es_host }}:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'"
   register: result
   until: result.stdout.find('"acknowledged"') != -1
   retries: 20
@@ -54,7 +55,7 @@
   tags: action_start
 
 - name: wait for cluster to stabilize
-  shell: "curl -s -m 2 {{es_host}}:9200/_cat/health | cut -d ' ' -f 4"
+  shell: "curl -s -m 2 {{ es_host }}:9200/_cat/health | cut -d ' ' -f 4"
   register: result
   until: result.stdout.find("green") != -1
   retries: 200

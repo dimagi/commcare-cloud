@@ -1,4 +1,5 @@
-- assert:
+- name: Assert EFS mount parameters are set
+  assert:
     that:
       - efs_mount_uid != ''
       - efs_mount_gid != ''

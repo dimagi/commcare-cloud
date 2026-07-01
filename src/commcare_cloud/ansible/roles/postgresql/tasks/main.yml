@@ -3,13 +3,13 @@
 
 - name: check if pghashlib installed
   stat:
-    path: "{{postgres_install_dir}}/lib/hashlib.so"
+    path: "{{ postgres_install_dir }}/lib/hashlib.so"
   register: hashlib_stat
   tags: pghashlib
 
 - name: Download pghashlib
   get_url: url=https://github.com/markokr/pghashlib/archive/master.zip dest=/tmp/pghashlib.zip
-  when: hashlib_stat.stat.exists == False
+  when: not hashlib_stat.stat.exists
   tags: pghashlib
 
 - name: Unzip pghashlib
@@ -17,19 +17,19 @@
   args:
      chdir: /tmp
      creates: /tmp/pghashlib-master
-  when: hashlib_stat.stat.exists == False
+  when: not hashlib_stat.stat.exists
   tags: pghashlib
 
 - name: Install pghashlib
   become: yes
-  shell: "PG_CONFIG={{postgres_install_dir}}/bin/pg_config make install"
+  shell: "PG_CONFIG={{ postgres_install_dir }}/bin/pg_config make install"
   args:
     chdir: /tmp/pghashlib-master
-    creates: "{{postgres_install_dir}}/lib/hashlib.so"
+    creates: "{{ postgres_install_dir }}/lib/hashlib.so"
   notify:
     - Run ldconfig
     - Restart postgres
-  when: hashlib_stat.stat.exists == False
+  when: not hashlib_stat.stat.exists
   tags: pghashlib
 
 - name: Setup plproxy
@@ -46,7 +46,7 @@
     ansible_ssh_pipelining: true
   postgresql_ext:
     name: hashlib
-    db: "{{item.name}}"
+    db: "{{ item.name }}"
     port: "{{ postgresql_port }}"
   with_items: "{{ postgresql_dbs.all }}"
   when: item.create and not is_pg_standby and ((item.host == inventory_hostname) or is_monolith|bool)

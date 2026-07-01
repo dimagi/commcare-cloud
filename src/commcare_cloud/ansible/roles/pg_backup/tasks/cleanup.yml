@@ -1,5 +1,6 @@
 ## Cleanup task is mainly to update the script with latest changes and set new cron tasks without removing all backup storages.
-- include_vars: 'roles/pg_backup/defaults/main.yml'
+- name: Load pg_backup defaults
+  include_vars: 'roles/pg_backup/defaults/main.yml'
 
 - name: create backup directory (cleanup)
   become: yes

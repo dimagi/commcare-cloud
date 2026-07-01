@@ -1,4 +1,5 @@
-- set_fact:
+- name: Set git repo destination and deploy key
+  set_fact:
     repo_dest: "{{ [code_source, item.dest|default('')]|reject('eq', '')|join('/') }}"
     deploy_key: "{% if item.deploy_key|default('') %}{{ cchq_home }}/.ssh/{{ item.deploy_key }}{% else %}{% endif %}"
 
