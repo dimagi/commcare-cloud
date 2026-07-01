@@ -115,14 +115,7 @@
     group: root
     mode: 0644
     backup: yes
-  register: aliases
-  tags:
-    - postfix
-
-- name: "RFC 2142 email aliases and forwarding (update)"
-  become: yes
-  command: postalias /etc/aliases
-  when: aliases.changed
+  notify: rebuild alias database
   tags:
     - postfix
 
