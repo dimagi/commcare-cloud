@@ -1735,6 +1735,67 @@ have been made to our actual resources in AWS.
 
 ---
 
+#### ``ec2`` Command
+
+Manage the EC2 instance state (start/stop/describe) of hosts in an AWS environment.
+
+```
+commcare-cloud <env> ec2 [--no-wait] [--unsafe]
+                         {describe,start,stop,stop_and_start} inventory_group [inventory_group ...]
+```
+
+`start` and `stop` show a check-mode preview of the state transitions
+and ask for confirmation before applying; `stop_and_start` asks for
+confirmation directly (a check-mode preview of a full cycle would show
+no net state change); `describe` just runs.
+
+`stop` and `stop_and_start` will eventually stop the services running
+on the hosts gracefully before stopping the EC2 instances. Until that
+is implemented they stop the instances outright, without draining
+services first, so they must be confirmed by passing `--unsafe`.
+
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
+
+##### Example
+
+```
+commcare-cloud <env> ec2 describe webworkers
+commcare-cloud <env> ec2 stop celery:pillowtop --unsafe
+commcare-cloud <env> ec2 stop_and_start 10.201.11.133 10.201.11.134 --unsafe
+```
+
+##### Positional Arguments
+
+###### `{describe,start,stop,stop_and_start}`
+
+What to do to the matched instances.
+`describe` reports their current state without changing anything;
+`start`/`stop` are idempotent;
+`stop_and_start` stops the instances (if running) and starts them again.
+
+###### `inventory_group`
+
+One or more inventory items to act on. Each can be a group
+(e.g. `webworkers`), an individual host name or private IP
+(e.g. `10.201.11.133`), or any ansible host pattern
+(e.g. `celery:pillowtop`).
+
+##### Options
+
+###### `--no-wait`
+
+Return as soon as the state change is issued instead of waiting
+for instances to reach their final state.
+
+###### `--unsafe`
+
+Required to run `stop` and `stop_and_start`, which currently stop
+the EC2 instances without gracefully stopping the services running
+on them first. Has no effect on `describe` or `start`.
+
+---
+
 #### ``forward-port`` Command
 
 Port forward to access a remote admin console
