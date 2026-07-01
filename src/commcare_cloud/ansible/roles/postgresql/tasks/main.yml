@@ -13,10 +13,11 @@
   tags: pghashlib
 
 - name: Unzip pghashlib
-  command: unzip pghashlib.zip
-  args:
-     chdir: /tmp
-     creates: /tmp/pghashlib-master
+  unarchive:
+    src: /tmp/pghashlib.zip
+    dest: /tmp
+    remote_src: yes
+    creates: /tmp/pghashlib-master
   when: not hashlib_stat.stat.exists
   tags: pghashlib
 
