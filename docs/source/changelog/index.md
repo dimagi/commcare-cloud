@@ -7,6 +7,15 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-07-01** [Set explicit file permissions across roles](0100-explicit-file-permissions.md)
+Many `file`/`copy`/`template` tasks across the ansible roles did not set an
+explicit `mode`, so the resulting permissions depended on the umask of the
+machine running Ansible rather than being pinned by the playbook. This
+change sets an explicit mode (and, for a few sensitive files, `owner`/
+`group`) on every affected task.
+
+
+---
 #### **2026-06-22** [Prometheus/Grafana stack installer removed](0099-remove-prometheus-installer.md)
 `commcare-cloud` no longer includes a playbook to install the
 Prometheus/Grafana monitoring stack. Operators who want Prometheus can stand
