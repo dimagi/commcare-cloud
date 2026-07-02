@@ -73,6 +73,7 @@
       path_to_script: "{{ sql_file_path.dest }}"
     register: query_result
     loop: "{{ pg_repack.get(inventory_hostname, []) }}"
+    when: not ansible_check_mode
 
 - name: Create pg_repack script
   become: yes
