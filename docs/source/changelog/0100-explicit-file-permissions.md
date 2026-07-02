@@ -43,7 +43,7 @@ These changes will take effect the next time the relevant role/playbook runs.
 For the standard CommCare HQ stack, pull the latest `commcare-cloud` and run:
 
 ```bash
-cchq <env> deploy-stack --tags=commcarehq,services,ssh,supervisor,postgresql,pgbouncer,proxy,couchdb2,elasticsearch,kafka,zookeeper,http_proxy,kinesis-agent,nginx,pg_repack,datadog,cloudwatch_logs,audit,logging,lpar2rrd
+cchq <env> deploy-stack --tags=commcarehq,services,ssh,supervisor,postgresql,pgbouncer,proxy,couchdb2,elasticsearch,kafka,zookeeper,http_proxy,kinesis-agent,nginx,pg_repack,datadog,cloudwatch_logs,audit,logging,lpar2rrd --skip-tags=es_restart
 ```
 
 Alternately, you may prefer to run deploy-stack multiple times with smaller
@@ -52,8 +52,8 @@ tag sub-groups. For example:
 ```bash
 cchq <env> deploy-stack --tags=commcarehq,services,ssh,supervisor,datadog,audit,logging
 cchq <env> deploy-stack --tags=postgresql,pgbouncer,pg_repack
-cchq <env> deploy-stack --tags=couchdb2,elasticsearch,kafka,zookeeper,proxy
-cchq <env> deploy-stack --tags=http_proxy,nginx,kinesis-agent,cloudwatch_logs,lpar2rrd
+cchq <env> deploy-stack --tags=couchdb2,elasticsearch,kafka,zookeeper --skip-tags=es_restart
+cchq <env> deploy-stack --tags=proxy,http_proxy,nginx,kinesis-agent,cloudwatch_logs,lpar2rrd
 ```
 
 It is not essential to specify tags when running `deploy-stack`; they are
@@ -62,6 +62,11 @@ provided to reduce run time while ensuring all relevant tasks are run.
 This covers the common/ssh/datadog/lpar2rrd roles, postgresql/pgbouncer,
 elasticsearch, kafka/zookeeper, commcarehq, couchdb2 (including its
 keepalived/haproxy setup), nginx, http_proxy, cloudwatch_logs, and pg_repack.
+
+Elasticsearch note: `--skip-tags=es_restart` prevents a full cluster restart
+which could cause downtime and may require cluster maintenance to reallocate
+replica shards. Use a safe (one node at a time) restart procedure if your ES
+nodes need to be restarted after `deploy-stack` has completed.
 
 If your environment self-hosts Sentry (i.e. has hosts in the `sentry`
 inventory group), also run:
