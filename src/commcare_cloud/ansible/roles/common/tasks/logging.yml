@@ -20,12 +20,12 @@
     name: ansible-logrotate
   when: "logrotate_scripts | length > 0"
 
-- name: Configure logrotate size limit in rsyslog (replacing weekly)
+- name: Configure logrotate size limit in rsyslog (replacing weekly)  # noqa: no-tabs
   lineinfile:
     path: /etc/logrotate.d/rsyslog
-    regexp: '^	weekly'
+    regexp: '^\tweekly'
     insertbefore: 'missingok'
-    line: '	size 750M'
+    line: "\tsize 750M"  # no-tabs: single quotes here would write literal '\t' in file
     state: present
 
 - name: Configure logrotate timer (hourly instead of daily)

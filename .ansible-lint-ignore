@@ -2,8 +2,6 @@ src/commcare_cloud/ansible/group_vars/all.yml var-naming
 src/commcare_cloud/ansible/roles/aws-efs/roles/shared_dir/tasks/setup_client.yml load-failure
 src/commcare_cloud/ansible/roles/bootstrap-users/defaults/main.yml var-naming
 src/commcare_cloud/ansible/roles/bootstrap-users/tasks/main.yml risky-shell-pipe
-src/commcare_cloud/ansible/roles/common/tasks/logging.yml no-tabs
-src/commcare_cloud/ansible/roles/common/tasks/main.yml no-tabs
 src/commcare_cloud/ansible/roles/ecryptfs/tasks/main.yml command-instead-of-module
 src/commcare_cloud/ansible/roles/ecryptfs/tasks/main.yml risky-shell-pipe
 src/commcare_cloud/ansible/roles/ecryptfs/tasks/tmp.yml command-instead-of-module
