@@ -310,6 +310,14 @@ Acceptance: CLI imports succeed on each target core; verified at 12→14 (#30).
 The core/package upgrade. Ansible 10 is the highest reachable on Python 3.10.
 Raise the `ansible` pin and `min_ansible_version`; re-pin collections to
 core-2.17-compatible versions.
+This is also the first core (2.12+) that supports ansible-lint 6.2+: bump
+ansible-lint here, drop the `ansible_lint.py` ignore-file backport (now native),
+and regenerate the baseline — rule IDs gain sub-tags (`var-naming[pattern]`) and
+new rules (`fqcn`, `name[casing]`) surface. Revisit the two `.ansible-lint-ignore`
+survivors: `var-naming` can move to per-var inline `# noqa` (6.x reports the real
+vars-file line; 5.4.0 defaults to line 1 and can't be noqa'd), and `load-failure`
+either resolves via 6.x's cross-role import handling or stays (no loadable line to
+annotate).
 Prior art: Dependabot [#6895](https://github.com/dimagi/commcare-cloud/pull/6895)
 (ansible 4→10.7.0) and [#6444](https://github.com/dimagi/commcare-cloud/pull/6444)
 (ansible-core 2.11→2.17.7) — **close both here** (they only touch the pin, so
