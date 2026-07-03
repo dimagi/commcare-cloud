@@ -19,7 +19,10 @@
 
 - name: Run NodeSource install script
   ansible.builtin.shell: |
+    set -o pipefail
     curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
+  args:
+    executable: /bin/bash
 
 - name: Install nodejs packages
   apt: name="nodejs" state=present
