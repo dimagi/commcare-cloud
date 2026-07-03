@@ -1,3 +1,7 @@
+# NO_WWW_SITE_HOST / J2ME_SITE_HOST are UPPER_CASE by convention: a public
+# per-environment config interface read by the nginx templates, so they can't be
+# renamed. var-naming is kept in .ansible-lint-ignore (it can't be suppressed
+# inline in a vars file).
 J2ME_SITE_HOST: null
 NO_WWW_SITE_HOST: null
 tableau_server: null
