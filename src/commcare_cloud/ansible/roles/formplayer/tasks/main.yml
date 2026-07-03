@@ -1,4 +1,6 @@
 - name: Make sure the log directory exists
+  # load-failure (see .ansible-lint-ignore): This cross-role import resolves
+  # relative to the playbook dir; ansible-lint resolves relative to the role root.
   import_tasks: roles/commcarehq/tasks/www_log_dir.yml
 
 - name: Install formplayer packages
