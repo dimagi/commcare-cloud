@@ -53,7 +53,8 @@
 - name: Install datadog agent
   apt:
     name: datadog-agent
-    state: latest
+    # datadog-agent is intentionally kept current for security fixes
+    state: latest  # noqa: package-latest
     cache_valid_time: 7200
     install_recommends: no
 

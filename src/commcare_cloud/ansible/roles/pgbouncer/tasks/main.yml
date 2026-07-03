@@ -4,7 +4,8 @@
   apt:
     name: pgbouncer
     update_cache: yes
-    state: latest
+    # kept latest to satisfy the pgbouncer_min_version check below
+    state: latest  # noqa: package-latest
 
 - name: pgbouncer gather package facts
   package_facts:

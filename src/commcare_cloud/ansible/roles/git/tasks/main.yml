@@ -11,7 +11,8 @@
   apt:
     name:
       - git
-    state: latest
+    # kept latest to satisfy the git >= 2.49.0 assertion below
+    state: latest  # noqa: package-latest
   tags:
     - install_git
 
