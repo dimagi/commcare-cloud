@@ -15,8 +15,6 @@ src/commcare_cloud/ansible/roles/formplayer/roles/commcarehq/tasks/www_log_dir.y
 src/commcare_cloud/ansible/roles/git/tasks/main.yml no-handler
 src/commcare_cloud/ansible/roles/git/tasks/main.yml package-latest
 src/commcare_cloud/ansible/roles/kafka/tasks/main.yml no-handler
-src/commcare_cloud/ansible/roles/keepalived/tasks/main.yml package-latest
-src/commcare_cloud/ansible/roles/lpar2rrd/tasks/install_master.yml package-latest
 src/commcare_cloud/ansible/roles/lvm/tasks/main.yml risky-shell-pipe
 src/commcare_cloud/ansible/roles/nginx/defaults/main.yml var-naming
 src/commcare_cloud/ansible/roles/nginx/roles/commcarehq/tasks/www_log_dir.yml load-failure
