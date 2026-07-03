@@ -3,7 +3,8 @@
   become: yes
   apt: name=lvm2 state=present
 
-- name: Check for valid partition table on block storage device
+- name: Check for valid partition table on block storage device  # noqa: risky-shell-pipe
+  # risky-shell-pipe: partition creation must not fail on a grep no-match
   become: yes
   shell: fdisk -l 2>&1 | grep 'Disk {{ item }} doesn.t contain a valid partition table'
   register: partition_check
@@ -13,7 +14,8 @@
   check_mode: no
   with_items: "{{ devices }}"
 
-- name: Create partition on block storage volume
+- name: Create partition on block storage volume  # noqa: risky-shell-pipe
+  # risky-shell-pipe: pipe required to send commands to fdisk
   become: yes
   shell: echo -e "o\nn\np\n1\n\n\nt\n8e\nw" | fdisk {{ item.item }}
   # http://superuser.com/a/739586/86694

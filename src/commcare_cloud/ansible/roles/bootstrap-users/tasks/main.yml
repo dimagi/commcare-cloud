@@ -166,7 +166,8 @@
 - import_tasks: remove_users.yml
   when: dev_users.absent
 
-- name: check users password valid time
+- name: check users password valid time  # noqa: risky-shell-pipe
+  # risky-shell-pipe: pipe masks getent exit code, intentionally tolerates missing user
   shell: getent shadow "{{ item }}" | cut -d':' -f5
   register: users_pw_valid
   loop: "{{ dev_users.present }} + ['ansible', '{{ cchq_user }}']"

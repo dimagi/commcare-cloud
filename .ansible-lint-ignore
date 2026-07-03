@@ -1,14 +1,10 @@
 src/commcare_cloud/ansible/group_vars/all.yml var-naming
 src/commcare_cloud/ansible/roles/aws-efs/roles/shared_dir/tasks/setup_client.yml load-failure
 src/commcare_cloud/ansible/roles/bootstrap-users/defaults/main.yml var-naming
-src/commcare_cloud/ansible/roles/bootstrap-users/tasks/main.yml risky-shell-pipe
-src/commcare_cloud/ansible/roles/ecryptfs/tasks/main.yml risky-shell-pipe
 src/commcare_cloud/ansible/roles/elasticsearch/tasks/main.yml no-handler
-src/commcare_cloud/ansible/roles/elasticsearch/tasks/rolling_restart.yml risky-shell-pipe
 src/commcare_cloud/ansible/roles/formplayer/roles/commcarehq/tasks/www_log_dir.yml load-failure
 src/commcare_cloud/ansible/roles/git/tasks/main.yml no-handler
 src/commcare_cloud/ansible/roles/kafka/tasks/main.yml no-handler
-src/commcare_cloud/ansible/roles/lvm/tasks/main.yml risky-shell-pipe
 src/commcare_cloud/ansible/roles/nginx/defaults/main.yml var-naming
 src/commcare_cloud/ansible/roles/nginx/roles/commcarehq/tasks/www_log_dir.yml load-failure
 src/commcare_cloud/ansible/roles/postgresql_base/tasks/main.yml no-handler
