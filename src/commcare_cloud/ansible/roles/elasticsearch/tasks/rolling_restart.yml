@@ -1,5 +1,6 @@
 # http://engineering.datarank.com/2015/03/14/performing-rolling-restarts-of-elasticsearch-using-ansible.html
-- name: disable cluster routing
+- name: disable cluster routing  # noqa: command-instead-of-module
+  # command-instead-of-module: conditions rely on curl's stdout, which the `uri` module doesn't expose
   shell: "curl -H \"Content-Type: application/json\" -XPUT {{ inventory_hostname }}:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"none\" }}'"
   register: result
   until: result.stdout.find('"acknowledged"') != -1
@@ -37,7 +38,8 @@
   debug: msg="Sometimes we try to start the node too soon. If hung start node manually"
   tags: action_start
 
-- name: wait for node to restart
+- name: wait for node to restart  # noqa: command-instead-of-module
+  # command-instead-of-module: conditions rely on curl's stdout, which the `uri` module doesn't expose
   shell: "curl -I -s -m 2 http://{{ es_host }}:9200 | head -n 1"
   register: result
   until: result.stdout == "HTTP/1.1 200 OK"
@@ -45,7 +47,8 @@
   delay: 3
   tags: action_start
 
-- name: enable cluster routing
+- name: enable cluster routing  # noqa: command-instead-of-module
+  # command-instead-of-module: conditions rely on curl's stdout, which the `uri` module doesn't expose
   shell: "curl -H \"Content-Type: application/json\" -XPUT {{ es_host }}:9200/_cluster/settings -d '{\"transient\" : {\"cluster.routing.allocation.enable\" : \"all\" }}'"
   register: result
   until: result.stdout.find('"acknowledged"') != -1
@@ -54,7 +57,8 @@
   changed_when: result.stdout.find('"acknowledged":true') != -1
   tags: action_start
 
-- name: wait for cluster to stabilize
+- name: wait for cluster to stabilize  # noqa: command-instead-of-module
+  # command-instead-of-module: conditions rely on curl's stdout, which the `uri` module doesn't expose
   shell: "curl -s -m 2 {{ es_host }}:9200/_cat/health | cut -d ' ' -f 4"
   register: result
   until: result.stdout.find("green") != -1
