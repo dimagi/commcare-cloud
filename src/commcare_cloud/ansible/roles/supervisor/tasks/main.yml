@@ -44,14 +44,16 @@
     mode: '0644'
   register: service_conf
 
-- name: stop supervisor to pick up configuration changes
+- name: stop supervisor to pick up configuration changes  # noqa: no-handler
+  # no-handler: part of an ordered stop/pkill/start sequence, not a handler
   service: name=supervisord state=stopped
   register: result
   failed_when: result.get("rc", -1) > 1
   changed_when: result.get("rc") == 0
   when: service_conf.changed
 
-- name: pkill supervisord if run by cchq
+- name: pkill supervisord if run by cchq  # noqa: no-handler
+  # no-handler: part of an ordered stop/pkill/start sequence, not a handler
   command: pkill -9 -U cchq supervisord
   # if it returns 1 with no output, that just means no process to kill
   register: result

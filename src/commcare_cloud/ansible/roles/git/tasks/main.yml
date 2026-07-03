@@ -2,7 +2,8 @@
   apt_repository: repo='ppa:git-core/ppa' state=present
   register: add_git_repo
 
-- name: Update package list
+- name: Update package list  # noqa: no-handler
+  # no-handler: apt cache must update before the install task below; handler would run too late
   apt: update_cache=yes
   when: add_git_repo is changed
 

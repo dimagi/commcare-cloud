@@ -8,7 +8,8 @@
 - name: Add PosgreSQL apt key
   apt_key: url={{ postgresql_apt_key_url }} state=present
 
-- name: Update package list
+- name: Update package list  # noqa: no-handler
+  # no-handler: apt cache must update before the install task below; handler would run too late
   apt: update_cache=yes
   when: add_postgresql_repo is changed
 

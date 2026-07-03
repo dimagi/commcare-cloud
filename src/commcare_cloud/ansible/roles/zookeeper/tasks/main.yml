@@ -94,7 +94,8 @@
   tags: after-reboot
 
 # Restarting a service right after it's been started will cause an unnecessary/non-idempotent restart
-- name: Restart Zookeeper service
+- name: Restart Zookeeper service  # noqa: no-handler
+  # no-handler: restart only if the start above did not already (re)start it
   service: name=zookeeper-server enabled=yes state=restarted
   when: not zookeeper_service_started.changed
   tags: zookeeper_cluster_conf

@@ -127,7 +127,8 @@
   tags:
     - es_conf
 
-- name: Reload Systemd Daemon if Elasticsearch config changed and Restart ElasticSearch.
+- name: Reload Systemd Daemon if Elasticsearch config changed and Restart ElasticSearch.  # noqa: no-handler
+  # no-handler: restart is ordered within this play, not a deferred handler
   become: yes
   systemd:
     state: restarted
@@ -137,7 +138,8 @@
   tags:
     - es_conf
 
-- name: Remind to restart the cluster after an ES conf change
+- name: Remind to restart the cluster after an ES conf change  # noqa: no-handler
+  # no-handler: debug reminder tied to the conf-changed result
   debug: msg="If you're just updating the ES conf then you sill need to restart the cluster. Use  the 'es_rolling_restart' playbook."
   when: copy_elasticsearch_conf_result.changed
 
@@ -169,7 +171,8 @@
   failed_when: (result.state is defined) and (result.state != "started")
   tags: after-reboot
 
-- name: Restart Elasticsearch
+- name: Restart Elasticsearch  # noqa: no-handler
+  # no-handler: restart is ordered within this play, not a deferred handler
   become: yes
   service: name=elasticsearch state=restarted
   when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_logging_result.changed
