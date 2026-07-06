@@ -10,6 +10,7 @@
   file:
     path: "{{ snuba_virtualenv_path }}"
     state: directory
+    mode: '0755'
 
 - name: Create virtual env for Snuba
   pip:
@@ -46,6 +47,7 @@
   template:
     src: snuba_service.conf.j2
     dest: "/etc/supervisor/conf.d/snuba_service.conf"
+    mode: '0644'
   notify: 
     - restart supervisor
     - restart snuba

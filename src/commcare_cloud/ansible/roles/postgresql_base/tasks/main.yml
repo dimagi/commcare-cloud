@@ -90,6 +90,7 @@
     state: directory
     owner: postgres
     group: postgres
+    mode: '0755'
 
 - name: assert replication slot config correct
   assert: { that: "replication_slot is not defined or replication_slot in hostvars[hot_standby_master]['postgresql_replication_slots']"}
@@ -101,6 +102,7 @@
     state: directory
     owner: postgres
     group: postgres
+    mode: '0750'
   when: postgresql_enable_archive|bool and not is_pg_standby|bool
 
 - name: Create clean WAL archive cron
@@ -114,12 +116,12 @@
     state: "{{ 'present' if postgresql_enable_archive and not is_pg_standby and not disable_archive_cleanup_cron else 'absent' }}"
 
 - name: PostgreSQL app configuration
-  template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
+  template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres" mode=0644
   tags: configure
   notify: Restart postgres
 
 - name: PostgreSQL access configuration
-  template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner="postgres"
+  template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner=postgres group=postgres mode=0640
   tags:
     - configure
     - pg_hba
@@ -182,6 +184,9 @@
   template:
     src: recovery.conf.j2
     dest: "{{ postgresql_recovery_conf }}"
+    owner: postgres
+    group: postgres
+    mode: '0600'
   when: is_pg_standby and recovery_file.stat.exists
   tags:
     - postgres_users

@@ -25,11 +25,15 @@
   template:
     src: pgbouncer-classic.defaults.j2
     dest: /etc/default/pgbouncer
+    mode: '0644'
 
 - name: pgbouncer configuration (classic)
   template:
     src: pgbouncer-classic.ini.j2
     dest: /etc/pgbouncer/pgbouncer.ini
+    owner: postgres
+    group: postgres
+    mode: '0640'
 
 - name: pgbouncer gather state
   service_facts:
@@ -40,6 +44,7 @@
   template:
     src: pgbouncer-multiprocess@.service.j2
     dest: /etc/systemd/system/pgbouncer-multiprocess@.service
+    mode: '0644'
   notify:
    - Reload systemd
    - Restart pgbouncer
@@ -100,6 +105,7 @@
   template:
     src: tmpfiles.postgresql-pgbouncer.conf.j2
     dest: /etc/tmpfiles.d/postgresql-pgbouncer.conf
+    mode: '0644'
   tags:
     - configure
 
@@ -107,6 +113,9 @@
   template:
     src: pgbouncer.ini.j2
     dest: "{{ pgbouncer_ini }}"
+    owner: postgres
+    group: postgres
+    mode: '0640'
   notify:
     - Start and enable pgbouncer
     - Reload pgbouncer
@@ -118,6 +127,9 @@
   template:
     src: pgbouncer.users.j2
     dest: "{{ pgbouncer_users }}"
+    owner: postgres
+    group: postgres
+    mode: '0640'
   notify:
     - Start and enable pgbouncer
     - Reload pgbouncer

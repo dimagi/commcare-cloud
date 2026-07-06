@@ -16,6 +16,7 @@
     state: directory
     owner: dd-agent
     group: dd-agent
+    mode: '0755'
   when: item is defined and item.enabled
   with_items: "{{ datadog_integrations }}"
 

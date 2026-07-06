@@ -60,6 +60,7 @@
     copy:
       src: schema_permissions.sql
       dest: /tmp/schema_permissions.sql
+      mode: '0644'
     register: sql_file_path
 
   - name: Run queries from SQL script
@@ -72,6 +73,7 @@
       path_to_script: "{{ sql_file_path.dest }}"
     register: query_result
     loop: "{{ pg_repack.get(inventory_hostname, []) }}"
+    when: not ansible_check_mode
 
 - name: Create pg_repack script
   become: yes

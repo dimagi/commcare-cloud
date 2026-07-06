@@ -43,6 +43,7 @@
     dest: /etc/apt/keyrings/
     owner: root
     group: root
+    mode: '0644'
 
 - name: Add new datadog apt repository
   apt_repository:
@@ -75,6 +76,7 @@
     dest: /etc/datadog-agent/datadog.yaml
     owner: dd-agent
     group: dd-agent
+    mode: '0640'
   notify: restart datadog
 
 - name: Make sure datadog agent is started

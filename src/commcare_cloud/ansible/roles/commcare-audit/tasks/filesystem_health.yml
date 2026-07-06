@@ -24,6 +24,7 @@
     path: "{{ audit_directory }}/filesystems_health.txt"
     line: "{{ item }}"
     create: true
+    mode: '0644'
   with_items: "{{ successfull_filesystem_checks }}"
   delegate_to: localhost
   become_user: "{{ control_user }}"

@@ -47,6 +47,11 @@ couchdb_version: 2.3.1
 couchdb2_port: 15984
 couchdb2_local_port: "{{ 15986 if couchdb_version is version('3.0.0', '<') else couchdb2_port }}"
 couchdb2_proxy_port: "{{ 35984 if couchdb_use_haproxy else 25984 }}"
+
+# Used by TASK [andrewrothstein.couchdb-cluster-apt : configurate....]
+# couchdb_admins value is a dict
+couchdb_admins: "{{ {COUCH_USERNAME: COUCH_PASSWORD} }}"
+
 # mostly part of couchdb setup, but also needed outside of those roles by e.g. deploy_cloudwatch_logs.yml
 # which needs this variable to construct its logic on all machines, not just couchdb machines.
 couchdb_dir: "/opt/couchdb"

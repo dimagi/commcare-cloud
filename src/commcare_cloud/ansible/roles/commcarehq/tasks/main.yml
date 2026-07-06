@@ -28,6 +28,15 @@
     owner: cchq
     group: cchq
 
+- name: Ensure cchq ~/.ssh exists with correct permissions
+  become: yes
+  file:
+    path: "{{ cchq_home }}/.ssh"
+    state: directory
+    owner: cchq
+    group: cchq
+    mode: '0700'
+
 - name: add deploy keys
   become: yes
   copy:
@@ -45,6 +54,9 @@
   blockinfile:
     dest: "{{ cchq_home }}/.ssh/config"
     create: yes
+    owner: cchq
+    group: cchq
+    mode: '0600'
     block: |
       Host github.com
         Hostname ssh.github.com
