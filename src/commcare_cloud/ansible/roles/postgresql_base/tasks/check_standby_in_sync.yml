@@ -2,14 +2,20 @@
 - name: Get primary checkpoint location
   delegate_to: "{{ hot_standby_master }}"
   shell: |
+    set -o pipefail
     /usr/lib/postgresql/{{ old_version }}/bin/pg_controldata -D /opt/data/postgresql/{{ old_version }}/main | grep 'Latest checkpoint location' | awk '{ print $4 }'
+  args:
+    executable: /bin/bash
   register: primary_checkpoint
   check_mode: no
   when: retry_count == 0 or not checkpoints_match
 
 - name: Get standby checkpoint location
   shell: |
+    set -o pipefail
     /usr/lib/postgresql/{{ old_version }}/bin/pg_controldata -D /opt/data/postgresql/{{ old_version }}/main | grep 'Latest checkpoint location' | awk '{ print $4 }'
+  args:
+    executable: /bin/bash
   register: standby_checkpoint
   check_mode: no
   when: retry_count == 0 or not checkpoints_match

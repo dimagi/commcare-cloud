@@ -4,7 +4,7 @@
     state: present 
 
 - name: install apache2
-  apt: name=apache2 update_cache=yes state=latest
+  apt: name=apache2 update_cache=yes state=present
 
 - name: enabled mod_cgi
   apache2_module: name=cgid state=present

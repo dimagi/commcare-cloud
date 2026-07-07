@@ -1,6 +1,6 @@
 ---
 - name: Get lsblk output in JSON format
-  shell: "lsblk -l --json"
+  command: "lsblk -l --json"
   register: lsblk_output
 
 - name: Filter JSON output for non-null mountpoints
@@ -9,7 +9,7 @@
     | selectattr('mountpoint', '!=', None) | map(attribute='name') }}"
 
 - name: Get filesystem health
-  shell: "sudo tune2fs -l /dev/{{ item }}"
+  command: "sudo tune2fs -l /dev/{{ item }}"
   with_items: "{{ filtered_mountpoints }}"
   register: filesystems_health
   ignore_errors: true

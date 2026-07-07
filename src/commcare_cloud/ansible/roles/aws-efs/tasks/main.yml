@@ -7,6 +7,8 @@
     fail_msg: "efs_mount_uid={{ efs_mount_uid }} efs_mount_gid={{ efs_mount_gid }} efs_mount_dir={{ efs_mount_dir }}"
     success_msg: "efs_mount_uid={{ efs_mount_uid }} efs_mount_gid={{ efs_mount_gid }} efs_mount_dir={{ efs_mount_dir }}"
 
+# load-failure (see .ansible-lint-ignore): This cross-role import resolves
+# relative to the playbook dir; ansible-lint resolves relative to the role root.
 - import_tasks: roles/shared_dir/tasks/setup_client.yml
   vars:
     shared_drive_enabled: yes

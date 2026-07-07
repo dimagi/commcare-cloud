@@ -1,7 +1,7 @@
 ---
 # This role installs and sets up keepalived
 - name: Install keepalived 
-  apt: name=keepalived state=latest
+  apt: name=keepalived state=present
   tags: keepalived
   notify: restart keepalived
 

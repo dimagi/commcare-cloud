@@ -54,7 +54,7 @@
     owner: "{{ item.user }}"
     group: "{{ item.user }}"
     mode: '0644'
-  ignore_errors: True
+  failed_when: false
   with_items:
     - {'user': 'ansible', 'home': '/home/ansible' }
     - {'user': 'root', 'home': '/root' }
@@ -65,7 +65,7 @@
   become_user: "{{ item.user }}"
   vars:
     ansible_ssh_pipelining: true
-  ignore_errors: True
+  failed_when: false
   with_items:
     - {'user': 'ansible', 'var': 'proxy', 'protocol': 'http'}
     - {'user': 'ansible', 'var': 'http-proxy', 'protocol': 'http'}
@@ -78,12 +78,15 @@
     - {'user': '{{ cchq_user }}', 'var': 'https-proxy', 'protocol': 'http'}
 
 - name: GIT proxy
-  command: 'git config --global {{ item.var }} {{ item.protocol }}://{{ http_proxy_address }}:{{ http_proxy_port }}/'
+  community.general.git_config:
+    name: "{{ item.var }}"
+    value: "{{ item.protocol }}://{{ http_proxy_address }}:{{ http_proxy_port }}/"
+    scope: global
   become: yes
   become_user: "{{ item.user }}"
   vars:
     ansible_ssh_pipelining: true
-  ignore_errors: True
+  failed_when: false
   with_items:
     - {'user': 'ansible', 'var': 'http.proxy', 'protocol': 'http'}
     - {'user': 'ansible', 'var': 'https.proxy', 'protocol': 'http'}
@@ -93,12 +96,15 @@
     - {'user': '{{ cchq_user }}', 'var': 'https.proxy', 'protocol': 'http'}
 
 - name: Github https insteadOf ssh
-  command: 'git config --global url."{{ item.var }}".insteadOf {{ item.insteadof }}'
+  community.general.git_config:
+    name: 'url.{{ item.var }}.insteadOf'
+    value: "{{ item.insteadof }}"
+    scope: global
   become: yes
   become_user: "{{ item.user }}"
   vars:
     ansible_ssh_pipelining: true
-  ignore_errors: True
+  failed_when: false
   with_items:
     - {'user': 'ansible', 'var': 'https://github.com/', 'insteadof': 'git@github.com:' }
     - {'user': 'ansible', 'var': 'https://', 'insteadof': 'git://' }

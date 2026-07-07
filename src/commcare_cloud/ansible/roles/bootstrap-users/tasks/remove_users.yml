@@ -13,14 +13,14 @@
     users_to_remove: "{{ user_check.results|selectattr('msg', 'undefined')|map(attribute='item')|list }}"
 
 - name: Get running processes
-  shell: "ps -o pid= -u \"{{ users_to_remove|join(',') }}\""
+  command: "ps -o pid= -u \"{{ users_to_remove|join(',') }}\""
   register: running_processes
   changed_when: no
   failed_when: no
 
 - name: Kill running processes
   become: yes
-  shell: "kill {{ item }}"
+  command: "kill {{ item }}"
   with_items: "{{ running_processes.stdout_lines|default([]) }}"
 
 - name: Wait for killed processes to exit
@@ -34,7 +34,7 @@
 
 - name: Force kill stuck processes
   become: yes
-  shell: "kill -9 {{ item }}"
+  command: "kill -9 {{ item }}"
   with_items: "{{ killed_processes.results|default([]) | select('failed') | map(attribute='item') | list }}"
 
 - name: Remove users of former devs

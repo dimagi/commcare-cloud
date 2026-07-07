@@ -89,9 +89,10 @@
   tags:
     - etc_hosts
 
-- name: "Add host file"
+- name: "Add host file"  # noqa: no-tabs
   lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ item }}" state=present
   with_items:
+    # no-tabs: single-quotes here would write iteral '\t' and break lineinfile idempotency
     - "{{ lookup('dig', inventory_hostname, wantlist=True)[0] }}\t\t{{ inventory_hostname }}"
   tags:
     - etc_hosts
@@ -115,14 +116,7 @@
     group: root
     mode: 0644
     backup: yes
-  register: aliases
-  tags:
-    - postfix
-
-- name: "RFC 2142 email aliases and forwarding (update)"
-  become: yes
-  command: postalias /etc/aliases
-  when: aliases.changed
+  notify: rebuild alias database
   tags:
     - postfix
 

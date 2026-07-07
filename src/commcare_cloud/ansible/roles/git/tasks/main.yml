@@ -2,7 +2,8 @@
   apt_repository: repo='ppa:git-core/ppa' state=present
   register: add_git_repo
 
-- name: Update package list
+- name: Update package list  # noqa: no-handler
+  # no-handler: apt cache must update before the install task below; handler would run too late
   apt: update_cache=yes
   when: add_git_repo is changed
 
@@ -11,12 +12,14 @@
   apt:
     name:
       - git
-    state: latest
+    # kept latest to satisfy the git >= 2.49.0 assertion below
+    state: latest  # noqa: package-latest
   tags:
     - install_git
 
 - name: Check installed git version
-  command: git --version
+  # no module equivalent for querying the installed git version
+  command: git --version  # noqa: command-instead-of-module
   register: git_version_check
   changed_when: false
   check_mode: false

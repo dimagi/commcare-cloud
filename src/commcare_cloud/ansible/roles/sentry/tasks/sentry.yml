@@ -14,7 +14,7 @@
     createhome=yes
 
 - name: clear users password valid time
-  shell: chage -M -1 sentry
+  command: chage -M -1 sentry
 
 - name: Create virtualenv and config directory
   file:
@@ -64,7 +64,9 @@
     port: "{{ sentry_dbport | default('5432') }}"
 
 - name: sentry DB migration
-  shell: "SENTRY_CONF={{ sentry_app_config }} {{ sentry_virtualenv_path }}/bin/sentry upgrade --noinput"
+  command: "{{ sentry_virtualenv_path }}/bin/sentry upgrade --noinput"
+  environment:
+    SENTRY_CONF: "{{ sentry_app_config }}"
   notify: restart sentry
 
 - name: Clean Sentry Database Cron

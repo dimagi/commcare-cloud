@@ -4,7 +4,7 @@
   block:
     
   - name: Check if cloudwatch-agent-ctl exists
-    shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a status
+    command: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a status
     become: yes
     register: ctl_status
     failed_when: false
@@ -25,7 +25,7 @@
     notify: Reload cloudwatch agent
 
   - name: Ensure cloudwatch agent enabled
-    shell: /bin/true
+    command: /bin/true
     notify: Start cloudwatch agent
     when: '"\"status\": \"running\"" not in ctl_status.stdout'
 

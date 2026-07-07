@@ -18,5 +18,6 @@
     name:
       - pip  # Creates/updates /usr/local/bin/pip
       - setuptools
-    state: latest
+    # deliberately upgrade pip & setuptools to the latest
+    state: latest  # noqa: package-latest
     executable: pip3  # Use /usr/bin/pip3 this time only

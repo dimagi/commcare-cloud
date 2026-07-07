@@ -21,7 +21,7 @@
   block:
 
     - name: Install from script
-      shell:
+      command:
         cmd: "./setup --install"
         chdir: "{{ temp_dir.path }}"
       environment:

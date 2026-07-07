@@ -26,5 +26,5 @@
   become_user: postgres
   vars:
     ansible_ssh_pipelining: true
-  shell: "{{ postgres_install_dir }}/bin/psql -U postgres -p {{ postgresql_port }} {{ item.name }} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to \\\"{{ item.user }}\\\"\""
+  command: "{{ postgres_install_dir }}/bin/psql -U postgres -p {{ postgresql_port }} {{ item.name }} -c \"GRANT USAGE on FOREIGN DATA WRAPPER plproxy to \\\"{{ item.user }}\\\"\""
   when: postgresql_dbs.form_processing and item.host == inventory_hostname

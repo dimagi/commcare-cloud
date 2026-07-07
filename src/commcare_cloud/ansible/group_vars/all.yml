@@ -121,6 +121,10 @@ new_domain_email: inquiries@example.com
 solutions_aes_email: null
 show_maintenance_updates_on_deploy: true
 
+# These UPPER_CASE names are a public per-environment config interface:
+# deployments set them and templates (localsettings.py.j2, ...) read them, so
+# renaming to lowercase would break existing deployments. var-naming for this
+# file is kept in .ansible-lint-ignore (it can't be suppressed inline in a vars file).
 ALTERNATE_HOSTS: []
 REDIS_BROKER_DB: '0'
 REDIS_BROKER_PORT: '6379'

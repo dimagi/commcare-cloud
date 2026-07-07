@@ -35,7 +35,9 @@
 
   - name: Install pg_repack
     become: yes
-    shell: "PG_CONFIG={{ postgres_install_dir }}/bin/pg_config make install"
+    command: make install
+    environment:
+      PG_CONFIG: "{{ postgres_install_dir }}/bin/pg_config"
     args:
       chdir: "/tmp/pg_repack-{{ pg_repack_version }}"
       creates: "{{ postgres_install_dir }}/bin/pg_repack"

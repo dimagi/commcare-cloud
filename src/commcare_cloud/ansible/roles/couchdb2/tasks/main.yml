@@ -13,7 +13,7 @@
         pkill cpu_sup
         pkill couchjs
         sleep 60
-      ignore_errors: yes
+      failed_when: false
   when: couchdb_version != couchdb_version_current and couchdb_version_current != "none"
 
 - name: Copy extra config
@@ -74,7 +74,7 @@
   notify: restart couchdb2
 
 - name: Start couchdb2
-  shell: /bin/true
+  command: /bin/true
   notify: start couchdb2
   tags:
     - after-reboot
@@ -237,7 +237,7 @@
     - monit
 
 - name: Start monit
-  shell: /bin/true
+  command: /bin/true
   notify: start monit
 
 - name: Flush handlers
