@@ -96,6 +96,8 @@
     scope: global
   become: yes
   become_user: "{{ cchq_user }}"
+  environment:
+    XDG_CONFIG_HOME: ""  # prevents warning that causes task failure
 
 - name: Clone source repositories
   when: not current_localsettings.stat.exists
