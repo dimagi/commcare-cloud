@@ -5,7 +5,7 @@ def authorize_key(config, key_path)
 
     full_key_path = File.expand_path(key_path)
 
-    if File.exists?(full_key_path)
+    if File.exist?(full_key_path)
       config.vm.provision 'file',
         run: 'once',
         source: full_key_path,
