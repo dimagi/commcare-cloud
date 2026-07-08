@@ -10,7 +10,7 @@ require_relative './provisioning/key_authorization'
 
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "ubuntu/bionic64"
+  config.vm.box = "generic/ubuntu2204"
   cchq_proxy_port = ENV.fetch("VAGRANT_CCHQ_PROXY_PORT", 8080)
   config.ssh.insert_key = false
   authorize_key config, '~/.vagrant.d/insecure_private_key'
