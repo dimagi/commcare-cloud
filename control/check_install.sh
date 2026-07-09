@@ -14,10 +14,6 @@ RED='\033[0;31m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# clean up obsolete ~/.commcare-cloud stuff
-[ -d ~/.commcare-cloud/bin ] && { rm ~/.commcare-cloud/bin/*; rmdir ~/.commcare-cloud/bin; }
-[ -h ~/.commcare-cloud/repo ] && rm ~/.commcare-cloud/repo
-
 if [ ! -f "${FAB_CONFIG}" ]
 then
     OLD_FAB_CONFIG="${COMMCARE_CLOUD_REPO}/src/commcare_cloud/fab/config.py"
