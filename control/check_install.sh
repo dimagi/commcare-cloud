@@ -14,22 +14,11 @@ RED='\033[0;31m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-if [ ! -f "${FAB_CONFIG}" ]
-then
-    OLD_FAB_CONFIG="${COMMCARE_CLOUD_REPO}/src/commcare_cloud/fab/config.py"
-    if [ -f "${OLD_FAB_CONFIG}" ]
-    then
-        cp "${OLD_FAB_CONFIG}" "${FAB_CONFIG}"
-        printf "${YELLOW}→ Copied $(realpath ${OLD_FAB_CONFIG}) to ${FAB_CONFIG}\n"
-    fi
-else
-    printf "${GREEN}✓ ${FAB_CONFIG} exists\n"
-fi
-# fab config _still_ doesn't exist, note that we were unsuccessful in inferring it
-if [ ! -f "${FAB_CONFIG}" ]
-then
+if [ ! -f "${FAB_CONFIG}" ]; then
     cp "${FAB_CONFIG_EXAMPLE}" "${FAB_CONFIG}"
     printf "${YELLOW}→ Copied $(realpath ${FAB_CONFIG_EXAMPLE}) to ${FAB_CONFIG}\n"
+else
+    printf "${GREEN}✓ ${FAB_CONFIG} exists\n"
 fi
 
 printf "${NC}"
