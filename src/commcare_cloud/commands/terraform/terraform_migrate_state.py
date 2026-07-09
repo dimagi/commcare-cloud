@@ -121,7 +121,8 @@ class RemoteMigrationStateManager(object):
         wrapped as as a RemoteMigrationState object.
         """
 
-        temp_filename = tempfile.mktemp()
+        temp_fd, temp_filename = tempfile.mkstemp()
+        os.close(temp_fd)
         try:
 
             try:
@@ -149,7 +150,8 @@ class RemoteMigrationStateManager(object):
         AWS_PROFILE={aws_profile} aws s3 cp {tempfile} s3://{state_bucket}/migration-state/{environment}.json
         after dumping the object to tempfile
         """
-        temp_filename = tempfile.mktemp()
+        temp_fd, temp_filename = tempfile.mkstemp()
+        os.close(temp_fd)
         try:
             with open(temp_filename, 'w', encoding='utf-8') as f:
                 json.dump(remote_migration_state.to_json(), f)
