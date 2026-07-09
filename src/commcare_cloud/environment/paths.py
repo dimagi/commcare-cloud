@@ -31,6 +31,7 @@ TERRAFORM_DIR = os.path.join(PACKAGE_BASE, 'terraform')
 # only works with an editable install
 DIMAGI_ENVIRONMENTS_DIR = os.path.realpath(os.path.join(PACKAGE_BASE, '..', '..', 'environments'))
 ENVIRONMENTS_DIR = os.environ.get('COMMCARE_CLOUD_ENVIRONMENTS', DIMAGI_ENVIRONMENTS_DIR)
+CACHE_DIR = os.environ.get('COMMCARE_CLOUD_CACHE', os.path.expanduser("~/.cache/commcare-cloud"))
 
 
 lazy_immutable_property = memoized_property
@@ -44,6 +45,12 @@ class DefaultPaths(object):
 
     def get_env_file_path(self, filename):
         return os.path.join(self.environments_dir, self.env_name, filename)
+
+    def get_cache_path(self, filename):
+        cache_dir = os.path.join(CACHE_DIR, self.env_name)
+        if not os.path.exists(cache_dir):
+            os.makedirs(cache_dir)
+        return os.path.join(cache_dir, filename)
 
     @lazy_immutable_property
     def public_yml(self):
@@ -143,7 +150,7 @@ class DefaultPaths(object):
 
     @lazy_immutable_property
     def generated_yml(self):
-        return self.get_env_file_path('.generated.yml')
+        return self.get_cache_path('.generated.yml')
 
     @lazy_immutable_property
     def terraform_yml(self):
