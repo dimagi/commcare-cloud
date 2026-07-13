@@ -126,6 +126,7 @@ REDIS_BROKER_HOST: 'broker.production.commcare.local'
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-production-blobdb'
+s3_blob_db_max_pool_connections: 100
 
 
 localsettings:
