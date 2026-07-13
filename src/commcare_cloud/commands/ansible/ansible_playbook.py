@@ -387,7 +387,7 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
 
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
-        unknown_args += ('--tags=services',)
+        unknown_args += ('--tags=services', '--flush-cache')
         rc = AnsiblePlaybook(self.parser).run(args, unknown_args)
         if ask("Would you like to update supervisor to use the new configurations?"):
             run_ansible_playbook(
