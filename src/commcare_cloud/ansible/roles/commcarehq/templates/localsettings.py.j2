@@ -198,7 +198,9 @@ S3_BLOB_DB_SETTINGS = {
     'bulk_delete_chunksize': {{ s3_bulk_delete_chunksize }},
     'config': {
         'signature_version': 's3v4',
-        'max_pool_connections': {%if s3_blob_db_max_pool_connections %}{{ s3_blob_db_max_pool_connections }}{% else %}10{% endif %},
+        {% if s3_blob_db_max_pool_connections %}
+        'max_pool_connections': {{ s3_blob_db_max_pool_connections }},
+        {% endif %}
     },
 }
 {% if localsettings.get('BLOB_DB_MIGRATING_FROM_S3_TO_S3', False) %}
