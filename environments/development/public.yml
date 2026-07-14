@@ -103,5 +103,6 @@ commcare_cloud_root_user: ubuntu
 commcare_cloud_strict_host_key_checking: no
 commcare_cloud_use_vault: no
 
-# add datadisk device for shared directory; applicable for non-monolithic deployments
-datadisk_device: "/dev/xvdbb"
+# Example datadisk device for shared directory. Applicable for non-monolithic
+# deployments, but does not work on Vagrant
+#datadisk_device: "/dev/xvdbb"
