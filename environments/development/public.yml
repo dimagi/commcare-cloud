@@ -26,6 +26,8 @@ backup_es_s3: False
 # this ensures that ssh access from the control machine is always allowed regardless of other firewall rules
 #control_machine_ip: 127.0.0.1
 
+REDIS_BROKER_HOST: "localhost"
+
 KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
 
