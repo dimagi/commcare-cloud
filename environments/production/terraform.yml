@@ -438,7 +438,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard1-production"
-    instance_type: "db.m6g.4xlarge"
+    instance_type: "db.m6g.2xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
@@ -454,7 +454,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard2-production"
-    instance_type: "db.m6g.4xlarge"
+    instance_type: "db.m6g.2xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
@@ -470,7 +470,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard3-production"
-    instance_type: "db.m6g.4xlarge"
+    instance_type: "db.m6g.2xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
@@ -486,7 +486,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard4-production"
-    instance_type: "db.m6g.4xlarge"
+    instance_type: "db.m6g.2xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
@@ -502,7 +502,7 @@ rds_instances:
       max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
 
   - identifier: "pgshard5-production"
-    instance_type: "db.m6g.4xlarge"
+    instance_type: "db.m6g.2xlarge"
     storage: 750
     max_storage: 2500
     storage_type: gp3
