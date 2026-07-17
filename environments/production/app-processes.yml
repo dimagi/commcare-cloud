@@ -1,5 +1,9 @@
 gunicorn_workers_static_factor: 0
 gunicorn_workers_factor: 2
+# graceful_timeout matches the 900s request budget nginx allows, so that
+# worker recycling can't kill an in-flight request that would have completed
+gunicorn_max_requests: 700
+gunicorn_graceful_timeout: 900
 formplayer_memory: "31g"
 formplayer_g1heapregionsize: "16m"
 # to enable profling, add `-Ddd.profiling.enabled=true -XX:FlightRecorderOptions=stackdepth=256` to formplayer_command_args
