@@ -42,6 +42,8 @@ class AppProcessesConfig(jsonobject.JsonObject):
     flower_port = PortProperty()
     gunicorn_workers_factor = jsonobject.IntegerProperty()
     gunicorn_workers_static_factor = jsonobject.IntegerProperty()
+    gunicorn_max_requests = jsonobject.IntegerProperty()
+    gunicorn_graceful_timeout = jsonobject.IntegerProperty()
     formplayer_memory = MemorySpecProperty()
     formplayer_maxmetaspacesize = MemorySpecProperty()
     formplayer_g1heapregionsize = MemorySpecProperty()

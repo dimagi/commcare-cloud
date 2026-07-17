@@ -11,6 +11,9 @@ command={{ app_processes_config.django_command_prefix }}
     -c deployment/gunicorn/gunicorn_conf.py
     -k gevent
     --workers {{ item.gunicorn_workers }}
+    --max-requests {{ app_processes_config.gunicorn_max_requests }}
+    --max-requests-jitter {{ app_processes_config.gunicorn_max_requests // 2 }}
+    --graceful-timeout {{ app_processes_config.gunicorn_graceful_timeout }}
     --bind 0.0.0.0:{{ django_port }}
     --log-file {{ log_home }}/{{ project }}.gunicorn.log
     --log-level debug
