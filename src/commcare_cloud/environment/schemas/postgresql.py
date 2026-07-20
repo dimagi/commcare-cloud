@@ -154,6 +154,17 @@ class PostgresqlConfig(jsonobject.JsonObject):
             for host, value in self.host_settings.items()
         }
 
+        # project_db defaults to living wherever the ucr db lives. This must
+        # happen before hosts are resolved below so both inherit consistently.
+        if self.dbs.project_db is not None:
+            ucr = self.dbs.ucr
+            if self.dbs.project_db.host is None:
+                self.dbs.project_db.host = ucr.host
+            if not self.dbs.project_db.pgbouncer_hosts:
+                self.dbs.project_db.pgbouncer_hosts = list(ucr.pgbouncer_hosts)
+            if self.dbs.project_db.pgbouncer_endpoint is None:
+                self.dbs.project_db.pgbouncer_endpoint = ucr.pgbouncer_endpoint
+
         all_dbs = self.generate_postgresql_dbs()
         for db in all_dbs:
             if db.host is None:
@@ -210,6 +221,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
             self.dbs.form_processing.get_db_list() if self.dbs.form_processing else []
         ) + [
             self.dbs.ucr,
+            self.dbs.project_db,
             self.dbs.formplayer,
             self.dbs.auditcare,
             self.dbs.repeaters,
@@ -273,6 +285,7 @@ class SmartDBConfig(jsonobject.JsonObject):
     main = jsonobject.ObjectProperty(lambda: MainDBOptions, required=True)
     formplayer = jsonobject.ObjectProperty(lambda: FormplayerDBOptions, required=True)
     ucr = jsonobject.ObjectProperty(lambda: UcrDBOptions, required=True)
+    project_db = jsonobject.ObjectProperty(lambda: ProjectDbDBOptions, required=False, default=None)
     synclogs = jsonobject.ObjectProperty(lambda: SynclogsDBOptions, required=False)
     form_processing = jsonobject.ObjectProperty(lambda: FormProcessingConfig, required=False)
     auditcare = jsonobject.ObjectProperty(lambda: AuditcareDBOptions, required=False, default=None)
@@ -334,6 +347,12 @@ class FormplayerDBOptions(DBOptions):
 class UcrDBOptions(DBOptions):
     name = constants.ucr_db_name
     django_alias = 'ucr'
+    django_migrate = False
+
+
+class ProjectDbDBOptions(DBOptions):
+    name = constants.project_db_name
+    django_alias = 'project_db'
     django_migrate = False
 
 

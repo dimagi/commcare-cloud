@@ -146,3 +146,20 @@
         DROP USER IF EXISTS repeaters_fdw_user;
       END $$;
   when: postgresql_dbs.repeaters and postgresql_host == postgresql_dbs.repeaters.host
+
+- name: Enable extensions in the project_db database
+  become: yes
+  become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
+  postgresql_query:
+    db: '{{ postgresql_dbs.project_db.name }}'
+    port: "{{ postgresql_port }}"
+    login_host: "{{ db_is_remote and postgresql_host or omit }}"
+    login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+    login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
+    query: |
+      CREATE EXTENSION IF NOT EXISTS cube;
+      CREATE EXTENSION IF NOT EXISTS earthdistance;
+      CREATE EXTENSION IF NOT EXISTS pg_trgm;
+      CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
+  when: postgresql_dbs.project_db and postgresql_dbs.project_db.create
+        and postgresql_host == postgresql_dbs.project_db.host
