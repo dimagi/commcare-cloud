@@ -39,8 +39,7 @@ dbs:
     pgbouncer_hosts:
       - pgproxy6
     query_stats: True
-  project_db:
-    create: True
+  project_db: {}
   synclogs:
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
