@@ -63,6 +63,7 @@ redis_bind: 0.0.0.0
 s3_blob_db_enabled: False
 s3_blob_db_url:
 s3_blob_db_s3_bucket:
+s3_blob_db_max_pool_connections:
 s3_bulk_delete_chunksize: 1000
 
 # For instructions on S3-to-S3 migrations, see docs/howto/migrate-s3-to-s3.md
