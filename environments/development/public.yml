@@ -2,10 +2,11 @@ internal_domain_name: null
 
 internal_network_interface: eth1
 
-http_proxy_address: '192.168.33.14'
-http_proxy_port: '3128'
-http_proxy_parent_address: '192.168.33.1'
-http_proxy_parent_port: '3128'
+# HTTP proxy breaks Vagrant networking
+#http_proxy_address: '192.168.33.14'
+#http_proxy_port: '3128'
+#http_proxy_parent_address: '192.168.33.1'
+#http_proxy_parent_port: '3128'
 
 # disable ecryptfs - Elasticsearch and Kafka have issues with it on Vagrant
 root_encryption_mode: none
