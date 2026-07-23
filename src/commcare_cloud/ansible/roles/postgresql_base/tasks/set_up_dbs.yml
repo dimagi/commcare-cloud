@@ -161,5 +161,4 @@
       CREATE EXTENSION IF NOT EXISTS earthdistance;
       CREATE EXTENSION IF NOT EXISTS pg_trgm;
       CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
-  when: postgresql_dbs.project_db and postgresql_dbs.project_db.create
-        and postgresql_host == postgresql_dbs.project_db.host
+  when: postgresql_dbs.project_db and postgresql_host == postgresql_dbs.project_db.host
