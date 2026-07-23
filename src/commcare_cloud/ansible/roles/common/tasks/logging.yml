@@ -20,12 +20,14 @@
     name: ansible-logrotate
   when: "logrotate_scripts | length > 0"
 
-- name: Configure logrotate size limit in rsyslog (replacing weekly)  # noqa: no-tabs
+# maxsize caps growth between rotations without disabling time-based rotation
+# (the weekly default from /etc/logrotate.conf still applies)
+- name: Configure logrotate size limit in rsyslog  # noqa: no-tabs
   lineinfile:
     path: /etc/logrotate.d/rsyslog
-    regexp: '^\tweekly'
+    regexp: '^\t(weekly|(max)?size )'
     insertbefore: 'missingok'
-    line: "\tsize 750M"  # no-tabs: single quotes here would write literal '\t' in file
+    line: "\tmaxsize 750M"  # no-tabs: single quotes here would write literal '\t' in file
     state: present
 
 - name: Configure logrotate timer (hourly instead of daily)

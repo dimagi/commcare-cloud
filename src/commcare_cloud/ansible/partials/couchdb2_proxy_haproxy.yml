@@ -31,7 +31,7 @@
         path: "/var/log/haproxy/*.log"
         options:
           - daily
-          - size 100M
+          - maxsize 100M
           - rotate 10
           - missingok
           - compress

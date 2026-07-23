@@ -29,7 +29,7 @@
             - "{{ couchdb_dir }}/var/log/*.log"
           options:
             - hourly
-            - size 300M
+            - maxsize 300M
             - rotate 100
             - missingok
             - compress
