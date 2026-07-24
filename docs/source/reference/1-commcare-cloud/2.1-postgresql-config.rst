@@ -356,11 +356,9 @@ without a different host explicitly set in `\ ``dbs`` <#dbs>`_.
 
 Specify a mapping of Reporting DB "engines" (UCR, ProjectDB).
 
-The default maps only the ``ucr`` engine. Environments that enable the
-optional `\ ``project_db`` <#project-db>`_ database override this to also map
-the ``project_db`` engine, e.g. ``{"ucr": "ucr", "project_db": "project_db"}``.
-Note that setting this value replaces the whole mapping rather than merging,
-so the ``ucr`` entry must be re-listed.
+Setting this replaces the default (``{"ucr": "ucr"}``) entirely rather than
+merging into it, so when you add an engine (e.g. `\ ``project_db``
+<#project-db>`_) you must re-list ``ucr`` or it will be dropped.
 
 The keys define engine aliases, and can be anything. The values are either
 
