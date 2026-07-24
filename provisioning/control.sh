@@ -1,3 +1,5 @@
+snap wait system seed.loaded &
+SEED_WAIT_PID=$!
 apt-get update
 apt-get install -y libffi-dev libssl-dev git
 
@@ -43,6 +45,9 @@ grep -E '/home/vagrant/.cc-git .* bind ' /etc/fstab > /dev/null \
 # Custom venv because ~/commcare-cloud/.venv may be used by host
 echo 'export UV_PROJECT_ENVIRONMENT=~/.cc-venv' >> /home/vagrant/.profile
 
+# Install uv
+echo "Waiting for snap seed. This may take a while..."
+wait "$SEED_WAIT_PID"
 snap install astral-uv --classic
 
 # Initialize commcare-cloud
