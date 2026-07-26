@@ -7,6 +7,9 @@ http_proxy_port: '3128'
 http_proxy_parent_address: '192.168.33.1'
 http_proxy_parent_port: '3128'
 
+# disable ecryptfs - Elasticsearch and Kafka have issues with it on Vagrant
+root_encryption_mode: none
+
 # use this value to switch between nginx and apache
 proxy_type: nginx
 elasticsearch_version: 6.8.23
