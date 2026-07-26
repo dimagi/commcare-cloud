@@ -218,3 +218,9 @@ supervisor_service_files:
     file_path: "{{ service_home }}/{{ deploy_env }}_django_bash_runner.sh"
     template: ../templates/django_bash_runner.sh.j2
     should_exist: "{{ prometheus_monitoring_enabled|default(False) }}"
+
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags: nginx-error
