@@ -68,6 +68,25 @@ Configuration for the db that formplayer uses
 
 Configuration for the db that UCRs are copied into.
 
+``project_db``
+^^^^^^^^^^^^^^^^^^
+
+
+* Type: `db config <#db-config-type>`_
+* Default: not created (opt-in)
+* Default values (when enabled):
+  .. code-block:: yaml
+
+     django_alias: project_db
+     name: commcarehq_project_db
+     django_migrate: False
+
+Optional db that stores ProjectDB tables. It is only created in environments
+that add a ``project_db`` block to `\ ``dbs`` <#dbs>`_ and map it in `\
+``REPORTING_DATABASES`` <#reporting-databases>`_. Its ``host`` and pgbouncer
+settings default to those of the ``ucr`` db when not set explicitly. Installs
+required extensions automatically as part of database setup.
+
 ``synclogs``
 ^^^^^^^^^^^^^^^^
 
@@ -335,7 +354,11 @@ without a different host explicitly set in `\ ``dbs`` <#dbs>`_.
 * Default: ``{"ucr": "ucr"}``
 * Status: Custom
 
-Specify a mapping of UCR "engines".
+Specify a mapping of Reporting DB "engines" (UCR, ProjectDB).
+
+Setting this replaces the default (``{"ucr": "ucr"}``) entirely rather than
+merging into it, so when you add an engine (e.g. `\ ``project_db``
+<#project-db>`_) you must re-list ``ucr`` or it will be dropped.
 
 The keys define engine aliases, and can be anything. The values are either
 

@@ -1,5 +1,9 @@
 DEFAULT_POSTGRESQL_HOST: rds_pg0
 
+REPORTING_DATABASES:
+  ucr: ucr
+  project_db: project_db
+
 postgres_override:
   postgresql_max_connections: 300
   postgresql_version: '14'
@@ -35,6 +39,7 @@ dbs:
     pgbouncer_hosts:
       - pgproxy6
     query_stats: True
+  project_db: {}
   synclogs:
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
