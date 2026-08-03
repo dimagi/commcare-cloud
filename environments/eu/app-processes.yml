@@ -1,5 +1,6 @@
 formplayer_memory: "2g"
 formplayer_g1heapregionsize: "4m"
+flower_max_tasks: 10000
 management_commands:
   celerybeat_a1:
     run_submission_reprocessing_queue:
