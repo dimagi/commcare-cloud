@@ -5,6 +5,9 @@ command={{ virtualenv_home }}/bin/celery
     -A corehq flower
     --address=0.0.0.0
     --port={{ app_processes_config.flower_port }}
+    {% if app_processes_config.flower_max_tasks is not none %}
+    --max-tasks={{ app_processes_config.flower_max_tasks }}
+    {% endif %}
 directory={{ code_home }}
 user={{ cchq_user }}
 numprocs=1
