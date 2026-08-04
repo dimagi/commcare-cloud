@@ -40,6 +40,7 @@ class AppProcessesConfig(jsonobject.JsonObject):
     django_bind = IpAddressProperty()
     django_port = PortProperty()
     flower_port = PortProperty()
+    flower_max_tasks = jsonobject.IntegerProperty()
     gunicorn_workers_factor = jsonobject.IntegerProperty()
     gunicorn_workers_static_factor = jsonobject.IntegerProperty()
     gunicorn_max_requests = jsonobject.IntegerProperty()
