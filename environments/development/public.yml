@@ -2,15 +2,19 @@ internal_domain_name: null
 
 internal_network_interface: eth1
 
-http_proxy_address: '192.168.33.14'
-http_proxy_port: '3128'
-http_proxy_parent_address: '192.168.33.1'
-http_proxy_parent_port: '3128'
+# HTTP proxy breaks Vagrant networking
+#http_proxy_address: '192.168.33.14'
+#http_proxy_port: '3128'
+#http_proxy_parent_address: '192.168.33.1'
+#http_proxy_parent_port: '3128'
+
+# disable ecryptfs - Elasticsearch and Kafka have issues with it on Vagrant
+root_encryption_mode: none
 
 # use this value to switch between nginx and apache
 proxy_type: nginx
-elasticsearch_version: 1.7.6
-elasticsearch_download_sha256: 78affc30353730ec245dad1f17de242a4ad12cf808eaa87dd878e1ca10ed77df.
+elasticsearch_version: 6.8.23
+elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'
 elasticsearch_cluster_name: 'deves'
@@ -22,6 +26,8 @@ backup_es_s3: False
 # uncomment and change to the control machine IP when using ufw
 # this ensures that ssh access from the control machine is always allowed regardless of other firewall rules
 #control_machine_ip: 127.0.0.1
+
+REDIS_BROKER_HOST: "localhost"
 
 KSPLICE_ACTIVE: no
 KSPLICE_ACTIVATION_KEY: "{{ secrets.KSPLICE_ACTIVATION_KEY }}"
@@ -69,6 +75,7 @@ localsettings:
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
   DEPLOY_MACHINE_NAME: "{{ inventory_hostname }}"
+  ELASTICSEARCH_MAJOR_VERSION: 6
   # Run `python -m smtpd -n -c DebuggingServer 0.0.0.0:1025` on proxy
   EMAIL_SMTP_HOST: '{{ groups.proxy.0 }}'
   EMAIL_SMTP_PORT: '1025'
@@ -97,5 +104,6 @@ commcare_cloud_root_user: ubuntu
 commcare_cloud_strict_host_key_checking: no
 commcare_cloud_use_vault: no
 
-# add datadisk device for shared directory; applicable for non-monolithic deployments
-datadisk_device: "/dev/xvdbb"
+# Example datadisk device for shared directory. Applicable for non-monolithic
+# deployments, but does not work on Vagrant
+#datadisk_device: "/dev/xvdbb"
