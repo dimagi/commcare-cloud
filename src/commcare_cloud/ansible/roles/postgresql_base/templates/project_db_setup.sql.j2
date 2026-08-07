@@ -50,3 +50,8 @@ REVOKE EXECUTE ON FUNCTION projectdb_drop_role(text) FROM PUBLIC;
 
 GRANT EXECUTE ON FUNCTION projectdb_provision_role(text, text) TO {{ postgres_users.commcare.username }};
 GRANT EXECUTE ON FUNCTION projectdb_drop_role(text) TO {{ postgres_users.commcare.username }};
+
+-- Postgres 14 grants CREATE to PUBLIC, 15+ don't
+-- USAGE is deliberately left in place so domain roles can still access
+-- functions installed by the extensions
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
