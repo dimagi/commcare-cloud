@@ -20,10 +20,15 @@ def github_repo(repo_name, prompt_if_missing=False):
     prompt_if_missing is True and no token is found via env or config,
     ask for a token and optionally continue without authentication.
     """
+    token = get_github_credentials(prompt_if_missing)
+    return Github(login_or_token=token).get_repo(repo_name)
+
+
+def get_github_credentials(prompt_if_missing=False):
     token = get_github_credentials_no_prompt()
     if not token and prompt_if_missing:
         token = _prompt_for_github_token()
-    return Github(login_or_token=token).get_repo(repo_name)
+    return token
 
 
 @memoized
