@@ -1,7 +1,5 @@
 celery_a1-staging: 10.201.10.31
 celery_a1-staging.instance_id: i-0e15f23fcc71fd3c9
-celery_a2-staging: 10.201.10.163
-celery_a2-staging.instance_id: i-0fcf2866598d1a9a6
 control3-staging: 10.201.10.21
 control3-staging.instance_id: i-0764b662e2e2637c3
 couch24-staging: 10.201.42.45
@@ -46,6 +44,7 @@ pgproxy6-staging: 10.201.41.151
 pgproxy6-staging.instance_id: i-073f7e3a3e2eceb72
 pgshard_nlb-staging: pgshard-nlb-staging-e8ef6b4c55f3618d.elb.us-east-1.amazonaws.com
 pgsynclogs_nlb-staging: pgsynclogs-nlb-staging-1102365451f68242.elb.us-east-1.amazonaws.com
+pgtest-staging: pgtest-staging.czkracjslrn2.us-east-1.rds.amazonaws.com
 pgucr_nlb-staging: pgucr-nlb-staging-b32586fcc9999b2d.elb.us-east-1.amazonaws.com
 pillow5-staging: 10.201.10.194
 pillow5-staging.instance_id: i-024e31574a4e10811
@@ -53,7 +52,6 @@ proxy6-staging: 10.201.11.133
 proxy6-staging.instance_id: i-03426413ed3c925f1
 proxy8-staging: 10.201.10.72
 proxy8-staging.instance_id: i-053e8c3dd100eb276
-proxy_alb-staging: internal-proxy-alb-staging-1025146289.us-east-1.elb.amazonaws.com
 web13-staging: 10.201.10.244
 web13-staging.instance_id: i-0fb86252d8c3490e9
 web14-staging: 10.201.11.231
