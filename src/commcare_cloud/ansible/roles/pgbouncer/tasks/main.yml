@@ -22,6 +22,14 @@
   tags:
     - configure
 
+- name: pgbouncer quit if the auth password is not set
+  assert:
+    that: PGBOUNCER_AUTH_PASSWORD
+    fail_msg: 'PGBOUNCER_AUTH_PASSWORD must be set for envs with a project_db'
+  when: postgresql_dbs.project_db
+  tags:
+    - configure
+
 - name: pgbouncer defaults (classic)
   template:
     src: pgbouncer-classic.defaults.j2
