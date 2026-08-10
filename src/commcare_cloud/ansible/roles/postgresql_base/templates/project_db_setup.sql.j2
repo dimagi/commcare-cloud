@@ -51,3 +51,23 @@ GRANT EXECUTE ON FUNCTION projectdb_drop_role(text) TO {{ postgres_users.commcar
 -- USAGE is deliberately left in place so domain roles can still access
 -- functions installed by the extensions
 REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+
+-- user_lookup function from pgbouncer docs (https://www.pgbouncer.org/config.html)
+-- So pgbouncer can look up a user password hash instead of hardcoding it in userlist.txt
+-- This is not specific to ProjectDB, but it lives here because nothing else uses it
+CREATE SCHEMA IF NOT EXISTS pgbouncer;
+
+CREATE OR REPLACE FUNCTION pgbouncer.user_lookup(username text)
+RETURNS TABLE(usename name, passwd text)
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = pg_catalog, pg_temp
+AS $$
+  SELECT rolname, CASE WHEN rolvaliduntil < now() THEN NULL ELSE rolpassword END
+  FROM pg_authid WHERE rolname = username AND rolcanlogin;
+$$;
+
+REVOKE EXECUTE ON FUNCTION pgbouncer.user_lookup(text) FROM PUBLIC;
+GRANT USAGE ON SCHEMA pgbouncer TO {{ pgbouncer_auth_username }};
+GRANT EXECUTE ON FUNCTION pgbouncer.user_lookup(text) TO {{ pgbouncer_auth_username }};
+GRANT CONNECT ON DATABASE {{ postgresql_dbs.project_db.name }} TO {{ pgbouncer_auth_username }};
