@@ -12,6 +12,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -29,6 +30,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -49,6 +51,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -69,6 +72,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -89,6 +93,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -109,6 +114,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -129,6 +135,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -146,6 +153,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -163,6 +171,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -180,6 +189,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -197,6 +207,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -228,6 +239,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -247,6 +259,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.162.36.205
         pgbouncer_hosts:
         - 10.162.36.205
+        pgbouncer_max_db_connections: null
         pgbouncer_pool_size: null
         pgbouncer_reserve_pool_size: null
         port: 6432
@@ -267,6 +280,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.162.36.205
         pgbouncer_hosts:
         - 10.162.36.205
+        pgbouncer_max_db_connections: null
         pgbouncer_pool_size: null
         pgbouncer_reserve_pool_size: null
         port: 6432
@@ -287,6 +301,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.162.36.205
         pgbouncer_hosts:
         - 10.162.36.205
+        pgbouncer_max_db_connections: null
         pgbouncer_pool_size: null
         pgbouncer_reserve_pool_size: null
         port: 6432
@@ -307,6 +322,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.162.36.205
         pgbouncer_hosts:
         - 10.162.36.205
+        pgbouncer_max_db_connections: null
         pgbouncer_pool_size: null
         pgbouncer_reserve_pool_size: null
         port: 6432
@@ -327,6 +343,7 @@ postgresql_dbs:
         pgbouncer_endpoint: 10.162.36.205
         pgbouncer_hosts:
         - 10.162.36.205
+        pgbouncer_max_db_connections: null
         pgbouncer_pool_size: null
         pgbouncer_reserve_pool_size: null
         port: 6432
@@ -347,6 +364,7 @@ postgresql_dbs:
       pgbouncer_endpoint: 10.162.36.205
       pgbouncer_hosts:
       - 10.162.36.205
+      pgbouncer_max_db_connections: null
       pgbouncer_pool_size: null
       pgbouncer_reserve_pool_size: null
       port: 6432
@@ -363,6 +381,7 @@ postgresql_dbs:
       pg_config: []
       pgbouncer_endpoint: null
       pgbouncer_hosts: []
+      pgbouncer_max_db_connections: null
       pgbouncer_pool_size: null
       pgbouncer_reserve_pool_size: null
       port: null
@@ -380,6 +399,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -397,6 +417,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -417,6 +438,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
@@ -434,6 +456,7 @@ postgresql_dbs:
     pgbouncer_endpoint: 10.162.36.205
     pgbouncer_hosts:
     - 10.162.36.205
+    pgbouncer_max_db_connections: null
     pgbouncer_pool_size: null
     pgbouncer_reserve_pool_size: null
     port: 6432
