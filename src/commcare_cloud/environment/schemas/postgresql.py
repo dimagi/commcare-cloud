@@ -311,6 +311,7 @@ class DBOptions(jsonobject.JsonObject):
     pgbouncer_endpoint = jsonobject.StringProperty(default=None)
     pgbouncer_pool_size = jsonobject.IntegerProperty(default=None)
     pgbouncer_reserve_pool_size = jsonobject.IntegerProperty(default=None)
+    pgbouncer_max_db_connections = jsonobject.IntegerProperty(default=None)
     port = jsonobject.IntegerProperty(default=None)
     user = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
