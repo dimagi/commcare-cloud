@@ -94,6 +94,13 @@ login role, provisioned from HQ using ``projectdb_provision_role`` and
 ``auth_query`` to get the password hash from the DB, connecting to postgres
 using its own ``auth_user`` and ``pgbouncer_auth`` role.
 
+Because each of those roles gets its own pgbouncer pool, this db does not
+inherit the environment-wide pool settings, which would let a single domain use
+as many connections as the whole db previously could. Instead
+``pgbouncer_max_db_connections`` defaults to 20 per pgbouncer host across all
+ProjectDB pools, with ``pgbouncer_pool_size`` set so the max per domain is half
+that. This may require tuning.
+
 ``synclogs``
 ^^^^^^^^^^^^^^^^
 
@@ -240,6 +247,35 @@ Some examples where you would want to set the ``pgbouncer_endpoints`` and ``pgbo
 * You have multiple ``pgbouncer_hosts`` in a network load balancer whose address ``pgbouncer_enpoint`` is set to.
 * You want ``pgbouncer1`` to be ready to switch over to in case ``pgbouncer0`` fails. In that case,
   you set ``pgbouncer_hosts`` to ``[pgbouncer0, pgbouncer1]`` and ``pgbouncer_endpoint`` to ``pgbouncer0``.
+
+``pgbouncer_pool_size``
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+* Type: int
+
+Maximum number of server connections pgbouncer will open for a single pool of
+this db, overriding the environment-wide ``pgbouncer_default_pool``.
+
+``pgbouncer_reserve_pool_size``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+* Type: int
+
+Additional connections pgbouncer may open for a pool of this db when clients have
+been waiting longer than ``pgbouncer_pool_timeout``\ , overriding the
+environment-wide ``pgbouncer_reserve_pool``.
+
+``pgbouncer_max_db_connections``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+* Type: int
+
+Maximum number of server connections across *all* pools of this db.  Useful for
+dbs that are accessed by many postgres users, such as project_db.  Otherwise
+this setting is redundant with ``pgbouncer_pool_size``.
 
 ``port``
 ~~~~~~~~~~~~
