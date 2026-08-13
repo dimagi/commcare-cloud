@@ -32,7 +32,7 @@ BEGIN
     RAISE EXCEPTION 'refusing to manage role %', role_name;
   END IF;
   IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = role_name) THEN
-    -- the role owns nothing, but DROP ROLE fails while grants still reference it
+    -- drop grants to the role, which would otherwise block DROP ROLE
     EXECUTE format('DROP OWNED BY %I', role_name);
     EXECUTE format('DROP ROLE %I', role_name);
   END IF;
