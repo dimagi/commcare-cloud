@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION projectdb_provision_role(role_name text, role_passwor
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = pg_catalog
+SET search_path = pg_catalog, pg_temp
 AS $$
 BEGIN
   IF role_name NOT LIKE 'projectdb\_%' THEN
@@ -29,7 +29,7 @@ CREATE OR REPLACE FUNCTION projectdb_drop_role(role_name text)
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = pg_catalog
+SET search_path = pg_catalog, pg_temp
 AS $$
 BEGIN
   IF role_name NOT LIKE 'projectdb\_%' THEN
