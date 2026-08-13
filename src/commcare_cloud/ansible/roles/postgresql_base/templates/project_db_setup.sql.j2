@@ -17,11 +17,7 @@ BEGIN
   IF role_name NOT LIKE 'projectdb\_%' THEN
     RAISE EXCEPTION 'refusing to manage role %', role_name;
   END IF;
-  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = role_name) THEN
-    EXECUTE format('ALTER ROLE %I WITH LOGIN PASSWORD %L', role_name, role_password);
-  ELSE
-    EXECUTE format('CREATE ROLE %I WITH LOGIN PASSWORD %L', role_name, role_password);
-  END IF;
+  EXECUTE format('CREATE ROLE %I WITH LOGIN PASSWORD %L', role_name, role_password);
 END;
 $$;
 
