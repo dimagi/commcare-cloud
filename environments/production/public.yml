@@ -61,12 +61,6 @@ pg_repack_version: 1.4.7
 
 aws_region: 'us-east-1'
 
-filebeat_inputs:
-  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
-    tags: nginx-timing
-  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
-    tags: nginx-error
-
 formplayer_java_version: "{{ java_17_bin_path }}/java"
 formplayer_archive_time_spec: '3d'
 formplayer_purge_time_spec: '10d'

@@ -55,14 +55,6 @@ DATADOG_ENABLED: False
 nameservers: []
 internal_domain_name: 'commcarehq.test'
 
-filebeat_inputs:
-  - path: {% raw %}"{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
-{% endraw %}
-    tags:  nginx-error
-  - path: {% raw %}"{{ log_home }}/{{ deploy_env }}-timing.log"
-{% endraw %}
-    tags: nginx-timing
-
 TWO_FACTOR_GATEWAY_ENABLED: False
 
 localsettings:

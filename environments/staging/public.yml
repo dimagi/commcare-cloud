@@ -29,12 +29,6 @@ postgres_s3: False
 # pg_repack
 pg_repack_version: 1.4.7
 
-filebeat_inputs:
-  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
-    tags: nginx-timing
-  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
-    tags: nginx-error
-
 aws_region: 'us-east-1'
 
 formplayer_archive_time_spec: '10m'
