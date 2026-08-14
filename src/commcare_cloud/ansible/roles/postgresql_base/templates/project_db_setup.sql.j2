@@ -70,4 +70,3 @@ $$;
 REVOKE EXECUTE ON FUNCTION pgbouncer.user_lookup(text) FROM PUBLIC;
 GRANT USAGE ON SCHEMA pgbouncer TO {{ pgbouncer_auth_username }};
 GRANT EXECUTE ON FUNCTION pgbouncer.user_lookup(text) TO {{ pgbouncer_auth_username }};
-GRANT CONNECT ON DATABASE {{ postgresql_dbs.project_db.name }} TO {{ pgbouncer_auth_username }};
