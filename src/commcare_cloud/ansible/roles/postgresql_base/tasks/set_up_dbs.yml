@@ -151,7 +151,7 @@
 # to validate dynamically provisioned roles (for ProjectDB)
 - name: Create pgbouncer auth user
   become: yes
-  become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
+  become_user: "{{ 'ansible' if db_is_remote else 'postgres' }}"
   vars:
     ansible_ssh_pipelining: true
   when: postgresql_dbs.project_db and postgresql_host == postgresql_dbs.project_db.host
