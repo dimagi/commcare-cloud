@@ -64,6 +64,11 @@ CommCare is configured to work with a number of databases:
 
   * custom report database
 
+* ``commcarehq_project_db``
+
+  * per-project case data, one schema per project
+  * optional, and opt-in per environment
+
 * ``commcarehq_synclogs``
 
   * data necessary for maintaining the state of the mobile devices 
