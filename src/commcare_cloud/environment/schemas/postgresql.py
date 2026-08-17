@@ -165,6 +165,16 @@ class PostgresqlConfig(jsonobject.JsonObject):
             if self.dbs.project_db.pgbouncer_endpoint is None:
                 self.dbs.project_db.pgbouncer_endpoint = ucr.pgbouncer_endpoint
 
+            # pgbouncer_max_db_connections is the max connections across all
+            # project_db pools on a single pgbouncer host
+            if self.dbs.project_db.pgbouncer_max_db_connections is None:
+                self.dbs.project_db.pgbouncer_max_db_connections = 20
+            # pgbouncer_pool_size is the max connections for a single domain
+            if self.dbs.project_db.pgbouncer_pool_size is None:
+                # Don't let one domain use more than half project_db connections
+                self.dbs.project_db.pgbouncer_pool_size = max(
+                    1, self.dbs.project_db.pgbouncer_max_db_connections // 2)
+
         all_dbs = self.generate_postgresql_dbs()
         for db in all_dbs:
             if db.host is None:
@@ -311,6 +321,7 @@ class DBOptions(jsonobject.JsonObject):
     pgbouncer_endpoint = jsonobject.StringProperty(default=None)
     pgbouncer_pool_size = jsonobject.IntegerProperty(default=None)
     pgbouncer_reserve_pool_size = jsonobject.IntegerProperty(default=None)
+    pgbouncer_max_db_connections = jsonobject.IntegerProperty(default=None)
     port = jsonobject.IntegerProperty(default=None)
     user = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
