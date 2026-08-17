@@ -151,7 +151,7 @@
 # to validate dynamically provisioned roles (for ProjectDB)
 - name: Create pgbouncer auth user
   become: yes
-  become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
+  become_user: "{{ 'ansible' if db_is_remote else 'postgres' }}"
   vars:
     ansible_ssh_pipelining: true
   # In check mode postgresql_user does not commit the role and it will be missing for
