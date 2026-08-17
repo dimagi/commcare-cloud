@@ -13,7 +13,7 @@
 {{ db.name }} = host={{ "localhost" if db.host == inventory_hostname else db.host }} port={{ postgresql_port }}
 {%- if db.pgbouncer_pool_size %} pool_size={{ db.pgbouncer_pool_size // pgbouncer_processes }}{% endif %}
 {%- if db.pgbouncer_reserve_pool_size is not none %} reserve_pool={{ db.pgbouncer_reserve_pool_size // pgbouncer_processes }}{% endif %}
-{%- if postgresql_dbs.project_db and db.name == postgresql_dbs.project_db.name %} auth_user={{ pgbouncer_auth_username }} auth_query='SELECT usename, passwd FROM pgbouncer.user_lookup($1)'{% endif %}
+{%- if postgresql_dbs.project_db and db.name == postgresql_dbs.project_db.name %} auth_user={{ pgbouncer_auth_username }} auth_query='SELECT usename, passwd FROM pgbouncer.project_db_user_lookup($1)'{% endif %}
 
 {% endfor %}
 
