@@ -169,20 +169,20 @@
         state: present
         db: '{{ postgresql_dbs.project_db.name }}'
         port: "{{ postgresql_port }}"
-        login_host: "{{ db_is_remote and postgresql_host or omit }}"
-        login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
-        login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
+        login_host: "{{ postgresql_host if db_is_remote else omit }}"
+        login_user: "{{ postgres_users.root.username if db_is_remote else omit }}"
+        login_password: "{{ postgres_users.root.password if db_is_remote else omit }}"
         encrypted: True
       no_log: true
 
 - name: Set up the project_db database
   become: yes
-  become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
+  become_user: "{{ 'ansible' if db_is_remote else 'postgres' }}"
   postgresql_query:
     db: '{{ postgresql_dbs.project_db.name }}'
     port: "{{ postgresql_port }}"
-    login_host: "{{ db_is_remote and postgresql_host or omit }}"
-    login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
-    login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
+    login_host: "{{ postgresql_host if db_is_remote else omit }}"
+    login_user: "{{ postgres_users.root.username if db_is_remote else omit }}"
+    login_password: "{{ postgres_users.root.password if db_is_remote else omit }}"
     query: "{{ lookup('template', 'project_db_setup.sql.j2') }}"
   when: postgresql_dbs.project_db and postgresql_host == postgresql_dbs.project_db.host
