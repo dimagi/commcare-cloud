@@ -1,0 +1,8 @@
+[Service]
+# The base unit file has Restart=... commented out with a note that
+# it prevents `pg_ctlcluster ... stop` from working. However,
+# commcare-cloud does not use that command, and there have been
+# postgresql OOMs where it was killed and had to be restarted manually.
+#
+# Use `systemctl stop postgresql@...` to stop the service.
+Restart=on-failure
