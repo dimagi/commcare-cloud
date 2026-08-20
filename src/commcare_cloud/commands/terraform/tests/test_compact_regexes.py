@@ -97,5 +97,8 @@ def _generate_matching_example(pattern):
         .replace(r'$', '') \
         .replace(r'\.', '.') \
         .replace(r'(?:/([\w\-,]+))?', '') \
+        .replace(r'([\w\-,]+)', 'one-two,three-four') \
+        .replace(r'(.+)', 'anything') \
+        .replace(r'\Z', '') \
         .replace(r'/?', '/') \
         .replace(r'(case_list_explorer|duplicate_cases)', 'duplicate_cases')
