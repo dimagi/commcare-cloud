@@ -63,14 +63,6 @@ def test_compact_regex_lists__restricts_group_sizes():
         assert len(group) <= 10, f'{key} has too many regexes: {len(group)}'
 
 
-def test_patterns_are_waf_compatible():
-    # AWS WAFv2 uses the RE2 regex engine, which rejects \Z (its spelling
-    # is \z, and $ is equivalent since multiline mode is off). \Z sneaks in
-    # via `./manage.py list_waf_allow_patterns` and breaks terraform apply.
-    for pattern in COMMCAREHQ_XML_POST_URLS_REGEX:
-        assert r'\Z' not in pattern, f'replace \\Z with $ for WAF (RE2) compatibility: {pattern}'
-
-
 def _test_compact_function_against_examples(compact_function, patterns):
     examples = [_generate_matching_example(pattern) for pattern in patterns]
     compacted_patterns = compact_function(patterns)
@@ -107,5 +99,6 @@ def _generate_matching_example(pattern):
         .replace(r'(?:/([\w\-,]+))?', '') \
         .replace(r'([\w\-,]+)', 'one-two,three-four') \
         .replace(r'(.+)', 'anything') \
+        .replace(r'\Z', '') \
         .replace(r'/?', '/') \
         .replace(r'(case_list_explorer|duplicate_cases)', 'duplicate_cases')

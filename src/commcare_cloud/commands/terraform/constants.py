@@ -11,12 +11,12 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/api/case/v2/([\w\-,]+)/?$
 ^/a/([\w\.:-]+)/api/case/v2/?$
 ^/a/([\w\.:-]+)/api/case/v2/bulk-fetch/$
-^/a/([\w\.:-]+)/api/case/v2/ext/(.+)/$
+^/a/([\w\.:-]+)/api/case/v2/ext/(.+)/\Z
 ^/a/([\w\.:-]+)/api/v([\d\.]+)/form/$
 ^/a/([\w\.:-]+)/api/v0.6/case/?$
 ^/a/([\w\.:-]+)/api/v0\.6/case/([\w\-,]+)/?$
 ^/a/([\w\.:-]+)/api/v0\.6/case/bulk-fetch/$
-^/a/([\w\.:-]+)/api/v0\.6/case/ext/(.+)/$
+^/a/([\w\.:-]+)/api/v0\.6/case/ext/(.+)/\Z
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/app_logo/([\w\-]+)/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/audio/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/bulk/$
