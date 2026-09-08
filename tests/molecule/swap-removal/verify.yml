@@ -1,10 +1,13 @@
 ---
-# This is an example playbook to execute Ansible tests.
-
 - name: Verify
   hosts: all
   gather_facts: false
   tasks:
-  - name: Example assertion
-    ansible.builtin.assert:
-      that: true
+  - name: Assert swap file was removed
+    ansible.builtin.command: test ! -e /swapfile
+    changed_when: false
+  - name: Assert fstab entry was removed
+    ansible.builtin.command: grep -Fxq "/swapfile none swap sw 0 0" /etc/fstab
+    register: fstab_grep
+    failed_when: fstab_grep.rc == 0
+    changed_when: false
