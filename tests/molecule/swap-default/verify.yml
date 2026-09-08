@@ -1,10 +1,17 @@
 ---
-# This is an example playbook to execute Ansible tests.
-
 - name: Verify
   hosts: all
   gather_facts: false
   tasks:
-  - name: Example assertion
-    ansible.builtin.assert:
-      that: true
+  - name: Assert swap file exists with mode 0600
+    ansible.builtin.shell: test "$(stat -c %a /swapfile)" = 600
+    changed_when: false
+  - name: Assert swap file was allocated
+    ansible.builtin.command: test -s /swapfile
+    changed_when: false
+  - name: Assert fstab entry present
+    ansible.builtin.command: grep -Fxq "/swapfile none swap sw 0 0" /etc/fstab
+    changed_when: false
+  - name: Assert swappiness setting persisted
+    ansible.builtin.command: grep -Fxq "vm.swappiness=1" /etc/sysctl.conf
+    changed_when: false
