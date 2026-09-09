@@ -12,6 +12,10 @@ pgbouncer_default_pool: 15
 pgbouncer_reserve_pool: 4
 pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: session
+# pgbouncer's built-in defaults; lower to recycle server connections
+# faster, e.g. to shed memory retained by bloated postgres backends
+pgbouncer_server_lifetime: 3600
+pgbouncer_server_idle_timeout: 600
 pgbouncer_kernel_settings: {}
 
 postgresql_port: 5432

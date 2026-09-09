@@ -63,6 +63,17 @@
     - Restart postgres
     - reload systemd
 
+- name: Configure postgres to restart on failure
+  become: yes
+  template:
+    src: restart.conf.j2
+    dest: "{{ postgresql_systemd_config_dir }}/restart.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemd
+
 - name: Ensure PostgreSQL data directory exists.
   file:
     path: "{{ postgresql_data_dir }}"
