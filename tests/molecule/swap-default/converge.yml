@@ -1,0 +1,15 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Include swap
+      module_defaults:
+        # vm.swappiness is host-wide and not namespaced: writing/reloading it
+        # live from inside a rootless container always reports changed, so the
+        # module never converges. Only manage the persisted sysctl.conf line.
+        sysctl:
+          sysctl_set: false
+          reload: false
+      block:
+        - ansible.builtin.include_role:
+            name: "swap"

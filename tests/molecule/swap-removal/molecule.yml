@@ -1,0 +1,27 @@
+---
+dependency:
+  name: galaxy
+  enabled: false
+driver:
+  name: containers
+platforms:
+  - name: instance
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+provisioner:
+  name: ansible
+scenario:
+  # Drop dependency/cleanup/side_effect -- they're unused here,
+  # and leaving them in emits warnings on every run
+  test_sequence:
+    - lint
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - verify
+    - destroy
+verifier:
+  name: ansible
