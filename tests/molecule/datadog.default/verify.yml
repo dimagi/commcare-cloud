@@ -10,6 +10,7 @@
     - name: Assert stub package version was kept (real repo not used)
       ansible.builtin.shell: dpkg-query -W -f='${Version}' datadog-agent | grep -Fq "999:1.0.0"
       changed_when: false
+      when: lookup('env', 'MOLECULE_DATADOG_REAL_INSTALL') != '1'
 
     - name: Assert datadog-agent service is active
       ansible.builtin.command: systemctl is-active datadog-agent
