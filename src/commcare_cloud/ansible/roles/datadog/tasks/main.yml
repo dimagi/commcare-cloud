@@ -8,12 +8,20 @@
    - A2923DFF56EDA6E76E55E492D3A80E30382E94DE
 
 # ansible apt_key doesn't do any action on expired keys
-- name: Remove expired datadog apt key manually
-  command: apt-key del {{ item }}
+- name: Check for expired datadog apt keys
+  command: apt-key export {{ item }}
+  register: expired_datadog_apt_keys
+  changed_when: false
+  failed_when: false
   with_list:
     - A2923DFF56EDA6E76E55E492D3A80E30382E94DE
     - D75CEA17048B9ACBF186794B32637D44F14F620E
     - 5F1E256061D813B125E156E8E6266D4AC0962C7D
+
+- name: Remove expired datadog apt key manually
+  command: apt-key del {{ item.item }}
+  loop: "{{ expired_datadog_apt_keys.results }}"
+  when: item.stdout | trim != ''
 
 - name: Remove old datadog apt repository
   apt_repository:
