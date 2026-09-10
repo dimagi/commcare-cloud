@@ -10,6 +10,8 @@ platforms:
     pre_build_image: true
 provisioner:
   name: ansible
+  playbooks:
+    converge: ../swap-default/converge.yml
 scenario:
   # Drop dependency/cleanup/side_effect -- they're unused here,
   # and leaving them in emits warnings on every run
