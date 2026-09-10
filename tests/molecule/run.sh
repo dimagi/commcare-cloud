@@ -49,8 +49,14 @@ role=${positional[0]:-*}
 scenario=${positional[1]:-*}
 extra=("${positional[@]:2}")
 
+if [[ "$role" == *.* ]]; then
+  echo "ROLE must not contain '.'" >&2
+  echo "Suggestion: replace '.' with '_': ${role//./_}" >&2
+  exit 1
+fi
+
 export ANSIBLE_CONFIG=$(pwd)/src/commcare_cloud/ansible/ansible.cfg
 export ANSIBLE_ROLES_PATH=$(pwd)/src/commcare_cloud/ansible/roles
-export MOLECULE_GLOB="tests/molecule/$role-$scenario/molecule.yml"
+export MOLECULE_GLOB="tests/molecule/$role.$scenario/molecule.yml"
 
 molecule test --all ${opts[@]+"${opts[@]}"} ${extra[@]+"${extra[@]}"}

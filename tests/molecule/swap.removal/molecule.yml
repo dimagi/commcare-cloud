@@ -12,7 +12,7 @@ platforms:
 provisioner:
   name: ansible
   playbooks:
-    converge: ../swap-default/converge.yml
+    converge: ../swap.default/converge.yml
     cleanup: ../lib/stub.yml
     side_effect: ../lib/stub.yml
 verifier:

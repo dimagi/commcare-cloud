@@ -3,7 +3,7 @@ set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 usage() {
-  echo "Scaffold a new molecule scenario at tests/molecule/<role>-<scenario>/"
+  echo "Scaffold a new molecule scenario at tests/molecule/<role>.<scenario>/"
   echo ""
   echo "Usage: init.sh ROLE [SCENARIO]"
 }
@@ -23,7 +23,14 @@ if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
 fi
 role=$1
 scenario=${2:-default}
-target="$role-$scenario"
+
+if [[ "$role" == *.* ]]; then
+  echo "ROLE must not contain '.'" >&2
+  echo "Suggestion: replace '.' with '_': ${role//./_}" >&2
+  exit 1
+fi
+
+target="$role.$scenario"
 
 if [ -e "$target" ]; then
   echo "tests/molecule/$target already exists" >&2

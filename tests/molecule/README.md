@@ -4,7 +4,7 @@ Molecule tests for roles under `src/commcare_cloud/ansible/roles/` live
 here, one directory per role/scenario pair:
 
 ```
-tests/molecule/<role>-<scenario>/
+tests/molecule/<role>.<scenario>/
     molecule.yml
     converge.yml
     prepare.yml   (optional)
