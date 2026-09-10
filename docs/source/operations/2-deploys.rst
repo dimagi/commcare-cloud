@@ -260,7 +260,7 @@ Local Settings deploy
 
 Settings generally only need to be deployed when static files are updated against your specific environment. 
 
-Sometimes changes are made to the system which require new settings to be deployed before code can be rolled out. In these cases, the detailed steps are provided in the `changelog <https://commcare-cloud.readthedocs.io/en/latest/changelog/index.html#changelog>`_. Announcements are made to the `Developer Forum <https://forum.dimagi.com/>`_ in a `dedicated category <https://forum.dimagi.com/c/developers/maintainer-announcements/>`_ when these actions are needed. We strongly recommend that anyone maintaining a CommCare Cloud instance subscribe to that feed. For security updates, also request to join the `Maintainers group <https://forum.dimagi.com/g/maintainers>`_.
+Sometimes changes are made to the system which require new settings to be deployed before code can be rolled out. In these cases, the detailed steps are provided in the `changelog <https://commcare-cloud.readthedocs.io/en/latest/changelog/index.html#changelog>`_. Announcements are made to the `Developer Forum <https://forum.dimagi.com/>`_ in a `dedicated category <https://forum.dimagi.com/c/developers/maintainer-announcements/>`_ when these actions are needed. We strongly recommend that anyone maintaining a CommCare Cloud instance subscribe to that feed. For security updates, also watch the `Security Announcements category <https://forum.dimagi.com/c/developers/security-announcements/24>`_. You must have an account in order to see this category.
 
 -------------------------------
 Resolving problems with deploys

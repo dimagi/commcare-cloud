@@ -24,9 +24,11 @@ Subscribe to the `developers forum <https://forum.dimagi.com/c/developers/5>`_ t
 other parties hosting CommCare. Dimagi will announce important changes
 there, such as upcoming upgrades.
 
-For security updates specifically, request to join the
-`Maintainers group <https://forum.dimagi.com/g/maintainers>`_. Members are
-notified when a security update is available, ahead of the public advisory.
+For security updates specifically, log into or create an account on the
+`Dimagi Forum <https://forum.dimagi.com/>`_ and watch the
+`Security Announcements category <https://forum.dimagi.com/c/developers/security-announcements/24>`_.
+You must have an account in order to see this category. Notifications are
+posted there when a security update is available.
 
 Deploy CommCare HQ at least once every two weeks
 ------------------------------------------------
