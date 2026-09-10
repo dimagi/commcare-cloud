@@ -1,0 +1,30 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Assert datadog-agent package installed
+      ansible.builtin.shell: dpkg-query -W -f='${Status}' datadog-agent | grep -q "install ok installed"
+      changed_when: false
+
+    - name: Assert stub package version was kept (real repo not used)
+      ansible.builtin.shell: dpkg-query -W -f='${Version}' datadog-agent | grep -Fq "999:1.0.0"
+      changed_when: false
+
+    - name: Assert datadog-agent service is active
+      ansible.builtin.command: systemctl is-active datadog-agent
+      register: svc_status
+      changed_when: false
+      failed_when: svc_status.stdout != "active"
+
+    - name: Assert datadog.yaml rendered with api key
+      ansible.builtin.command: 'grep -Fq "api_key: 0000000000000000000000000000ff" /etc/datadog-agent/datadog.yaml'
+      changed_when: false
+
+    - name: Assert datadog.yaml file mode
+      ansible.builtin.shell: test "$(stat -c %a /etc/datadog-agent/datadog.yaml)" = 640
+      changed_when: false
+
+    - name: Assert disk integration config rendered
+      ansible.builtin.command: test -f /etc/datadog-agent/conf.d/disk.d/conf.yaml
+      changed_when: false
