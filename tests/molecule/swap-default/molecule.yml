@@ -1,6 +1,7 @@
 ---
 dependency:
-  name: galaxy
+  name: shell
+  command: ''
   enabled: false
 driver:
   name: containers

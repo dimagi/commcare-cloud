@@ -44,11 +44,11 @@ The platform image is `docker.io/geerlingguy/docker-ubuntu2204-ansible`, rather
 than a generic systemd/Ubuntu image. It's built specifically for
 Ansible/Molecule testing — systemd, `sudo`, and `python3` pre-configured.
 
-## Silencing "playbook not configured" warnings
+## Minimizing Molecule warnings
 
 Molecule warns if a scenario doesn't configure a `cleanup` or `side_effect`
 playbook (among others). Point the unused step at the shared no-op in
-`tests/molecule/lib/stub.yml`:
+`tests/molecule/lib/stub.yml` to avoid warnings:
 
 ```yaml
 provisioner:
@@ -56,6 +56,17 @@ provisioner:
   playbooks:
     cleanup: ../lib/stub.yml
     side_effect: ../lib/stub.yml
+```
+
+If a role has no galaxy roles/collections to install, keep the dependency
+manager disabled, but use `name: shell` rather than `name: galaxy` so it only
+emits one warning instead of two:
+
+```yaml
+dependency:
+  name: shell
+  command: ''
+  enabled: false
 ```
 
 ## About the directory structure
