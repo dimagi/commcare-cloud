@@ -10,11 +10,13 @@ Usage: run.sh [OPTIONS] [ROLE] [SCENARIO] [ANSIBLE_ARGS]
   run.sh <ROLE>             Test every scenario for one role
   run.sh <ROLE> <SCENARIO>  Test one scenario
 
-Useful options (see `molecule test --help` for all):
+Options:
 
-  --destroy never   Leave the container running after the run, e.g. to
+  --destroy=never   Leave the container running after the run, e.g. to
                     poke around after a failure.
-  --parallel        Run scenarios in parallel.
+
+See also `molecule test --help`. Note: molecule options taking a value
+must use --opt=VALUE or -oVALUE syntax.
 EOF
 }
 
@@ -28,12 +30,6 @@ while [ "$i" -lt "${#args[@]}" ]; do
     -h|--help)
       usage
       exit 0
-      ;;
-    # These take a separate value argument (not just --opt=value); pull
-    # both tokens so the value isn't mistaken for ROLE/SCENARIO.
-    -s|--scenario-name|-p|--platform-name|-d|--driver-name|--destroy)
-      opts+=("$arg" "${args[$((i + 1))]}")
-      i=$((i + 1))
       ;;
     -*)
       opts+=("$arg")
