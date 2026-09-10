@@ -44,6 +44,20 @@ The platform image is `docker.io/geerlingguy/docker-ubuntu2204-ansible`, rather
 than a generic systemd/Ubuntu image. It's built specifically for
 Ansible/Molecule testing — systemd, `sudo`, and `python3` pre-configured.
 
+## Silencing "playbook not configured" warnings
+
+Molecule warns if a scenario doesn't configure a `cleanup` or `side_effect`
+playbook (among others). Point the unused step at the shared no-op in
+`tests/molecule/lib/stub.yml`:
+
+```yaml
+provisioner:
+  name: ansible
+  playbooks:
+    cleanup: ../lib/stub.yml
+    side_effect: ../lib/stub.yml
+```
+
 ## About the directory structure
 
 Molecule assumes one role per repo, and by default puts each role's scenarios

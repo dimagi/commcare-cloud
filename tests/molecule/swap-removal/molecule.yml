@@ -12,18 +12,7 @@ provisioner:
   name: ansible
   playbooks:
     converge: ../swap-default/converge.yml
-scenario:
-  # Drop dependency/cleanup/side_effect -- they're unused here,
-  # and leaving them in emits warnings on every run
-  test_sequence:
-    - lint
-    - destroy
-    - syntax
-    - create
-    - prepare
-    - converge
-    - idempotence
-    - verify
-    - destroy
+    cleanup: ../lib/stub.yml
+    side_effect: ../lib/stub.yml
 verifier:
   name: ansible
