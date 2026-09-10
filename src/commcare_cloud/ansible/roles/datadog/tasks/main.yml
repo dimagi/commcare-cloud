@@ -55,6 +55,7 @@
 - name: Add new datadog apt repository
   apt_repository:
     repo: "deb [signed-by=/etc/apt/keyrings/DATADOG_APT_KEY_C0962C7D.gpg] http://apt.datadoghq.com/ stable 7"
+    filename: datadog-agent  # must be distinct from apt_datadoghq_com.list used by old repo
     state: present
 
 - name: Install datadog agent
