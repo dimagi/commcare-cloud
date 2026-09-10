@@ -3,6 +3,53 @@
   hosts: all
   become: true
   tasks:
+    - name: Ensure gnupg is present
+      # would be nice to get this included in the base image, but until then...
+      ansible.builtin.apt:
+        name: gnupg
+        state: present
+        update_cache: true
+
+    - name: Copy vendored legacy datadog key files for key removal tasks
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "/tmp/{{ item | basename }}"
+      loop:
+        - "{{ playbook_dir }}/../../../src/commcare_cloud/ansible/roles/datadog/files/DATADOG_APT_KEY_C0962C7D.gpg"
+        - "{{ playbook_dir }}/../../../src/commcare_cloud/ansible/roles/datadog/files/DATADOG_APT_KEY_F14F620E.gpg"
+
+    - name: Import vendored legacy datadog keys
+      ansible.builtin.apt_key:
+        file: "/tmp/{{ item | basename }}"
+        state: present
+      loop:
+        - "{{ playbook_dir }}/../../../src/commcare_cloud/ansible/roles/datadog/files/DATADOG_APT_KEY_C0962C7D.gpg"
+        - "{{ playbook_dir }}/../../../src/commcare_cloud/ansible/roles/datadog/files/DATADOG_APT_KEY_F14F620E.gpg"
+
+    - name: Seed one expired legacy datadog apt key
+      ansible.builtin.command: >
+        gpg --no-default-keyring --keyring /etc/apt/trusted.gpg
+        --keyserver keyserver.ubuntu.com
+        --recv-keys A2923DFF56EDA6E76E55E492D3A80E30382E94DE
+      changed_when: true
+
+    - name: Ensure /etc/apt/keyrings exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
+    - name: Seed placeholder files for the role's file-based cleanup tasks
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: touch
+        mode: "0644"
+      loop:
+        - /etc/apt/keyrings/DATADOG_APT_KEY_382E94DE.gpg
+        - /etc/apt/keyrings/DATADOG_APT_KEY_F14F620E.gpg
+        - /etc/apt/sources.list.d/apt_datadoghq_com.list
+        - /etc/apt/trusted.gpg.d/datadog-archive-keyring.gpg
+
     # The role installs the datadog-agent package from apt.datadoghq.com. Serve
     # a fake one from a local repo so the role apt task installs it rather than
     # hitting Datadog's repo on every CI run.
