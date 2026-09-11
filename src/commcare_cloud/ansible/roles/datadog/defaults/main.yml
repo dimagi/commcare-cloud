@@ -1,5 +1,22 @@
 couchdb2_first_host: "{{ groups['couchdb2'][0] if 'couchdb2' in groups else 'NO HOST SHOULD MATCH THIS' }}"
 
+# Fallback defaults; service-specific vars are enabled per host group.
+datadog_integration_disk_check: true
+datadog_integration_couch: false
+datadog_integration_elastic: false
+datadog_integration_gunicorn: false
+datadog_integration_kafka: false
+datadog_integration_kafka_consumer: false
+datadog_integration_nginx: false
+datadog_integration_pgbouncer: false
+datadog_integration_postgres: false
+datadog_integration_postgres_receiver: false
+datadog_integration_redisdb: false
+datadog_integration_zk: false
+datadog_integration_http: false
+datadog_integration_haproxy: false
+datadog_integration_tcp_check: false
+
 datadog_integrations:
   - {"name": "elastic", "enabled": "{{ datadog_integration_elastic }}"}
   - {"name": "gunicorn", "enabled": "{{ datadog_integration_gunicorn }}"}
