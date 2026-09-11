@@ -8,7 +8,6 @@
       ansible.builtin.apt:
         name: gnupg
         state: present
-        update_cache: true
 
     - name: Copy vendored legacy datadog key files for key removal tasks
       ansible.builtin.copy:
@@ -66,7 +65,6 @@
           ansible.builtin.apt:
             name: dpkg-dev
             state: present
-            update_cache: true
 
         - name: Create fake datadog-agent package tree
           ansible.builtin.file:
@@ -129,7 +127,3 @@
           ansible.builtin.copy:
             dest: /etc/apt/sources.list.d/fake-datadog.list
             content: "deb [trusted=yes] file:/tmp/fake-datadog-repo ./\n"
-
-        - name: Refresh apt cache to pick up local fake repo
-          ansible.builtin.apt:
-            update_cache: true
