@@ -8,6 +8,7 @@
       ansible.builtin.apt:
         name: gnupg
         state: present
+        update_cache: true
 
     - name: Copy vendored legacy datadog key files for key removal tasks
       ansible.builtin.copy:
