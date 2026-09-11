@@ -36,7 +36,6 @@
   with_items:
     - /etc/apt/keyrings/DATADOG_APT_KEY_382E94DE.gpg
     - /etc/apt/keyrings/DATADOG_APT_KEY_F14F620E.gpg
-    - /etc/apt/keyrings/DATADOG_APT_KEY_C0962C7D.gpg
 
 # the repository configuration was not getting cleaned up by the apt_repository module, so we need to do it manually
 - name: Remove old datadog repository configuration
