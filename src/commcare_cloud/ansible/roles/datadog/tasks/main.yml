@@ -21,7 +21,7 @@
 - name: Remove expired datadog apt key manually
   command: apt-key del {{ item.item }}
   loop: "{{ expired_datadog_apt_keys.results }}"
-  when: item.stdout | trim != ''
+  when: item.stdout | trim
 
 - name: Remove old datadog apt repository
   apt_repository:
