@@ -87,6 +87,13 @@ that add a ``project_db`` block to `\ ``dbs`` <#dbs>`_ and map it in `\
 settings default to those of the ``ucr`` db when not set explicitly. Installs
 required extensions automatically as part of database setup.
 
+Enabling it in an environment requires one manual step: set
+``PGBOUNCER_AUTH_PASSWORD`` in the vault.  Each domain gets its own postgres
+login role, provisioned from HQ using ``projectdb_provision_role`` and
+``projectdb_drop_role``.  To validate these logins, pgbouncer runs an
+``auth_query`` to get the password hash from the DB, connecting to postgres
+using its own ``auth_user`` and ``pgbouncer_auth`` role.
+
 ``synclogs``
 ^^^^^^^^^^^^^^^^
 
