@@ -62,8 +62,11 @@ celery_processes:
       concurrency: 2
     geospatial_queue:
       concurrency: 1
+    24_hour_queue:
+      concurrency: 2
     beat: {}
     flower: {}
+
 pillows:
   'pillow5':
     AppDbChangeFeedPillow:
