@@ -1,0 +1,130 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: Ensure gnupg is present
+      # would be nice to get this included in the base image, but until then...
+      ansible.builtin.apt:
+        name: gnupg
+        state: present
+        update_cache: true
+
+    - name: Copy vendored legacy datadog key files for key removal tasks
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "/tmp/{{ item | basename }}"
+      loop:
+        - "{{ playbook_dir }}/../../../src/commcare_cloud/ansible/roles/datadog/files/DATADOG_APT_KEY_C0962C7D.gpg"
+        - "{{ playbook_dir }}/../../../src/commcare_cloud/ansible/roles/datadog/files/DATADOG_APT_KEY_F14F620E.gpg"
+
+    - name: Import vendored legacy datadog keys
+      ansible.builtin.apt_key:
+        file: "/tmp/{{ item | basename }}"
+        state: present
+      loop:
+        - "{{ playbook_dir }}/../../../src/commcare_cloud/ansible/roles/datadog/files/DATADOG_APT_KEY_C0962C7D.gpg"
+        - "{{ playbook_dir }}/../../../src/commcare_cloud/ansible/roles/datadog/files/DATADOG_APT_KEY_F14F620E.gpg"
+
+    - name: Seed one expired legacy datadog apt key
+      ansible.builtin.command: >
+        gpg --no-default-keyring --keyring /etc/apt/trusted.gpg
+        --keyserver keyserver.ubuntu.com
+        --recv-keys A2923DFF56EDA6E76E55E492D3A80E30382E94DE
+      changed_when: true
+
+    - name: Ensure /etc/apt/keyrings exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
+    - name: Seed placeholder files for the role's file-based cleanup tasks
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: touch
+        mode: "0644"
+      loop:
+        - /etc/apt/keyrings/DATADOG_APT_KEY_382E94DE.gpg
+        - /etc/apt/keyrings/DATADOG_APT_KEY_F14F620E.gpg
+        - /etc/apt/sources.list.d/apt_datadoghq_com.list
+        - /etc/apt/trusted.gpg.d/datadog-archive-keyring.gpg
+
+    # The role installs the datadog-agent package from apt.datadoghq.com. Serve
+    # a fake one from a local repo so the role apt task installs it rather than
+    # hitting Datadog's repo on every CI run.
+    #
+    # To occasionally manually check that the role's repo/key config is valid
+    # (NOT FOR ROUTINE/CI USE):
+    #
+    #   MOLECULE_DATADOG_REAL_INSTALL=1 ./tests/molecule/run.sh datadog default
+    #
+    - name: Stub the datadog-agent package
+      when: lookup('env', 'MOLECULE_DATADOG_REAL_INSTALL') != '1'
+      block:
+        - name: Ensure dpkg-dev is present (for dpkg-scanpackages)
+          ansible.builtin.apt:
+            name: dpkg-dev
+            state: present
+
+        - name: Create fake datadog-agent package tree
+          ansible.builtin.file:
+            path: /tmp/fake-datadog-agent/DEBIAN
+            state: directory
+            mode: "0755"
+
+        - name: Write fake package control file
+          ansible.builtin.copy:
+            dest: /tmp/fake-datadog-agent/DEBIAN/control
+            content: |
+              Package: datadog-agent
+              Version: 999:1.0.0
+              Architecture: all
+              Maintainer: Molecule Test <test@example.com>
+              Description: Fake datadog-agent stub for molecule testing
+
+        - name: Write fake package postinst
+          ansible.builtin.copy:
+            dest: /tmp/fake-datadog-agent/DEBIAN/postinst
+            mode: "0755"
+            content: |
+              #!/bin/sh
+              set -e
+              getent group dd-agent >/dev/null || groupadd --system dd-agent
+              getent passwd dd-agent >/dev/null || useradd --system --gid dd-agent --no-create-home --shell /usr/sbin/nologin dd-agent
+              mkdir -p /etc/datadog-agent/conf.d /etc/datadog-agent/checks.d
+              chown -R dd-agent:dd-agent /etc/datadog-agent
+              cat > /lib/systemd/system/datadog-agent.service <<'UNIT'
+              [Unit]
+              Description=Fake Datadog Agent (Molecule stub)
+
+              [Service]
+              ExecStart=/bin/sleep infinity
+              Restart=always
+
+              [Install]
+              WantedBy=multi-user.target
+              UNIT
+              systemctl daemon-reload
+
+        - name: Create local fake repo directory
+          ansible.builtin.file:
+            path: /tmp/fake-datadog-repo
+            state: directory
+            mode: "0755"
+
+        - name: Build fake datadog-agent package into the local repo
+          ansible.builtin.command: >
+            dpkg-deb --build --root-owner-group
+            /tmp/fake-datadog-agent
+            /tmp/fake-datadog-repo/datadog-agent_999.1.0.0_all.deb
+          changed_when: true
+
+        - name: Generate local repo package index
+          ansible.builtin.shell: cd /tmp/fake-datadog-repo && dpkg-scanpackages . > Packages
+          changed_when: true
+
+        - name: Add local fake repo as an apt source
+          ansible.builtin.copy:
+            dest: /etc/apt/sources.list.d/fake-datadog.list
+            content: "deb [trusted=yes] file:/tmp/fake-datadog-repo ./\n"
