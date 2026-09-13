@@ -300,7 +300,6 @@ resource "aws_security_group" "alb-sg" {
     to_port          = "80"
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
   }
 
   ingress {
@@ -308,7 +307,6 @@ resource "aws_security_group" "alb-sg" {
     to_port          = "443"
     from_port        = "443"
     cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
   }
 
   ingress {
@@ -520,7 +518,6 @@ resource "aws_security_group" "rds" {
     to_port          = "5432"
     protocol         = "tcp"
     cidr_blocks      = flatten([aws_subnet.subnet-app-private.*.cidr_block, aws_subnet.subnet-db-private.*.cidr_block])
-    ipv6_cidr_blocks = ["::/0"]
   }
 
   dynamic "egress" {
@@ -563,7 +560,6 @@ resource "aws_security_group" "elasticache" {
     to_port          = "6379"
     protocol         = "tcp"
     cidr_blocks      = flatten([aws_subnet.subnet-app-private.*.cidr_block, aws_subnet.subnet-public.*.cidr_block])
-    ipv6_cidr_blocks = ["::/0"]
   }
 
   dynamic "egress" {
