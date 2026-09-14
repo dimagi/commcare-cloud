@@ -167,7 +167,7 @@
       postgresql_user:
         name: "{{ pgbouncer_auth_username }}"
         password: "{{ PGBOUNCER_AUTH_PASSWORD }}"
-        role_attr_flags: 'LOGIN,NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
+        role_attr_flags: 'LOGIN,NOCREATEROLE,NOCREATEDB'
         state: present
         db: '{{ postgresql_dbs.project_db.name }}'
         port: "{{ postgresql_port }}"
