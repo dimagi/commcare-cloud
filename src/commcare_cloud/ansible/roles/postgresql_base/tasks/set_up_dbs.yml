@@ -154,7 +154,9 @@
   become_user: "{{ 'ansible' if db_is_remote else 'postgres' }}"
   vars:
     ansible_ssh_pipelining: true
-  when: postgresql_dbs.project_db and postgresql_host == postgresql_dbs.project_db.host
+  # In check mode postgresql_user does not commit the role and it will be missing for
+  # "Set up the project_db database". So we need to skip this in check mode.
+  when: postgresql_dbs.project_db and postgresql_host == postgresql_dbs.project_db.host and not ansible_check_mode
   block:
     - name: Check that the pgbouncer auth password is set
       assert:
@@ -185,4 +187,5 @@
     login_user: "{{ postgres_users.root.username if db_is_remote else omit }}"
     login_password: "{{ postgres_users.root.password if db_is_remote else omit }}"
     query: "{{ lookup('template', 'project_db_setup.sql.j2') }}"
-  when: postgresql_dbs.project_db and postgresql_host == postgresql_dbs.project_db.host
+  # See the comment on "Create pgbouncer auth user" above about check mode
+  when: postgresql_dbs.project_db and postgresql_host == postgresql_dbs.project_db.host and not ansible_check_mode
