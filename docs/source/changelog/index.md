@@ -7,6 +7,12 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-09-15** [Hide Set-Cookie header in nginx](0101-nginx-hide-set-cookie-header.md)
+An issue was found in the nginx cache configuration
+for certain requests under apps/download in CommCare HQ.
+
+
+---
 #### **2026-07-01** [Set explicit file permissions across roles](0100-explicit-file-permissions.md)
 Many `file`/`copy`/`template` tasks across the ansible roles did not set an
 explicit `mode`, so the resulting permissions depended on the umask of the
