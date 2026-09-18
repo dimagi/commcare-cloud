@@ -5,6 +5,17 @@ CREATE EXTENSION IF NOT EXISTS earthdistance;
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
 
+-- RDS doesn't expose pg_authid, create our own stand-in
+CREATE SCHEMA IF NOT EXISTS pgbouncer;
+CREATE TABLE IF NOT EXISTS pgbouncer.project_db_passwords (
+    rolname text PRIMARY KEY,
+    passwd text NOT NULL
+);
+REVOKE ALL ON pgbouncer.project_db_passwords FROM PUBLIC;
+
+GRANT USAGE ON SCHEMA pgbouncer TO {{ postgres_users.commcare.username }};
+GRANT SELECT ON pgbouncer.project_db_passwords TO {{ postgres_users.commcare.username }};
+
 -- Make SECURITY DEFINER functions so HQ can create per-domain read-only roles
 -- for ProjectDB without HQ having direct access to CREATEROLE
 CREATE OR REPLACE FUNCTION projectdb_provision_role(role_name text, role_password text)
@@ -18,6 +29,15 @@ BEGIN
     RAISE EXCEPTION 'refusing to manage role %', role_name;
   END IF;
   EXECUTE format('CREATE ROLE %I WITH LOGIN PASSWORD %L', role_name, role_password);
+  EXECUTE format('GRANT %I TO %I', role_name, current_user);
+  INSERT INTO pgbouncer.project_db_passwords (rolname, passwd)
+  VALUES (role_name, role_password);
+EXCEPTION WHEN duplicate_object THEN
+  -- Role already exists. Membership was granted when it was first created
+  EXECUTE format('ALTER ROLE %I WITH PASSWORD %L', role_name, role_password);
+  INSERT INTO pgbouncer.project_db_passwords (rolname, passwd)
+  VALUES (role_name, role_password)
+  ON CONFLICT (rolname) DO UPDATE SET passwd = EXCLUDED.passwd;
 END;
 $$;
 
@@ -36,6 +56,7 @@ BEGIN
     EXECUTE format('DROP OWNED BY %I', role_name);
     EXECUTE format('DROP ROLE %I', role_name);
   END IF;
+  DELETE FROM pgbouncer.project_db_passwords WHERE rolname = role_name;
 END;
 $$;
 
@@ -51,3 +72,22 @@ GRANT EXECUTE ON FUNCTION projectdb_drop_role(text) TO {{ postgres_users.commcar
 -- USAGE is deliberately left in place so domain roles can still access
 -- functions installed by the extensions
 REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+
+-- user_lookup function from pgbouncer docs (https://www.pgbouncer.org/config.html)
+-- So pgbouncer can look up a user password hash instead of hardcoding it in userlist.txt
+-- Scope limited to ProjectDB's per-domain roles, which is all pgbouncer needs it for
+CREATE SCHEMA IF NOT EXISTS pgbouncer;
+CREATE OR REPLACE FUNCTION pgbouncer.project_db_user_lookup(username text)
+RETURNS TABLE(usename name, passwd text)
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = pg_catalog, pg_temp
+AS $$
+  SELECT rolname, passwd
+  FROM pgbouncer.project_db_passwords
+  WHERE rolname = username;
+$$;
+
+REVOKE EXECUTE ON FUNCTION pgbouncer.project_db_user_lookup(text) FROM PUBLIC;
+GRANT USAGE ON SCHEMA pgbouncer TO {{ pgbouncer_auth_username }};
+GRANT EXECUTE ON FUNCTION pgbouncer.project_db_user_lookup(text) TO {{ pgbouncer_auth_username }};
