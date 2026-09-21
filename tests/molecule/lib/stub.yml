@@ -1,0 +1,9 @@
+---
+# Generic no-op playbook, shared across scenarios. Reference it from a
+# scenario's molecule.yml (provisioner.playbooks.<action>: ../lib/stub.yml)
+# for any sequence step (e.g. cleanup, side_effect) a scenario doesn't need,
+# so Molecule doesn't warn that the playbook isn't configured.
+- name: Stub
+  hosts: all
+  gather_facts: false
+  tasks: []

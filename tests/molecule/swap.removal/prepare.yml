@@ -1,0 +1,31 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    # swapon/swapoff cannot work inside a rootless container (no
+    # CAP_SYS_ADMIN in the host's user namespace), so stub them out
+    # ahead of the real binaries on PATH.
+    - name: Stub swapon/swapoff
+      ansible.builtin.file:
+        src: /usr/bin/true
+        dest: "/usr/local/sbin/{{ item }}"
+        state: link
+      loop:
+        - swapon
+        - swapoff
+      become: true
+
+    # The role only removes swap when it finds pre-existing state, so
+    # fake a prior "swap enabled" run here.
+    - name: Create a pre-existing swap file
+      ansible.builtin.file:
+        path: /swapfile
+        state: touch
+        mode: "0600"
+      become: true
+
+    - name: Add pre-existing fstab entry
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        line: "/swapfile none swap sw 0 0"
+      become: true

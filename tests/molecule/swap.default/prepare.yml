@@ -1,0 +1,18 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    # swapon/swapoff need CAP_SYS_ADMIN against the host, which a rootless
+    # container never has. mkswap fails on any OverlayFS-backed root since swap
+    # files aren't supported there. Stub all three out ahead of the real
+    # binaries on PATH to let the role run to completion instead of failing.
+    - name: Stub swapon/swapoff/mkswap
+      ansible.builtin.file:
+        src: /usr/bin/true
+        dest: "/usr/local/sbin/{{ item }}"
+        state: link
+      loop:
+        - swapon
+        - swapoff
+        - mkswap
+      become: true

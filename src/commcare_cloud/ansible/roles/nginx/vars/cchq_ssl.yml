@@ -98,6 +98,7 @@ nginx_sites:
       proxy_cache_key: "$proxy_host$request_uri_no_username"
       client_body_buffer_size: 5m
       proxy_ignore_headers: Set-Cookie
+      proxy_hide_header: Set-Cookie
     - name: "/static"
       alias: "{{ nginx_static_home }}"
       add_header: "Access-Control-Allow-Origin *"

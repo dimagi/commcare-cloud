@@ -44,6 +44,8 @@ ansible-lint-cloud = "commcare_cloud.ansible_lint:main"
 test = [
     "ansible-lint==5.4.0",
     "docopt",
+    "molecule",
+    "molecule-plugins[docker,podman]",
     "pytest",
     "pytest-unmagic>=1.1.0",
     "requests-mock",

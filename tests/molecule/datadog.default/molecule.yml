@@ -1,0 +1,35 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  - name: instance
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+
+    # Let systemd run as PID 1, needed for the role's service tasks.
+    override_command: false
+    privileged: true
+    cgroupns_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    tmpfs:
+      - /run
+      - /tmp
+
+provisioner:
+  name: ansible
+  playbooks:
+    cleanup: ../lib/stub.yml
+    side_effect: ../lib/stub.yml
+  inventory:
+    group_vars:
+      all:
+        DATADOG_ENABLED: true
+        DATADOG_API_KEY: "0000000000000000000000000000ff"
+        env_monitoring_id: molecule-test
+verifier:
+  name: ansible
