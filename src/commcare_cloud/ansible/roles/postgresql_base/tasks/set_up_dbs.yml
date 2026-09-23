@@ -163,6 +163,11 @@
         that: PGBOUNCER_AUTH_PASSWORD
         fail_msg: 'PGBOUNCER_AUTH_PASSWORD must be set for envs with a project_db'
 
+    - name: Check that the projectdb users password is set
+      assert:
+        that: PROJECTDB_USERS_PASSWORD
+        fail_msg: 'PROJECTDB_USERS_PASSWORD must be set for envs with a project_db'
+
     - name: Create the role
       postgresql_user:
         name: "{{ pgbouncer_auth_username }}"
