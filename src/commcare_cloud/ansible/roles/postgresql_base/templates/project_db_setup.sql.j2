@@ -22,6 +22,18 @@ BEGIN
 END;
 $$;
 
+-- Backfill for roles created before the GRANT above existed. Without it,
+-- projectdb_drop_role's DROP OWNED BY fails for them. Safe to run every
+-- deploy: re-granting an already-held membership is a no-op.
+DO $$
+DECLARE
+  r record;
+BEGIN
+  FOR r IN SELECT rolname FROM pg_roles WHERE rolname LIKE 'projectdb\_%' LOOP
+    EXECUTE format('GRANT %I TO %I', r.rolname, current_user);
+  END LOOP;
+END $$;
+
 CREATE OR REPLACE FUNCTION projectdb_drop_role(role_name text)
 RETURNS void
 LANGUAGE plpgsql
