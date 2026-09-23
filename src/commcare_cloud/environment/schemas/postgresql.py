@@ -164,7 +164,6 @@ class PostgresqlConfig(jsonobject.JsonObject):
                 self.dbs.project_db.pgbouncer_hosts = list(ucr.pgbouncer_hosts)
             if self.dbs.project_db.pgbouncer_endpoint is None:
                 self.dbs.project_db.pgbouncer_endpoint = ucr.pgbouncer_endpoint
-            self.pgbouncer_override.pgbouncer_auth_type = 'scram-sha-256'
 
         all_dbs = self.generate_postgresql_dbs()
         for db in all_dbs:

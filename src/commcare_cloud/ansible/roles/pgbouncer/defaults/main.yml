@@ -12,7 +12,6 @@ pgbouncer_default_pool: 15
 pgbouncer_reserve_pool: 4
 pgbouncer_pool_timeout: 2
 pgbouncer_pool_mode: session
-pgbouncer_auth_type: md5
 # pgbouncer's built-in defaults; lower to recycle server connections
 # faster, e.g. to shed memory retained by bloated postgres backends
 pgbouncer_server_lifetime: 3600
