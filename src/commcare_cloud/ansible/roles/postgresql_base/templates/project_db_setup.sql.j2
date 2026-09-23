@@ -59,6 +59,10 @@ REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 -- scoped by which role a domain is given, not by that role having a secret password.
 -- Scope limited to ProjectDB's per-domain roles, which is all pgbouncer needs it for
 CREATE SCHEMA IF NOT EXISTS pgbouncer;
+
+-- Leftover from when each role's password was stored here instead of shared.
+DROP TABLE IF EXISTS pgbouncer.project_db_passwords;
+
 CREATE OR REPLACE FUNCTION pgbouncer.project_db_user_lookup(username text)
 RETURNS TABLE(usename name, passwd text)
 LANGUAGE sql
