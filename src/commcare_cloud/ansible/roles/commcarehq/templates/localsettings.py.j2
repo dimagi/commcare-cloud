@@ -634,6 +634,10 @@ ACTIVE_PILLOW_NAMES = [
 SIMPLE_API_KEYS = {{ SIMPLE_API_KEYS|to_json }}
 {% endif %}
 
+{% if AI_TRANSLATION_API_KEYS %}
+AI_TRANSLATION_API_KEYS = {{ AI_TRANSLATION_API_KEYS|to_json }}
+{% endif %}
+
 {% if groups.kafka %}
 KAFKA_BROKERS = [
     {%- for host in groups.kafka -%}
