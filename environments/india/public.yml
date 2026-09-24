@@ -104,6 +104,7 @@ localsettings:
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
+  CELERY_24_HOUR_QUEUE: "24_hour_queue"
   CELERY_BROKER_HEARTBEAT: 600
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
