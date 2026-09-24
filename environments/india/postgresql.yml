@@ -2,6 +2,7 @@ DEFAULT_POSTGRESQL_HOST: rds_pgmain0
 REPORTING_DATABASES:
   ucr: ucr
   aaa-data: aaa-data
+  project_db: project_db
 
 pgbouncer_override:
   pgbouncer_default_pool: 115
@@ -40,6 +41,7 @@ dbs:
     pgbouncer_endpoint: pgucr_nlb
     pgbouncer_hosts:
       - pgbouncer8
+  project_db: {}
   synclogs:
     pgbouncer_endpoint: pgsynclogs_nlb
     pgbouncer_hosts:
