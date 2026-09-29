@@ -54,20 +54,26 @@ GRANT EXECUTE ON FUNCTION projectdb_drop_role(text) TO {{ postgres_users.commcar
 -- functions installed by the extensions
 REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 
+-- RDS doesn't expose pg_authid, so this can't read each role's real password hash.
+-- All projectdb_ roles share one password (PROJECTDB_USERS_PASSWORD), set here at
+-- deploy time and kept out of any function's source so it isn't readable via
+-- pg_get_functiondef/pg_proc by anyone who can call it (e.g. postgres_users.commcare).
+CREATE SCHEMA IF NOT EXISTS pgbouncer;
+CREATE TABLE IF NOT EXISTS pgbouncer.project_db_secret (passwd text NOT NULL);
+REVOKE ALL ON pgbouncer.project_db_secret FROM PUBLIC;
+TRUNCATE pgbouncer.project_db_secret;
+INSERT INTO pgbouncer.project_db_secret (passwd) VALUES ('{{ PROJECTDB_USERS_PASSWORD }}');
+
 -- user_lookup function from pgbouncer docs (https://www.pgbouncer.org/config.html)
 -- So pgbouncer can look up a user password instead of hardcoding it in userlist.txt.
--- RDS doesn't expose pg_authid, so this can't read each role's real password hash.
--- All projectdb_ roles share one password (PROJECTDB_USERS_PASSWORD); access is
--- scoped by which role a domain is given, not by that role having a secret password.
 -- Scope limited to ProjectDB's per-domain roles, which is all pgbouncer needs it for
-CREATE SCHEMA IF NOT EXISTS pgbouncer;
 CREATE OR REPLACE FUNCTION pgbouncer.project_db_user_lookup(username text)
 RETURNS TABLE(usename name, passwd text)
 LANGUAGE sql
 SECURITY DEFINER
 SET search_path = pg_catalog, pg_temp
 AS $$
-  SELECT rolname, '{{ PROJECTDB_USERS_PASSWORD }}'
+  SELECT rolname, (SELECT passwd FROM pgbouncer.project_db_secret)
   FROM pg_roles
   WHERE rolname = username AND rolcanlogin AND rolname LIKE 'projectdb\_%';
 $$;
