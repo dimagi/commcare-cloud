@@ -1,0 +1,31 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  - name: instance
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      # Work around become_user tasks need ACLs to grant temp-file access, but
+      # container overlay filesystems don't support them.
+      allow_world_readable_tmpfiles: true
+  playbooks:
+    cleanup: ../lib/stub.yml
+    side_effect: ../lib/stub.yml
+  inventory:
+    group_vars:
+      all:
+        http_proxy_address: 10.0.2.2
+        http_proxy_port: 3128
+        SITE_HOST: commcarehq.example.com
+        internal_domain_name: internal.example.com
+        cchq_user: cchq
+verifier:
+  name: ansible

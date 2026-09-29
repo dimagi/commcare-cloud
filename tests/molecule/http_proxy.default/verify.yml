@@ -1,0 +1,69 @@
+---
+# Note: bower, npm, and git tasks use `failed_when: false`, which means they can
+# fail for any reason and remain green. Tasks fail on `user: cchq` and
+# `user: ansible` items due to "sudo: unknown user ..."; npm is not installed so
+# it's command failure is always ignored. This may be fragile because other
+# unexpected failure reasons may not surface. However, `user: root` items do not
+# fail, and, at least for bower and git, task outcomes are verified.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - block:
+      - name: Assert proxy vars present in /etc/environment
+        ansible.builtin.command: grep -Fxq "{{ item }}=http://10.0.2.2:3128/" /etc/environment
+        changed_when: false
+        loop:
+          - http_proxy
+          - https_proxy
+          - ftp_proxy
+          - HTTP_PROXY
+          - HTTPS_PROXY
+          - FTP_PROXY
+
+      - name: Assert apt proxy config present
+        ansible.builtin.command: >-
+          grep -Fxq 'Acquire::{{ item }}::Proxy "http://10.0.2.2:3128";' /etc/apt/apt.conf
+        changed_when: false
+        loop:
+          - http
+          - https
+          - ftp
+
+      - name: Assert no_proxy lines present in /etc/environment
+        ansible.builtin.shell: >-
+          grep -E "^{{ item }}=" /etc/environment | grep -Fq '127.0.0.1,localhost'
+          && grep -E "^{{ item }}=" /etc/environment | grep -Fq 'commcarehq.example.com'
+          && grep -E "^{{ item }}=" /etc/environment | grep -Fq 'internal.example.com'
+        changed_when: false
+        loop:
+          - no_proxy
+          - NO_PROXY
+
+      - name: Assert root .bowerrc rendered with proxy
+        ansible.builtin.shell: >-
+          grep -Fq '"proxy": "http://10.0.2.2:3128"' /root/.bowerrc
+          && grep -Fq '"https-proxy": "http://10.0.2.2:3128"' /root/.bowerrc
+        changed_when: false
+
+      - name: Assert git proxy/insteadOf config set for root
+        ansible.builtin.command: grep -Fxq "{{ item }}" /root/.gitconfig-fake
+        changed_when: false
+        loop:
+          - "http.proxy http://10.0.2.2:3128/"
+          - "https.proxy http://10.0.2.2:3128/"
+          - "url.https://github.com/.insteadOf git@github.com:"
+          - "url.https://.insteadOf git://"
+
+    always:
+      - name: Get fake git error log
+        # because `failed_when: false` swallows errors, making it hard to debug
+        ansible.builtin.command: cat /root/.gitconfig-errors
+        changed_when: false
+        failed_when: false
+        register: gitconfig_errors
+      - ansible.builtin.debug:
+          var: gitconfig_errors.stdout_lines
+        when: gitconfig_errors.stdout_lines
+        failed_when: gitconfig_errors.stdout_lines

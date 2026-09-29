@@ -1,0 +1,12 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: Stub git
+      # apt install is expensive. Rather than installing real git, use a fake
+      # that implements the read/write contract at ~/.gitconfig-fake
+      ansible.builtin.copy:
+        src: fake_git.py
+        dest: /usr/local/sbin/git
+        mode: '0755'
