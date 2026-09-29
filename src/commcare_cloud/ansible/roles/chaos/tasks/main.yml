@@ -22,6 +22,8 @@
 
 - name: Start chaos
   command: "{{ chaos_dir }}/start/{{ strategy }}"
+  args:
+    creates: "{{ chaos_dir }}/stop/{{ strategy }}"
   tags:
     - start
 
