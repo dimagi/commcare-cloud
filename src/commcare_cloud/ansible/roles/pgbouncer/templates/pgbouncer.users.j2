@@ -1,3 +1,6 @@
 {% for group in postgres_users.values() %}
 "{{ group.username }}" "{{ group.password }}"
 {% endfor %}
+{% if postgresql_dbs.project_db %}
+"{{ pgbouncer_auth_username }}" "{{ PGBOUNCER_AUTH_PASSWORD }}"
+{% endif %}
