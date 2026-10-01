@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include chaos
+      ansible.builtin.include_role:
+        name: "chaos"
+      tags: always  # Always include, regardless of --tags
