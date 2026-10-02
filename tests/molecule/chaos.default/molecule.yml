@@ -1,0 +1,28 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  - name: instance
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+provisioner:
+  name: ansible
+  options:
+    # Without tags the role starts chaos and immediately stops it again.
+    tags: start
+  playbooks:
+    prepare: ../lib/stub.yml
+    cleanup: ../lib/stub.yml
+    side_effect: ../lib/stub.yml
+  inventory:
+    group_vars:
+      all:
+        # Keep the IO load low.
+        burnio_wait: 60
+        burnio_scale: 2
+verifier:
+  name: ansible
