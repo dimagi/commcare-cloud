@@ -1,0 +1,15 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tags: always  # Always verify, regardless of --tags
+  tasks:
+  - name: Assert chaos dir was removed
+    ansible.builtin.command: test ! -e /var/chaos
+    changed_when: false
+  - name: Assert burnio loops were stopped
+    ansible.builtin.shell: test -z "$(grep -l '[b]urnioloop' /proc/[0-9]*/cmdline)"
+    changed_when: false
+  - name: Assert burnio files were removed
+    ansible.builtin.shell: test -z "$(ls /tmp/burnio-* 2>/dev/null)"
+    changed_when: false
