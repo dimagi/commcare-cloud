@@ -12,9 +12,9 @@
       - /var/chaos/burnioloop
       - /var/chaos/stop/burnio
   - name: Assert burnio_scale loops are running
-    ansible.builtin.shell: test "$(grep -l '[b]urnioloop' /proc/[0-9]*/cmdline | wc -l)" = 2
+    ansible.builtin.shell: test "$(grep -l '[b]urnioloop' /proc/[0-9]*/cmdline | wc -l)" = {{ burnio_scale }}
     changed_when: false
   - name: Assert burnio files are being written
     ansible.builtin.command: test -e /tmp/burnio-{{ item }}
     changed_when: false
-    loop: [0, 1]
+    loop: "{{ range(burnio_scale | int) | list }}"
