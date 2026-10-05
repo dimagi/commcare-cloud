@@ -1,0 +1,48 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  - name: instance
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+
+    # Let systemd run as PID 1, needed for the fake agent's service.
+    override_command: false
+    privileged: true
+    cgroupns_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    tmpfs:
+      - /run
+      - /tmp
+
+provisioner:
+  name: ansible
+  playbooks:
+    cleanup: ../lib/stub.yml
+    side_effect: ../lib/stub.yml
+  inventory:
+    group_vars:
+      all:
+        enable_cloudwatch_logs: true
+        deploy_env: molecule
+        log_files_collect_list:
+          - file_path: /var/log/syslog
+            log_group_name_suffix: syslog
+            should_include: true
+          - file_path: /var/log/auth.log
+            log_group_name_suffix: auth
+            log_stream_name_suffix: extra
+            should_include: true
+          - file_path: /var/log/excluded.log
+            log_group_name_suffix: excluded
+            should_include: "{{ 'no_such_group' in group_names }}"
+          - file_path: /var/log/apt/history.log
+            log_group_name_suffix: apt-history
+            should_include: true
+verifier:
+  name: ansible
