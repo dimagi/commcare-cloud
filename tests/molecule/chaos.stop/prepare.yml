@@ -9,7 +9,11 @@
         mode: "0755"
         content: |
           #!/bin/sh
-          # Supports only `killall -g NAME`; kills just the named processes
+          # Supports only `killall -g NAME`; kills just the named processes.
+          # Killing the whole process group also kills the Ansible task in some
+          # Docker configurations (GitHub Actions). This is enough here: the
+          # burnioloop shell is what starts each dd, so once it is gone only the
+          # already running dd remains, and it exits after its single write.
           [ "$1" = "-g" ] || exit 2
           pkill -x "$2"
       tags: always
