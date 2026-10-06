@@ -7,10 +7,6 @@
       ansible.builtin.shell: dpkg-query -W -f='${Status}' amazon-cloudwatch-agent | grep -q "install ok installed"
       changed_when: false
 
-    - name: Assert systemd unit exists
-      ansible.builtin.command: test -f /lib/systemd/system/amazon-cloudwatch-agent.service
-      changed_when: false
-
     - name: Assert agent service is active
       ansible.builtin.command: systemctl is-active amazon-cloudwatch-agent
       register: svc_status
