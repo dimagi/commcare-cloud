@@ -1,0 +1,226 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  vars:
+    fixtures: /var/tmp/fake-cwa
+    pkg_tree: /var/tmp/fake-cwa/pkg
+  tasks:
+    - name: Ensure gnupg is present
+      # would be nice to get this included in the base image, but until then...
+      ansible.builtin.apt:
+        name: gnupg
+        state: present
+        update_cache: true
+
+    # The role downloads the package from S3, which is slow and needs the
+    # network on every CI run, so by default serve a fake one.
+    #
+    # To occasionally manually check that the role works with the real package
+    # (NOT FOR ROUTINE/CI USE):
+    #
+    #   MOLECULE_CWA_REAL_INSTALL=1 ./tests/molecule/run.sh cloudwatch_logs default
+    #
+    - name: Stub the amazon-cloudwatch-agent package
+      when: lookup('env', 'MOLECULE_CWA_REAL_INSTALL') != '1'
+      block:
+        - name: Create fake package tree
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: directory
+            mode: "0755"
+          loop:
+            - "{{ pkg_tree }}/DEBIAN"
+            - "{{ pkg_tree }}/opt/aws/amazon-cloudwatch-agent/bin"
+            - "{{ pkg_tree }}/lib/systemd/system"
+
+        - name: Write fake package control file
+          ansible.builtin.copy:
+            dest: "{{ pkg_tree }}/DEBIAN/control"
+            mode: "0644"
+            content: |
+              Package: amazon-cloudwatch-agent
+              Version: 1.0.0
+              Architecture: all
+              Maintainer: Molecule Test <test@example.com>
+              Description: Fake amazon-cloudwatch-agent stub for molecule testing
+
+        - name: Write fake package postinst
+          ansible.builtin.copy:
+            dest: "{{ pkg_tree }}/DEBIAN/postinst"
+            mode: "0755"
+            content: |
+              #!/bin/sh
+              set -e
+              mkdir -p /opt/aws/amazon-cloudwatch-agent/etc
+              systemctl daemon-reload
+
+        - name: Write fake agent systemd unit
+          ansible.builtin.copy:
+            dest: "{{ pkg_tree }}/lib/systemd/system/amazon-cloudwatch-agent.service"
+            mode: "0644"
+            content: |
+              [Unit]
+              Description=Fake Amazon CloudWatch Agent (Molecule stub)
+
+              [Service]
+              ExecStart=/bin/sleep infinity
+              Restart=always
+
+              [Install]
+              WantedBy=multi-user.target
+
+        # The real amazon-cloudwatch-agent-ctl needs EC2 metadata/IAM to
+        # fetch-config with -m ec2. This one only starts the unit and records the
+        # arguments it was given.
+        - name: Write fake amazon-cloudwatch-agent-ctl
+          ansible.builtin.copy:
+            dest: "{{ pkg_tree }}/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl"
+            mode: "0755"
+            content: |
+              #!/bin/sh
+              # usage: amazon-cloudwatch-agent-ctl -a ACTION [...]
+              case "$2" in
+                status)
+                  if systemctl is-active --quiet amazon-cloudwatch-agent; then
+                    echo '{'
+                    echo '  "status": "running",'
+                    echo '  "version": "1.0.0"'
+                    echo '}'
+                  else
+                    echo '{'
+                    echo '  "status": "stopped",'
+                    echo '  "version": "1.0.0"'
+                    echo '}'
+                  fi
+                  ;;
+                start)
+                  systemctl start amazon-cloudwatch-agent
+                  ;;
+                fetch-config)
+                  echo "$@" >> /var/log/fake-cwa-ctl.log
+                  systemctl start amazon-cloudwatch-agent
+                  ;;
+                *)
+                  echo "fake ctl: unsupported action: $2" >&2
+                  exit 1
+                  ;;
+              esac
+
+        - name: Build fake package
+          ansible.builtin.command: >
+            dpkg-deb --build --root-owner-group
+            {{ pkg_tree }}
+            {{ fixtures }}/amazon-cloudwatch-agent.deb
+          changed_when: true
+
+        # The role runs `gpg --verify` as root, so a key created and imported
+        # here (as root) is the one it will find.
+        - name: Generate throwaway signing key
+          ansible.builtin.command: >
+            gpg --batch --passphrase ''
+            --quick-generate-key molecule-test@example.com default default never
+          changed_when: true
+
+        - name: Sign fake package
+          ansible.builtin.command: >
+            gpg --batch --yes --detach-sign
+            --output {{ fixtures }}/amazon-cloudwatch-agent.deb.sig
+            {{ fixtures }}/amazon-cloudwatch-agent.deb
+          changed_when: true
+
+    # The real amazon-cloudwatch-agent-ctl runs `fetch-config -m ec2`, which
+    # needs the EC2 metadata service (IMDS) for the instance id, region and
+    # credentials. Serve a minimal fake one on the link-local address. The
+    # stub package avoids this because its ctl never talks to IMDS.
+    - name: Fake the EC2 metadata service for the real package
+      when: lookup('env', 'MOLECULE_CWA_REAL_INSTALL') == '1'
+      block:
+        - name: Ensure iproute2 is present
+          ansible.builtin.apt:
+            name: iproute2
+            state: present
+
+        - name: Write fake IMDS server
+          ansible.builtin.copy:
+            dest: /usr/local/bin/fake-imds.py
+            mode: "0755"
+            content: |
+              #!/usr/bin/python3
+              import json
+              from http.server import BaseHTTPRequestHandler, HTTPServer
+
+              INSTANCE_ID = "i-0123456789abcdef0"
+              REGION = "us-east-1"
+              ROUTES = {
+                  "/latest/meta-data/instance-id": INSTANCE_ID,
+                  "/latest/meta-data/instance-type": "t3.micro",
+                  "/latest/meta-data/ami-id": "ami-00000000",
+                  "/latest/meta-data/hostname": "ip-10-0-0-1.ec2.internal",
+                  "/latest/meta-data/local-hostname": "ip-10-0-0-1.ec2.internal",
+                  "/latest/meta-data/placement/region": REGION,
+                  "/latest/meta-data/placement/availability-zone": REGION + "a",
+                  "/latest/meta-data/iam/security-credentials": "molecule",
+                  "/latest/meta-data/iam/security-credentials/molecule": json.dumps({
+                      "Code": "Success",
+                      "Type": "AWS-HMAC",
+                      "AccessKeyId": "AKIAFAKEFAKEFAKEFAKE",
+                      "SecretAccessKey": "fake",
+                      "Token": "fake",
+                      "Expiration": "2099-01-01T00:00:00Z",
+                      "LastUpdated": "2020-01-01T00:00:00Z",
+                  }),
+                  "/latest/dynamic/instance-identity/document": json.dumps({
+                      "instanceId": INSTANCE_ID,
+                      "instanceType": "t3.micro",
+                      "region": REGION,
+                      "availabilityZone": REGION + "a",
+                      "accountId": "000000000000",
+                      "imageId": "ami-00000000",
+                      "privateIp": "10.0.0.1",
+                  }),
+              }
+
+
+              class Handler(BaseHTTPRequestHandler):
+                  def _send(self, status, body=""):
+                      data = body.encode()
+                      self.send_response(status)
+                      self.send_header("Content-Length", str(len(data)))
+                      self.end_headers()
+                      self.wfile.write(data)
+
+                  def do_PUT(self):  # IMDSv2 token
+                      self._send(200, "fake-token")
+
+                  def do_GET(self):
+                      body = ROUTES.get(self.path.split("?")[0].rstrip("/"))
+                      if body is None:
+                          self._send(404)
+                      else:
+                          self._send(200, body)
+
+
+              HTTPServer(("169.254.169.254", 80), Handler).serve_forever()
+
+        - name: Write fake IMDS systemd unit
+          ansible.builtin.copy:
+            dest: /etc/systemd/system/fake-imds.service
+            mode: "0644"
+            content: |
+              [Unit]
+              Description=Fake EC2 metadata service (Molecule stub)
+
+              [Service]
+              ExecStartPre=/sbin/ip addr replace 169.254.169.254/32 dev lo
+              ExecStart=/usr/bin/python3 /usr/local/bin/fake-imds.py
+              Restart=always
+
+              [Install]
+              WantedBy=multi-user.target
+
+        - name: Start fake IMDS
+          ansible.builtin.systemd:
+            name: fake-imds
+            state: started
+            daemon_reload: true
