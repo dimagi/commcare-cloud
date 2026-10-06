@@ -11,9 +11,33 @@ permissions:
   contents: read
 
 jobs:
-  molecule:
+  discover:
     runs-on: ubuntu-22.04
+    outputs:
+      roles: ${{ steps.roles.outputs.roles }}
+    steps:
+    - uses: actions/checkout@v5
+    - name: List roles
+      id: roles
+      run: |
+        # tests/molecule/<role>.<scenario>/molecule.yml -> ["<role>", ...]
+        roles=$(python3 - <<'EOF'
+        import json, pathlib
 
+        paths = pathlib.Path("tests/molecule").glob("*/molecule.yml")
+        print(json.dumps(sorted({p.parent.name.partition(".")[0] for p in paths})))
+        EOF
+        )
+        echo "roles=$roles" >> "$GITHUB_OUTPUT"
+
+  role:
+    needs: discover
+    name: ${{ matrix.role }}
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        role: ${{ fromJSON(needs.discover.outputs.roles) }}
     steps:
     - uses: actions/checkout@v5
     - name: Install uv
@@ -30,4 +54,4 @@ jobs:
     - name: Run molecule tests
       run: |
         source .venv/bin/activate
-        ./tests/molecule/run.sh
+        ./tests/molecule/run.sh "${{ matrix.role }}"
