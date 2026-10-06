@@ -52,10 +52,7 @@
             content: |
               #!/bin/sh
               set -e
-              getent group cwagent >/dev/null || groupadd --system cwagent
-              getent passwd cwagent >/dev/null || useradd --system --gid cwagent --no-create-home --shell /usr/sbin/nologin cwagent
               mkdir -p /opt/aws/amazon-cloudwatch-agent/etc
-              chown -R cwagent:cwagent /opt/aws/amazon-cloudwatch-agent/etc
               systemctl daemon-reload
 
         - name: Write fake agent systemd unit

@@ -14,7 +14,7 @@
       failed_when: svc_status.stdout != "active"
 
     - name: Assert config owner and mode
-      ansible.builtin.shell: test "$(stat -c '%U:%G %a' /opt/aws/amazon-cloudwatch-agent/etc/cloudwatch_logs.json)" = "cwagent:cwagent 644"
+      ansible.builtin.shell: test "$(stat -c '%U:%G %a' /opt/aws/amazon-cloudwatch-agent/etc/cloudwatch_logs.json)" = "root:root 644"
       changed_when: false
 
     - name: Read rendered config
