@@ -1,0 +1,73 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Stat backup paths
+    ansible.builtin.stat:
+      path: "{{ item }}"
+    loop:
+      - /opt/data/backups/blobdb
+      - /usr/local/sbin/create_blobdb_backup.sh
+      - /root/.aws/credentials
+      - /usr/local/sbin/backup_snapshots.py
+      - /usr/local/bin/check_s3_backup.py
+    register: stats
+
+  - name: Index stat results by path
+    ansible.builtin.set_fact:
+      stat_by_path: "{{ dict(stats.results | map(attribute='item') | zip(stats.results | map(attribute='stat'))) }}"
+
+  - name: Assert backup dir and files exist with expected modes
+    ansible.builtin.assert:
+      that:
+        - stat_by_path['/opt/data/backups/blobdb'].isdir
+        - stat_by_path['/opt/data/backups/blobdb'].mode == '0700'
+        - stat_by_path['/usr/local/sbin/create_blobdb_backup.sh'].mode == '0700'
+        - stat_by_path['/root/.aws/credentials'].mode == '0700'
+        - stat_by_path['/usr/local/sbin/backup_snapshots.py'].mode == '0755'
+        - stat_by_path['/usr/local/bin/check_s3_backup.py'].mode == '0755'
+
+  - name: Read backup script
+    ansible.builtin.slurp:
+      src: /usr/local/sbin/create_blobdb_backup.sh
+    register: backup_script
+
+  - name: Assert backup script archives blobdb and uploads to S3
+    ansible.builtin.assert:
+      that:
+        - "'/opt/data/backups/blobdb' in script"
+        - "'/opt/data/blobdb' in script"
+        - "'backup_snapshots.py' in script"
+        - "'molecule-blobdb-backups' in script"
+        - "'s3.us-east-1.amazonaws.com' in script"
+    vars:
+      script: "{{ backup_script.content | b64decode }}"
+
+  - name: Read AWS credentials
+    ansible.builtin.slurp:
+      src: /root/.aws/credentials
+    register: aws_credentials
+
+  - name: Assert AWS credentials rendered
+    ansible.builtin.assert:
+      that:
+        - "'aws_access_key_id=AKIAMOLECULETEST' in creds"
+        - "'aws_secret_access_key=molecule-secret-key' in creds"
+    vars:
+      creds: "{{ aws_credentials.content | b64decode }}"
+
+  - name: Read cron file
+    ansible.builtin.slurp:
+      src: /etc/cron.d/backup_blobdb
+    register: cron_file
+
+  - name: Assert cron entries
+    ansible.builtin.assert:
+      that:
+        - cron is search('(?m)^0 0 \* \* [1-6,\-]+ root /usr/local/sbin/create_blobdb_backup.sh daily 2$')
+        - cron is search('(?m)^15 \*/3 \* \* [1-6,\-]+ root /usr/local/sbin/create_blobdb_backup.sh hourly 60$')
+        - cron is search('(?m)^0 0 \* \* 0 root /usr/local/sbin/create_blobdb_backup.sh weekly 14$')
+        - cron is search('(?m)^0 [0-9,]+ \* \* \* root /opt/venv/bin/python3 /usr/local/bin/check_s3_backup.py blobdb ')
+    vars:
+      cron: "{{ cron_file.content | b64decode }}"

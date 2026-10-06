@@ -1,0 +1,25 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Stat legacy cron file
+    ansible.builtin.stat:
+      path: /etc/cron.d/create_blobdb_backup.sh
+    register: legacy_cron
+
+  - name: Read backup cron file
+    ansible.builtin.slurp:
+      src: /etc/cron.d/backup_blobdb
+    register: cron_file
+
+  - name: Assert legacy file and hourly cron were removed, other crons kept
+    ansible.builtin.assert:
+      that:
+        - not legacy_cron.stat.exists
+        - "'create_blobdb_backup.sh hourly' not in cron"
+        - "'create_blobdb_backup.sh daily' in cron"
+        - "'create_blobdb_backup.sh weekly' in cron"
+        - "'Check blobdb s3 backups' in cron"
+    vars:
+      cron: "{{ cron_file.content | b64decode }}"
