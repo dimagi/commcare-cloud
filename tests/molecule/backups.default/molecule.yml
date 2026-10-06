@@ -1,0 +1,39 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  - name: instance
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+    groups:
+      - shared_dir_host
+provisioner:
+  name: ansible
+  playbooks:
+    cleanup: ../lib/stub.yml
+    prepare: ../lib/stub.yml
+    side_effect: ../lib/stub.yml
+  inventory:
+    group_vars:
+      all:
+        backup_blobdb: true
+        blobdb_s3: true
+        blobdb_backup_hourly: true
+        check_s3_backups_email: backups@example.com
+        deploy_env: molecule
+        encrypted_root: /opt/data
+        virtualenv_home: /opt/venv
+        aws_versioning_enabled: true
+        aws_region: us-east-1
+        aws_endpoint: s3.us-east-1.amazonaws.com
+        blobdb_snapshot_bucket: molecule-blobdb-backups
+        couchdb_snapshot_bucket: molecule-couch-backups
+        postgres_snapshot_bucket: molecule-postgres-backups
+        AMAZON_S3_ACCESS_KEY: AKIAMOLECULETEST
+        AMAZON_S3_SECRET_KEY: molecule-secret-key
+verifier:
+  name: ansible
