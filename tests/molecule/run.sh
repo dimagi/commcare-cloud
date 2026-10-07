@@ -70,6 +70,7 @@ fi
 
 export ANSIBLE_CONFIG=$(pwd)/src/commcare_cloud/ansible/ansible.cfg
 export ANSIBLE_ROLES_PATH=$(pwd)/src/commcare_cloud/ansible/roles
+export CCHQ_COLLECTIONS_PATH=$(python -c 'from commcare_cloud.environment.paths import ANSIBLE_COLLECTIONS_PATHS as p; print(p)')
 export MOLECULE_GLOB="tests/molecule/$role.$scenario/molecule.yml"
 
 # --all picks every scenario matched by MOLECULE_GLOB, but only test/destroy
@@ -80,4 +81,4 @@ else
   select_opts=(--scenario-name "$role.$scenario")
 fi
 
-molecule "$command" "${select_opts[@]}" ${opts[@]+"${opts[@]}"} ${extra[@]+"${extra[@]}"}
+molecule --base-config tests/molecule/lib/base.yml "$command" "${select_opts[@]}" ${opts[@]+"${opts[@]}"} ${extra[@]+"${extra[@]}"}
