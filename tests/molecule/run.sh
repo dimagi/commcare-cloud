@@ -81,4 +81,9 @@ else
   select_opts=(--scenario-name "$role.$scenario")
 fi
 
-molecule --base-config tests/molecule/lib/base.yml "$command" "${select_opts[@]}" ${opts[@]+"${opts[@]}"} ${extra[@]+"${extra[@]}"}
+rc=0
+molecule --base-config tests/molecule/lib/base.yml "$command" "${select_opts[@]}" ${opts[@]+"${opts[@]}"} ${extra[@]+"${extra[@]}"} || rc=$?
+if [ "$rc" -ne 0 ]; then
+  printf '\033[1;31mFAILED: molecule %s %s (exit %s)\033[0m\n' "$command" "$role.$scenario" "$rc" >&2
+fi
+exit "$rc"
