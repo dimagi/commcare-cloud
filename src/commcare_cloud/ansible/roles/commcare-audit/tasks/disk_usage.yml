@@ -1,9 +1,12 @@
---- 
+---
 - name: Running 'df -h' command
-  shell: |
-    set -o pipefail
-    df -h | tee {{ audit_directory }}/disk_usage.txt
-  args:
-    executable: /bin/bash
+  command: df -h
+  register: disk_usage
+
+- name: Save disk usage stats
+  copy:
+    content: "{{ disk_usage.stdout }}\n"
+    dest: "{{ audit_directory }}/disk_usage.txt"
+    mode: '0644'
   delegate_to: localhost
   become_user: "{{ control_user }}"

@@ -1,6 +1,6 @@
 ---
 - name: Get lsblk output in JSON format
-  command: "lsblk -l --json"
+  command: "lsblk -l --json -o NAME,MOUNTPOINT"
   register: lsblk_output
 
 - name: Filter JSON output for non-null mountpoints
