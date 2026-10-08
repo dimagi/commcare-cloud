@@ -38,8 +38,24 @@ jobs:
       fail-fast: false
       matrix:
         role: ${{ fromJSON(needs.discover.outputs.roles) }}
+    env:
+      MOLECULE_CONTAINERS_BACKEND: docker
     steps:
     - uses: actions/checkout@v5
+
+    # Pulling the image takes 20-30s. Start it now so it overlaps the setup
+    # steps below. It keeps running after this step ends. If it hasn't
+    # finished when molecule creates the first container, `docker run` waits
+    # for the in-progress download instead of starting another.
+    - name: Start pulling container images
+      env:
+        ROLE: ${{ matrix.role }}
+      run: |
+        images=$(sed -n 's/^ *image: *//p' tests/molecule/"$ROLE".*/molecule.yml | sort -u)
+        for image in $images; do
+          nohup "$MOLECULE_CONTAINERS_BACKEND" pull --quiet "$image" >/dev/null 2>&1 &
+        done
+
     - name: Install uv
       uses: astral-sh/setup-uv@v7
       with:
