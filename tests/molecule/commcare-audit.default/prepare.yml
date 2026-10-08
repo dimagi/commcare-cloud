@@ -1,0 +1,66 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    # The role reads real block devices, which differ per host and aren't
+    # visible in a rootless container. Stub the commands ahead of the real
+    # binaries on PATH (and on sudo's secure_path, since the role runs
+    # `sudo tune2fs`) so the reports have known content.
+    - name: Stub df
+      ansible.builtin.copy:
+        dest: /usr/local/sbin/df
+        mode: "0755"
+        content: |
+          #!/bin/sh
+          cat <<'EOF'
+          Filesystem      Size  Used Avail Use% Mounted on
+          /dev/sda1        20G  5.0G   15G  26% /
+          /dev/sdb        100G   40G   60G  40% /opt/data
+          EOF
+      become: true
+
+    - name: Stub lsblk
+      ansible.builtin.copy:
+        dest: /usr/local/sbin/lsblk
+        mode: "0755"
+        # Output format of `lsblk -l --json -o NAME,MOUNTPOINT`
+        content: |
+          #!/bin/sh
+          cat <<'EOF'
+          {
+             "blockdevices": [
+                {"name": "sda1", "mountpoint": "/"},
+                {"name": "sdb", "mountpoint": "/opt/data"},
+                {"name": "sdc", "mountpoint": null}
+             ]
+          }
+          EOF
+      become: true
+
+    - name: Stub tune2fs
+      ansible.builtin.copy:
+        dest: /usr/local/sbin/tune2fs
+        mode: "0755"
+        # Succeeds for every device except sdb, so verify can tell whether the
+        # role skipped unmounted devices (sdc) and failed checks (sdb).
+        content: |
+          #!/bin/sh
+          # Usage: tune2fs -l /dev/NAME
+          dev=$2
+          echo "Filesystem UUID:          stub-${dev#/dev/}"
+          echo "Filesystem state:         clean"
+          if [ "$dev" = /dev/sdb ]; then
+            echo "tune2fs: Bad magic number in super-block while trying to open $dev" >&2
+            exit 1
+          fi
+      become: true
+
+    - name: Create /opt/data
+      ansible.builtin.file:
+        path: /opt/data
+        state: directory
+        # Distinct, non-root IDs so verify can tell owner from group.
+        owner: "1234"
+        group: "5678"
+        mode: "0750"
+      become: true
