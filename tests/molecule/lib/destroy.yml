@@ -1,0 +1,24 @@
+---
+# Replaces the containers driver's destroy playbook (see base.yml). The
+# driver's version removes containers with `async` and polls for completion
+# every 5s, so a sub-second `rm` costs ~5s.
+- name: Destroy
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  no_log: "{{ molecule_no_log }}"
+  tasks:
+    - name: Find container engine
+      ansible.builtin.include_tasks: container_engine.yml
+
+    - name: Destroy molecule instance(s)
+      ansible.builtin.shell: |
+        if {{ container_engine }} container inspect {{ item.name | quote }} >/dev/null 2>&1; then
+          {{ container_engine }} rm -f {{ item.name | quote }} >/dev/null
+          echo removed
+        fi
+      register: destroy_result
+      changed_when: destroy_result.stdout == 'removed'
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "{{ item.name }}"

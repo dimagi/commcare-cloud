@@ -8,6 +8,11 @@ provisioner:
     # (possibly too new for this ansible) shadow the ones bundled in the venv.
     # Use the collections path cchq commands use instead.
     ANSIBLE_COLLECTIONS_PATH: ${CCHQ_COLLECTIONS_PATH}
+  playbooks:
+    # Faster replacements for the containers driver's playbooks.
+    # Paths are relative to the scenario directory.
+    create: ../lib/create.yml
+    destroy: ../lib/destroy.yml
 scenario:
   # Molecule's default sequence also runs dependency, lint, cleanup (twice),
   # syntax and side_effect. Each step starts a new ansible-playbook process
