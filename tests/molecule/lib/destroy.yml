@@ -22,3 +22,12 @@
       loop: "{{ molecule_yml.platforms }}"
       loop_control:
         label: "{{ item.name }}"
+
+    - name: Delete fact cache
+      # Molecule only prunes the ephemeral directory at the end of a full
+      # sequence, so after `--destroy=never` the next run would otherwise reuse
+      # facts gathered from the old container.
+      ansible.builtin.file:
+        path: "{{ lookup('config', 'CACHE_PLUGIN_CONNECTION') }}"
+        state: absent
+      when: lookup('config', 'CACHE_PLUGIN_CONNECTION')

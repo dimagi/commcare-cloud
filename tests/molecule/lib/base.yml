@@ -8,6 +8,12 @@ provisioner:
     # (possibly too new for this ansible) shadow the ones bundled in the venv.
     # Use the collections path cchq commands use instead.
     ANSIBLE_COLLECTIONS_PATH: ${CCHQ_COLLECTIONS_PATH}
+  config_options:
+    defaults:
+      # Gather facts once per scenario instead of once per play
+      gathering: smart
+      fact_caching: jsonfile
+      fact_caching_connection: ${MOLECULE_EPHEMERAL_DIRECTORY}/facts
   playbooks:
     # Faster replacements for the containers driver's playbooks.
     # Paths are relative to the scenario directory.
