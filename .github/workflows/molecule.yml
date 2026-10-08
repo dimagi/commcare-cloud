@@ -52,6 +52,8 @@ jobs:
       run: uv sync --locked --group test
 
     - name: Run molecule tests
+      env:
+        MOLECULE_CONTAINERS_BACKEND: docker
       run: |
         source .venv/bin/activate
         ./tests/molecule/run.sh "${{ matrix.role }}"

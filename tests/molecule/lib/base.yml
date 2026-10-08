@@ -14,6 +14,7 @@ provisioner:
       gathering: smart
       fact_caching: jsonfile
       fact_caching_connection: ${MOLECULE_EPHEMERAL_DIRECTORY}/facts
+      pipelining: true
   playbooks:
     # Faster replacements for the containers driver's playbooks.
     # Paths are relative to the scenario directory.
