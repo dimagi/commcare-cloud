@@ -17,7 +17,6 @@
           /dev/sda1        20G  5.0G   15G  26% /
           /dev/sdb        100G   40G   60G  40% /opt/data
           EOF
-      become: true
 
     - name: Stub lsblk
       ansible.builtin.copy:
@@ -35,7 +34,6 @@
              ]
           }
           EOF
-      become: true
 
     - name: Stub tune2fs
       ansible.builtin.copy:
@@ -53,7 +51,6 @@
             echo "tune2fs: Bad magic number in super-block while trying to open $dev" >&2
             exit 1
           fi
-      become: true
 
     - name: Create /opt/data
       ansible.builtin.file:
@@ -63,4 +60,3 @@
         owner: "1234"
         group: "5678"
         mode: "0750"
-      become: true
