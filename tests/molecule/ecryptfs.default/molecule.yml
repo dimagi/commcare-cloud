@@ -13,7 +13,6 @@ provisioner:
   name: ansible
   playbooks:
     cleanup: ../lib/stub.yml
-    side_effect: ../lib/stub.yml
   inventory:
     group_vars:
       all:

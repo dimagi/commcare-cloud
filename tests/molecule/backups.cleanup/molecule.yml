@@ -13,6 +13,5 @@ provisioner:
   name: ansible
   playbooks:
     cleanup: ../lib/stub.yml
-    side_effect: ../lib/stub.yml
 verifier:
   name: ansible

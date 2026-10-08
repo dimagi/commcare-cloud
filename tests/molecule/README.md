@@ -46,17 +46,20 @@ Ansible/Molecule testing — systemd, `sudo`, and `python3` pre-configured.
 
 ## Minimizing Molecule warnings
 
-Molecule warns if a scenario doesn't configure a `cleanup` or `side_effect`
-playbook (among others). Point the unused step at the shared no-op in
-`tests/molecule/lib/stub.yml` to avoid warnings:
+Molecule warns if a scenario doesn't configure a `cleanup` playbook. It runs
+`cleanup` before `molecule destroy`, and before the final destroy when a test
+fails. Point it at the shared no-op in `tests/molecule/lib/stub.yml` to avoid
+the warning:
 
 ```yaml
 provisioner:
   name: ansible
   playbooks:
     cleanup: ../lib/stub.yml
-    side_effect: ../lib/stub.yml
 ```
+
+`side_effect` doesn't need a stub, because the test sequence in
+`tests/molecule/lib/base.yml` leaves it out.
 
 If a role has no galaxy roles/collections to install, keep the dependency
 manager disabled, but use `name: shell` rather than `name: galaxy` so it only
