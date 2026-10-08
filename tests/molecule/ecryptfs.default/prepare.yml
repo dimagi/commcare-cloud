@@ -1,0 +1,81 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  vars:
+    pkg_tree: /var/tmp/fake-ecryptfs-utils
+  tasks:
+    # The real ecryptfs-utils is no use in a container (see the stubs below),
+    # so by default install an empty fake package to satisfy the role's apt
+    # task without network access.
+    #
+    # To occasionally manually check that the role works with the real package
+    # (NOT FOR ROUTINE/CI USE):
+    #
+    #   MOLECULE_ECRYPTFS_REAL_INSTALL=1 ./tests/molecule/run.sh ecryptfs default
+    #
+    - name: Stub the ecryptfs-utils package
+      when: lookup('env', 'MOLECULE_ECRYPTFS_REAL_INSTALL') != '1'
+      block:
+        - name: Create fake package tree
+          ansible.builtin.file:
+            path: "{{ pkg_tree }}/DEBIAN"
+            state: directory
+            mode: "0755"
+
+        - name: Write fake package control file
+          ansible.builtin.copy:
+            dest: "{{ pkg_tree }}/DEBIAN/control"
+            mode: "0644"
+            content: |
+              Package: ecryptfs-utils
+              Version: 0.0-molecule
+              Architecture: all
+              Maintainer: Molecule Test <test@example.com>
+              Description: Fake ecryptfs-utils stub for molecule testing
+
+        - name: Build fake package
+          ansible.builtin.command: >
+            dpkg-deb --build --root-owner-group {{ pkg_tree }} {{ pkg_tree }}.deb
+          changed_when: true
+
+        - name: Install fake package
+          ansible.builtin.command: dpkg -i {{ pkg_tree }}.deb
+          changed_when: true
+
+    - name: Refresh apt cache for the real ecryptfs-utils package
+      ansible.builtin.apt:
+        update_cache: true
+      when: lookup('env', 'MOLECULE_ECRYPTFS_REAL_INSTALL') == '1'
+
+    # The stubs below go in /usr/local/sbin, ahead of the real binaries on
+    # PATH, so they apply with the real package too.
+
+    # The real ecryptfs-add-passphrase needs the kernel keyring, which the
+    # container's seccomp profile blocks. Print its output format so the
+    # role's sig extraction still runs.
+    - name: Stub ecryptfs-add-passphrase
+      ansible.builtin.copy:
+        dest: /usr/local/sbin/ecryptfs-add-passphrase
+        mode: "0755"
+        content: |
+          #!/bin/sh
+          cat >/dev/null
+          echo "Inserted auth tok with sig [{{ ecryptfs_stub_sig }}] into the user session keyring"
+
+    # A rootless container cannot mount ecryptfs. Record the mount in
+    # /etc/mtab instead, where the role's "already mounted" check looks for
+    # it, so the second converge skips the mount like it would on a real host.
+    - name: Stub mount
+      ansible.builtin.copy:
+        dest: /usr/local/sbin/mount
+        mode: "0755"
+        content: |
+          #!/bin/sh
+          echo "$*" >> /var/log/fake-mount.log
+          for dir; do :; done
+          echo "${dir%/} ${dir%/} ecryptfs rw 0 0" >> /etc/mtab
+
+    - name: Replace /etc/mtab symlink with a writable copy
+      ansible.builtin.command: cp --remove-destination /proc/self/mounts /etc/mtab
+      changed_when: true

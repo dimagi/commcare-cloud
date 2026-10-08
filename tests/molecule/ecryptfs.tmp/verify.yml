@@ -1,0 +1,37 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Assert mount used the sig from ecryptfs-add-passphrase
+    ansible.builtin.command: grep -Fq "ecryptfs_fnek_sig={{ ecryptfs_stub_sig }}," /var/log/fake-mount.log
+    changed_when: false
+
+  - name: Assert README present
+    ansible.builtin.command: grep -Fxq "If you can read this file the directory is unencrypted" /opt/tmp/README
+    changed_when: false
+
+  - name: Stat encrypted tmp dir
+    ansible.builtin.stat:
+      path: /opt/tmp
+    register: tmp_dir
+
+  - name: Assert encrypted tmp dir is writable by cchq
+    ansible.builtin.assert:
+      that:
+        - tmp_dir.stat.pw_name == 'cchq'
+        - tmp_dir.stat.gr_name == 'cchq'
+        - tmp_dir.stat.mode == '0775'
+
+  - name: Read purge cron file
+    ansible.builtin.slurp:
+      path: /etc/cron.d/purge_tmp_files
+    register: cron_file
+
+  - name: Assert purge cron entries
+    ansible.builtin.assert:
+      that:
+        - "'@daily root /usr/sbin/tmpreaper 2d /opt/tmp' in cron_lines"
+        - "'@daily root /usr/sbin/tmpreaper 2d /tmp' in cron_lines"
+    vars:
+      cron_lines: "{{ (cron_file.content | b64decode).splitlines() }}"

@@ -1,0 +1,10 @@
+---
+# Base config merged under every scenario's molecule.yml (run.sh passes it
+# with --base-config).
+provisioner:
+  env:
+    # Molecule puts ~/.ansible/collections ahead of any ANSIBLE_COLLECTIONS_PATH
+    # from the environment, so collections installed there for other projects
+    # (possibly too new for this ansible) shadow the ones bundled in the venv.
+    # Use the collections path cchq commands use instead.
+    ANSIBLE_COLLECTIONS_PATH: ${CCHQ_COLLECTIONS_PATH}
