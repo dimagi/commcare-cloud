@@ -1,7 +1,6 @@
 ---
 - name: Prepare
   hosts: all
-  become: true
   tasks:
     - name: Ensure gnupg is present
       # would be nice to get this included in the base image, but until then...

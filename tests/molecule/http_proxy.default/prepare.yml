@@ -1,7 +1,6 @@
 ---
 - name: Prepare
   hosts: all
-  become: true
   tasks:
     - name: Stub git
       # apt install is expensive. Rather than installing real git, use a fake

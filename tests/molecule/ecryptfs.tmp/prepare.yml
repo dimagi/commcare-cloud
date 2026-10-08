@@ -4,7 +4,6 @@
 
 - name: Prepare tmp
   hosts: all
-  become: true
   tasks:
     - name: Create cchq group
       ansible.builtin.group:
