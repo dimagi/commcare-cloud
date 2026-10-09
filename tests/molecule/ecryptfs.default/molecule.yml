@@ -1,0 +1,29 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  - name: instance
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+provisioner:
+  name: ansible
+  playbooks:
+    cleanup: ../lib/stub.yml
+    side_effect: ../lib/stub.yml
+  inventory:
+    group_vars:
+      all:
+        root_encryption_mode: ecryptfs
+        encrypted_root: /opt/data
+        encrypted_tmp: /opt/tmp
+        shared_data_dir: /opt/shared_data
+        shared_dir_gid: 1500
+        shared_drive_enabled: false
+        ECRYPTFS_PASSWORD: molecule-password
+        ecryptfs_stub_sig: 0123456789abcdef
+verifier:
+  name: ansible

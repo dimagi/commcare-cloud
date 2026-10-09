@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Include backups cleanup tasks
+      ansible.builtin.include_role:
+        name: "backups"
+        tasks_from: cleanup

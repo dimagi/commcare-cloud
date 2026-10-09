@@ -1,0 +1,38 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Assert amazon-cloudwatch-agent package installed
+      ansible.builtin.shell: dpkg-query -W -f='${Status}' amazon-cloudwatch-agent | grep -q "install ok installed"
+      changed_when: false
+
+    - name: Assert agent service is active
+      ansible.builtin.command: systemctl is-active amazon-cloudwatch-agent
+      register: svc_status
+      changed_when: false
+      failed_when: svc_status.stdout != "active"
+
+    - name: Assert config owner and mode
+      ansible.builtin.shell: test "$(stat -c '%U:%G %a' /opt/aws/amazon-cloudwatch-agent/etc/cloudwatch_logs.json)" = "root:root 644"
+      changed_when: false
+
+    - name: Read rendered config
+      ansible.builtin.slurp:
+        src: /opt/aws/amazon-cloudwatch-agent/etc/cloudwatch_logs.json
+      register: config_file
+
+    - name: Assert rendered config content
+      vars:
+        collect_list: "{{ (config_file.content | b64decode | from_json).logs.logs_collected.files.collect_list }}"
+      ansible.builtin.assert:
+        that:
+          - collect_list | length == 3
+          - collect_list | map(attribute='file_path') | list == ['/var/log/syslog', '/var/log/auth.log', '/var/log/apt/history.log']
+          - collect_list | map(attribute='log_group_name') | list == ['molecule-syslog', 'molecule-auth', 'molecule-apt-history']
+          - collect_list | map(attribute='log_stream_name') | list == ['{instance_id}-{local_hostname}', '{instance_id}-{local_hostname}-extra', '{instance_id}-{local_hostname}']
+
+    - name: Assert fetch-config was run against the rendered config
+      ansible.builtin.command: grep -Fq -- "-c file:/opt/aws/amazon-cloudwatch-agent/etc/cloudwatch_logs.json" /var/log/fake-cwa-ctl.log
+      changed_when: false
+      when: lookup('env', 'MOLECULE_CWA_REAL_INSTALL') != '1'

@@ -1,0 +1,20 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tags: always  # Always verify, regardless of --tags
+  tasks:
+  - name: Assert chaos scripts exist with mode 0755
+    ansible.builtin.shell: test "$(stat -c %a {{ item }})" = 755
+    changed_when: false
+    loop:
+      - /var/chaos/start/burnio
+      - /var/chaos/burnioloop
+      - /var/chaos/stop/burnio
+  - name: Assert burnio_scale loops are running
+    ansible.builtin.shell: test "$(grep -l '[b]urnioloop' /proc/[0-9]*/cmdline | wc -l)" = {{ burnio_scale }}
+    changed_when: false
+  - name: Assert burnio files are being written
+    ansible.builtin.command: test -s /tmp/burnio-{{ item }}
+    changed_when: false
+    loop: "{{ range(burnio_scale | int) | list }}"

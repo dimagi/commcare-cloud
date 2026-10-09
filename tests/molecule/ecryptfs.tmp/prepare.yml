@@ -1,0 +1,16 @@
+---
+- name: Prepare ecryptfs
+  ansible.builtin.import_playbook: ../ecryptfs.default/prepare.yml
+
+- name: Prepare tmp
+  hosts: all
+  become: true
+  tasks:
+    - name: Create cchq group
+      ansible.builtin.group:
+        name: cchq
+
+    - name: Create cchq user (owns the encrypted tmp dir)
+      ansible.builtin.user:
+        name: cchq
+        group: cchq

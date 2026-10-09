@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Include ecryptfs tmp tasks
+      ansible.builtin.include_role:
+        name: "ecryptfs"
+        tasks_from: tmp
