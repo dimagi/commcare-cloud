@@ -13,7 +13,6 @@
       loop:
         - swapon
         - swapoff
-      become: true
 
     # The role only removes swap when it finds pre-existing state, so
     # fake a prior "swap enabled" run here.
@@ -22,10 +21,8 @@
         path: /swapfile
         state: touch
         mode: "0600"
-      become: true
 
     - name: Add pre-existing fstab entry
       ansible.builtin.lineinfile:
         path: /etc/fstab
         line: "/swapfile none swap sw 0 0"
-      become: true

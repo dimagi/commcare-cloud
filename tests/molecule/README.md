@@ -44,19 +44,46 @@ The platform image is `docker.io/geerlingguy/docker-ubuntu2204-ansible`, rather
 than a generic systemd/Ubuntu image. It's built specifically for
 Ansible/Molecule testing — systemd, `sudo`, and `python3` pre-configured.
 
+## Keeping scenarios fast
+
+The shared config in `tests/molecule/lib/` removes most fixed overhead: a
+shorter test sequence, faster container create/destroy, facts gathered once
+per scenario, and Ansible pipelining. Within a scenario:
+
+- **Avoid apt installs.** An install with `update_cache` costs about 10s even
+  on CI, and it depends on the network. When the real package can't do
+  anything useful in the container, stub it with a local fake package. Add an
+  opt-in env var (`MOLECULE_<ROLE>_REAL_INSTALL=1`) for an occasional manual
+  run with the real package, as the datadog and ecryptfs scenarios do.
+- **Run systemd as PID 1 only when the role manages services.** It needs
+  `override_command: false`, `privileged: true`, `cgroupns_mode: host` and the
+  cgroup volume (see the datadog scenario), and it makes the container slower
+  to start and stop.
+- **Don't use `become: true` in `prepare.yml` or `verify.yml`.** The container
+  connection is already root.
+- **Facts are cached** from the first play that gathers them, usually prepare.
+  If prepare changes something a role reads from facts (e.g. mounts), refresh
+  them with an `ansible.builtin.setup` task. `gather_facts: true` won't
+  refresh them.
+- **Don't trade readability for speed**, e.g. by merging tasks into one
+  `shell` task to save module calls.
+
 ## Minimizing Molecule warnings
 
-Molecule warns if a scenario doesn't configure a `cleanup` or `side_effect`
-playbook (among others). Point the unused step at the shared no-op in
-`tests/molecule/lib/stub.yml` to avoid warnings:
+Molecule warns if a scenario doesn't configure a `cleanup` playbook. It runs
+`cleanup` before `molecule destroy`, and before the final destroy when a test
+fails. Point it at the shared no-op in `tests/molecule/lib/stub.yml` to avoid
+the warning:
 
 ```yaml
 provisioner:
   name: ansible
   playbooks:
     cleanup: ../lib/stub.yml
-    side_effect: ../lib/stub.yml
 ```
+
+`side_effect` doesn't need a stub, because the test sequence in
+`tests/molecule/lib/base.yml` leaves it out.
 
 If a role has no galaxy roles/collections to install, keep the dependency
 manager disabled, but use `name: shell` rather than `name: galaxy` so it only

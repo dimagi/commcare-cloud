@@ -1,0 +1,34 @@
+---
+# Sets `container_engine` to the docker/podman executable for create.yml and
+# destroy.yml.
+#
+# Picks the engine the same way the `containers` driver does
+# (molecule_plugins/containers/driver.py): the first engine listed in
+# MOLECULE_CONTAINERS_BACKEND (default "podman,docker") that is on PATH,
+# else the first listed. The driver sets the connection plugin from the same
+# choice, so create and destroy must use the same engine.
+- name: Find container engine
+  ansible.builtin.shell: |
+    IFS=, read -ra engines <<< "${MOLECULE_CONTAINERS_BACKEND:-podman,docker}"
+    for engine in "${engines[@]}"; do
+      if command -v "$engine" >/dev/null; then
+        echo "$engine"
+        exit
+      fi
+    done
+    echo "${engines[0]}"
+  args:
+    executable: /bin/bash
+  register: container_engine_result
+  changed_when: false
+
+- name: Set container engine executable
+  ansible.builtin.set_fact:
+    # The podman driver's connection runs MOLECULE_PODMAN_EXECUTABLE (e.g.
+    # podman-remote) when set, so use it here too.
+    container_engine: >-
+      {{
+        (lookup('env', 'MOLECULE_PODMAN_EXECUTABLE') or 'podman')
+        if container_engine_result.stdout == 'podman'
+        else container_engine_result.stdout
+      }}

@@ -1,0 +1,65 @@
+---
+# Replaces the containers driver's create playbook (see base.yml). The
+# driver's version starts containers with `async` and polls for completion
+# every 5s, so a ~1s `run` costs ~5s.
+#
+# Supports only the platform options listed in supported_platform_keys, all
+# with the same meaning as in the driver. Add support here before using
+# another one in a scenario.
+- name: Create
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  no_log: "{{ molecule_no_log }}"
+  vars:
+    supported_platform_keys:
+      - name
+      - image
+      - pre_build_image
+      - groups
+      - override_command
+      - privileged
+      - cgroupns_mode
+      - volumes
+      - tmpfs
+    # The driver's default command, used unless override_command is false
+    # (e.g. to run the image's systemd as PID 1).
+    default_command: [bash, -c, "while true; do sleep 10000; done"]
+  tasks:
+    - name: Check platform options
+      ansible.builtin.assert:
+        that:
+          - item.keys() | difference(supported_platform_keys) | length == 0
+          - item.pre_build_image | default(false)
+        fail_msg: >-
+          {{ item.name }}: tests/molecule/lib/create.yml requires
+          `pre_build_image: true` and doesn't support
+          {{ item.keys() | difference(supported_platform_keys) }}
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Find container engine
+      ansible.builtin.include_tasks: container_engine.yml
+
+    # --stop-timeout 0: `podman rm -f` (unlike `docker rm -f`) first waits out
+    # the container's stop timeout, 10s by default. The default command's
+    # bash, as PID 1, ignores SIGTERM, so destroy always waited the full 10s.
+    - name: Create molecule instance(s)
+      ansible.builtin.command:
+        argv: >-
+          {{
+            [container_engine, 'run', '--detach',
+             '--name', item.name,
+             '--hostname', item.name,
+             '--stop-timeout', '0']
+            + (['--privileged'] if item.privileged | default(false) else [])
+            + (['--cgroupns', item.cgroupns_mode] if item.cgroupns_mode is defined else [])
+            + (item.volumes | default([]) | map('regex_replace', '^', '--volume=') | list)
+            + (item.tmpfs | default([]) | map('regex_replace', '^', '--tmpfs=') | list)
+            + [item.image]
+            + (default_command if item.override_command | default(true) else [])
+          }}
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "{{ item.name }}"
