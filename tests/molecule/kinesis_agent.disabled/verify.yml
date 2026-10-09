@@ -1,0 +1,12 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Assert nothing was installed or configured
+      ansible.builtin.command: test ! -e {{ item }}
+      changed_when: false
+      loop:
+        - /usr/local/src/amazon-kinesis-agent
+        - /opt/aws-kinesis-agent
+        - /etc/aws-kinesis/agent.json
