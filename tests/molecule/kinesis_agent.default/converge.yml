@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include kinesis_agent
+      ansible.builtin.include_role:
+        name: "kinesis_agent"
+      vars:
+        kinesis_flows: "{{ molecule_kinesis_flows }}"
