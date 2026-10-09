@@ -1,0 +1,30 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  vars:
+    report_dir: "{{ audit_path }}/{{ ansible_hostname }}"
+  tasks:
+  # lookup('file') reads from the controller, where the role writes reports.
+  - name: Assert disk usage report has host df output
+    ansible.builtin.assert:
+      that:
+        - "'/dev/sdb        100G   40G   60G  40% /opt/data' in lookup('file', report_dir + '/disk_usage.txt')"
+
+  - name: Assert filesystem health report has only mounted, healthy devices
+    vars:
+      report: "{{ lookup('file', report_dir + '/filesystems_health.txt') }}"
+    ansible.builtin.assert:
+      that:
+        - "'stub-sda1' in report"
+        - "'stub-sdb' not in report"
+        - "'stub-sdc' not in report"
+
+  - name: Assert /opt/data permissions report
+    vars:
+      report: "{{ lookup('file', report_dir + '/opt_data_file_permissions.txt') }}"
+    ansible.builtin.assert:
+      that:
+        - "'mode: 0750' in report"
+        - "'owner: 1234' in report"
+        - "'group: 5678' in report"
