@@ -194,6 +194,10 @@ localsettings:
       'co-carecoordination-perf': {
         'index_cname': 'case_search_cc_perf',
         'multiplex_writes': True,
+      },
+      'philly-ubr-staging': {
+        'index_cname': 'case_search_philly_ubr',
+        'multiplex_writes': True,
       }
   }
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'

@@ -193,6 +193,10 @@ localsettings:
     'co-carecoordination-perf': {
         'index_cname': 'case_search_cc_perf',
         'multiplex_writes': True,
+    },
+    'philly-ubr': {
+        'index_cname': 'case_search_philly_ubr',
+        'multiplex_writes': True,
     }
   }
   IS_DIMAGI_ENVIRONMENT: True
