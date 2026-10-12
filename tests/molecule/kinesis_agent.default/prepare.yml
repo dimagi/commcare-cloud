@@ -1,0 +1,56 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    # The role clones amazon-kinesis-agent from GitHub and runs its
+    # `./setup --install`, which builds the agent and downloads its
+    # dependencies. By default, stub git with a fake that "clones" a fake
+    # setup script, so the run needs no network.
+    #
+    # To occasionally manually check that the role works with the real repo
+    # (NOT FOR ROUTINE/CI USE):
+    #
+    #   MOLECULE_KINESIS_REAL_INSTALL=1 ./tests/molecule/run.sh kinesis_agent default
+    #
+    - name: Stub git and the amazon-kinesis-agent repo
+      when: lookup('env', 'MOLECULE_KINESIS_REAL_INSTALL') != '1'
+      block:
+        - name: Install fake git
+          ansible.builtin.copy:
+            src: fake_git.py
+            dest: /usr/local/sbin/git
+            mode: "0755"
+
+        - name: Create fake repo fixture
+          ansible.builtin.file:
+            path: /var/tmp/fake-kinesis-agent
+            state: directory
+            mode: "0755"
+
+        - name: Install fake setup script into the fixture
+          ansible.builtin.copy:
+            src: fake_setup.sh
+            dest: /var/tmp/fake-kinesis-agent/setup
+            mode: "0755"
+
+    - name: Prepare for the real install
+      when: lookup('env', 'MOLECULE_KINESIS_REAL_INSTALL') == '1'
+      block:
+        - name: Install git
+          ansible.builtin.apt:
+            name: git
+            state: present
+            update_cache: true
+
+        - name: Create man1 directory for openjdk's postinst
+          ansible.builtin.file:
+            path: /usr/share/man/man1
+            state: directory
+            mode: "0755"
+
+        - name: Install Java
+          # The agent's build.xml rejects the Java that ant pulls in when no
+          # Java is installed. Formplayer hosts get the version from the java
+          # role (a dependency of the formplayer role), so use that here.
+          ansible.builtin.include_role:
+            name: java

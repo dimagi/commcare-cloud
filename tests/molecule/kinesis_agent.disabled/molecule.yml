@@ -1,0 +1,23 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  - name: instance
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+provisioner:
+  name: ansible
+  playbooks:
+    converge: ../kinesis_agent.default/converge.yml
+    prepare: ../lib/stub.yml
+    cleanup: ../lib/stub.yml
+  inventory:
+    group_vars:
+      all:
+        molecule_kinesis_flows: []
+verifier:
+  name: ansible

@@ -1,21 +1,13 @@
-- name: create temporary build directory
-  tempfile:
-    state: directory
-    suffix: kinesis_repo
-  register: temp_dir
-  when: (kinesis_flows | length)
-
 - name: Pull source repo
   git:
     repo: "https://github.com/awslabs/amazon-kinesis-agent.git"
-    dest: "{{ temp_dir.path }}"
+    dest: "{{ kinesis_agent_src_dir }}"
     version: "2.0.6"
     recursive: yes
     accept_hostkey: yes
     update: yes
   register: git_task
-  when: (kinesis_flows | length) and temp_dir.path is defined
-
+  when: (kinesis_flows | length)
 
 - name: Install, configure kinesis-agent
   block:
@@ -23,18 +15,21 @@
     - name: Install from script
       command:
         cmd: "./setup --install"
-        chdir: "{{ temp_dir.path }}"
+        chdir: "{{ kinesis_agent_src_dir }}"
       environment:
         DEBUG: "1"
       register: install_task
-      when: temp_dir.path is defined
       become: yes
 
-    - name: use the registered var and the file module to remove the temporary file
+  rescue:
+    - name: Remove source repo so the next run retries the install
       file:
-        path: "{{ temp_dir.path }}"
+        path: "{{ kinesis_agent_src_dir }}"
         state: absent
-      when: temp_dir.path is defined
+
+    - name: Fail after removing source repo
+      fail:
+        msg: "kinesis-agent install failed: {{ install_task.stderr | default('') }}"
 
   when: (kinesis_flows | length) and git_task.changed
   tags: kinesis-agent
