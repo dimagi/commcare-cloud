@@ -152,12 +152,14 @@ is low-priority baseline debt (short names resolve fine; collection moves are
 handled by #10–11).
 Acceptance: new non-blocking `lint.yml` fails on new violations; green on day one.
 Ticket: [SAAS-19958](https://dimagi.atlassian.net/browse/SAAS-19958)
+Follow-up: [SAAS-19980](https://dimagi.atlassian.net/browse/SAAS-19980) (reduce the ansible-lint ignore list)
 
 #### 7. Refresh Vagrant harness to 22.04
 `Vagrantfile` is `ubuntu/bionic64` (18.04); upgrade it, verify provisioning,
 document the local full-stack flow.
 Acceptance: `vagrant up` + `deploy-stack` completes on 22.04 on current Ansible.
 Ticket: [SAAS-19959](https://dimagi.atlassian.net/browse/SAAS-19959)
+Follow-up: [SAAS-20034](https://dimagi.atlassian.net/browse/SAAS-20034) (full `deploy-stack` on the Vagrant harness)
 
 #### 8. Molecule scaffolding + one reference role
 Add Molecule (docker driver) with a shared base config and a worked example for
@@ -174,6 +176,16 @@ elasticsearch, nginx, proxy/haproxy. Likely one Jira ticket per role/group.
 Acceptance: each converges twice with no changes; basic service-up asserts.
 Depends: 8.
 Ticket: [SAAS-19961](https://dimagi.atlassian.net/browse/SAAS-19961)
+Scoping: [SAAS-20358](https://dimagi.atlassian.net/browse/SAAS-20358)
+Role tickets:
+- datadog: [SAAS-20255](https://dimagi.atlassian.net/browse/SAAS-20255)
+- http_proxy: [SAAS-20256](https://dimagi.atlassian.net/browse/SAAS-20256)
+- chaos: [SAAS-20257](https://dimagi.atlassian.net/browse/SAAS-20257)
+- cloudwatch_logs: [SAAS-20258](https://dimagi.atlassian.net/browse/SAAS-20258)
+- backups: [SAAS-20259](https://dimagi.atlassian.net/browse/SAAS-20259)
+- ecryptfs: [SAAS-20261](https://dimagi.atlassian.net/browse/SAAS-20261)
+- commcare-audit: [SAAS-20359](https://dimagi.atlassian.net/browse/SAAS-20359)
+- kinesis_agent: [SAAS-20360](https://dimagi.atlassian.net/browse/SAAS-20360)
 
 ### Dependency work — collections + roles, version-agnostic, run on 4.10
 
