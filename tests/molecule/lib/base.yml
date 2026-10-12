@@ -8,3 +8,29 @@ provisioner:
     # (possibly too new for this ansible) shadow the ones bundled in the venv.
     # Use the collections path cchq commands use instead.
     ANSIBLE_COLLECTIONS_PATH: ${CCHQ_COLLECTIONS_PATH}
+  config_options:
+    defaults:
+      # Gather facts once per scenario instead of once per play
+      gathering: smart
+      fact_caching: jsonfile
+      fact_caching_connection: ${MOLECULE_EPHEMERAL_DIRECTORY}/facts
+      pipelining: true
+  playbooks:
+    # Faster replacements for the containers driver's playbooks.
+    # Paths are relative to the scenario directory.
+    create: ../lib/create.yml
+    destroy: ../lib/destroy.yml
+scenario:
+  # Molecule's default sequence also runs dependency, lint, cleanup (twice),
+  # syntax and side_effect. Each step starts a new ansible-playbook process
+  # (~0.5-1s), and none of them do anything useful here: dependency and lint
+  # are disabled, cleanup and side_effect are stubs, and converge catches
+  # anything syntax would.
+  test_sequence:
+    - destroy
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - verify
+    - destroy

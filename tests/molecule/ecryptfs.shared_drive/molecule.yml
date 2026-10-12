@@ -15,7 +15,6 @@ provisioner:
     converge: ../ecryptfs.default/converge.yml
     prepare: ../ecryptfs.default/prepare.yml
     cleanup: ../lib/stub.yml
-    side_effect: ../lib/stub.yml
   inventory:
     group_vars:
       all:

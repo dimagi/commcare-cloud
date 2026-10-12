@@ -14,6 +14,5 @@ provisioner:
   playbooks:
     converge: ../swap.default/converge.yml
     cleanup: ../lib/stub.yml
-    side_effect: ../lib/stub.yml
 verifier:
   name: ansible

@@ -1,7 +1,6 @@
 ---
 - name: Prepare
   hosts: all
-  become: true
   vars:
     fixtures: /var/tmp/fake-cwa
     pkg_tree: /var/tmp/fake-cwa/pkg

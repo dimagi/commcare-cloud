@@ -1,7 +1,6 @@
 ---
 - name: Prepare
   hosts: all
-  become: true
   tasks:
     - name: Stub killall
       ansible.builtin.copy:

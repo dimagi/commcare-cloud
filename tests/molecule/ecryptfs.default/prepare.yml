@@ -1,7 +1,6 @@
 ---
 - name: Prepare
   hosts: all
-  become: true
   vars:
     pkg_tree: /var/tmp/fake-ecryptfs-utils
   tasks:
