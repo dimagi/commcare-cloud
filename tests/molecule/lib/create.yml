@@ -22,6 +22,7 @@
       - cgroupns_mode
       - volumes
       - tmpfs
+      - security_opts
     # The driver's default command, used unless override_command is false
     # (e.g. to run the image's systemd as PID 1).
     default_command: [bash, -c, "while true; do sleep 10000; done"]
@@ -57,6 +58,7 @@
             + (['--cgroupns', item.cgroupns_mode] if item.cgroupns_mode is defined else [])
             + (item.volumes | default([]) | map('regex_replace', '^', '--volume=') | list)
             + (item.tmpfs | default([]) | map('regex_replace', '^', '--tmpfs=') | list)
+            + (item.security_opts | default([]) | map('regex_replace', '^', '--security-opt=') | list)
             + [item.image]
             + (default_command if item.override_command | default(true) else [])
           }}
