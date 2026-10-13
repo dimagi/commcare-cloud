@@ -1,0 +1,102 @@
+---
+- name: Prepare
+  hosts: all
+  vars_files:
+    - ../../../src/commcare_cloud/ansible/group_vars/all.yml  # for cchq_user and www_home
+    - ../../../src/commcare_cloud/ansible/roles/deploy_hq/vars/main.yml  # for code_source
+  vars:
+    previous_release: "{{ code_releases }}/2026-10-11_12.00"
+  tasks:
+    - name: Create cchq user
+      ansible.builtin.user:
+        name: "{{ cchq_user }}"
+
+    - name: Create releases dir
+      ansible.builtin.file:
+        path: "{{ code_releases }}"
+        state: directory
+        owner: "{{ cchq_user }}"
+        group: "{{ cchq_user }}"
+        mode: "0755"
+
+    - name: Create previous release dirs
+      # Release setup copies localsettings.py, node_modules and static JS from the current release.
+      ansible.builtin.file:
+        path: "{{ previous_release }}/{{ item }}"
+        state: directory
+        owner: "{{ cchq_user }}"
+        group: "{{ cchq_user }}"
+        mode: "0755"
+      loop:
+        - node_modules/fake-package
+        - staticfiles/CACHE/js
+
+    - name: Create previous release files
+      ansible.builtin.copy:
+        dest: "{{ previous_release }}/{{ item }}"
+        content: "{{ item }}\n"
+        owner: "{{ cchq_user }}"
+        group: "{{ cchq_user }}"
+        mode: "0644"
+      loop:
+        - localsettings.py
+        - node_modules/fake-package/index.js
+        - staticfiles/CACHE/js/previous.js
+
+    - name: Point current at previous release
+      ansible.builtin.file:
+        src: "{{ previous_release }}"
+        dest: "{{ code_home }}"
+        state: link
+        owner: "{{ cchq_user }}"
+        group: "{{ cchq_user }}"
+
+    - name: Create fake commcare-hq checkout
+      ansible.builtin.file:
+        path: /var/tmp/fake-commcare-hq
+        state: directory
+        mode: "0755"
+
+    - name: Install fake manage.py in the fake checkout
+      ansible.builtin.copy:
+        src: fake_manage.py
+        dest: /var/tmp/fake-commcare-hq/manage.py
+        mode: "0755"
+
+    - name: Create package.json in the fake checkout
+      ansible.builtin.copy:
+        dest: /var/tmp/fake-commcare-hq/package.json
+        content: "{}\n"
+        mode: "0644"
+
+    - name: Install fake git
+      ansible.builtin.copy:
+        src: fake_git.sh
+        dest: /usr/local/bin/git
+        mode: "0755"
+
+    - name: Install fake uv
+      ansible.builtin.copy:
+        src: fake_uv.sh
+        dest: /usr/local/bin/uv
+        mode: "0755"
+
+    - name: Install fake yarn
+      ansible.builtin.copy:
+        src: fake_yarn.sh
+        dest: /usr/local/bin/yarn
+        mode: "0755"
+
+    - name: Install fake rsync
+      ansible.builtin.copy:
+        src: fake_rsync.py
+        dest: /usr/local/bin/rsync
+        mode: "0755"
+
+    - name: Create command log
+      ansible.builtin.copy:
+        dest: "{{ molecule_command_log }}"
+        content: ""
+        owner: "{{ cchq_user }}"
+        group: "{{ cchq_user }}"
+        mode: "0644"

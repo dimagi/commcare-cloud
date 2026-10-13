@@ -1,0 +1,71 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  # Two proxies and a webworker because deploy_hq.yml targets proxy[0],
+  # proxy[1:] and webworkers in different plays. They share a volume for
+  # shared_dir_for_staticfiles. Set label on SELinux hosts so containers
+  # can read files written by others; ignored by hosts without SELinux.
+  - name: proxy0
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+    groups: [proxy]
+    volumes:
+      - deploy_hq_shared:/mnt/shared
+    security_opts:
+      - label=level:s0:c100,c200
+  - name: proxy1
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+    groups: [proxy]
+    volumes:
+      - deploy_hq_shared:/mnt/shared
+    security_opts:
+      - label=level:s0:c100,c200
+  - name: webworker0
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+    groups: [webworkers]
+    volumes:
+      - deploy_hq_shared:/mnt/shared
+    security_opts:
+      - label=level:s0:c100,c200
+provisioner:
+  name: ansible
+  env:
+    # Skip tags that change on every run, causing idempotence to fail
+    ANSIBLE_SKIP_TAGS: restart,upgrade_warning
+  config_options:
+    defaults:
+      # Work around become_user tasks need ACLs to grant temp-file access, but
+      # container overlay filesystems don't support them.
+      allow_world_readable_tmpfiles: true
+  playbooks:
+    cleanup: ../lib/stub.yml
+    destroy: destroy.yml  # removes the shared volume (deploy_hq_shared)
+  inventory:
+    hosts:
+      all:
+        children:
+          # Empty groups avoid "Could not match supplied host pattern" warnings.
+          celery: {}
+          pillowtop: {}
+          django_manage: {}
+          hq_webworkers: {}
+          mobile_webworkers: {}
+          api_webworkers: {}
+    group_vars:
+      # Converge loads group_vars next to deploy_hq.yml, which take precedence over these.
+      all:
+        deploy_env: molecule
+        ansible_sudo_pass: ""
+        release_name: "2026-10-12_12.00"
+        code_version: 0123456789abcdef0123456789abcdef01234567
+        shared_dir_for_staticfiles: /mnt/shared/temp
+        molecule_command_log: /var/tmp/deploy_hq-commands.log
+verifier:
+  name: ansible
