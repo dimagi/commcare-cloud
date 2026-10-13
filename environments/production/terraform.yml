@@ -406,7 +406,7 @@ rds_instances:
     storage_type: gp3
     storage_throughput: 500
     multi_az: true
-    engine_version: "14.18"
+    engine_version: "14.24"
     backup_window: "23:00-01:00"
     backup_retention: 7
     iops: 12000
@@ -430,7 +430,7 @@ rds_instances:
     max_storage: 5000
     storage_type: gp3
     multi_az: true
-    engine_version: "14.18"
+    engine_version: "14.24"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -444,7 +444,7 @@ rds_instances:
     storage_type: gp3
     iops: 12000
     multi_az: true
-    engine_version: "14.18"
+    engine_version: "14.24"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -460,7 +460,7 @@ rds_instances:
     storage_type: gp3
     iops: 12000
     multi_az: true
-    engine_version: "14.18"
+    engine_version: "14.24"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -476,7 +476,7 @@ rds_instances:
     storage_type: gp3
     iops: 12000
     multi_az: true
-    engine_version: "14.18"
+    engine_version: "14.24"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -492,7 +492,7 @@ rds_instances:
     storage_type: gp3
     iops: 12000
     multi_az: true
-    engine_version: "14.18"
+    engine_version: "14.24"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -508,7 +508,7 @@ rds_instances:
     storage_type: gp3
     iops: 12000
     multi_az: true
-    engine_version: "14.18"
+    engine_version: "14.24"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
@@ -522,7 +522,7 @@ rds_instances:
     storage: 1000
     storage_type: gp3
     multi_az: true
-    engine_version: "14.18"
+    engine_version: "14.24"
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
@@ -544,7 +544,7 @@ rds_instances:
     storage: 200
     storage_type: gp3
     multi_az: true
-    engine_version: "14.18"
+    engine_version: "14.24"
     backup_retention: 7
     params:
       shared_preload_libraries: pg_stat_statements,pg_transport
@@ -566,7 +566,7 @@ rds_instances:
     storage: 7700
     storage_type: gp3
     multi_az: true
-    engine_version: "14.18"
+    engine_version: "14.24"
     backup_window: "23:00-01:00"
     backup_retention: 7
     enable_cross_region_backup: true
