@@ -59,6 +59,7 @@ def test_rds_instance_config():
         }
     )
     assert instance_with_params.parameter_group is None
+    assert instance_with_params.allow_major_version_upgrade is False
 
     instance_with_param_group = RdsInstanceConfig.wrap({
         'identifier': 'pg0-staging',
@@ -67,6 +68,14 @@ def test_rds_instance_config():
         'parameter_group': 'pg18-params-staging',
     })
     assert instance_with_param_group.parameter_group == 'pg18-params-staging'
+
+    instance_allowing_major_upgrade = RdsInstanceConfig.wrap({
+        'identifier': 'pg0-staging',
+        'instance_type': 'db.t4g.large',
+        'storage': 300,
+        'allow_major_version_upgrade': True,
+    })
+    assert instance_allowing_major_upgrade.allow_major_version_upgrade is True
 
     with pytest.raises(ValueError) as context:
         RdsInstanceConfig.wrap({
