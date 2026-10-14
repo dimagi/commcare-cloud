@@ -177,8 +177,8 @@ Acceptance: each converges twice with no changes; basic service-up asserts.
 Depends: 8.
 Outcome: SAAS-19961 became a prioritization pass. Vagrant `deploy-stack` already
 runs the roles listed above, so Molecule went to the roles it doesn't run (the
-role tickets below). Appendix C has the coverage report and the remaining
-priorities.
+role tickets below). [Appendix C](#appendix-c-module-coverage-and-test-priority)
+has the coverage report and the remaining priorities.
 Ticket: [SAAS-19961](https://dimagi.atlassian.net/browse/SAAS-19961)
 Scoping: [SAAS-20358](https://dimagi.atlassian.net/browse/SAAS-20358)
 Role tickets:
@@ -210,7 +210,9 @@ Acceptance: `ansible-galaxy install -r` resolves the collection; syntax clean;
 Vagrant `deploy-stack` green with the development environment covering
 project_db, repeaters and plproxy, plus the `set_up_dbs.yml` remote-DB Molecule
 scenario (Appendix C, item 2).
-Depends: Appendix C item 2.
+Depends: Appendix C item 2
+([SAAS-20370](https://dimagi.atlassian.net/browse/SAAS-20370),
+[SAAS-20371](https://dimagi.atlassian.net/browse/SAAS-20371)).
 
 #### 11. Adopt `ansible.posix`
 Add `ansible.posix` to `requirements.yml`, then FQCN-ify its modules:
@@ -599,17 +601,25 @@ don't run in development.
    `deploy-stack` runs `postgresql_query`, `postgresql_lang`, the plproxy
    extension and the project_db `postgresql_user` task. The project_db path
    also needs `PGBOUNCER_AUTH_PASSWORD` and `PROJECTDB_USERS_PASSWORD` set for
-   development. This costs no new test code. The RDS path
+   development. This costs no new test code
+   ([SAAS-20370](https://dimagi.atlassian.net/browse/SAAS-20370)). The RDS path
    (`db_is_remote: yes`) still needs its own check: a Molecule scenario that
    runs only `set_up_dbs.yml` against a local postgres, reusing the postgres
-   setup from the pg_repack scenario. #10's acceptance names both.
-3. **formplayer `rollback.yml`.** Covers `supervisorctl`. Rollback is an
-   emergency path, so a break would surface at a bad time.
-4. **ecryptfs with `datavol_device`.** Covers `filesystem` by adding a case to
-   the existing ecryptfs scenario, with the partition, format and mount
-   binaries stubbed.
-5. **`monit_tmp` pytest test.** A Python test like those in
-   `tests/test_deploy/` is cheaper than running the pg_upgrade playbooks.
+   setup from the pg_repack scenario
+   ([SAAS-20371](https://dimagi.atlassian.net/browse/SAAS-20371)). #10's
+   acceptance names both.
+3. **formplayer `rollback.yml`
+   ([SAAS-20372](https://dimagi.atlassian.net/browse/SAAS-20372)).** Covers
+   `supervisorctl`. Rollback is an emergency path, so a break would surface at
+   a bad time.
+4. **ecryptfs with `datavol_device`
+   ([SAAS-20373](https://dimagi.atlassian.net/browse/SAAS-20373)).** Covers
+   `filesystem` by adding a case to the existing ecryptfs scenario, with the
+   partition, format and mount binaries stubbed.
+5. **`monit_tmp` pytest test
+   ([SAAS-20374](https://dimagi.atlassian.net/browse/SAAS-20374)).** A Python
+   test like those in `tests/test_deploy/` is cheaper than running the
+   pg_upgrade playbooks.
 
 Lower priority:
 
