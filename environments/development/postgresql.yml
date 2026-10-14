@@ -13,5 +13,6 @@ postgres_override:
 
 dbs:
   project_db: {}
+  repeaters: {}
   synclogs: null
   form_processing: null
