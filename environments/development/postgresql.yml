@@ -1,5 +1,8 @@
 SEPARATE_SYNCLOGS_DB: False
 SEPARATE_FORM_PROCESSING_DBS: False
+REPORTING_DATABASES:
+  ucr: ucr
+  project_db: project_db
 
 postgres_override:
   postgresql_effective_cache_size: 4GB
@@ -9,5 +12,6 @@ postgres_override:
   postgresql_shared_buffers: 128MB
 
 dbs:
+  project_db: {}
   synclogs: null
   form_processing: null
