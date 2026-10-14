@@ -19,7 +19,7 @@ provisioner:
   name: ansible
   env:
     # Skip tags that change on every run, causing idempotence to fail
-    ANSIBLE_SKIP_TAGS: restart,upgrade_warning
+    ANSIBLE_SKIP_TAGS: activate_release,upgrade_warning
   config_options:
     defaults:
       # Work around become_user tasks need ACLs to grant temp-file access, but

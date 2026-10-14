@@ -109,7 +109,7 @@
   become: true
   become_user: '{{ cchq_user }}'
   any_errors_fatal: true
-  tags: restart
+  tags: activate_release
   tasks:
     - import_role: {name: deploy_hq}
       vars:
@@ -136,4 +136,4 @@
         force: true
 
 - import_playbook: restart_commcare_services.yml
-  tags: restart
+  tags: activate_release
