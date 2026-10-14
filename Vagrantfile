@@ -51,6 +51,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.insert_key = false
   authorize_key config, '~/.vagrant.d/insecure_private_key'
 
+  # Disable non-standard DNSSEC validation in generic/ubuntu2204
+  config.vm.provision "shell", inline: <<~'SHELL'
+    mkdir -p /etc/systemd/resolved.conf.d
+    printf '[Resolve]\nDNSSEC=no\n' > /etc/systemd/resolved.conf.d/dnssec.conf
+    systemctl restart systemd-resolved
+  SHELL
+
   {
     'control' => ['192.168.33.14', 'control'],
     'app1'    => ['192.168.33.15', 'nodes'],
