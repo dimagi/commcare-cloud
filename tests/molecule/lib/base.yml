@@ -15,8 +15,6 @@ provisioner:
       fact_caching: jsonfile
       fact_caching_connection: ${MOLECULE_EPHEMERAL_DIRECTORY}/facts
       pipelining: true
-      # As in src/commcare_cloud/ansible/ansible.cfg, which molecule doesn't use.
-      # Avoids a warning when a become_user task first creates it.
       remote_tmp: /tmp
   playbooks:
     # Faster replacements for the containers driver's playbooks.
