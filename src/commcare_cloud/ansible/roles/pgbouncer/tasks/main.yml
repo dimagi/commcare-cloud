@@ -173,8 +173,13 @@
     state: monitored
   ignore_errors: "{{ ansible_check_mode }}"
   register: result
-  until: not result.failed or 'process not presently configured with monit' not in result.msg
-  retries: 5
+  until: >-
+    not result.failed or (
+      'process not presently configured with monit' not in result.msg
+      and 'CONNECTION_FAILED' not in (
+        (result.module_stdout | default('')) ~ (result.module_stderr | default(''))
+      )
+    )
+  retries: 9
   delay: 20
   tags: monit
-
