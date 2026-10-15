@@ -62,9 +62,8 @@
           cat >/dev/null
           echo "Inserted auth tok with sig [{{ ecryptfs_stub_sig }}] into the user session keyring"
 
-    # A rootless container cannot mount ecryptfs. Record the mount in
-    # /etc/mtab instead, where the role's "already mounted" check looks for
-    # it, so the second converge skips the mount like it would on a real host.
+    # This stub logs each call. ecryptfs mounts are added to /etc/mtab
+    # where the role checks whether the drive is already mounted.
     - name: Stub mount
       ansible.builtin.copy:
         dest: /usr/local/sbin/mount
@@ -72,6 +71,7 @@
         content: |
           #!/bin/sh
           echo "$*" >> /var/log/fake-mount.log
+          [ "$2" = ecryptfs ] || exit 0
           for dir; do :; done
           echo "${dir%/} ${dir%/} ecryptfs rw 0 0" >> /etc/mtab
 
