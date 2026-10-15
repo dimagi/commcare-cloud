@@ -1,0 +1,5 @@
+---
+- name: Rollback formplayer
+  ansible.builtin.import_playbook: ../../../src/commcare_cloud/ansible/rollback_formplayer.yml
+  # Skip during idempotence. The play restarts formplayer on every run.
+  tags: molecule-idempotence-notest
