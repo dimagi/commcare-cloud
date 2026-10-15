@@ -23,6 +23,8 @@
       - volumes
       - tmpfs
       - security_opts
+      - networks
+      - env
     # The driver's default command, used unless override_command is false
     # (e.g. to run the image's systemd as PID 1).
     default_command: [bash, -c, "while true; do sleep 10000; done"]
@@ -43,6 +45,23 @@
     - name: Find container engine
       ansible.builtin.include_tasks: container_engine.yml
 
+    - name: Create molecule network(s)
+      # A network is required so containers can resolve each other by name
+      ansible.builtin.shell: |
+        if ! {{ container_engine }} network inspect {{ item | quote }} >/dev/null 2>&1; then
+          {{ container_engine }} network create {{ item | quote }} >/dev/null
+          echo created
+        fi
+      register: network_result
+      changed_when: network_result.stdout == 'created'
+      loop: >-
+        {{
+          molecule_yml.platforms
+          | selectattr('networks', 'defined')
+          | map(attribute='networks') | flatten
+          | map(attribute='name') | unique
+        }}
+
     # --stop-timeout 0: `podman rm -f` (unlike `docker rm -f`) first waits out
     # the container's stop timeout, 10s by default. The default command's
     # bash, as PID 1, ignores SIGTERM, so destroy always waited the full 10s.
@@ -59,6 +78,8 @@
             + (item.volumes | default([]) | map('regex_replace', '^', '--volume=') | list)
             + (item.tmpfs | default([]) | map('regex_replace', '^', '--tmpfs=') | list)
             + (item.security_opts | default([]) | map('regex_replace', '^', '--security-opt=') | list)
+            + (item.networks | default([]) | map(attribute='name') | map('regex_replace', '^', '--network=') | list)
+            + ((item.env | default({})).items() | map('join', '=') | map('regex_replace', '^', '--env=') | list)
             + [item.image]
             + (default_command if item.override_command | default(true) else [])
           }}

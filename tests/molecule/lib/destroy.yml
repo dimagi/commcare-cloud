@@ -23,6 +23,22 @@
       loop_control:
         label: "{{ item.name }}"
 
+    - name: Destroy molecule network(s)
+      ansible.builtin.shell: |
+        if {{ container_engine }} network inspect {{ item | quote }} >/dev/null 2>&1; then
+          {{ container_engine }} network rm {{ item | quote }} >/dev/null
+          echo removed
+        fi
+      register: network_result
+      changed_when: network_result.stdout == 'removed'
+      loop: >-
+        {{
+          molecule_yml.platforms
+          | selectattr('networks', 'defined')
+          | map(attribute='networks') | flatten
+          | map(attribute='name') | unique
+        }}
+
     - name: Delete fact cache
       # Molecule only prunes the ephemeral directory at the end of a full
       # sequence, so after `--destroy=never` the next run would otherwise reuse
