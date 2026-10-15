@@ -1,0 +1,14 @@
+---
+- name: Prepare ecryptfs
+  ansible.builtin.import_playbook: ../ecryptfs.default/prepare.yml
+
+- name: Prepare datavol
+  hosts: all
+  tasks:
+    - name: Create the data volume partition
+      # There are no block devices in the container. A sparse file stands in
+      # for the partition, and the role's filesystem task formats it with
+      # the real mkfs.ext4.
+      ansible.builtin.command: truncate -s 64M {{ datavol_device }}1
+      args:
+        creates: "{{ datavol_device }}1"
