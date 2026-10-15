@@ -1,0 +1,95 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  - name: instance
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+    groups:
+      - django_manage
+    networks:
+      - name: postgresql_base.remote_dbs
+  - name: postgres
+    image: docker.io/library/postgres  # version tag added by create.yml
+    pre_build_image: true
+    override_command: false
+    groups:
+      - remote_postgresql
+      - ansible_skip  # do not gather facts or run tasks
+    networks:
+      - name: postgresql_base.remote_dbs
+    volumes:
+      # z: relabel for SELinux hosts; ignored elsewhere
+      - ${MOLECULE_SCENARIO_DIRECTORY}/files/seed.sql:/docker-entrypoint-initdb.d/seed.sql:ro,z
+    env:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: molecule-root-password
+provisioner:
+  name: ansible
+  ansible_args:
+    - --limit=!ansible_skip
+  config_options:
+    defaults:
+      # Work around become_user tasks need ACLs to grant temp-file access, but
+      # container overlay filesystems don't support them.
+      allow_world_readable_tmpfiles: true
+  playbooks:
+    create: create.yml
+    cleanup: ../lib/stub.yml
+  inventory:
+    hosts:
+      all:
+        children:
+          # Empty groups avoid "Could not match supplied host pattern" warnings
+          # from deploy_postgres.yml plays that don't apply here.
+          postgresql: {}
+          pg_standby: {}
+          pgbouncer: {}
+          pg_backup: {}
+          plproxy: {}
+    group_vars:
+      all:
+        ansible_sudo_pass: ""
+        skip_monit: true
+        PGBOUNCER_AUTH_PASSWORD: molecule-pgbouncer-auth-password
+        PROJECTDB_USERS_PASSWORD: molecule-projectdb-users-password
+        postgres_users:
+          root:
+            username: root
+            password: molecule-root-password
+          commcare:
+            username: commcarehq
+            password: molecule-commcarehq-password
+          devreadonly:
+            username: devreadonly
+            password: molecule-devreadonly-password
+            role_attr_flags: 'NOSUPERUSER,NOCREATEROLE,NOCREATEDB'
+            privs:
+              - privs: SELECT
+                objs: ALL_IN_SCHEMA
+        postgresql_dbs:
+          main: &main_db
+            name: commcarehq
+            host: postgres
+            user: commcarehq
+            create: true
+          repeaters: &repeaters_db
+            name: commcarehq_repeaters
+            host: postgres
+            user: commcarehq
+            create: true
+          project_db: &project_db
+            name: commcarehq_project_db
+            host: postgres
+            user: commcarehq
+            create: true
+          all:
+            - *main_db
+            - *project_db
+            - *repeaters_db
+verifier:
+  name: ansible

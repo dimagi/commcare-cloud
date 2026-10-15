@@ -1,0 +1,18 @@
+---
+- name: Set postgres image version
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - ../../../src/commcare_cloud/ansible/roles/postgresql_base/defaults/main.yml
+  tasks:
+    - name: Add postgresql_version to the postgres platform image
+      ansible.builtin.set_fact:
+        molecule_yml: "{{ molecule_yml | combine({'platforms': others + [postgres_with_tag]}) }}"
+      vars:
+        others: "{{ molecule_yml.platforms | rejectattr('name', 'eq', 'postgres') | list }}"
+        postgres: "{{ molecule_yml.platforms | selectattr('name', 'eq', 'postgres') | first }}"
+        postgres_with_tag: "{{ postgres | combine({'image': postgres.image + ':' + postgresql_version}) }}"
+
+- name: Create
+  ansible.builtin.import_playbook: ../lib/create.yml
