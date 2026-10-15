@@ -121,30 +121,40 @@
 - name: Enable postgres_fdw extension in the main db
   become: yes
   become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
-  postgresql_query:
-    db: '{{ postgresql_dbs.main.name }}'
-    port: "{{ postgresql_port }}"
-    login_host: "{{ db_is_remote and postgresql_host or omit }}"
-    login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
-    login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
-    query: |
-      CREATE EXTENSION IF NOT EXISTS postgres_fdw;
-      GRANT USAGE ON FOREIGN DATA WRAPPER postgres_fdw TO {{ postgres_users.commcare.username }};
   when: postgresql_dbs.repeaters and postgresql_host == postgresql_dbs.main.host
+  block:
+    - name: Create the postgres_fdw extension
+      postgresql_ext:
+        name: postgres_fdw
+        db: '{{ postgresql_dbs.main.name }}'
+        port: "{{ postgresql_port }}"
+        login_host: "{{ db_is_remote and postgresql_host or omit }}"
+        login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+        login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
+
+    - name: Grant postgres_fdw usage to the commcare user
+      postgresql_privs:
+        type: foreign_data_wrapper
+        objs: postgres_fdw
+        privs: USAGE
+        roles: "{{ postgres_users.commcare.username }}"
+        db: '{{ postgresql_dbs.main.name }}'
+        port: "{{ postgresql_port }}"
+        login_host: "{{ db_is_remote and postgresql_host or omit }}"
+        login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
+        login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
 
 - name: Drop unused repeaters_fdw_user in repeaters database
   become: yes
   become_user: "{{ db_is_remote and 'ansible' or 'postgres' }}"
-  postgresql_query:
+  postgresql_user:
+    name: repeaters_fdw_user
+    state: absent
     db: '{{ postgresql_dbs.main.name }}'
     port: "{{ postgresql_port }}"
     login_host: "{{ db_is_remote and postgresql_host or omit }}"
     login_user: "{{ db_is_remote and postgres_users.root.username or omit }}"
     login_password: "{{ db_is_remote and postgres_users.root.password or omit }}"
-    query: |
-      DO $$ BEGIN
-        DROP USER IF EXISTS repeaters_fdw_user;
-      END $$;
   when: postgresql_dbs.repeaters and postgresql_host == postgresql_dbs.repeaters.host
 
 # Create pgbouncer user for auth_query calls
@@ -192,5 +202,8 @@
     login_user: "{{ postgres_users.root.username if db_is_remote else omit }}"
     login_password: "{{ postgres_users.root.password if db_is_remote else omit }}"
     query: "{{ lookup('template', 'project_db_setup.sql.j2') }}"
+  # postgresql_query reports changed for any DDL. Every statement in the
+  # template is safe to rerun. There's no cheap way to detect changes.
+  changed_when: false
   # See the comment on "Create pgbouncer auth user" above about check mode
   when: postgresql_dbs.project_db and postgresql_host == postgresql_dbs.project_db.host and not ansible_check_mode
