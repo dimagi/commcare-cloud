@@ -49,7 +49,7 @@
       # A network is required so containers can resolve each other by name
       ansible.builtin.shell: |
         if ! {{ container_engine }} network inspect {{ item | quote }} >/dev/null 2>&1; then
-          {{ container_engine }} network create {{ item | quote }} >/dev/null
+          {{ container_engine }} network create {{ item | quote }} >/dev/null || exit $?
           echo created
         fi
       register: network_result
