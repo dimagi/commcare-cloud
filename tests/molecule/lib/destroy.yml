@@ -14,7 +14,7 @@
     - name: Destroy molecule instance(s)
       ansible.builtin.shell: |
         if {{ container_engine }} container inspect {{ item.name | quote }} >/dev/null 2>&1; then
-          {{ container_engine }} rm -f {{ item.name | quote }} >/dev/null
+          {{ container_engine }} rm --force --volumes {{ item.name | quote }} >/dev/null
           echo removed
         fi
       register: destroy_result
@@ -22,6 +22,22 @@
       loop: "{{ molecule_yml.platforms }}"
       loop_control:
         label: "{{ item.name }}"
+
+    - name: Destroy molecule network(s)
+      ansible.builtin.shell: |
+        if {{ container_engine }} network inspect {{ item | quote }} >/dev/null 2>&1; then
+          {{ container_engine }} network rm {{ item | quote }} >/dev/null || exit $?
+          echo removed
+        fi
+      register: network_result
+      changed_when: network_result.stdout == 'removed'
+      loop: >-
+        {{
+          molecule_yml.platforms
+          | selectattr('networks', 'defined')
+          | map(attribute='networks') | flatten
+          | map(attribute='name') | unique
+        }}
 
     - name: Delete fact cache
       # Molecule only prunes the ephemeral directory at the end of a full

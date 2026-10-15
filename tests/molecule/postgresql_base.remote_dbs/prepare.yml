@@ -1,0 +1,13 @@
+---
+- name: Prepare
+  hosts: instance
+  tasks:
+    - name: Create ansible user
+      ansible.builtin.user:
+        name: ansible
+
+    - name: Wait for postgres to accept connections
+      ansible.builtin.wait_for:
+        host: postgres
+        port: 5432
+        timeout: 30

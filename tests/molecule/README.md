@@ -44,6 +44,13 @@ The platform image is `docker.io/geerlingguy/docker-ubuntu2204-ansible`, rather
 than a generic systemd/Ubuntu image. It's built specifically for
 Ansible/Molecule testing — systemd, `sudo`, and `python3` pre-configured.
 
+A scenario can add a second container for a service the role talks to over
+the network, e.g. a `postgres` image standing in for RDS. Put every platform on
+the same named network (`networks: [{name: <name>}]`) so containers can resolve
+each other by name; containers on the default network can't. If the service
+image has no python, target every play at the platforms that do (e.g.
+`hosts: instance`), since Ansible can't gather facts or run modules on it.
+
 ## Keeping scenarios fast
 
 The shared config in `tests/molecule/lib/` removes most fixed overhead: a

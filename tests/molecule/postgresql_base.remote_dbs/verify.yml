@@ -1,0 +1,101 @@
+---
+- name: Verify
+  hosts: instance
+  gather_facts: false
+  module_defaults:
+    community.postgresql.postgresql_query:
+      login_host: postgres
+      login_user: "{{ postgres_users.root.username }}"
+      login_password: "{{ postgres_users.root.password }}"
+  tasks:
+    - name: Query databases
+      community.postgresql.postgresql_query:
+        db: postgres
+        query: >-
+          SELECT datname, pg_get_userbyid(datdba) AS owner
+          FROM pg_database WHERE datname LIKE 'commcarehq%' ORDER BY datname
+      register: dbs
+
+    - name: Assert databases exist with expected owner
+      ansible.builtin.assert:
+        that: dbs.query_result == expected
+        fail_msg: "Got: {{ dbs.query_result | to_json }}"
+      vars:
+        expected:
+          - {datname: commcarehq, owner: commcarehq}
+          - {datname: commcarehq_project_db, owner: commcarehq}
+          - {datname: commcarehq_repeaters, owner: commcarehq}
+
+    - name: Query roles
+      community.postgresql.postgresql_query:
+        db: postgres
+        query: >-
+          SELECT rolname, rolcreatedb, rolcanlogin, rolsuper, rolcreaterole
+          FROM pg_roles
+          WHERE rolname IN ('commcarehq', 'devreadonly', 'pgbouncer_auth', 'repeaters_fdw_user')
+          ORDER BY rolname
+      register: roles
+
+    - name: Assert roles have expected attributes and repeaters_fdw_user is gone
+      ansible.builtin.assert:
+        that: roles.query_result == expected
+        fail_msg: "Got: {{ roles.query_result | to_json }}"
+      vars:
+        expected:
+          - {rolname: commcarehq, rolcreatedb: true, rolcanlogin: true, rolsuper: false, rolcreaterole: false}
+          - {rolname: devreadonly, rolcreatedb: false, rolcanlogin: true, rolsuper: false, rolcreaterole: false}
+          - {rolname: pgbouncer_auth, rolcreatedb: false, rolcanlogin: true, rolsuper: false, rolcreaterole: false}
+
+    - name: Query devreadonly privileges
+      community.postgresql.postgresql_query:
+        db: postgres
+        query: >-
+          SELECT has_table_privilege('devreadonly', 'molecule_privs_check', 'SELECT') AS can_select
+      register: devreadonly_privs
+
+    - name: Assert devreadonly can read tables in the public schema
+      ansible.builtin.assert:
+        that: "devreadonly_privs.query_result == [{'can_select': true}]"
+        fail_msg: "Got: {{ devreadonly_privs.query_result | to_json }}"
+
+    - name: Query main db
+      community.postgresql.postgresql_query:
+        db: commcarehq
+        query: >-
+          SELECT has_foreign_data_wrapper_privilege('commcarehq', 'postgres_fdw', 'USAGE') AS commcarehq_fdw_usage
+      register: main_db
+
+    - name: Assert postgres_fdw is installed and usable by commcarehq
+      ansible.builtin.assert:
+        that: "main_db.query_result == [{'commcarehq_fdw_usage': true}]"
+        fail_msg: "Got: {{ main_db.query_result | to_json }}"
+
+    - name: Query project_db
+      community.postgresql.postgresql_query:
+        db: commcarehq_project_db
+        query: >-
+          SELECT
+            (SELECT array_agg(extname::text ORDER BY extname) FROM pg_extension
+             WHERE extname IN ('cube', 'earthdistance', 'fuzzystrmatch', 'pg_trgm')) AS extensions,
+            has_function_privilege('commcarehq', 'projectdb_provision_role(text, text)', 'EXECUTE') AS commcarehq_provision,
+            has_function_privilege('commcarehq', 'projectdb_drop_role(text)', 'EXECUTE') AS commcarehq_drop,
+            has_function_privilege('devreadonly', 'projectdb_provision_role(text, text)', 'EXECUTE') AS other_provision,
+            has_function_privilege('devreadonly', 'projectdb_drop_role(text)', 'EXECUTE') AS other_drop,
+            has_function_privilege('pgbouncer_auth', 'pgbouncer.project_db_user_lookup(text)', 'EXECUTE') AS pgbouncer_lookup,
+            (SELECT array_agg(passwd) FROM pgbouncer.project_db_secret) AS secrets
+      register: project_db
+
+    - name: Assert project_db extensions, functions and pgbouncer secret
+      ansible.builtin.assert:
+        that: project_db.query_result == [expected]
+        fail_msg: "Got: {{ project_db.query_result | to_json }}"
+      vars:
+        expected:
+          extensions: [cube, earthdistance, fuzzystrmatch, pg_trgm]
+          commcarehq_provision: true
+          commcarehq_drop: true
+          # devreadonly has no grants, so this checks EXECUTE was revoked from PUBLIC
+          other_provision: false
+          other_drop: false
+          pgbouncer_lookup: true
+          secrets: [molecule-projectdb-users-password]
