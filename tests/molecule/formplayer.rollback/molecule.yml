@@ -1,0 +1,27 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  - name: formplayer0
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+    groups: [formplayer]
+provisioner:
+  name: ansible
+  options:
+    tags: rollback  # skip java and supervisor dependency roles
+  playbooks:
+    cleanup: ../lib/stub.yml
+  inventory:
+    group_vars:
+      all:
+        deploy_env: molecule
+        ansible_sudo_pass: ""
+        molecule_pause_user_input: "2026-10-01_12.00"  # see action_plugins/pause.py
+        supervisorctl_log: /var/tmp/supervisorctl.log
+verifier:
+  name: ansible
