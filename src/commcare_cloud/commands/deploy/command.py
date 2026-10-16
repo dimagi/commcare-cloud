@@ -59,6 +59,13 @@ class Deploy(CommandBase):
             Generate new localsettings.py rather than copying from the previous
             release.
         """),
+        Argument('--prebuilt-static', action='store_true', help="""
+            Fetch the prebuilt static files artifact for the deployed commit
+            from GitHub Actions instead of relying solely on the on-host
+            build. Requires a GitHub token (GITHUB_TOKEN env var or
+            config.py) with Actions read access on dimagi/commcare-hq.
+            Falls back to the on-host build if the artifact is unavailable.
+        """),
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
     )
@@ -128,6 +135,7 @@ def _warn_about_non_formplayer_args(args):
         '--commcare-rev',
         '--ignore-kafka-checkpoint-warning',
         '--update-config',
+        '--prebuilt-static',
     ]:
         dest = arg.lstrip("-").replace("-", "_")
         if getattr(args, dest) not in [None, False]:
