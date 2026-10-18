@@ -1,0 +1,81 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  vars_files:
+    - ../../../src/commcare_cloud/ansible/group_vars/all.yml  # for cchq_user and www_home
+    - ../../../src/commcare_cloud/ansible/roles/deploy_hq/vars/main.yml  # for code_source
+  vars:
+    local_cache: "{{ code_source }}/staticfiles/CACHE"
+    is_compress_host: "{{ inventory_hostname == groups.proxy[0] }}"
+  tasks:
+    - name: Read command log
+      ansible.builtin.slurp:
+        src: "{{ molecule_command_log }}"
+      register: command_log
+
+    - name: Assert each command ran once, in order
+      vars:
+        actual: "{{ (command_log.content | b64decode).splitlines() }}"
+        release_setup:
+          - uv sync --group=prod --no-dev --locked --compile-bytecode
+        kafka_checkpoints:
+          - manage.py validate_kafka_pillow_checkpoints
+        collect:
+          - yarn install --non-interactive --production --no-emoji
+          - manage.py resource_static
+          - manage.py collectstatic --noinput -v 0
+          - manage.py fix_less_imports_collectstatic
+          - manage.py generate_webpack_settings
+          - yarn build
+        compress:
+          - manage.py compress --force -v 0
+        translations:
+          - manage.py update_django_locales
+          - manage.py compilemessages -v 0
+          - manage.py compilejsi18n
+        migrations:
+          - manage.py migrate_multi --noinput
+          - manage.py create_kafka_topics
+        expected: >-
+          {{
+            release_setup
+            + (kafka_checkpoints if inventory_hostname == groups.webworkers[0] else [])
+            + collect
+            + (compress if is_compress_host else [])
+            + translations
+            + (migrations if inventory_hostname == groups.webworkers[0] else [])
+          }}
+      ansible.builtin.assert:
+        that: actual == expected
+        fail_msg: "{{ actual }}"
+
+    - name: Assert files were copied from the previous release
+      ansible.builtin.command: cmp {{ code_home }}/{{ item }} {{ code_source }}/{{ item }}
+      changed_when: false
+      loop:
+        - localsettings.py
+        - node_modules/fake-package/index.js
+
+    - name: Assert manage.py shebang points to the release's virtualenv
+      ansible.builtin.command: grep -Fxq "#! {{ code_source }}/python_env/bin/python" {{ code_source }}/manage.py
+      changed_when: false
+
+    - name: Assert code version was written for clean_releases
+      when: is_compress_host
+      ansible.builtin.command: grep -Fxq {{ code_version }} {{ code_source }}/.staticfiles-version
+      changed_when: false
+
+    - name: Assert webworker pulled only the manifest
+      when: "'webworkers' in group_names"
+      ansible.builtin.shell: test -f {{ local_cache }}/manifest.json && test ! -e {{ local_cache }}/js
+      changed_when: false
+
+    - name: Assert other proxy pulled the whole cache
+      # implies shared files were created on proxy[0]
+      when: inventory_hostname in groups.proxy[1:]
+      ansible.builtin.command: test -f {{ local_cache }}/{{ item }}
+      changed_when: false
+      loop:
+        - manifest.json
+        - js/output.js

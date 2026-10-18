@@ -4,6 +4,8 @@ secrets:
   DATADOG_API_KEY: null
   DATADOG_APP_KEY: null
   HAPROXY_STATS_PASSWORD: secrete
+  PGBOUNCER_AUTH_PASSWORD: pgbouncerauth
+  PROJECTDB_USERS_PASSWORD: projectdbusers
   POSTGRES_USERS:
     commcare:
       username: commcarehq

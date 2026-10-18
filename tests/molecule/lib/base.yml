@@ -15,6 +15,7 @@ provisioner:
       fact_caching: jsonfile
       fact_caching_connection: ${MOLECULE_EPHEMERAL_DIRECTORY}/facts
       pipelining: true
+      remote_tmp: /tmp
   playbooks:
     # Faster replacements for the containers driver's playbooks.
     # Paths are relative to the scenario directory.

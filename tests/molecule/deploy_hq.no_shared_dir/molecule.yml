@@ -1,0 +1,53 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  # One proxy; staticfiles_pull_cache fails if there's more than one and no shared dir.
+  - name: proxy0
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+    groups: [proxy]
+  - name: webworker0
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+    groups: [webworkers]
+provisioner:
+  name: ansible
+  env:
+    # Skip tags that change on every run, causing idempotence to fail
+    ANSIBLE_SKIP_TAGS: activate_release,upgrade_warning
+  config_options:
+    defaults:
+      # Work around become_user tasks need ACLs to grant temp-file access, but
+      # container overlay filesystems don't support them.
+      allow_world_readable_tmpfiles: true
+  playbooks:
+    prepare: ../deploy_hq.default/prepare.yml
+    converge: ../deploy_hq.default/converge.yml
+    cleanup: ../lib/stub.yml
+  inventory:
+    hosts:
+      all:
+        children:
+          # Empty groups avoid "Could not match supplied host pattern" warnings.
+          celery: {}
+          pillowtop: {}
+          django_manage: {}
+          hq_webworkers: {}
+          mobile_webworkers: {}
+          api_webworkers: {}
+    group_vars:
+      # Converge loads group_vars next to deploy_hq.yml, which take precedence over these.
+      all:
+        deploy_env: molecule
+        ansible_sudo_pass: ""
+        release_name: "2026-10-12_12.00"
+        code_version: 0123456789abcdef0123456789abcdef01234567
+        shared_dir_for_staticfiles: null  # pass staticfiles manifest through redis
+        molecule_command_log: /var/tmp/deploy_hq-commands.log
+verifier:
+  name: ansible
