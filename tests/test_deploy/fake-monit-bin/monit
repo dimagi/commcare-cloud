@@ -2,24 +2,44 @@
 """Fake monit for testing the monit_tmp module
 
 Process state is read from the JSON file named by $FAKE_MONIT_STATE,
-a mapping of process name to monit status (e.g. "OK").
+a mapping of process name to monit status (e.g. "OK"). Each invocation
+is appended to commands.log in the same directory.
 """
 import json
 import os
 import sys
+from pathlib import Path
+
+NEW_STATUS = {"monitor": "OK", "unmonitor": "Not monitored"}
 
 
 def main(args):
+    state_file = Path(os.environ["FAKE_MONIT_STATE"])
+    with open(state_file.with_name("commands.log"), "a") as fh:
+        print(" ".join(args), file=fh)
     if args == ["-V"]:
         print("This is Monit version 5.26.0")
         return 0
+    with open(state_file) as fh:
+        processes = json.load(fh)
     if args[:1] == ["summary"]:
-        with open(os.environ["FAKE_MONIT_STATE"]) as fh:
-            processes = json.load(fh)
         print("Monit 5.26.0 uptime: 1d 0h 0m")
         print(" Service Name                     Status                      Type")
         for name, status in processes.items():
             print(f" {name:<32} {status:<27} Process")
+        return 0
+    if args[:1] in (["status"], ["validate"]):
+        name = args[-1]
+        print("Monit 5.26.0 uptime: 1d 0h 0m")
+        print()
+        print(f"Process '{name}'")
+        print(f"  status                       {processes[name]}")
+        return 1 if args[0] == "validate" else 0
+    if len(args) == 2 and args[0] in NEW_STATUS:
+        command, name = args
+        processes[name] = NEW_STATUS[command]
+        with open(state_file, "w") as fh:
+            json.dump(processes, fh)
         return 0
     print(f"fake monit: unsupported arguments: {args}", file=sys.stderr)
     return 2
