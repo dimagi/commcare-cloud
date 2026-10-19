@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+"""Fake monit for testing the monit_tmp module
+
+Process state is read from the JSON file named by $FAKE_MONIT_STATE,
+a mapping of process name to monit status (e.g. "OK").
+"""
+import json
+import os
+import sys
+
+
+def main(args):
+    if args == ["-V"]:
+        print("This is Monit version 5.26.0")
+        return 0
+    if args[:1] == ["summary"]:
+        with open(os.environ["FAKE_MONIT_STATE"]) as fh:
+            processes = json.load(fh)
+        print("Monit 5.26.0 uptime: 1d 0h 0m")
+        print(" Service Name                     Status                      Type")
+        for name, status in processes.items():
+            print(f" {name:<32} {status:<27} Process")
+        return 0
+    print(f"fake monit: unsupported arguments: {args}", file=sys.stderr)
+    return 2
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
