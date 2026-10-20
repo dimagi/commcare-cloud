@@ -503,9 +503,8 @@ As of 2026-10-12, traced against `master`. Two checks run role code:
   http_proxy, chaos, cloudwatch_logs, backups, ecryptfs, commcare-audit
   ([SAAS-20359](https://dimagi.atlassian.net/browse/SAAS-20359)) and
   kinesis_agent ([SAAS-20360](https://dimagi.atlassian.net/browse/SAAS-20360)).
-  pg_repack ([SAAS-20361](https://dimagi.atlassian.net/browse/SAAS-20361)) is
-  in progress and has no scenario on `master` yet. keystore is Won't Fix (one
-  `copy` task).
+  keystore is Won't Fix (one `copy` task). pg_repack and sentry are Won't Fix
+  (see below).
 - **Vagrant** runs `deploy-stack` against `environments/development` on Ubuntu
   22.04 ([SAAS-19959](https://dimagi.atlassian.net/browse/SAAS-19959),
   [SAAS-20034](https://dimagi.atlassian.net/browse/SAAS-20034)). It is run by
@@ -604,8 +603,7 @@ don't run in development.
    development. This costs no new test code
    ([SAAS-20370](https://dimagi.atlassian.net/browse/SAAS-20370)). The RDS path
    (`db_is_remote: yes`) still needs its own check: a Molecule scenario that
-   runs only `set_up_dbs.yml` against a local postgres, reusing the postgres
-   setup from the pg_repack scenario
+   runs only `set_up_dbs.yml` against a local postgres
    ([SAAS-20371](https://dimagi.atlassian.net/browse/SAAS-20371)). #10's
    acceptance names both.
 3. **formplayer `rollback.yml`
@@ -627,15 +625,15 @@ Lower priority:
   ([SAAS-20364](https://dimagi.atlassian.net/browse/SAAS-20364)).** No
   uncovered modules, but its block/rescue and conditionals are exposed to the
   #21 changes.
-- **pg_repack ([SAAS-20361](https://dimagi.atlassian.net/browse/SAAS-20361)).**
-  No modules that item 2 doesn't cover. Finish it if it's close to done.
-- **sentry ([SAAS-20365](https://dimagi.atlassian.net/browse/SAAS-20365)).** No
-  environment uses it, and its modules are covered elsewhere apart from
-  `supervisorctl`, which item 3 covers. It may still be worth a Molecule
-  scenario because it is used internally to configure Sentry, independent of
-  `deploy-stack` (see `src/commcare_cloud/ansible/deploy_sentry.yml`).
 
 Not worth a scenario:
+
+- **pg_repack ([SAAS-20361](https://dimagi.atlassian.net/browse/SAAS-20361)),
+  Won't Fix.** No modules that item 2 doesn't cover. Staging runs it, so a
+  break shows up there.
+- **sentry ([SAAS-20365](https://dimagi.atlassian.net/browse/SAAS-20365)),
+  Won't Fix.** No environment uses it, and item 3 covers `supervisorctl`, its
+  only uncovered module.
 
 - **deploy_hq release setup
   ([SAAS-20362](https://dimagi.atlassian.net/browse/SAAS-20362)).** It uses
