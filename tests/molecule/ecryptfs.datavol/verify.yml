@@ -1,0 +1,21 @@
+---
+- name: Verify ecryptfs
+  ansible.builtin.import_playbook: ../ecryptfs.default/verify.yml
+
+- name: Verify datavol
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Read partition filesystem type
+      ansible.builtin.command: blkid -o value -s TYPE /var/tmp/datavol1
+      register: fstype
+      changed_when: false
+
+    - name: Assert partition was formatted ext4
+      ansible.builtin.assert:
+        that: fstype.stdout == 'ext4'
+        fail_msg: "{{ fstype.stdout }}"
+
+    - name: Assert fstab entry present
+      ansible.builtin.command: grep -Fxq "/var/tmp/datavol1 /opt/data ext4 defaults,noatime 0 0" /etc/fstab
+      changed_when: false
