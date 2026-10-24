@@ -28,6 +28,10 @@ nginx_http_params:
   keepalive_timeout: "65"
   types_hash_max_size: 2048
   server_names_hash_bucket_size: 128
+  # nginx 1.29.7 changed the default to 1.1 with keepalive connections to
+  # upstreams. Keep the previous default until keepalive is tested with
+  # each upstream (idle timeouts must be shorter than the upstream's).
+  proxy_http_version: "1.0"
 
 nginx_separate_logs_per_site: True
 commcarehq_errors_repository: "https://github.com/dimagi/commcare-hq-errorpages.git"

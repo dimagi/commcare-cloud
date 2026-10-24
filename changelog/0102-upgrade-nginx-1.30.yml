@@ -1,0 +1,25 @@
+title: Upgrade nginx to 1.30
+key: upgrade-nginx-1.30
+date: 2026-10-24
+optional_per_env: no
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version:
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  nginx is upgraded from 1.28.0 to 1.30.6, the current stable release.
+
+details: |
+  nginx 1.30 includes several security fixes since 1.28.0. nginx.org
+  does not publish 1.28 packages for Ubuntu 26.04.
+
+  nginx 1.29.7 changed the default for proxied requests to HTTP/1.1 with
+  keepalive connections to upstream servers. commcare-cloud now sets
+  `proxy_http_version 1.0` explicitly to keep the previous behaviour.
+
+update_steps: |
+  To apply, run:
+
+  ```
+  commcare-cloud <env> ansible-playbook deploy_proxy.yml
+  ```

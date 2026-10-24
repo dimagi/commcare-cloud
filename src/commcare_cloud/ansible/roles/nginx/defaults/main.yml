@@ -10,4 +10,4 @@ primary_ssl_env: ""
 nginx_hsts_max_age: null
 nginx_worker_rlimit_nofile: null
 couch_excluded_hosts: null
-nginx_version: "1.28.0-1~{{ ansible_distribution_release }}"
+nginx_version: "1.30.6-1~{{ ansible_distribution_release }}"
