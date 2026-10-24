@@ -178,6 +178,16 @@
   loop: "{{ users_pw_valid.results }}"
   when: item.stdout is defined and item.stdout
 
+- name: Use original sudo instead of sudo-rs
+  # Ubuntu 25.10+ defaults to sudo-rs, which rejects the wildcards in
+  # command arguments used in sudoers.j2. Also switches visudo.
+  alternatives:
+    name: sudo
+    path: /usr/bin/sudo.ws
+  when: ansible_distribution_version is version('25.10', '>=')
+  tags:
+    - sudoers
+
 
 # This must be the last task in the file
 # It disables factory auth (e.g. root user with password login)
