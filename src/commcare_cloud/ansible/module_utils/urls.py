@@ -1,3 +1,6 @@
+# Vendored from ansible-core 2.11.12 lib/ansible/module_utils/urls.py and patched
+# for Python >= 3.12 targets (Ubuntu 26.04). See module_utils/README.md.
+# Delete this file when ansible-core is upgraded to >= 2.15.
 # This code is part of Ansible, but is an independent component.
 # This particular file snippet, and this file snippet only, is BSD licensed.
 # Modules you write using this snippet, which is embedded dynamically by Ansible
@@ -516,7 +519,12 @@ UnixHTTPSConnection = None
 if hasattr(httplib, 'HTTPSConnection') and hasattr(urllib_request, 'HTTPSHandler'):
     class CustomHTTPSConnection(httplib.HTTPSConnection):
         def __init__(self, *args, **kwargs):
+            # Python 3.12 removed the cert_file/key_file arguments and attributes
+            cert_file = kwargs.pop('cert_file', None)
+            key_file = kwargs.pop('key_file', None)
             httplib.HTTPSConnection.__init__(self, *args, **kwargs)
+            self.cert_file = cert_file
+            self.key_file = key_file
             self.context = None
             if HAS_SSLCONTEXT:
                 self.context = self._context
@@ -582,14 +590,19 @@ if hasattr(httplib, 'HTTPSConnection') and hasattr(urllib_request, 'HTTPSHandler
             return self.do_open(self._build_https_connection, req)
 
         def _build_https_connection(self, host, **kwargs):
-            kwargs.update({
-                'cert_file': self.client_cert,
-                'key_file': self.client_key,
-            })
             try:
                 kwargs['context'] = self._context
             except AttributeError:
                 pass
+            if sys.version_info >= (3, 12):
+                # Python 3.12 removed the cert_file/key_file arguments
+                if self.client_cert:
+                    kwargs['context'].load_cert_chain(self.client_cert, self.client_key)
+            else:
+                kwargs.update({
+                    'cert_file': self.client_cert,
+                    'key_file': self.client_key,
+                })
             if self._unix_socket:
                 return UnixHTTPSConnection(self._unix_socket)(host, **kwargs)
             return httplib.HTTPSConnection(host, **kwargs)

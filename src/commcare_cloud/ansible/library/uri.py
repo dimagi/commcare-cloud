@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# Vendored from ansible-core 2.11.12 lib/ansible/modules/uri.py and patched
+# for Python >= 3.12 targets (Ubuntu 26.04). See module_utils/README.md.
+# Delete this file when ansible-core is upgraded to >= 2.15.
 
 # Copyright: (c) 2013, Romeo Theriault <romeot () hawaii.edu>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -406,7 +409,6 @@ url:
   sample: https://www.ansible.com/
 '''
 
-import cgi
 import datetime
 import json
 import os
@@ -622,6 +624,37 @@ def uri(module, url, dest, body, body_format, method, headers, socket_timeout, c
     return r, content, dest
 
 
+# cgi was removed in Python 3.13. _parseparam() and _parse_content_type() are
+# cgi._parseparam() and cgi.parse_header() from Python 3.12, unchanged.
+def _parseparam(s):
+    while s[:1] == ';':
+        s = s[1:]
+        end = s.find(';')
+        while end > 0 and (s.count('"', 0, end) - s.count('\\"', 0, end)) % 2:
+            end = s.find(';', end + 1)
+        if end < 0:
+            end = len(s)
+        f = s[:end]
+        yield f.strip()
+        s = s[end:]
+
+
+def _parse_content_type(line):
+    parts = _parseparam(';' + line)
+    key = parts.__next__()
+    pdict = {}
+    for p in parts:
+        i = p.find('=')
+        if i >= 0:
+            name = p[:i].strip().lower()
+            value = p[i + 1:].strip()
+            if len(value) >= 2 and value[0] == value[-1] == '"':
+                value = value[1:-1]
+                value = value.replace('\\\\', '\\').replace('\\"', '"')
+            pdict[name] = value
+    return key, pdict
+
+
 def main():
     argument_spec = url_argument_spec()
     argument_spec.update(
@@ -743,7 +776,7 @@ def main():
         charsets = []
         content_types = []
         for value in uresp['content_type'].split(','):
-            ct, params = cgi.parse_header(value)
+            ct, params = _parse_content_type(value)
             if ct not in content_types:
                 content_types.append(ct)
             if 'charset' in params:
