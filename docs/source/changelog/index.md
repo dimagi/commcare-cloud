@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-10-24** [Upgrade CouchDB to 3.5.3](0103-upgrade-couchdb-3.5.3.md)
+The default CouchDB version is now 3.5.3.
+
+
+---
 #### **2026-10-24** [Upgrade nginx to 1.30](0102-upgrade-nginx-1.30.md)
 nginx is upgraded from 1.28.0 to 1.30.6, the current stable release.
 
