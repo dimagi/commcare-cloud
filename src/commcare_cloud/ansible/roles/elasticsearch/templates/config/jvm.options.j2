@@ -60,6 +60,10 @@
 -Djava.io.tmpdir={{ elasticsearch_data_dir }}/tmp
 {% endif %}
 
+## JNA extracts its native library to java.io.tmpdir by default, which fails
+## when that is on a noexec mount (ecryptfs /opt/data on monoliths)
+-Djna.tmpdir={{ elasticsearch_home }}/tmp
+
 ## heap dumps
 
 # generate a heap dump when an allocation from the Java heap fails

@@ -152,6 +152,7 @@
     - "{{ elasticsearch_data_dir }}/data"
     - "{{ elasticsearch_data_dir }}/logs"
     - "{{ elasticsearch_data_dir }}/tmp"
+    - "{{ elasticsearch_home }}/tmp"
 
 - name: Create Elasticsearch data directories if they do not exist
   become: yes
