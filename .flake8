@@ -2,3 +2,7 @@
 max-line-length = 115
 # http://pep8.readthedocs.org/en/latest/intro.html#error-codes
 ignore = E128, E265, F403, W503
+# Vendored ansible-core/six files, see src/commcare_cloud/ansible/module_utils/README.md
+per-file-ignores =
+    src/commcare_cloud/ansible/module_utils/*: E,W,F,C
+    src/commcare_cloud/ansible/library/uri.py: E,W,F,C
