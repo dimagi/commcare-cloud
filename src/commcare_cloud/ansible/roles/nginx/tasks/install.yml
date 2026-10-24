@@ -1,15 +1,10 @@
 ---
-- name: Add Nginx apt key
+- name: Add nginx apt repository
   become: yes
-  apt_key: url=https://nginx.org/keys/nginx_signing.key state=present
-
-- name: Remove nginx mainline repository
-  become: yes
-  apt_repository: repo='deb http://nginx.org/packages/mainline/ubuntu/ {{ ansible_distribution_release }} nginx' state=absent
-
-- name: Add nginx stable repository
-  become: yes
-  apt_repository: repo='deb http://nginx.org/packages/ubuntu {{ ansible_distribution_release }} nginx' state=present
+  import_role:
+    name: apt_signed_repo
+  vars:
+    apt_signed_repo_name: nginx
 
 - name: Install nginx
   become: yes

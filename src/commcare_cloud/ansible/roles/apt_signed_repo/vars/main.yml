@@ -1,0 +1,41 @@
+# Repositories that use a key trusted only for that repository (signed-by)
+# instead of a key added with apt-key, which apt trusts for every repository.
+# Each is a separate variable, apt_signed_repo_<name> with - replaced by _, so
+# only the one in use is templated.
+#
+#   line: repository line without "deb [options]"; the key is files/<name>.asc
+#   legacy_lines: lines added with apt-key, removed when migrating a host
+#   legacy_key_ids: fingerprints removed from /etc/apt/trusted.gpg when migrating
+
+apt_signed_repo_pgdg:
+  line: "https://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+  legacy_lines:
+    - "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
+  legacy_key_ids:
+    - B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+
+apt_signed_repo_nginx:
+  line: "https://nginx.org/packages/ubuntu {{ ansible_distribution_release }} nginx"
+  legacy_lines:
+    - "deb http://nginx.org/packages/ubuntu {{ ansible_distribution_release }} nginx"
+    - "deb http://nginx.org/packages/mainline/ubuntu/ {{ ansible_distribution_release }} nginx"
+  legacy_key_ids:
+    - 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
+    - 8540A6F18833A80E9C1653A42FD21310B49F6B46
+    - 9E9BE90EACBCDE69FE9B204CBCDCD8A38D88A2B3
+
+apt_signed_repo_git_core_ppa:
+  line: "https://ppa.launchpadcontent.net/git-core/ppa/ubuntu {{ ansible_distribution_release }} main"
+  legacy_lines:
+    - "deb http://ppa.launchpad.net/git-core/ppa/ubuntu {{ ansible_distribution_release }} main"
+  legacy_key_ids:
+    - F911AB184317630C59970973E363C90F8F1B6217
+
+apt_signed_repo_erlang_solutions:
+  line: "https://binaries2.erlang-solutions.com/ubuntu/ {{ ansible_distribution_release }}-esl-erlang-{{ couchdb_erlang_version }} contrib"
+  legacy_lines:
+    - "deb http://binaries2.erlang-solutions.com/ubuntu/ {{ ansible_distribution_release }}-esl-erlang-{{ couchdb_erlang_version }} contrib"
+  legacy_key_ids:
+    - A476FFB0288ADC13FE8B91A7708D410964E7272E
+
+apt_signed_repo: "{{ lookup('vars', 'apt_signed_repo_' ~ apt_signed_repo_name | replace('-', '_')) }}"

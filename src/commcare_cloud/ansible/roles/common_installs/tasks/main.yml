@@ -1,19 +1,10 @@
 ---
 
-- name: Add PostgreSQL apt key
-  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
-
 - name: Add PostgreSQL apt repository
-  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
-  register: add_postgres_repo
-
-- name: Update package list
-  apt: update_cache=yes
-  when: |
-    add_postgres_repo is defined and add_postgres_repo is changed or
-    add_pango_repo is defined and add_pango_repo is changed
-  tags:
-    - python
+  import_role:
+    name: apt_signed_repo
+  vars:
+    apt_signed_repo_name: pgdg
 
 # Install base packages, common to all servers
 - name: Install common packages

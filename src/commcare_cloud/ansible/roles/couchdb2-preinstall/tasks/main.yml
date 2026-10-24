@@ -16,30 +16,11 @@
 
 - name: Install Erlang dependencies (Jammy)
   block:
-    - name: Download Erlang Solutions GPG key
-      get_url:
-        url: https://binaries2.erlang-solutions.com/GPG-KEY-pmanager.asc
-        dest: /tmp/erlang-solutions-gpg.asc
-        mode: '0644'
-      check_mode: false
-
-    - name: Add Erlang Solutions GPG key
-      apt_key:
-        file: /tmp/erlang-solutions-gpg.asc
-        state: present
-
-    - name: Add Erlang Solutions repository
-      apt_repository:
-        repo: "deb http://binaries2.erlang-solutions.com/ubuntu/ {{ ansible_distribution_release|lower }}-esl-erlang-{{ couchdb_erlang_version }} contrib"
-        state: present
-        filename: erlang-solutions
-      register: erlang_repo_added
-
-    - name: Update apt cache after adding repository
-      apt:
-        update_cache: yes
-      when: erlang_repo_added is changed
-      check_mode: false
+    - name: Add Erlang Solutions apt repository
+      import_role:
+        name: apt_signed_repo
+      vars:
+        apt_signed_repo_name: erlang-solutions
 
     - name: Install esl-erlang package
       apt:

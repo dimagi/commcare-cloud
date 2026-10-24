@@ -1,0 +1,45 @@
+---
+# Usage: import_role apt_signed_repo with apt_signed_repo_name set to a
+# repository defined in vars/main.yml.
+#
+# compat(ansible-core-2.11): ansible-core 2.15+ has the deb822_repository module,
+# which adds the key and the repository with signed-by in one task. Once on it and
+# every host has been migrated off apt-key, replace this role with that module.
+
+# Lines without signed-by must go before the new line is added because apt
+# refuses to use a repository with conflicting Signed-By values.
+- name: "Remove {{ apt_signed_repo_name }} apt repository without signed-by"
+  apt_repository:
+    repo: "{{ item }}"
+    state: absent
+    update_cache: no
+  loop: "{{ apt_signed_repo.legacy_lines }}"
+
+- name: "Add {{ apt_signed_repo_name }} apt key"
+  copy:
+    src: "{{ apt_signed_repo_name }}.asc"
+    dest: "/etc/apt/keyrings/{{ apt_signed_repo_name }}.asc"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: "Add {{ apt_signed_repo_name }} apt repository"
+  # updates the apt cache when changed
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/{{ apt_signed_repo_name }}.asc] {{ apt_signed_repo.line }}"
+    filename: "{{ apt_signed_repo_name }}"
+    state: present
+
+- name: Check for legacy apt keyring
+  stat:
+    path: /etc/apt/trusted.gpg
+  register: apt_signed_repo_trusted_gpg
+
+- name: "Remove {{ apt_signed_repo_name }} key from legacy apt keyring"
+  command: gpg --batch --yes --no-default-keyring --keyring /etc/apt/trusted.gpg --delete-keys {{ item }}
+  loop: "{{ apt_signed_repo.legacy_key_ids }}"
+  register: apt_signed_repo_key_removed
+  changed_when: apt_signed_repo_key_removed.rc == 0
+  # gpg exits 2 when the key is not in the keyring
+  failed_when: apt_signed_repo_key_removed.rc not in [0, 2]
+  when: apt_signed_repo_trusted_gpg.stat.exists
