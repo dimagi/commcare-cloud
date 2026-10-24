@@ -24,6 +24,7 @@
   pip:
     name: boto3
     version: 1.4.0
+  environment: "{{ pip_system_environment }}"
   when: postgres_s3|bool
 
 - name: Set up aws credentials

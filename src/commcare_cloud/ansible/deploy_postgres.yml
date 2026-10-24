@@ -36,6 +36,7 @@
   tasks:
     - name: Install python-psycopg2 to be able to set up remote postgresql
       become: yes
+      environment: "{{ pip_system_environment }}"
       block:
         - pip: name=psycopg2-binary
     - name: Remote PostgreSQL

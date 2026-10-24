@@ -1,4 +1,4 @@
-# Vendored from ansible-core 2.11.12 lib/ansible/module_utils/urls.py and patched
+# compat(ansible-core-2.11): vendored from ansible-core 2.11.12 lib/ansible/module_utils/urls.py and patched
 # for Python >= 3.12 targets (Ubuntu 26.04). See module_utils/README.md.
 # Delete this file when ansible-core is upgraded to >= 2.15.
 # This code is part of Ansible, but is an independent component.

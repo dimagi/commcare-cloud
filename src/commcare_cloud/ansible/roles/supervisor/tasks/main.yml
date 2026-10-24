@@ -1,6 +1,7 @@
 ---
 - name: install supervisor
   pip: name=supervisor state=present version=4.2.5
+  environment: "{{ pip_system_environment }}"
 
 - name: link supervisor
   file:

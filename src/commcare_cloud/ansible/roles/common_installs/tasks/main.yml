@@ -90,9 +90,11 @@
     name:
       - sh
     umask: "0022"
+  environment: "{{ pip_system_environment }}"
 
 - name: Remove pip-installed uv
   become: yes
   pip:
     name: [uv]
     state: absent
+  environment: "{{ pip_system_environment }}"

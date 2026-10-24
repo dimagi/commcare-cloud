@@ -107,6 +107,7 @@
   become: yes
   pip:
     name: "elasticsearch>={{ elasticsearch_version.split('.')[0] }}.0.0,<{{ elasticsearch_version.split('.')[0] | int + 1 }}.0.0"
+  environment: "{{ pip_system_environment }}"
 
 - name: Check for installed plugins
   command: "{{ elasticsearch_home }}/bin/elasticsearch-plugin list"

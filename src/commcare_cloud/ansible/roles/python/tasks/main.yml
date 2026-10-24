@@ -12,7 +12,21 @@
       - python3-dev
       - python3-setuptools
 
+- name: Check if system Python is externally managed (PEP 668)
+  # compat(ubuntu-26.04): remove with the condition below once all hosts are 23.04+
+  command:
+    argv:
+      - python3
+      - -c
+      - "import os, sys, sysconfig; sys.exit(not os.path.exists(os.path.join(sysconfig.get_path('stdlib'), 'EXTERNALLY-MANAGED')))"
+  register: python_externally_managed
+  changed_when: false
+  check_mode: no
+  failed_when: python_externally_managed.rc not in [0, 1]
+
 - name: Update pip & setuptools
+  # Not on PEP 668 systems: this would shadow the apt-managed pip/setuptools
+  when: python_externally_managed.rc == 1
   become: yes
   pip:
     name:

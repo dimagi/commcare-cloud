@@ -1,5 +1,7 @@
 # Python 3.12+ compatibility for ansible-core 2.11
 
+`compat(ansible-core-2.11)`: find everything to remove with `git grep 'compat(ansible-core-2.11)'`.
+
 commcare-cloud pins `ansible~=4.3` (ansible-core 2.11), which predates
 Python 3.12. Ansible runs modules with the target's `/usr/bin/python3`,
 which is Python 3.14 on Ubuntu 26.04, so some of the code ansible-core
