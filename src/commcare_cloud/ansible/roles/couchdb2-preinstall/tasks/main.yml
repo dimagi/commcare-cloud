@@ -1,5 +1,5 @@
 ---
-- name: Get current couchdb version (Jammy)
+- name: Get current couchdb version
   block:
     - name: Gather packages facts
       package_facts:
@@ -8,12 +8,15 @@
     - name: Set current couchdb version
       set_fact:
         couchdb_version_current: "{{ ansible_facts.packages['couchdb'][0].version | regex_search('^([0-9]\\.?)+') if ansible_facts.packages['couchdb'] is defined else 'none' }}"
-  when: ansible_distribution_version == '22.04'
+  when: ansible_distribution_version is version('22.04', '>=')
 
 - name: Print current couchdb version
   debug:
     var: couchdb_version_current
 
+# CouchDB packages bundle their own Erlang runtime, so this is not used.
+# compat(ubuntu-26.04): Erlang Solutions has no repository for 26.04. Remove
+# this block (and the erlang-solutions apt_signed_repo) with 22.04.
 - name: Install Erlang dependencies (Jammy)
   block:
     - name: Add Erlang Solutions apt repository
@@ -30,7 +33,7 @@
    - ansible_distribution_version == '22.04'
    - not ansible_check_mode
 
-- name: Install couchdb (Jammy)
+- name: Install couchdb
   block:
     - name: Add couchdb apt key
       copy:
@@ -55,4 +58,4 @@
     - name: Install couchdb
       apt:
         name: "couchdb={{ couchdb_version }}~{{ ansible_distribution_release }}"
-  when: ansible_distribution_version == '22.04'
+  when: ansible_distribution_version is version('22.04', '>=')

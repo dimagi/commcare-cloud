@@ -68,14 +68,14 @@
   notify: restart chrony
   when: use_chrony
 
-- name: Install common packages (Jammy)
+- name: Install common packages
   become: yes
   apt:
     name:
       - acl
       - software-properties-common
       - ufw
-  when: ansible_distribution_version == '22.04'
+  when: ansible_distribution_version is version('22.04', '>=')
 
 - name: Install uv
   # snap does a system-wide install with automatic updates
