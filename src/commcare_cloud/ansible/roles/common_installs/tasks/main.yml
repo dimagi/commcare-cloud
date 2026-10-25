@@ -40,7 +40,10 @@
       - ncdu # 'du' improved
       - monit # service restarter
       - libcairo2
-      - libpango1.0-0
+      # libpango1.0-0 is a transitional package for these, removed in Ubuntu 24.04
+      - libpango-1.0-0
+      - libpangocairo-1.0-0
+      - libpangoft2-1.0-0
       - auditd
 
 # Install ntp package
