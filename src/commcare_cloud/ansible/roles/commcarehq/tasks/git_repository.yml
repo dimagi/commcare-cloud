@@ -30,6 +30,7 @@
     command:
       cmd: uv sync --group=prod --no-dev --locked --compile-bytecode
       chdir: "{{ code_source }}"
+    environment: "{{ uv_sync_environment }}"
     when: not testing|default(False)
     tags:
       - python

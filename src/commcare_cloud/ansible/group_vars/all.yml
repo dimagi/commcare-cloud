@@ -29,6 +29,10 @@ shared_mount_dir: "/mnt/{{ shared_dir_name }}"
 # as on 22.04 (pip there ignores this). Remove when they move to a venv.
 pip_system_environment:
   PIP_BREAK_SYSTEM_PACKAGES: "1"
+# compat(ubuntu-26.04): GCC 15 (Ubuntu 25.10+) defaults to C23, which older
+# packages with C extensions built from source do not compile with (e.g.
+# setproctitle 1.2.2). Remove when commcare-hq requires versions with wheels.
+uv_sync_environment: "{{ {'CFLAGS': '-std=gnu17'} if ansible_distribution_version is version('25.10', '>=') else {} }}"
 is_monolith: '{{ groups["all"]|length == 1 }}'
 shared_drive_enabled: '{{ not is_monolith }}'
 transfer_payload_dir_name: "transfer_payloads"

@@ -11,6 +11,7 @@
   setup_virtualenv:
     dest: "{{ code_source }}"
     http_proxy: "{{ http_proxy | default(omit, true) }}"
+  environment: "{{ uv_sync_environment }}"
 
 - name: Copy localsettings.py
   copy:
