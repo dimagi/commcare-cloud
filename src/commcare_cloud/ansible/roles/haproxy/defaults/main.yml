@@ -1,6 +1,7 @@
 ---
-# Major version to install (don't specify point release)
-haproxy_version: 2.4
+# Major version to install (don't specify point release), from the Ubuntu archive
+# compat(ubuntu-26.04): 22.04 has 2.4, 26.04 has 3.2
+haproxy_version: "{{ '2.4' if ansible_distribution_version is version('26.04', '<') else '3.2' }}"
 
 # Validate Certificates when downloading hatop. May be set to "no" when proxy server
 # is intercepting the certificates.
