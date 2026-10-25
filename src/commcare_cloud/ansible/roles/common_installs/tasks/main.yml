@@ -52,7 +52,8 @@
   apt:
     name:
       - ntp
-  when: not use_chrony
+  # compat(ubuntu-26.04): Ubuntu 25.10+ has no ntp package and runs chrony by default
+  when: not use_chrony and ansible_distribution_version is version('25.10', '<')
 
 # Install chrony package
 - name: Install chrony package
