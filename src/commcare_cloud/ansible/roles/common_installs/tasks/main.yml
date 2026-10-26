@@ -93,4 +93,5 @@
   pip:
     name: [uv]
     state: absent
-  environment: "{{ pip_system_environment }}"
+  # pip refuses to uninstall on PEP 668 systems, where uv was never pip-installed
+  when: python_externally_managed.rc == 1
