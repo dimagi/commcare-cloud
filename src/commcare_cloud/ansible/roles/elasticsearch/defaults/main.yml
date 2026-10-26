@@ -5,6 +5,8 @@ elasticsearch_version: 6.8.23
 elasticsearch_memory: "{{ [ansible_memory_mb.real.total // 2, 24576] | min }}m"
 elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
 elasticsearch_home: "/opt/elasticsearch-{{ elasticsearch_version }}"
+# Python environment for the snapshot scripts
+elasticsearch_scripts_virtualenv: /opt/elasticsearch-scripts
 elasticsearch_conf_dir: "/etc/elasticsearch-{{ elasticsearch_version }}"
 elasticsearch_data_dir: "{{ encrypted_root }}/elasticsearch-{{ elasticsearch_version }}"
 elasticsearch_tcp_port: 9300
