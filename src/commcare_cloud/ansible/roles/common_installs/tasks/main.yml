@@ -88,14 +88,6 @@
     name: [astral-uv]
     classic: true
 
-- name: Install pip packages
-  become: yes
-  pip:
-    name:
-      - sh
-    umask: "0022"
-  environment: "{{ pip_system_environment }}"
-
 - name: Remove pip-installed uv
   become: yes
   pip:
