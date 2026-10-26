@@ -1,0 +1,21 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: Create cchq user
+      ansible.builtin.user:
+        name: cchq
+
+    - name: Create services directory
+      ansible.builtin.file:
+        path: /home/cchq/services
+        state: directory
+        mode: "0755"
+
+    - name: Add a program for supervisord to run
+      ansible.builtin.copy:
+        dest: /home/cchq/services/sleeper.conf
+        content: |
+          [program:sleeper]
+          command=/bin/sleep infinity
+        mode: "0644"

@@ -1,0 +1,26 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Assert supervisor commands come from the virtualenv
+      ansible.builtin.command: readlink /usr/bin/{{ item }}
+      register: link
+      changed_when: false
+      failed_when: link.stdout != '/opt/supervisor/bin/' ~ item
+      loop:
+        - supervisord
+        - supervisorctl
+
+    - name: Read supervisord and program PIDs from before converge
+      ansible.builtin.slurp:
+        src: /root/pids-before
+      register: pids_before
+
+    - name: Assert supervisord and the program were not restarted
+      # This also checks the new supervisorctl can talk to the old supervisord
+      ansible.builtin.shell: |
+        echo "$(systemctl show -p MainPID --value supervisord) $(supervisorctl pid sleeper)"
+      register: pids
+      changed_when: false
+      failed_when: pids.stdout != (pids_before.content | b64decode | trim)

@@ -1,0 +1,70 @@
+---
+# Set up supervisord as the role did before it used a virtualenv: installed
+# with pip into the system Python, and running a program.
+- name: Prepare
+  hosts: all
+  vars:
+    role_templates: ../../../src/commcare_cloud/ansible/roles/supervisor/templates
+  tasks:
+    - name: Create cchq user
+      ansible.builtin.user:
+        name: cchq
+
+    - name: Create services directory
+      ansible.builtin.file:
+        path: /home/cchq/services
+        state: directory
+        mode: "0755"
+
+    - name: Add a program for supervisord to run
+      ansible.builtin.copy:
+        dest: /home/cchq/services/sleeper.conf
+        content: |
+          [program:sleeper]
+          command=/bin/sleep infinity
+        mode: "0644"
+
+    - name: Install supervisor into the system Python
+      ansible.builtin.pip:
+        name: supervisor==4.2.5
+        executable: pip3
+
+    - name: Link supervisor
+      ansible.builtin.file:
+        path: /usr/bin/{{ item }}
+        state: link
+        src: /usr/local/bin/{{ item }}
+      loop:
+        - supervisord
+        - supervisorctl
+
+    - name: Configure supervisor
+      ansible.builtin.template:
+        src: "{{ role_templates }}/supervisord.conf.j2"
+        dest: /etc/supervisord.conf
+        mode: "0644"
+
+    - name: Add Systemd Conf
+      ansible.builtin.template:
+        src: "{{ role_templates }}/supervisord.systemd.service.j2"
+        dest: /etc/systemd/system/supervisord.service
+        mode: "0644"
+
+    - name: Start supervisord
+      ansible.builtin.systemd:
+        name: supervisord
+        state: started
+        daemon_reload: true
+
+    - name: Wait for the program to start
+      ansible.builtin.command: supervisorctl status sleeper
+      register: status
+      changed_when: false
+      until: "'RUNNING' in status.stdout"
+      retries: 10
+      delay: 1
+
+    - name: Record supervisord and program PIDs
+      ansible.builtin.shell: |
+        echo "$(systemctl show -p MainPID --value supervisord) $(supervisorctl pid sleeper)" > /root/pids-before
+      changed_when: true

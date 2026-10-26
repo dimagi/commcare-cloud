@@ -1,0 +1,25 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Assert supervisor commands come from the virtualenv
+      ansible.builtin.command: readlink /usr/bin/{{ item }}
+      register: link
+      changed_when: false
+      failed_when: link.stdout != '/opt/supervisor/bin/' ~ item
+      loop:
+        - supervisord
+        - supervisorctl
+
+    - name: Assert supervisor is not installed in the system Python
+      ansible.builtin.command: python3 -c 'import supervisor'
+      register: system_import
+      changed_when: false
+      failed_when: system_import.rc == 0
+
+    - name: Assert supervisord runs the program
+      ansible.builtin.command: supervisorctl status sleeper
+      register: status
+      changed_when: false
+      failed_when: "'RUNNING' not in status.stdout"
