@@ -41,28 +41,24 @@
   tags:
     - zone_update
 
-- name: Ensure that the Erlang VM listens on a known minimum port no.
+# Not in vm.args: andrewrothstein.couchdb-cluster-apt rewrites that file from its
+# template on every run, so any lines added to it are removed and re-added, and
+# CouchDB restarts on every deploy. erlexec appends ERL_ZFLAGS to the arguments
+# from vm.args, and couchdb.service reads /etc/default/couchdb.
+- name: Set extra Erlang VM options
   lineinfile:
-    dest: "{{ couchdb_dir }}/etc/vm.args"
-    line: "-kernel inet_dist_listen_min {{ couchdb_cluster_port }}"
-    insertafter: '^-sasl sasl_error_logger false'   
-    state: present
-  notify: restart couchdb2
-  when: couchdb_cluster_port is defined
-
-- name: Ensure that the Erlang VM listens on a known maximum port no.
-  lineinfile:
-    dest: "{{ couchdb_dir }}/etc/vm.args"
-    line: "-kernel inet_dist_listen_max {{ couchdb_cluster_port }}"
-    insertafter: '^-kernel inet_dist_listen_min {{ couchdb_cluster_port }}'
-    state: present
-  notify: restart couchdb2
-  when: couchdb_cluster_port is defined
-
-- name: Add new standard options to vm.args
-  blockinfile:
-    path: "{{ couchdb_dir }}/etc/vm.args"
-    block: "{{ lookup('file', 'vm.args.defaults') }}"
+    dest: /etc/default/couchdb
+    regexp: '^ERL_ZFLAGS='
+    line: "ERL_ZFLAGS=\"{{ erl_flags | join(' ') }}\""
+  vars:
+    erl_flags: >-
+      {{
+        couchdb_erl_flags
+        + ([
+          '-kernel inet_dist_listen_min ' ~ couchdb_cluster_port,
+          '-kernel inet_dist_listen_max ' ~ couchdb_cluster_port,
+        ] if couchdb_cluster_port is defined else [])
+      }}
   notify: restart couchdb2
   when: couchdb_version is version('3.0.0', '>=')
 
