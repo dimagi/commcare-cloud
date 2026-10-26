@@ -34,11 +34,12 @@
 - name: Remote PostgreSQL (e.g. Amazon RDS)
   hosts: django_manage
   tasks:
-    - name: Install python-psycopg2 to be able to set up remote postgresql
+    - name: Install python3-psycopg2 to be able to set up remote postgresql
       become: yes
-      environment: "{{ pip_system_environment }}"
-      block:
-        - pip: name=psycopg2-binary
+      apt:
+        name: python3-psycopg2
+        update_cache: yes
+        cache_valid_time: 3600
     - name: Remote PostgreSQL
       include_role:
         name: postgresql_base
