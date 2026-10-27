@@ -12,6 +12,24 @@
         - supervisord
         - supervisorctl
 
+    - name: Assert the old system-wide supervisor scripts are gone
+      ansible.builtin.stat:
+        path: /usr/local/bin/{{ item }}
+      register: old_script
+      failed_when: old_script.stat.exists
+      loop:
+        - supervisord
+        - supervisorctl
+        - echo_supervisord_conf
+        - pidproxy
+
+    - name: Assert supervisorctl on PATH is the virtualenv's
+      # command-instead-of-shell: `command -v` is a shell builtin
+      ansible.builtin.shell: command -v supervisorctl  # noqa: command-instead-of-shell
+      register: on_path
+      changed_when: false
+      failed_when: on_path.stdout != '/usr/bin/supervisorctl'
+
     - name: Read supervisord and program PIDs from before converge
       ansible.builtin.slurp:
         src: /root/pids-before

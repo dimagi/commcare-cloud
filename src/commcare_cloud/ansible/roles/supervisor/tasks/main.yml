@@ -25,6 +25,20 @@
     - supervisord
     - supervisorctl
 
+# The old system-wide install (pip into the system Python) put these scripts
+# in /usr/local/bin, which comes before /usr/bin on PATH and in sudo's
+# secure_path. They stop working when the system Python is upgraded
+# (do-release-upgrade), which breaks every `supervisorctl` commcare-cloud runs.
+- name: Remove supervisor scripts from the old system-wide install
+  file:
+    path: /usr/local/bin/{{ item }}
+    state: absent
+  with_items:
+    - supervisord
+    - supervisorctl
+    - echo_supervisord_conf
+    - pidproxy
+
 - name: check for sysvinit conf
   stat: path=/etc/init.d/supervisor
   register: init_d_conf
