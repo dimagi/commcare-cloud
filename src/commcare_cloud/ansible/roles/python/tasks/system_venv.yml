@@ -1,0 +1,46 @@
+# Creates or updates a virtualenv that uses the system Python.
+# Parameters: venv_path, venv_packages
+---
+- name: Install python3-venv
+  become: yes
+  apt:
+    name: python3-venv
+    update_cache: yes
+    cache_valid_time: 3600
+
+# A virtualenv only works with the Python minor version it was created with.
+# A release upgrade (e.g. 22.04 -> 24.04) replaces the system Python, so the
+# virtualenv has to be built again.
+- name: Check that {{ venv_path }} uses the current system Python
+  command:
+    argv:
+      - /usr/bin/python3
+      - -c
+      - |
+        import os, sys
+        cfg = os.path.join(sys.argv[1], "pyvenv.cfg")
+        if not os.path.exists(cfg):
+            sys.exit(0)
+        with open(cfg) as f:
+            settings = dict(line.split("=", 1) for line in f if "=" in line)
+        version = {k.strip(): v.strip() for k, v in settings.items()}.get("version", "")
+        sys.exit(0 if version.split(".")[:2] == [str(n) for n in sys.version_info[:2]] else 1)
+      - "{{ venv_path }}"
+  register: venv_python_check
+  changed_when: false
+  check_mode: no
+  failed_when: venv_python_check.rc not in [0, 1]
+
+- name: Remove {{ venv_path }}, which uses an older system Python
+  become: yes
+  file:
+    path: "{{ venv_path }}"
+    state: absent
+  when: venv_python_check.rc == 1
+
+- name: Install packages in {{ venv_path }}
+  become: yes
+  pip:
+    name: "{{ venv_packages }}"
+    virtualenv: "{{ venv_path }}"
+    virtualenv_command: /usr/bin/python3 -m venv

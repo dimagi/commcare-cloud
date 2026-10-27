@@ -103,19 +103,14 @@
   tags:
     - es_conf
 
-- name: Install python3-venv
-  become: yes
-  apt:
-    name: python3-venv
-    update_cache: yes
-    cache_valid_time: 3600
-
 - name: Install elasticsearch python client for the snapshot scripts
-  become: yes
-  pip:
-    name: "elasticsearch>={{ elasticsearch_version.split('.')[0] }}.0.0,<{{ elasticsearch_version.split('.')[0] | int + 1 }}.0.0"
-    virtualenv: "{{ elasticsearch_scripts_virtualenv }}"
-    virtualenv_command: /usr/bin/python3 -m venv
+  import_role:
+    name: python
+    tasks_from: system_venv
+  vars:
+    venv_path: "{{ elasticsearch_scripts_virtualenv }}"
+    venv_packages:
+      - "elasticsearch>={{ elasticsearch_version.split('.')[0] }}.0.0,<{{ elasticsearch_version.split('.')[0] | int + 1 }}.0.0"
 
 - name: Check for installed plugins
   command: "{{ elasticsearch_home }}/bin/elasticsearch-plugin list"

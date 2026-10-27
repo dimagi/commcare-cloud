@@ -1,0 +1,25 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Check whether the old virtualenv was removed
+      ansible.builtin.stat:
+        path: /opt/supervisor/old-python
+      register: old_python
+
+    - name: Assert the virtualenv was rebuilt
+      ansible.builtin.assert:
+        that: not old_python.stat.exists
+
+    - name: Assert the virtualenv uses the system Python version
+      ansible.builtin.shell: >-
+        grep -qx "version = $(python3 -c 'import platform; print(platform.python_version())')"
+        /opt/supervisor/pyvenv.cfg
+      changed_when: false
+
+    - name: Assert supervisord runs the program
+      ansible.builtin.command: supervisorctl status sleeper
+      register: status
+      changed_when: false
+      failed_when: "'RUNNING' not in status.stdout"

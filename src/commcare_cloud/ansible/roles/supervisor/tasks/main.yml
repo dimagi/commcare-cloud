@@ -1,18 +1,14 @@
 ---
-- name: Install python3-venv
-  apt:
-    name: python3-venv
-    update_cache: yes
-    cache_valid_time: 3600
-
 - name: Install supervisor in a virtualenv
-  pip:
-    name:
+  import_role:
+    name: python
+    tasks_from: system_venv
+  vars:
+    venv_path: "{{ supervisor_virtualenv }}"
+    venv_packages:
       - supervisor==4.2.5
       # supervisor 4.2.5 imports pkg_resources, which setuptools 82 removed
       - setuptools<82
-    virtualenv: "{{ supervisor_virtualenv }}"
-    virtualenv_command: /usr/bin/python3 -m venv
 
 # A supervisord already running from the old system-wide install keeps
 # running; the new one is used from its next restart.

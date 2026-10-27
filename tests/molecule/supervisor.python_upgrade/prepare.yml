@@ -1,0 +1,45 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: Create cchq user
+      ansible.builtin.user:
+        name: cchq
+
+    - name: Create services directory
+      ansible.builtin.file:
+        path: /home/cchq/services
+        state: directory
+        mode: "0755"
+
+    - name: Add a program for supervisord to run
+      ansible.builtin.copy:
+        dest: /home/cchq/services/sleeper.conf
+        content: |
+          [program:sleeper]
+          command=/bin/sleep infinity
+        mode: "0644"
+
+    - name: Install python3-venv
+      ansible.builtin.apt:
+        name: python3-venv
+        update_cache: true
+
+    # What a release upgrade leaves behind: a virtualenv whose site-packages
+    # are for a Python version the system no longer has.
+    - name: Create a virtualenv to stand in for one from an older Python
+      ansible.builtin.command: python3 -m venv /opt/supervisor
+      args:
+        creates: /opt/supervisor/pyvenv.cfg
+
+    - name: Mark the virtualenv as created with Python 3.8
+      ansible.builtin.lineinfile:
+        path: /opt/supervisor/pyvenv.cfg
+        regexp: '^version\s*='
+        line: version = 3.8.10
+
+    - name: Add a file to check that the virtualenv was rebuilt
+      ansible.builtin.copy:
+        dest: /opt/supervisor/old-python
+        content: ""
+        mode: "0644"
