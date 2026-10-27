@@ -179,12 +179,7 @@
   when: item.stdout is defined and item.stdout
 
 - name: Use original sudo instead of sudo-rs
-  # compat(ubuntu-26.04): Ubuntu 25.10+ defaults to sudo-rs, which rejects the wildcards in
-  # command arguments used in sudoers.j2. Also switches visudo.
-  alternatives:
-    name: sudo
-    path: /usr/bin/sudo.ws
-  when: ansible_distribution_version is version('25.10', '>=')
+  import_tasks: sudo_ws.yml
   tags:
     - sudoers
 

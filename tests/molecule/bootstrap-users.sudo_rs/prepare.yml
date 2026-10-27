@@ -1,0 +1,11 @@
+---
+# Install python for Ansible (with python3-setuptools, whose distutils shim
+# ansible-core 2.11 needs on Python 3.12+, as on 26.04 servers), and sudo,
+# which on 26.04 also installs sudo-rs and makes it /usr/bin/sudo.
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Install python3 and sudo
+      ansible.builtin.raw: apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-setuptools sudo
+      changed_when: true

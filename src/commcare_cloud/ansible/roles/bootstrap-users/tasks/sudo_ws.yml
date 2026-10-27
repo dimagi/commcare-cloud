@@ -1,0 +1,32 @@
+---
+# compat(ubuntu-26.04): Ubuntu 25.10+ defaults to sudo-rs, which rejects the wildcards in
+# command arguments used in sudoers.j2, so become stops working. Use the original sudo.
+
+# An upgrade from 22.04/24.04 installs sudo-rs and, in auto mode, switches /usr/bin/sudo to
+# it while running, before Ansible can switch it back. sudo-rs isn't installed yet before
+# the upgrade, so the alternative can't be pinned in advance; this apt hook switches it back
+# right after the package is installed.
+- name: Install script that keeps sudo.ws as sudo
+  copy:
+    src: keep-sudo-ws
+    dest: /usr/local/sbin/cchq-keep-sudo-ws
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Run it after every dpkg run
+  copy:
+    dest: /etc/apt/apt.conf.d/80cchq-keep-sudo-ws
+    content: |
+      // Managed by commcare-cloud (bootstrap-users role)
+      DPkg::Post-Invoke { "[ ! -x /usr/local/sbin/cchq-keep-sudo-ws ] || /usr/local/sbin/cchq-keep-sudo-ws"; };
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Use original sudo instead of sudo-rs
+  # Also switches visudo.
+  alternatives:
+    name: sudo
+    path: /usr/bin/sudo.ws
+  when: ansible_distribution_version is version('25.10', '>=')

@@ -1,0 +1,7 @@
+#!/bin/sh
+# Managed by commcare-cloud (bootstrap-users role). Run by apt after every dpkg run.
+# Keeps sudo.ws as /usr/bin/sudo when sudo-rs is installed, e.g. by do-release-upgrade
+# to Ubuntu 25.10+, where sudo-rs would otherwise take over in auto mode.
+if [ -x /usr/bin/sudo.ws ] && [ "$(readlink -f /usr/bin/sudo)" != /usr/bin/sudo.ws ]; then
+    update-alternatives --set sudo /usr/bin/sudo.ws
+fi

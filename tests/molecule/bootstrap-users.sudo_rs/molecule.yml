@@ -1,0 +1,19 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  # A 26.04 image: sudo-rs only exists on Ubuntu 25.10+. It has no python,
+  # which prepare.yml installs.
+  - name: instance
+    image: docker.io/library/ubuntu:26.04
+    pre_build_image: true
+provisioner:
+  name: ansible
+  playbooks:
+    cleanup: ../lib/stub.yml
+verifier:
+  name: ansible

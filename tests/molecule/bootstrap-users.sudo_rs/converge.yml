@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Include the sudo tasks of bootstrap-users
+      ansible.builtin.include_role:
+        name: bootstrap-users
+        tasks_from: sudo_ws

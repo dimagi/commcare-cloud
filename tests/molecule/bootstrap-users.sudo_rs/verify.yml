@@ -1,0 +1,33 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Assert sudo is sudo.ws after converge
+      ansible.builtin.command: readlink -f /usr/bin/sudo
+      register: sudo_path
+      changed_when: false
+      failed_when: sudo_path.stdout != '/usr/bin/sudo.ws'
+
+    # What do-release-upgrade to 25.10+ does: the sudo alternative is in auto
+    # mode, where sudo-rs wins on priority, when apt installs packages.
+    - name: Put the sudo alternative back in auto mode, which picks sudo-rs
+      ansible.builtin.command: update-alternatives --auto sudo
+      changed_when: true
+
+    - name: Assert sudo is now sudo-rs
+      ansible.builtin.command: readlink -f /usr/bin/sudo
+      register: sudo_path
+      changed_when: false
+      failed_when: sudo_path.stdout == '/usr/bin/sudo.ws'
+
+    - name: Run dpkg, as the upgrade does
+      # command-instead-of-module: the apt module has no reinstall, and dpkg must run
+      ansible.builtin.command: apt-get install -y --reinstall sudo-rs  # noqa: command-instead-of-module
+      changed_when: true
+
+    - name: Assert the apt hook switched sudo back to sudo.ws
+      ansible.builtin.command: readlink -f /usr/bin/sudo
+      register: sudo_path
+      changed_when: false
+      failed_when: sudo_path.stdout != '/usr/bin/sudo.ws'

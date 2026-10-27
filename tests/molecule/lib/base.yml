@@ -8,6 +8,11 @@ provisioner:
     # (possibly too new for this ansible) shadow the ones bundled in the venv.
     # Use the collections path cchq commands use instead.
     ANSIBLE_COLLECTIONS_PATH: ${CCHQ_COLLECTIONS_PATH}
+    # Molecule writes its own ansible.cfg, so the module_utils and library
+    # paths from src/commcare_cloud/ansible/ansible.cfg are lost. They hold the
+    # ansible-core patches that Python 3.12+ targets (Ubuntu 26.04) need.
+    ANSIBLE_MODULE_UTILS: ${MOLECULE_SCENARIO_DIRECTORY}/../../../src/commcare_cloud/ansible/module_utils
+    ANSIBLE_LIBRARY: ${MOLECULE_SCENARIO_DIRECTORY}/../../../src/commcare_cloud/ansible/library
   config_options:
     defaults:
       # Gather facts once per scenario instead of once per play
