@@ -3,6 +3,8 @@ Description=Apache Zookeeper server
 Documentation=https://zookeeper.apache.org/doc/
 Requires=network.target
 After=network.target
+# Don't start before the data dir is mounted (see "Mark the Zookeeper data dir")
+ConditionPathExists={{ zookeeper_data_dir }}/.cchq-zookeeper-data-dir
 
 [Service]
 Type=forking

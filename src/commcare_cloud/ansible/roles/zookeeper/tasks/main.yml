@@ -66,6 +66,19 @@
     - "{{ zookeeper_log_dir }}"
     - "{{ zookeeper_conf_dir }}"
 
+# The service only starts when this file is there (ConditionPathExists in the unit). If the
+# data dir is on an encrypted mount (e.g. /opt/data), it is missing at boot until after-reboot
+# mounts the encrypted dir; otherwise ZooKeeper would start with a new, empty data dir and
+# Kafka would refuse to join it (InconsistentClusterIdException).
+- name: Mark the Zookeeper data dir
+  copy:
+    content: ""
+    dest: "{{ zookeeper_data_dir }}/.cchq-zookeeper-data-dir"
+    force: no
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_group }}"
+    mode: 0644
+
 - name: configure server id
   template: src=myid.j2 dest="{{ zookeeper_data_dir }}/myid" mode=0644
   when: zookeeper_cluster
