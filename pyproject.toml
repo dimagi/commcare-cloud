@@ -28,7 +28,7 @@ dependencies = [
     "pycryptodome>=3.6.6",
     "PyGithub",
     "pytz",
-    "setuptools<81",
+    "setuptools<85",
     "sh",
     "simplejson",
     "tabulate",
