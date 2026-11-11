@@ -113,6 +113,7 @@ REDIS_BROKER_HOST: 'broker.bk-production.commcare.local'
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-backup-production-blobdb'
+s3_blob_db_max_pool_connections: 100
 
 localsettings:
   ALLOWED_HOSTS:
@@ -130,6 +131,7 @@ localsettings:
   BIGCOUCH_QUORUM_COUNT: 1
   CELERY_24_HOUR_QUEUE: "24_hour_queue"
   CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE: ""
+  CHECK_REPEATERS_PARTITION_COUNT: 4
   COMMCARE_ANALYTICS_HOST: ""
   COUCH_CACHE_DOCS: True
   COUCH_CACHE_VIEWS: True
@@ -137,6 +139,7 @@ localsettings:
   CUSTOM_SYNCLOGS_DB: "synclogs_2017-11-01"
   DEPLOY_MACHINE_NAME: "{{ ansible_hostname }}"
   DEVICE_LOGS_ENABLED: no
+  DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY: 999
   EULA_COMPLIANCE: True
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
@@ -204,6 +207,8 @@ localsettings:
     repeaters: repeaters
   LOCAL_MIDDLEWARE:
     - 'django.middleware.security.SecurityMiddleware'
+  MIN_REPEATER_RATE_LIMIT_DELAY: 10
+  MAX_REPEATER_RATE_LIMIT_DELAY: 30
   PILLOWTOP_MACHINE_ID: hqdb0
   ALLOW_PHONE_AS_DEFAULT_TWO_FACTOR_DEVICE: True
   RATE_LIMIT_SUBMISSIONS: yes
@@ -235,6 +240,7 @@ localsettings:
   CONNECTID_MESSAGE_URL: 'https://connectid.dimagi.com/messaging/send_fcm/'
   CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
   CONNECTID_ADD_USER_ANALYTICS_URL: 'https://connectid.dimagi.com/users/add_user_analytics'
+  ASYNC_INDICATORS_TO_QUEUE: 100000
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu
