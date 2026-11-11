@@ -10,7 +10,7 @@ data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
 internal_subscription_change_email: accounts+subchange+internal@dimagi.com
 billing_email: sales@dimagi.com
-invoicing_contact_email: billing-support@dimagi.com
+invoicing_contact_email: accounts@dimagi.com
 growth_email: saas-revenue-team@dimagi.com
 saas_ops_email: saas-ops@dimagi.com
 saas_reporting_email: accounts@dimagi.com
@@ -27,7 +27,7 @@ solutions_aes_email: solutions-tech-app-engineers@dimagi.com
 DATADOG_ENABLED: False
 
 DATADOG_TRACE:
-  TAGS:
+  DD_TAGS:
     env: backup-production
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
@@ -141,6 +141,7 @@ localsettings:
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
+  ENABLE_BHA_CASE_SEARCH_ADAPTER: True
   ENABLE_SOFT_ASSERT_EMAILS: True
   ENFORCE_SSO_LOGIN: True
   ELASTICSEARCH_MAJOR_VERSION: 6
