@@ -16,6 +16,8 @@ celery_processes:
       concurrency: 1
     celery,export_download_queue,reminder_rule_queue,case_import_queue,case_rule_queue:
       concurrency: 1
+    24_hour_queue:
+      concurrency: 1
     flower: {}
     beat: {}
 
