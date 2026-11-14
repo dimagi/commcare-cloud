@@ -20,6 +20,7 @@ module "postgresql__{{ rds_instance.identifier }}" {
     port = {{ rds_instance.port|tojson }}
     monitoring_interval = {{ rds_instance.monitoring_interval|tojson }}
     enable_cross_region_backup = {{ rds_instance.enable_cross_region_backup|tojson }}
+    allow_major_version_upgrade = {{ rds_instance.allow_major_version_upgrade|tojson }}
   }
   {%- if rds_instance.parameter_group %}
   parameter_group_name = module.rds_parameter_group__{{ rds_instance.parameter_group }}.name
