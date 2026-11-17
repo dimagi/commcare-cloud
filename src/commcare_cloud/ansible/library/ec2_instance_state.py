@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/python
 """Custom Ansible module to start/stop/stop_and_start/describe EC2 instances."""
 import os
 import re
