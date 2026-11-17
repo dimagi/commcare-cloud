@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/python
 from datetime import datetime
 from pathlib import Path
 
