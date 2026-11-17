@@ -190,21 +190,41 @@ Role tickets:
 - ecryptfs: [SAAS-20261](https://dimagi.atlassian.net/browse/SAAS-20261)
 - commcare-audit: [SAAS-20359](https://dimagi.atlassian.net/browse/SAAS-20359)
 - kinesis_agent: [SAAS-20360](https://dimagi.atlassian.net/browse/SAAS-20360)
+- pg_repack: [SAAS-20361](https://dimagi.atlassian.net/browse/SAAS-20361)
+  (Won't Fix, see Appendix C)
+- deploy_hq release setup:
+  [SAAS-20362](https://dimagi.atlassian.net/browse/SAAS-20362) (Won't Fix,
+  covered by [#7001](https://github.com/dimagi/commcare-cloud/pull/7001))
+- deploy_hq static files and translations:
+  [SAAS-20363](https://dimagi.atlassian.net/browse/SAAS-20363)
+- deploy_hq migrations and commission_hosts:
+  [SAAS-20364](https://dimagi.atlassian.net/browse/SAAS-20364) (Won't Fix,
+  migrations covered by #7001; commission_hosts is left to staging deploys)
+- sentry: [SAAS-20365](https://dimagi.atlassian.net/browse/SAAS-20365)
+  (Won't Fix, see Appendix C)
 
 ### Dependency work — collections + roles, version-agnostic, run on 4.10
+
+Ansible 4 bundles `community.postgresql` and `ansible.posix`, so their short
+module names resolve today; #10–11 declare them. Pin each new collection at the
+newest version whose `requires_ansible` admits core 2.11.
+`src/commcare_cloud/manage_commcare_cloud/tests/test_install.py` hard-codes the
+`requirements.yml` entries, so every ticket here that edits `requirements.yml`
+updates it too.
 
 #### 10. Adopt `community.postgresql` (declare + migrate `postgresql_*`)
 Add `community.postgresql` to `requirements.yml`, then FQCN-ify
 `postgresql_user/db/privs/set/query/ext/lang` and drop `encrypted:` (removed in
-core 2.15; `set_up_dbs.yml:51` and `:182`).
-Files:
-- roles: `postgresql_base` (`set_up_dbs.yml`, `main.yml`), `postgresql`
-  (`main.yml`, `plproxy.yml`), `pg_repack`, `sentry`
-- playbooks: `pg_upgrade_finalize.yml`, `promote_pg_standby.yml`,
-  `setup_pg_logical_replication.yml` (12 `postgresql_query` tasks),
-  `wipe_postgres.yml`, plus any needing a `collections:` entry.
+core 2.15; `set_up_dbs.yml:51` and `:192`).
+Files (30 uses):
+- roles: `postgresql_base` (`set_up_dbs.yml`), `postgresql` (`main.yml`,
+  `plproxy.yml`), `pg_repack`, `sentry`
+- playbooks: `setup_pg_logical_replication.yml` (12 `postgresql_query`, 2
+  `postgresql_ext`), `wipe_postgres.yml`
 `pg_replication_slot` is a custom module in `library/`, not a
-community.postgresql module. Replacing it with
+community.postgresql module. It is the only postgres module in
+`postgresql_base/tasks/main.yml`, `pg_upgrade_finalize.yml` and
+`promote_pg_standby.yml`. Replacing it with
 `community.postgresql.postgresql_slot` is optional and out of scope.
 Acceptance: `ansible-galaxy install -r` resolves the collection; syntax clean;
 Vagrant `deploy-stack` green with the development environment covering
@@ -212,12 +232,14 @@ project_db, repeaters and plproxy, plus the `set_up_dbs.yml` remote-DB Molecule
 scenario (Appendix C, item 2).
 Depends: Appendix C item 2
 ([SAAS-20370](https://dimagi.atlassian.net/browse/SAAS-20370),
-[SAAS-20371](https://dimagi.atlassian.net/browse/SAAS-20371)).
+[SAAS-20371](https://dimagi.atlassian.net/browse/SAAS-20371)), both done.
+Ticket: [SAAS-20606](https://dimagi.atlassian.net/browse/SAAS-20606)
 
 #### 11. Adopt `ansible.posix`
 Add `ansible.posix` to `requirements.yml`, then FQCN-ify its modules:
 - `synchronize`: `roles/deploy_hq/tasks/staticfiles_*`
-- `authorized_key`: `roles/setup_auth_keys.yml`, bootstrap-users
+- `authorized_key`: `roles/setup_auth_keys.yml`, bootstrap-users (`main.yml`,
+  `remove_users.yml`)
 - `mount`: common, shared_dir, ecryptfs, lvm
 - `sysctl`: swap, redis, postgresql, pgbouncer, elasticsearch,
   `deploy_logstash.yml`
@@ -225,6 +247,7 @@ Acceptance: collection installs; refs resolve to `ansible.posix.*`; lint clean;
 deploy_hq static files Molecule scenario
 ([SAAS-20363](https://dimagi.atlassian.net/browse/SAAS-20363)) and Vagrant
 `deploy-stack` green.
+Ticket: [SAAS-20607](https://dimagi.atlassian.net/browse/SAAS-20607)
 
 #### 12. Audit `community.general` + `dimagi.commcare_logstash`
 Decide whether `community.general 7.4.0` is still required and at what version,
@@ -232,15 +255,27 @@ and confirm `dimagi.commcare_logstash` loads on the target cores. (The other
 Dimagi collection, `dimagi.commcare_prometheus`, is removed in #5, so it drops
 out of this audit.) Record each collection's `requires_ansible` and confirm it
 admits core 2.21 (v14 excludes incompatible collections by default).
+community.general modules in use: ufw, snap, django_manage, pam_limits,
+timezone, monit, yarn, filesystem, lvg/lvol, supervisorctl, alternatives,
+apache2_module, npm, git_config, and the `dig` lookup.
+`dimagi.commcare_logstash` is used only by `deploy_logstash.yml`.
+Also fix `roles/formplayer/meta/main.yml`: its `collections:` entry lists the
+module `community.general.monit` instead of a collection.
 Acceptance: necessity decision recorded; a compat-matrix entry per surviving
 collection.
+Ticket: [SAAS-20608](https://dimagi.atlassian.net/browse/SAAS-20608)
 
 #### 13. Removed-collection audit (collections dropped v5–v14)
 The repo uses short module names (FQCN is ~6 tasks total), so grep the *short
 module names* of every collection removed from the `ansible` package across
 v5–v14 (per each version's changelog). Pin and explicitly install any still in
 use.
+Known case: the `ipaddr` filter (es_rolling_restart, common, couchdb2,
+elasticsearch and `pg_hba.conf.j2` templates). It moved from
+`ansible.netcommon` to `ansible.utils.ipaddr`, needs `netaddr`, and nothing
+declares it.
 Acceptance: nothing in-use silently disappears at any version step; pins added.
+Ticket: [SAAS-20609](https://dimagi.atlassian.net/browse/SAAS-20609)
 
 #### 14. Standalone-role maintenance audit; drop orphaned roles
 Use the Appendix B matrix as the baseline: for each *role* in `requirements.yml`
@@ -250,21 +285,29 @@ roles (`cloudalchemy.*`, plus the transitive `gantsign.golang` /
 covers the survivors: `DavidWittman.redis`, `sansible.logstash`, the
 `andrewrothstein.*` couchdb roles.
 Acceptance: role compat matrix complete; orphaned pins removed or justified.
+Ticket: [SAAS-20610](https://dimagi.atlassian.net/browse/SAAS-20610)
 
 #### 15. Vendor or replace `tmpreaper`
-Abandoned but trivial (`ANXS/tmpreaper`, dead since 2017); used in several
-playbooks. Risk is removed syntax (`with_items`, bare `warn:`, string-bool
+Abandoned but trivial (`ANXS/tmpreaper`, dead since 2017); used by
+`deploy_tmpreaper.yml` and `deploy_commcarehq.yml`. Risk is removed syntax (`with_items`, bare `warn:`, string-bool
 `when:`) failing on the target core. Fork into the repo as a local role under
 `roles/` (preferred — a maintainable copy we can fix forward) or replace with a
 few inline tasks; re-point `requirements.yml` / refs.
 Acceptance: resolves to a repo-local role (or inline tasks); no abandoned pin
 remains; Vagrant `deploy-stack` green (`deploy_tmpreaper.yml` is part of it).
+Ticket: [SAAS-20611](https://dimagi.atlassian.net/browse/SAAS-20611)
 
 #### 16. Vendor or replace `ansible-logrotate`
-Same approach as #15 (`nickhammond`, dead since 2018). Heavily used — it's a
-`meta` dependency of `common`, so nearly every host pulls it; test broadly.
+Same approach as #15 (`nickhammond`, dead since 2018). Heavily used:
+`common/tasks/logging.yml` includes it, so nearly every host runs it; test
+broadly. Also used by bootstrap-users, devops_scripts, the couchdb2 proxy
+partials, and `deploy_couchdb2.yml` / `deploy_proxy.yml` /
+`deploy_webworker.yml`. `common`'s `meta` dependency is on the local
+`roles/logrotate`, a different role; a vendored copy must not clash with that
+name.
 Acceptance: resolves to a repo-local role (or inline tasks); no abandoned pin
 remains; Vagrant `deploy-stack` green (`common` has no Molecule scenario).
+Ticket: [SAAS-20612](https://dimagi.atlassian.net/browse/SAAS-20612)
 
 ### Deprecation cleanup — version-agnostic, run on 4.10
 
@@ -497,21 +540,34 @@ against GitHub archived flag + last push, June 2026):
 
 ## Appendix C: Module coverage and test priority
 
-As of 2026-10-12, traced against `master`. Two checks run role code:
+First traced against `master` on 2026-10-12; updated 2026-11-17 for the
+coverage tickets merged since. Two checks run role code:
 
 - **Molecule** runs in CI on every PR. Scenarios exist for swap, datadog,
   http_proxy, chaos, cloudwatch_logs, backups, ecryptfs, commcare-audit
-  ([SAAS-20359](https://dimagi.atlassian.net/browse/SAAS-20359)) and
-  kinesis_agent ([SAAS-20360](https://dimagi.atlassian.net/browse/SAAS-20360)).
+  ([SAAS-20359](https://dimagi.atlassian.net/browse/SAAS-20359)),
+  kinesis_agent ([SAAS-20360](https://dimagi.atlassian.net/browse/SAAS-20360)),
+  deploy_hq (`deploy_hq.default`, `deploy_hq.no_shared_dir`;
+  [SAAS-20363](https://dimagi.atlassian.net/browse/SAAS-20363)),
+  `postgresql_base.remote_dbs`
+  ([SAAS-20371](https://dimagi.atlassian.net/browse/SAAS-20371)),
+  `formplayer.rollback`
+  ([SAAS-20372](https://dimagi.atlassian.net/browse/SAAS-20372)) and
+  `ecryptfs.datavol`
+  ([SAAS-20373](https://dimagi.atlassian.net/browse/SAAS-20373)).
   keystore is Won't Fix (one `copy` task). pg_repack and sentry are Won't Fix
   (see below).
 - **Vagrant** runs `deploy-stack` against `environments/development` on Ubuntu
   22.04 ([SAAS-19959](https://dimagi.atlassian.net/browse/SAAS-19959),
   [SAAS-20034](https://dimagi.atlassian.net/browse/SAAS-20034)). It is run by
   hand, not in CI. Development has a postgres primary and standby with a
-  replication slot, and a shared-directory host with NFS clients. It has no
-  `remote_postgresql` hosts, and `project_db`, `repeaters` and
-  `form_processing` are unset.
+  replication slot, and a shared-directory host with NFS clients. Since
+  [SAAS-20370](https://dimagi.atlassian.net/browse/SAAS-20370) it also sets
+  `project_db`, `repeaters` and `form_processing.proxy`. It has no
+  `remote_postgresql` hosts.
+- **pytest** covers the custom modules `setup_virtualenv`, `clean_releases`,
+  `git_setup_release`, `ec2_instance_state` and `monit_tmp`
+  ([SAAS-20374](https://dimagi.atlassian.net/browse/SAAS-20374)).
 
 A module counts as covered when at least one check runs a task that uses it.
 Covering a module does not mean every role's use of it is covered. Task
@@ -522,7 +578,12 @@ the rest of the Vagrant rows are at role level.
 **Molecule runs:** `apt`, `apt_key`, `apt_repository`, `command`, `copy`,
 `cron`, `fail`, `file`, `get_url`, `git` (against a fake `git` binary),
 `git_config`, `lineinfile`, `service`, `set_fact`, `shell`, `stat`, `sysctl`,
-`template`, and the include/import modules.
+`template`, and the include/import modules. Since the Appendix C priority
+tickets it also runs `synchronize` (fake `rsync`) and `yarn` (fake `yarn`) in
+deploy_hq; `postgresql_user`, `postgresql_privs`, `postgresql_db`,
+`postgresql_ext` and `postgresql_query` in `set_up_dbs.yml` against a real
+postgres container with `db_is_remote: yes`; `supervisorctl` (fake binary) in
+formplayer rollback; and `filesystem` in ecryptfs with `datavol_device` set.
 
 ### Modules only Vagrant runs
 
@@ -531,8 +592,8 @@ Vagrant, and it runs with no failed tasks.
 
 | Module | Where Vagrant runs it |
 |--|--|
-| `postgresql_db`, `postgresql_user`, `postgresql_privs`, `postgresql_set`, `pg_replication_slot` (custom), `locale_gen` | postgresql_base on the primary (local DB setup only; see below) |
-| `postgresql_ext` | postgresql (pghashlib extension) |
+| `postgresql_set`, `pg_replication_slot` (custom), `locale_gen` | postgresql_base on the primary |
+| `postgresql_lang`, `postgresql_ext` | postgresql (pghashlib extension; plproxy since SAAS-20370) |
 | `add_host` | `host_group_aliases.yml` |
 | `ufw` | `deploy_common.yml` (`ufw: state=disabled`) |
 | `authorized_key`, `getent`, `group`, `user` | bootstrap-users |
@@ -557,24 +618,23 @@ Vagrant, and it runs with no failed tasks.
 
 | Module | Role or playbook | Why it doesn't run | Ticket |
 |--|--|--|--|
-| `synchronize` | deploy_hq `staticfiles_*` | deploy_hq is run by `commcare-cloud deploy`, not `deploy-stack` | #11 (ansible.posix) |
-| `yarn` | deploy_hq `yarn_install.yml` | same | #12 (community.general) |
-| `postgresql_query` | postgresql_base `set_up_dbs.yml`; pg_repack | development has no `repeaters` or `project_db`; no `pg_repack` hosts | #10 |
-| `postgresql_lang`, and `postgresql_ext` for plproxy | postgresql `plproxy.yml` | development has no `form_processing.proxy` | #10 |
-| `supervisorctl` | formplayer `rollback.yml`; sentry | only `rollback_formplayer.yml` runs rollback; no environment has a `sentry` group | #12 |
-| `filesystem` | shared_dir `setup_host.yml`; ecryptfs; lvm | `datadisk_device` and `datavol_device` are unset in development and in the ecryptfs scenarios; no `lvm` group | #12 |
-| `lvg`, `lvol` | lvm | no environment has an `lvm` group | #12 |
+| `lvg`, `lvol` (and `filesystem` for lvm) | lvm | no environment has an `lvm` group | #12 |
 | `apache2_module` | lpar2rrd | `lpar2rrd_agent_enabled` is unset in every environment | #12 |
 | `group_by`, `setup` | upgrade_warning | not part of `deploy-stack` | — |
 | `async_status` | postgresql_base `standby_progress.yml` | only `setup_pg_standby.yml` runs it | — |
-| `monit_tmp` (custom) | `pg_upgrade_*.yml` | not part of `deploy-stack` | #23 |
 | `expect` | `deploy_netvault.yml` | not part of `deploy-stack` | — |
+
+The rows for `synchronize`, `yarn`, `postgresql_query`, `postgresql_lang`,
+`supervisorctl`, `filesystem` (ecryptfs) and `monit_tmp` were removed after the
+priority tickets below covered them. `pg_repack`'s and sentry's own uses of
+`postgresql_query` / `supervisorctl` still don't run; both are Won't Fix.
 
 `setup_virtualenv`, `clean_releases`, `git_setup_release` and
 `ec2_instance_state` have pytest tests in `tests/test_deploy/` and
 `tests/test_ec2_instance_state.py`, so they need no Molecule coverage.
-`monit_tmp` and `pg_replication_slot` have no pytest tests. `django_user` is
-not used anywhere and can be deleted.
+`monit_tmp` now has them too (`tests/test_deploy/test_monit_tmp.py`).
+`pg_replication_slot` has no pytest tests. `django_user` is not used anywhere
+and can be deleted.
 
 ### Paths Vagrant skips in roles it runs
 
@@ -583,13 +643,16 @@ don't run in development.
 
 | Path | Gate | Used by | What doesn't run |
 |--|--|--|--|
-| Remote DB setup (RDS) in `deploy_postgres.yml` | `remote_postgresql` group | production, staging, eu, india, backup-production | every `postgresql_*` task in `set_up_dbs.yml` with `db_is_remote: yes` |
-| project_db setup | `postgresql_dbs.project_db` | production, staging, eu, india | `postgresql_user` with `encrypted: True` (`set_up_dbs.yml`, which #10 changes), `postgresql_query` |
-| repeaters | `postgresql_dbs.repeaters` | production, staging, eu, india, backup-production | `postgresql_query` |
-| plproxy | `postgresql_dbs.form_processing.proxy` | production, staging | `postgresql_lang`, `postgresql_ext` |
+| Remote DB setup (RDS) in `deploy_postgres.yml` | `remote_postgresql` group | production, staging, eu, india, backup-production | every `postgresql_*` task in `set_up_dbs.yml` with `db_is_remote: yes`; covered by Molecule `postgresql_base.remote_dbs` ([SAAS-20371](https://dimagi.atlassian.net/browse/SAAS-20371)) |
 | ufw rules | `ufw_private_interface` | backup-production | the ufw role's tasks |
 
+The project_db, repeaters and plproxy rows were removed: development sets them
+since [SAAS-20370](https://dimagi.atlassian.net/browse/SAAS-20370), so Vagrant
+runs those paths.
+
 ### Priority before #10–25
+
+All five items are done (2026-10-20).
 
 1. **deploy_hq static files
    ([SAAS-20363](https://dimagi.atlassian.net/browse/SAAS-20363)).** The only
@@ -622,9 +685,12 @@ don't run in development.
 Lower priority:
 
 - **deploy_hq migrations and commission_hosts
-  ([SAAS-20364](https://dimagi.atlassian.net/browse/SAAS-20364)).** No
-  uncovered modules, but its block/rescue and conditionals are exposed to the
-  #21 changes.
+  ([SAAS-20364](https://dimagi.atlassian.net/browse/SAAS-20364)), Won't
+  Fix.** No uncovered modules, but its block/rescue and conditionals are
+  exposed to the #21 changes. The `deploy_hq.default` scenario
+  ([#7001](https://github.com/dimagi/commcare-cloud/pull/7001)) runs the
+  migrations step. commission_hosts is not covered; staging deploys during the
+  version bumps exercise it.
 
 Not worth a scenario:
 
@@ -636,8 +702,10 @@ Not worth a scenario:
   only uncovered module.
 
 - **deploy_hq release setup
-  ([SAAS-20362](https://dimagi.atlassian.net/browse/SAAS-20362)).** It uses
-  only covered modules and pytest-tested custom modules.
+  ([SAAS-20362](https://dimagi.atlassian.net/browse/SAAS-20362)), Won't
+  Fix.** It uses only covered modules and pytest-tested custom modules, and
+  the `deploy_hq.default` scenario
+  ([#7001](https://github.com/dimagi/commcare-cloud/pull/7001)) runs it anyway.
 - **lvm, ufw, lpar2rrd, upgrade_warning, keepalived, aws-efs, ebsnvme,
   devops_scripts.** They need real block devices or netfilter, are dead code,
   run across the whole inventory, or use only covered modules. Lint and
