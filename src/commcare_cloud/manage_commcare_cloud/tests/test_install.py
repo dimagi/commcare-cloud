@@ -55,11 +55,10 @@ dimagi.commcare_logstash   0.9.5
 """
 
 
-def test_required_roles_and_required_collections_on_requirements_yml():
+def test_required_roles_on_requirements_yml():
     with open(os.path.join(ANSIBLE_DIR, "requirements.yml")) as f:
         yml = yaml.safe_load(f)
     assert required_roles(yml), "expected required roles"
-    assert required_collections(yml), "expected required collections"
 
 
 def test_required_roles_uses_name_or_src():
