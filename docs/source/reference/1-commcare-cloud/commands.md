@@ -413,43 +413,55 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ##### The ansible options below are available as well
 ```
+  --become-password-file BECOME_PASSWORD_FILE, --become-pass-file BECOME_PASSWORD_FILE
+                        Become password file
+  --connection-password-file CONNECTION_PASSWORD_FILE, --conn-pass-file CONNECTION_PASSWORD_FILE
+                        Connection password file
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   --playbook-dir BASEDIR
                         Since this tool does not use playbooks, use this as a
-                        substitute playbook directory.This sets the relative
+                        substitute playbook directory. This sets the relative
                         path for many features including roles/ group_vars/
                         etc.
-  --syntax-check        perform a syntax check on the playbook, but do not
-                        execute it
   --task-timeout TASK_TIMEOUT
                         set task timeout limit in seconds, must be positive
                         integer.
-  --vault-id VAULT_IDS  the vault identity to use
+  --vault-id VAULT_IDS  the vault identity to use. This argument may be
+                        specified multiple times.
   --version             show program's version number, config file location,
                         configured module search path, module location,
                         executable location and exit
   -B SECONDS, --background SECONDS
                         run asynchronously, failing after X seconds
                         (default=N/A)
+  -K, --ask-become-pass
+                        ask for privilege escalation password
   -M MODULE_PATH, --module-path MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
-                        gins/modules)
+                        prepend colon-separated path(s) to module library
+                        (default={{ '{{' }} ANSIBLE_HOME ~
+                        "/plugins/modules:/usr/share/ansible/plugins/modules"
+                        }}). This argument may be specified multiple times.
   -P POLL_INTERVAL, --poll POLL_INTERVAL
                         set the poll interval if using -B (default=15)
   -e EXTRA_VARS, --extra-vars EXTRA_VARS
                         set additional variables as key=value or YAML/JSON, if
-                        filename prepend with @
+                        filename prepend with @. This argument may be
+                        specified multiple times.
   -f FORKS, --forks FORKS
                         specify number of parallel processes to use
                         (default=50)
+  -k, --ask-pass        ask for connection password
   -l SUBSET, --limit SUBSET
                         further limit selected hosts to an additional pattern
   -o, --one-line        condense output
   -t TREE, --tree TREE  log output to this directory
-  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
-                        connection debugging)
+  -v, --verbose         Causes Ansible to print more debug messages. Adding
+                        multiple -v will increase the verbosity, the builtin
+                        plugins currently evaluate up to -vvvvvv. A reasonable
+                        level to start is -vvv, connection debugging might
+                        require -vvvv. This argument may be specified multiple
+                        times.
 
 ```
 ##### Privilege Escalation Options
@@ -459,8 +471,6 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --become-method BECOME_METHOD
                         privilege escalation method to use (default=sudo), use
                         `ansible-doc -t become -l` to list valid choices.
-  -K, --ask-become-pass
-                        ask for privilege escalation password
 
 ```
 ##### Connection Options
@@ -480,11 +490,10 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --ssh-extra-args SSH_EXTRA_ARGS
                         specify extra arguments to pass to ssh only (e.g. -R)
   -T TIMEOUT, --timeout TIMEOUT
-                        override the connection timeout in seconds
-                        (default=30)
+                        override the connection timeout in seconds (default
+                        depends on connection)
   -c CONNECTION, --connection CONNECTION
-                        connection type to use (default=smart)
-  -k, --ask-pass        ask for connection password
+                        connection type to use (default=ssh)
   -u REMOTE_USER, --user REMOTE_USER
                         connect as this user (default=None)
 
@@ -542,43 +551,55 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ##### The ansible options below are available as well
 ```
+  --become-password-file BECOME_PASSWORD_FILE, --become-pass-file BECOME_PASSWORD_FILE
+                        Become password file
+  --connection-password-file CONNECTION_PASSWORD_FILE, --conn-pass-file CONNECTION_PASSWORD_FILE
+                        Connection password file
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
   --playbook-dir BASEDIR
                         Since this tool does not use playbooks, use this as a
-                        substitute playbook directory.This sets the relative
+                        substitute playbook directory. This sets the relative
                         path for many features including roles/ group_vars/
                         etc.
-  --syntax-check        perform a syntax check on the playbook, but do not
-                        execute it
   --task-timeout TASK_TIMEOUT
                         set task timeout limit in seconds, must be positive
                         integer.
-  --vault-id VAULT_IDS  the vault identity to use
+  --vault-id VAULT_IDS  the vault identity to use. This argument may be
+                        specified multiple times.
   --version             show program's version number, config file location,
                         configured module search path, module location,
                         executable location and exit
   -B SECONDS, --background SECONDS
                         run asynchronously, failing after X seconds
                         (default=N/A)
+  -K, --ask-become-pass
+                        ask for privilege escalation password
   -M MODULE_PATH, --module-path MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
-                        gins/modules)
+                        prepend colon-separated path(s) to module library
+                        (default={{ '{{' }} ANSIBLE_HOME ~
+                        "/plugins/modules:/usr/share/ansible/plugins/modules"
+                        }}). This argument may be specified multiple times.
   -P POLL_INTERVAL, --poll POLL_INTERVAL
                         set the poll interval if using -B (default=15)
   -e EXTRA_VARS, --extra-vars EXTRA_VARS
                         set additional variables as key=value or YAML/JSON, if
-                        filename prepend with @
+                        filename prepend with @. This argument may be
+                        specified multiple times.
   -f FORKS, --forks FORKS
                         specify number of parallel processes to use
                         (default=50)
+  -k, --ask-pass        ask for connection password
   -l SUBSET, --limit SUBSET
                         further limit selected hosts to an additional pattern
   -o, --one-line        condense output
   -t TREE, --tree TREE  log output to this directory
-  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
-                        connection debugging)
+  -v, --verbose         Causes Ansible to print more debug messages. Adding
+                        multiple -v will increase the verbosity, the builtin
+                        plugins currently evaluate up to -vvvvvv. A reasonable
+                        level to start is -vvv, connection debugging might
+                        require -vvvv. This argument may be specified multiple
+                        times.
 
 ```
 ##### Privilege Escalation Options
@@ -588,8 +609,6 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --become-method BECOME_METHOD
                         privilege escalation method to use (default=sudo), use
                         `ansible-doc -t become -l` to list valid choices.
-  -K, --ask-become-pass
-                        ask for privilege escalation password
 
 ```
 ##### Connection Options
@@ -609,11 +628,10 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --ssh-extra-args SSH_EXTRA_ARGS
                         specify extra arguments to pass to ssh only (e.g. -R)
   -T TIMEOUT, --timeout TIMEOUT
-                        override the connection timeout in seconds
-                        (default=30)
+                        override the connection timeout in seconds (default
+                        depends on connection)
   -c CONNECTION, --connection CONNECTION
-                        connection type to use (default=smart)
-  -k, --ask-pass        ask for connection password
+                        connection type to use (default=ssh)
   -u REMOTE_USER, --user REMOTE_USER
                         connect as this user (default=None)
 
@@ -922,6 +940,10 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ##### The ansible-playbook options below are available as well
 ```
+  --become-password-file BECOME_PASSWORD_FILE, --become-pass-file BECOME_PASSWORD_FILE
+                        Become password file
+  --connection-password-file CONNECTION_PASSWORD_FILE, --conn-pass-file CONNECTION_PASSWORD_FILE
+                        Connection password file
   --flush-cache         clear the fact cache for every host in inventory
   --force-handlers      run handlers even if a task fails
   --list-hosts          outputs a list of matching hosts; does not execute
@@ -930,29 +952,40 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --list-tasks          list all tasks that would be executed
   --skip-tags SKIP_TAGS
                         only run plays and tasks whose tags do not match these
-                        values
+                        values. This argument may be specified multiple times.
   --start-at-task START_AT_TASK
                         start the playbook at the task matching this name
   --step                one-step-at-a-time: confirm each task before running
   --syntax-check        perform a syntax check on the playbook, but do not
                         execute it
-  --vault-id VAULT_IDS  the vault identity to use
+  --vault-id VAULT_IDS  the vault identity to use. This argument may be
+                        specified multiple times.
   --version             show program's version number, config file location,
                         configured module search path, module location,
                         executable location and exit
+  -K, --ask-become-pass
+                        ask for privilege escalation password
   -M MODULE_PATH, --module-path MODULE_PATH
-                        prepend colon-separated path(s) to module library (def
-                        ault=~/.ansible/plugins/modules:/usr/share/ansible/plu
-                        gins/modules)
+                        prepend colon-separated path(s) to module library
+                        (default={{ '{{' }} ANSIBLE_HOME ~
+                        "/plugins/modules:/usr/share/ansible/plugins/modules"
+                        }}). This argument may be specified multiple times.
   -e EXTRA_VARS, --extra-vars EXTRA_VARS
                         set additional variables as key=value or YAML/JSON, if
-                        filename prepend with @
+                        filename prepend with @. This argument may be
+                        specified multiple times.
   -f FORKS, --forks FORKS
                         specify number of parallel processes to use
                         (default=50)
-  -t TAGS, --tags TAGS  only run plays and tasks tagged with these values
-  -v, --verbose         verbose mode (-vvv for more, -vvvv to enable
-                        connection debugging)
+  -k, --ask-pass        ask for connection password
+  -t TAGS, --tags TAGS  only run plays and tasks tagged with these values.
+                        This argument may be specified multiple times.
+  -v, --verbose         Causes Ansible to print more debug messages. Adding
+                        multiple -v will increase the verbosity, the builtin
+                        plugins currently evaluate up to -vvvvvv. A reasonable
+                        level to start is -vvv, connection debugging might
+                        require -vvvv. This argument may be specified multiple
+                        times.
 
 ```
 ##### Connection Options
@@ -972,11 +1005,10 @@ authenticate using the pem file (or prompt for root password if there is no pem 
   --ssh-extra-args SSH_EXTRA_ARGS
                         specify extra arguments to pass to ssh only (e.g. -R)
   -T TIMEOUT, --timeout TIMEOUT
-                        override the connection timeout in seconds
-                        (default=30)
+                        override the connection timeout in seconds (default
+                        depends on connection)
   -c CONNECTION, --connection CONNECTION
-                        connection type to use (default=smart)
-  -k, --ask-pass        ask for connection password
+                        connection type to use (default=ssh)
   -u REMOTE_USER, --user REMOTE_USER
                         connect as this user (default=None)
 
@@ -990,8 +1022,6 @@ authenticate using the pem file (or prompt for root password if there is no pem 
                         `ansible-doc -t become -l` to list valid choices.
   --become-user BECOME_USER
                         run operations as this user (default=root)
-  -K, --ask-become-pass
-                        ask for privilege escalation password
   -b, --become          run operations with become (does not imply password
                         prompting)
 ```

@@ -104,7 +104,7 @@ def run_ansible_playbook(
             return ()
 
     def ansible_playbook(playbook, *cmd_args):
-        min_ansible_version = "2.10.0"
+        min_ansible_version = "2.17.0"
         if version.parse(ansible.__version__) < version.parse(min_ansible_version):
             puts(color_error(
                 f"The version of ansible-core you have installed ({ansible.__version__}) "

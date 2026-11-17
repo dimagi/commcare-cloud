@@ -9,7 +9,7 @@ description = "A tool for managing commcare deploys."
 license = "BSD-3-Clause"
 requires-python = "~=3.10.0"
 dependencies = [
-    "ansible~=4.3",
+    "ansible~=10.7",
     "ansible-inventory==0.6.4",
     "ansible-vault==2.1.0",
     "attrs",
