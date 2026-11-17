@@ -23,11 +23,18 @@
     name: Check supervisor processes status
 
 - hosts:
+  - pgbouncer
   - postgresql
   - pg_standby
   tasks:
-  - command: service pgbouncer status
+  - command: service pgbouncer-multiprocess@{{ item }} status
     name: Check pgbouncer status
+    loop: "{{ range(1, (pgbouncer_processes | default(1) | int) + 1) | list }}"
+
+- hosts:
+  - postgresql
+  - pg_standby
+  tasks:
   - command: service postgresql status
     name: Check postgresql status
 
