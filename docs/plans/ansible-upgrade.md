@@ -18,8 +18,8 @@ parse-checked but never run, and standalone playbooks outside `deploy_stack.yml`
 `deploy_proxy` set, etc.) get neither. That coverage gap is the upgrade's
 biggest risk, so the test tickets come first.
 
-Sequence: clean up deprecations and build a test safety net first, then step
-through versions. The interpreter may move in two hops: **3.10 → 3.12** (spans
+Sequence: build a test safety net first, then step through versions, fixing
+what each bump breaks. The interpreter may move in two hops: **3.10 → 3.12** (spans
 Ansible 10–12), then **3.12 → 3.14** at the 12 → 14 jump (or one hop if 3.14
 tests pass early — #28 optional).
 
@@ -30,7 +30,7 @@ tests pass early — #28 optional).
    conditionals (v8/CVE-2023-5764), and non-boolean `when:` as an error + native
    Jinja + inverted trust model (v12). → tickets 19–21.
 2. **Collection removals** in every major version. Pin and explicitly install
-   collectinos that were removed from Ansible. → #10–13.
+   collections that were removed from Ansible. → #10–13.
 
 ---
 
@@ -40,7 +40,8 @@ tests pass early — #28 optional).
 10–25 are version-agnostic cleanup (10–16 dependency work; 17–25 deprecation
 edits) and parallelize within their bands; 26–33 are mostly sequential version
 bumps + rollout. Every cleanup ticket (10–25) must leave the tree green on 4.10
-on its own, so that each bump (26/29/30) is a pin change with nothing left to fix.
+on its own. Order: #17 and #22 (certain to break), then the #26 bump branch;
+fix each failure it surfaces on `master` before merging the bump.
 
 ### Housekeeping — independent, do first
 
@@ -204,6 +205,8 @@ Role tickets:
   (Won't Fix, see Appendix C)
 
 ### Dependency work — collections + roles, version-agnostic, run on 4.10
+
+None of these block a bump: Ansible 10–14 bundle the collections.
 
 Ansible 4 bundles `community.postgresql` and `ansible.posix`, so their short
 module names resolve today; #10–11 declare them. Pin each new collection at the
@@ -381,12 +384,14 @@ flips to `False` in 2.24); the `failed_when` suppressed-error key is now
 must be lists, not strings.
 Acceptance: CLI imports succeed on each target core; verified at 12→14 (#30).
 
-### Version bumps — sequential, after cleanup + a full test pass
+### Version bumps — sequential, after a full test pass
 
 #### 26. Ansible 4 → 10 (core 2.11→2.17)
 The core/package upgrade. Ansible 10 is the highest reachable on Python 3.10.
 Raise the `ansible` pin and `min_ansible_version`; re-pin collections to
-core-2.17-compatible versions.
+core-2.17-compatible versions, including `community.general` (#12).
+Run the full suite on the bump branch; land each fix it surfaces on `master`
+first.
 This is also the first core (2.12+) that supports ansible-lint 6.2+: bump
 ansible-lint here, drop the `ansible_lint.py` ignore-file backport (now native),
 and regenerate the baseline — rule IDs gain sub-tags (`var-naming[pattern]`) and
@@ -398,16 +403,17 @@ annotate).
 Prior art: Dependabot [#6895](https://github.com/dimagi/commcare-cloud/pull/6895)
 (ansible 4→10.7.0) and [#6444](https://github.com/dimagi/commcare-cloud/pull/6444)
 (ansible-core 2.11→2.17.7) — **close both here** (they only touch the pin, so
-can't merge until the cleanup band is done).
+can't merge until the bump branch is green).
 Acceptance: core 2.17 installs; `deploy_hq.yml` syntax-check green; full suite
 (see Notes → Verification layers) green on Ansible 10.
 Fallback: bisect via 6/8 if failures are hard to localize.
-Depends: 10–25
+Depends: 17, 22, and fixes the bump branch surfaces.
 
 #### 27. Re-pin surviving standalone roles + re-test
 Bump the still-maintained roles to their newest releases and re-test on core
 2.17: `DavidWittman.redis`, `sansible.logstash`, the `andrewrothstein.*` SHAs
 (couchdb, couchdb-cluster). Done here because verification needs the new core.
+Includes #14's audit.
 Acceptance: Vagrant `deploy-stack` green on Ansible 10, which runs the redis
 and couchdb roles; pins updated. Development has no `logproxy` group, so
 nothing runs `sansible.logstash`: test it on staging, or add a `logproxy` host
