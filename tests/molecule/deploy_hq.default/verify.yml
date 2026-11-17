@@ -22,7 +22,7 @@
         kafka_checkpoints:
           - manage.py validate_kafka_pillow_checkpoints
         collect:
-          - yarn install --non-interactive --production --no-emoji
+          - yarn install --non-interactive --production
           - manage.py resource_static
           - manage.py collectstatic --noinput -v 0
           - manage.py fix_less_imports_collectstatic
