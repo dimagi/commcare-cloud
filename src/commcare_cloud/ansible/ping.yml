@@ -14,8 +14,6 @@
   tasks:
   - command: service nginx status
     name: Check nginx status
-    args:
-      warn: False
 
 - hosts:
   - webworkers
@@ -23,8 +21,6 @@
   - command: supervisorctl status
     become: True
     name: Check supervisor processes status
-    args:
-      warn: False
 
 - hosts:
   - postgresql
@@ -32,20 +28,14 @@
   tasks:
   - command: service pgbouncer status
     name: Check pgbouncer status
-    args:
-      warn: False
   - command: service postgresql status
     name: Check postgresql status
-    args:
-      warn: False
 
 - hosts:
   - couchdb2
   tasks:
   - command: service couchdb2 status
     name: Check couchdb status
-    args:
-      warn: False
 
 - hosts:
   - redis
@@ -53,8 +43,6 @@
   - command: service redis-server status
     name: Check redis status
     become: True
-    args:
-      warn: False
 
 - hosts:
   - zookeeper
@@ -62,16 +50,12 @@
   - command: service zookeeper-server status
     name: Check zookeeper status
     become: True
-    args:
-      warn: False
 
 - hosts:
   - kafka
   tasks:
   - command: service kafka-server status
     name: Check kafka status
-    args:
-      warn: False
 
 - hosts:
   - all
@@ -80,8 +64,6 @@
   - command: service postfix status
     name: Check postfix status
     become: True
-    args:
-      warn: False
 
 - hosts:
   - pillowtop
@@ -90,8 +72,6 @@
   - command: supervisorctl status
     become: True
     name: Check supervisor processes status
-    args:
-      warn: False
 
 - hosts:
   - formplayer
@@ -99,16 +79,12 @@
   - command: supervisorctl status
     become: True
     name: Check supervisor processes status
-    args:
-      warn: False
 
 - hosts:
   - elasticsearch
   tasks:
   - command: service elasticsearch status
     name: Check elasticsearch status
-    args:
-      warn: False
 
 - hosts:
   - elasticsearch
@@ -128,5 +104,3 @@
   tasks:
   - command: service nfs-kernel-server status
     name: Check NFS status
-    args:
-      warn: False
