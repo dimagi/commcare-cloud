@@ -14,8 +14,6 @@
   tasks:
   - command: service nginx status
     name: Check nginx status
-    args:
-      warn: False
 
 - hosts:
   - webworkers
@@ -23,29 +21,28 @@
   - command: supervisorctl status
     become: True
     name: Check supervisor processes status
-    args:
-      warn: False
+
+- hosts:
+  - pgbouncer
+  - postgresql
+  - pg_standby
+  tasks:
+  - command: service pgbouncer-multiprocess@{{ item }} status
+    name: Check pgbouncer status
+    loop: "{{ range(1, (pgbouncer_processes | default(1) | int) + 1) | list }}"
 
 - hosts:
   - postgresql
   - pg_standby
   tasks:
-  - command: service pgbouncer status
-    name: Check pgbouncer status
-    args:
-      warn: False
   - command: service postgresql status
     name: Check postgresql status
-    args:
-      warn: False
 
 - hosts:
   - couchdb2
   tasks:
-  - command: service couchdb2 status
+  - command: service couchdb status
     name: Check couchdb status
-    args:
-      warn: False
 
 - hosts:
   - redis
@@ -53,8 +50,6 @@
   - command: service redis-server status
     name: Check redis status
     become: True
-    args:
-      warn: False
 
 - hosts:
   - zookeeper
@@ -62,16 +57,12 @@
   - command: service zookeeper-server status
     name: Check zookeeper status
     become: True
-    args:
-      warn: False
 
 - hosts:
   - kafka
   tasks:
   - command: service kafka-server status
     name: Check kafka status
-    args:
-      warn: False
 
 - hosts:
   - all
@@ -80,8 +71,6 @@
   - command: service postfix status
     name: Check postfix status
     become: True
-    args:
-      warn: False
 
 - hosts:
   - pillowtop
@@ -90,8 +79,6 @@
   - command: supervisorctl status
     become: True
     name: Check supervisor processes status
-    args:
-      warn: False
 
 - hosts:
   - formplayer
@@ -99,16 +86,12 @@
   - command: supervisorctl status
     become: True
     name: Check supervisor processes status
-    args:
-      warn: False
 
 - hosts:
   - elasticsearch
   tasks:
   - command: service elasticsearch status
     name: Check elasticsearch status
-    args:
-      warn: False
 
 - hosts:
   - elasticsearch
@@ -128,5 +111,3 @@
   tasks:
   - command: service nfs-kernel-server status
     name: Check NFS status
-    args:
-      warn: False
