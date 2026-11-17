@@ -8,7 +8,8 @@
 - name: Add PosgreSQL apt key
   apt_key: url={{ postgresql_apt_key_url }} state=present
 
-- name: Update package list
+- name: Update package list  # noqa: no-handler
+  # no-handler: apt cache must update before the install task below; handler would run too late
   apt: update_cache=yes
   when: add_postgresql_repo is changed
 
@@ -16,7 +17,7 @@
   locale_gen: name='en_US.UTF-8' state=present
 
 - name: Install PostgreSQL
-  apt: name="{{postgresql_binary}}" state=present
+  apt: name="{{ postgresql_binary }}" state=present
 
 - name: Install dependencies
   apt:
@@ -62,6 +63,17 @@
     - Restart postgres
     - reload systemd
 
+- name: Configure postgres to restart on failure
+  become: yes
+  template:
+    src: restart.conf.j2
+    dest: "{{ postgresql_systemd_config_dir }}/restart.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemd
+
 - name: Ensure PostgreSQL data directory exists.
   file:
     path: "{{ postgresql_data_dir }}"
@@ -90,6 +102,7 @@
     state: directory
     owner: postgres
     group: postgres
+    mode: '0755'
 
 - name: assert replication slot config correct
   assert: { that: "replication_slot is not defined or replication_slot in hostvars[hot_standby_master]['postgresql_replication_slots']"}
@@ -101,6 +114,7 @@
     state: directory
     owner: postgres
     group: postgres
+    mode: '0750'
   when: postgresql_enable_archive|bool and not is_pg_standby|bool
 
 - name: Create clean WAL archive cron
@@ -114,18 +128,19 @@
     state: "{{ 'present' if postgresql_enable_archive and not is_pg_standby and not disable_archive_cleanup_cron else 'absent' }}"
 
 - name: PostgreSQL app configuration
-  template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres"
+  template: src=postgresql.conf.j2 dest="{{ postgresql_config_home }}/postgresql.conf" owner="postgres" mode=0644
   tags: configure
   notify: Restart postgres
 
 - name: PostgreSQL access configuration
-  template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner="postgres"
+  template: src=pg_hba.conf.j2 dest="{{ postgresql_config_home }}/pg_hba.conf" owner=postgres group=postgres mode=0640
   tags:
     - configure
     - pg_hba
   notify: Reload postgres
 
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers
 
 - name: Set up PostgreSQL DBs
   import_tasks: set_up_dbs.yml
@@ -136,10 +151,12 @@
     - configure
 
 # restart / reload if necessary to make sure replication slot config updated
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers
 
 # Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
-- shell: /bin/true
+- name: No-op task to support tag-only execution
+  command: /bin/true
   changed_when: false
   register: no_tags
 
@@ -179,6 +196,9 @@
   template:
     src: recovery.conf.j2
     dest: "{{ postgresql_recovery_conf }}"
+    owner: postgres
+    group: postgres
+    mode: '0600'
   when: is_pg_standby and recovery_file.stat.exists
   tags:
     - postgres_users
@@ -190,7 +210,7 @@
   become_user: postgres
   vars:
     ansible_ssh_pipelining: true
-  shell: "{{postgres_install_dir}}/bin/psql -U postgres -p {{postgresql_port}} {{item.name}} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
+  command: "{{ postgres_install_dir }}/bin/psql -U postgres -p {{ postgresql_port }} {{ item.name }} -c \"CREATE EXTENSION IF NOT EXISTS pg_stat_statements\""
   when: item.query_stats and not is_pg_standby and (item.host == inventory_hostname) or is_monolith|bool
   with_items: "{{ postgresql_dbs.all }}"
   tags:
@@ -232,9 +252,11 @@
 
 - import_tasks: cleanup.yml
 
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers
 
-- monit:
+- name: Enable monit monitoring for postgresql
+  monit:
     name: "postgresql_{{ postgresql_version }}"
     state: monitored
   tags: monit
@@ -247,6 +269,6 @@
 
 - name: Create 1GB Dummmy file for Emergency
   become: yes
-  shell: "dd if=/dev/zero of={{ encrypted_root }}/emerg_delete.dummy count=1024 bs=1048576"
+  command: "dd if=/dev/zero of={{ encrypted_root }}/emerg_delete.dummy count=1024 bs=1048576"
   args:
     creates: "{{ encrypted_root }}/emerg_delete.dummy"

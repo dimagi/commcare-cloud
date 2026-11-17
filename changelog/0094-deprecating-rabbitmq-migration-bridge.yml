@@ -1,0 +1,19 @@
+title: Deprecating rabbitmq_migration_bridge var
+key: deprecating-rabbitmq-migration-bridge
+date: 2026-01-06
+optional_per_env: no
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version:
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  ``rabbitmq_migration_bridge`` var is being replaced by
+  ``celery_broker_migration``
+
+details: |
+  A subtle name change to indicate that this variable is useful with more than
+  just RabbitMQ brokers.
+
+update_steps: |
+  If you specify ``rabbitmq_migration_bridge`` in your inventory file, replace
+  it with ``celery_broker_migration``.

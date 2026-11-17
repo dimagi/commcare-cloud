@@ -67,11 +67,11 @@
     - "{{ zookeeper_conf_dir }}"
 
 - name: configure server id
-  template: src=myid.j2 dest="{{ zookeeper_data_dir }}/myid"
+  template: src=myid.j2 dest="{{ zookeeper_data_dir }}/myid" mode=0644
   when: zookeeper_cluster
 
 - name: configure Zookeeper properties
-  template: src=zoo.cfg.j2 dest="{{ zookeeper_conf_dir }}/zoo.cfg"
+  template: src=zoo.cfg.j2 dest="{{ zookeeper_conf_dir }}/zoo.cfg" mode=0644
 
 - name: Install Zookeeper systemd script
   template: src=zookeeper-server.service.j2 dest=/etc/systemd/system/zookeeper-server.service mode=0755
@@ -82,7 +82,8 @@
     daemon_reload: yes
 
 # Allows to excecute task only when a tag is specified: https://serverfault.com/a/748864
-- shell: /bin/true
+- name: No-op task to support tag-only execution
+  command: /bin/true
   changed_when: false
   register: no_tags
 
@@ -93,9 +94,10 @@
   tags: after-reboot
 
 # Restarting a service right after it's been started will cause an unnecessary/non-idempotent restart
-- name: Restart Zookeeper service
+- name: Restart Zookeeper service  # noqa: no-handler
+  # no-handler: restart only if the start above did not already (re)start it
   service: name=zookeeper-server enabled=yes state=restarted
-  when: zookeeper_service_started.changed == False
+  when: not zookeeper_service_started.changed
   tags: zookeeper_cluster_conf
 
 - name: Add Zookeeper binaries to PATH

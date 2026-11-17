@@ -1,7 +1,6 @@
 import datetime
 
-from nose.tools import assert_equals
-from parameterized import parameterized
+import pytest
 
 from commcare_cloud.commands.utils import timeago
 
@@ -12,7 +11,7 @@ MONTH = DAY * (365.0 / 12.0)
 YEAR = MONTH * 12
 
 
-@parameterized([
+@pytest.mark.parametrize("delta,expected", [
     (datetime.timedelta(seconds=2), 'just now'),
     (datetime.timedelta(seconds=10), '10 seconds ago'),
     (datetime.timedelta(seconds=12), '12 seconds ago'),
@@ -31,4 +30,4 @@ YEAR = MONTH * 12
     (datetime.timedelta(seconds=YEAR * 2.1), '2 years ago'),
 ])
 def test_timeago(delta, expected):
-    assert_equals(timeago(delta), expected)
+    assert timeago(delta) == expected

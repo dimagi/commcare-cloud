@@ -12,6 +12,7 @@
     dest:  /etc/rsyslog.d/commands.conf
     owner: root
     group: root
+    mode: '0644'
   notify: restart rsyslog
 
 - name: Configure logrotate for audit logs

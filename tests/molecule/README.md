@@ -1,0 +1,112 @@
+# Molecule tests
+
+Molecule tests for roles under `src/commcare_cloud/ansible/roles/` live
+here, one directory per role/scenario pair:
+
+```
+tests/molecule/<role>.<scenario>/
+    molecule.yml
+    converge.yml
+    prepare.yml   (optional)
+    verify.yml
+```
+
+## Running scenarios
+
+```sh
+./tests/molecule/run.sh [ROLE [SCENARIO]]
+```
+
+## Adding a new scenario for a role
+
+```sh
+./tests/molecule/init.sh ROLE [SCENARIO]
+```
+
+## Container choice
+
+The `containers` molecule driver is used, which picks whichever of
+`podman`/`docker` is available. If your container engine is rootless — check
+with `podman info`/`docker info` — that matters for two things role authors
+should know about:
+
+- **Anything needing real root against the host kernel** (enabling swap,
+  non-namespaced sysctls, raw device access, etc.) **fails in a rootless
+  container**, even with `privileged: true` — its "root" is a mapped
+  unprivileged host UID. Work around it in the scenario (e.g. stub the
+  binary in `prepare.yml`), not the role.
+- **Non-namespaced sysctls** can be written to their config file, but the live
+  `/proc/sys` value never actually changes, so `ansible.posix.sysctl` reports
+  `changed` every run, breaking idempotence. Fix with `module_defaults`
+  (`sysctl_set`/`reload: false`) on the scenario's `include_role` task.
+
+The platform image is `docker.io/geerlingguy/docker-ubuntu2204-ansible`, rather
+than a generic systemd/Ubuntu image. It's built specifically for
+Ansible/Molecule testing — systemd, `sudo`, and `python3` pre-configured.
+
+A scenario can add a second container for a service the role talks to over
+the network, e.g. a `postgres` image standing in for RDS. Put every platform on
+the same named network (`networks: [{name: <name>}]`) so containers can resolve
+each other by name; containers on the default network can't. If the service
+image has no python, target every play at the platforms that do (e.g.
+`hosts: instance`), since Ansible can't gather facts or run modules on it.
+
+## Keeping scenarios fast
+
+The shared config in `tests/molecule/lib/` removes most fixed overhead: a
+shorter test sequence, faster container create/destroy, facts gathered once
+per scenario, and Ansible pipelining. Within a scenario:
+
+- **Avoid apt installs.** An install with `update_cache` costs about 10s even
+  on CI, and it depends on the network. When the real package can't do
+  anything useful in the container, stub it with a local fake package. Add an
+  opt-in env var (`MOLECULE_<ROLE>_REAL_INSTALL=1`) for an occasional manual
+  run with the real package, as the datadog and ecryptfs scenarios do.
+- **Run systemd as PID 1 only when the role manages services.** It needs
+  `override_command: false`, `privileged: true`, `cgroupns_mode: host` and the
+  cgroup volume (see the datadog scenario), and it makes the container slower
+  to start and stop.
+- **Don't use `become: true` in `prepare.yml` or `verify.yml`.** The container
+  connection is already root.
+- **Facts are cached** from the first play that gathers them, usually prepare.
+  If prepare changes something a role reads from facts (e.g. mounts), refresh
+  them with an `ansible.builtin.setup` task. `gather_facts: true` won't
+  refresh them.
+- **Don't trade readability for speed**, e.g. by merging tasks into one
+  `shell` task to save module calls.
+
+## Minimizing Molecule warnings
+
+Molecule warns if a scenario doesn't configure a `cleanup` playbook. It runs
+`cleanup` before `molecule destroy`, and before the final destroy when a test
+fails. Point it at the shared no-op in `tests/molecule/lib/stub.yml` to avoid
+the warning:
+
+```yaml
+provisioner:
+  name: ansible
+  playbooks:
+    cleanup: ../lib/stub.yml
+```
+
+`side_effect` doesn't need a stub, because the test sequence in
+`tests/molecule/lib/base.yml` leaves it out.
+
+If a role has no galaxy roles/collections to install, keep the dependency
+manager disabled, but use `name: shell` rather than `name: galaxy` so it only
+emits one warning instead of two:
+
+```yaml
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+```
+
+## About the directory structure
+
+Molecule assumes one role per repo, and by default puts each role's scenarios
+beside its source files. commcare-cloud, however, keeps all tests under the
+`tests` directory at the repo root, so scenarios live in `tests/molecule/`.
+Molecule also requires scenario names to be unique with no notion of "role" so
+the role name is folded into the scenario directory name itself.

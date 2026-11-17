@@ -1,16 +1,12 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import abc
 import inspect
 
-import six
 from clint.textui import puts
 
 from commcare_cloud.colors import color_summary
 
 
-@six.add_metaclass(abc.ABCMeta)
-class CommandBase(object):
+class CommandBase(metaclass=abc.ABCMeta):
     command = None
     help = None
     aliases = ()

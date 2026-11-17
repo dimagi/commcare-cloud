@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import jsonobject
 
 
@@ -7,6 +5,7 @@ class _Constants(jsonobject.JsonObject):
     commcarehq_main_db_name = jsonobject.StringProperty(default='commcarehq')
     formplayer_db_name = jsonobject.StringProperty(default='formplayer')
     ucr_db_name = jsonobject.StringProperty(default='commcarehq_ucr')
+    project_db_name = jsonobject.StringProperty(default='commcarehq_project_db')
     synclogs_db_name = jsonobject.StringProperty(default='commcarehq_synclogs')
     auditcare_db_name = jsonobject.StringProperty(default='commcarehq_auditcare')
     repeaters_db_name = jsonobject.StringProperty(default='commcarehq_repeaters')

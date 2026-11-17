@@ -14,6 +14,7 @@
   template:
     src: opt_data_file_permissions.txt.j2
     dest: "{{ audit_directory }}/opt_data_file_permissions.txt"
+    mode: '0644'
   delegate_to: localhost
   become_user: "{{ control_user }}"
   when: data_dir.stat.exists

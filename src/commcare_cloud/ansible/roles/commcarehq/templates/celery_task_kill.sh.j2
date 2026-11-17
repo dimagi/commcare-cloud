@@ -4,11 +4,11 @@
 #
 
 HOURS=$1
-MAX_MINUTES=`expr ${HOURS} \* 60 \* 60`
+MAX_SECONDS=`expr ${HOURS} \* 60 \* 60`
 
 SIG_NAME=$2
 
-PIDS=$(ps -eo comm,pid,etimes | awk '/celeryd:/ { if ( $4 > '"${MAX_MINUTES}"' ) { print $3 } }');
+PIDS=$(ps -eo comm,pid,etimes | awk '/celeryd:/ { if ( $4 > '"${MAX_SECONDS}"' ) { print $3 } }');
 
 if [ "$PIDS" != "" ]; then
   echo "Killing stale celery workers:"

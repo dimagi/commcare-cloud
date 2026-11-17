@@ -1,14 +1,9 @@
-from __future__ import print_function
-
-from __future__ import absolute_import
-from __future__ import unicode_literals
 from collections import Counter, namedtuple
 
 import jsonobject
 from clint.textui import puts, indent
 
 from commcare_cloud.colors import color_warning
-import six
 
 IpAddressProperty = jsonobject.StringProperty
 IpAddressAndPortProperty = jsonobject.StringProperty
@@ -24,16 +19,20 @@ class CeleryOptions(jsonobject.JsonObject):
     max_tasks_per_child = jsonobject.IntegerProperty(default=None)
     num_workers = jsonobject.IntegerProperty(default=1)
     prefetch_multiplier = jsonobject.IntegerProperty(default=4)
+    env_vars = jsonobject.DictProperty()
 
 
 class PillowOptions(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     start_process = jsonobject.IntegerProperty(default=0)
     num_processes = jsonobject.IntegerProperty(default=1)
+    gevent_workers = jsonobject.IntegerProperty(default=0)
     dedicated_migration_process = jsonobject.BooleanProperty(default=False)
     total_processes = jsonobject.IntegerProperty(default=None, exclude_if_none=True)
     processor_chunk_size = jsonobject.IntegerProperty(default=None, exclude_if_none=True)
     exclude_ucrs = jsonobject.StringProperty(default=None, exclude_if_none=True)
+    env_vars = jsonobject.DictProperty()
+    process = jsonobject.DictProperty()
 
 
 class AppProcessesConfig(jsonobject.JsonObject):
@@ -41,22 +40,25 @@ class AppProcessesConfig(jsonobject.JsonObject):
     django_bind = IpAddressProperty()
     django_port = PortProperty()
     flower_port = PortProperty()
+    flower_max_tasks = jsonobject.IntegerProperty()
     gunicorn_workers_factor = jsonobject.IntegerProperty()
     gunicorn_workers_static_factor = jsonobject.IntegerProperty()
+    gunicorn_max_requests = jsonobject.IntegerProperty()
+    gunicorn_graceful_timeout = jsonobject.IntegerProperty()
     formplayer_memory = MemorySpecProperty()
     formplayer_maxmetaspacesize = MemorySpecProperty()
     formplayer_g1heapregionsize = MemorySpecProperty()
     http_proxy = IpAddressAndPortProperty()
-    django_command_prefix = jsonobject.StringProperty()
+    django_command_prefix = jsonobject.StringProperty()  # obsolete for ddtrace-run; use DD_TRACE_ENABLED=True
     celery_command_prefix = jsonobject.StringProperty()
     formplayer_command_args = jsonobject.StringProperty()
-    datadog_pythonagent = jsonobject.BooleanProperty()
     additional_no_proxy_hosts = CommaSeparatedStrings()
 
-    service_blacklist = jsonobject.ListProperty(six.text_type)
+    service_blacklist = jsonobject.ListProperty(str)
     management_commands = jsonobject.DictProperty(jsonobject.DictProperty())
     celery_processes = jsonobject.DictProperty(jsonobject.DictProperty(CeleryOptions))
     pillows = jsonobject.DictProperty(jsonobject.DictProperty(PillowOptions))
+    webworkers = jsonobject.DictProperty()
 
     celery_heartbeat_thresholds = jsonobject.DictProperty(int)
 
@@ -105,11 +107,12 @@ class CeleryProcess(namedtuple('CeleryProcess', ['name', 'required', 'is_queue',
 
 
 CELERY_PROCESSES = [
+    CeleryProcess("24_hour_queue", required=False, blockage_threshold=24 * 60 * 60),
     CeleryProcess("analytics_queue", blockage_threshold=30 * 60),
     CeleryProcess("async_restore_queue", required=False, blockage_threshold=60),
     CeleryProcess("background_queue", blockage_threshold=10 * 60),
     CeleryProcess("beat", required=False, is_queue=False),
-    CeleryProcess("case_rule_queue", blockage_threshold=60 * 60),
+    CeleryProcess("case_rule_queue", blockage_threshold=4 * 60 * 60),
     CeleryProcess("case_import_queue", blockage_threshold=60),
     CeleryProcess("celery", blockage_threshold=60),
     CeleryProcess("celery_periodic", required=False, blockage_threshold=10 * 60),

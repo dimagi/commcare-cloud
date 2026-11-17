@@ -1,8 +1,4 @@
 # coding=utf-8
-from __future__ import print_function
-from __future__ import absolute_import
-
-from __future__ import unicode_literals
 import inspect
 import os
 import shlex
@@ -16,7 +12,8 @@ from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_error
 from commcare_cloud.commands.ansible.downtime import Downtime
 from commcare_cloud.commands.clean_releases import CleanReleases
-from commcare_cloud.commands.deploy.command import Deploy
+from commcare_cloud.commands.deploy.command import Deploy, DeployDiff
+from commcare_cloud.commands.ec2_instance_state import Ec2InstanceState
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
 from commcare_cloud.commands.preindex_views import PreindexViews
@@ -43,8 +40,7 @@ from .commands.ansible.run_module import (
     RunShellCommand,
     SendDatadogEvent,
 )
-from .commands.fab import Fab
-from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Scp, DjangoManage, Tmux, ForwardPort
+from .commands.inventory_lookup.inventory_lookup import Lookup, Ssh, Scp, Rsync, DjangoManage, Tmux, ForwardPort
 from .commands.ansible.ops_tool import ListDatabases, CeleryResourceReport, PillowResourceReport, \
     CouchDBClusterInfo, AuditEnvironment, UpdateLocalKnownHosts, PillowTopicAssignments
 from commcare_cloud.commands.command_base import CommandBase, Argument, CommandError
@@ -63,6 +59,7 @@ COMMAND_GROUPS = OrderedDict([
         Ssh,
         AuditEnvironment,
         Scp,
+        Rsync,
         RunAnsibleModule,
         RunShellCommand,
         SendDatadogEvent,
@@ -83,8 +80,8 @@ COMMAND_GROUPS = OrderedDict([
         UpdateUsers,
         UpdateUserPublicKey,
         UpdateSupervisorConfs,
-        Fab,
         Deploy,
+        DeployDiff,
         ListReleases,
         CleanReleases,
         PreindexViews,
@@ -103,6 +100,7 @@ COMMAND_GROUPS = OrderedDict([
         AwsSignIn,
         AwsList,
         AwsFillInventory,
+        Ec2InstanceState,
         ForwardPort,
     ])
 ])
@@ -116,21 +114,22 @@ COMMAND_TYPES = sorted(
 def run_on_control_instead(args, argv, force_latest_code):
     executable = 'commcare-cloud'
     branch = getattr(args, 'branch', 'master')
-    venv = os.environ.get("CCHQ_VIRTUALENV")
     if force_latest_code:
         bash_commands_template = (
-            '{env}cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
-            '&& git reset --hard origin/{branch} && source ~/init-ansible && {cchq} {cchq_args}'
+            'cd ~/commcare-cloud && git fetch --prune && git checkout {branch} '
+            '&& git reset --hard origin/{branch} && uv run {cchq} {cchq_args}'
         )
     else:
         bash_commands_template = (
-            '{env}source ~/commcare-cloud/control/activate_venv.sh --fail-on-error '
-            '&& {cchq} {cchq_args}'
+            'cd ~/commcare-cloud && if [ ! -f pyproject.toml ]; then '
+            'echo "Migrating control machine to uv-based commcare-cloud." && '
+            'echo "Consider using --control-setup=yes if this fails..." && '
+            'git checkout {branch} && git pull --ff-only; '
+            'fi && uv run {cchq} {cchq_args}'
         )
     cmd_parts = [
         executable, args.env_name, 'ssh', 'control[0]', '-t',
         bash_commands_template.format(
-            env=(f'export CCHQ_VIRTUALENV={venv}; ' if venv else ''),
             branch=branch,
             cchq=executable,
             cchq_args=' '.join(shlex.quote(arg) for arg in argv),
@@ -209,9 +208,9 @@ def call_commcare_cloud(input_argv=sys.argv):
     # throw error if user is attempting to use python 2
     if not os.environ.get("CI_TEST") and sys.version_info[0] == 2:
         exit(dedent("""
-            Error: you must upgrade to Python 3. Python 2 is no longer supported.
+            Error: you must upgrade to Python 3. Python 2 is not supported.
 
-            To setup Python 3.6, see
+            To setup Python 3.10, see
             https://commcare-cloud.readthedocs.io/en/latest/reference/1-commcare-cloud/1-installation.html#manual-installation
             """))
 

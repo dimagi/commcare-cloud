@@ -36,8 +36,10 @@
       follow: no
 
   - name: Re-read supervisor config
-    command: supervisorctl reread
+    # the supervisorctl module manages program state; it has no reread action
+    command: supervisorctl reread  # noqa: command-instead-of-module
 
   - name: Restart formplayer service
-    supervisorctl: name=all state=restarted
-    # on a monolith this actually restarts all services
+    supervisorctl:
+      name: "{{ project }}-{{ deploy_env }}-formsplayer-spring"
+      state: restarted

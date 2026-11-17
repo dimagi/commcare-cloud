@@ -1,0 +1,21 @@
+---
+- name: Destroy
+  ansible.builtin.import_playbook: ../lib/destroy.yml
+
+- name: Remove shared volume
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  no_log: "{{ molecule_no_log }}"
+  tasks:
+    - name: Find container engine
+      ansible.builtin.include_tasks: ../lib/container_engine.yml
+
+    - name: Remove shared staticfiles volume
+      ansible.builtin.shell: |
+        if {{ container_engine }} volume inspect deploy_hq_shared >/dev/null 2>&1; then
+          {{ container_engine }} volume rm deploy_hq_shared >/dev/null
+          echo removed
+        fi
+      register: volume_result
+      changed_when: volume_result.stdout == 'removed'

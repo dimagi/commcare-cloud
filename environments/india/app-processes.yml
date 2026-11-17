@@ -38,6 +38,10 @@ celery_processes:
       concurrency: 2
     geospatial_queue:
       concurrency: 1
+    24_hour_queue:
+      concurrency: 1
+    ush_background_tasks:
+      concurrency: 1
 pillows:
   pillow5:
     AppDbChangeFeedPillow:
@@ -45,8 +49,6 @@ pillows:
     ApplicationToElasticsearchPillow:
       num_processes: 1
     CacheInvalidatePillow:
-      num_processes: 1
-    DefaultChangeFeedPillow:
       num_processes: 1
     DomainDbKafkaPillow:
       num_processes: 1
@@ -56,7 +58,6 @@ pillows:
       num_processes: 1
     SqlSMSPillow:
       num_processes: 1
-      processor_chunk_size: 1
     UpdateUserSyncHistoryPillow:
       num_processes: 1
     UserCacheInvalidatePillow:
@@ -66,7 +67,6 @@ pillows:
     case-pillow:
       num_processes: 2
       dedicated_migration_process: True
-      processor_chunk_size: 1
     xform-pillow:
       num_processes: 2
       dedicated_migration_process: True
@@ -74,4 +74,3 @@ pillows:
       num_processes: 1
     user-pillow:
       num_processes: 1
-      processor_chunk_size: 1

@@ -9,3 +9,7 @@ output "commcare_server_role_id" {
 output "commcare_server_instance_profile" {
   value = aws_iam_instance_profile.commcare_server_instance_profile.name
 }
+
+output "commcare_control_server_instance_profile" {
+  value = aws_iam_instance_profile.commcare_control_server_instance_profile.name
+}

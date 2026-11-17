@@ -1,11 +1,9 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 import os
+import shlex
 import textwrap
 from io import open
 
 from clint.textui import puts
-from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_code, color_notice, color_summary
@@ -45,7 +43,11 @@ class Configure(CommandBase):
 
         if not environments_dir:
             if environ_value and not have_same_realpath(environ_value, DIMAGI_ENVIRONMENTS_DIR):
-                print("I see you have COMMCARE_CLOUD_ENVIRONMENTS set to {} in your environment".format(environ_value))
+                print(
+                    "I see you have COMMCARE_CLOUD_ENVIRONMENTS set to {} in your environment".format(
+                        environ_value
+                    )
+                )
                 if ask("Would you like to use environments at that location?"):
                     environments_dir = environ_value
 
@@ -63,11 +65,13 @@ class Configure(CommandBase):
                     dir_path = os.path.expanduser(os.path.join(default_environments_dir, dir_name))
                     if not os.path.exists(dir_path):
                         os.makedirs(dir_path)
-                print("Okay, I've got the env started for you, "
-                      "but you're going to have to fill out the rest before you can do much. "
-                      "For more information, see https://commcare-cloud.readthedocs.io/en/latest/reference/1-commcare-cloud/2-configuration.html "
-                      "and refer to the examples at "
-                      "https://github.com/dimagi/commcare-cloud/tree/master/environments.")
+                print(
+                    "Okay, I've got the env started for you, "
+                    "but you're going to have to fill out the rest before you can do much. "
+                    "For more information, see https://commcare-cloud.readthedocs.io/en/latest/reference/1-commcare-cloud/2-configuration.html "  # noqa: E501
+                    "and refer to the examples at "
+                    "https://github.com/dimagi/commcare-cloud/tree/master/environments."
+                )
 
         return environments_dir
 
@@ -90,7 +94,7 @@ class Configure(CommandBase):
                     export PATH=$PATH:{virtualenv_path}
                     source {PACKAGE_BASE}/.bash_completion
                 """.format(
-                    COMMCARE_CLOUD_ENVIRONMENTS=shlex_quote(environments_dir),
+                    COMMCARE_CLOUD_ENVIRONMENTS=shlex.quote(environments_dir),
                     virtualenv_path=get_virtualenv_bin_path(),
                     PACKAGE_BASE=PACKAGE_BASE,
                 )).strip())

@@ -3,8 +3,6 @@ secrets:
   KSPLICE_ACTIVATION_KEY:
   DATADOG_API_KEY: null
   DATADOG_APP_KEY: null
-  AMQP_USER: "{{ deploy_env }}_worker"
-  AMQP_PASSWORD: '{{ generate_password() }}'
   HAPROXY_STATS_PASSWORD: '{{ generate_password() }}'
   SUPERVISOR_HTTP_USERNAME: 'supervisor_http'
   SUPERVISOR_HTTP_PASSWORD: '{{ generate_password() }}'
@@ -32,6 +30,7 @@ localsettings_private:
   BOOKKEEPER_CONTACT_EMAILS: []
   COUCH_USERNAME: 'commcarehq'
   COUCH_PASSWORD: '{{ generate_password() }}'
+  REDIS_PASSWORD: '{{ generate_password() }}'
   BITLY_OAUTH_TOKEN: ''
   DROPBOX_KEY: ''
   DROPBOX_SECRET: ''

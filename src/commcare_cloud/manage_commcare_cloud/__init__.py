@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from .manage_commcare_cloud import main
 
 

@@ -25,7 +25,7 @@ options:
     critical: 0.9
     warning: 0.8
   timeout_h: 0
-query: min(last_1h):max:system.disk.in_use{device:/opt/data,!environment:icds,!environment:pna} by
+query: min(last_1h):max:system.disk.in_use{device:/opt/data} by
   {host,environment,device}.rollup(max) >= 0.9
 tags: []
 type: query alert

@@ -1,0 +1,20 @@
+- name: Setup chaos directories
+  file: path="{{ item }}" owner=root group=root mode=0755 state=directory
+  with_items:
+    - "{{ chaos_dir }}"
+    - "{{ chaos_dir }}/start"
+    - "{{ chaos_dir }}/stop"
+
+- name: Install chaos scripts
+  template:
+    src: "{{ strategy }}.j2"
+    dest: "{{ chaos_dir }}/start/{{ strategy }}"
+    group: root
+    owner: root
+    mode: 0755
+    backup: yes
+
+- name: Start chaos
+  command: "{{ chaos_dir }}/start/{{ strategy }}"
+  args:
+    creates: "{{ chaos_dir }}/stop/{{ strategy }}"

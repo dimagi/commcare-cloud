@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import os
 
 from commcare_cloud.commands.command_base import Argument

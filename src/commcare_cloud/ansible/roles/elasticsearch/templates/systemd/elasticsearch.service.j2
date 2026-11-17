@@ -8,6 +8,9 @@ After=network-online.target
 Type=simple
 Environment=ES_HOME={{ elasticsearch_home }}
 Environment=ES_PATH_CONF={{ elasticsearch_conf_dir}}
+{% if elasticsearch_version == '6.8.23'%}
+Environment=JAVA_HOME={{ java_17_home_path }}
+{% endif %}
 {% if elasticsearch_version <= '5.6.16'%}
 Environment=CONF_DIR={{ elasticsearch_conf_dir}}
 {% endif %}

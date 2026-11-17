@@ -142,6 +142,13 @@ This will let the secrets management system know that that secret exists,
 and will let you give it a default value (usually `None`).
 This is especially important for maintaining compatibility between different secrets backends.
 
+Secrets can omit the "legacy_namespace" key in `secrets.yml` if they do not
+need default or fallback values. These tend to be secrets used by CommCare
+Cloud. "legacy_namespace" is set to "localsettings_private" for secrets written
+to `localsettings.py` for Django. "legacy_namespace" is set to "secrets" for
+secrets used by other services. These are tendencies not rules, and
+most secrets are added with "legacy_namespace" set to "secrets".
+
 
 ### Managing secrets with Vault
 **IMPORTANT**: Install the git hooks to help ensure you never commit secrets into the repo: `./git-hooks/install.sh`

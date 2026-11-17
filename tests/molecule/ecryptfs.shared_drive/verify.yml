@@ -1,0 +1,21 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Stat blobdb paths
+    ansible.builtin.stat:
+      path: "{{ item }}"
+    register: stats
+    loop:
+      - /opt/data/blobdb
+      - /opt/shared_data
+
+  - name: Assert blobdb paths absent (blobdb lives on the shared drive)
+    ansible.builtin.assert:
+      that:
+        - not blobdb.exists
+        - not shared_data.exists
+    vars:
+      blobdb: "{{ stats.results[0].stat }}"
+      shared_data: "{{ stats.results[1].stat }}"

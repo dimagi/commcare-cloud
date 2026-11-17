@@ -1,5 +1,5 @@
 account_alias: commcare-india
-terraform_version: '1.5'
+terraform_version: '1.13'
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "ap-south-1"
@@ -33,7 +33,7 @@ servers:
     os: jammy
 
   - server_name: "djangomanage3-india"
-    server_instance_type: "t3a.small"
+    server_instance_type: "t3a.medium"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -65,7 +65,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "celerybeat_a2-india"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 60
@@ -75,7 +75,7 @@ servers:
     os: jammy
 
   - server_name: "celery14-india"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "r6a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 60
@@ -85,7 +85,7 @@ servers:
     os: jammy
 
   - server_name: "celery15-india"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "r6a.large"
     network_tier: "app-private"
     az: "b"
     volume_size: 60
@@ -99,7 +99,7 @@ servers:
     network_tier: "db-private"
     az: "a"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     block_device:
       volume_size: 80
@@ -113,7 +113,7 @@ servers:
     network_tier: "db-private"
     az: "b"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     block_device: 
       volume_size: 80
@@ -127,7 +127,7 @@ servers:
     network_tier: "db-private"
     az: "c"
     volume_size: 60
-    volume_encrypted: no
+    volume_encrypted: yes
     volume_type: "gp3"
     block_device:
       volume_size: 80
@@ -207,7 +207,7 @@ servers:
     os: jammy 
 
   - server_name: "formplayer3-india"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "r6a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 200
@@ -287,29 +287,9 @@ servers:
     group: "postgresql"
     os: jammy
 
-  - server_name: "rabbit_a6-india"
-    server_instance_type: t3a.small
-    network_tier: "db-private"
-    az: "a"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: jammy 
-
-  - server_name: "rabbit_c7-india"
-    server_instance_type: t3a.small
-    network_tier: "db-private"
-    az: "c"
-    volume_size: 30
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: jammy 
-
 proxy_servers:
   - server_name: "proxy_a1-india"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -319,7 +299,7 @@ proxy_servers:
     os: jammy
 
   - server_name: "proxy_b1-india"
-    server_instance_type: "t3a.medium"
+    server_instance_type: "t3a.large"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
@@ -330,11 +310,14 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pgmain0-india"
-    instance_type: "db.t3.medium"
+    instance_type: "db.t4g.medium"
     storage: 500
     storage_type: gp3
     multi_az: true
-    engine_version: "14.4"
+    engine_version: "14.24"
+    params:
+      max_connections: "125"
+
 
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-india
@@ -388,6 +371,27 @@ r53_private_zone:
   create_record: yes
   route_names:  "redis"
 
+elasticache_celery_broker:
+  create: yes
+  cache_engine: "redis"
+  cache_engine_version: "7.0"
+  cache_node_type: "cache.r6g.large"
+  params:
+    maxmemory-policy: "noeviction"
+  automatic_failover: true
+  transit_encryption: false
+  at_rest_encryption: true
+  auto_minor_version: false
+  cluster_size: 2
+  multi_az: true
+  maintenance_window: "sun:00:30-sun:01:30"
+  snapshot_retention: 0
+
+r53_records:
+  - domain_name: "india.commcare.local"
+    route_name: "broker"
+    records: ["${module.elasticache-celery-broker.primary_configuration_endpoint_address}"]
+
 efs_file_systems:
   - efs_name: "efs_india"
     create: yes
@@ -397,3 +401,11 @@ efs_file_systems:
     create_record: yes
     domain_name: "india.commcare.local"
     route_names: "shared-efs"
+
+terraform_imports:
+  - to: module.logshipping.aws_cloudwatch_event_rule.config-changes
+    id: default/config-changes
+  - to: module.logshipping.aws_cloudwatch_event_target.config-changes
+    id: default/config-changes/Id5885852165010
+  - to: module.logshipping.aws_cloudwatch_log_group.config-changes
+    id: /aws/events/config-changes

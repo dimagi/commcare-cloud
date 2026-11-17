@@ -1,11 +1,16 @@
-datadog_pythonagent: True
-django_command_prefix: '{% if inventory_hostname in groups["mobile_webworkers"] %}{{ virtualenv_home }}/bin/ddtrace-run {% endif %}'
-celery_command_prefix: ''
 gunicorn_workers_static_factor: 0
-gunicorn_workers_factor: 4
+gunicorn_workers_factor: 2
+# graceful_timeout matches the 900s request budget nginx allows, so that
+# worker recycling can't kill an in-flight request that would have completed
+gunicorn_max_requests: 700
+gunicorn_graceful_timeout: 900
 formplayer_memory: "31g"
 formplayer_g1heapregionsize: "16m"
-formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.java.org.javarosa.enableOpenTracing=true -Ddd.profiling.enabled=true -XX:FlightRecorderOptions=stackdepth=256 -Ddd.service=formplayer -Ddd.env=production -Ddd.trace.sample.rate=0.1'
+# to enable profling, add `-Ddd.profiling.enabled=true -XX:FlightRecorderOptions=stackdepth=256` to formplayer_command_args
+formplayer_command_args: '-javaagent:/home/cchq/dd-java-agent.jar -Dsrc.main.java.org.javarosa.enableOpenTracing=true -Ddd.service=formplayer -Ddd.env=production -Ddd.trace.sample.rate=1.0'
+#webworkers:
+#  env_vars:
+#    DD_TRACE_ENABLED: True
 management_commands:
   celerybeat_a0:
     run_submission_reprocessing_queue:
@@ -14,11 +19,18 @@ management_commands:
     run_sms_queue:
   pillow_a2000:
     run_pillow_retry_queue:
+
+# NOTE: to enable APM on celery, `celery_command_prefix`` must be set in
+# addition to `DD_TRACE_ENABLED=True` because automatic command prefix in
+# celery_bash_runner.sh.j2 is too complicated.
+#celery_command_prefix: '{{ virtualenv_home }}/bin/ddtrace-run '
 celery_processes:
   celery_a2000,celery_a2001,celery_b2000,celery_b2001:
     analytics_queue:
       pooling: gevent
       concurrency: 4
+      #env_vars:
+      #  DD_TRACE_ENABLED: True
     async_restore_queue:
       concurrency: 8
     background_queue:
@@ -46,7 +58,9 @@ celery_processes:
       concurrency: 24
       num_workers: 5
     reminder_case_update_bulk_queue:
-      concurrency: 1
+      pooling: gevent
+      concurrency: 4
+      num_workers: 2
     reminder_queue:
       pooling: gevent
       concurrency: 40
@@ -54,7 +68,8 @@ celery_processes:
       concurrency: 1
     repeat_record_queue:
       pooling: gevent
-      concurrency: 72
+      concurrency: 36
+      num_workers: 2
       prefetch_multiplier: 1
     repeat_record_datasource_queue:
       pooling: gevent
@@ -66,8 +81,11 @@ celery_processes:
     sms_queue:
       pooling: gevent
       concurrency: 20
+    submission_reprocessing_queue:
+      concurrency: 1
+      prefetch_multiplier: 1
     ucr_indicator_queue:
-      concurrency: 3
+      concurrency: 5
     ucr_queue:
       concurrency: 9
       prefetch_multiplier: 1
@@ -78,6 +96,8 @@ celery_processes:
       concurrency: 8
     geospatial_queue:
       concurrency: 1
+    24_hour_queue:
+      concurrency: 2
 
   celerybeat_a0:
     # not really queues
@@ -99,17 +119,16 @@ celery_processes:
     malt_generation_queue:
       pooling: gevent
       concurrency: 2
-    submission_reprocessing_queue:
-      concurrency: 2
-      prefetch_multiplier: 1
     sumologic_logs_queue:
       pooling: gevent
       concurrency: 50
 
 pillows:
   pillow_a2000:
+  # form-sql partitions: 32 = 4 * 8
     xform-pillow:
-      num_processes: 33
+      num_processes: 9
+      gevent_workers: 4
       dedicated_migration_process: True
     user-pillow:
       num_processes: 1
@@ -120,8 +139,6 @@ pillows:
     ApplicationToElasticsearchPillow:
       num_processes: 1
     CacheInvalidatePillow:
-      num_processes: 1
-    DefaultChangeFeedPillow:
       num_processes: 1
     DomainDbKafkaPillow:
       num_processes: 1
@@ -138,8 +155,16 @@ pillows:
     UserGroupsDbKafkaPillow:
       num_processes: 1
   pillow_b2000:
-  # case-sql partitions: 96
+  # case-sql partitions: 96 = 8 * 12
     case-pillow:
-      num_processes: 25
-      total_processes: 25
+      num_processes: 9
+      gevent_workers: 12
       dedicated_migration_process: True
+      #env_vars:
+      #  DD_TRACE_ENABLED: True
+      #  DD_PROFILING_ENABLED: True
+      #process:
+      #  "1":
+      #    env_vars:
+      #      DD_TRACE_ENABLED: True
+      #      DD_PROFILING_ENABLED: True

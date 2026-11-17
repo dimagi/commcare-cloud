@@ -1,7 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
 import os
 import re
 import shlex
@@ -390,15 +387,15 @@ class UpdateSupervisorConfs(_AnsiblePlaybookAlias):
 
     def run(self, args, unknown_args):
         args.playbook = 'deploy_stack.yml'
-        unknown_args += ('--tags=services',)
+        unknown_args += ('--tags=services', '--flush-cache')
         rc = AnsiblePlaybook(self.parser).run(args, unknown_args)
         if ask("Would you like to update supervisor to use the new configurations?"):
-            carryover_args = []
-            if args.limit:
-                carryover_args.extend(['--limit', args.limit])
-            commcare_cloud(
-                args.env_name, 'run-shell-command', 'webworkers:celery:pillowtop:formplayer',
-                'supervisorctl reread; supervisorctl update', '-b', *carryover_args
+            run_ansible_playbook(
+                playbook='restart_commcare_services.yml',
+                ansible_context=AnsibleContext(args),
+                limit=args.limit,
+                skip_check=True,
+                quiet=True,
             )
         else:
             return rc

@@ -1,13 +1,8 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import re
 from collections import namedtuple
 
-from nose.tools import assert_equal
-
 from commcare_cloud.commands.terraform.terraform_migrate_state import get_migrations, \
     Migration, make_migration_plans, MigrationPlan
-from six.moves import range
 
 
 def test_numbering():
@@ -127,22 +122,22 @@ def test_make_migration_plans():
         'module.Users.aws_iam_account_alias.alias',
         'aws_key_pair.droberts',
     ]
-    assert_equal(len(migration_plans), 3)
-    assert_equal(migration_plans[0], MigrationPlan(
+    assert len(migration_plans) == 3
+    assert migration_plans[0] == MigrationPlan(
         migration=migration[0],
         start_state=expected_state_0,
         moves=expected_moves_0,
         end_state=expected_state_1,
-    ))
-    assert_equal(migration_plans[1], MigrationPlan(
+    )
+    assert migration_plans[1] == MigrationPlan(
         migration=migration[1],
         start_state=expected_state_1,
         moves=expected_moves_1,
         end_state=expected_state_2,
-    ))
-    assert_equal(migration_plans[2], MigrationPlan(
+    )
+    assert migration_plans[2] == MigrationPlan(
         migration=migration[2],
         start_state=expected_state_2,
         moves=expected_moves_2,
         end_state=expected_state_3,
-    ))
+    )

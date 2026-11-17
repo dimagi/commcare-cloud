@@ -1,5 +1,6 @@
 locals {
   create = (var.create && lookup(var.rds_instance, "create", true)) ? true : false
+  use_external_parameter_group = var.parameter_group_name != null
 
   version_parts = regex("^(?P<major>[0-9]+)(?:\\.(?P<minor>[0-9]+))?", var.rds_instance["engine_version"])
   version_parts_number = {
@@ -18,7 +19,8 @@ module "postgresql" {
   create_random_password = false
   create_db_instance = local.create
   create_db_option_group = local.create
-  create_db_parameter_group = local.create
+  create_db_parameter_group = local.use_external_parameter_group ? false : local.create
+  parameter_group_name = var.parameter_group_name
   create_db_subnet_group = local.create
   identifier = var.rds_instance["identifier"]
 
@@ -28,6 +30,8 @@ module "postgresql" {
   allocated_storage = var.rds_instance["storage"]
   max_allocated_storage = var.rds_instance["max_storage"]
   storage_type = var.rds_instance["storage_type"]
+  iops = var.rds_instance["iops"]
+  storage_throughput = var.rds_instance["storage_throughput"]
 
   apply_immediately     = var.apply_immediately
   auto_minor_version_upgrade = false
@@ -59,6 +63,7 @@ module "postgresql" {
   # DB option group
   major_engine_version = local.major_engine_version == "" ? local.computed_major_engine_version : var.major_engine_version
   monitoring_interval = var.rds_instance["monitoring_interval"]
+  monitoring_role_arn = var.rds_instance["monitoring_interval"] > 0 ? var.rds_monitoring_role_arn : null
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
   performance_insights_enabled = true
   performance_insights_retention_period = 7

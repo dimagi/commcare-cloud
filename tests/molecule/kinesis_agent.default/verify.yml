@@ -1,0 +1,34 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Assert agent dir owner and mode
+      ansible.builtin.shell: test "$(stat -c '%U:%G %a' /opt/aws-kinesis-agent)" = "aws-kinesis-agent-user:aws-kinesis-agent-user 755"
+      changed_when: false
+
+    - name: Assert config owner and mode
+      ansible.builtin.shell: test "$(stat -c '%U:%G %a' /etc/aws-kinesis/agent.json)" = "root:root 644"
+      changed_when: false
+
+    - name: Read rendered config
+      ansible.builtin.slurp:
+        src: /etc/aws-kinesis/agent.json
+      register: config_file
+
+    - name: Assert rendered config content
+      vars:
+        config: "{{ config_file.content | b64decode | from_json }}"
+      ansible.builtin.assert:
+        that:
+          - config.checkpointFile == '/opt/aws-kinesis-agent/run/checkpoints'
+          - config['kinesis.endpoint'] == 'kinesis.us-east-1.amazonaws.com'
+          - config['firehose.endpoint'] == 'firehose.us-east-1.amazonaws.com'
+          - config.flows | map(attribute='filePattern') | list == ['/opt/data/formplayer/log/request_response.*log', '/var/log/molecule/*.log']
+          - config.flows | map(attribute='deliveryStream') | list == ['formplayer-request-response-molecule', 'molecule-logs']
+
+    - name: Assert agent service is active
+      ansible.builtin.command: systemctl is-active aws-kinesis-agent
+      register: svc_status
+      changed_when: false
+      failed_when: svc_status.stdout != "active"

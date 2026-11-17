@@ -129,7 +129,7 @@ these tools*:
   cloud
   + Web Proxy Server (nginx)
   + SQL database (PostgreSQL)
-  + Messaging queue (RabbitMQ)
+  + Messaging queue (Redis)
   + Cache server (Redis)
   + Search index (Elasticsearch)
   + Object Storage (RiakCS)

@@ -4,10 +4,11 @@
   block:
     
   - name: Check if cloudwatch-agent-ctl exists
-    shell: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a status
+    command: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a status
     become: yes
     register: ctl_status
     failed_when: false
+    changed_when: false
     check_mode: no
 
   - name: install cwa if check command fails
@@ -18,14 +19,14 @@
     template:
       src: "cloudwatch_logs.json.j2"
       dest: "/opt/aws/amazon-cloudwatch-agent/etc/cloudwatch_logs.json"
-      group: cwagent
-      owner: cwagent
+      group: root
+      owner: root
       mode: 0644
     become: yes
     notify: Reload cloudwatch agent
 
   - name: Ensure cloudwatch agent enabled
-    shell: /bin/true
+    command: /bin/true
     notify: Start cloudwatch agent
     when: '"\"status\": \"running\"" not in ctl_status.stdout'
 

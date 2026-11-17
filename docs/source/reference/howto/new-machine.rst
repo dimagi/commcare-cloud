@@ -4,15 +4,14 @@ Adding a new machine to a cluster
 
 
 #. Add the machine to `inventory.ini <../commcare-cloud/env/index.md#inventoryini>`_
-#. 
-   Update the local known hosts
+
+#. Update the local known hosts
 
    .. code-block:: bash
 
        $ cchq <env> update-local-known-hosts
 
-#. 
-   For proxy, webworkers, celery, pillowtop run the following (this is the only step that modifies machines other than the new one):
+#. For proxy, webworkers, celery, pillowtop run the following (this is the only step that modifies machines other than the new one):
 
    .. code-block:: bash
 

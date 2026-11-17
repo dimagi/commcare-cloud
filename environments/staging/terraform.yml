@@ -1,5 +1,5 @@
 account_alias: commcare-staging
-terraform_version: '1.5'
+terraform_version: '1.13'
 state_bucket: dimagi-terraform
 state_bucket_region: "us-east-1"
 region: "us-east-1"
@@ -35,7 +35,7 @@ servers:
     os: jammy 
 
   - server_name: "web13-staging"
-    server_instance_type: "t3a.large"
+    server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -46,7 +46,7 @@ servers:
     server_auto_recovery: true
 
   - server_name: "web14-staging"
-    server_instance_type: "t3a.large"
+    server_instance_type: "t3a.xlarge"
     network_tier: "app-private"
     az: "b"
     volume_size: 80
@@ -77,7 +77,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 80
+      volume_size: 120
       volume_type: "gp3"
     group: "elasticsearch"
     os: jammy
@@ -90,7 +90,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 80
+      volume_size: 120
       volume_type: "gp3"
     group: "elasticsearch"
     os: jammy
@@ -103,7 +103,7 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 80
+      volume_size: 120
       volume_type: "gp3"
     group: "elasticsearch"
     os: jammy
@@ -116,26 +116,26 @@ servers:
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 80
+      volume_size: 120
       volume_type: "gp3"
     group: "elasticsearch"
     os: jammy
 
-  - server_name: "es23-staging"
+  - server_name: "es24-staging"
     server_instance_type: "t3a.medium"
     network_tier: "db-private"
-    az: "c"
+    az: "a"
     volume_size: 30
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 80
-      volume_type: "gp3"
+     volume_size: 80
+     volume_type: "gp3"
     group: "elasticsearch"
     os: jammy
 
   - server_name: "pillow5-staging"
-    server_instance_type: "t3a.xlarge"
+    server_instance_type: "m6a.2xlarge"
     network_tier: "app-private"
     az: "a"
     volume_size: 80
@@ -184,65 +184,45 @@ servers:
     server_auto_recovery: true
 
   - server_name: "couch24-staging"
-    server_instance_type: "t3a.large"
+    server_instance_type: "t3a.xlarge"
     network_tier: "db-private"
     az: "c"
     volume_size: 30
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 30
+      volume_size: 35
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
     os: jammy
 
   - server_name: "couch25-staging"
-    server_instance_type: "t3a.large"
+    server_instance_type: "t3a.xlarge"
     network_tier: "db-private"
     az: "c"
     volume_size: 30
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 30
+      volume_size: 35
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
     os: jammy
 
   - server_name: "couch27-staging"
-    server_instance_type: "t3a.large"
+    server_instance_type: "t3a.xlarge"
     network_tier: "db-private"
     az: "b"
     volume_size: 30
     volume_type: "gp3"
     volume_encrypted: yes
     block_device:
-      volume_size: 30
+      volume_size: 35
       volume_type: "gp3"
       encrypted: true
     group: "couchdb2"
-    os: jammy
-
-  - server_name: "rabbit_a3-staging"
-    server_instance_type: "t3a.medium"
-    network_tier: "app-private"
-    az: "a"
-    volume_size: 80
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
-    os: jammy
-
-  - server_name: "rabbit_b2-staging"
-    server_instance_type: "t3a.medium"
-    network_tier: "app-private"
-    az: "b"
-    volume_size: 80
-    volume_encrypted: yes
-    volume_type: "gp3"
-    group: "rabbitmq"
     os: jammy
 
   - server_name: "kafka15-staging"
@@ -253,7 +233,7 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
-      volume_size: 5
+      volume_size: 30
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
@@ -267,7 +247,7 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
-      volume_size: 5
+      volume_size: 30
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
@@ -281,7 +261,7 @@ servers:
     volume_encrypted: yes
     volume_type: "gp3"
     block_device:
-      volume_size: 5
+      volume_size: 30
       encrypted: true
       volume_type: "gp3"
     group: "kafka"
@@ -334,23 +314,25 @@ proxy_servers:
 
 rds_instances:
   - identifier: "pg0-staging"
-    instance_type: "db.t3.small"
-    storage: 160
+    instance_type: "db.t4g.large"
+    storage: 300
     storage_type: gp3
     multi_az: yes
-    engine_version: "14"
+    engine_version: "18.3"
     params:
+      rds.force_ssl: 0
       shared_preload_libraries: pg_stat_statements
       track_io_timing: 1
     enable_cross_region_backup: yes
 
   - identifier: "pgformplayer0-staging"
-    instance_type: "db.t3.small"
+    instance_type: "db.t4g.small"
     storage: 160
     storage_type: gp3
     multi_az: yes
-    engine_version: "14.4"
+    engine_version: "18.3"
     params:
+      rds.force_ssl: 0
       shared_preload_libraries: pg_stat_statements
       track_io_timing: 1
 
@@ -403,6 +385,27 @@ r53_private_zone:
   create_record: yes
   route_names:  "redis"
 
+elasticache_celery_broker:
+  create: yes
+  cache_engine: "redis"
+  cache_engine_version: "7.0"
+  cache_node_type: "cache.r6g.large"
+  params:
+    maxmemory-policy: "noeviction"
+  automatic_failover: true
+  transit_encryption: false
+  at_rest_encryption: true
+  auto_minor_version: false
+  cluster_size: 2
+  multi_az: true
+  maintenance_window: "sun:00:30-sun:01:30"
+  snapshot_retention: 0
+
+r53_records:
+  - domain_name: "staging.commcare.local"
+    route_name: "broker"
+    records: ["${module.elasticache-celery-broker.primary_configuration_endpoint_address}"]
+
 efs_file_systems:
   - efs_name: "efs_staging"
     create: yes
@@ -413,3 +416,6 @@ efs_file_systems:
     domain_name: "staging.commcare.local"
     route_names: "shared-efs"
 
+terraform_imports:
+  - to: aws_guardduty_detector.detector
+    id: CBEA74BFAc3fcfdeB82cEF1FFDEc9DEE

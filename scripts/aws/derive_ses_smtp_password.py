@@ -2,14 +2,14 @@
 
 # Copy-paste-edited from https://docs.aws.amazon.com/ses/latest/DeveloperGuide/smtp-credentials.html
 # Example Usage:
-#   CREDENTIAL_FILE=/path/to/downloaded/iam_user_name_accessKeys.csv
-#   SES_SECRET=$(cat ${CREDENTIAL_FILE} | head -n2 | tail -n1 | cut -d',' -f2)
-#   ./scripts/aws/derive_ses_smtp_password.py --region us-east-1 --secret ${SES_SECRET}
+#   ./scripts/aws/derive_ses_smtp_password.py --region us-east-1 --csv /path/to/iam_user_name_accessKeys.csv
+#   pbpaste | ./scripts/aws/derive_ses_smtp_password.py --region us-east-1 -
 
 import hmac
 import hashlib
 import base64
 import argparse
+import csv
 
 # Values that are required to calculate the signature. These values should
 # never change.
@@ -35,12 +35,32 @@ def calculateKey(secretAccessKey, region):
     print(smtpPassword.decode('utf-8'))
 
 
+def extract_secret(content, is_csv):
+    if is_csv:
+        rows = list(csv.DictReader(content.splitlines()))
+        if len(rows) != 1:
+            raise ValueError(
+                f'Expected exactly one data row in CSV, got {len(rows)}.'
+            )
+        try:
+            return rows[0]['Secret access key']
+        except KeyError:
+            raise ValueError(
+                'CSV is missing a "Secret access key" column. '
+                'Expected the AWS access keys download format.'
+            )
+    return content.strip()
+
+
 def main():
     parser = argparse.ArgumentParser(description='Convert a Secret Access Key for an IAM user to an SMTP password.')
-    parser.add_argument('--secret',
-            help='The Secret Access Key that you want to convert.',
-            required=True,
-            action="store")
+    parser.add_argument('file',
+            type=argparse.FileType('r'),
+            help='Path to a file containing the Secret Access Key, or "-" to read from stdin.')
+    parser.add_argument('--csv',
+            action='store_true',
+            help='Interpret the input as the CSV file AWS provides when downloading IAM access keys '
+                 '(extracts the "Secret access key" column). Default: input is the secret by itself.')
     parser.add_argument('--region',
             help='The name of the AWS Region that the SMTP password will be used in.',
             required=True,
@@ -63,7 +83,15 @@ def main():
             action="store")
     args = parser.parse_args()
 
-    calculateKey(args.secret.strip(), args.region)
+    with args.file as f:
+        content = f.read()
+
+    try:
+        secret = extract_secret(content, args.csv)
+    except ValueError as e:
+        parser.error(str(e))
+
+    calculateKey(secret, args.region)
 
 
 main()

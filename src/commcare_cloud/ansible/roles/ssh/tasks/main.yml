@@ -1,7 +1,8 @@
 - name: Set sshd configuration
   template:
-    src: ../templates/sshd_config.j2
+    src: sshd_config.j2
     dest: /etc/ssh/sshd_config
+    mode: '0644'
   notify: Restart ssh
 
 - name: get sha256 sum of ssh_host_key
@@ -16,7 +17,7 @@
 - name: Remove TCL template generated ssh_host_keys
   file:
     state: absent
-    path: "{{item}}"
+    path: "{{ item }}"
   loop:
   - /etc/ssh/ssh_host_rsa_key
   - /etc/ssh/ssh_host_rsa_key.pub

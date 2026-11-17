@@ -2,17 +2,29 @@
 #
 #   ./manage.py list_waf_allow_patterns
 #
-# to replace the contents of the multiline string
-from __future__ import unicode_literals
+# for each rule's multiline string
+COMMCAREHQ_SSRF_URLS_REGEX = r"""
+^/oauth/applications/register/
+""".strip().split('\n')
+
 COMMCAREHQ_XML_POST_URLS_REGEX = r"""
+^/a/([\w\.:-]+)/api/case/v2/([\w\-,]+)/?$
+^/a/([\w\.:-]+)/api/case/v2/?$
+^/a/([\w\.:-]+)/api/case/v2/bulk-fetch/$
+^/a/([\w\.:-]+)/api/case/v2/ext/(.+)/$
 ^/a/([\w\.:-]+)/api/v([\d\.]+)/form/$
-^/a/([\w\.:-]+)/api/v0\.6/case(?:/([\w\-,]+))?/?$
+^/a/([\w\.:-]+)/api/v0.6/case/?$
+^/a/([\w\.:-]+)/api/v0\.6/case/([\w\-,]+)/?$
 ^/a/([\w\.:-]+)/api/v0\.6/case/bulk-fetch/$
+^/a/([\w\.:-]+)/api/v0\.6/case/ext/(.+)/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/app_logo/([\w\-]+)/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/audio/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/bulk/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/image/$
 ^/a/([\w\.:-]+)/apps/([\w-]+)/multimedia/uploaded/video/$
+^/a/([\w\.:-]+)/apps/api/([\w-]+)/multimedia/$
+^/a/([\w\.:-]+)/apps/api/([\w-]+)/multimedia/status/([\w-]+)/$
+^/a/([\w\.:-]+)/apps/api/import_app/$
 ^/a/([\w\.:-]+)/apps/edit_advanced_form_actions/([\w-]+)/([\w-]+)/$
 ^/a/([\w\.:-]+)/apps/edit_form_attr/([\w-]+)/([\w-]+)/([\w-]+)/$
 ^/a/([\w\.:-]+)/apps/edit_form_attr_api/([\w-]+)/([\w-]+)/([\w-]+)/$
@@ -30,6 +42,7 @@ COMMCAREHQ_XML_POST_URLS_REGEX = r"""
 ^/a/([\w\.:-]+)/importer/excel/bulk_upload_api/$
 ^/a/([\w\.:-]+)/importer/excel/config/$
 ^/a/([\w\.:-]+)/messaging/broadcasts/add/$
+^/a/([\w\.:-]+)/messaging/broadcasts/edit/([\w-]+)/([\w-]+)/$
 ^/a/([\w\.:-]+)/messaging/conditional/add/$
 ^/a/([\w\.:-]+)/messaging/conditional/edit/([\w-]+)/$
 ^/a/([\w\.:-]+)/receiver/$

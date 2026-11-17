@@ -10,6 +10,7 @@
   file:
     path: "{{ snuba_virtualenv_path }}"
     state: directory
+    mode: '0755'
 
 - name: Create virtual env for Snuba
   pip:
@@ -24,10 +25,9 @@
     remote_src: yes
 
 - name: Rename snuba version directory
-  shell: "mv snuba-{{ snuba_version }} snuba"
+  command: "mv snuba-{{ snuba_version }} snuba"
   args:
     chdir: "{{ snuba_virtualenv_path }}"
-    executable: /bin/bash
 
 - name: Run Make commands for snuba 
   shell: "source {{ snuba_virtualenv_path }}/bin/activate && make install-python-dependencies"
@@ -39,13 +39,14 @@
   replace:
     path: "{{ snuba_virtualenv_path }}/snuba/snuba/settings.py"
     regexp: "^REDIS_PASSWORD = None"
-    replace: "REDIS_PASSWORD = '{{ localsettings.REDIS_PASSWORD }}'"
-  when: localsettings.REDIS_PASSWORD is defined
+    replace: "REDIS_PASSWORD = '{{ REDIS_PASSWORD }}'"
+  when: REDIS_PASSWORD is defined
 
 - name: Create supervisor file
   template:
     src: snuba_service.conf.j2
     dest: "/etc/supervisor/conf.d/snuba_service.conf"
+    mode: '0644'
   notify: 
     - restart supervisor
     - restart snuba

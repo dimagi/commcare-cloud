@@ -14,12 +14,13 @@
     createhome=yes
 
 - name: clear users password valid time
-  shell: chage -M -1 sentry
+  command: chage -M -1 sentry
 
 - name: Create virtualenv and config directory
   file:
     path: "{{ item }}"
     state: directory
+    mode: '0755'
   with_items:
     - "{{ sentry_virtualenv_path }}"
     - "{{ sentry_app_config }}"
@@ -40,16 +41,19 @@
   template:
     src: sentry.conf.py.j2
     dest: "{{ sentry_app_config }}/sentry.conf.py"
+    mode: '0644'
   
 - name: Copy sentry config files
   template:
     src: config.yml.j2
     dest: "{{ sentry_app_config }}/config.yml"
+    mode: '0644'
  
 - name: Create supervisor file
   template:
     src: sentry_web_server.conf.j2
     dest: "/etc/supervisor/conf.d/sentry_web_service.conf"
+    mode: '0644'
   notify: restart supervisor
 
 - name: Create citext extension
@@ -57,10 +61,12 @@
   postgresql_ext:
     name: citext
     db: "{{ sentry_database }}"
-    port: "{{ sentry_dbport | default('5432')}}"
+    port: "{{ sentry_dbport | default('5432') }}"
 
 - name: sentry DB migration
-  shell: "SENTRY_CONF={{ sentry_app_config }} {{ sentry_virtualenv_path }}/bin/sentry upgrade --noinput"
+  command: "{{ sentry_virtualenv_path }}/bin/sentry upgrade --noinput"
+  environment:
+    SENTRY_CONF: "{{ sentry_app_config }}"
   notify: restart sentry
 
 - name: Clean Sentry Database Cron

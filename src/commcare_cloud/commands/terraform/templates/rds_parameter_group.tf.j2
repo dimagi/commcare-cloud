@@ -1,0 +1,21 @@
+{%- for group in rds_parameter_groups %}
+module "rds_parameter_group__{{ group.name }}" {
+  source      = "./modules/rds_parameter_group"
+  name        = {{ group.name|tojson }}
+  family      = {{ group.family|tojson }}
+  description = "Database parameter group for {{ group.name }}"
+  parameters = [
+    {%- for param in rds_parameters_by_group[group.name] %}
+    {
+      name = {{ param.name|tojson }}
+      value = {{ param.value|tojson }}
+      apply_method = {{ param.apply_method|tojson }}
+    },
+    {%- endfor %}
+  ]
+  tags = {
+    Environment = var.environment
+    Name        = {{ group.name|tojson }}
+  }
+}
+{%- endfor %}

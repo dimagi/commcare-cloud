@@ -1,3 +1,0 @@
-ansible_control_user: ansible
-commcare_cloud_repository: https://github.com/dimagi/commcare-cloud.git
-commcare_cloud_version: master

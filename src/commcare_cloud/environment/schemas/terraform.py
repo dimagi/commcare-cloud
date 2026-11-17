@@ -1,11 +1,7 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import json
 import re
 
 import jsonobject
-from six.moves import range
 
 
 class TerraformConfig(jsonobject.JsonObject):
@@ -15,7 +11,13 @@ class TerraformConfig(jsonobject.JsonObject):
     username = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
     terraform_version = jsonobject.StringProperty(
-        choices=['0.12', '0.13', '0.14', '0.15', '1.0', '1.1', '1.2', '1.3', '1.4', '1.5'])
+        choices=[
+            '0.12', '0.13', '0.14', '0.15',
+            '1.0', '1.1', '1.2', '1.3',
+            '1.4', '1.5', '1.6', '1.7',
+            '1.8', '1.9', '1.10', '1.11',
+            '1.12', '1.13'
+        ])
     manage_users = jsonobject.BooleanProperty(default=True)
     state_bucket = jsonobject.StringProperty()
     state_bucket_region = jsonobject.StringProperty()
@@ -32,14 +34,17 @@ class TerraformConfig(jsonobject.JsonObject):
     servers = jsonobject.ListProperty(lambda: ServerConfig)
     proxy_servers = jsonobject.ListProperty(lambda: ServerConfig)
     rds_instances = jsonobject.ListProperty(lambda: RdsInstanceConfig)
+    rds_parameter_groups = jsonobject.ListProperty(lambda: RdsParameterGroupConfig, default=list)
     pgbouncer_nlbs = jsonobject.ListProperty(lambda: PgbouncerNlbs)
     internal_albs = jsonobject.ListProperty(lambda: InternalAlbs)
     elasticache_cluster = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
+    elasticache_celery_broker = jsonobject.ObjectProperty(lambda: ElasticacheClusterConfig, default=None)
     r53_private_zone = jsonobject.ObjectProperty(lambda: RoutePrivateZoneConfig, default=None)
+    r53_records = jsonobject.ListProperty(lambda: Route53RecordConfig, default=list)
     efs_file_systems = jsonobject.ListProperty(lambda: EfsFileSystem, default=None)
     ec2_auto_recovery = jsonobject.ListProperty(lambda: Ec2AutoRecovery, default=None)
-    fsx_file_systems = jsonobject.ListProperty(lambda: FsxFileSystem, default=None)
-    awsmq = jsonobject.ObjectProperty(lambda: awsmqConfig, default=None)
+    terraform_imports = jsonobject.ListProperty(lambda: TerraformImportsConfig, default=list)
+    skip_ebs_snapshots = jsonobject.StringProperty(default="no")
 
     @classmethod
     def wrap(cls, data):
@@ -67,6 +72,14 @@ class TerraformConfig(jsonobject.JsonObject):
             '1.3': "~> 1.3, < 1.4",
             '1.4': "~> 1.4, < 1.5",
             '1.5': "~> 1.5, < 1.6",
+            '1.6': "~> 1.6, < 1.7",
+            '1.7': "~> 1.7, < 1.8",
+            '1.8': "~> 1.8, < 1.9",
+            '1.9': "~> 1.9, < 1.10",
+            '1.10': "~> 1.10, < 1.11",
+            '1.11': "~> 1.11, < 1.12",
+            '1.12': "~> 1.12, < 1.13",
+            '1.13': "~> 1.13, < 1.14",
         }[self.terraform_version]
         # Using the |tojson jinja2 filter replaces < and > with their \u-style escape code.
         # As a workaround, we use `"{{ terraform_version_range_string }}"`,
@@ -115,7 +128,7 @@ class ServerConfig(jsonobject.JsonObject):
     volume_encrypted = jsonobject.BooleanProperty(default=True, required=True)
     block_device = jsonobject.ObjectProperty(lambda: BlockDevice, default=None)
     group = jsonobject.StringProperty()
-    os = jsonobject.StringProperty(required=True, choices=['bionic', 'jammy'])
+    os = jsonobject.StringProperty(required=True, choices=['jammy'])
     additional_tags = jsonobject.DictProperty()
     server_auto_recovery = jsonobject.BooleanProperty(default=False)
     enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
@@ -167,6 +180,13 @@ class BlockDevice(jsonobject.JsonObject):
     enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
 
 
+RDS_DEFAULT_PARAMS = {
+    'pg_stat_statements.track': 'all',
+    'pg_stat_statements.max': 10000,
+    'track_activity_query_size': 2048,
+}
+
+
 class RdsInstanceConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     identifier = jsonobject.StringProperty(required=True)
@@ -176,6 +196,8 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     storage = jsonobject.IntegerProperty(required=True)
     max_storage = jsonobject.IntegerProperty(default=0)
     storage_type = jsonobject.StringProperty(default='gp2', choices=['gp2', 'gp3', 'io1', 'standard'])
+    iops = jsonobject.IntegerProperty(default=None)
+    storage_throughput = jsonobject.IntegerProperty(default=None)
     create = jsonobject.BooleanProperty(default=True)
     username = "root"
     backup_window = jsonobject.StringProperty(default="06:27-06:57")
@@ -185,22 +207,35 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     maintenance_window = "sat:08:27-sat:08:57"
     port = 5432
     params = jsonobject.DictProperty()
-
-    _default_params = {
-        'pg_stat_statements.track': 'all',
-        'pg_stat_statements.max': 10000,
-        'track_activity_query_size': 2048,
-    }
+    parameter_group = jsonobject.StringProperty(default=None)
 
     @classmethod
     def wrap(cls, data):
-        if 'params' not in data:
-            data['params'] = {}
-        params = data['params']
-        for name, value in cls._default_params.items():
-            if name not in params:
-                params[name] = value
-        return super(RdsInstanceConfig, cls).wrap(data)
+        if data.get('params') and data.get('parameter_group'):
+            raise ValueError(
+                f"RDS instance '{data.get('identifier')}' sets both 'parameter_group' "
+                "and 'params'. These are mutually exclusive — when 'parameter_group' "
+                "is set, parameters must be defined on the standalone group."
+            )
+        elif data.get('parameter_group'):
+            return super(RdsInstanceConfig, cls).wrap(data)
+        else:
+            params = data.get('params', {})
+            data['params'] = {**RDS_DEFAULT_PARAMS, **params}
+            return super(RdsInstanceConfig, cls).wrap(data)
+
+
+class RdsParameterGroupConfig(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    name = jsonobject.StringProperty(required=True)
+    family = jsonobject.StringProperty(required=True)
+    params = jsonobject.DictProperty()
+
+    @classmethod
+    def wrap(cls, data):
+        params = data.get('params', {})
+        data['params'] = {**RDS_DEFAULT_PARAMS, **params}
+        return super(RdsParameterGroupConfig, cls).wrap(data)
 
 
 class PgbouncerNlbs(jsonobject.JsonObject):
@@ -267,28 +302,21 @@ class ElasticacheClusterConfig(jsonobject.JsonObject):
     snapshot_window = jsonobject.StringProperty(default="07:30-08:30")
 
 
-class awsmqConfig(jsonobject.JsonObject):
-    _allow_dynamic_properties = False
-    create = jsonobject.BooleanProperty(default=True)
-    broker_name = jsonobject.StringProperty(default="mq-broker")
-    apply_immediately = jsonobject.BooleanProperty(default=True)
-    auto_minor_version_upgrade = jsonobject.BooleanProperty(default=False)
-    deployment_mode = jsonobject.StringProperty(default="CLUSTER_MULTI_AZ")
-    engine_type = jsonobject.StringProperty(default="RabbitMQ")
-    engine_version = jsonobject.StringProperty(default="3.10.10")
-    host_instance_type = jsonobject.StringProperty(default="mq.m5.large")
-    publicly_accessible = jsonobject.BooleanProperty(default=False)
-    logs_general = jsonobject.BooleanProperty(default=True)
-    audit_log_enabled = jsonobject.BooleanProperty(default=False)
-    encryption_enabled = jsonobject.BooleanProperty(default=False)
-
-
 class RoutePrivateZoneConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
     create = jsonobject.BooleanProperty(default=True)
     domain_name = jsonobject.StringProperty()
     create_record = jsonobject.BooleanProperty(default=True)
     route_names = jsonobject.StringProperty()
+
+
+class Route53RecordConfig(jsonobject.JsonObject):
+    _allow_dynamic_properties = False
+    domain_name = jsonobject.StringProperty(required=True)
+    route_name = jsonobject.StringProperty(required=True)
+    record_type = jsonobject.StringProperty(default='CNAME')
+    ttl = jsonobject.IntegerProperty(default=300)
+    records = jsonobject.ListProperty(str, required=True)
 
 
 class EfsFileSystem(jsonobject.JsonObject):
@@ -310,9 +338,7 @@ class Ec2AutoRecovery(jsonobject.JsonObject):
     name_prefix = jsonobject.StringProperty(required=True)
 
 
-class FsxFileSystem(jsonobject.JsonObject):
+class TerraformImportsConfig(jsonobject.JsonObject):
     _allow_dynamic_properties = False
-    create = jsonobject.BooleanProperty(default=True)
-    fsx_name = jsonobject.StringProperty(required=True)
-    storage_capacity = jsonobject.IntegerProperty(required=True)
-    throughput_capacity = jsonobject.IntegerProperty(required=True)
+    to = jsonobject.StringProperty(required=True)
+    id = jsonobject.StringProperty(required=True)

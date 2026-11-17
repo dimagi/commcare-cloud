@@ -1,0 +1,13 @@
+---
+- name: Converge
+  hosts: all
+  # Unlike commcare-audit.yml, no `become: true`. The role writes its reports
+  # with `delegate_to: localhost`, and become would sudo to control_user on the
+  # machine running molecule. The container connection is already root.
+  tasks:
+    - name: Include commcare-audit
+      # Skip the role during idempotence. It writes a new audit report on each
+      # run, so a second run isn't meaningful.
+      tags: molecule-idempotence-notest
+      ansible.builtin.include_role:
+        name: "commcare-audit"

@@ -1,0 +1,37 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tags: always  # Always verify, regardless of --tags
+  vars_files:
+    - ../../../src/commcare_cloud/ansible/group_vars/all.yml  # for www_home
+    - ../../../src/commcare_cloud/ansible/roles/formplayer/vars/main.yml
+  tasks:
+    - name: Stat current release link
+      ansible.builtin.stat:
+        path: "{{ formplayer_current_dir }}"
+      register: current
+
+    - name: Assert current links to the selected release
+      vars:
+        expected: "{{ formplayer_releases_base_dir }}/2026-10-01_12.00"
+      ansible.builtin.assert:
+        that: current.stat.lnk_source == expected
+        fail_msg: "{{ current.stat.lnk_source }} != {{ expected }}"
+
+    - name: Read supervisorctl log
+      ansible.builtin.slurp:
+        src: "{{ supervisorctl_log }}"
+      register: supervisorctl_log_content
+
+    - name: Assert supervisorctl re-read config and restarted formplayer
+      vars:
+        supervisor_actions: >-
+          {{
+            (supervisorctl_log_content.content | b64decode).splitlines()
+            | select('match', '(reread|restart)( |$)')
+            | list
+          }}
+      ansible.builtin.assert:
+        that: supervisor_actions == ['reread', 'restart commcare-hq-molecule-formsplayer-spring']
+        fail_msg: "{{ supervisor_actions }}"

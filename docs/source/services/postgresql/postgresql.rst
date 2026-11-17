@@ -13,7 +13,6 @@ PostgreSQL
    /services/postgresql/move-partitioned-database.rst
    /services/postgresql/upgrade.rst
    /services/postgresql/migrating_plproxy.rst
-   /services/postgresql/upgrade_citusdb.rst
 
 
 Usage in CommCare
@@ -64,6 +63,11 @@ CommCare is configured to work with a number of databases:
 * ``commcarehq_ucr``
 
   * custom report database
+
+* ``commcarehq_project_db``
+
+  * per-project case data, one schema per project
+  * optional, and opt-in per environment
 
 * ``commcarehq_synclogs``
 

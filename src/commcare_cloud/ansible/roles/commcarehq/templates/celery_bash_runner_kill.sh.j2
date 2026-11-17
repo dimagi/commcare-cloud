@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Process to soft kill old celery jobs via supervisor managed process.
+#
+
+HOURS=$1
+MAX_SECONDS=`expr ${HOURS} \* 60 \* 60`
+
+SIG_NAME=$2
+
+PARENT_PIDS=$(ps -eo comm,ppid,etimes | awk '/celeryd:/ { if ( $4 > '"${MAX_SECONDS}"' ) { print $3 } }');
+
+if [ "$PARENT_PIDS" != "" ]; then
+  echo "Shutting down celery bash runners:"
+  echo "Process information with start and elapsed time:"
+  for pid in ${PARENT_PIDS}
+  do
+    if ps -p ${pid} -o pid,cmd | grep -qE 'celery_bash_runner'; then
+      echo "`ps -p ${pid} -o pid,start,etime,cmd`"
+      kill -${SIG_NAME} ${pid}
+    fi
+  done
+fi

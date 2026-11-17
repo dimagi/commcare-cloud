@@ -5,16 +5,15 @@ server_admin_email: commcarehq-ops+admins@dimagi.com
 default_from_email: commcarehq-noreply-backup-production@dimagi.com
 return_path_email: commcarehq-bounces+backup-production@dimagi.com
 support_email: support@dimagi.com
-probono_support_email: pro-bono@dimagi.com
 accounts_email: accounts@dimagi.com
 data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
 internal_subscription_change_email: accounts+subchange+internal@dimagi.com
 billing_email: sales@dimagi.com
 invoicing_contact_email: billing-support@dimagi.com
-growth_email: growth@dimagi.com
+growth_email: saas-revenue-team@dimagi.com
 saas_ops_email: saas-ops@dimagi.com
-saas_reporting_email: saas-reporting@dimagi.com
+saas_reporting_email: accounts@dimagi.com
 master_list_email: master-list@dimagi.com
 sales_email: sales@dimagi.com
 privacy_email: privacy@dimagi.com
@@ -32,9 +31,9 @@ DATADOG_TRACE:
     env: backup-production
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
-elasticsearch_cluster_name: 'prodhqes-1.x'
-elasticsearch_version: 5.6.16
-elasticsearch_download_sha256: 6b035a59337d571ab70cea72cc55225c027ad142fbb07fd8984e54261657c77f.
+elasticsearch_cluster_name: 'prodhqes'
+elasticsearch_version: 6.8.23
+elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
 #elasticsearch_node_name: '???'
 elasticsearch_fielddata_cache_size: "40%"
 elasticsearch_delete_old_logs: True
@@ -55,12 +54,6 @@ pg_repack_version: 1.4.7
 
 aws_region: 'us-east-2'
 
-filebeat_inputs:
-  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
-    tags: nginx-timing
-  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
-    tags: nginx-error
-
 formplayer_java_version: "{{ java_17_bin_path }}/java"
 formplayer_archive_time_spec: '3d'
 formplayer_purge_time_spec: '10d'
@@ -74,8 +67,6 @@ formplayer_custom_properties:
   spring.datasource.hikari.minimum-idle: 5
 
 KSPLICE_ACTIVE: no # Don't know what this does, this is set to yes in prod
-
-run_websockets_wsgi: True
 
 couch_dbs:
   default:
@@ -116,17 +107,12 @@ zookeeper_cluster: True
 
 TWO_FACTOR_GATEWAY_ENABLED: True
 
-erlang: 1:24.3.3-1
-rabbitmq_version: 3.10.13-1
-
-#RabbitMQ Broker URL
-BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.0 }}:5672/{{ AMQP_NAME }}'
+# Celery Broker
+REDIS_BROKER_HOST: 'broker.bk-production.commcare.local'
 
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-backup-production-blobdb'
-
-AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 
 localsettings:
   ALLOWED_HOSTS:
@@ -156,19 +142,17 @@ localsettings:
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
   ENFORCE_SSO_LOGIN: True
-  ELASTICSEARCH_MAJOR_VERSION: 5
-  ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-04"
-  ES_XFORM_INDEX_NAME: "xforms_2023-01-27"
-  ES_MULTIPLEX_TO_VERSION: '6'
+  ELASTICSEARCH_MAJOR_VERSION: 6
+  ES_MULTIPLEX_TO_VERSION: '7'
   # Index Multiplexer Settings  
-  ES_APPS_INDEX_MULTIPLEXED: False # swap completed
-  ES_CASE_SEARCH_INDEX_MULTIPLEXED: False # swap completed 
-  ES_CASES_INDEX_MULTIPLEXED: False # swap completed
-  ES_DOMAINS_INDEX_MULTIPLEXED: False # swap completed
-  ES_FORMS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_GROUPS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_SMS_INDEX_MULTIPLEXED: False # Swap completed
-  ES_USERS_INDEX_MULTIPLEXED: False # swap completed
+  ES_APPS_INDEX_MULTIPLEXED: False
+  ES_CASE_SEARCH_INDEX_MULTIPLEXED: False
+  ES_CASES_INDEX_MULTIPLEXED: False
+  ES_DOMAINS_INDEX_MULTIPLEXED: False
+  ES_FORMS_INDEX_MULTIPLEXED: False
+  ES_GROUPS_INDEX_MULTIPLEXED: False
+  ES_SMS_INDEX_MULTIPLEXED: False
+  ES_USERS_INDEX_MULTIPLEXED: False
   # Index Swap settings  
   ES_APPS_INDEX_SWAPPED: False
   ES_CASE_SEARCH_INDEX_SWAPPED: False
@@ -184,12 +168,16 @@ localsettings:
         'index_cname': 'case_search_bha',
         'multiplex_writes': True,
     },
-    'co-carecoordination-perf': {
+    'co-carecoordination-uat': {
         'index_cname': 'case_search_bha',
         'multiplex_writes': True,
     },
-    'co-carecoordination-uat': {
-        'index_cname': 'case_search_bha',
+    'co-carecoordination-perf': {
+        'index_cname': 'case_search_cc_perf',
+        'multiplex_writes': True,
+    },
+    'philly-ubr': {
+        'index_cname': 'case_search_philly_ubr',
         'multiplex_writes': True,
     }
   }
@@ -198,10 +186,10 @@ localsettings:
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
-    'first_line': "585 Massachusetts Ave"
+    'first_line': "245 Main St, 2nd Floor"
     'city': "Cambridge"
     'region': "MA"
-    'postal_code': "02139"
+    'postal_code': "02142"
     'country': "US"
     'phone_number': "(617) 649-2214"
     'email': "accounts@dimagi.com"
@@ -240,8 +228,11 @@ localsettings:
         - 'ils-gateway'
         - 'ils-gateway-train'
   USER_REPORTING_METADATA_BATCH_ENABLED: True
-  WS4REDIS_CONNECTION_HOST: "redis.bk-production.commcare.local"
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
+  CONNECTID_CHANNEL_URL: 'https://connectid.dimagi.com/messaging/create_channel/'
+  CONNECTID_MESSAGE_URL: 'https://connectid.dimagi.com/messaging/send_fcm/'
+  CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
+  CONNECTID_ADD_USER_ANALYTICS_URL: 'https://connectid.dimagi.com/users/add_user_analytics'
 
 # comment these two lines out to make a new rackspace machine
 commcare_cloud_root_user: ubuntu

@@ -86,14 +86,13 @@ Each of these files should contain YAML of the following format:
        - <username4>
        ...
 
-The **\ ``present``\ ** section will have a list of users who have access to your servers. The name you add here should be their desired system username, and should correspond to the name of their public key in ``<username>.pub`` under `\ ``_authorized_keys`` <#_authorized_keys>`_.
+The ``present`` section will have a list of users who have access to your servers. The name you add here should be their desired system username, and should correspond to the name of their public key in ``<username>.pub`` under `_authorized_keys`_.
 
-Each ``<username>`` must correspond to that used in a ``<username>.pub``
-under .
+Each ``<username>`` must correspond to that used in a ``<username>.pub`` under `_authorized_keys`_.
 
-The **\ ``absent``\ ** section lists those users whose access you want to remove from your servers when running the user update scripts.
+The ``absent`` section lists those users whose access you want to remove from your servers when running the user update scripts.
 
-If you change this file, you will need to run the `\ ``update-users`` command <../commands/index.md#update-users>`_
+If you change this file, you will need to run the ``update-users`` command ``<../commands/index.md#update-users>``
 
 Contents of an ``environment`` configuration directory
 ----------------------------------------------------------
@@ -107,15 +106,15 @@ given as ``<env1>``\ , ``<env2>``\ , etc. above.
 A ``commcare-cloud`` environment configuration is made up of the following files:
 
 
-* `\ ``app-processes.yml`` <#app-processesyml>`_
-* `\ ``fab-settings.yml`` <#fab-settingsyml>`_
-* `\ ``inventory.ini`` <#inventoryini>`_
-* `\ ``known_hosts`` <#known_hosts>`_
-* `\ ``meta.yml`` <#metayml>`_
-* `\ ``postgresql.yml`` <#postgresqlyml>`_
-* `\ ``proxy.yml`` <#proxyyml>`_
-* `\ ``public.yml`` <#publicyml>`_
-* `\ ``vault.yml`` <#vaultyml>`_
+* ``app-processes.yml`` ``<#app-processesyml>``
+* ``fab-settings.yml`` ``<#fab-settingsyml>``
+* ``inventory.ini`` ``<#inventoryini>``
+* ``known_hosts`` ``<#known_hosts>``
+* ``meta.yml`` ``<#metayml>``
+* ``postgresql.yml`` ``<#postgresqlyml>``
+* ``proxy.yml`` ``<#proxyyml>``
+* ``public.yml`` ``<#publicyml>``
+* ``vault.yml`` ``<#vaultyml>``
 
 The purpose of each of these files and their formats will be discussed
 in detail in the following sections.
@@ -228,7 +227,7 @@ Each `<ETL-processor-name>` must be correspond to the `name` fields specified in
 ``AppDbChangeFeedPillow``, ``ApplicationToElasticsearchPillow``,
 ``CacheInvalidatePillow``, ``case-pillow``, ``case_messaging_sync_pillow``,
 ``CaseSearchToElasticsearchPillow``, ``CaseToElasticsearchPillow``,
-``DefaultChangeFeedPillow``, ``DomainDbKafkaPillow``,
+``DomainDbKafkaPillow``,
 ``FormSubmissionMetadataTrackerPillow``, ``group-pillow``, ``GroupPillow``,
 ``GroupToUserPillow``, ``kafka-ucr-main``, ``kafka-ucr-static``,
 ``KafkaDomainPillow``, ``LedgerToElasticsearchPillow``, ``location-ucr-pillow``,
@@ -241,6 +240,22 @@ For all features to work, each of these ETL processors
 for no good reason beyond historical accident) just listed must appear
 at least once, and up to once per host. An ETL processor not mentioned
 will not be run at all.
+
+ETL processor parameters:
+
+* ``num_processes``: the number of processes to create for this ETL processor on
+  this host.
+* ``total_processes``: default 1; the total number of processes for this ETL
+  processor across all hosts. This is used to calculate the ``--process-number``
+  option for each process.
+* ``gevent_workers``: default 0; the number of in-process concurrent workers to
+  create consuming from this queue on this host. Gevent is not used with the
+  default value of 0. If specified the value must be 2 or more. A single gevent
+  worker is not allowed since it would have no benefit. NOTE: if
+  ``dedicated_migration_process`` is true, ``gevent_workers`` will be ignored
+  for process number 0.
+* ``dedicated_migration_process``: default False; if True, this ETL processor
+  will be run in a dedicated process for database migrations.
 
 ``fab-settings.yml``
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -292,7 +307,7 @@ This file contains settings related to the Nginx proxy.
 ``public.yml``
 ^^^^^^^^^^^^^^^^^^
 
-This file contains the remainder of the settings for the environement
+This file contains the remainder of the settings for the environment
 that aren't specified in any of the aforementioned files.
 
 ``vault.yml``

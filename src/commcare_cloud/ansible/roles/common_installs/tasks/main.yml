@@ -7,40 +7,11 @@
   apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present
   register: add_postgres_repo
 
-- name: Add Python PPA
-  apt_repository:
-    repo: 'ppa:deadsnakes/ppa'
-    state: '{{ "present" if use_deadsnakes else "absent" }}'
-  register: add_deadsnakes_ppa
-  tags:
-    - python
-
 - name: Update package list
   apt: update_cache=yes
   when: |
     add_postgres_repo is defined and add_postgres_repo is changed or
-    add_pango_repo is defined and add_pango_repo is changed or
-    add_deadsnakes_ppa is defined and add_deadsnakes_ppa is changed or
-    add_python_ppa_bionic is defined and add_python_ppa_bionic is changed
-  tags:
-    - python
-
-
-- name: Install python packages
-  become: yes
-  apt:
-    name:
-      - python{{ python_version }}={{ python_version }}.*
-      - python{{ python_version }}-dev
-  tags:
-    - python
-
-- name: Install extra python packages
-  become: yes
-  apt:
-    name:
-      - python{{ python_version }}-distutils  # for virtualenv
-  when: python_version == '3.9'
+    add_pango_repo is defined and add_pango_repo is changed
   tags:
     - python
 
@@ -106,16 +77,6 @@
   notify: restart chrony
   when: use_chrony
 
-- name: Install common packages (Bionic)
-  become: yes
-  apt:
-    name:
-      - python-minimal
-      - python3-pip
-      - software-properties-common
-      - ufw
-  when: ansible_distribution_version == '18.04'
-
 - name: Install common packages (Jammy)
   become: yes
   apt:
@@ -125,19 +86,22 @@
       - ufw
   when: ansible_distribution_version == '22.04'
 
+- name: Install uv
+  # snap does a system-wide install with automatic updates
+  become: yes
+  community.general.snap:
+    name: [astral-uv]
+    classic: true
+
 - name: Install pip packages
+  become: yes
   pip:
     name:
-      - virtualenv
       - sh
-      - httplib2
-      - pexpect
     umask: "0022"
-  become: yes
 
-- name: Install virtualenv-clone
+- name: Remove pip-installed uv
   become: yes
   pip:
-    name: virtualenv-clone
-    version: 0.5.1
-    umask: "0022"
+    name: [uv]
+    state: absent

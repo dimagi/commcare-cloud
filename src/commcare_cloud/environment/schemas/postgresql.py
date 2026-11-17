@@ -1,17 +1,11 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-import copy
 from collections import defaultdict
 
 import jsonobject
 import re
 
-import six
-
 from commcare_cloud.environment.constants import constants
 from commcare_cloud.environment.exceptions import PGConfigException
 from commcare_cloud.environment.schemas.role_defaults import get_defaults_jsonobject
-from six.moves import range
 
 PostgresqlOverride = get_defaults_jsonobject(
     'postgresql_base',
@@ -121,7 +115,6 @@ class PostgresqlConfig(jsonobject.JsonObject):
         all_pgbouncer_hosts = environment.groups.get('postgresql', [])
         if self.DEFAULT_POSTGRESQL_HOST not in all_pgbouncer_hosts:
             all_pgbouncer_hosts.append(self.DEFAULT_POSTGRESQL_HOST)
-        all_pgbouncer_hosts.extend(environment.groups.get('citusdb_master', []))
         all_pgbouncer_hosts.extend(environment.groups.get('pgbouncer', []))
 
         dbs_by_host = defaultdict(list)
@@ -134,27 +127,6 @@ class PostgresqlConfig(jsonobject.JsonObject):
             root_pg_host = self._get_root_pg_host(host, environment)
             dbs_by_host[host] = dbs_by_host[root_pg_host]
 
-        for host in environment.groups.get('citusdb_worker', []):
-            citusdb_masters = set(environment.groups.get('citusdb_master', []))
-            pg_standbys = set(environment.groups.get('pg_standby', []))
-            citusdb_masters = list(citusdb_masters - pg_standbys)
-            if not citusdb_masters:
-                raise PGConfigException('no hosts in the "citusdb_master" group (excluding standbys)')
-            if len(citusdb_masters) > 1:
-                raise PGConfigException('more than one citus master configured (excluding standbys)')
-
-            citusdb_master = citusdb_masters[0]
-            citus_dbs = []
-            for db in sorted_dbs:
-                if db['host'] == citusdb_master:
-                    db_config = copy.deepcopy(db)
-                    db_config['host'] = host
-                    db_config['pgbouncer_hosts'] = [host]
-                    db_config['pgbouncer_endpoint'] = host
-                    citus_dbs.append(db_config)
-
-            dbs_by_host[host] = citus_dbs
-
         data['postgresql_dbs']['by_pgbouncer_host'] = dict(dbs_by_host)
         return data
 
@@ -165,7 +137,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
         if not standby_master:
             raise PGConfigException('{} has not root PG host'.format(standby_host))
         standby_master = env.translate_host(standby_master, env.paths.inventory_source)
-        potential_masters = env.groups['postgresql'] + env.groups.get('citusdb',[])
+        potential_masters = env.groups['postgresql']
         if standby_master in potential_masters:
             return standby_master
         return self._get_root_pg_host(standby_master, env)
@@ -181,6 +153,27 @@ class PostgresqlConfig(jsonobject.JsonObject):
             environment.translate_host(host, environment.paths.postgresql_yml): value
             for host, value in self.host_settings.items()
         }
+
+        # project_db defaults to living wherever the ucr db lives. This must
+        # happen before hosts are resolved below so both inherit consistently.
+        if self.dbs.project_db is not None:
+            ucr = self.dbs.ucr
+            if self.dbs.project_db.host is None:
+                self.dbs.project_db.host = ucr.host
+            if not self.dbs.project_db.pgbouncer_hosts:
+                self.dbs.project_db.pgbouncer_hosts = list(ucr.pgbouncer_hosts)
+            if self.dbs.project_db.pgbouncer_endpoint is None:
+                self.dbs.project_db.pgbouncer_endpoint = ucr.pgbouncer_endpoint
+
+            # pgbouncer_max_db_connections is the max connections across all
+            # project_db pools on a single pgbouncer host
+            if self.dbs.project_db.pgbouncer_max_db_connections is None:
+                self.dbs.project_db.pgbouncer_max_db_connections = 20
+            # pgbouncer_pool_size is the max connections for a single domain
+            if self.dbs.project_db.pgbouncer_pool_size is None:
+                # Don't let one domain use more than half project_db connections
+                self.dbs.project_db.pgbouncer_pool_size = max(
+                    1, self.dbs.project_db.pgbouncer_max_db_connections // 2)
 
         all_dbs = self.generate_postgresql_dbs()
         for db in all_dbs:
@@ -212,8 +205,12 @@ class PostgresqlConfig(jsonobject.JsonObject):
         self.pg_repack = pg_repack
 
         for replication in self.replications:
-            replication.source_host = environment.translate_host(replication.source_host, environment.paths.postgresql_yml)
-            replication.target_host = environment.translate_host(replication.target_host, environment.paths.postgresql_yml)
+            replication.source_host = environment.translate_host(
+                replication.source_host, environment.paths.postgresql_yml
+            )
+            replication.target_host = environment.translate_host(
+                replication.target_host, environment.paths.postgresql_yml
+            )
 
         for entry in self.postgres_override.postgresql_hba_entries:
             netmask = entry.get('netmask')
@@ -234,6 +231,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
             self.dbs.form_processing.get_db_list() if self.dbs.form_processing else []
         ) + [
             self.dbs.ucr,
+            self.dbs.project_db,
             self.dbs.formplayer,
             self.dbs.auditcare,
             self.dbs.repeaters,
@@ -244,7 +242,7 @@ class PostgresqlConfig(jsonobject.JsonObject):
         defined_django_aliases = {db.django_alias for db in self.generate_postgresql_dbs()
                                   if db.django_alias is not None}
         for reporting_alias, value in self.REPORTING_DATABASES.items():
-            if isinstance(value, six.string_types):
+            if isinstance(value, str):
                 referenced_django_aliases.add(value)
             else:
                 # value is {WRITE: alias, READ: [(alias, weight)...]}
@@ -297,6 +295,7 @@ class SmartDBConfig(jsonobject.JsonObject):
     main = jsonobject.ObjectProperty(lambda: MainDBOptions, required=True)
     formplayer = jsonobject.ObjectProperty(lambda: FormplayerDBOptions, required=True)
     ucr = jsonobject.ObjectProperty(lambda: UcrDBOptions, required=True)
+    project_db = jsonobject.ObjectProperty(lambda: ProjectDbDBOptions, required=False, default=None)
     synclogs = jsonobject.ObjectProperty(lambda: SynclogsDBOptions, required=False)
     form_processing = jsonobject.ObjectProperty(lambda: FormProcessingConfig, required=False)
     auditcare = jsonobject.ObjectProperty(lambda: AuditcareDBOptions, required=False, default=None)
@@ -322,10 +321,11 @@ class DBOptions(jsonobject.JsonObject):
     pgbouncer_endpoint = jsonobject.StringProperty(default=None)
     pgbouncer_pool_size = jsonobject.IntegerProperty(default=None)
     pgbouncer_reserve_pool_size = jsonobject.IntegerProperty(default=None)
+    pgbouncer_max_db_connections = jsonobject.IntegerProperty(default=None)
     port = jsonobject.IntegerProperty(default=None)
     user = jsonobject.StringProperty()
     password = jsonobject.StringProperty()
-    options = jsonobject.DictProperty(six.text_type)
+    options = jsonobject.DictProperty(str)
     django_alias = jsonobject.StringProperty()
     django_migrate = jsonobject.BooleanProperty(default=True)
     query_stats = jsonobject.BooleanProperty(default=False)
@@ -358,6 +358,12 @@ class FormplayerDBOptions(DBOptions):
 class UcrDBOptions(DBOptions):
     name = constants.ucr_db_name
     django_alias = 'ucr'
+    django_migrate = False
+
+
+class ProjectDbDBOptions(DBOptions):
+    name = constants.project_db_name
+    django_alias = 'project_db'
     django_migrate = False
 
 

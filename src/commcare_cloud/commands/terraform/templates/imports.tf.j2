@@ -1,0 +1,6 @@
+{% for terraform_import in terraform_imports %}
+import {
+  to = {{ terraform_import.to }}
+  id = {{ terraform_import.id|tojson }}
+}
+{% endfor %}

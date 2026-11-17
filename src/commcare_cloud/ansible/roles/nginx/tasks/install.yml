@@ -1,10 +1,4 @@
 ---
-
-# Once we're entirely on bionic
-# we might be able install from the default bionic apt repo
-# and not add the official nginx repo.
-# See: https://github.com/dimagi/commcare-cloud/pull/2901#pullrequestreview-250517794
-
 - name: Add Nginx apt key
   become: yes
   apt_key: url=https://nginx.org/keys/nginx_signing.key state=present
@@ -22,7 +16,8 @@
   apt: name="nginx={{ nginx_version }}" state=present update_cache=yes cache_valid_time=3600
   notify: 'quick start nginx'
 
-- meta: flush_handlers  # need to start nginx as quickly as possible for minimal downtime
+- name: Flush handlers - start nginx as quickly as possible for minimal downtime
+  meta: flush_handlers
 
 - name: Make sure nofile ulimit is high
   become: yes
@@ -50,17 +45,17 @@
 
 - name: Copy the nginx configuration file
   become: yes
-  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf mode=0644
   notify: reload nginx
 
 - name: Copy the nginx default configuration file
   become: yes
-  template: src=default.conf.j2 dest=/etc/nginx/conf.d/default.conf
+  template: src=default.conf.j2 dest=/etc/nginx/conf.d/default.conf mode=0644
   notify: reload nginx
 
 - name: Copy the nginx default site configuration file
   become: yes
-  template: src=default.j2 dest=/etc/nginx/sites-available/default
+  template: src=default.j2 dest=/etc/nginx/sites-available/default mode=0644
   notify: reload nginx
 
 - name: Create the link for site enabled specific configurations
@@ -69,7 +64,10 @@
   notify: reload nginx
 
 - name: Make sure the log directory exists
+  # load-failure (see .ansible-lint-ignore): This cross-role import resolves
+  # relative to the playbook dir; ansible-lint resolves relative to the role root.
   import_tasks: roles/commcarehq/tasks/www_log_dir.yml
 
-- set_fact: nginx_installed=True
+- name: Mark nginx as installed
+  set_fact: nginx_installed=True
 

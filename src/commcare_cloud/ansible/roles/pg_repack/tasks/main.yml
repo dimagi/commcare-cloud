@@ -1,5 +1,6 @@
 ---
-- include_vars: 'roles/postgresql_base/defaults/main.yml'
+- name: Load postgresql_base defaults
+  include_vars: 'roles/postgresql_base/defaults/main.yml'
 
 - name: check if pg_repack installed
   stat:
@@ -9,11 +10,12 @@
 - name: check pg_repack version
   command: "{{ postgres_install_dir }}/bin/pg_repack --version"
   register: pg_repack_installed_version
-  when: pg_repack_stat.stat.exists == True
+  when: pg_repack_stat.stat.exists
   check_mode: no
   changed_when: False
 
-- debug:
+- name: Report pg_repack version upgrade
+  debug:
     msg: "Updating pg_repack from version {{ pg_repack_installed_version.stdout.split()[1] }}"
   when: pg_repack_stat.stat.exists and pg_repack_installed_version.stdout.split()[1] != pg_repack_version
 
@@ -33,7 +35,9 @@
 
   - name: Install pg_repack
     become: yes
-    shell: "PG_CONFIG={{ postgres_install_dir }}/bin/pg_config make install"
+    command: make install
+    environment:
+      PG_CONFIG: "{{ postgres_install_dir }}/bin/pg_config"
     args:
       chdir: "/tmp/pg_repack-{{ pg_repack_version }}"
       creates: "{{ postgres_install_dir }}/bin/pg_repack"
@@ -58,6 +62,7 @@
     copy:
       src: schema_permissions.sql
       dest: /tmp/schema_permissions.sql
+      mode: '0644'
     register: sql_file_path
 
   - name: Run queries from SQL script
@@ -70,6 +75,7 @@
       path_to_script: "{{ sql_file_path.dest }}"
     register: query_result
     loop: "{{ pg_repack.get(inventory_hostname, []) }}"
+    when: not ansible_check_mode
 
 - name: Create pg_repack script
   become: yes

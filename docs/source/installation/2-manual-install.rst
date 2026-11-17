@@ -3,7 +3,11 @@
 Install Using Commcare-Cloud on one or more machines
 ====================================================
 
-This tutorial will walk you through the process of setting up a new environment to run CommCare HQ using :ref:`commcare-cloud <commcare-cloud>`. It covers both a single-server (“monolith”) environment and a small cluster of virtual machines. If you want to quickly test or preview the environment setup on a single machine you can follow :ref:`quick-install` which uses a script to automate all of the below.
+This tutorial will walk you through the process of setting up a new environment to run CommCare HQ using :ref:`commcare-cloud <commcare-cloud>`. It covers both, a single-server (“monolith”) environment and a small cluster of virtual machines.
+
+If you face any issue during the setup, you can refer the :ref:`troubleshoot-first-time-install` documentation.
+
+If you want to quickly test or preview the environment setup on a single machine you can follow :ref:`quick-install` which uses a script to automate all of the below.
 
 This assumes you have gone through :ref:`deploy-commcarehq` which details what all you need to know to deploy CommCare HQ in production.
 
@@ -13,11 +17,11 @@ Procure Hardware
 The first step is to procure the hardware required to run CommCare HQ to meet your project requirements. To understand the hardware resources required for your project please see :ref:`deployment-options`. Below are configurations used for the purpose of the tutorial.
 
 
-Single server
+Single server (Monolith)
 ~~~~~~~~~~~~~
 
 When CommCare HQ is running on a single server, this configuration is
-referred to as a “monolith”. A monolith will need an *absolute minimum*
+referred to as a **monolith**. A monolith will need an *absolute minimum*
 of:
 
 -  4 CPU cores
@@ -25,7 +29,7 @@ of:
 -  40 GB storage
 
 These resources are only sufficient to run a demo of CommCare HQ. Any
-production environment will need a lot more resources.
+production environment will need more resources.
 
 If you are using VirtualBox for testing CommCare HQ, you can follow the
 instructions on :ref:`configure-vbox`.
@@ -33,8 +37,8 @@ instructions on :ref:`configure-vbox`.
 Cluster
 ~~~~~~~
 
-The following example uses a cluster of similarly resourced virtual
-machines. Let us assume that we have estimated that the following will
+The following example uses a cluster of virtual
+machines with similar resources available as for a monolith. Let us assume that we have estimated that the following will
 meet the requirements of our project:
 
 ========== ===== ===== =====================
@@ -49,7 +53,7 @@ db2        2     16 GB 30 GB + 60 GB + 20 GB
 ========== ===== ===== =====================
 
 db1 has an extra volume for databases. db2 has one extra volume for
-databases, and another for a shared NFS volume.
+databases, and another 20GB for a shared NFS volume.
 
 All environments
 ~~~~~~~~~~~~~~~~
@@ -57,26 +61,26 @@ All environments
 CommCare HQ environments run on Ubuntu Server 22.04 (64-bit).
 
 During the installation of Ubuntu you will be prompted for the details
-of the first user, who will have sudo access. It is convenient to name
-the user “ansible”. (The user can be named something else. Deploying
-CommCare HQ will create an “ansible” user if one does not already
-exist.)
+of the first user, who will have sudo access.
+You can use any name you want. However, it is convenient to name the user “ansible” since we will add a user by this name for installation anyway.
+If you are using EC2 instances from AWS, you will have the available default user "ubuntu".
 
 When choosing which software to install during the Ubuntu installation,
 select only “SSH Server”.
 
 You will need a domain name which directs to the monolith or the
-cluster’s proxy server.
+cluster’s proxy server. DNS for this can be set up before or during the installation as per your convenience.
 
 Prepare all machines for automated deploy
 -----------------------------------------
-Do the following on the monolith, or on each machine in the cluster.
+Do the following on the monolith or on each machine in the cluster.
 
 Enable root login via SSH
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 On a standard Ubuntu install, the root user is not enabled or
-allowed to SSH. The root user will only be used initially, and
-will then be disabled automatically by the install scripts.
+allowed to SSH but is needed for this installation.
+The root user will be used initially to setup all users, and
+will then be disabled automatically by the installation scripts.
 
 Make a root password and store it somewhere safe for later
 reference.
@@ -111,11 +115,27 @@ reference.
 
         PasswordAuthentication yes
 
+    To allow keyboard interactive authentication, ensure
+
+    ::
+
+        KbdInteractiveAuthentication yes
+
 4.  Restart SSH:
 
     ::
 
         $ sudo service ssh reload
+
+5. Test that you can log in as root:
+
+    ::
+
+        $ ssh root@localhost
+
+    Test this from the machine itself in case of a monolith or from the control machine (named "control1") in case of a cluster.
+    Use "localhost" for monolith or the private IP address of the machine to login to for a cluster (including the control machine itself).
+    Remember to logout or exit once done.
 
 Initialize log file
 ~~~~~~~~~~~~~~~~~~~
@@ -126,46 +146,18 @@ To be used in the installation process.
     $ sudo touch /var/log/ansible.log
     $ sudo chmod 666 /var/log/ansible.log
 
-Install system dependencies
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This only needs to be done on the control machine. In the case of a monolith,
+Permissions will be tightened later by `commcare-cloud <env> bootstrap-users` or
+`deploy_stack`, whichever is run first, if there is a machine in the `control`
+group.
+
+Prepare control machine for automated deploy
+--------------------------------------------
+The following steps only need to be done on the control machine. In the case of a monolith,
 there is only one machine to manage so that is also the control machine. In
 our example cluster, the control machine is named “control1”.
 
-
-1.  SSH into control1 as the “ansible” user, or the user you created during installation. You can skip this step if you are installing a monolith:
-
-    ::
-
-        $ ssh ansible@control1
-
-    This instruction assumes that the control machine’s name resolves to its IP address.
-    Replace the name with the IP address if necessary.
-
-2.  On the control machine, or the monolith, install required packages:
-
-    ::
-
-        $ sudo apt update
-        $ sudo apt install python3-pip python3-dev python3-distutils python3-venv libffi-dev sshpass net-tools
-
-3.  Check your default Python version for Python 3.x:
-
-    ::
-
-        $ python --version
-
-    If your default version is not 3.x or if the “python” command was
-    not found, make python3 your default by running the command below,
-    otherwise skip it.
-
-    ::
-
-        $ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
-
-
 Create a user for yourself
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In general, CommCare environments are managed by a team. Each member of
 the team has their own user account.
@@ -180,28 +172,49 @@ add them to the “sudo” user group. For example, if your username were
    ...
    $ sudo usermod -a -G sudo jbloggs
 
+Switch to this user for the remainder of these setup steps:
 
-Install CommCare Cloud
-----------------------
+::
 
-1.  On the control machine or the monolith, install and configure Git:
+    $ su - jbloggs
+
+
+Install system dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1.  Install the required packages:
 
     ::
 
-        $ sudo apt install git
+        $ sudo apt update
+        $ sudo apt install libffi-dev sshpass net-tools git
+        $ sudo snap install astral-uv --classic
+
+2.  Configure Git:
+
+    ::
+
         $ git config --global user.name "Jay Bloggs"
         $ git config --global user.email "jbloggs@example.com"
 
     (Of course, substitute “Jay Bloggs” with your name, and
     “jbloggs@example.com” with your email address.)
 
-2.  Clone and initialize CommCare Cloud:
+3.  Make python3 default for python command:
 
     ::
 
-        $ git clone https://github.com/dimagi/commcare-cloud.git
-        $ cd commcare-cloud
-        $ source control/init.sh
+        $ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+
+
+Install and Configure CommCare Cloud
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1.  Clone and initialize CommCare Cloud:
+
+    ::
+
+        $ source <(curl -s https://raw.githubusercontent.com/dimagi/commcare-cloud/master/control/init.sh)
 
     When prompted, confirm setting up the CommCare Cloud environment on
     login:
@@ -211,7 +224,15 @@ Install CommCare Cloud
         Do you want to have the CommCare Cloud environment setup on login?
         (y/n): y
 
-3.  Clone the sample CommCare Cloud “environments” folder into your home
+    If the input times out before entering 'y', you can follow the prompt instructions
+    to setup CommCare Cloud on login:
+
+    ::
+
+        $ echo '[ -t 1 ] && source ~/init-ansible' >> ~/.profile
+
+
+2.  Clone the sample CommCare Cloud “environments” folder into your home
     directory.
 
     ::
@@ -219,7 +240,7 @@ Install CommCare Cloud
         $ cd ~
         $ git clone https://github.com/dimagi/sample-environment.git environments
 
-4.  Rename your environment. You could name it after your organization
+3.  Rename your environment. You could name it after your organization
     or your project. If you are installing a monolith you could leave
     its name as “monolith”. For this example we will name it “cluster”.
 
@@ -229,14 +250,14 @@ Install CommCare Cloud
         $ git mv monolith cluster
         $ git commit -m "Renamed environment"
 
-5.  Remove the “origin” Git remote. (You will not be pushing your
+4.  Remove the “origin” Git remote. (You will not be pushing your
     changes back to the Dimagi “sample-environment” repository.)
 
     ::
 
         $ git remote remove origin
 
-6.  (Optional) You are encouraged to add a remote for your own Git
+5.  (Optional) You are encouraged to add a remote for your own Git
     repository, so that you can share and track changes to your
     environment’s configuration. For example:
 
@@ -244,21 +265,17 @@ Install CommCare Cloud
 
         $ git remote add origin git@github.com:your-organization/commcare-environment.git
 
-7.  Configure your CommCare environment.
-
-    See :ref:`configure-env` for more information.
-
-8.  Add your username to the ``present`` section of
+6.  Add your username to the ``present`` section of
     ``~/environments/_users/admins.yml``.
 
     ::
 
        $ nano ~/environments/_users/admins.yml
 
-9.  Copy your **public** key to ``~/environments/_authorized_keys/``.
-    The filename must correspond to your username.
+7.  Copy your **public** SSH key to ``~/environments/_authorized_keys/``.
+    The filename must correspond to your username, for example: ``jbloggs.pub``.
 
-10. Change “monolith.commcarehq.test” to your real domain name,
+8. Change “monolith.commcarehq.test” to your real domain name,
 
     ::
 
@@ -268,9 +285,9 @@ Install CommCare Cloud
 
     ::
 
-       $ git grep -n "monolith"
+       $ git grep -n "monolith.commcarehq.test"
 
-    You should find references in the following files and places:
+    You should find references in the following places:
 
     -  ``proxy.yml``
 
@@ -279,11 +296,18 @@ Install CommCare Cloud
     -  ``public.yml``
 
        -  ``ALLOWED_HOSTS``
-       -  ``server_email``
-       -  ``default_from_email``
-       -  ``root_email``
 
-11. Configure ``inventory.ini``
+
+9. Change default emails
+
+    ::
+
+      $ git grep -n "_email"
+
+    You should find references in ``public.yml``
+
+
+10. Configure ``inventory.ini``
 
     .. rubric:: For a monolith
        :name: for-a-monolith
@@ -382,9 +406,6 @@ Install CommCare Cloud
        [formplayer:children]
        webworker2
 
-       [rabbitmq:children]
-       webworker1
-
        [postgresql:children]
        db1
        db2
@@ -421,12 +442,16 @@ Install CommCare Cloud
        db1
        db2
 
+11. Configure rest of your CommCare environment.
+
+    See :ref:`configure-env` for more information.
+
 12. Configure the ``commcare-cloud`` command.
 
     ::
 
         $ export COMMCARE_CLOUD_ENVIRONMENTS=$HOME/environments
-        $ manage-commcare-cloud configure
+        $ uv run manage-commcare-cloud configure
 
     You will see a few prompts that will guide you through the
     installation. Answer the questions as follows for a standard
@@ -459,7 +484,7 @@ Install CommCare Cloud
 
        $ cp ~/commcare-cloud/src/commcare_cloud/config.example.py ~/commcare-cloud/src/commcare_cloud/config.py
 
-    Update the known hosts file
+    Update the known hosts file (substituting your environment name if necessary)
 
     ::
 
@@ -486,7 +511,7 @@ Install CommCare Cloud
     Find the value of “ansible_sudo_pass” and record it in your password
     manager. We will need this to deploy CommCare HQ.
 
-14. Encrypt the provided vault file, using that “ansible_sudo_pass”. (As
+14. Encrypt the provided vault file using a newly generated password. (As
     usual, substitute “cluster” with the name of your environment.)
 
     ::
@@ -500,39 +525,74 @@ pages <https://docs.ansible.com/ansible/latest/user_guide/vault.html>`__.
 Vault <https://github.com/dimagi/commcare-cloud/blob/master/src/commcare_cloud/ansible/README.md#managing-secrets-with-vault>`__
 will tell you more about how we use this vault file.
 
+
+Networking
+----------
+
+For a cluster, before we deploy CommCare HQ services, we need to open ports on the machines so the services can communicate with each other.
+To see which ports need to be opened, refer to the following documentation :ref:`commcare-ports`
+
+For a monolith, this step is not required.
+
+Shared Directory
+----------------
+
+For a cluster, configure the file path for the shared directory in the ``public.yml`` file like
+
+.. code-block:: yaml
+
+    datadisk_device: "/dev/xvdbb"
+
+You can use `fdisk -l` to find the path of the disk you want to use as a shared directory.
+In the example above, it was ``/dev/xvdbb1``.
+
 Deploy CommCare HQ services
 ---------------------------
 
-You will need the SSH agent to have your SSH key for Ansible.
+The first step is to setup the expected user configuration. You will be prompted for
+the vault password from earlier and the SSH password, which is the root user's password.
+After this step, the root user will not be able to log in via SSH.
 
 ::
 
-   $ eval `ssh-agent`
-   $ ssh-add ~/.ssh/id_rsa
+    $ commcare-cloud cluster bootstrap-users
 
-When you run the “commcare-cloud deploy-stack”, you will be prompted for
-the vault password from earlier. You will also be prompted for an SSH
-password. This is the root user’s password. After this step, the root
-user will not be able to log in via SSH.
+
+Once this completes successfully, you will now be able to ssh into this machine from your previously created user (e.g., jbloggs).
+You should exit your current ssh session, and ssh back into the machine using the "-A" option to enable agent forwarding.
+This is necessary to escalate privileges when running commcare-cloud commands, as well as for executing commands on other machines if
+you are setting up a cluster.
 
 ::
 
-   $ commcare-cloud cluster deploy-stack --first-time -e 'CCHQ_IS_FRESH_INSTALL=1'
+    $ exit  # exit until no longer connected to the machine
+    $ ssh -A jbloggs@control1
 
-   This command will apply without running the check first. Continue? [y/N]y
-   ansible-playbook /home/jbloggs/commcare-cloud/src/commcare_cloud/ansible/deploy_stack.yml -i /home/jbloggs/environments/cluster/inventory.ini -e @/home/jbloggs/environments/cluster/vault.yml -e @/home/jbloggs/environments/cluster/public.yml -e @/home/jbloggs/environments/cluster/.generated.yml --diff --tags=bootstrap-users -u root --ask-pass --vault-password-file=/home/jbloggs/commcare-cloud/src/commcare_cloud/ansible/echo_vault_password.sh --ask-pass --ssh-common-args -o=UserKnownHostsFile=/home/jbloggs/environments/cluster/known_hosts
-   Vault Password for 'cluster': <ansible_sudo_pass>
-   SSH password: <root user's password>
+Please note the option used to ssh "-A" which enables agent forwarding.
+Run on your **local machine** to check if you have an SSH key added to your ssh agent:
+
+::
+
+    $ ssh-add -l
+
+If you don't see SSH key listed here for the user you are using to log in, you will need to add it to the ssh agent before running the ssh command.
+You can read about it here, https://www.ssh.com/academy/ssh/agent#adding-ssh-keys-to-the-agent.
+.. warning::
+   ssh-add should only be run locally and not on the remote machine.
+   If this isn't setup correctly, you will face a machine access error in the next step.
+
+Also consider using a config file to streamline ssh.
+https://www.digitalocean.com/community/tutorials/how-to-configure-custom-connection-options-for-your-ssh-client
+
+Let's deploy CommCare HQ services.
+
+::
+
+   $ commcare-cloud cluster deploy-stack -e 'CCHQ_IS_FRESH_INSTALL=1' --skip-check
 
 This will run a series of Ansible commands that will take quite a long
-time to run.
-
-If there are failures during the install, which may happen due to timing
-issues, you can continue running the playbook with:
-
-::
-
-   $ commcare-cloud cluster deploy-stack --skip-check -e 'CCHQ_IS_FRESH_INSTALL=1'
+time to run. If there are failures during the install, which may happen due to timing
+issues, you can rerun this command.
 
 Deploy CommCare HQ code
 -----------------------
@@ -552,7 +612,9 @@ initially.
 
        $ commcare-cloud cluster django-manage preindex_everything
 
-3. Run the “deploy” command:
+3. This is a good point to set up the DNS record for the domain, if not done already.
+
+4. Run the “deploy” command:
 
    ::
 
@@ -566,6 +628,8 @@ initially.
 
    When prompted for the ``sudo`` password, enter the
    “ansible_sudo_pass” value.
+
+   Please ensure you run this deploy even if the version has not changed since it will do an initial setup of the environment.
 
 See the Deploying CommCare HQ code changes section in :ref:`manage-deployment` for more information.
 
@@ -632,16 +696,11 @@ from a browser.
 If you are using VirtualBox, see :ref:`configure-vbox` to find the URL to use
 in your browser.
 
-Troubleshooting first-time setup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you face any issues, it is recommended to review the :ref:`troubleshoot-first-time-install` documentation.
-
 Firefighting issues once CommCare HQ is running
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You may also wish to look at the
-:ref:`firefighting` page which lists out common
+:ref:`reference/firefighting/index:Firefighting Production Issues` page which lists out common
 issues that ``commcare-cloud`` can resolve.
 
 If you ever reboot this machine, make sure to follow the `after reboot

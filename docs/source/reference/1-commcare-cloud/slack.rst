@@ -34,7 +34,7 @@ To configure commcare-cloud to send messages to Slack:
    Set the value of ``slack_notifications_channel`` in the environment ``meta.yml`` file. This
    should be the ID of the Slack channel to send notifications to.
 
-   .. code-block:: yml
+   .. code-block:: yaml
 
        slack_notifications_channel: "C0WLJ3XYZ"
 

@@ -1,27 +1,24 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
 import re
-from abc import ABCMeta, abstractmethod, abstractproperty
-from collections import defaultdict, OrderedDict
-from itertools import groupby
 import sys
+from abc import ABCMeta, abstractmethod, abstractproperty
+from collections import OrderedDict, defaultdict
+from itertools import groupby
 
 import attr
-import six
-from clint.textui import puts, indent
+from clint.textui import indent, puts
 
-from commcare_cloud.colors import color_error, color_warning, color_code, color_notice
-from commcare_cloud.commands.ansible.helpers import (
-    AnsibleContext, get_django_webworker_name,
-    get_formplayer_spring_instance_name,
-    get_celery_workers,
-    get_pillowtop_processes,
-    get_all_supervisor_processes_by_host)
 from commcare_cloud.cli_utils import ask
+from commcare_cloud.colors import color_error
+from commcare_cloud.commands.ansible.helpers import (
+    AnsibleContext,
+    get_all_supervisor_processes_by_host,
+    get_celery_workers,
+    get_django_webworker_name,
+    get_formplayer_spring_instance_name,
+    get_pillowtop_processes,
+)
 from commcare_cloud.commands.ansible.run_module import run_ansible_module
-from commcare_cloud.commands.command_base import CommandBase, Argument
-from commcare_cloud.environment.paths import get_role_defaults
+from commcare_cloud.commands.command_base import Argument, CommandBase
 
 ACTIONS = ['start', 'stop', 'restart', 'status', 'logs', 'help']
 
@@ -43,7 +40,7 @@ class ServiceOption(object):
     sub_options = attr.ib(default=None)
 
 
-class ServiceBase(six.with_metaclass(ABCMeta)):
+class ServiceBase(metaclass=ABCMeta):
     """Base class for all services."""
 
     @abstractproperty
@@ -131,7 +128,7 @@ class ServiceBase(six.with_metaclass(ABCMeta)):
         )
 
 
-class SubServicesMixin(six.with_metaclass(ABCMeta)):
+class SubServicesMixin(metaclass=ABCMeta):
     @abstractproperty
     def managed_services(self):
         """
@@ -356,7 +353,9 @@ class Elasticsearch(ServiceBase):
             sys.exit(1)
 
     def _run_rolling_restart_yml(self, tags, limit):
-        from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
+        from commcare_cloud.commands.ansible.ansible_playbook import (
+            run_ansible_playbook,
+        )
         extra_args = ['--tags={}'.format(tags)]
         if limit:
             extra_args.extend(['--limit={}'.format(limit)])
@@ -374,13 +373,6 @@ class Couchdb2(MultiAnsibleService):
         'haproxy': ('haproxy', 'couchdb2_proxy'),
     }
     log_location = '/usr/local/couchdb2/couchdb/var/log/'
-
-
-class RabbitMq(AnsibleService):
-    name = 'rabbitmq'
-    inventory_groups = ['rabbitmq']
-    service_name = 'rabbitmq-server'
-    log_location = '/var/log/rabbitmq/rabbit@<rabbitmq machine>.log'
 
 
 class Redis(AnsibleService):
@@ -410,23 +402,6 @@ class Postgresql(MultiAnsibleService):
         return {
             'postgresql': ("postgresql_{}".format(pg_version), 'postgresql,pg_standby,!remote_postgresql'),
             'pgbouncer': ('pgbouncer', 'postgresql,pg_standby,!remote_postgresql')
-        }
-
-
-class Citusdb(Postgresql):
-    name = 'citusdb'
-    log_location = 'Postgres: /opt/data/postgresql/<version>/main/pg_log\n' \
-                   'Pgbouncer: /var/log/postgresql/pgbouncer.log'
-
-    @property
-    def service_process_mapping(self):
-        citus_pg_version = self.environment.public_vars.get('citus_postgresql_version')
-        if not citus_pg_version:
-            citus_pg_version = get_role_defaults('citusdb').get('citus_postgresql_version')
-        monit_name = "postgresql_{}".format(citus_pg_version)
-        return {
-            'citusdb': (monit_name, 'citusdb'),
-            'pgbouncer': ('pgbouncer', 'citusdb')
         }
 
 
@@ -482,21 +457,35 @@ class Webworker(SingleSupervisorService):
         if action == 'restart':
             if process_pattern:
                 raise NotImplementedError("restart --only=... is not supported")
-            return _restart_commcare_services(self.environment, host_pattern, 'webworker')
+            return _restart_webworker_services(self.environment, host_pattern)
         return super().run(action, host_pattern=host_pattern, process_pattern=process_pattern)
 
 
-def _restart_commcare_services(environment, limit, name="commcare"):
-    from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
+def _restart_commcare_services(environment, limit):
+    from commcare_cloud.commands.ansible.ansible_playbook import (
+        run_ansible_playbook,
+    )
     return run_ansible_playbook(
-        # grep:
-        # restart_commcare_services.yml
-        # restart_webworker_services.yml
-        playbook=f'restart_{name}_services.yml',
+        playbook='restart_commcare_services.yml',
         ansible_context=AnsibleContext(None, environment),
         limit=limit,
         skip_check=True,
         quiet=True,
+    )
+
+
+def _restart_webworker_services(environment, limit):
+    from commcare_cloud.commands.ansible.ansible_playbook import (
+        run_ansible_playbook,
+    )
+
+    return run_ansible_playbook(
+        playbook='restart_webworker_services.yml',
+        ansible_context=AnsibleContext(None, environment),
+        limit=limit,
+        skip_check=True,
+        quiet=True,
+        unknown_args=['-e', 'webworker_hosts=webworkers'],
     )
 
 
@@ -626,10 +615,8 @@ def optimize_process_operations(all_processes_by_host, process_host_mapping):
 
 SERVICES = [
     Postgresql,
-    Citusdb,
     Nginx,
     Couchdb2,
-    RabbitMq,
     Elasticsearch,
     ElasticsearchClassic,
     Redis,

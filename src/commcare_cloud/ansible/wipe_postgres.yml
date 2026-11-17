@@ -1,7 +1,7 @@
 ---
 
 - name: Delete all PostgreSQL databases
-  hosts: postgresql:pg_standby:!citusdb
+  hosts: postgresql:pg_standby
   vars:
     postgresql_host: "{{ inventory_hostname }}"
   vars_prompt:

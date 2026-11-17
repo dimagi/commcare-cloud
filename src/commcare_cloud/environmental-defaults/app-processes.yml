@@ -25,6 +25,10 @@ django_port: 9010
 flower_port: 5555
 gunicorn_workers_factor: 1
 gunicorn_workers_static_factor: 0
+# Override the corresponding values in commcare-hq's gunicorn_conf.py.
+# 50% jitter is added to max_requests.
+gunicorn_max_requests: 240
+gunicorn_graceful_timeout: 300
 formplayer_memory: "3584m"
 formplayer_maxmetaspacesize: "512m"
 formplayer_g1heapregionsize: "2m"

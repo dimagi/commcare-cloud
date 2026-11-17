@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import itertools
 import os
 import shlex
@@ -260,7 +258,6 @@ def get_all_supervisor_processes_by_host(environment):
         get_management_command_processes(environment),
         _get_simple_processes(environment, 'webworkers', get_django_webworker_name(environment)),
         _get_simple_processes(environment, 'formplayer', get_formplayer_spring_instance_name(environment)),
-        _get_simple_processes(environment, 'proxy', _get_process_name(environment, 'websockets')),
     )
     for process in processes:
         by_host[process.host].append(process.full_name)

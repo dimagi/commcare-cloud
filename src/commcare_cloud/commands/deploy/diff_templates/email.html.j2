@@ -8,6 +8,26 @@
 {%- endmacro %}
 <html>
 <head>
+  <style>
+    .text-label {
+      border-radius: 1em;
+      padding: 0em .5em;
+      font-size: small;
+    }
+    .diffstat {
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .text-diff-added { color: green }
+    .text-diff-deleted { color: red }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li { padding: .5em }
+    li:nth-of-type(odd) { background-color: #eee }
+    ul.expanded-prs > li { border: 1px solid lightgray }
+  </style>
 </head>
 <body>
 <h2>Deployed by {{ user }}, cheers!</h2>
@@ -30,36 +50,38 @@
 {% endif %}
 
 {% if pr_infos %}
-  <h4>Deployed PRs:</h4>
+  <h3>Deployed PRs:</h3>
   <ul>
     {% for pr in pr_infos %}
       <li>
-        <a href="{{ pr.url }}">#{{ pr.number }} {{ pr.title }}</a>
-        <i>opened by</i> @{{ pr.opened_by }}
-        <span class="diffstat" style="font-size:12px;font-weight:bold;color:#666;white-space:nowrap;cursor:default">
-                    <span class="text-diff-added" style="color:#55a532">
-                      +{{ pr.additions }}
-                    </span>
-                    <span class="text-diff-deleted" style="color:#bd2c00">
-                      −{{ pr.deletions }}
-                    </span>
-                </span>
+        <a href="{{ pr.url }}">#{{ pr.number }}</a>
+        &nbsp; <strong>{{ pr.title }}</strong> &nbsp;
+        <em style="font-size: small">opened by</em> @{{ pr.opened_by }}
+        <span class="diffstat">
+          <span class="text-diff-added">+{{ pr.additions }}</span>
+          <span class="text-diff-deleted">−{{ pr.deletions }}</span>
+        </span>
         {% for label in pr.labels %}
-          <span class="text-label" style="color:#{{ label.color }}">
-                    {{ label.name }}
-                </span>
+          <span class="text-label" style="background-color:#{{ label.color }}">
+            {{ label.name }}
+          </span>
         {% endfor %}
       </li>
     {% endfor %}
   </ul>
+
   {% for label, prs in prs_by_label.items() %}
   {% if label in LABELS_TO_EXPAND %}
-    <p>{{ label }}</p>
-    <ul>
+    <h3>{{ label }}</h3>
+    <ul class="expanded-prs">
       {% for pr in prs %}
         <li>
-          <a href="{{ pr.url }}">#{{ pr.number }} {{ pr.title }}</a>
-          : {{ pr.body }}
+          <h4>
+            <a href="{{ pr.url }}">
+              #{{ pr.number }} <strong>{{ pr.title }}</strong>
+            </a>
+          </h4>
+          {{ pr.body }}
         </li>
       {% endfor %}
     </ul>

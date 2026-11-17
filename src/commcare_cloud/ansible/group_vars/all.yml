@@ -6,8 +6,6 @@ log_home: "{{ www_home }}/log"
 metrics_home: "{{ www_home }}/metrics"
 legacy_service_home: "{{ code_home }}/services"
 service_home: "{{ www_home }}/services"
-python_version: '3.9'
-use_deadsnakes: yes
 virtualenv_home: "{{ code_home }}/python_env"
 nginx_static_home: "{{ code_home }}/staticfiles"
 encrypted_root: "/opt/data"
@@ -45,25 +43,27 @@ zookeeper_client_port: 2181
 formplayer_port: 8181
 
 couchdb_use_haproxy: False
-couchdb_version: 2.3.1
+couchdb_version: 3.5.0
 couchdb2_port: 15984
-couchdb2_local_port: "{{ 15986 if couchdb_version is version('3.0.0', '<') else couchdb2_port }}"
+couchdb2_local_port: "{{ couchdb2_port }}"
 couchdb2_proxy_port: "{{ 35984 if couchdb_use_haproxy else 25984 }}"
-couchdb_admins: "{
-  '{{ COUCH_USERNAME }}': '{{ COUCH_PASSWORD }}',
-}"
+
+# Used by TASK [andrewrothstein.couchdb-cluster-apt : configurate....]
+# couchdb_admins value is a dict
+couchdb_admins: "{{ {COUCH_USERNAME: COUCH_PASSWORD} }}"
+
 # mostly part of couchdb setup, but also needed outside of those roles by e.g. deploy_cloudwatch_logs.yml
 # which needs this variable to construct its logic on all machines, not just couchdb machines.
-couchdb_dir: "{{ '/usr/local/couchdb2/couchdb' if ansible_distribution_version == '18.04' else '/opt/couchdb' }}"
+couchdb_dir: "/opt/couchdb"
 
 is_redis_cluster: '{{ "redis_cluster_master" in groups and groups["redis_cluster_master"]|length > 1 }}'
 redis_bind: 0.0.0.0
-run_websockets_wsgi: False
 
 # commcare-hq connects to an S3-compatible service
 s3_blob_db_enabled: False
 s3_blob_db_url:
 s3_blob_db_s3_bucket:
+s3_blob_db_max_pool_connections:
 s3_bulk_delete_chunksize: 1000
 
 # For instructions on S3-to-S3 migrations, see docs/howto/migrate-s3-to-s3.md
@@ -77,44 +77,20 @@ old_s3_bulk_delete_chunksize: ~
 s3_blob_db_access_key: "{{ s3_access_key|default('') }}"
 s3_blob_db_secret_key:  "{{ s3_secret_key|default('') }}"
 
-datadog_integration_couch: false
-datadog_integration_elastic: false
-datadog_integration_gunicorn: false
-datadog_integration_kafka: false
-datadog_integration_kafka_consumer: false
-datadog_integration_nginx: false
-datadog_integration_pgbouncer: false
-datadog_integration_postgres: false
-datadog_integration_postgres_receiver: false
-datadog_integration_rabbitmq: false
-datadog_integration_redisdb: false
-datadog_integration_zk: false
-datadog_integration_http: false
-datadog_integration_haproxy: false
-datadog_integration_tcp_check: false
-datadog_integration_disk_check: true
 datadog_extra_host_checks: []
-datadog_patch_modules:
-  - requests:true
-  - gevent:true
-  - psycopg:true
-  - redis:true
-  - sqlalchemy:true
-  - elasticsearch:true
 
 root_email: commcarehq-ops+root@example.com
 server_email: commcarehq-noreply@example.com
 server_admin_email: commcarehq-ops+admins@example.com
 default_from_email: commcarehq-noreply@example.com
 support_email: support@example.com
-probono_support_email: pro-bono@example.com
 accounts_email: accounts@example.com
 data_email: datatree@example.com
 subscription_change_email: accounts+subchange@example.com
 internal_subscription_change_email: accounts+subchange+internal@example.com
 billing_email: sales@example.com
 invoicing_contact_email: accounts@example.com
-growth_email: growth@example.com
+growth_email: saas-revenue-team@example.com
 saas_ops_email: saas-ops@example.com
 saas_reporting_email: null
 master_list_email: master-list@example.com
@@ -131,13 +107,14 @@ new_domain_email: inquiries@example.com
 solutions_aes_email: null
 show_maintenance_updates_on_deploy: true
 
+# These UPPER_CASE names are a public per-environment config interface:
+# deployments set them and templates (localsettings.py.j2, ...) read them, so
+# renaming to lowercase would break existing deployments. var-naming for this
+# file is kept in .ansible-lint-ignore (it can't be suppressed inline in a vars file).
 ALTERNATE_HOSTS: []
-AMQP_HOST: "{{ groups.rabbitmq.0 }}"
-AMQP_NAME: commcarehq
-OLD_AMQP_HOST: null
-OLD_AMQP_NAME: commcarehq
-BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }}'
-OLD_BROKER_URL: "{{ ('amqp://' + OLD_AMQP_USER + ':' + OLD_AMQP_PASSWORD + '@' + OLD_AMQP_HOST + ':5672/' + OLD_AMQP_NAME) if OLD_AMQP_HOST else None }}"
+REDIS_BROKER_DB: '0'
+REDIS_BROKER_PORT: '6379'
+BROKER_URL: "redis://{{ REDIS_BROKER_HOST }}:{{ REDIS_BROKER_PORT }}/{{ REDIS_BROKER_DB }}"
 DROPBOX_APP_NAME: 'CommCareHQFiles'
 ELASTICSEARCH_PORT: 9200
 TWO_FACTOR_GATEWAY_ENABLED: False
@@ -157,6 +134,10 @@ aws_versioning_enabled: true
 nofile_limit: 4096
 keepalived_recepient_email: '{{ root_email }}'
 
+# Account pgbouncer uses to look up per-domain Project DB roles via auth_query.
+# Needed by both the postgresql_base and pgbouncer roles, hence defined here.
+pgbouncer_auth_username: pgbouncer_auth
+
 # this parameter is to set backups hour frequency, by default it will take backups for every '3' hours 
 # if hourly backups are enabled. 
 nadir_hour_frequency: 3
@@ -169,7 +150,8 @@ celery_hours_before_soft_kill: ~
 ansible_become_password: "{{ ansible_sudo_pass }}"
 
 # Java version for Formplayer
-java_17_bin_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64/bin
+java_17_home_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64
+java_17_bin_path: '{{ java_17_home_path }}/bin'
 
 #  To find this complete list, you can run:
 #  $ find . -type f | grep templates/supervisor_
@@ -178,7 +160,6 @@ java_17_bin_path: /usr/lib/jvm/java-1.17.0-openjdk-amd64/bin
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_prometheus.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_pillowtop.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_workers.conf.j2
-#  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_websockets.conf
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_formplayer_spring.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_management_commands.conf.j2
 #  ./src/commcare_cloud/ansible/roles/commcarehq/templates/supervisor_celery_flower.conf.j2
@@ -217,10 +198,6 @@ supervisor_service_files:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_pillowtop.conf"
     template: ../templates/supervisor_pillowtop.conf.j2
     should_exist: "{{ inventory_hostname in groups['pillowtop'] }}"
-  websockets:
-    file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_websockets.conf"
-    template: ../templates/supervisor_websockets.conf
-    should_exist: "{{ inventory_hostname in groups['proxy'] and run_websockets_wsgi }}"
   prometheus:
     file_path: "{{ service_home }}/{{ deploy_env }}_supervisor_prometheus.conf"
     template: ../templates/supervisor_prometheus.conf.j2
@@ -230,3 +207,9 @@ supervisor_service_files:
     file_path: "{{ service_home }}/{{ deploy_env }}_django_bash_runner.sh"
     template: ../templates/django_bash_runner.sh.j2
     should_exist: "{{ prometheus_monitoring_enabled|default(False) }}"
+
+filebeat_inputs:
+  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
+    tags: nginx-timing
+  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
+    tags: nginx-error

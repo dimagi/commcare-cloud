@@ -1,0 +1,16 @@
+- name: "Find stop scripts"
+  command: "find {{ chaos_dir }}/stop -executable -type f"
+  register: stop_scripts
+  changed_when: false
+  failed_when: false
+  tags:
+    - debug_stop
+
+- name: Stop chaos
+  command: "{{ item }}"
+  with_items: "{{ stop_scripts.stdout_lines }}"
+  tags:
+    - debug_stop
+
+- name: Remove chaos scripts
+  file: path="{{ chaos_dir }}" state=absent

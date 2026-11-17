@@ -177,8 +177,7 @@ Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
 specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers[0] will pick the first webworker. May also be
-omitted for environments with only a single server.
+example: webworkers[0] will pick the first webworker.
 
 Use '-' for default (django_manage[0])
 
@@ -189,7 +188,7 @@ Use '-' for default (django_manage[0])
 Connect to a remote host with ssh.
 
 ```
-commcare-cloud <env> ssh [--quiet] [server]
+commcare-cloud <env> ssh [--quiet] server
 ```
 
 This will also automatically add the ssh argument `-A`
@@ -208,8 +207,7 @@ Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
 specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers[0] will pick the first webworker. May also be
-omitted for environments with only a single server.
+example: webworkers[0] will pick the first webworker.
 
 Use '-' for default (django_manage[0])
 
@@ -279,6 +277,76 @@ Limitations:
 
 When used with --control, this command skips the slow setup.
 To force setup, use --control-setup=yes instead.
+
+##### Positional Arguments
+
+###### `source`
+
+Local pathname or remote host with optional path in the form [user@]host:[path].
+
+###### `target`
+
+Local pathname or remote host with optional path in the form [user@]host:[path].
+
+##### Options
+
+###### `--quiet`
+
+Don't output the command to be run.
+
+---
+
+#### ``rsync`` Command
+
+Copy file(s) over SSH with the ability to resume if disconnected.
+
+```
+commcare-cloud <env> rsync [--quiet] source target
+```
+
+##### By default, the following rsync options are used
+```
+- archive: preserve file structure, symlinks, etc
+- progress: shows progress
+- partial: keep partially transferred files if disrupted
+- append-verify: append to partially trasnferred files and verify checksum once complete
+
+If a remote host is not specified in either the `source` or
+`target`, the `source` host defaults to `django_manage[0]`.
+
+```
+##### Examples
+```
+
+Copy remote `django_manage` file to local current directory
+```
+cchq <env> rsync /tmp/file.txt .
+```
+
+Copy remote .txt files to local /texts/ directory
+```
+cchq <env> rsync webworkers[0]:'/tmp/*.txt' /texts/
+```
+
+Copy local file to remote path
+```
+cchq <env> rsync file.txt control:/tmp/other.txt
+```
+
+```
+##### Limitations
+```
+
+- Multiple `source` arguments are not supported.
+- File paths do not auto-complete.
+- Unlike normal `rsync`, options with values are most easily passed
+  after the `target` argument.
+- Copy from remote to remote is not supported.
+- Probably many more.
+
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
+```
 
 ##### Positional Arguments
 
@@ -654,7 +722,7 @@ Don't output the command to be run.
 Connect to a remote host with ssh and open a tmux session.
 
 ```
-commcare-cloud <env> tmux [--quiet] [server] [remote_command]
+commcare-cloud <env> tmux [--quiet] server [remote_command]
 ```
 
 When used with --control, this command skips the slow setup.
@@ -676,8 +744,7 @@ Server name/group: postgresql, proxy, webworkers, ... The server
 name/group may be prefixed with 'username@' to login as a
 specific user and may be terminated with '[<n>]' to choose one of
 multiple servers if there is more than one in the group. For
-example: webworkers[0] will pick the first webworker. May also be
-omitted for environments with only a single server.
+example: webworkers[0] will pick the first webworker.
 
 Use '-' for default (django_manage[0])
 
@@ -757,7 +824,7 @@ Output as CSV
 View and edit secrets through the CLI
 
 ```
-commcare-cloud <env> secrets {view,edit,list-append,list-remove} secret_name
+commcare-cloud <env> secrets [--from-stdin] {view,edit,list-append,list-remove} secret_name
 ```
 
 ##### Positional Arguments
@@ -765,6 +832,13 @@ commcare-cloud <env> secrets {view,edit,list-append,list-remove} secret_name
 ###### `{view,edit,list-append,list-remove}`
 
 ###### `secret_name`
+
+##### Options
+
+###### `--from-stdin`
+
+Read the new secret value from stdin instead of prompting interactively.
+Can only be used with the 'edit' subcommand.
 
 ---
 
@@ -1094,60 +1168,6 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 
 ---
 
-#### ``fab`` Command
-
-Placeholder for obsolete fab commands
-
-```
-commcare-cloud <env> fab [-l] [fab_command]
-```
-
-##### Positional Arguments
-
-###### `fab_command`
-
-The name of the obsolete fab command.
-
-##### Options
-
-###### `-l`
-
-Use `-l` instead of a command to see the full list of commands.
-
-##### Obsolete fab commands
-```
-
-Obsolete fab command       Replaced by 'commcare-cloud ENV ...'
---------------------       --------------------------------------
-check_status               ping all
-                           service postgresql status
-                           service elasticsearch status
-    
-clean_releases             clean-releases [--keep=N]
-deploy_commcare            deploy commcare
-kill_stale_celery_workers  kill-stale-celery-workers
-manage                     django-manage
-perform_system_checks      perform-system-checks
-preindex_views             preindex-views
-restart_services           service commcare restart
-restart_webworkers         service webworker restart
-rollback                   deploy commcare --resume=PREVIOUS_RELEASE
-
-Use the 'list-releases' command to get valid release names.
-    
-rollback_formplayer        ansible-playbook rollback_formplayer.yml --tags=rollback
-setup_limited_release      deploy commcare --private [--keep-days=N] [--commcare-rev=HQ_BRANCH]
-setup_release              deploy commcare --private --limit=all [--keep-days=N] [--commcare-rev=HQ_BRANCH]
-start_celery               service celery start
-start_pillows              service pillowtop start
-stop_celery                service celery stop
-stop_pillows               service pillowtop stop
-supervisorctl              service NAME ACTION
-update_current             deploy commcare --resume=RELEASE_NAME
-```
-
----
-
 #### ``deploy`` Command
 
 Deploy CommCare
@@ -1203,6 +1223,22 @@ Do not block deploy if Kafka checkpoints are unavailable.
 
 Generate new localsettings.py rather than copying from the previous
 release.
+
+---
+
+#### ``deploy-diff`` Command
+
+Display pull requests that would be deployed on master now.
+
+```
+commcare-cloud <env> deploy-diff [{commcare,formplayer}]
+```
+
+##### Positional Arguments
+
+###### `{commcare,formplayer}`
+
+Component to check deploy diff for. Default is 'commcare'.
 
 ---
 
@@ -1270,8 +1306,8 @@ Manage services.
 
 ```
 commcare-cloud <env> service [--only PROCESS_PATTERN]
-                             {celery,citusdb,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}
-                             [{celery,citusdb,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker} ...]
+                             {celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,redis,webworker}
+                             [{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,redis,webworker} ...]
                              {start,stop,restart,status,logs,help}
 ```
 
@@ -1293,7 +1329,7 @@ service and the `pgbouncer` service. We'll call the actual services
 
 ##### Positional Arguments
 
-###### `{celery,citusdb,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,rabbitmq,redis,webworker}`
+###### `{celery,commcare,couchdb2,elasticsearch,elasticsearch-classic,formplayer,kafka,nginx,pillowtop,postgresql,redis,webworker}`
 
 The name of the service group(s) to apply the action to.
 There is a preset list of service groups that are supported.
@@ -1645,7 +1681,7 @@ Set the last applied migration value to this number before running. Will begin r
 Use your MFA device to "sign in" to AWS for &lt;duration&gt; minutes (default 30)
 
 ```
-commcare-cloud <env> aws-sign-in [--duration-minutes DURATION_MINUTES]
+commcare-cloud <env> aws-sign-in [--duration-minutes DURATION_MINUTES] [--ses]
 ```
 
 This will store the temporary session credentials in ~/.aws/credentials
@@ -1658,6 +1694,12 @@ before having to sign in again.
 ###### `--duration-minutes DURATION_MINUTES`
 
 Stay signed in for this many minutes
+
+###### `--ses`
+
+Sign in with the SES profile (used for rotating SES IAM users)
+instead of the default profile. Requires `ses_config` to be set
+in aws.yml.
 
 ---
 
@@ -1693,17 +1735,78 @@ have been made to our actual resources in AWS.
 
 ---
 
+#### ``ec2`` Command
+
+Manage the EC2 instance state (start/stop/describe) of hosts in an AWS environment.
+
+```
+commcare-cloud <env> ec2 [--no-wait] [--unsafe]
+                         {describe,start,stop,stop_and_start} inventory_group [inventory_group ...]
+```
+
+`start` and `stop` show a check-mode preview of the state transitions
+and ask for confirmation before applying; `stop_and_start` asks for
+confirmation directly (a check-mode preview of a full cycle would show
+no net state change); `describe` just runs.
+
+`stop` and `stop_and_start` will eventually stop the services running
+on the hosts gracefully before stopping the EC2 instances. Until that
+is implemented they stop the instances outright, without draining
+services first, so they must be confirmed by passing `--unsafe`.
+
+When used with --control, this command skips the slow setup.
+To force setup, use --control-setup=yes instead.
+
+##### Example
+
+```
+commcare-cloud <env> ec2 describe webworkers
+commcare-cloud <env> ec2 stop celery:pillowtop --unsafe
+commcare-cloud <env> ec2 stop_and_start 10.201.11.133 10.201.11.134 --unsafe
+```
+
+##### Positional Arguments
+
+###### `{describe,start,stop,stop_and_start}`
+
+What to do to the matched instances.
+`describe` reports their current state without changing anything;
+`start`/`stop` are idempotent;
+`stop_and_start` stops the instances (if running) and starts them again.
+
+###### `inventory_group`
+
+One or more inventory items to act on. Each can be a group
+(e.g. `webworkers`), an individual host name or private IP
+(e.g. `10.201.11.133`), or any ansible host pattern
+(e.g. `celery:pillowtop`).
+
+##### Options
+
+###### `--no-wait`
+
+Return as soon as the state change is issued instead of waiting
+for instances to reach their final state.
+
+###### `--unsafe`
+
+Required to run `stop` and `stop_and_start`, which currently stop
+the EC2 instances without gracefully stopping the services running
+on them first. Has no effect on `describe` or `start`.
+
+---
+
 #### ``forward-port`` Command
 
 Port forward to access a remote admin console
 
 ```
-commcare-cloud <env> forward-port {flower,couch,elasticsearch}
+commcare-cloud <env> forward-port {couch,elasticsearch,flower}
 ```
 
 ##### Positional Arguments
 
-###### `{flower,couch,elasticsearch}`
+###### `{couch,elasticsearch,flower}`
 
 The remote service to port forward. Must be one of couch,elasticsearch,flower.
 

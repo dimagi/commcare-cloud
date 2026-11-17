@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import jsonobject
 
 
@@ -18,32 +16,16 @@ class ProxyConfig(jsonobject.JsonObject):
     nginx_ssl_ciphers = jsonobject.StringProperty(exclude_if_none=True)
     fake_ssl_cert = jsonobject.BooleanProperty(default=False)
     letsencrypt_cchq_ssl = jsonobject.BooleanProperty(default=False)
-    letsencrypt_cas_ssl = jsonobject.BooleanProperty(default=False)
     primary_ssl_env = jsonobject.StringProperty()
     trusted_proxies = jsonobject.ListProperty(str)
 
     special_sites = jsonobject.ListProperty(str)
-    
+
     extra_sites = jsonobject.ListProperty(str)
 
     nginx_block_ips = jsonobject.ListProperty(str)
 
-    CAS_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
-    cas_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
-    cas_key_value = jsonobject.StringProperty(exclude_if_none=True)
-
-    REACH_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
-    reach_errors_home = jsonobject.StringProperty(exclude_if_none=True)
-    reach_commcare_errors_branch = jsonobject.StringProperty(exclude_if_none=True)
-
-    TABLEAU_HOST = jsonobject.StringProperty(exclude_if_none=True)
-    tableau_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
-    tableau_key_value = jsonobject.StringProperty(exclude_if_none=True)
     tableau_server = jsonobject.StringProperty(exclude_if_none=True)
-
-    PNA_SITE_HOST = jsonobject.StringProperty(exclude_if_none=True)
-    pna_nginx_combined_cert_value = jsonobject.StringProperty(exclude_if_none=True)
-    pna_key_value = jsonobject.StringProperty(exclude_if_none=True)
 
     def check(self):
         pass

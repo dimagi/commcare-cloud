@@ -1,10 +1,10 @@
 dev_users:
   present:
-    - adunn
     - aphulera
-    - biyeun
+    - ayadav
     - cellowitz
     - chrissmit
+    - conroyricketts
     - csmit
     - ctsims
     - czue
@@ -15,43 +15,46 @@ dev_users:
     - esoergel
     - gherceg
     - jingcheng
-    - jschweers
-    - jtang
-    - matthewriley
-    - mlee
     - mkangia
     - mriese
     - nhooper
     - pverma
+    - rcostello
     - sgoyal
     - skelly
     - sravfeyn
-    - sherbers
-    - rcostello
     - zeng
-    - ayadav
-    - devanshhooda
+    - jtank
   absent:
+    - adunn
     - akjain
     - astone
-    - wpride
-    - gcapalbo
-    - jroth
-    - pvaidyanathan
-    - nsharma
-    - npellegrino
-    - gbova
-    - jemord
-    - sgoswami
-    - rkumar
-    - knguyen
-    - sbansal
-    - dchung
+    - biyeun
     - cstahl
+    - dchung
+    - devanshhooda
+    - dochoa
+    - gbova
+    - gcapalbo
+    - jemord
+    - jmiller
+    - jroth
+    - jschweers
+    - jtang
+    - knguyen
+    - matthewriley
+    - mlee
+    - mriley
+    - mperosa
+    - npellegrino
+    - nsharma
+    - pvaidyanathan
+    - rkumar
     - rnegi
     - rpietersen
-    - spokhriyal
-    - dochoa
-    - jmiller
-    - mperosa
+    - sbansal
     - schauhan
+    - sherbers
+    - sgoswami
+    - spokhriyal
+    - wpride

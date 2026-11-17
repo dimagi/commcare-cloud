@@ -1,10 +1,8 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import os
 import subprocess
 
 from unittest.mock import patch
-from parameterized import parameterized
+import pytest
 
 from argparse import ArgumentParser
 from commcare_cloud.commands.inventory_lookup.inventory_lookup import Ssh
@@ -29,9 +27,9 @@ class Args(object):
             setattr(self, key, value)
 
 
-@parameterized([
+@pytest.mark.parametrize("args,ssh_args,expected_cmd_parts", [
     (Args(server='bob@demo_server0', env_name='simple_ssh'), [],
-     ['ssh', 'ansible@172.19.3.0', '-t', '-o', 'UserKnownHostsFile={}/simple_ssh/known_hosts'.format(TEST_ENVIRONMENTS_DIR)]),
+     ['ssh', 'ansible@172.19.3.0', '-t', '-o', 'UserKnownHostsFile={}/simple_ssh/known_hosts'.format(TEST_ENVIRONMENTS_DIR)]),  # noqa: E501
     (Args(server='demo_server0', env_name='ssh_no_known_hosts'), [],
      ['ssh', 'ansible@172.19.3.0', '-t']),
     (Args(server='demo_server0', env_name='no_strict_known_hosts'), [],

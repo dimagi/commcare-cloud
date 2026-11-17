@@ -4,9 +4,10 @@ locals {
   // for more regions
   aws_elb_account_map = {
     us-east-1 = "127311923021"
+    us-east-2 = "033677994240"
     us-west-1 = "027434742980"
     ap-south-1 = "718504428378"
-    us-east-2 = "033677994240"
+    eu-west-1  = "156460612806"
   }
 
   hive_prefix = "year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}"
@@ -22,19 +23,44 @@ locals {
 data "aws_region" "current" {
 }
 
-resource "aws_wafv2_regex_pattern_set" "allow_xml_post_urls" {
-  name        = "XML_POST_urls"
+resource "aws_wafv2_regex_pattern_set" "allow_ssrf_urls" {
+  name        = "SSRF_urls"
+  description = "URLs that should circumvent EC2MetaDataSSRF_BODY rule"
+  scope       = "REGIONAL"
+
+  dynamic "regular_expression" {
+    for_each = var.commcarehq_ssrf_urls_regex
+    content {
+      regex_string = regular_expression.value.regex_string
+    }
+  }
+
+  tags = {}
+}
+
+resource "aws_wafv2_regex_pattern_set" "allow_xml_post_urls_0" {
+  name        = "XML_POST_urls_0"
   description = "URLs that should circumvent CrossSiteScripting_BODY rule"
   scope       = "REGIONAL"
 
   dynamic "regular_expression" {
-    for_each = var.commcarehq_xml_post_urls_regex
+    for_each = var.commcarehq_xml_post_urls_regex_0
     content {
-      # TF-UPGRADE-TODO: The automatic upgrade tool can't predict
-      # which keys might be set in maps assigned here, so it has
-      # produced a comprehensive set here. Consider simplifying
-      # this after confirming which keys can be set in practice.
+      regex_string = regular_expression.value.regex_string
+    }
+  }
 
+  tags = {}
+}
+
+resource "aws_wafv2_regex_pattern_set" "allow_xml_post_urls_1" {
+  name        = "XML_POST_urls_1"
+  description = "URLs that should circumvent CrossSiteScripting_BODY rule"
+  scope       = "REGIONAL"
+
+  dynamic "regular_expression" {
+    for_each = var.commcarehq_xml_post_urls_regex_1
+    content {
       regex_string = regular_expression.value.regex_string
     }
   }
@@ -98,7 +124,7 @@ resource "aws_wafv2_ip_set" "permanent_block" {
 
 resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
   name     = "CommCareWhitelistRules"
-  capacity = "50"
+  capacity = "112"
   scope    = "REGIONAL"
   visibility_config {
     cloudwatch_metrics_enabled = true
@@ -137,7 +163,7 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
   }
 
   rule {
-    name     = "AllowXMLBody"
+    name     = "AllowXMLBody0"
     priority = 1
 
     action {
@@ -147,7 +173,7 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
 
     statement {
       regex_pattern_set_reference_statement {
-        arn = aws_wafv2_regex_pattern_set.allow_xml_post_urls.arn
+        arn = aws_wafv2_regex_pattern_set.allow_xml_post_urls_0.arn
         field_to_match {
           uri_path {
           }
@@ -163,6 +189,165 @@ resource "aws_wafv2_rule_group" "commcare_whitelist_rules" {
       cloudwatch_metrics_enabled = true
       metric_name                = "AllowXMLBody"
       sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "AllowXMLBody1"
+    priority = 2
+
+    action {
+      allow {
+      }
+    }
+
+    statement {
+      regex_pattern_set_reference_statement {
+        arn = aws_wafv2_regex_pattern_set.allow_xml_post_urls_1.arn
+        field_to_match {
+          uri_path {
+          }
+        }
+        text_transformation {
+          priority = 0
+          type     = "NONE"
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AllowXMLBody"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "AllowSSRFBody"
+    priority = 3
+
+    action {
+      allow {
+      }
+    }
+
+    statement {
+      regex_pattern_set_reference_statement {
+        arn = aws_wafv2_regex_pattern_set.allow_ssrf_urls.arn
+        field_to_match {
+          uri_path {
+          }
+        }
+        text_transformation {
+          priority = 0
+          type     = "NONE"
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AllowSSRFBody"
+      sampled_requests_enabled   = true
+    }
+  }
+  rule {
+    name     = "AllowLocalhostInOAuthBody"
+    priority = 4
+
+    action {
+        allow {
+        }
+    }
+
+    statement {
+        and_statement {
+            statement {
+                regex_match_statement {
+                    regex_string = "^/oauth/*"
+
+                    field_to_match {
+                        uri_path {}
+                    }
+
+                    text_transformation {
+                        priority = 0
+                        type     = "NONE"
+                    }
+                }
+            }
+            statement {
+                regex_match_statement {
+                    regex_string = "redirect_uris?=[^&]*localhost"
+
+                    field_to_match {
+                        body {
+                            oversize_handling = "NO_MATCH"
+                        }
+                    }
+
+                    text_transformation {
+                        priority = 0
+                        type     = "NONE"
+                    }
+                }
+            }
+        }
+    }
+
+    visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "AllowLocalhostInOAuthBody"
+        sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "AllowLocalhostInOAuthQuery"
+    priority = 5
+
+    action {
+        allow {
+        }
+    }
+
+    statement {
+        and_statement {
+            statement {
+                regex_match_statement {
+                    regex_string = "^/oauth/*"
+
+                    field_to_match {
+                        uri_path {}
+                    }
+
+                    text_transformation {
+                        priority = 0
+                        type     = "NONE"
+                    }
+                }
+            }
+            statement {
+                regex_match_statement {
+                    regex_string = "redirect_uris?=[^&]*localhost"
+
+                    field_to_match {
+                        query_string {}
+                    }
+
+                    text_transformation {
+                        priority = 0
+                        type     = "NONE"
+                    }
+                }
+            }
+        }
+    }
+
+    visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "AllowLocalhostInOAuthQuery"
+        sampled_requests_enabled   = true
     }
   }
 }

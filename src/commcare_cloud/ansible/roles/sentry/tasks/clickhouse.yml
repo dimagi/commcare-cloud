@@ -21,9 +21,11 @@
     state: directory
     owner: clickhouse
     group: clickhouse
+    mode: '0750'
 
 - name: Copy clickhouse config files
   template:
     src: clickhouse.xml.j2
     dest: "/etc/clickhouse-server/config.d/clickhouse.xml"
+    mode: '0644'
   notify: restart clickhouse-server

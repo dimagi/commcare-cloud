@@ -5,11 +5,11 @@
     regexp: "^{{ old_shared_data_dir }} {{ item }}"
     state: absent
   with_flattened:
-    - groups.webworkers
-    - groups.proxy
-    - groups.celery
-    - groups.pillowtop
-    - groups.shared_dir_host
+    - "{{ groups.webworkers }}"
+    - "{{ groups.proxy }}"
+    - "{{ groups.celery }}"
+    - "{{ groups.pillowtop }}"
+    - "{{ groups.shared_dir_host }}"
   tags:
     - nfs-cleanup
 

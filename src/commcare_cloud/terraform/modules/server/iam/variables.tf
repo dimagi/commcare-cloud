@@ -4,3 +4,6 @@ variable "environment" {}
 variable "region_name" {}
 variable "account_alias" {}
 variable "s3_blob_db_s3_bucket" {}
+variable "old_s3_blob_db_s3_bucket" {
+  default = ""
+}

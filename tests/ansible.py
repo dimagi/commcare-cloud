@@ -12,7 +12,7 @@ def run(module, args):
     Callers are responsible for cleanup of changed system state.
     Arguments (paths, etc.) should reference temporary resources that
     can later be cleaned up by the caller. For example, utilities like
-    ``testil.tempdir()`` can be used to create temporary directories in
+    ``tempfile.TemporaryDirectory()`` can be used to create temporary directories in
     which the module can safely work without affecting other parts of
     the system on which the test is running.
 
@@ -25,16 +25,25 @@ def run(module, args):
     provided to load from some other location); otherwise a module
     object is expected.
     """
+    warnings = []
+
     def exit_json(*args, **kw):
+        kw.setdefault("warnings", warnings)
         raise Exit(kw)
+
     def fail_json(*args, **kw):
+        kw.setdefault("warnings", warnings)
         raise Fail(kw.get("msg", repr(kw)), kw)
+
+    def warn(self, msg):
+        warnings.append(msg)
     if isinstance(module, (str, Path)):
         module = import_module(module)
     with _module_args_patch(args), patch.multiple(
         module.AnsibleModule,
         fail_json=fail_json,
         exit_json=exit_json,
+        warn=warn,
     ):
         try:
             module.main()

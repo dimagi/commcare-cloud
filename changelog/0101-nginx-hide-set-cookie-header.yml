@@ -1,0 +1,31 @@
+title: Hide Set-Cookie header in nginx
+key: nginx-hide-set-cookie-header
+date: 2026-09-15
+optional_per_env: no
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version:
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  An issue was found in the nginx cache configuration
+  for certain requests under apps/download in CommCare HQ.
+
+details: |
+  Nginx supports caching responses, and by default does not cache
+  responses that include the "Set-Cookie" header field. The app
+  cache (apps/download) was configued to ignore this header, which
+  enabled caching responses despite containing the "Set-Cookie"
+  field.
+
+  This change adds the "proxy_hide_header: Set-Cookie" directive
+  to nginx, which ensures this header is not included in cached
+  responses.
+
+update_steps: |
+  To apply, simply run:
+
+  ```
+  commcare-cloud <env> ansible-playbook deploy_proxy.yml --tags=nginx_sites
+
+  ```
+

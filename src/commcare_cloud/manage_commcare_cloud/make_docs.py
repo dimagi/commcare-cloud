@@ -1,7 +1,3 @@
-from __future__ import print_function
-
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import html
 import inspect
 import os
@@ -16,7 +12,6 @@ from gettext import gettext as _
 
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.commcare_cloud import make_command_parser, COMMAND_GROUPS
-from six.moves import range
 
 
 class _Section(RawTextHelpFormatter._Section):
@@ -197,4 +192,3 @@ class MakeDocs(CommandBase):
         template = j2.get_template('commands.md.j2')
         print(template.render(parser=parser, subparsers_by_group=subparsers_by_group,
                               commands=commands), end='')
-

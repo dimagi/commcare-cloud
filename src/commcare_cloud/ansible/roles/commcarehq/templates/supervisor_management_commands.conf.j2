@@ -2,9 +2,10 @@
 [program:{{ project }}-{{ deploy_env }}-{{ command_name }}]
 directory={{ code_home }}
 environment=TMPDIR="{{ encrypted_tmp }}"
-environment={% for name, value in item.env_vars.items() %}{% if value|string|length > 0 %}{{ name }}="{{ value }}",{% endif %}{% endfor %}
+environment={% for name, value in [item, params]|env_vars %}{{ name }}="{{ value }}",{% endfor %}
 
-command={{ django_bash_runner if prometheus_monitoring_enabled else django_direct_runner }} {{ command_name }}
+command={% if params.env_vars.DD_TRACE_ENABLED|default(False) %}{{ virtualenv_home }}/bin/ddtrace-run {% endif -%}
+    {{ django_bash_runner if prometheus_monitoring_enabled else django_direct_runner }} {{ command_name }}
 user={{ cchq_user }}
 numprocs=1
 autostart=true

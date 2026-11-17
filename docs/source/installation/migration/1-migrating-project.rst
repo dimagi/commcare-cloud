@@ -122,7 +122,7 @@ will be unable to submit forms or sync with the server.
   run the data dumps.
 
   * ``./manage.py dump_domain_data <domain_name>`` 
-  * ``./manage.py run_blob_export --all <domain_name>``
+  * ``./manage.py run_blob_export <domain_name>``
 
   .. note::
      It is important to have the commit hash that ``dump_domain_data`` and ``run_blob_export`` were run from. If
@@ -160,7 +160,7 @@ will be unable to submit forms or sync with the server.
   should have been provided in Step 1. This ensures the database will be migrated to the same state it was in when
   the data was dumped.
 
-* Import the dump files (each blob file will need to be imported individually)
+* Import the dump files
 
   * ``./manage.py load_domain_data <filename.zip>``
   * ``./manage.py run_blob_import <filename.tar.gz>``

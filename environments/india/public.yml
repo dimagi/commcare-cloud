@@ -6,9 +6,9 @@ DATADOG_ENABLED: True
 
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 #elasticsearch_memory: '4096m'
-elasticsearch_cluster_name: 'indiahqes-1.x'
-elasticsearch_version: 5.6.16
-elasticsearch_download_sha256: 6b035a59337d571ab70cea72cc55225c027ad142fbb07fd8984e54261657c77f.
+elasticsearch_cluster_name: 'indiahqes'
+elasticsearch_version: 6.8.23
+elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
 elasticsearch_delete_old_logs: True
 
 backup_blobdb: False
@@ -18,10 +18,6 @@ postgres_s3: True
 postgresql_backup_weeks: 1
 postgresql_backup_days: 1
 
-citus_version: 9.4
-citus_postgresql_version: 12
-citus_postgresql_port: 5432
-
 aws_region: 'ap-south-1'
 
 formplayer_java_version: "{{ java_17_bin_path }}/java"
@@ -30,12 +26,6 @@ formplayer_sensitive_data_logging: true
 nofile_limit: 65536
 
 KSPLICE_ACTIVE: yes
-
-filebeat_inputs:
-  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
-    tags:  nginx-error
-  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
-    tags: nginx-timing
 
 kafka_version: 3.2.3
 kafka_scala_version: 2.13
@@ -49,17 +39,11 @@ zookeeper_version: 3.7.1
 zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
 zookeeper_cluster: True
 
-erlang: 1:24.3.3-1
-rabbitmq_version: 3.10.13-1
+# Celery Broker
+REDIS_BROKER_HOST: "broker.india.commcare.local"
 
-#RabbitMQ Broker URL
-BROKER_URL: 'amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}'
-
-AMQP_HOST: "{{ groups.rabbitmq.0 }}"
 
 control_machine_ip: 10.162.36.196
-
-run_websockets_wsgi: True
 
 show_maintenance_updates_on_deploy: False
 
@@ -71,7 +55,7 @@ couch_dbs:
     username: "{{ COUCH_USERNAME }}"
     password: "{{ COUCH_PASSWORD }}"
     is_https: False
-couchdb_version: '3.3.1'
+couchdb_version: '3.5.0'
 couchdb_rexi_use_kill_all: 'true'
 couchdb_reduce_limit: False
 couchdb_cluster_settings:
@@ -81,7 +65,7 @@ couchdb_cluster_settings:
   n: 3
 
 s3_blob_db_enabled: yes
-s3_blob_db_url: "https://s3.amazonaws.com"
+s3_blob_db_url: "https://s3.ap-south-1.amazonaws.com"
 s3_blob_db_s3_bucket: 'dimagi-commcare-india-blobdb'
 
 root_email: commcarehq-ops+root@dimagi.com
@@ -90,16 +74,15 @@ server_admin_email: commcarehq-ops+admins@dimagi.com
 default_from_email: commcarehq-noreply-india@dimagi.com
 return_path_email: commcarehq-bounces+india@dimagi.com
 support_email: support@dimagi.com
-probono_support_email: pro-bono@dimagi.com
 accounts_email: accounts@dimagi.com
 data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
 internal_subscription_change_email: accounts+subchange+internal@dimagi.com
 billing_email: sales@dimagi.com
 invoicing_contact_email: accounts@dimagi.com
-growth_email: growth@dimagi.com
+growth_email: saas-revenue-team@dimagi.com
 saas_ops_email: saas-ops@dimagi.com
-saas_reporting_email: saas-reporting@dimagi.com
+saas_reporting_email: accounts@dimagi.com
 master_list_email: master-list@dimagi.com
 sales_email: sales@dimagi.com
 privacy_email: privacy@dimagi.com
@@ -113,7 +96,6 @@ TWO_FACTOR_GATEWAY_ENABLED: True
 
 localsettings:
   ALLOWED_HOSTS:
-    - "{{ CAS_SITE_HOST }}"
     - "{{ J2ME_SITE_HOST }}"
   ALLOW_MAKE_SUPERUSER_COMMAND: False  
   ASYNC_INDICATORS_TO_QUEUE: 30000
@@ -122,6 +104,7 @@ localsettings:
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
+  CELERY_24_HOUR_QUEUE: "24_hour_queue"
   CELERY_BROKER_HEARTBEAT: 600
 #  COUCH_CACHE_DOCS:
 #  COUCH_CACHE_VIEWS:
@@ -135,8 +118,9 @@ localsettings:
   EMAIL_USE_TLS: yes
   ENABLE_SOFT_ASSERT_EMAILS: True
   ENFORCE_SSO_LOGIN: True
-  ELASTICSEARCH_MAJOR_VERSION: 5
+  ELASTICSEARCH_MAJOR_VERSION: 6
   ES_CASE_SEARCH_INDEX_NAME: "case_search_2022-10-14"
+  ES_MULTIPLEX_TO_VERSION: '6'
   # Index Multiplexer Settings  
   ES_APPS_INDEX_MULTIPLEXED: False
   ES_CASE_SEARCH_INDEX_MULTIPLEXED: False
@@ -147,14 +131,14 @@ localsettings:
   ES_SMS_INDEX_MULTIPLEXED: False
   ES_USERS_INDEX_MULTIPLEXED: False
   # Index Swap Settings  
-  ES_APPS_INDEX_SWAPPED: False
-  ES_CASE_SEARCH_INDEX_SWAPPED: False
-  ES_CASES_INDEX_SWAPPED: False
-  ES_DOMAINS_INDEX_SWAPPED: False
-  ES_FORMS_INDEX_SWAPPED: False
-  ES_GROUPS_INDEX_SWAPPED: False
-  ES_SMS_INDEX_SWAPPED: False
-  ES_USERS_INDEX_SWAPPED: False
+  ES_APPS_INDEX_SWAPPED: True
+  ES_CASE_SEARCH_INDEX_SWAPPED: True
+  ES_CASES_INDEX_SWAPPED: True
+  ES_DOMAINS_INDEX_SWAPPED: True
+  ES_FORMS_INDEX_SWAPPED: True
+  ES_GROUPS_INDEX_SWAPPED: True
+  ES_SMS_INDEX_SWAPPED: True
+  ES_USERS_INDEX_SWAPPED: True
   # Index Settings End
   IS_DIMAGI_ENVIRONMENT: True
   EULA_COMPLIANCE: True
@@ -162,10 +146,10 @@ localsettings:
   INACTIVITY_TIMEOUT: 20160
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
-    'first_line': "585 Massachusetts Ave"
+    'first_line': "245 Main St, 2nd Floor"
     'city': "Cambridge"
     'region': "MA"
-    'postal_code': "02139"
+    'postal_code': "02142"
     'country': "US"
     'phone_number': "(617) 649-2214"
     'email': "accounts@dimagi.com"
@@ -193,8 +177,9 @@ localsettings:
   SUMOLOGIC_URL: "{{ SUMOLOGIC_URL }}"
   SYNC_CASE_FOR_MESSAGING_ON_SAVE: False
 #  STATIC_ROOT:
-  WS4REDIS_CONNECTION_HOST: "redis.india.commcare.local"
   USER_REPORTING_METADATA_BATCH_ENABLED: True
+  CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
+  CONNECTID_ADD_USER_ANALYTICS_URL: 'https://connectid.dimagi.com/users/add_user_analytics'
   STATIC_TOGGLE_STATES:
     ucr_sum_when_templates:
       always_enabled:

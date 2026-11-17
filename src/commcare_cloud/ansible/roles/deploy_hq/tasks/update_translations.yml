@@ -7,3 +7,4 @@
   loop:
     - update_django_locales
     - compilemessages -v 0
+    - compilejsi18n

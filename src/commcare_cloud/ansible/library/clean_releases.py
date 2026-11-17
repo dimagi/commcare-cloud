@@ -1,7 +1,5 @@
 #! /usr/bin/env python3
-from __future__ import (absolute_import, division, print_function)
-
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 
 from ansible.module_utils.basic import AnsibleModule
@@ -114,7 +112,7 @@ def main():
         assert len(after) >= params["keep"], (diff, params["keep"])
         if not module.check_mode:
             keep_shares = {get_code_version(releases_path / k) for k in before - set(to_remove)}
-            keep_shares.add(None) # None prevents rm when get_code_version(...) returns None
+            keep_shares.add(None)  # None prevents rm when get_code_version(...) returns None
             for name in to_remove:
                 if shared_dir:
                     delete_shared(releases_path / name, shared_dir, keep_shares, module)

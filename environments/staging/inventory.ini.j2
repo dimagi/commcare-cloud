@@ -24,7 +24,7 @@ web14
 
 {{ __pgproxy6__ }} pgbouncer_processes=2 swap_size=2G
 
-{{ __pgbouncer2__ }}
+{{ __pgbouncer2__ }} pgbouncer_processes=2
 
 {{ __rds_pg0__ }}
 
@@ -68,14 +68,6 @@ couch_alb
 [couchdb2_alb:children]
 couch_alb
 
-{{ __rabbit_a3__ }}
-{{ __rabbit_b2__ }}
-
-[rabbitmq:children]
-# Amazon EC2
-rabbit_a3
-rabbit_b2
-
 {{ __kafka15__ }} kafka_broker_id=15 zookeeper_server_id=15
 {{ __kafka16__ }} kafka_broker_id=16 zookeeper_server_id=16
 {{ __kafka17__ }} kafka_broker_id=17 zookeeper_server_id=17
@@ -116,7 +108,6 @@ formplayer11
 
 [formplayer:vars]
 formplayer_efs_dns={{ aws_resources['formplayer-efs'] }}:/
-formplayer_fsx_dns={{ aws_resources['fsx_staging-fsx'] }}:/fsx
 cchq_uid=2002
 cchq_gid=3002
 
@@ -130,7 +121,7 @@ cchq_gid=3002
 
 {{ __es22__ }} elasticsearch_node_name=es22-staging elasticsearch_node_zone=us-east-1b
 
-{{ __es23__ }} elasticsearch_node_name=es23-staging elasticsearch_node_zone=us-east-1c
+{{ __es24__ }} elasticsearch_node_name=es24-staging elasticsearch_node_zone=us-east-1a
 
 [elasticsearch:children]
 # Amazon EC2
@@ -141,7 +132,7 @@ es_coordinator
 [es_master:children]
 es21
 es22
-es23
+es24
 
 [es_master:vars]
 elasticsearch_master=true
@@ -170,9 +161,6 @@ webworkers
 [control:children]
 control3
 
-[awsmq]
-{{ aws_resources['staging-mq-broker'] }}
-
 [ansible_skip:children]
 rds_pg0
 rds_pgformplayer0
@@ -182,7 +170,6 @@ pgucr_nlb
 pgsynclogs_nlb
 pgshard_nlb
 couch_alb
-awsmq
 
 
 [django_manage:children]

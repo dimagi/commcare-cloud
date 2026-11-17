@@ -6,7 +6,7 @@
   when: elasticsearch_version is version('7.0.0', '>=')
 
 - name: Downloads Directory
-  file: path="/home/{{ cchq_user }}/downloads/" state=directory
+  file: path="/home/{{ cchq_user }}/downloads/" state=directory mode=0755
 
 - name: Create elasticsearch user
   user: name=elasticsearch createhome=no password=no state=present
@@ -25,13 +25,6 @@
     state: present
   become: yes
 
-- name: Download Elasticsearch 5
-  become: yes
-  copy:
-    src: "elasticsearch-5.6.16.tar.gz"
-    dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
-  when: elasticsearch_version == "5.6.16"
-
 - name: Download Elasticsearch 6
   become: yes
   get_url:
@@ -39,7 +32,6 @@
     dest: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     checksum: "sha256:{{ elasticsearch_download_sha256 }}"
   when: elasticsearch_version is version('6.0.0', '>=') and elasticsearch_version is version('7.0.0', '<')
-
 
 - name: Download Elasticsearch 7
   become: yes
@@ -55,6 +47,7 @@
     src: "/home/{{ cchq_user }}/downloads/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     dest: /opt/
     copy: no
+  ignore_errors: '{{ ansible_check_mode }}'
 
 - name: Chown Elasticsearch
   become: yes
@@ -72,6 +65,7 @@
     state: directory
     owner: elasticsearch
     group: elasticsearch
+    mode: '0755'
 
 - name: Copy Elasticsearch Config
   become: yes
@@ -80,6 +74,7 @@
     dest: "{{ elasticsearch_conf_dir }}/elasticsearch.yml"
     owner: elasticsearch
     group: elasticsearch
+    mode: '0644'
   register: copy_elasticsearch_conf_result
   tags:
     - es_conf
@@ -91,6 +86,7 @@
     dest: "{{ elasticsearch_conf_dir }}/log4j2.properties"
     owner: elasticsearch
     group: elasticsearch
+    mode: '0644'
   register: copy_elasticsearch_logging_result
   tags:
     - es_conf
@@ -102,6 +98,7 @@
     dest: "{{ elasticsearch_conf_dir }}/jvm.options"
     owner: elasticsearch
     group: elasticsearch
+    mode: '0644'
   register: copy_elasticsearch_logging_result
   tags:
     - es_conf
@@ -112,12 +109,12 @@
     name: "elasticsearch>={{ elasticsearch_version.split('.')[0] }}.0.0,<{{ elasticsearch_version.split('.')[0] | int + 1 }}.0.0"
 
 - name: Check for installed plugins
-  shell: "{{ elasticsearch_home }}/bin/elasticsearch-plugin list"
+  command: "{{ elasticsearch_home }}/bin/elasticsearch-plugin list"
   register: installed_plugins
 
 - name: Install elasticsearch phonetic plugin
   become: yes
-  shell: "{{ elasticsearch_home }}/bin/elasticsearch-plugin install analysis-phonetic"
+  command: "{{ elasticsearch_home }}/bin/elasticsearch-plugin install analysis-phonetic"
   when: (installed_plugins.stdout is defined) and ('analysis-phonetic' not in installed_plugins.stdout) and es_plugins_phonetic_enabled
 
 - name: Copy Elasticsearch Systemd Conf
@@ -125,11 +122,13 @@
   template:
     src: systemd/elasticsearch.service.j2
     dest: /etc/systemd/system/elasticsearch.service
+    mode: '0644'
   register: copy_elasticsearch_systemd_result
   tags:
     - es_conf
 
-- name: Reload Systemd Daemon if Elasticsearch config changed and Restart ElasticSearch.
+- name: Reload Systemd Daemon if Elasticsearch config changed and Restart ElasticSearch.  # noqa: no-handler
+  # no-handler: restart is ordered within this play, not a deferred handler
   become: yes
   systemd:
     state: restarted
@@ -139,7 +138,9 @@
   tags:
     - es_conf
 
-- debug: msg="If you're just updating the ES conf then you sill need to restart the cluster. Use  the 'es_rolling_restart' playbook."
+- name: Remind to restart the cluster after an ES conf change  # noqa: no-handler
+  # no-handler: debug reminder tied to the conf-changed result
+  debug: msg="If you're just updating the ES conf then you sill need to restart the cluster. Use  the 'es_rolling_restart' playbook."
   when: copy_elasticsearch_conf_result.changed
 
 - name: Check if Elasticsearch data directories exist
@@ -170,7 +171,8 @@
   failed_when: (result.state is defined) and (result.state != "started")
   tags: after-reboot
 
-- name: Restart Elasticsearch
+- name: Restart Elasticsearch  # noqa: no-handler
+  # no-handler: restart is ordered within this play, not a deferred handler
   become: yes
   service: name=elasticsearch state=restarted
   when: copy_elasticsearch_conf_result.changed or copy_elasticsearch_logging_result.changed
@@ -187,7 +189,7 @@
   uri:
     url: 'http://{{ groups.elasticsearch.0 }}:9200/_snapshot/{{ es_repository_name }}'
     method: PUT
-    body: ' {"type": "s3", "settings": {"bucket": "{{ es_snapshot_bucket }}", "compress": "true", "server_side_encryption": "true", "endpoint": "{{aws_endpoint}}" }}'
+    body: ' {"type": "s3", "settings": {"bucket": "{{ es_snapshot_bucket }}", "compress": "true", "server_side_encryption": "true", "endpoint": "{{ aws_endpoint }}" }}'
   when: backup_es_s3 and inventory_hostname == groups.elasticsearch.0
   tags:
     - cron
@@ -283,6 +285,6 @@
     weekday: "1,2,3,4,5,6"
     user: root
     cron_file: delete_older_es_logs
-    state: '{{ "present" if elasticsearch_delete_old_logs else "absent"}}'
+    state: '{{ "present" if elasticsearch_delete_old_logs else "absent" }}'
   tags:
     - cron

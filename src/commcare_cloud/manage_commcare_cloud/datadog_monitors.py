@@ -1,5 +1,3 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 import difflib
 import os
 import re
@@ -7,7 +5,6 @@ from abc import ABCMeta, abstractmethod
 from io import open
 
 import jinja2
-import six
 import yaml
 from clint.textui import indent, puts
 from datadog import api, initialize
@@ -135,7 +132,6 @@ def get_monitor_definitions(config):
         if file.endswith('yml') and file != '.ignore.yml':
             file_path = os.path.join(CONFIG_ROOT, file)
             with open(file_path, 'r', encoding='utf-8') as mon:
-                # PY2: data is used in a yaml.safe_load below so will return a bytes str anyway
                 data = mon.read()
             monitor_def = render_messages(config, yaml.safe_load(data))
             monitors[monitor_def['id']] = monitor_def
@@ -225,7 +221,7 @@ class MonitorError(Exception):
     pass
 
 
-class MonitorAPI(six.with_metaclass(ABCMeta)):
+class MonitorAPI(metaclass=ABCMeta):
     def __init__(self, filtered_ids=None):
         self.filtered_ids = filtered_ids
 
@@ -355,7 +351,9 @@ class UpdateDatadogMonitors(CommandBase):
                 "No change will be applied for these:"
             ))
             for id, missing_monitor in sorted(only_remote.items()):
-                puts("  - Untracked monitor {} '{}' (no change will be applied)".format(id, missing_monitor['name']))
+                puts(
+                    "  - Untracked monitor {} '{}' (no change will be applied)".format(id, missing_monitor["name"])
+                )
             if ask("And BTW do you want to dump all untracked monitors as a starting point?"):
                 for id, missing_monitor in sorted(only_remote.items()):
                     local_monitor_api.create(id, missing_monitor)

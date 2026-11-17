@@ -29,6 +29,7 @@ postgresql_autovacuum_multixact_freeze_max_age: ~
 postgresql_autovacuum_max_workers: ~
 postgresql_autovacuum_analyze_scale_factor: ~
 postgresql_autovacuum_vacuum_scale_factor: ~
+postgresql_idle_in_transaction_session_timeout: ''
 postgresql_custom_settings: []
 
 postgresql_systemd_config_dir: "/etc/systemd/system/postgresql@.service.d"
@@ -54,8 +55,6 @@ postgresql_max_worker_processes: ~
 postgresql_max_parallel_workers_per_gather: ~
 postgresql_effective_io_concurrency: ~
 postgresql_max_locks_per_transaction: ~
-
-allow_direct_citusdb_access: no
 
 postgresql_apt_repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename}}-pgdg main"
 postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"

@@ -5,16 +5,7 @@
   vars:
     certbot_min_version: 1.6.0
   tasks:
-    # Installation instructions: https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx
-    - name: Remove legacy certbot apt repo
-      apt_repository: repo='ppa:certbot/certbot' state=absent
-
-    - name: Uninstall Certbot via APT
-      apt:
-        name: certbot
-        state: absent
-      ignore_errors: '{{ ansible_check_mode }}'
-
+    # Installation instructions: https://certbot.eff.org/instructions?ws=nginx&os=snap
     - name: Check certbot version
       shell: "test -x /usr/bin/certbot && certbot --version"
       register: certbot_version

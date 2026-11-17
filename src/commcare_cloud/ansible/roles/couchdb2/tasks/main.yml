@@ -13,13 +13,13 @@
         pkill cpu_sup
         pkill couchjs
         sleep 60
-      ignore_errors: yes
+      failed_when: false
   when: couchdb_version != couchdb_version_current and couchdb_version_current != "none"
 
 - name: Copy extra config
   template:
     src: extras.ini.j2
-    dest: "{{couchdb_dir}}/etc/local.d/extras.ini"
+    dest: "{{ couchdb_dir }}/etc/local.d/extras.ini"
     owner: '{{ couchdb_user }}'
     group: '{{ couchdb_group }}'
     mode: 0640
@@ -31,7 +31,7 @@
 
 - name: Add placement zone config
   lineinfile:
-    path: "{{couchdb_dir}}/etc/default.ini"
+    path: "{{ couchdb_dir }}/etc/default.ini"
     regexp: '^placement='
     line: "{{ couchdb_placement }}"
     insertafter: '^\[cluster\]'
@@ -74,14 +74,16 @@
   notify: restart couchdb2
 
 - name: Start couchdb2
-  shell: /bin/true
+  command: /bin/true
   notify: start couchdb2
   tags:
     - after-reboot
 
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers
 
 - name: Add nodes
+  no_log: true
   uri:
     url: "http{% if couchdb_secure %}s{% endif %}://{{ inventory_hostname|ipaddr }}:{% if couchdb_version is version('3.0.0', '>=') %}{{ couchdb_port }}/_node/_local{% else %}{{ couchdb_node_port }}{% endif %}/_nodes/couchdb@{{ item|ipaddr }}"
     method: PUT
@@ -91,6 +93,10 @@
     status_code: 201, 409 # 409 means already set up (conflict)
     body: '{}'
   when: inventory_hostname == groups.couchdb2.0 and item != groups.couchdb2.0
+  register: result
+  until: not result.failed or 'Connection refused' not in result.msg
+  retries: 5
+  delay: 10
   with_items: "{{ groups.couchdb2 }}"
   tags:
     - add_couch_nodes
@@ -161,7 +167,7 @@
     weekday: "1,2,3,4,5,6"
     user: couchdb
     cron_file: backup_couch
-    state: '{{ "present" if backup_couch and couch_backup_hourly else "absent"}}' 
+    state: '{{ "present" if backup_couch and couch_backup_hourly else "absent" }}' 
   tags:
     - cron
     - backups
@@ -175,7 +181,7 @@
     weekday: "1,2,3,4,5,6"
     user: couchdb
     cron_file: backup_couch
-    state: '{{ "present" if backup_couch else "absent"}}'
+    state: '{{ "present" if backup_couch else "absent" }}'
   tags:
     - cron
     - backups
@@ -189,7 +195,7 @@
     weekday: 0
     user: couchdb
     cron_file: backup_couch
-    state: '{{ "present" if backup_couch else "absent"}}'
+    state: '{{ "present" if backup_couch else "absent" }}'
   tags:
     - cron
     - backups
@@ -231,12 +237,14 @@
     - monit
 
 - name: Start monit
-  shell: /bin/true
+  command: /bin/true
   notify: start monit
 
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers
 
-- monit:
+- name: Enable monit monitoring for couchdb2
+  monit:
     name: couchdb2
     state: monitored
   ignore_errors: "{{ ansible_check_mode }}"

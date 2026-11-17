@@ -29,7 +29,7 @@ make more sense to optimise on resource costs.
 
 Importantly, optimum resource management requires accurate resource
 monitoring. For more details on this topic, see the CommCare Cloud
-documentation on :ref:`label_datadog-for-monitoring`.
+documentation on :ref:`monitoring`.
 
 Recommended Server Sizings for different loads
 ----------------------------------------------
@@ -80,7 +80,7 @@ cost.
 By monitoring which services are using what resources, that data will
 determine how to grow the cluster. For practical guidance on this topic,
 see the CommCare Cloud documentation on
-:ref:`label_datadog-for-monitoring`.
+:ref:`monitoring`.
 
 
 **Virtualization**

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 import json
 import os
 import re
@@ -188,7 +186,9 @@ def get_migrations():
             number = int(number_string)
             if number == 0:
                 continue
-            get_new_resource_address = runpy.run_path(os.path.join(MIGRATIONS_ROOT, file_name)).get('get_new_resource_address')
+            get_new_resource_address = runpy.run_path(os.path.join(MIGRATIONS_ROOT, file_name)).get(
+                "get_new_resource_address"
+            )
             migrations.append(
                 Migration(number=number, slug=slug,
                           get_new_resource_address=get_new_resource_address))

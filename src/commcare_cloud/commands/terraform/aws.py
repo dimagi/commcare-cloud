@@ -1,8 +1,8 @@
 # coding=utf-8
-from __future__ import absolute_import, print_function, unicode_literals
-
+import configparser
 import json
 import os
+import shlex
 import subprocess
 from datetime import datetime
 from dateutil import parser
@@ -16,7 +16,6 @@ import yaml
 from clint.textui import puts
 from memoized import memoized
 from simplejson import JSONDecodeError
-from six.moves import configparser, input, shlex_quote
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_notice, color_success
@@ -31,7 +30,7 @@ def check_output(cmd_parts, env, silent=False):
     env_vars = os.environ.copy()
     env_vars.update(env)
     if not silent:
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command('{} {}'.format(
             ' '.join('{}={}'.format(key, value) for key, value in env.items()),
             cmd,
@@ -44,7 +43,7 @@ def run(cmd_parts, env, silent=False):
     env_vars = os.environ.copy()
     env_vars.update(env)
     if not silent:
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command('{} {}'.format(
             ' '.join('{}={}'.format(key, value) for key, value in env.items()),
             cmd,
@@ -92,17 +91,6 @@ def get_aws_resources(environment):
         '--output', 'json', '--region', config.region,
     ])
 
-    awsmq_info = [{
-        'brokerid': brokerid,
-        'brokername': brokername,
-        'endpoint': '{brokerid}.mq.{config.region}.amazonaws.com:5671'.format(brokerid=brokerid, config=config)
-    } for brokername, brokerid in aws_cli(environment, [
-        'aws', 'mq', 'list-brokers',
-        '--query', 'BrokerSummaries[*].[BrokerName,BrokerId]',
-        "--output", "json",
-        "--region", config.region,
-    ])]
-
     nlb_endpoints = aws_cli(environment, [
         'aws', 'elbv2', 'describe-load-balancers',
         '--query', "LoadBalancers[?Type=='network'].[LoadBalancerName,DNSName]",
@@ -121,16 +109,6 @@ def get_aws_resources(environment):
         'efs_dns': '{efs_id}.efs.{config.region}.amazonaws.com'.format(efs_id=efs_id, config=config)
     } for (name,), efs_id in aws_cli(environment, [
         'aws', 'efs', 'describe-file-systems', '--query', "FileSystems[*][Tags[?Key=='Name'].Value,FileSystemId]",
-        "--output", "json",
-        "--region", config.region,
-    ])]
-
-    fsx_info = [{
-        'name': name,
-        'fsx_id': fsx_id,
-        'fsx_dns': '{fsx_id}.fsx.{config.region}.amazonaws.com'.format(fsx_id=fsx_id, config=config)
-    } for (name,), fsx_id in aws_cli(environment, [
-        'aws', 'fsx', 'describe-file-systems', '--query', "FileSystems[*][Tags[?Key=='Name'].Value,FileSystemId]",
         "--output", "json",
         "--region", config.region,
     ])]
@@ -157,12 +135,6 @@ def get_aws_resources(environment):
 
     for info in efs_info:
         resources['{name}-efs'.format(**info)] = info['efs_dns']
-
-    for info in fsx_info:
-        resources['{name}-fsx'.format(**info)] = info['fsx_dns']
-
-    for info in awsmq_info:
-        resources[info['brokername']] = info['endpoint']
 
     return resources
 
@@ -210,7 +182,6 @@ class AwsFillInventory(CommandBase):
                 f.write(yaml.safe_dump(resources, default_flow_style=False))
         else:
             with open(environment.paths.aws_resources_yml, 'r', encoding='utf-8') as f:
-                # PY2: yaml.safe_load will return bytes when the content is ASCII-only bytes
                 resources = yaml.safe_load(f.read())
 
         with open(environment.paths.inventory_ini_j2, 'r', encoding='utf-8') as f:
@@ -222,7 +193,6 @@ class AwsFillInventory(CommandBase):
             # reflecting that we were unable to create it
             out_string = AwsFillInventoryHelper(environment, inventory_ini_j2,
                                                 resources).render()
-            # PY2: out_string is unicode based on Jinja2 render method
             f.write(out_string)
 
 
@@ -341,13 +311,20 @@ class AwsSignIn(CommandBase):
     arguments = [
         Argument('--duration-minutes', type=int, default=DEFAULT_SIGN_IN_DURATION_MINUTES, help="""
             Stay signed in for this many minutes
-        """)
+        """),
+        Argument('--ses', action='store_true', default=False, help="""
+            Sign in with the SES profile (used for rotating SES IAM users)
+            instead of the default profile. Requires `ses_config` to be set
+            in aws.yml.
+        """),
     ]
 
     def run(self, args, unknown_args):
         environment = get_environment(args.env_name)
-        duration_minutes = args.duration_minutes
-        aws_sign_in(environment, duration_minutes, force_new=True)
+        if args.ses:
+            aws_sign_in_for_ses(environment)
+        else:
+            aws_sign_in(environment, args.duration_minutes, force_new=True)
 
 
 AWS_CREDENTIALS_PATH = os.path.expanduser('~/.aws/credentials')
@@ -368,8 +345,6 @@ def aws_sign_in(environment, duration_minutes=DEFAULT_SIGN_IN_DURATION_MINUTES, 
 
     _ensure_all_dirs(AWS_DOT_DIR)
     if environment.aws_config.credential_style == 'sso':
-        for path in (AWS_SSO_CACHE_DIR, AWS_CLI_CACHE_DIR):
-            _ensure_all_dirs(path)
         return _aws_sign_in_with_sso(environment)
     else:
         return _aws_sign_in_with_iam(environment.terraform_config.aws_profile, duration_minutes=duration_minutes,
@@ -396,7 +371,7 @@ def is_ec2_instance_in_account(account_id):
         else:
             return False
 
-    except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
+    except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
         return False
 
     return aws_instance_identity_doc.get('accountId') == account_id
@@ -423,28 +398,70 @@ def _aws_sign_in_with_sso(environment):
     :return: The name of temp session profile.
              (Always the passed in profile followed by ':session')
     """
-    aws_session_profile = '{}:session'.format(environment.terraform_config.aws_profile)
-    # todo: add `... or if _date_modified(AWS_CONFIG_PATH) > _date_modified(AWS_CREDENTIALS_PATH)`
-    if not _has_profile_for_sso(aws_session_profile):
-        puts(color_notice(
-            "Configuring SSO. To further customize, run `aws configure sso "
-            "--profile {}`".format(
-                aws_session_profile)))
-        _write_profile_for_sso(
-            aws_session_profile,
-            sso_start_url=environment.aws_config.sso_config.sso_start_url,
-            sso_account_id=environment.aws_config.sso_config.sso_account_id,
-            sso_region=environment.aws_config.sso_config.sso_region,
-            region=environment.aws_config.sso_config.region,
-        )
-
-    if not _has_valid_session_credentials_for_sso():
-        _refresh_sso_credentials(aws_session_profile)
+    aws_session_profile = f'{environment.terraform_config.aws_profile}:session'
+    sso_config = environment.aws_config.sso_config
+    _ensure_sso_profile_signed_in(
+        aws_session_profile,
+        sso_start_url=sso_config.sso_start_url,
+        sso_region=sso_config.sso_region,
+        sso_account_id=sso_config.sso_account_id,
+        sso_role_name='PowerUserAccessPlus',
+        region=sso_config.region,
+    )
 
     if not _has_valid_v1_session_credentials(aws_session_profile):
         _sync_sso_to_v1_credentials(aws_session_profile)
 
     return aws_session_profile
+
+
+def aws_sign_in_for_ses(environment):
+    """
+    Create or update an SSO profile named "<aws_profile>:ses" for managing SES IAM users.
+
+    Unlike the default profile, this assumes an EmailAdmin role in the central account
+    where SES IAM users live (defined in the env's `ses_config`).
+    """
+    ses_config = environment.aws_config.ses_config
+    if not ses_config or not ses_config.account_id:
+        raise ValueError(
+            f"ses_config is not set in aws.yml for environment {environment.name}")
+
+    aws_ses_profile = f'{environment.terraform_config.aws_profile}:ses'
+    sso_config = environment.aws_config.sso_config
+    _ensure_sso_profile_signed_in(
+        aws_ses_profile,
+        sso_start_url=sso_config.sso_start_url,
+        sso_region=sso_config.sso_region,
+        sso_account_id=ses_config.account_id,
+        sso_role_name=ses_config.role_name,
+        region=ses_config.region,
+    )
+    return aws_ses_profile
+
+
+def _ensure_sso_profile_signed_in(
+        profile_name, sso_start_url, sso_region, sso_account_id, sso_role_name, region):
+    """Make sure ~/.aws/config has a [profile <profile_name>] section, and that we have a valid SSO session."""
+    for path in (AWS_DOT_DIR, AWS_SSO_CACHE_DIR, AWS_CLI_CACHE_DIR):
+        _ensure_all_dirs(path)
+
+    # todo: add `... or if _date_modified(AWS_CONFIG_PATH) > _date_modified(AWS_CREDENTIALS_PATH)`
+    if not _has_profile_for_sso(profile_name):
+        puts(color_notice(
+            "Configuring SSO. To further customize, run "
+            f"`aws configure sso --profile {profile_name}`"))
+        _write_profile_for_sso(
+            profile_name,
+            sso_start_url=sso_start_url,
+            sso_region=sso_region,
+            sso_account_id=sso_account_id,
+            sso_role_name=sso_role_name,
+            region=region,
+        )
+
+    if not _has_valid_session_credentials_for_sso():
+        _refresh_sso_credentials(profile_name)
 
 
 def _sync_sso_to_v1_credentials(aws_session_profile):
@@ -467,6 +484,8 @@ def _sync_sso_to_v1_credentials(aws_session_profile):
             try:
                 data = json.load(f)
             except JSONDecodeError:
+                continue
+            except UnicodeDecodeError:
                 continue
 
             if data.get('ProviderType') != 'sso':
@@ -610,6 +629,7 @@ def _write_profile_for_sso(
         sso_start_url,
         sso_region,
         sso_account_id,
+        sso_role_name,
         region):
     config = configparser.ConfigParser()
     config.read(os.path.realpath(AWS_CONFIG_PATH))
@@ -620,7 +640,7 @@ def _write_profile_for_sso(
     config.set(section, 'sso_start_url', sso_start_url)
     config.set(section, 'sso_region', sso_region)
     config.set(section, 'sso_account_id', sso_account_id)
-    config.set(section, 'sso_role_name', 'PowerUserAccessPlus')
+    config.set(section, 'sso_role_name', sso_role_name)
     config.set(section, 'region', region)
     config.set(section, 'output', 'json')
     with open(AWS_CONFIG_PATH, 'w', encoding='utf-8') as f:

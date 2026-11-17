@@ -1,8 +1,0 @@
-ignore_kafka_checkpoint_warning: True
-code_repo: 'https://github.com/dimagi/commcare-hq.git'
-default_branch: master
-project: 'commcare-hq'
-email_enabled: False
-#timezone: Africa/Addis_Ababa
-#py3_include_venv: True
-#py3_run_deploy: True

@@ -40,7 +40,7 @@ https://www.commcarehq.org/hq/admin/system/check_services - plaintext URL that c
 
 
 Control machine log files
-===================
+=========================
 There are two log files on the control machine that might be useful to reference if you need to know what commands were executed.
 These files are located in the `/var/log/` directory and are:
 
@@ -152,24 +152,20 @@ Note: /dev/sdX device where ``/`` is mounted
 
 **Steps:**
 
+1. open **/etc/default/grub**
 
- 	1. open **/etc/default/grub**
+2. add the following parameters **fsck.mode=force fsck.repair=yes**::
 
- 	2. add the following parameters **fsck.mode=force fsck.repair=yes**
+    GRUB_CMDLINE_LINUX_DEFAULT="quiet splash fsck.mode=force fsck.repair=yes"
 
- 		::
-         GRUB_CMDLINE_LINUX_DEFAULT="quiet splash fsck.mode=force fsck.repair=yes"
+   the new parameters added here are: **fsck.mode=force fsck.repair=yes**
 
-		the new parameters added here are: **fsck.mode=force fsck.repair=yes**
+   **caution:** Make sure you don't edit anything else, and that the edits you've made are correct, or else your 
+   computer may fail to boot
 
+3. update grub configuration::
 
-	**caution:** Make sure you don't edit anything else, and that the edits you've made are correct, or else your 
-	computer may fail to boot
-
-
-	3. update grub configuration
-		::
-         sudo update-grub
+    sudo update-grub
 
 
 
@@ -207,8 +203,6 @@ Datadog Dashboards
 `postgres/pgbouncer <https://app.datadoghq.com/dash/263336/postgres---overview>`_
 
 `redis <https://app.datadoghq.com/dash/290868/redis-timeboard>`_
-
-`rabbitmq <https://app.datadoghq.com/screen/487480/rabbitmq---overview>`_
 
 `pillow <https://app.datadoghq.com/dash/256236/change-feeds-pillows>`_
 
@@ -253,7 +247,7 @@ Couch node is down
 
 If a couch node is down, the couch disk might be full. In that case, see `Couch node data disk is full <#couch-node-data-disk-is-full>`_ below. Otherwise, it could mean that the node is slow to respond, erroring frequently, or that the couch process or VM itself in a stopped state.
 
-Monitors are setup to ping the proxy instead of couch instance directly, so the error will appear as "instance:http://\ :raw-html-m2r:`<proxy ip>`\ /\ *node/couchdb*\ :raw-html-m2r:`<couch node ip>`\ /".
+Monitors are setup to ping the proxy instead of couch instance directly, so the error will appear as "instance:http://<proxy ip>/node/couchdb/<couch node ip>/".
 
 
 #. log into couch node ip
@@ -291,7 +285,7 @@ Couch node data disk is full
 ----------------------------
 
 Stop routing data to the node
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If there is more than one couch node, and the other nodes are healthy, the fastest way to get to a calmer place is to pull the node with the full disk out of the proxy so requests stop getting routed to it. First
 
@@ -315,7 +309,7 @@ To stop routing data to the node:
        cchq production run-shell-command <node-name> 'monit stop couchdb2' -b
 
 Increase its disk
-^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~
 
 The steps for this will differ depending on your hosting situation.
 
@@ -324,7 +318,7 @@ Link to internal Dimagi docs on `How to modify volume size on AWS <https://confl
 Once the disk is resized, couchdb should start normally. You may want to immediately investigate how to compact more aggressively to avoid the situation again, or to increase disk on the other nodes as well, since what happens on one is likely to happen on others sooner rather than later barring any other changes.
 
 Add the node back
-^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~
 
 Once the node has enough disk
 
@@ -332,7 +326,7 @@ Once the node has enough disk
 #. Start the node (or ensure that it's already started)
 #. Force `internal replication <https://docs.couchdb.org/en/stable/cluster/sharding.html#forcing-synchronization-of-the-shard-s>`_.
 #. Verify `internal replication is up to date <https://docs.couchdb.org/en/stable/cluster/sharding.html#monitor-internal-replication-to-ensure-up-to-date-shard-s>`_.
-#. Clear node `maintenance mode <https://docs.couchdb.org/en/stable/cluster/sharding.html#clear-the-target-node-s-maintenance-mode>`_.
+#. Clear node `maintenance mode_off <https://docs.couchdb.org/en/stable/cluster/sharding.html#clear-the-target-node-s-maintenance-mode>`_.
 #. Reset your inventory.ini to the way it was (i.e. with the node present under the ``[couchdb2]`` group)
 #. Run the same command again to now route a portion of traffic back to the node again:
    .. code-block:: bash
@@ -402,15 +396,21 @@ backups. General steps once nodes are setup with snapshots of production data:
   `couch_node_standalone_fix.py <https://gist.github.com/snopoke/f5c81497f6cbf3937dce2734e2b354a5>`_
   script can be used to do this.
 
-DefaultChangeFeedPillow is millions of changes behind
------------------------------------------------------
+A couch change feed pillow is millions of changes behind
+--------------------------------------------------------
 
 Background
-^^^^^^^^^^
+~~~~~~~~~~
 
 Most of our change feed processors (pillows) read from Kafka, but a small number of them serve
-to copy changes from the CouchDB ``_changes`` feeds *into* Kafka,
-the main such pillow being ``DefaultChangeFeedPillow``.
+to copy changes from the CouchDB ``_changes`` feeds *into* Kafka.
+Currently the pillows that do this are
+- AppDbChangeFeedPillow
+- CacheInvalidatePillow
+- DomainDbKafkaPillow
+- UserGroupsDbKafkaPillow
+- UserCacheInvalidatePillow
+
 These pillows store as a checkpoint a CouchDB "seq", a long string that references a place
 in the _changes feed. While these ``seq``\ s have the illusion of durability
 (that is, if couch gives you one, then couch will remember it when you pass it back)
@@ -429,7 +429,7 @@ This results in what we sometimes call a "rewind", when a couch change feed proc
 suddenly becomes millions of changes behind.
 
 What to do
-^^^^^^^^^^
+~~~~~~~~~~
 
 If you encounter a pillow rewind, you can fix it by
 
@@ -442,7 +442,7 @@ Figure out when the rewind happened
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Look at https://app.datadoghq.com/dashboard/ewu-jyr-udt/change-feeds-pillows for the right
-environment, and look for a huge jump in needs_processed for DefaultChangeFeedPillow.
+environment, and look for a huge jump in needs_processed for the relevant pillow.
 
 Find a recent ``seq``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -479,7 +479,8 @@ and manually change the checkpoint using something like the following lines
    # in django shell
    seq = '131585621-g1AAAAKzeJzLYWBg4MhgTmEQTc4vTc5ISXIwNNAzMjDSMzHQMzQ2zQFKMyUyJMn___8_K4M5ieFXGmMuUIw9JdkkxdjEMoVBBFOfqTkuA40MwAYmKQDJJHu4mb_cwWamJZumpiaa49JKyFAHkKHxcEP31oMNNTJMSbIwSCbX0ASQofUwQ3_-uQI21MwkKcnYxAyfoVjCxdIcbGYeC5BkaABSQGPnQxw7yQZibpJpooGFGQ7dxBi7AGLsfrCxfxKPg401MDI2MzClxNgDEGPvQ1zrWwA2NsnCyCItLYkCYx9AjIUE7p8qSDIAutXQwMwAV5LMAgCrhbmz'
    from pillowtop.utils import get_pillow_by_name
-   p = get_pillow_by_name('DefaultChangeFeedPillow')
+   # Let's assume we are investigating AppDbChangeFeedPillow
+   p = get_pillow_by_name('AppDbChangeFeedPillow')
    p.checkpoint.update_to(seq)
 
 Nginx
@@ -521,7 +522,7 @@ Troubleshooting
 ---------------
 
 Reconnecting the NFS client
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is possible that the mounted NFS folder on the client machines becomes disconnected from the host in which case you'll see errors like "Webpage not available"
 
@@ -535,7 +536,7 @@ To verify that this is the issue log into the proxy machine and check if there a
    # verify that it is mounted and that there are files in the subfolders
 
 Forcing re-connection of an NFS client in a webworker (or other commcarehq machine)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It may happen, specially if the client crashes or has kernel oops, that a connection gets in a state where it cannot be broken nor re-established.  This is how we force re-connection in a webworker.
 
@@ -648,7 +649,7 @@ Sometimes Postgres gets into a state where it has too many open connections. In 
 In this case you can check what machines are hogging connections by logging into postgres and using the following steps:
 
 Get a postgres shell
-^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~
 
 .. code-block::
 
@@ -656,7 +657,7 @@ Get a postgres shell
    $ sudo -u postgres psql commcarehq
 
 Check open connections
-^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: sql
 
@@ -687,7 +688,7 @@ When using pgbouncer the following command can be used to list clients:
         2  10.104.103.104
 
 See Running Queries
-^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~
 
 To see a list of queries (ordered by the long running ones first) you can do something like the following. This can also be exported to csv for further analysis.
 
@@ -702,19 +703,19 @@ To see a list of queries (ordered by the long running ones first) you can do som
    Copy (SELECT state, query_start, client_addr, query FROM pg_stat_activity ORDER BY query_start) TO '/tmp/pg_queries.csv' WITH CSV;
 
 Find queries that are consuming IO
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Use ``iotop`` to see what processes are dominating the IO and get their process IDs.
 
 Filter the list of running queries by process ID:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: sql
 
-   SELECT pid, query_start, now() - query_start as duration, client_addr, query FROM pg_stat_activity WHERE procpid = {pid} ORDER BY query_start;
+   SELECT pid, query_start, now() - query_start as duration, client_addr, query FROM pg_stat_activity WHERE procpid = :pid ORDER BY query_start;
 
 Kill connections
-^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~
 
 *DO NOT EVER ``kill -9`` any PostgreSQL processes. It can bring the DB process down.*
 
@@ -734,7 +735,7 @@ Kill a single query
 
 .. code-block:: sql
 
-   SELECT pg_terminate_backend({procpid})
+   SELECT pg_terminate_backend(procpid)
 
 Replication Delay
 ^^^^^^^^^^^^^^^^^
@@ -778,7 +779,7 @@ PostgreSQL disk usage
 Use the following query to find disc usage by table where child tables are added to the usage of the parent.
 
 Table size
-^^^^^^^^^^
+~~~~~~~~~~
 
 .. code-block:: sql
 
@@ -800,7 +801,7 @@ Table size
    ) a order by total_bytes desc;
 
 Table size grouped by parent table
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: sql
 
@@ -830,7 +831,7 @@ Table size grouped by parent table
    ) as a;
 
 Table stats grouped by parent table
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: sql
 
@@ -859,7 +860,7 @@ Table stats grouped by parent table
    ORDER BY n_tup_ins DESC;
 
 Disk Full on Data partition
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In Case PostgreSQL fails with  ``No space left on device`` error message and in order to free up space needed to restart the PostgreSQL then take the following steps
 
@@ -874,7 +875,7 @@ In Case PostgreSQL fails with  ``No space left on device`` error message and in 
       dd if=/dev/zero of=/opt/data/emerg_delete.dummy count=1024 bs=1048576
 
 Deleting old WAL logs
-^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~
 
 At all the times, PostgreSQL maintains a write-ahead log (WAL) in the pg_xlog/ for version <10 and in pg_wal/ for version >=10 subdirectory of the cluster’s data directory. The log records for every change made to the database’s data files. These log messages exists primarily for crash-safety purposes.
 
@@ -1056,9 +1057,9 @@ Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a 
 
 
   * Reroute according to existing shard allocation
-  * 
-    The rerouting of unassigned primary shards will cause data loss (w.r.t es_2.4.6). :raw-html-m2r:`<br>`
-    :warning: The :raw-html-m2r:`<b>allow_primary</b>` parameter will force a new empty primary shard to be allocated without any data. If a node which has a copy of the original shard (including data) rejoins the cluster later on, that data will be deleted: the old shard copy will be replaced by the new live shard copy.
+  * The rerouting of unassigned primary shards will cause data loss (w.r.t es_2.4.6).
+
+    **Warning** The **allow_primary** parameter will force a new empty primary shard to be allocated without any data. If a node which has a copy of the original shard (including data) rejoins the cluster later on, that data will be deleted: the old shard copy will be replaced by the new live shard copy.
 
   * 
     Example reroute command to allocate replica shard
@@ -1075,24 +1076,24 @@ Currently on ICDS (maybe on prod/india) shard allocation is disabled. In case a 
   * Turn on auto shard allocation using
     .. code-block::
 
-       curl 'http://<es_url>/_cluster/settings/' -X PUT  --data '{"transient":{"cluster.routing.allocation.enable":"all"}}'
+       curl 'http://<es_url>/_cluster/settings/' -X PUT -H 'Content-Type: application/json' --data '{"transient":{"cluster.routing.allocation.enable":"all"}}'
 
   * Wait for replicas to get assigned.
 
 * Finally **remember to turn off** auto shard allocation using
   .. code-block::
 
-       curl 'http://<es_url>/_cluster/settings/' -X PUT  --data '{"transient":{"cluster.routing.allocation.enable":"none"}}'
+       curl 'http://<es_url>/_cluster/settings/' -X PUT -H 'Content-Type: application/json' --data '{"transient":{"cluster.routing.allocation.enable":"none"}}'
 
 .. code-block::
 
-   curl -XPUT '<es url/ip>:9200/_cluster/settings' -d '{ "transient":
+   curl -XPUT -H 'Content-Type: application/json' '<es url/ip>:9200/_cluster/settings' -d '{ "transient":
      { "cluster.routing.allocation.enable" : "all"
      }
    }'
    # wait for shards to be allocated
    ./scripts/elasticsearch-administer.py <es url> shard_status # all shards should say STARTED
-   curl -XPUT '<es url/ip>:9200/_cluster/settings' -d '{ "transient":
+   curl -XPUT -H 'Content-Type: application/json' '<es url/ip>:9200/_cluster/settings' -d '{ "transient":
      { "cluster.routing.allocation.enable" : "none"
      }
    }'
@@ -1122,9 +1123,9 @@ Disk full / filling rapidly
 ---------------------------
 
 Is maxmemory set too high wrt actual memory?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We have seen a situation where the redis disk fills up with files of the pattern /opt/data/redis/temp-rewriteaof-*.aof. This happens when redis maxmemory is configured to be too high a proportion of the total memory (although the connection is unclear to the author, Danny). This blog http://oldblog.antirez.com/post/redis-persistence-demystified.html/ explains AOF rewrite files. The solution is to (1) lower maxmemory and (2) delete the temp files.
+We have seen a situation where the redis disk fills up with files of the pattern ``/opt/data/redis/temp-rewriteaof-*.aof``. This happens when redis maxmemory is configured to be too high a proportion of the total memory (although the connection is unclear to the author, Danny). This blog http://oldblog.antirez.com/post/redis-persistence-demystified.html/ explains AOF rewrite files. The solution is to (1) lower maxmemory and (2) delete the temp files.
 
 .. code-block::
 
@@ -1136,7 +1137,7 @@ We have seen a situation where the redis disk fills up with files of the pattern
    root@redis0:/opt/data/redis# rm temp-rewriteaof-\*.aof
 
 Is your disk at least 3x your maxmemory?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We use the `default AOF auto-rewrite configuration <https://github.com/redis/redis/blob/5.0/redis.conf#L757-L770>`_\ , which is to rewrite the AOF (on-disk replica of in-memory redis data) whenever it doubles in size. Thus disk usage will sawtooth between X and 3X where X is the size of the AOL after rewrite: X right rewrite, 2X when rewrite is triggered, and 3X when the 2X-sized file has been written to a 1X-sized file, but the 2X-sized file has not yet been deleted, followed finally again by X after rewrite is finalized and the old file is deleted.
 
@@ -1147,7 +1148,7 @@ Checking redis after restart
 
 Redis takes some time to read the AOF back into memory upon restart/startup. To check if it's up, you can run the following:
 
-.. code-block:: memory
+.. code-block:: bash
 
    $ cchq <env> ssh ansible@redis
 
@@ -1190,33 +1191,34 @@ Resources:
 Managing Pillows
 ----------------
 
-You can check on the status of the pillow processors with
+You can check the status of pillow processes with:
 
 .. code-block::
 
    cchq <env> service pillowtop status
 
-and you can restart a pillow which is not currently ``RUNNING`` with
+All processes should have a status of ``RUNNING``. If not, you can start a pillow with:
 
 .. code-block::
 
    cchq <env> service pillowtop start --only=<pillow_name>
 
-Note that the elements returned by the ``status`` command are the names of the processors, not the names of the pillows themselves. 
+Run pillowtop status again to confirm the pillow is now running. If it is not, check pillow logs for errors during startup.
 
-For example if the status command identified that ``myenv-production-DefaultChangeFeedPillow-0`` was not running, to restart the pillow one would run 
+.. note::
 
-.. code-block::
+    The elements returned by the ``status`` command are the names of processes, not the names of the pillows themselves.
 
-   #Correct - Restarting by pillow name
-   cchq myenv service pillowtop start --only=DefaultChangeFeedPillow
+    For example, if the status command identified that ``commcare-hq-cluster-pillowtop-AppDbChangeFeedPillow-0`` was not running, start the pillow using:
 
-rather than
+    .. code-block::
 
-.. code-block::
+        #Correct - Restarting by pillow name
+        cchq cluster service pillowtop start --only=AppDbChangeFeedPillow
 
-   #Incorrect - Restarting by processor name
-   cchq myenv service pillowtop start --only=myenv-production-DefaultChangeFeedPillow-0
+        #Incorrect - Restarting by process name
+        cchq cluster service pillowtop start --only=commcare-hq-cluster-pillowtop-AppDbChangeFeedPillow-0
+
 
 Formplayer / Cloudcare / Webapps
 ================================
@@ -1270,7 +1272,7 @@ and sometimes that alone can clean up space. This is run on every deploy, so if 
 Move logs to another drive
 --------------------------
 
-Check the size of the log files stored at /home/cchq/www/\ :raw-html-m2r:`<environment>`\ /log, these can get out of hand.  Last time this ocurred, we moved these into the shared drive, which had plenty of available disk space (but check first!)
+Check the size of the log files stored at /home/cchq/www/<environment>/log, these can get out of hand.  Last time this ocurred, we moved these into the shared drive, which had plenty of available disk space (but check first!)
 
 ``$ mv -v pattern-matching-old-logs.*.gz /mnt/shared/temp-log-storage-main-hd-full/``
 
@@ -1360,14 +1362,14 @@ first thing after logging in.
 Some Short Write-ups and Examples
 =================================
 
-See `Troubleshooting Pasteboard / HQ chat dumping ground <https://confluence.dimagi.com/pages/viewpage.action?pageId=29559520>`_. There is also some `ElasticSearch material <https://docs.google.com/a/dimagi.com/document/d/1EMy-m-Q3aia43q_TqeJdAFVLEx6UfEu3vRqSXskpQ_Y/edit#heading=h.xygb2bpkcfie>`_
+See internal Dimagi `Troubleshooting Pasteboard / HQ chat dumping ground <https://confluence.dimagi.com/pages/viewpage.action?pageId=29559520>`_. There is also some `ElasticSearch material <https://docs.google.com/a/dimagi.com/document/d/1EMy-m-Q3aia43q_TqeJdAFVLEx6UfEu3vRqSXskpQ_Y/edit#heading=h.xygb2bpkcfie>`_
 
 Backups
 =======
 
-Information for restoring elasticsearch and postgres from a backup are at `Restoring From Backups <https://confluence.dimagi.com/display/commcarehq/Restoring+From+Backups>`_
+Internal Dimagi processes for restoring Elasticsearch and Postgres from a backup are documented at `Restoring From Backups <https://dimagi.atlassian.net/wiki/spaces/cc/pages/2146603111/Restoring+From+Backups>`_
 
 SMS Gateways
 ============
 
-See the page on `SMS Gateway Technical Info <https://confluence.dimagi.com/display/commcarehq/SMS+Gateway+Technical+Info>`_ for API docs and support contacts for each gateway.
+See the internal Dimagi page on `SMS Gateway Technical Info <https://dimagi.atlassian.net/wiki/spaces/cc/pages/2146603000>`_ for API docs and support contacts for each gateway.

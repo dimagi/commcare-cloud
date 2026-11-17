@@ -1,0 +1,31 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Create legacy cron file
+    ansible.builtin.copy:
+      content: "0 0 * * * root /usr/local/sbin/create_blobdb_backup.sh daily 2\n"
+      dest: /etc/cron.d/create_blobdb_backup.sh
+      mode: "0644"
+  - name: Create blobdb backup cron entries
+    ansible.builtin.cron:
+      name: "{{ item.name }}"
+      job: "{{ item.job }}"
+      minute: "{{ item.minute }}"
+      hour: "{{ item.hour }}"
+      weekday: "{{ item.weekday }}"
+      cron_file: backup_blobdb
+      user: root
+    loop:
+      - {name: Backup blobdb daily, job: /usr/local/sbin/create_blobdb_backup.sh daily 2, minute: "0", hour: "0", weekday: "1,2,3,4,5,6"}
+      - {name: Backup blobdb hourly, job: /usr/local/sbin/create_blobdb_backup.sh hourly 60, minute: "15", hour: "*/3", weekday: "1,2,3,4,5,6"}
+      - {name: Backup blobdb weekly, job: /usr/local/sbin/create_blobdb_backup.sh weekly 14, minute: "0", hour: "0", weekday: "0"}
+  - name: Create unrelated cron entry that cleanup must keep
+    ansible.builtin.cron:
+      name: Check blobdb s3 backups
+      job: /opt/venv/bin/python3 /usr/local/bin/check_s3_backup.py blobdb
+      minute: "0"
+      hour: "3"
+      cron_file: backup_blobdb
+      user: root

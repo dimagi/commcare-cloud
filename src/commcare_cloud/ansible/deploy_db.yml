@@ -3,7 +3,6 @@
   hosts:
     - redis
     - elasticsearch
-    - rabbitmq
     - formplayer
     - django_manage
   become: true
@@ -13,9 +12,6 @@
 
 - name : PostgreSQL
   import_playbook: deploy_postgres.yml
-
-- name : CitusDB
-  import_playbook: deploy_citusdb.yml
 
 - import_playbook: deploy_couchdb2.yml
 
@@ -27,10 +23,6 @@
   become: true
   roles:
     - {role: elasticsearch, tags: 'elasticsearch'}
-
-- import_playbook: deploy_rabbitmq.yml
-  tags:
-    - rabbitmq
 
 - import_playbook: deploy_kafka.yml
   tags:

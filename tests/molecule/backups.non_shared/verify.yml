@@ -1,0 +1,36 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Stat backup paths
+    ansible.builtin.stat:
+      path: "{{ item }}"
+    register: stats
+    loop:
+      # absent, fail if exists
+      - /opt/data/backups/blobdb
+      - /usr/local/sbin/create_blobdb_backup.sh
+
+      # present, required
+      - /root/.aws/credentials
+      - /usr/local/sbin/backup_snapshots.py
+      - /usr/local/bin/check_s3_backup.py
+
+  - name: Assert only the files not gated on shared_dir_host exist
+    ansible.builtin.assert:
+      that:
+        - existing | sort == expected | sort
+    vars:
+      existing: "{{ stats.results | selectattr('stat.exists') | map(attribute='item') | list }}"
+      expected:
+        - /root/.aws/credentials
+        - /usr/local/sbin/backup_snapshots.py
+        - /usr/local/bin/check_s3_backup.py
+
+  - name: Assert no backup cron entries
+    ansible.builtin.command: grep -qs -e create_blobdb_backup.sh -e check_s3_backup.py /etc/cron.d/backup_blobdb
+    register: cron_grep
+    # rc 1: file exists with no matches, rc 2: file does not exist
+    failed_when: cron_grep.rc == 0
+    changed_when: false

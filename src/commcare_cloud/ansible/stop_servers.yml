@@ -23,9 +23,7 @@
 
 - hosts:
   - proxy
-  - cas_proxy
   - couchdb2_proxy
-  - reach_proxy
   tasks:
   - service:
       name: nginx
@@ -87,15 +85,6 @@
       state: stopped
     become: yes
     name: Stop kafka
-
-- hosts:
-  - rabbitmq
-  tasks:
-  - service:
-      name: rabbitmq-server
-      state: stopped
-    name: Stop rabbitmq
-    become: yes
 
 - hosts:
   - elasticsearch

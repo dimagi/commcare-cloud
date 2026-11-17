@@ -3,12 +3,6 @@ env_key: environment.name
 message: |
   The Pillow Erros on {{environment.name}} has been above {{#is_warning}} {{warn_threshold}} {{/is_warning}}{{#is_alert}} {{threshold}} {{/is_alert}}for the past 1 hour.
   This could be the result of an outage.
-  {{#is_match "environment.name" "icds-new"}}
-  https://www.icds-cas.gov.in/hq/admin/pillow_errors
-  {{/is_match}}
-  {{#is_match "environment.name" "pna"}}
-  https://pna.commcarehq.org/hq/admin/pillow_errors
-  {{/is_match}}
   {{#is_match "environment.name" "india"}}
   https://india.commcarehq.org/hq/admin/pillow_errors
   {{/is_match}}

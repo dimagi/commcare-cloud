@@ -1,3 +1,7 @@
 - name: restart rsyslog
   become: yes
   service: name=rsyslog state=restarted
+
+- name: rebuild alias database
+  become: yes
+  command: postalias /etc/aliases

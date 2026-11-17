@@ -1,6 +1,6 @@
 {% for group in postgres_users.values() %}
 "{{ group.username }}" "{{ group.password }}"
 {% endfor %}
-{% if inventory_hostname in groups['citusdb_worker']|default([]) %}
-"postgres" ""
+{% if postgresql_dbs.project_db %}
+"{{ pgbouncer_auth_username }}" "{{ PGBOUNCER_AUTH_PASSWORD }}"
 {% endif %}

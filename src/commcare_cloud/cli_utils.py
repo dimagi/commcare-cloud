@@ -1,12 +1,10 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 import re
+import shlex
 import subprocess
 import sys
 from io import open
 
 from clint.textui import puts
-from six.moves import input, shlex_quote
 
 from commcare_cloud.colors import color_code, color_error
 
@@ -132,5 +130,5 @@ def print_command(command):
     Use this function to do so
     """
     if isinstance(command, (list, tuple)):
-        command = ' '.join(shlex_quote(arg) for arg in command)
+        command = ' '.join(shlex.quote(arg) for arg in command)
     print(color_code(command), file=sys.stderr)

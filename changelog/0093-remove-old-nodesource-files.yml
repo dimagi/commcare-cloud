@@ -1,0 +1,22 @@
+title: Remove Old NodeSource Files
+key: remove-old-nodesource-files
+date: 2026-01-01
+optional_per_env: no
+# (optional) Min version of HQ that MUST be deployed before this change can be rolled out (commit hash)
+min_commcare_version:
+# (optional) Max version of HQ that can be deployed before this change MUST be rolled out (commit hash)
+max_commcare_version:
+context: |
+  Remove no longer needed NodeSource files that break ``apt``.
+
+details: |
+  After the most recent Node upgrade, we've encountered failures when running apt commands.
+  This is due to NodeSource apt files for previous version of Node no longer working correctly.
+  These files are no longer necessary and therefore can be safely removed.
+
+
+update_steps: |
+  To remove old NodeSource files, run the following:
+  ```bash
+  cchq <env> deploy-stack --tags=nodejs
+  ```

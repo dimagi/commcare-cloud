@@ -1,0 +1,36 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  - name: instance
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+
+    # Let systemd run as PID 1, needed for the role's service tasks.
+    override_command: false
+    privileged: true
+    cgroupns_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    tmpfs:
+      - /run
+      - /tmp
+
+provisioner:
+  name: ansible
+  playbooks:
+    cleanup: ../lib/stub.yml
+  inventory:
+    group_vars:
+      all:
+        molecule_kinesis_flows:
+          - file_pattern: "/opt/data/formplayer/log/request_response.*log"
+            delivery_stream: "formplayer-request-response-molecule"
+          - file_pattern: "/var/log/molecule/*.log"
+            delivery_stream: "molecule-logs"
+verifier:
+  name: ansible

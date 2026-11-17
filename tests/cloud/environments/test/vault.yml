@@ -3,8 +3,6 @@ secrets:
   KSPLICE_ACTIVATION_KEY:
   DATADOG_API_KEY: null
   DATADOG_APP_KEY: null
-  AMQP_USER: "{{ deploy_env }}_worker"
-  AMQP_PASSWORD: '******'
   HAPROXY_STATS_PASSWORD: '******'
   POSTGRES_USERS:
     commcare:
@@ -28,8 +26,7 @@ localsettings_private:
   BANK_ROUTING_NUMBER_ACH: ''
   BANK_ROUTING_NUMBER_WIRE: ''
   BOOKKEEPER_CONTACT_EMAILS: []
-  BITLY_APIKEY: ''
-  BITLY_LOGIN: ''
+  BITLY_OAUTH_TOKEN: ''
   COUCH_PASSWORD: '******'
   COUCH_USERNAME: commcarehq
   DROPBOX_KEY: ''

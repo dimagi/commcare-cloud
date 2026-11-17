@@ -3,6 +3,7 @@
   template:
     src: "haproxy.cfg.j2"
     dest: "/etc/haproxy/conf.d/00-haproxy"
+    mode: '0644'
   notify: Regenerate haproxy configuration
   tags:
     - haproxy-base-config
@@ -11,6 +12,7 @@
   copy:
     src: "haproxy-logging.cfg"
     dest: "/etc/rsyslog.d/10-haproxy-local-logging.conf"
+    mode: '0644'
   notify: Restart rsyslog
   tags:
     - haproxy-logging-config
@@ -27,6 +29,7 @@
   template:
     src: service.j2
     dest: "/etc/haproxy/conf.d/{{ item.service.haproxy_service_name }}"
+    mode: '0644'
   with_items: "{{ haproxy_service_configs | default([]) }}"
   when:
     - (item.service.haproxy_backend_nodes is defined and

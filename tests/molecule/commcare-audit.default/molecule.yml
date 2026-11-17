@@ -1,0 +1,22 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  - name: instance
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+provisioner:
+  name: ansible
+  playbooks:
+    cleanup: ../lib/stub.yml
+  inventory:
+    group_vars:
+      all:
+        audit_path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/audit"
+        control_user: "{{ lookup('env', 'USER') }}"
+verifier:
+  name: ansible

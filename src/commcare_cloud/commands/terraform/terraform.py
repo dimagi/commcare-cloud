@@ -1,13 +1,12 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
+from itertools import islice
 import json
 import os
+import shlex
 import subprocess
 from collections import defaultdict
 from io import open
 
 from clint.textui import puts
-from six.moves import shlex_quote
 
 from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_error
@@ -19,6 +18,7 @@ from commcare_cloud.commands.terraform.aws import (
 from commcare_cloud.user_utils import get_default_username, \
     print_help_message_about_the_commcare_cloud_default_username_env_var
 from commcare_cloud.commands.terraform.constants import (
+    COMMCAREHQ_SSRF_URLS_REGEX,
     COMMCAREHQ_XML_POST_URLS_REGEX,
     COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX,
 )
@@ -99,7 +99,7 @@ class Terraform(CommandBase):
         all_env_vars = os.environ.copy()
         all_env_vars.update(env_vars)
         cmd_parts = ['terraform'] + unknown_args
-        cmd = ' '.join(shlex_quote(arg) for arg in cmd_parts)
+        cmd = ' '.join(shlex.quote(arg) for arg in cmd_parts)
         print_command('cd {}; {} {}; cd -'.format(
             run_dir,
             ' '.join('{}={}'.format(key, value) for key, value in env_vars.items()),
@@ -125,30 +125,64 @@ def format_param_for_terraform(param_name, param_value):
     }
 
 
-def get_postgresql_params_by_rds_instance(environment):
+def validate_references_to_parameter_groups(groups_by_name, rds_instances):
+    for instance in rds_instances:
+        if instance.parameter_group and instance.parameter_group not in groups_by_name:
+            raise ValueError(
+                f"RDS instance '{instance.identifier}' references parameter_group "
+                f"'{instance.parameter_group}', but no group with that name exists"
+            )
+
+
+def get_env_default_params(environment):
+    """
+    This function "hand picks" which defaults we have defined in the default and environment postgres
+    configs that we want to bring over to RDS too
+    """
+    postgresql_variables = get_role_defaults('postgresql_base')
+    postgresql_variables.update(environment.postgresql_config.postgres_override)
+    return {
+        'max_connections': postgresql_variables['postgresql_max_connections'],
+    }
+
+
+def get_rds_parameters_by_instance(environment):
     """
     Returns a map from rds_instance identifier to postgresql parameters as accepted by terraform
 
     See aws db_parameter_group "parameter" argument.
     """
-    postgresql_variables = get_role_defaults('postgresql_base')
-    postgresql_variables.update(environment.postgresql_config.postgres_override)
-    environment_default_params = {
-        'max_connections': postgresql_variables['postgresql_max_connections'],
-    }
+    environment_default_params = get_env_default_params(environment)
     rds_instance_to_params = {}
     for rds_instance in environment.terraform_config.rds_instances:
-        param_names = set(environment_default_params.keys()) | set(rds_instance.params.keys())
-        combined_params = {
-            param_name: (rds_instance.params[param_name] if param_name in rds_instance.params
-                         else environment_default_params[param_name])
-            for param_name in param_names
-        }
+        combined_params = {**environment_default_params, **rds_instance.params}
         rds_instance_to_params[rds_instance.identifier] = [
             format_param_for_terraform(param_name, param_value)
             for param_name, param_value in combined_params.items()
         ]
     return rds_instance_to_params
+
+
+def get_rds_parameters_by_parameter_group(environment):
+    groups = environment.terraform_config.rds_parameter_groups
+    if not groups:
+        return {}
+
+    groups_by_name = {g.name: g for g in groups}
+
+    validate_references_to_parameter_groups(
+        groups_by_name,
+        environment.terraform_config.rds_instances,
+    )
+
+    environment_default_params = get_env_default_params(environment)
+    rds_params_by_group = {}
+    for group in groups:
+        parameters = {**environment_default_params, **group.params}
+        rds_params_by_group[group.name] = [
+            format_param_for_terraform(name, value) for name, value in parameters.items()
+        ]
+    return rds_params_by_group
 
 
 def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediately):
@@ -166,12 +200,17 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
             'public_key': environment.get_authorized_key(username)
         } for username in environment.users_config.dev_users.present],
         'key_name': key_name,
-        'postgresql_params': get_postgresql_params_by_rds_instance(environment),
-        'commcarehq_xml_post_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_POST_URLS_REGEX),
+        'rds_parameters_by_instance': get_rds_parameters_by_instance(environment),
+        'rds_parameters_by_group': get_rds_parameters_by_parameter_group(environment),
+        'commcarehq_ssrf_urls_regex': compact_waf_regexes(COMMCAREHQ_SSRF_URLS_REGEX),
         'commcarehq_xml_querystring_urls_regex': compact_waf_regexes(COMMCAREHQ_XML_QUERYSTRING_URLS_REGEX),
         's3_blob_db_s3_bucket': environment.public_vars.get('s3_blob_db_s3_bucket'),
+        'old_s3_blob_db_s3_bucket': environment.public_vars.get('old_s3_blob_db_s3_bucket') or '',
         'release_bucket': environment.public_vars.get('release_bucket'),
     })
+
+    waf_regex_maps = create_waf_regex_lists(COMMCAREHQ_XML_POST_URLS_REGEX)
+    context.update(waf_regex_maps)
 
     context.update({
         'apply_immediately': apply_immediately
@@ -181,12 +220,30 @@ def generate_terraform_entrypoint(environment, key_name, run_dir, apply_immediat
             ('terraform.tf.j2', 'terraform.tf'),
             ('commcarehq.tf.j2', 'commcarehq.tf'),
             ('postgresql.tf.j2', 'postgresql.tf'),
+            ('rds_parameter_group.tf.j2', 'rds_parameter_group.tf'),
             ('variables.tf.j2', 'variables.tf'),
             ('terraform.tfvars.j2', 'terraform.tfvars'),
             ('terraform.lock.hcl.j2', '.terraform.lock.hcl'),
+            ('imports.tf.j2', 'imports.tf'),
     ):
         with open(os.path.join(run_dir, output_file), 'w', encoding='utf-8') as f:
             f.write(render_template(template_file, context, template_root))
+
+
+def create_waf_regex_lists(patterns, compactible_affixes=None, max_length=200, max_group_size=10):
+    groups = create_waf_regex_groupings(patterns, compactible_affixes, max_length, max_group_size)
+    terraform_groups = {}
+    for (index, group) in enumerate(groups):
+        terraform_groups[f'commcarehq_xml_post_urls_regex_{index}'] = group
+
+    return terraform_groups
+
+
+def create_waf_regex_groupings(patterns, compactible_affixes=None, max_length=200, max_group_size=10):
+    regexes = compact_waf_regexes(patterns, compactible_affixes, max_length)
+    iterator = iter(regexes)
+    while batch := tuple(islice(iterator, max_group_size)):
+        yield batch
 
 
 def compact_waf_regexes(patterns, compactible_affixes=None, max_length=200):

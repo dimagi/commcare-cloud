@@ -8,6 +8,22 @@ resource "aws_vpc" "main" {
   }
 }
 
+# Manage the default security group to ensure it has no rules
+# This complies with AWS EC2.2 best practice
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.main.id
+
+  # Explicitly define empty ingress and egress rules
+  # This removes all default rules
+  ingress = []
+  egress  = []
+
+  tags = {
+    Name        = "default-sg-${var.env}-do-not-use"
+    Description = "Default security group with no rules - do not use"
+  }
+}
+
 resource "aws_subnet" "subnet-app-private" {
   count             = length(var.azs)
   cidr_block        = "${var.vpc_begin_range}.1${count.index}.0/24"

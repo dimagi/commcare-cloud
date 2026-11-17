@@ -3,7 +3,6 @@ internal_network_interface: eth1
 internal_ipv4: "{{ ansible_default_ipv4.address }}"
 nofile_limit: 65536
 proxy_type: nginx
-rabbitmq_create_cluster: false
 DATADOG_ENABLED: False
 
 couch_dbs:

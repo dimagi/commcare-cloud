@@ -33,9 +33,11 @@
     owner: root
     group: root
 
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers
 
-- monit:
+- name: Enable monit monitoring for redis
+  monit:
     name: redis
     state: monitored
   tags: monit

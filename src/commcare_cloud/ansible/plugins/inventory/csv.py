@@ -1,10 +1,3 @@
-from __future__ import (
-    absolute_import,
-    division,
-    print_function,
-    unicode_literals,
-)
-
 import csv
 import json
 import os
@@ -17,7 +10,7 @@ from ansible.plugins.inventory import BaseInventoryPlugin
 
 __metaclass__ = type
 
-DOCUMENTATION = '''
+DOCUMENTATION = """
     inventory: csv
     short_description: Uses CSV files and inventory source.
     description: |
@@ -25,7 +18,7 @@ DOCUMENTATION = '''
         - Each group of lines can either be a list of hosts or a list of group var definitions.
         - Hosts are listed with the following required fields (C(hostname), C(host_address))
         - Host groups are specified in group columns e.g. C(group 1), C(group 2) etc.
-        - Host vars are listed in individual colums with headers formatted as follows - C({type}.var: {name}).
+        - Host vars are listed in individual columns with headers formatted as follows - C({type}.var: {name}).
         - The 'type' field must be one of the following (or blank for the default)
             - S: string (default if no type specified)
             - B: boolean ('true' or 't' (case insensitive), anything else is false)
@@ -40,8 +33,9 @@ DOCUMENTATION = '''
     notes:
        - "The hostname of a host defaults to the value in the 'hostname' column but it can be overridden by
          adding a C(var: hostname) var column."
-       - If this is done then the value in the C(hostname) column will be set as the value of the C(alt_hostname) var.
-'''
+       - If this is done then the value in the C(hostname) column will be set as the value of the
+         C(alt_hostname) var.
+"""
 
 EXAMPLES = '''
   example1: |
@@ -68,15 +62,12 @@ EXAMPLES = '''
       # groups are separated by a blank line (or a line where the first cell is cells)
       hostname,  host_address,   group 1,   I.var: db_port,  var: root_path
       host3,     192.168.33.23,  db,        1234,            /opt/data/db
-      
+
       # group table (column format)
       group,  var: port,  var: relay
       g1,     9010,       True
       g2,     8000,       False
 '''
-
-
-
 
 TYPE_STRING = 'S'
 TYPE_INTEGER = 'I'

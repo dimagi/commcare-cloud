@@ -1,0 +1,26 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Read command log
+      ansible.builtin.slurp:
+        src: "{{ molecule_command_log }}"
+      register: command_log
+
+    - name: Assert the staticfiles manifest went through redis
+      # The rest of the log is the same as in deploy_hq.default, and is verified there
+      vars:
+        actual: >-
+          {{
+            (command_log.content | b64decode).splitlines()
+            | select('match', 'manage.py update_manifest') | list
+          }}
+        expected: >-
+          {{
+            (['manage.py update_manifest save'] if inventory_hostname == groups.proxy[0] else [])
+            + (['manage.py update_manifest'] if 'webworkers' in group_names else [])
+          }}
+      ansible.builtin.assert:
+        that: actual == expected
+        fail_msg: "{{ actual }}"

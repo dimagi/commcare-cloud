@@ -7,6 +7,113 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-09-15** [Hide Set-Cookie header in nginx](0101-nginx-hide-set-cookie-header.md)
+An issue was found in the nginx cache configuration
+for certain requests under apps/download in CommCare HQ.
+
+
+---
+#### **2026-07-01** [Set explicit file permissions across roles](0100-explicit-file-permissions.md)
+Many `file`/`copy`/`template` tasks across the ansible roles did not set an
+explicit `mode`, so the resulting permissions depended on the umask of the
+machine running Ansible rather than being pinned by the playbook. This
+change sets an explicit mode (and, for a few sensitive files, `owner`/
+`group`) on every affected task.
+
+
+---
+#### **2026-06-22** [Prometheus/Grafana stack installer removed](0099-remove-prometheus-installer.md)
+`commcare-cloud` no longer includes a playbook to install the
+Prometheus/Grafana monitoring stack. Operators who want Prometheus can stand
+it up independently and point it at CommCare HQ's `/metrics` endpoint.
+
+
+---
+#### **2026-02-14** [Rolling Upgrade of CouchDB Nodes](0098-couchdb-upgrade.md)
+This changelog outlines the steps for a rolling upgrade of CouchDB nodes.
+
+The upgrade must be performed in two stages:
+  1. Upgrade from 3.3.x to 3.4.3
+  2. Upgrade from 3.4.3 to 3.5.0
+
+The rolling upgrade process remains the same for both stages.
+The only difference is updating the `couchdb_version` variable in
+environments/<env>/public.yml.
+
+
+---
+#### **2026-05-05** [Set minimum git version to 2.49](0097-min-git-version.md)
+commcare-cloud now requires git 2.49 or later on all machines that install git
+via the `git` ansible role (control machines and any other host that runs git
+for commcare-cloud purposes).
+
+
+---
+#### **2026-04-08** [Migrate Celery Broker to Redis](0096-migrate-celery-broker-to-redis.md)
+On June 1st, 2026, we will be dropping support for RabbitMQ as a broker for celery.
+
+
+---
+#### **2026-01-13** [Remove DefaultChangeFeedPillow From CommCareHQ](0095-remove-default-changefeed.md)
+Remove the DefaultChangeFeedPillow from CommCareHQ.
+
+
+---
+#### **2026-01-06** [Deprecating rabbitmq_migration_bridge var](0094-deprecating-rabbitmq-migration-bridge.md)
+``rabbitmq_migration_bridge`` var is being replaced by
+``celery_broker_migration``
+
+
+---
+#### **2026-01-01** [Remove Old NodeSource Files](0093-remove-old-nodesource-files.md)
+Remove no longer needed NodeSource files that break ``apt``.
+
+
+---
+#### **2025-12-03** [Upgrade To NodeJS 24](0092-upgrade-to-node-24.md)
+Node.js 20.x LTS is reaching its end of life 30th April 2026, so node and npm must be upgraded on all machines.
+
+
+---
+#### **2025-11-05** [upgrade-to-nginx-1-28](0091-upgrade-to-nginx-1-28.md)
+Updates nginx to 1.28.
+
+
+---
+#### **2025-10-08** [Enabling Datadog tracing (APM)](0090-Enabling_Datadog_tracing_APM.md)
+Configuration for enabling Datadog tracing with APM has changed. If you
+use this feature you may need to update your configuration.
+
+
+---
+#### **2025-07-10** [Remove PARSER_CLASS from redis settings](0089-remove-parser-class.md)
+We've remove the PARSER_CLASS when configuring redis in settings.py.
+
+
+---
+#### **2025-05-08** [Install uv for Python dependency management](0088-install-uv.md)
+CommCare HQ is moving to using `uv` for Python dependency management, which
+simplifies and speeds up dependency installation.
+
+
+---
+#### **2025-04-16** [Upgrade to Elasticsearch 6](0087-upgrade-to-es-6.md)
+Upgrade to Elasticsearch 6.
+This changelog outlines the steps required to `reindex` all indices and then perform the upgrade from Elasticsearch 5.6.16 to 6.8.23.
+
+
+---
+#### **2025-03-27** [AWS S3 Client Library Upgrade](0086-s3-library-upgrade.md)
+The `botocore` library is being upgraded in CommCare HQ. A blob db
+configuration change may be necessary prior to deploying the new version.
+
+
+---
+#### **2025-03-21** [Removing websockets](0085-remove_websockets.md)
+All code related to websockets is being removed from both CommCare HQ and CommCare-Cloud.
+
+
+---
 #### **2024-11-06** [New Geospatial Celery Queue](0084-add-geospatial-queue.md)
 The Microplanning feature requires the location properties on cases to be indexed correctly so
 that they can be used correctly in this feature. A separate queue is added to handle this indexing

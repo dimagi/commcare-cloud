@@ -1,0 +1,3 @@
+---
+- name: Deploy CommCare HQ
+  ansible.builtin.import_playbook: ../../../src/commcare_cloud/ansible/deploy_hq.yml

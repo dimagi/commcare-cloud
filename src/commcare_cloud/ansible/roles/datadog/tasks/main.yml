@@ -3,34 +3,66 @@
     id: "{{ item }}"
     state: absent
   with_list:
+   - 5F1E256061D813B125E156E8E6266D4AC0962C7D
    - D75CEA17048B9ACBF186794B32637D44F14F620E
    - A2923DFF56EDA6E76E55E492D3A80E30382E94DE
 
 # ansible apt_key doesn't do any action on expired keys
+- name: Check for expired datadog apt keys
+  command: apt-key export {{ item }}
+  register: expired_datadog_apt_keys
+  changed_when: false
+  failed_when: false
+  with_list:
+    - A2923DFF56EDA6E76E55E492D3A80E30382E94DE
+    - D75CEA17048B9ACBF186794B32637D44F14F620E
+    - 5F1E256061D813B125E156E8E6266D4AC0962C7D
+
 - name: Remove expired datadog apt key manually
-  command: apt-key del A2923DFF56EDA6E76E55E492D3A80E30382E94DE
+  command: apt-key del {{ item.item }}
+  loop: "{{ expired_datadog_apt_keys.results }}"
+  when: item.stdout | trim
 
 - name: Remove old datadog apt repository
   apt_repository:
     repo: 'deb http://apt.datadoghq.com/ stable main'
     state: absent
 
+# the GPG keys were not getting cleaned up by the apt_key module, so we need to do it manually
+- name: Remove all old datadog key files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/apt/keyrings/DATADOG_APT_KEY_382E94DE.gpg
+    - /etc/apt/keyrings/DATADOG_APT_KEY_F14F620E.gpg
+
+# the repository configuration was not getting cleaned up by the apt_repository module, so we need to do it manually
+- name: Remove old datadog repository configuration
+  file:
+    path: /etc/apt/sources.list.d/apt_datadoghq_com.list
+    state: absent
+
+
 - name: Add new datadog apt key
   copy:
-    src: DATADOG_APT_KEY_F14F620E.gpg
+    src: DATADOG_APT_KEY_C0962C7D.gpg
     dest: /etc/apt/keyrings/
     owner: root
     group: root
+    mode: '0644'
 
 - name: Add new datadog apt repository
   apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/DATADOG_APT_KEY_F14F620E.gpg] http://apt.datadoghq.com/ stable 7"
+    repo: "deb [signed-by=/etc/apt/keyrings/DATADOG_APT_KEY_C0962C7D.gpg] http://apt.datadoghq.com/ stable 7"
+    filename: datadog-agent  # must be distinct from apt_datadoghq_com.list used by old repo
     state: present
 
 - name: Install datadog agent
   apt:
     name: datadog-agent
-    state: latest
+    # datadog-agent is intentionally kept current for security fixes
+    state: latest  # noqa: package-latest
     cache_valid_time: 7200
     install_recommends: no
 
@@ -53,6 +85,7 @@
     dest: /etc/datadog-agent/datadog.yaml
     owner: dd-agent
     group: dd-agent
+    mode: '0640'
   notify: restart datadog
 
 - name: Make sure datadog agent is started

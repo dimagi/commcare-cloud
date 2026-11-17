@@ -1,0 +1,34 @@
+---
+- name: Prepare
+  hosts: all
+  tags: always  # Always prepare, regardless of --tags
+  vars_files:
+    - ../../../src/commcare_cloud/ansible/group_vars/all.yml  # for www_home
+    - ../../../src/commcare_cloud/ansible/roles/formplayer/vars/main.yml
+  tasks:
+    - name: Create fake releases
+      ansible.builtin.file:
+        path: "{{ formplayer_releases_base_dir }}/{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "2026-10-01_12.00"
+        - "2026-10-08_12.00"
+
+    - name: Point current at the newest release
+      ansible.builtin.file:
+        src: "{{ formplayer_releases_base_dir }}/2026-10-08_12.00"
+        dest: "{{ formplayer_current_dir }}"
+        state: link
+
+    - name: Install fake supervisorctl
+      ansible.builtin.copy:
+        src: fake_supervisorctl.sh
+        dest: /usr/local/bin/supervisorctl
+        mode: "0755"
+
+    - name: Create supervisorctl log
+      ansible.builtin.copy:
+        dest: "{{ supervisorctl_log }}"
+        content: ""
+        mode: "0644"

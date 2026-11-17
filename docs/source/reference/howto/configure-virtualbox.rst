@@ -97,30 +97,33 @@ Setting up Bridged mode:
 * For some wireless gateways which require a password, you might need to set the MAC address of the to the MAC address of the host. This may sometimes work to get a new IP address, but some wireless gateways will only give a single IP per MAC.
 * If you have access to the router, set it up to give the VM's MAC address in the settings with a static IP
 * Boot your VM. If the settings are correct, the machine should boot and be given an IP address. Verify what the IP address is with:
+
   .. code-block:: bash
 
      $ ip addr
 
 * On the host, edit the ``/etc/hosts`` file:
+
   .. code-block:: bash
 
        $ sudo nano /etc/hosts
-    and add the following line to the end:
+
+  and add the following line to the end:
+
   .. code-block::
 
        {ip address of the guest} monolith.commcarehq.test
 
 With these settings:
 
-
-* 
-  SSH into your server with:
+* SSH into your server with:
 
   .. code-block:: bash
 
        $ ssh username@{ip address of the guest}
 
 * Access CommCare HQ from a browser at:
+
   .. code-block::
 
        https://monolith.commcarehq.test

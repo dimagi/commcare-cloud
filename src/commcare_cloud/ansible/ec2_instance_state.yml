@@ -1,0 +1,23 @@
+---
+# Manage the EC2 instance state (describe/start/stop/stop_and_start) of the
+# targeted hosts. Target selection is by --limit;
+# Run is using the following command:
+# cchq <env> ap ec2_instance_state.yml  -e ec2_instance_state_command=<describe|start|stop|stop_and_start> --limit=<host pattern>
+# Required: -e ec2_instance_state_command=<describe|start|stop|stop_and_start>
+# Optional: -e ec2_instance_state_wait=<true|false>
+#           -e ec2_instance_state_region=<aws region>
+- name: Manage EC2 instance state
+  hosts: all
+  gather_facts: false
+  pre_tasks:
+    - name: Require an explicit --limit that is not 'all'
+      run_once: true
+      delegate_to: localhost
+      fail:
+        msg: >-
+          This playbook changes EC2 instance state and must be scoped with an
+          explicit --limit. Refusing to run without --limit or against 'all'
+          hosts. Pass --limit=<host pattern> 
+      when: ansible_limit is not defined or ansible_limit == 'all'
+  roles:
+    - role: ec2_instance_state

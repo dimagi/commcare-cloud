@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Include ecryptfs
+      ansible.builtin.include_role:
+        name: "ecryptfs"

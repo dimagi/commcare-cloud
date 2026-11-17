@@ -1,0 +1,33 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Assert mount used the sig from ecryptfs-add-passphrase
+    ansible.builtin.command: grep -Fq "ecryptfs_fnek_sig={{ ecryptfs_stub_sig }}," /var/log/fake-mount.log
+    changed_when: false
+
+  - name: Assert README present
+    ansible.builtin.command: grep -Fxq "If you can read this file the directory is unencrypted" /opt/data/README
+    changed_when: false
+
+  - name: Stat blobdb paths
+    ansible.builtin.stat:
+      path: "{{ item }}"
+    register: stats
+    loop:
+      - /opt/data/blobdb
+      - /opt/shared_data/blobdb
+
+  - name: Assert blobdb paths
+    ansible.builtin.assert:
+      that:
+        - blobdb.isdir
+        - blobdb.pw_name == 'nobody'
+        - blobdb.gid == 1500
+        - blobdb.mode == '0775'
+        - link.islnk
+        - link.lnk_target == '/opt/data/blobdb'
+    vars:
+      blobdb: "{{ stats.results[0].stat }}"
+      link: "{{ stats.results[1].stat }}"

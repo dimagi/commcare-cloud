@@ -1,0 +1,14 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Use the fake package fixtures
+      when: lookup('env', 'MOLECULE_CWA_REAL_INSTALL') != '1'
+      ansible.builtin.set_fact:
+        aws_cwa_deb_url: file:///var/tmp/fake-cwa/amazon-cloudwatch-agent.deb
+        aws_cwa_deb_sig_url: file:///var/tmp/fake-cwa/amazon-cloudwatch-agent.deb.sig
+
+    - name: Include cloudwatch_logs
+      ansible.builtin.include_role:
+        name: "cloudwatch_logs"

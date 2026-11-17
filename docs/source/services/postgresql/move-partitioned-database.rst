@@ -154,7 +154,7 @@ This should show that the *p2* database is now on the *pg2* host.
 
 Output shows that master and standby are up to date (both processing the same log).
 
-**Promote *pg2*\ **
+**Promote pg2**
 
 .. code-block:: bash
 

@@ -1,13 +1,9 @@
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
 import getpass
 import json
+import sys
 
-import six
 import yaml
 from clint.textui import puts
-from six.moves import input
 
 from commcare_cloud.colors import color_error
 from commcare_cloud.commands.command_base import CommandBase, Argument
@@ -25,14 +21,20 @@ class Secrets(CommandBase):
     arguments = (
         Argument(dest='subcommand', choices=['view', 'edit', 'list-append', 'list-remove']),
         Argument(dest='secret_name'),
+        Argument('--from-stdin', action='store_true', help="""
+            Read the new secret value from stdin instead of prompting interactively.
+            Can only be used with the 'edit' subcommand.
+        """),
     )
 
     def run(self, args, unknown_args):
+        if args.from_stdin and args.subcommand != 'edit':
+            self.parser.error("--from-stdin can only be used with the 'edit' subcommand")
         environment = get_environment(args.env_name)
         if args.subcommand == 'view':
             return self._secrets_view(environment, args.secret_name)
         if args.subcommand == 'edit':
-            return self._secrets_edit(environment, args.secret_name)
+            return self._secrets_edit(environment, args.secret_name, from_stdin=args.from_stdin)
         if args.subcommand == 'list-append':
             return self._secrets_append_to_list(environment, args.secret_name)
         if args.subcommand == 'list-remove':
@@ -40,14 +42,17 @@ class Secrets(CommandBase):
 
     def _secrets_view(self, environment, secret_name):
         secret = environment.get_secret(secret_name)
-        if isinstance(secret, six.string_types):
+        if isinstance(secret, str):
             print(secret)
         else:
             print(yaml.safe_dump(secret))
 
-    def _secrets_edit(self, environment, secret_name):
-        environment.secrets_backend.prompt_user_input()
-        secret_value = getpass.getpass("New value for '{}' secret '{}': ".format(environment.name, secret_name))
+    def _secrets_edit(self, environment, secret_name, from_stdin=False):
+        if from_stdin:
+            secret_value = sys.stdin.read().strip()
+        else:
+            environment.secrets_backend.prompt_user_input()
+            secret_value = getpass.getpass(f"New value for '{environment.name}' secret '{secret_name}': ")
         try:
             secret_value = json.loads(secret_value)
         except ValueError:
@@ -59,7 +64,9 @@ class Secrets(CommandBase):
         if not isinstance(secret, list):
             print("Cannot append. '{}' is not a list.".format(secret_name))
             exit(-1)
-        value_to_append = getpass.getpass("Value for '{}' to append to '{}': ".format(environment.name, secret_name))
+        value_to_append = getpass.getpass(
+            "Value for '{}' to append to '{}': ".format(environment.name, secret_name)
+        )
         secret.append(value_to_append)
         environment.secrets_backend.set_secret(secret_name, secret)
 
@@ -68,7 +75,9 @@ class Secrets(CommandBase):
         if not isinstance(secret, list):
             print("Cannot remove. '{}' is not a list.".format(secret_name))
             exit(-1)
-        value_to_remove = getpass.getpass("Value for '{}' to remove from '{}': ".format(environment.name, secret_name))
+        value_to_remove = getpass.getpass(
+            "Value for '{}' to remove from '{}': ".format(environment.name, secret_name)
+        )
         try:
             secret.remove(value_to_remove)
         except ValueError:

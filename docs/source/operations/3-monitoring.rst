@@ -22,7 +22,80 @@ The default configuration sets up all datadog integrations and there might be a 
 ----------
 Prometheus
 ----------
-Prometheus is an open source tool which you can self host on one of your machines. To setup a Prometheus server using commcare-cloud you can add a server under :code:`promethus` and do :code:`cchq <env> aps deploy_prometheus.yml`. This also gets executed automatically while doing :code:`cchq deploy-stack`. To setup service integrations with the Prometheus server you will need to set :code:`prometheus_monitoring_enabled` to True in your environment’s public.yml file.
+
+`Prometheus <https://prometheus.io/>`_ is an open source monitoring tool that you can self host on one of your machines. CommCare HQ exposes a ``/metrics`` endpoint compatible with the Prometheus data model. Operators are expected to maintain a Prometheus stack independently; it is not installed automatically by ``commcare-cloud``.
+
+To enable the HQ-side metrics pipeline, set :code:`prometheus_monitoring_enabled: true` in your environment’s :code:`public.yml`. This starts a multiprocess metrics aggregation process on each HQ app server and configures Django to expose the ``/metrics`` endpoint. Your Prometheus server can then be configured to scrape it.
+
+For guidance on standing up the monitoring stack itself, refer to the upstream documentation:
+
+- `Prometheus <https://prometheus.io/docs/introduction/first_steps/>`_
+- `Alertmanager <https://prometheus.io/docs/alerting/latest/alertmanager/>`_
+- `Grafana <https://grafana.com/docs/grafana/latest/setup-grafana/>`_
+
+Installing a Prometheus stack with Ansible
+------------------------------------------
+
+.. note::
+
+    This section contains suggestions for configuring a Prometheus monitoring stack for CommCare HQ. The referenced components are community supported and have not been tested by Dimagi.
+
+The `prometheus.prometheus <https://prometheus-community.github.io/ansible/>`__ Ansible collection provides roles for installing the Prometheus server, Alertmanager, Blackbox exporter, ``node_exporter``, and others. Install the collection with:
+
+.. code-block:: bash
+
+   ansible-galaxy collection install prometheus.prometheus
+
+Some HQ services are not covered by the ``prometheus.prometheus`` collection and require exporters to be installed separately. The following is a suggested set of exporters to monitor CommCare HQ services:
+
+.. list-table::
+   :header-rows: 1
+   :widths: auto
+
+   * - Service
+     - Host group
+     - Exporter
+   * - Celery
+     - ``celery``
+     - `celery-exporter <https://github.com/danihodovic/celery-exporter>`__
+   * - CouchDB
+     - ``couchdb2``
+     - `couchdb-prometheus-exporter <https://github.com/gesellix/couchdb-prometheus-exporter>`__
+   * - Elasticsearch
+     - ``elasticsearch``
+     - `elasticsearch_exporter <https://github.com/prometheus-community/elasticsearch_exporter>`__
+   * - HAProxy
+     - ``couchdb2_proxy``
+     - `native PROMEX module <https://www.haproxy.com/documentation/haproxy-configuration-tutorials/alerts-and-monitoring/prometheus/>`__
+   * - Host system metrics
+     - ``all``
+     - `prometheus.prometheus <https://prometheus-community.github.io/ansible/>`__ ``node_exporter``
+   * - HTTP endpoints
+     - ``prometheus``
+     - `prometheus.prometheus <https://prometheus-community.github.io/ansible/>`__ ``blackbox_exporter``
+   * - Kafka
+     - ``kafka``
+     - `kafka_exporter <https://github.com/danielqsj/kafka_exporter>`__
+   * - Nginx
+     - ``proxy``
+     - `prometheus.prometheus <https://prometheus-community.github.io/ansible/>`__ ``nginx_exporter``
+   * - PostgreSQL
+     - ``postgresql``, ``pg_standby``
+     - `prometheus.prometheus <https://prometheus-community.github.io/ansible/>`__ ``postgres_exporter``
+   * - PgBouncer
+     - ``postgresql``, ``pg_standby``
+     - `pgbouncer_exporter <https://github.com/prometheus-community/pgbouncer_exporter>`__
+   * - Redis
+     - ``redis``
+     - `prometheus.prometheus <https://prometheus-community.github.io/ansible/>`__ ``redis_exporter``
+   * - StatsD
+     - ``logproxy``
+     - `statsd_exporter <https://github.com/prometheus/statsd_exporter>`__
+   * - Zookeeper
+     - ``zookeeper``
+     - `native metrics <https://zookeeper.apache.org/doc/current/zookeeperMonitor.html>`__
+
+Write a playbook that applies the collection's relevant roles, extra service roles, and exporters to your hosts. See the `collection documentation <https://prometheus-community.github.io/ansible/>`__ for role references and example playbooks. Your playbook may be created or symlinked in ``./src/commcare_cloud/ansible/deploy_prometheus.yml`` (ignored by git) to reuse commcare-cloud Ansible tooling, including inventory and vars.
 
 
 .. _label_commcare-infrastructure-metrics:
@@ -214,7 +287,7 @@ See the `PostgreSQL Integration <https://docs.datadoghq.com/integrations/postgre
 
 
 Elasticsearch
-````````````
+`````````````
 The `Datadog Agent <https://docs.datadoghq.com/agent/>`_ ships with an integration which can be used to collect metrics.
 See the `Elasticsearch Integration <https://docs.datadoghq.com/integrations/elastic/?tab=host>`_ for more information.
 
@@ -317,7 +390,7 @@ Broker Metrics
 +------------------------------------+---------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------+
 
 Producer Metrics
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 +-------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+------------------------------------+
 | **Metric**              | **Metric type** | **Why care**                                                                                                                                                                                                                                                                                                            | **User impact**                                                                                                               | **How to measure**                 |
 +-------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+------------------------------------+
@@ -333,7 +406,7 @@ Producer Metrics
 +-------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+------------------------------------+
 
 Consumer Metrics
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 +-----------------------+-----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------+---------------------------------+
 | **Metric**            | **Metric type** | **Why care**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | **User impact**                                       | **How to measure**              |
 +-----------------------+-----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------+---------------------------------+
@@ -393,25 +466,3 @@ Celery also uses `Celery Flower <https://flower.readthedocs.io/en/latest/>`_ as 
 +----------------------------+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------+
 
 
-RabbitMQ
-````````````
-The `Datadog Agent <https://docs.datadoghq.com/agent/>`_ ships with an integration which can be used to collect metrics.
-See the `RabbitMQ Integration <https://docs.datadoghq.com/integrations/rabbitmq/?tab=host>`_ for more information.
-
-+-------------------------+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------+
-| **Metric**              | **Metric type** | **Why care**                                                                                                                                                                                                                                                                                                                          | **User impact**                                                                                                                                                  | **How to measure**                     |
-+-------------------------+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------+
-| Queue depth             | Saturation      | `Using queue depth, messages ready and messages unacknowledged <https://www.datadoghq.com/blog/rabbitmq-monitoring/#metrics-to-watch-queue-depth-messages-unacknowledged-and-messages-ready>`_                                                                                                                                        | For the most part this might go unnoticed for the user, but there will be a delay in the execution of background tasks, like sending emails, SMS’s, alerts, etc. | rabbitmq.queue.messages                |
-+-------------------------+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------+
-| Messages ready          | Other           | `Using queue depth, messages ready and messages unacknowledged <https://www.datadoghq.com/blog/rabbitmq-monitoring/#metrics-to-watch-queue-depth-messages-unacknowledged-and-messages-ready>`_                                                                                                                                        | For the most part this might go unnoticed for the user, but there will be a delay in the execution of background tasks, like sending emails, SMS’s, alerts, etc. | rabbitmq.queue.messages_ready          |
-+-------------------------+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------+
-| Messages unacknowledged | Error           | `Using queue depth, messages ready and messages unacknowledged <https://www.datadoghq.com/blog/rabbitmq-monitoring/#metrics-to-watch-queue-depth-messages-unacknowledged-and-messages-ready>`_                                                                                                                                        | Certain background tasks will fail to execute, like sending emails, SMS’s, alerts, etc.                                                                          | rabbitmq.queue.messages_unacknowledged |
-+-------------------------+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------+
-| Queue memory            | Utilization     | RabbitMQ keeps messages in memory for faster access, but if queues handle a lot of messages you could consider using lazy queues in order to preserve memory. `Read more <https://www.rabbitmq.com/lazy-queues.html>`_                                                                                                                | For the most part this might go unnoticed for the user, but there will be a delay in the execution of background tasks, like sending emails, SMS’s, alerts, etc. | rabbitmq.queue.memory                  |
-+-------------------------+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------+
-| Queue consumers         | Other           | The number of consumers is configurable, so a lower-than-expected number of consumers could indicate failures in your application.                                                                                                                                                                                                    | Certain background tasks might fail to execute, like sending emails, SMS’s, alerts, etc.                                                                         | rabbitmq.queue.consumers               |
-+-------------------------+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------+
-| Node sockets            | Utilization     | As you increase the number of connections to your RabbitMQ server, RabbitMQ uses a greater number of file descriptors and network sockets. Since RabbitMQ will block new connections for nodes that have reached their file descriptor limit, monitoring the available number of file descriptors helps you keep your system running. | Background tasks might take longer to execute as, or in the worst case, might not execute at all.                                                                | rabbitmq.node.sockets_used             |
-+-------------------------+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------+
-| Node file descriptors   | Utilization     | As you increase the number of connections to your RabbitMQ server, RabbitMQ uses a greater number of file descriptors and network sockets. Since RabbitMQ will block new connections for nodes that have reached their file descriptor limit, monitoring the available number of file descriptors helps you keep your system running. | Background tasks might take longer to execute as, or in the worst case, might not execute at all.                                                                | rabbitmq.node.fd_used                  |
-+-------------------------+-----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------+

@@ -16,16 +16,10 @@ kafka_log_message_format_version: 3.2
 zookeeper_version: 3.7.1
 zookeeper_download_sha1: sha512:9103628a50745fa1a289bca666fda4a9c08ec17c55cf13e66887e7ba76e93dbae60a1f1ffd6c10798be3a16069344ecbc00cebb29bf03d9cd7096ccd098ed011
 zookeeper_cluster: True
-amqp: False
-AMQP_HOST: "{% if amqp == true %}{{ groups.awsmq.0 }}{%else%}{{ groups.rabbitmq.0}}{% endif %}"
 TWO_FACTOR_GATEWAY_ENABLED: True
-erlang: 1:24.3.3-1
-rabbitmq_version: 3.10.13-1
 
-#RabbitMQ Broker URL
-BROKER_URL: "{% if amqp == true %}amqps://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5671{% else %}amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ AMQP_HOST }}:5672/{{ AMQP_NAME }};amqp://{{ AMQP_USER }}:{{ AMQP_PASSWORD }}@{{ groups.rabbitmq.1 }}:5672/{{ AMQP_NAME }}{% endif %}"
-
-run_websockets_wsgi: True
+# Celery Broker
+REDIS_BROKER_HOST: "broker.staging.commcare.local"
 
 backup_blobdb: False
 backup_postgres: plain
@@ -35,12 +29,6 @@ postgres_s3: False
 # pg_repack
 pg_repack_version: 1.4.7
 
-filebeat_inputs:
-  - path: "{{ log_home }}/{{ deploy_env }}-timing.log"
-    tags: nginx-timing
-  - path: "{{ log_home }}/{{ deploy_env }}_commcare-nginx_error.log"
-    tags: nginx-error
-
 aws_region: 'us-east-1'
 
 formplayer_archive_time_spec: '10m'
@@ -48,13 +36,6 @@ formplayer_sensitive_data_logging: true
 formplayer_detailed_tags:
     - form_name
     - module_name
-
-# aws fsx filesystem
-formplayer_fsx_dns: "fs-0ffde07db112793e4.fsx.us-east-1.amazonaws.com:/fsx"
-fsx_shared_mount_dir: "shared_fsx{{ '_' ~ deploy_env if deploy_env != 'production' else '' }}"
-fsx_shared_mount_endpoint: "fs-01fe0af927cf0c331.fsx.us-east-1.amazonaws.com:/fsx"
-fsx_shared_mount_options: "nfsvers=4.2"
-shared_dir_gid: 1500
 
 KSPLICE_ACTIVE: yes
 
@@ -64,14 +45,13 @@ server_admin_email: commcarehq-ops+admins@dimagi.com
 default_from_email: commcarehq-noreply-staging@dimagi.com
 return_path_email: commcarehq-bounces+staging@dimagi.com
 support_email: support@dimagi.com
-probono_support_email: pro-bono@dimagi.com
 accounts_email: commcarehq-ops+accounts@dimagi.com
 data_email: datatree@dimagi.com
 subscription_change_email: accounts+subchange@dimagi.com
 internal_subscription_change_email: accounts+subchange+internal@dimagi.com
 billing_email: sales@dimagi.com
 invoicing_contact_email: accounts@dimagi.com
-growth_email: growth@dimagi.com
+growth_email: saas-revenue-team@dimagi.com
 saas_ops_email: saas-ops@dimagi.com
 master_list_email: master-list@dimagi.com
 sales_email: sales@dimagi.com
@@ -97,7 +77,7 @@ couchdb2:
   username: "{{ COUCH_USERNAME }}"
   password: "{{ COUCH_PASSWORD }}"
 couchdb2_client_max_body_size: 100M
-couchdb_version: '3.3.1'
+couchdb_version: '3.5.0'
 couchdb_os_process_limit: 125
 couchdb_rexi_use_kill_all: 'true'
 couchdb_reduce_limit: False
@@ -113,7 +93,9 @@ DROPBOX_APP_NAME: 'CommCareHQFiles - Staging'
 
 s3_blob_db_enabled: yes
 s3_blob_db_url: "https://s3.amazonaws.com"
-s3_blob_db_s3_bucket: 'dimagi-commcare-staging-blobdb'
+s3_blob_db_s3_bucket: 'commcare-staging-blobdb'
+
+
 
 localsettings:
   ALLOWED_HOSTS:
@@ -127,6 +109,7 @@ localsettings:
   BANK_ADDRESS: { 'first_line': "1 Citizens Drive", 'city': "Riverside", 'region': "RI", 'postal_code': "02915" }
   BANK_NAME: "RBS Citizens N.A."
   BANK_SWIFT_CODE: 'CTZIUS33'
+  CELERY_24_HOUR_QUEUE: "24_hour_queue"
   CELERY_PERIODIC_QUEUE: 'celery_null'
   CELERY_REPEAT_RECORD_DATASOURCE_QUEUE: "repeat_record_datasource_queue"
   COMMCARE_ANALYTICS_HOST: "https://commcare-analytics-staging.dimagi.com"
@@ -139,6 +122,7 @@ localsettings:
   EMAIL_SMTP_HOST: email-smtp.us-east-1.amazonaws.com
   EMAIL_SMTP_PORT: 587
   EMAIL_USE_TLS: yes
+  ENABLE_BHA_CASE_SEARCH_ADAPTER: True
   ENABLE_SOFT_ASSERT_EMAILS: True
   IS_DIMAGI_ENVIRONMENT: True
   ENFORCE_TWO_FACTOR_FOR_SUPERUSERS: False
@@ -147,10 +131,10 @@ localsettings:
   HQ_INSTANCE: 'staging'
   INVOICE_FROM_ADDRESS:
     'name': "Dimagi, Inc."
-    'first_line': "585 Massachusetts Ave"
+    'first_line': "245 Main St, 2nd Floor"
     'city': "Cambridge"
     'region': "MA"
-    'postal_code': "02139"
+    'postal_code': "02142"
     'country': "US"
     'phone_number': "(617) 649-2214"
     'email': "accounts@dimagi.com"
@@ -177,7 +161,6 @@ localsettings:
   SMS_QUEUE_ENABLED: True
   SUMOLOGIC_URL: "{{ SUMOLOGIC_URL }}"
   USE_KAFKA_SHORTEST_BACKLOG_PARTITIONER: True
-  WS4REDIS_CONNECTION_HOST: "redis.staging.commcare.local"
   ENABLE_NEW_TRIAL_EXPERIENCE: True
   STATIC_ROOT:
   STATIC_CDN: 'https://d2f60qxn5rwjxl.cloudfront.net'
@@ -207,11 +190,21 @@ localsettings:
       'gherceg': {
           'index_cname': 'case_search_bha',
           'multiplex_writes': True,
+      },
+      'co-carecoordination-perf': {
+        'index_cname': 'case_search_cc_perf',
+        'multiplex_writes': True,
+      },
+      'philly-ubr-staging': {
+        'index_cname': 'case_search_philly_ubr',
+        'multiplex_writes': True,
       }
   }
   CONNECTID_URL: 'https://connectid.dimagi.com/o/userinfo'
   CONNECTID_CHANNEL_URL: 'https://connectid.dimagi.com/messaging/create_channel/'
   CONNECTID_MESSAGE_URL: 'https://connectid.dimagi.com/messaging/send_fcm/'
+  CONNECTID_CREDENTIALS_URL: 'https://connectid.dimagi.com/users/add_credential/'
+  CONNECTID_ADD_USER_ANALYTICS_URL: 'https://connectid.dimagi.com/users/add_user_analytics'
 
 
 # comment these two lines out to make a new rackspace machine
@@ -237,9 +230,6 @@ shared_dir_gid: 1500
 # for better time syncronization on aws servers
 # replace ntp with chrony.
 use_chrony: True
-
-python_version: '3.9'
-use_deadsnakes: yes
 
 allow_aws_ssm_proxy: true
 

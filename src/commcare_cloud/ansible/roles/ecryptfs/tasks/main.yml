@@ -1,27 +1,5 @@
 ---
 
-- name: Check for valid partition table on block storage device
-  become: yes
-  shell: fdisk -l 2>&1 | grep 'Disk {{ datavol_device }} doesn.t contain a valid partition table'
-  register: partition_check
-  when: datavol_device is defined and ansible_hostname not in groups.get('lvm', [])
-  changed_when: false
-  failed_when: false
-  check_mode: no
-
-- name: Create partition on block storage volume
-  become: yes
-  shell: echo -e "o\nn\np\n1\n\n\nw" | fdisk {{ datavol_device }}
-  # http://superuser.com/a/739586/86694
-  # o - clear in memory partition table
-  # n - new partition
-  # p - primary partition
-  # 1 - partition number 1
-  #   - default - start at beginning of disk
-  #   - default - use entire disk
-  # w - write the partition table
-  when: datavol_device is defined and partition_check.rc == 0 and ansible_hostname not in groups.get('lvm', [])
-
 - name: Format block storage volume
   become: yes
   filesystem: fstype="{{ datavol_fstype }}" dev="{{ datavol_device1 }}"
@@ -41,7 +19,7 @@
 
 - block:
     - name: Check for already mounted encrypted drive
-      shell: grep '{{ encrypted_root }} ecryptfs' /etc/mtab
+      command: grep '{{ encrypted_root }} ecryptfs' /etc/mtab
       register: mtab_contents
       failed_when: false
       changed_when: false
@@ -74,9 +52,12 @@
         - mount-ecryptfs
         - after-reboot
 
-    - name: Mount data drive
+    - name: Mount data drive  # noqa: command-instead-of-module
+      # command-instead-of-module: the `mount` module would persist the ecryptfs
+      # passphrase to /etc/fstab (undesired), and it doesn't fit the keyring-
+      # dependent same-path overlay mount
       become: yes
-      shell: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 {{ encrypted_root }}/ {{ encrypted_root }}/"
+      command: "mount -t ecryptfs -o key=passphrase:passphrase_passwd={{ ECRYPTFS_PASSWORD }},user,noauto,ecryptfs_cipher=aes,ecryptfs_key_bytes=32,ecryptfs_unlink_sigs,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig={{ password_hash.stdout }},verbosity=0 {{ encrypted_root }}/ {{ encrypted_root }}/"
       when: (password_hash.stdout is defined) and (encrypted_root not in mtab_contents.stdout)
       tags:
         - mount-ecryptfs

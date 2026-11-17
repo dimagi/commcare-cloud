@@ -2,11 +2,6 @@
 # {{ ansible_managed }}
 #
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-
 from datetime import time
 import hashlib
 import json
@@ -201,7 +196,12 @@ S3_BLOB_DB_SETTINGS = {
     'secret_key': {% if s3_blob_db_secret_key %}'{{ s3_blob_db_secret_key }}'{% else %}None{% endif %},
     's3_bucket': '{{ s3_blob_db_s3_bucket }}',
     'bulk_delete_chunksize': {{ s3_bulk_delete_chunksize }},
-    'config': {'signature_version': 's3v4'},
+    'config': {
+        'signature_version': 's3v4',
+        {% if s3_blob_db_max_pool_connections %}
+        'max_pool_connections': {{ s3_blob_db_max_pool_connections }},
+        {% endif %}
+    },
 }
 {% if localsettings.get('BLOB_DB_MIGRATING_FROM_S3_TO_S3', False) %}
 OLD_S3_BLOB_DB_SETTINGS = {
@@ -209,7 +209,7 @@ OLD_S3_BLOB_DB_SETTINGS = {
     'access_key': {% if old_s3_blob_db_access_key %}'{{ old_s3_blob_db_access_key }}'{% else %}None{% endif %},
     'secret_key': {% if old_s3_blob_db_secret_key %}'{{ old_s3_blob_db_secret_key }}'{% else %}None{% endif %},
     's3_bucket': '{{ old_s3_blob_db_s3_bucket }}',
-    'bulk_delete_chunksize': {{ old_s3_bulk_delete_chunksize }},
+    'bulk_delete_chunksize': {{ s3_bulk_delete_chunksize }},
     'config': {'signature_version': 's3v4'},
 }
 BLOB_DB_MIGRATING_FROM_S3_TO_S3 = {{ localsettings.BLOB_DB_MIGRATING_FROM_S3_TO_S3 }}
@@ -267,12 +267,7 @@ RUN_CASE_SEARCH_PILLOW = {{ localsettings.RUN_CASE_SEARCH_PILLOW }}
 RUN_UNKNOWN_USER_PILLOW = {{ localsettings.RUN_UNKNOWN_USER_PILLOW }}
 {% endif %}
 
-{% if BITLY_OAUTH_TOKEN %}
 BITLY_OAUTH_TOKEN = '{{ BITLY_OAUTH_TOKEN }}'
-{% else %}
-BITLY_LOGIN = '{{ BITLY_LOGIN }}'
-BITLY_APIKEY = '{{ BITLY_APIKEY }}'
-{% endif %}
 
 #xep
 #GET_URL_BASE  = 'dimagi.utils.web.get_secure_url_base'
@@ -333,14 +328,11 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
 ANALYTICS_IDS = {
     'GOOGLE_ANALYTICS_API_ID': '{{ GOOGLE_ANALYTICS_API_ID }}',
-    'HUBSPOT_API_ID': '{{ HUBSPOT_API_ID }}',
-    'HUBSPOT_API_KEY': '{{ HUBSPOT_API_KEY }}',
-    'HUBSPOT_ACCESS_TOKEN': '{{ HUBSPOT_ACCESS_TOKEN }}',
-    'KISSMETRICS_KEY': '{{ KISSMETRICS_KEY }}',
+    'GOOGLE_ANALYTICS_SECRET': '{{ GOOGLE_ANALYTICS_SECRET }}',
+    'GOOGLE_ANALYTICS_MEASUREMENT_ID': '{{ GOOGLE_ANALYTICS_MEASUREMENT_ID }}',
     'GTM_ID': '{{ GTM_ID }}',
-    'DRIFT_ID': '{{ DRIFT_ID }}',
-    'APPCUES_ID': '{{ APPCUES_ID }}',
-    'APPCUES_KEY': '{{ APPCUES_KEY }}'
+    'HUBSPOT_API_ID': '{{ HUBSPOT_API_ID }}',
+    'HUBSPOT_ACCESS_TOKEN': '{{ HUBSPOT_ACCESS_TOKEN }}',
 }
 
 GOOGLE_OAUTH_CONFIG = {
@@ -388,14 +380,16 @@ CAPTCHA_CHALLENGE_FUNCT = '{{ localsettings.CAPTCHA_CHALLENGE_FUNCT }}'
 PREVIEWER_RE = r'^(.*@dimagi\.com|.*@valuelabs\.in)$'
 GMAPS_API_KEY = '{{ GMAPS_API_KEY }}'
 MAPBOX_ACCESS_TOKEN = '{{ MAPBOX_ACCESS_TOKEN }}'
+USERFLOW_TOKEN = '{{ USERFLOW_TOKEN }}'
 FORMTRANSLATE_TIMEOUT = 5
 
-{% if OLD_BROKER_URL and rabbitmq_migration_bridge|default(False) %}
-CELERY_BROKER_READ_URL = BROKER_READ_URL = '{{ OLD_BROKER_URL }}'
-CELERY_BROKER_WRITE_URL = BROKER_WRITE_URL = '{{ BROKER_URL }}'
-{% else %}
-CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
+{% if 'REDIS_BROKER_HOST' in localsettings %}
+REDIS_BROKER_HOST = {{ REDIS_BROKER_HOST }}
+REDIS_BROKER_PORT = {{ REDIS_BROKER_PORT }}
+REDIS_BROKER_DB = {{ REDIS_BROKER_DB }}
 {% endif %}
+
+CELERY_BROKER_URL = BROKER_URL = '{{ BROKER_URL }}'
 {% if 'CELERY_BROKER_HEARTBEAT' in localsettings and localsettings.CELERY_BROKER_HEARTBEAT %}
 CELERY_BROKER_HEARTBEAT = {{ localsettings.CELERY_BROKER_HEARTBEAT }}
 {% endif %}
@@ -413,6 +407,8 @@ CELERY_REMINDER_CASE_UPDATE_BULK_QUEUE = '{{ localsettings.CELERY_REMINDER_CASE_
 CELERY_REPEAT_RECORD_DATASOURCE_QUEUE = '{{ localsettings.CELERY_REPEAT_RECORD_DATASOURCE_QUEUE }}'
 {% endif %}
 
+CELERY_24_HOUR_QUEUE = '{{ localsettings.get('CELERY_24_HOUR_QUEUE', 'background_queue') }}'
+
 FORMPLAYER_URL = "/formplayer"
 
 {% if FORMPLAYER_INTERNAL_AUTH_KEY %}
@@ -428,8 +424,8 @@ REPORT_CACHE = 'redis'
 redis_cache = {
     'BACKEND': 'django_redis.cache.RedisCache',
 {% set redis_url = 'redis://' ~ localsettings.REDIS_HOST ~ ':' ~ localsettings.REDIS_PORT %}
-{% if localsettings.get('REDIS_PASSWORD') %}
-{% set redis_url = 'redis://:' ~ localsettings.REDIS_PASSWORD ~ '@' ~ localsettings.REDIS_HOST ~ ':' ~ localsettings.REDIS_PORT %}
+{% if REDIS_PASSWORD %}
+{% set redis_url = 'redis://:' ~ REDIS_PASSWORD ~ '@' ~ localsettings.REDIS_HOST ~ ':' ~ localsettings.REDIS_PORT %}
 {% endif %}
 {% if 'REDIS_DB' in localsettings %}
     'LOCATION': '{{ redis_url }}/{{ localsettings.REDIS_DB }}',
@@ -437,7 +433,6 @@ redis_cache = {
     'LOCATION': '{{ redis_url }}',
 {% endif %}
     'OPTIONS': {
-        'PARSER_CLASS': 'redis.connection.HiredisParser',
         'REDIS_CLIENT_KWARGS': {
             'health_check_interval': 15,
         },
@@ -467,12 +462,16 @@ ELASTICSEARCH_PORT = {{ ELASTICSEARCH_PORT }}
 {% if 'ELASTICSEARCH_MAJOR_VERSION' in localsettings %}
 ELASTICSEARCH_MAJOR_VERSION = {{ localsettings.ELASTICSEARCH_MAJOR_VERSION }}
 {% else %}
-ELASTICSEARCH_MAJOR_VERSION = 5
+ELASTICSEARCH_MAJOR_VERSION = 6
 {% endif %}
 
 ES_SETTINGS = {{ ES_SETTINGS }}
 
 SECRET_KEY = "{{ SECRET_KEY }}"
+
+{% if PROJECTDB_USERS_PASSWORD %}
+PROJECTDB_USERS_PASSWORD = "{{ PROJECTDB_USERS_PASSWORD }}"
+{% endif %}
 
 PRIME_VIEWS_INTERVAL = 2
 
@@ -639,6 +638,10 @@ ACTIVE_PILLOW_NAMES = [
 SIMPLE_API_KEYS = {{ SIMPLE_API_KEYS|to_json }}
 {% endif %}
 
+{% if AI_TRANSLATION_API_KEYS %}
+AI_TRANSLATION_API_KEYS = {{ AI_TRANSLATION_API_KEYS|to_json }}
+{% endif %}
+
 {% if groups.kafka %}
 KAFKA_BROKERS = [
     {%- for host in groups.kafka -%}
@@ -734,6 +737,22 @@ RECAPTCHA_PUBLIC_KEY = {{ RECAPTCHA_PUBLIC_KEY }}
 RECAPTCHA_PRIVATE_KEY = {{ RECAPTCHA_PRIVATE_KEY }}
 {% endif %}
 
+{% if TURNSTILE_SITE_KEY %}
+TURNSTILE_SITE_KEY = {{ TURNSTILE_SITE_KEY }}
+{% endif %}
+
+{% if TURNSTILE_SECRET_KEY %}
+TURNSTILE_SECRET_KEY = {{ TURNSTILE_SECRET_KEY }}
+{% endif %}
+
+{% if MAXMIND_ACCOUNT_ID %}
+MAXMIND_ACCOUNT_ID = {{ MAXMIND_ACCOUNT_ID }}
+{% endif %}
+
+{% if MAXMIND_LICENSE_KEY %}
+MAXMIND_LICENSE_KEY = {{ MAXMIND_LICENSE_KEY }}
+{% endif %}
+
 {% if localsettings.get('DISABLE_AUTOCOMPLETE_ON_SENSITIVE_FORMS') %}
 DISABLE_AUTOCOMPLETE_ON_SENSITIVE_FORMS = True
 {% endif %}
@@ -759,16 +778,6 @@ DATADOG_APP_KEY = '{{ DATADOG_APP_KEY }}'
 {% endif %}
 
 METRICS_PROVIDERS = {{ metrics_providers | to_json }}
-
-{% if localsettings.get('WS4REDIS_CONNECTION_HOST') %}
-WS4REDIS_CONNECTION = {
-    'host': '{{ localsettings.WS4REDIS_CONNECTION_HOST }}'
-}
-{% endif %}
-
-{% if prometheus_celery_pushgateway is defined %}
-PROMETHEUS_PUSHGATEWAY_HOST = os.environ.get('PROMETHEUS_PUSHGATEWAY_HOST', None)
-{% endif %}
 
 {% if TWO_FACTOR_GATEWAY_ENABLED %}
 TWO_FACTOR_SMS_GATEWAY = 'corehq.apps.hqwebapp.two_factor_gateways.Gateway'
@@ -799,6 +808,10 @@ ENTERPRISE_MODE = {{ localsettings.ENTERPRISE_MODE }}
 
 {% if localsettings.get('RESTRICT_DOMAIN_CREATION') %}
 RESTRICT_DOMAIN_CREATION = {{ localsettings.RESTRICT_DOMAIN_CREATION }}
+{% endif %}
+
+{% if localsettings.get('ENABLE_BHA_CASE_SEARCH_ADAPTER') %}
+ENABLE_BHA_CASE_SEARCH_ADAPTER = {{ localsettings.ENABLE_BHA_CASE_SEARCH_ADAPTER }}
 {% endif %}
 
 {% if localsettings.get('TABLEAU_URL_ROOT') %}
@@ -955,7 +968,6 @@ SERVER_EMAIL = '{{ server_email }}'
 DEFAULT_FROM_EMAIL = '{{ default_from_email }}'
 RETURN_PATH_EMAIL = '{{ return_path_email }}'
 SUPPORT_EMAIL = '{{ support_email }}'
-PROBONO_SUPPORT_EMAIL = '{{ probono_support_email }}'
 ACCOUNTS_EMAIL = '{{ accounts_email }}'
 DATA_EMAIL = '{{ data_email }}'
 SUBSCRIPTION_CHANGE_EMAIL = '{{ subscription_change_email }}'
@@ -993,10 +1005,6 @@ TRANSIFEX_DETAILS = {
 
 {% if localsettings.KAFKA_API_VERSION is defined or kafka_version is defined %}
 KAFKA_API_VERSION = tuple({{ localsettings.KAFKA_API_VERSION|default(kafka_version.split('.')|map('int')|list) }})
-{% endif %}
-
-{% if localsettings.ICDS_USE_CITUS is defined %}
-ICDS_USE_CITUS = {{ localsettings.ICDS_USE_CITUS }}
 {% endif %}
 
 {% if localsettings.STATIC_DATA_SOURCE_PROVIDERS is defined %}
@@ -1162,6 +1170,10 @@ NO_DEVICE_LOG_ENVS = []
 NO_DEVICE_LOG_ENVS = [{{ env_monitoring_id|to_json }}]
 {% endif %}
 
+{% if 'DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY' in localsettings and localsettings.DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY %}
+DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY = {{ localsettings.DOMAIN_MAX_REGISTRATION_REQUESTS_PER_DAY }}
+{% endif %}
+
 {% if localsettings.IGNORE_ALL_DEMO_USER_SUBMISSIONS is defined %}
 IGNORE_ALL_DEMO_USER_SUBMISSIONS = {{ localsettings.IGNORE_ALL_DEMO_USER_SUBMISSIONS }}
 {% endif %}
@@ -1218,6 +1230,22 @@ CONNECTID_CHANNEL_URL = "{{ localsettings.CONNECTID_CHANNEL_URL }}"
 CONNECTID_MESSAGE_URL = "{{ localsettings.CONNECTID_MESSAGE_URL }}"
 {% endif %}
 
+{% if localsettings.CONNECTID_CREDENTIALS_URL is defined %}
+CONNECTID_CREDENTIALS_URL = "{{ localsettings.CONNECTID_CREDENTIALS_URL }}"
+{% endif %}
+
+{% if CONNECTID_CREDENTIALS_CLIENT_ID is defined %}
+CONNECTID_CREDENTIALS_CLIENT_ID = "{{ CONNECTID_CREDENTIALS_CLIENT_ID }}"
+{% endif %}
+
+{% if CONNECTID_CREDENTIALS_SECRET_KEY is defined %}
+CONNECTID_CREDENTIALS_SECRET_KEY = "{{ CONNECTID_CREDENTIALS_SECRET_KEY }}"
+{% endif %}
+
+{% if localsettings.CONNECTID_ADD_USER_ANALYTICS_URL is defined %}
+CONNECTID_ADD_USER_ANALYTICS_URL = "{{ localsettings.CONNECTID_ADD_USER_ANALYTICS_URL }}"
+{% endif %}
+
 {% if localsettings.MAX_MOBILE_UCR_LIMIT is defined %}
 MAX_MOBILE_UCR_LIMIT = {{ localsettings.MAX_MOBILE_UCR_LIMIT }}
 {% endif %}
@@ -1228,4 +1256,34 @@ MIN_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MIN_REPEATER_RATE_LIMIT_DELAY }
 
 {% if localsettings.MAX_REPEATER_RATE_LIMIT_DELAY is defined %}
 MAX_REPEATER_RATE_LIMIT_DELAY = {{ localsettings.MAX_REPEATER_RATE_LIMIT_DELAY }}
+{% endif %}
+
+{% if AI_CHATBOT_ID and AI_CHATBOT_TOKEN %}
+AI_CHATBOT_ID = "{{ AI_CHATBOT_ID }}"
+AI_CHATBOT_TOKEN = "{{ AI_CHATBOT_TOKEN }}"
+{% endif %}
+
+{% if OCS_API_KEY %}
+OCS_API_KEY = "{{ OCS_API_KEY }}"
+{% endif %}
+
+{% if OCS_OAUTH_CLIENT_ID and OCS_OAUTH_CLIENT_SECRET %}
+OCS_OAUTH_CLIENT_ID = "{{ OCS_OAUTH_CLIENT_ID }}"
+OCS_OAUTH_CLIENT_SECRET = "{{ OCS_OAUTH_CLIENT_SECRET }}"
+{% endif %}
+
+{% if OFFBOARDING_PLATFORMS %}
+OFFBOARDING_PLATFORMS = {{ OFFBOARDING_PLATFORMS|to_json }}
+{% endif %}
+
+{% if OFFBOARDING_PROTECTED_EMAILS %}
+OFFBOARDING_PROTECTED_EMAILS = {{ OFFBOARDING_PROTECTED_EMAILS|to_json }}
+{% endif %}
+
+{% if ORANGE_CAMEROON_X_AUTH_TOKEN and ORANGE_CAMEROON_CHANNEL_MSISDN and ORANGE_CAMEROON_CHANNEL_PIN %}
+ORANGE_CAMEROON_API_CREDS = {
+    'x-auth-token': '{{ ORANGE_CAMEROON_X_AUTH_TOKEN }}',
+    'channel_msisdn': '{{ ORANGE_CAMEROON_CHANNEL_MSISDN }}',
+    'channel_pin': '{{ ORANGE_CAMEROON_CHANNEL_PIN }}',
+}
 {% endif %}

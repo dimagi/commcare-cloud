@@ -12,7 +12,9 @@
         TMPDIR: '{{ encrypted_tmp }}'
         READ_FROM_PLPROXY_STANDBYS: 1
         PROMETHEUS_MULTIPROC_DIR: "{% if prometheus_monitoring_enabled|default(False) %}{{ metrics_home }}{% endif %}"
-        DD_TRACE_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
-        DD_TRACE_DJANGO_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
-        DD_TRACE_DEBUG: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
-        DD_INSTRUMENTATION_TELEMETRY_ENABLED: "{% if not app_processes_config.datadog_pythonagent %}False{% endif %}"
+        DD_ENV: "{{ env_monitoring_id }}"
+        DD_SERVICE: "pillowtop"
+        # Set app-processes.yml:pillows.<host>.<proc>.env_vars.DD_TRACE_ENABLED=True
+        # to enable APM on pillow processes.
+        DD_TRACE_ENABLED: False
+        DD_INSTRUMENTATION_TELEMETRY_ENABLED: False

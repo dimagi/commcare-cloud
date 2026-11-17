@@ -1,8 +1,5 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
 import collections
 import csv
-import git
 import inspect
 import itertools
 import json
@@ -13,7 +10,7 @@ from collections import defaultdict
 from datetime import datetime
 from io import open
 from operator import attrgetter, itemgetter
-from distutils.version import LooseVersion
+from packaging.version import Version
 from commcare_cloud.commands.ansible.service import SERVICE_NAMES, SERVICES_BY_NAME, ElasticsearchClassic
 from commcare_cloud.commands.ansible.ansible_playbook import _AnsiblePlaybookAlias, AnsiblePlaybook
 from commcare_cloud.commands.deploy.commcare import get_deployed_version
@@ -243,6 +240,7 @@ class PillowTopicAssignments(CommandBase):
         args.server = "django_manage[0]"
         args.tmux = None
         args.tee_file = None
+        args.quiet = None
         return DjangoManage(self.parser).run(args, manage_args)
 
 
@@ -334,7 +332,7 @@ def get_couch_config(environment, nodes=None, port=15984, local_port=15986, couc
     couch_nodes = nodes or environment.groups['couchdb2']
     if couchdb_version is None:
         couchdb_version = environment.public_vars.get('couchdb_version', '2.3.1')
-    if LooseVersion(couchdb_version) >= LooseVersion('3.0.0'):
+    if Version(couchdb_version) >= Version('3.0.0'):
         local_port = port
     config = Config(
         control_node_ip=couch_nodes[0],
@@ -497,7 +495,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         super().__init__(*args, **kwargs)
         self.env_info_dict = {}
         # We set the audits_directory in the `run` method
-        self.audits_directory = os.path.expanduser(f"~/.commcare-cloud/audits")
+        self.audits_directory = os.path.expanduser("~/.commcare-cloud/audits")
         self.environment = ""
         self.curr_audit_directory = ""
 
@@ -505,7 +503,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self.args = args
         self.environment = get_environment(args.env_name)
         self.env_info_dict["environment"] = args.env_name
-        
+
         env_name = args.env_name
         audit_name = datetime.utcnow().strftime('%Y-%m-%d_%H.%M.%S')
         self.curr_audit_directory = os.path.join(self.audits_directory, f"{env_name}/{audit_name}")
@@ -517,7 +515,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
         self._collect_control_machine_os_level_info()
         self._audit_hosts()
         self._collect_service_status_info()
-        
+
         self._write_info_file()
         self._remove_old_audit_folders()
 
@@ -548,8 +546,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
             json.dump(self.env_info_dict, fp=file)
 
     def _collect_commcare_cloud_details(self):
-        repo = git.Repo(search_parent_directories=True)
-        hexsha = repo.head.object.hexsha
+        hexsha = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode("utf-8").strip()
         self.env_info_dict["commcare_cloud"] = {"commit": hexsha}
 
     def _collect_commcare_hq_details(self):
@@ -567,7 +564,7 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
 
     def _collect_control_machine_os_level_info(self):
         os_data = {}
-        
+
         os_distrib = {}
         with open("/etc/lsb-release", "r") as file:
             distrib_info = file.read().split("\n")
@@ -577,10 +574,10 @@ class AuditEnvironment(_AnsiblePlaybookAlias):
                 key = info.split("=")[0]
                 value = info.split("=")[1]
                 os_distrib[key] = value
-        
+
         os_data["os_distrib"] = os_distrib
         self.env_info_dict["os_data"] = os_data
-        
+
     def _audit_hosts(self):
         args = self.args
         args.playbook = 'commcare-audit.yml'

@@ -1,22 +1,17 @@
-from __future__ import print_function
-
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from nose.tools import assert_equal, assert_dict_equal
-from parameterized import parameterized
+import pytest
 
 from commcare_cloud.commands.ansible.helpers import ProcessDescriptor
 from commcare_cloud.commands.ansible.service import get_managed_service_options, get_processes_by_host, \
     optimize_process_operations
 
 process_descriptors = [
-        ProcessDescriptor('h1', 'p1', 0, 'p1-0'),
-        ProcessDescriptor('h1', 'p1', 1, 'p1-1'),
-        ProcessDescriptor('h2', 'p1', 2, 'p1-2'),
-        ProcessDescriptor('h1', 'p2', 0, 'p2-0'),
-        ProcessDescriptor('h3', 'p3', 0, 'p3-0'),
-        ProcessDescriptor('h4', 'p3', 0, 'p3-0'),
-    ]
+    ProcessDescriptor("h1", "p1", 0, "p1-0"),
+    ProcessDescriptor("h1", "p1", 1, "p1-1"),
+    ProcessDescriptor("h2", "p1", 2, "p1-2"),
+    ProcessDescriptor("h1", "p2", 0, "p2-0"),
+    ProcessDescriptor("h3", "p3", 0, "p3-0"),
+    ProcessDescriptor("h4", "p3", 0, "p3-0"),
+]
 
 
 def test_get_managed_service_options():
@@ -28,7 +23,7 @@ def test_get_managed_service_options():
     ], options
 
 
-@parameterized([
+@pytest.mark.parametrize("all_hosts,process_descriptors,process_pattern,expected_response", [
     # no filtering
     (['h1', 'h2', 'h3', 'h4'], process_descriptors, None, {
         'h1': ['p1-0', 'p1-1', 'p2-0'],
@@ -72,7 +67,7 @@ def test_get_processes_by_host(all_hosts, process_descriptors, process_pattern, 
         hosts: sorted(process)
         for hosts, process in processes_by_host.items()
     }
-    assert_equal(processes_by_host, expected_response)
+    assert processes_by_host == expected_response
 
 
 def test_optimized_process_operations():
@@ -83,8 +78,8 @@ def test_optimized_process_operations():
     }
     process_host_mapping = {
         'h1': ['p1', 'p2'],
-        'h2': ['p3',],
-        'h3': ['p5',],
+        'h2': ['p3', ],
+        'h3': ['p5', ],
     }
     opt_process_host_mapping = optimize_process_operations(all_processes_by_host, process_host_mapping)
-    assert_dict_equal(opt_process_host_mapping, {('h2',): ['p3'], ('h1', 'h3'): ['all']})
+    assert opt_process_host_mapping == {('h2',): ['p3'], ('h1', 'h3'): ['all']}

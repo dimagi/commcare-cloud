@@ -26,8 +26,6 @@ allocations:
     from: proxy
   postgresql:
     from: proxy
-  rabbitmq:
-    from: proxy
   kafka:
     from: proxy
   zookeeper:
