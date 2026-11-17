@@ -236,7 +236,7 @@ scenario (Appendix C, item 2).
 Depends: Appendix C item 2
 ([SAAS-20370](https://dimagi.atlassian.net/browse/SAAS-20370),
 [SAAS-20371](https://dimagi.atlassian.net/browse/SAAS-20371)), both done.
-Ticket: [SAAS-20606](https://dimagi.atlassian.net/browse/SAAS-20606)
+Ticket: [SAAS-20606](https://dimagi.atlassian.net/browse/SAAS-20606) (after the bumps)
 
 #### 11. Adopt `ansible.posix`
 Add `ansible.posix` to `requirements.yml`, then FQCN-ify its modules:
@@ -250,7 +250,7 @@ Acceptance: collection installs; refs resolve to `ansible.posix.*`; lint clean;
 deploy_hq static files Molecule scenario
 ([SAAS-20363](https://dimagi.atlassian.net/browse/SAAS-20363)) and Vagrant
 `deploy-stack` green.
-Ticket: [SAAS-20607](https://dimagi.atlassian.net/browse/SAAS-20607)
+Ticket: [SAAS-20607](https://dimagi.atlassian.net/browse/SAAS-20607) (after the bumps)
 
 #### 12. Audit `community.general` + `dimagi.commcare_logstash`
 Decide whether `community.general 7.4.0` is still required and at what version,
@@ -266,7 +266,7 @@ Also fix `roles/formplayer/meta/main.yml`: its `collections:` entry lists the
 module `community.general.monit` instead of a collection.
 Acceptance: necessity decision recorded; a compat-matrix entry per surviving
 collection.
-Ticket: [SAAS-20608](https://dimagi.atlassian.net/browse/SAAS-20608)
+Ticket: [SAAS-20608](https://dimagi.atlassian.net/browse/SAAS-20608) (Won't Fix, folded into #26; meta fix in #17)
 
 #### 13. Removed-collection audit (collections dropped v5–v14)
 The repo uses short module names (FQCN is ~6 tasks total), so grep the *short
@@ -278,7 +278,7 @@ elasticsearch and `pg_hba.conf.j2` templates). It moved from
 `ansible.netcommon` to `ansible.utils.ipaddr`, needs `netaddr`, and nothing
 declares it.
 Acceptance: nothing in-use silently disappears at any version step; pins added.
-Ticket: [SAAS-20609](https://dimagi.atlassian.net/browse/SAAS-20609)
+Ticket: [SAAS-20609](https://dimagi.atlassian.net/browse/SAAS-20609) (after the bumps)
 
 #### 14. Standalone-role maintenance audit; drop orphaned roles
 Use the Appendix B matrix as the baseline: for each *role* in `requirements.yml`
@@ -288,7 +288,7 @@ roles (`cloudalchemy.*`, plus the transitive `gantsign.golang` /
 covers the survivors: `DavidWittman.redis`, `sansible.logstash`, the
 `andrewrothstein.*` couchdb roles.
 Acceptance: role compat matrix complete; orphaned pins removed or justified.
-Ticket: [SAAS-20610](https://dimagi.atlassian.net/browse/SAAS-20610)
+Ticket: [SAAS-20610](https://dimagi.atlassian.net/browse/SAAS-20610) (Won't Fix, folded into #27)
 
 #### 15. Vendor or replace `tmpreaper`
 Abandoned but trivial (`ANXS/tmpreaper`, dead since 2017); used by
@@ -298,7 +298,7 @@ Abandoned but trivial (`ANXS/tmpreaper`, dead since 2017); used by
 few inline tasks; re-point `requirements.yml` / refs.
 Acceptance: resolves to a repo-local role (or inline tasks); no abandoned pin
 remains; Vagrant `deploy-stack` green (`deploy_tmpreaper.yml` is part of it).
-Ticket: [SAAS-20611](https://dimagi.atlassian.net/browse/SAAS-20611)
+Ticket: [SAAS-20611](https://dimagi.atlassian.net/browse/SAAS-20611) (Won't Fix unless a bump breaks it)
 
 #### 16. Vendor or replace `ansible-logrotate`
 Same approach as #15 (`nickhammond`, dead since 2018). Heavily used:
@@ -310,12 +310,13 @@ partials, and `deploy_couchdb2.yml` / `deploy_proxy.yml` /
 name.
 Acceptance: resolves to a repo-local role (or inline tasks); no abandoned pin
 remains; Vagrant `deploy-stack` green (`common` has no Molecule scenario).
-Ticket: [SAAS-20612](https://dimagi.atlassian.net/browse/SAAS-20612)
+Ticket: [SAAS-20612](https://dimagi.atlassian.net/browse/SAAS-20612) (Won't Fix unless a bump breaks it)
 
 ### Deprecation cleanup — version-agnostic, run on 4.10
 
 #### 17. Remove `warn:` on command/shell
-~15, mostly `ping.yml`; removed in core 2.14.
+~15, mostly `ping.yml`; removed in core 2.14. Also fix the `collections:`
+entry in `roles/formplayer/meta/main.yml` (from #12).
 Acceptance: none remain; lint clean.
 
 #### 18. Convert `with_*` to `loop:`
