@@ -217,8 +217,9 @@ updates it too.
 
 #### 10. Adopt `community.postgresql` (declare + migrate `postgresql_*`)
 Add `community.postgresql` to `requirements.yml`, then FQCN-ify
-`postgresql_user/db/privs/set/query/ext/lang` and drop `encrypted:` (removed in
-core 2.15; `set_up_dbs.yml:51` and `:192`).
+`postgresql_user/db/privs/set/query/ext/lang` and drop `encrypted:` (still
+accepted by community.postgresql 3.9.0 in Ansible 10; `set_up_dbs.yml:51` and
+`:192`).
 Files (30 uses):
 - roles: `postgresql_base` (`set_up_dbs.yml`), `postgresql` (`main.yml`,
   `plproxy.yml`), `pg_repack`, `sentry`
@@ -315,9 +316,10 @@ Ticket: [SAAS-20612](https://dimagi.atlassian.net/browse/SAAS-20612) (Won't Fix 
 ### Deprecation cleanup — version-agnostic, run on 4.10
 
 #### 17. Remove `warn:` on command/shell
-~15, mostly `ping.yml`; removed in core 2.14. Also fix the `collections:`
+13, all in `ping.yml`; removed in core 2.14. Also fix the `collections:`
 entry in `roles/formplayer/meta/main.yml` (from #12).
 Acceptance: none remain; lint clean.
+Ticket: [SAAS-20613](https://dimagi.atlassian.net/browse/SAAS-20613)
 
 #### 18. Convert `with_*` to `loop:`
 Largest change: ~125 across ~21 files. Add appropriate filters/`lookup`.
@@ -364,6 +366,7 @@ Depends: 9.
 #### 22. Fix ansible.cfg Galaxy URL
 `old-galaxy.ansible.com` → `galaxy.ansible.com`.
 Acceptance: galaxy installs resolve.
+Ticket: [SAAS-20614](https://dimagi.atlassian.net/browse/SAAS-20614)
 
 #### 23. Update custom plugins/modules for the newer core API
 `module_utils._text` → `module_utils.common.text.converters`; `logging.warn` →
@@ -390,7 +393,8 @@ Acceptance: CLI imports succeed on each target core; verified at 12→14 (#30).
 #### 26. Ansible 4 → 10 (core 2.11→2.17)
 The core/package upgrade. Ansible 10 is the highest reachable on Python 3.10.
 Raise the `ansible` pin and `min_ansible_version`; re-pin collections to
-core-2.17-compatible versions, including `community.general` (#12).
+core-2.17-compatible versions. Drop the `community.general` 7.4.0 pin; Ansible
+10.7.0 bundles 9.5.2 (#12).
 Run the full suite on the bump branch; land each fix it surfaces on `master`
 first.
 This is also the first core (2.12+) that supports ansible-lint 6.2+: bump
@@ -409,6 +413,7 @@ Acceptance: core 2.17 installs; `deploy_hq.yml` syntax-check green; full suite
 (see Notes → Verification layers) green on Ansible 10.
 Fallback: bisect via 6/8 if failures are hard to localize.
 Depends: 17, 22, and fixes the bump branch surfaces.
+Ticket: [SAAS-20615](https://dimagi.atlassian.net/browse/SAAS-20615)
 
 #### 27. Re-pin surviving standalone roles + re-test
 Bump the still-maintained roles to their newest releases and re-test on core
@@ -543,7 +548,7 @@ against GitHub archived flag + last push, June 2026):
 | `tmpreaper` (`ANXS/tmpreaper`) | ANXS/tmpreaper | **DEAD** | **2017-07** | trivial role — vendor or replace (#15) |
 | `ansible-logrotate` | nickhammond/ansible-logrotate | **DEAD** | **2018-10** (v0.0.5) | trivial role — vendor or replace (#16) |
 | `dimagi.commcare_logstash` | dimagi/commcare-logstash | Dimagi | 2022-01 (0.9.5) | re-test; we own it (#12) |
-| `community.general` | (collection) | active | pinned 7.4.0 | bump in lockstep with core (#12) |
+| `community.general` | (collection) | active | pinned 7.4.0 | drop the pin at #26; Ansible 10.7.0 bundles 9.5.2 |
 
 ## Appendix C: Module coverage and test priority
 
@@ -743,7 +748,8 @@ Not worth a scenario:
   validated in CI and on Vagrant/Docker targets only.
 - **Open questions:** confirm...
   - 14.x has a stable collection set at execution.
-  - whether `community.general 7.4.0` needs bumping in lockstep with the cores.
+  - ~~whether `community.general 7.4.0` needs bumping in lockstep with the
+    cores~~ — **resolved:** no; #26 drops the pin and uses the bundled version.
   - ~~whether we need to maintain prometheus/grafana automation at all~~ —
     **resolved:** no; #5 removes it and documents operator-managed Prometheus.
   - add an Ansible 11 stop only if the SSH/Windows or docker-default changes
