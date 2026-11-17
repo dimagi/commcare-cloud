@@ -41,7 +41,7 @@
 - hosts:
   - couchdb2
   tasks:
-  - command: service couchdb2 status
+  - command: service couchdb status
     name: Check couchdb status
 
 - hosts:
