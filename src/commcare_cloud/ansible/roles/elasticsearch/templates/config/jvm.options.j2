@@ -72,7 +72,7 @@
 
 # specify an alternative path for JVM fatal error logs
 -XX:ErrorFile={{ elasticsearch_data_dir }}/logs/hs_err_pid%p.log
-{% if elasticsearch_disable_base64_intrinsics | bool %}
+{% if not elasticsearch_base64_intrinsics_enabled | bool %}
 
 # Disable the hardware-accelerated Base64 intrinsic
 # (see https://dimagi.atlassian.net/browse/SAAS-20621)
