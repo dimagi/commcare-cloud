@@ -14,9 +14,9 @@
     sansible_logstash_default_config: no
   tasks:
     - import_role:
-        name: sansible.logstash
+        name: logstash
     - import_role:
-        name: dimagi.commcare_logstash.logstash
+        name: commcare_logstash
       tags: configure
     - sysctl:
         name: net.core.rmem_max
@@ -45,5 +45,5 @@
     filebeat_version: 7.x
   tasks:
     - import_role:
-        name: dimagi.commcare_logstash.filebeat
+        name: filebeat
   tags: filebeat
