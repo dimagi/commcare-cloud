@@ -1,0 +1,15 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    # The vars sansible.logstash passes when it runs this role as a dependency
+    # (see its meta/main.yml).
+    - name: Include sansible.users_and_groups
+      ansible.builtin.include_role:
+        name: sansible.users_and_groups
+      vars:
+        sansible_users_and_groups_groups:
+          - name: logstash
+        sansible_users_and_groups_users:
+          - name: logstash
+            group: logstash
