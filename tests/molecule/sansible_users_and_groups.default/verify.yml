@@ -1,0 +1,20 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Assert logstash user has logstash as its primary group
+      ansible.builtin.shell: test "$(id -gn logstash)" = logstash
+      changed_when: false
+
+    - name: Assert home directory is owned by logstash with mode 0750
+      ansible.builtin.shell: test "$(stat -c '%U:%G %a' /home/logstash)" = "logstash:logstash 750"
+      changed_when: false
+
+    - name: Assert .ssh directory has mode 0700
+      ansible.builtin.shell: test "$(stat -c '%U %a' /home/logstash/.ssh)" = "logstash 700"
+      changed_when: false
+
+    - name: Assert sudoers is still valid
+      ansible.builtin.command: visudo -c
+      changed_when: false
