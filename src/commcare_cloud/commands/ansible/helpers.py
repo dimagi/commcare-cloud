@@ -8,7 +8,7 @@ from clint.textui import puts
 
 from commcare_cloud.cli_utils import has_arg, ask
 from commcare_cloud.colors import color_error, color_success
-from commcare_cloud.environment.paths import ANSIBLE_DIR, ANSIBLE_ROLES_PATH, ANSIBLE_COLLECTIONS_PATHS
+from commcare_cloud.environment.paths import ANSIBLE_DIR, ANSIBLE_ROLES_PATH, ANSIBLE_COLLECTIONS_PATH
 
 DEPRECATED_ANSIBLE_ARGS = []
 
@@ -17,7 +17,7 @@ class AnsibleContext(object):
     config = 'ANSIBLE_CONFIG'
     roles_path = 'ANSIBLE_ROLES_PATH'
     stdout_callback = 'ANSIBLE_STDOUT_CALLBACK'
-    collections_paths = 'ANSIBLE_COLLECTIONS_PATHS'
+    collections_path = 'ANSIBLE_COLLECTIONS_PATH'
 
     def __init__(self, args, environment=None, ansible_logfile=None):
         from commcare_cloud.environment.main import get_environment
@@ -37,7 +37,7 @@ class AnsibleContext(object):
         env = os.environ.copy()
         env[self.config] = os.path.join(ANSIBLE_DIR, 'ansible.cfg')
         env[self.roles_path] = ANSIBLE_ROLES_PATH
-        env[self.collections_paths] = ANSIBLE_COLLECTIONS_PATHS
+        env[self.collections_path] = ANSIBLE_COLLECTIONS_PATH
         if self.ansible_logfile:
             env["ANSIBLE_LOG_PATH"] = self.ansible_logfile
 

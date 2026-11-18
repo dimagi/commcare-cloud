@@ -11,7 +11,7 @@ from commcare_cloud.cli_utils import print_command
 from commcare_cloud.colors import color_notice, color_success
 from commcare_cloud.commands.command_base import CommandBase
 from commcare_cloud.environment.paths import put_virtualenv_bin_on_the_path, \
-    ANSIBLE_ROLES_PATH, ANSIBLE_DIR, ANSIBLE_COLLECTIONS_PATHS
+    ANSIBLE_ROLES_PATH, ANSIBLE_DIR, ANSIBLE_COLLECTIONS_PATH
 
 
 class Install(CommandBase):
@@ -25,25 +25,25 @@ class Install(CommandBase):
         env = os.environ.copy()
         put_virtualenv_bin_on_the_path()
         env['ANSIBLE_ROLES_PATH'] = ANSIBLE_ROLES_PATH
-        env['ANSIBLE_COLLECTIONS_PATHS'] = ANSIBLE_COLLECTIONS_PATHS
+        env['ANSIBLE_COLLECTIONS_PATH'] = ANSIBLE_COLLECTIONS_PATH
         requirements_yml = os.path.join(ANSIBLE_DIR, 'requirements.yml')
         with open(requirements_yml) as f:
             requirements = yaml.safe_load(f)
 
         required_names = {name for name, version in required_collections(requirements)}
-        for name in remove_unrequired_collections(ANSIBLE_COLLECTIONS_PATHS, required_names):
+        for name in remove_unrequired_collections(ANSIBLE_COLLECTIONS_PATH, required_names):
             puts(color_notice(f"Removed collection {name}: not in requirements.yml"))
 
         if (
             os.path.exists(ANSIBLE_ROLES_PATH)
-            and os.path.exists(ANSIBLE_COLLECTIONS_PATHS)
+            and os.path.exists(ANSIBLE_COLLECTIONS_PATH)
             and requirements_installed(requirements, env)
         ):
             puts(color_success("✓ Ansible roles and collections are up to date."))
             return 0
 
         os.makedirs(ANSIBLE_ROLES_PATH, exist_ok=True)
-        os.makedirs(ANSIBLE_COLLECTIONS_PATHS, exist_ok=True)
+        os.makedirs(ANSIBLE_COLLECTIONS_PATH, exist_ok=True)
 
         # Uses --force to update roles when required versions change.
         cmd_parts = ['ansible-galaxy', 'install', '--force', '-r', requirements_yml]
