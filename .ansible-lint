@@ -4,8 +4,14 @@
 
 exclude_paths:
   - src/commcare_cloud/ansible/requirements.yml
+  # Galaxy roles, installed by `manage-commcare-cloud install` under the
+  # virtualenv, which CI creates in the checkout.
+  - .venv/
 
 skip_list:
   - meta-no-info     # local roles are not published on Ansible Galaxy
   - no-changed-when  # command/shell tasks intentionally omit changed_when
   - role-name        # roles use path-style names (nested role directories)
+
+# Galaxy roles and collections are installed by `manage-commcare-cloud install`.
+offline: true
