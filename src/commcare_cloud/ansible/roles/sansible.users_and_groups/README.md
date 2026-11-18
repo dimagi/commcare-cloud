@@ -1,29 +1,10 @@
 # Users and Roles
 
-Master: [![Build Status](https://travis-ci.org/sansible/users_and_groups.svg?branch=master)](https://travis-ci.org/sansible/users_and_groups)
-Develop: [![Build Status](https://travis-ci.org/sansible/users_and_groups.svg?branch=develop)](https://travis-ci.org/sansible/users_and_groups)
-
-* [ansible.cfg](#ansible-cfg)
-* [Installation and Dependencies](#installation-and-dependencies)
-* [Tags](#tags)
-* [Examples](#examples)
-
 This roles manages OS users and groups.
 
-
-## Installation and Dependencies
-
-This role has no dependencies.
-
-To install run `ansible-galaxy install sansible.users_and_groups` or add
-this to your `roles.yml`
-
-```YAML
-- name: sansible.users_and_groups
-  version: v2.0
-```
-
-and run `ansible-galaxy install -p ./roles -r roles.yml`
+Vendored from [sansible/users_and_groups](https://github.com/sansible/users_and_groups)
+v2.0.5. Upstream is not maintained for current ansible-core, so changes are
+made here.
 
 
 ## Tags
