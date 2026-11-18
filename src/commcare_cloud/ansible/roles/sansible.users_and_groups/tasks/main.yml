@@ -1,7 +1,0 @@
----
-
-- name: Ensures users and groups
-  import_tasks: build.yml
-  tags:
-    - build
-    - maintain

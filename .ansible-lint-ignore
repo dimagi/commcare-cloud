@@ -16,6 +16,4 @@ src/commcare_cloud/ansible/roles/formplayer/roles/commcarehq/tasks/www_log_dir.y
 src/commcare_cloud/ansible/roles/logstash/tasks/configure.yml risky-file-permissions
 src/commcare_cloud/ansible/roles/nginx/defaults/main.yml var-naming
 src/commcare_cloud/ansible/roles/nginx/roles/commcarehq/tasks/www_log_dir.yml load-failure
-src/commcare_cloud/ansible/roles/sansible.users_and_groups/meta/main.yml meta-no-tags
-src/commcare_cloud/ansible/roles/sansible.users_and_groups/tasks/build.yml risky-file-permissions
 src/commcare_cloud/ansible/roles/sansible.java/meta/main.yml meta-no-tags
