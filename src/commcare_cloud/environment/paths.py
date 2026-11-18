@@ -25,7 +25,7 @@ def get_virtualenv_bin_path():
 _SITE_PACKAGES = get_paths()['purelib']
 PACKAGE_BASE = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 ANSIBLE_ROLES_PATH = os.path.realpath(os.path.join(_SITE_PACKAGES, '.ansible/roles'))
-ANSIBLE_COLLECTIONS_PATHS = os.path.realpath(os.path.join(_SITE_PACKAGES, '.ansible/'))
+ANSIBLE_COLLECTIONS_PATH = os.path.realpath(os.path.join(_SITE_PACKAGES, '.ansible/'))
 ANSIBLE_DIR = os.path.join(PACKAGE_BASE, 'ansible')
 TERRAFORM_DIR = os.path.join(PACKAGE_BASE, 'terraform')
 # only works with an editable install

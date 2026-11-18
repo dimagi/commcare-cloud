@@ -19,7 +19,7 @@ import subprocess
 import sys
 
 from commcare_cloud.environment.paths import (
-    ANSIBLE_COLLECTIONS_PATHS,
+    ANSIBLE_COLLECTIONS_PATH,
     ANSIBLE_DIR,
     ANSIBLE_ROLES_PATH,
 )
@@ -54,7 +54,7 @@ def lint_env():
     env = dict(os.environ)
     env["ANSIBLE_CONFIG"] = os.path.join(ANSIBLE_DIR, "ansible.cfg")
     env["ANSIBLE_ROLES_PATH"] = ANSIBLE_ROLES_PATH
-    env["ANSIBLE_COLLECTIONS_PATHS"] = ANSIBLE_COLLECTIONS_PATHS
+    env["ANSIBLE_COLLECTIONS_PATH"] = ANSIBLE_COLLECTIONS_PATH
     return env
 
 
