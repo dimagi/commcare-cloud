@@ -72,6 +72,9 @@ export ANSIBLE_CONFIG=$(pwd)/src/commcare_cloud/ansible/ansible.cfg
 export ANSIBLE_ROLES_PATH=$(pwd)/src/commcare_cloud/ansible/roles
 export CCHQ_COLLECTIONS_PATH=$(python -c 'from commcare_cloud.environment.paths import ANSIBLE_COLLECTIONS_PATH as p; print(p)')
 export MOLECULE_GLOB="tests/molecule/$role.$scenario/molecule.yml"
+# Don't pass a scenario's provisioner ansible_args (e.g. --limit) to our
+# create/destroy playbooks, which run on localhost.
+export MOLECULE_ANSIBLE_ARGS_STRICT_MODE=1
 
 # --all picks every scenario matched by MOLECULE_GLOB, but only test/destroy
 # have that option. Other subcommands need a specific scenario name instead.

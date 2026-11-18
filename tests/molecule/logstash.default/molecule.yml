@@ -18,9 +18,6 @@ platforms:
     # fake Elastic repo server.
     override_command: false
     privileged: true
-    cgroupns_mode: host
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
     tmpfs:
       - /run
       - /tmp

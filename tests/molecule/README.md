@@ -45,9 +45,9 @@ than a generic systemd/Ubuntu image. It's built specifically for
 Ansible/Molecule testing — systemd, `sudo`, and `python3` pre-configured.
 
 A scenario can add a second container for a service the role talks to over
-the network, e.g. a `postgres` image standing in for RDS. Put every platform on
-the same named network (`networks: [{name: <name>}]`) so containers can resolve
-each other by name; containers on the default network can't. If the service
+the network, e.g. a `postgres` image standing in for RDS. When a scenario has
+more than one platform, `lib/create.yml` puts them all on a network named after
+the scenario, so containers can resolve each other by name. If the service
 image has no python, target every play at the platforms that do (e.g.
 `hosts: instance`), since Ansible can't gather facts or run modules on it.
 
@@ -63,8 +63,8 @@ per scenario, and Ansible pipelining. Within a scenario:
   opt-in env var (`MOLECULE_<ROLE>_REAL_INSTALL=1`) for an occasional manual
   run with the real package, as the datadog and ecryptfs scenarios do.
 - **Run systemd as PID 1 only when the role manages services.** It needs
-  `override_command: false`, `privileged: true`, `cgroupns_mode: host` and the
-  cgroup volume (see the datadog scenario), and it makes the container slower
+  `override_command: false`, `privileged: true` and `tmpfs` for `/run` and
+  `/tmp` (see the datadog scenario), and it makes the container slower
   to start and stop.
 - **Don't use `become: true` in `prepare.yml` or `verify.yml`.** The container
   connection is already root.

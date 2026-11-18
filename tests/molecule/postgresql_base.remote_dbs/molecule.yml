@@ -11,8 +11,6 @@ platforms:
     pre_build_image: true
     groups:
       - django_manage
-    networks:
-      - name: postgresql_base.remote_dbs
   - name: postgres
     image: docker.io/library/postgres  # version tag added by create.yml
     pre_build_image: true
@@ -20,8 +18,6 @@ platforms:
     groups:
       - remote_postgresql
       - ansible_skip  # do not gather facts or run tasks
-    networks:
-      - name: postgresql_base.remote_dbs
     volumes:
       # z: relabel for SELinux hosts; ignored elsewhere
       - ${MOLECULE_SCENARIO_DIRECTORY}/files/seed.sql:/docker-entrypoint-initdb.d/seed.sql:ro,z
