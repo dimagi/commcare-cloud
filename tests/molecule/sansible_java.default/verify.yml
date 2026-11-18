@@ -1,0 +1,23 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Get DEB architecture
+      ansible.builtin.command: dpkg --print-architecture
+      register: deb_arch
+      changed_when: false
+
+    - name: Assert java is OpenJDK 8
+      ansible.builtin.shell: >
+        test "$(readlink -f /usr/bin/java)" =
+        /usr/lib/jvm/java-8-openjdk-{{ deb_arch.stdout }}/jre/bin/java
+      changed_when: false
+
+    - name: Assert the OpenJDK PPA key is trusted
+      ansible.builtin.shell: apt-key export EB9B1D8886F44E2A 2>/dev/null | grep -q 'BEGIN PGP PUBLIC KEY BLOCK'
+      changed_when: false
+
+    - name: Assert the Java CA keystore exists
+      ansible.builtin.command: test -f /etc/ssl/certs/java/cacerts
+      changed_when: false

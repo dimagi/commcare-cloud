@@ -1,0 +1,17 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    # As set in deploy_logstash.yml
+    sansible_java_version: 8
+    sansible_java_apt_keyserver: https://keyserver.ubuntu.com
+  tasks:
+    - name: Use the fake keyserver and PPA from prepare.yml
+      when: lookup('env', 'MOLECULE_SANSIBLE_JAVA_REAL_INSTALL') != '1'
+      ansible.builtin.set_fact:
+        sansible_java_apt_keyserver: file:///var/tmp/fake-keyserver
+        sansible_java_apt_repo: deb [trusted=yes] file:/var/tmp/fake-ppa ./
+
+    - name: Include sansible.java
+      ansible.builtin.include_role:
+        name: sansible.java

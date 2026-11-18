@@ -1,0 +1,161 @@
+---
+- name: Prepare
+  hosts: all
+  vars:
+    key_id: EB9B1D8886F44E2A
+    ppa_dir: /var/tmp/fake-ppa
+    pkg_trees: /var/tmp/fake-packages
+  tasks:
+    # The role installs gnupg2, downloads the OpenJDK PPA key from a
+    # keyserver, adds the PPA (which updates the apt cache), and installs
+    # openjdk-8-jdk and ca-certificates-java. By default, serve the real key
+    # from a local file and fake packages from a local apt repo, so the role
+    # itself needs no network. converge.yml points the role at the local key
+    # and repo.
+    #
+    # To occasionally manually check that the role works with the real
+    # keyserver, PPA and packages (NOT FOR ROUTINE/CI USE):
+    #
+    #   MOLECULE_SANSIBLE_JAVA_REAL_INSTALL=1 ./tests/molecule/run.sh sansible_java default
+    #
+    # The role installs gnupg2 before it updates the apt cache, which the
+    # image leaves empty.
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Stub the keyserver, PPA and packages
+      when: lookup('env', 'MOLECULE_SANSIBLE_JAVA_REAL_INSTALL') != '1'
+      block:
+        - name: Get DEB architecture
+          ansible.builtin.command: dpkg --print-architecture
+          register: deb_arch
+          changed_when: false
+
+        - name: Create fake keyserver directory
+          ansible.builtin.file:
+            path: /var/tmp/fake-keyserver/pks
+            state: directory
+            mode: "0755"
+
+        # get_url reads a file:// URL's query string as part of the file
+        # name, so this is the path the role's keyserver URL resolves to.
+        - name: Add the OpenJDK PPA key to the fake keyserver
+          ansible.builtin.copy:
+            src: openjdk-r-ppa.asc
+            dest: "/var/tmp/fake-keyserver/pks/lookup?op=get&search=0x{{ key_id }}"
+            mode: "0644"
+
+        - name: Create fake package trees
+          ansible.builtin.file:
+            path: "{{ pkg_trees }}/{{ item }}/DEBIAN"
+            state: directory
+            mode: "0755"
+          loop:
+            - openjdk-8-jdk
+            - ca-certificates-java
+
+        # The epoch sorts the fakes above any real version, so they satisfy
+        # versioned Breaks of real packages. Otherwise apt removes
+        # ca-certificates, which breaks ca-certificates-java (<< 20121112+nmu1).
+        - name: Write fake package control files
+          ansible.builtin.copy:
+            dest: "{{ pkg_trees }}/{{ item }}/DEBIAN/control"
+            mode: "0644"
+            content: |
+              Package: {{ item }}
+              Version: 99:0.0-molecule
+              Architecture: {{ deb_arch.stdout }}
+              Maintainer: Molecule Test <test@example.com>
+              Description: Fake {{ item }} stub for molecule testing
+          loop:
+            - openjdk-8-jdk
+            - ca-certificates-java
+
+        - name: Create fake java directory
+          ansible.builtin.file:
+            path: "{{ pkg_trees }}/openjdk-8-jdk/usr/lib/jvm/java-8-openjdk-{{ deb_arch.stdout }}/jre/bin"
+            state: directory
+            mode: "0755"
+
+        - name: Write fake java binary
+          ansible.builtin.copy:
+            dest: "{{ pkg_trees }}/openjdk-8-jdk/usr/lib/jvm/java-8-openjdk-{{ deb_arch.stdout }}/jre/bin/java"
+            mode: "0755"
+            content: |
+              #!/bin/sh
+              echo 'openjdk version "1.8.0-molecule"' >&2
+
+        # The real JRE package registers the java alternative, which the
+        # role's alternatives task requires.
+        - name: Write fake openjdk-8-jdk postinst
+          ansible.builtin.copy:
+            dest: "{{ pkg_trees }}/openjdk-8-jdk/DEBIAN/postinst"
+            mode: "0755"
+            content: |
+              #!/bin/sh
+              set -e
+              update-alternatives --install /usr/bin/java java \
+                /usr/lib/jvm/java-8-openjdk-{{ deb_arch.stdout }}/jre/bin/java 1081
+
+        - name: Create fake ca-certificates hook directory
+          ansible.builtin.file:
+            path: "{{ pkg_trees }}/ca-certificates-java/etc/ca-certificates/update.d"
+            state: directory
+            mode: "0755"
+
+        # The real hook builds the Java keystore, which the role's
+        # update-ca-certificates task checks for.
+        - name: Write fake ca-certificates-java hook
+          ansible.builtin.copy:
+            dest: "{{ pkg_trees }}/ca-certificates-java/etc/ca-certificates/update.d/jks-keystore"
+            mode: "0755"
+            content: |
+              #!/bin/sh
+              mkdir -p /etc/ssl/certs/java
+              touch /etc/ssl/certs/java/cacerts
+
+        - name: Create fake PPA directory
+          ansible.builtin.file:
+            path: "{{ ppa_dir }}"
+            state: directory
+            mode: "0755"
+
+        - name: Build fake packages
+          ansible.builtin.command: >
+            dpkg-deb --build --root-owner-group {{ pkg_trees }}/{{ item }} {{ ppa_dir }}/{{ item }}.deb
+          changed_when: true
+          loop:
+            - openjdk-8-jdk
+            - ca-certificates-java
+
+        # Install the real packages the role needs from the archive before
+        # disabling it: gnupg2 brings gpg-agent, which the role's apt-key
+        # add needs, and ca-certificates (a dependency of the real
+        # ca-certificates-java) provides update-ca-certificates.
+        - name: Install gnupg2 and ca-certificates
+          ansible.builtin.apt:
+            name:
+              - gnupg2
+              - ca-certificates
+            state: present
+
+        - name: Index the fake PPA
+          ansible.builtin.shell: |
+            apt-ftparchive packages . > Packages
+            apt-ftparchive release . > Release
+          args:
+            chdir: "{{ ppa_dir }}"
+          changed_when: true
+
+        # So the role's apt cache update reads only the fake PPA.
+        - name: Disable the Ubuntu archive
+          ansible.builtin.command: mv /etc/apt/sources.list /etc/apt/sources.list.disabled
+          changed_when: true
+
+    - name: Create man1 directory for openjdk's postinst
+      when: lookup('env', 'MOLECULE_SANSIBLE_JAVA_REAL_INSTALL') == '1'
+      ansible.builtin.file:
+        path: /usr/share/man/man1
+        state: directory
+        mode: "0755"
