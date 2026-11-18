@@ -8,13 +8,13 @@
 - name: Add Elastic gpg key
   become: yes
   apt_key:
-    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    url: "{{ sansible_logstash_apt_key_url }}"
     state: present
 
 - name: Install Logstash repo
   become: yes
   apt_repository:
-    repo: "deb https://artifacts.elastic.co/packages/{{ sansible_logstash_family }}/apt stable main"
+    repo: "{{ sansible_logstash_apt_repo }}"
     state: present
 
 - name: Install Logstash

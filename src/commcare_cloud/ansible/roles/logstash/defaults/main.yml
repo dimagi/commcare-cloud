@@ -1,5 +1,7 @@
 ---
 
+sansible_logstash_apt_key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+sansible_logstash_apt_repo: "deb https://artifacts.elastic.co/packages/{{ sansible_logstash_family }}/apt stable main"
 sansible_logstash_default_config: yes
 sansible_logstash_family: 2.0
 sansible_logstash_group: logstash

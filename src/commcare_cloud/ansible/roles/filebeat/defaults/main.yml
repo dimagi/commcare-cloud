@@ -1,4 +1,6 @@
 filebeat_version: 7.x
+filebeat_apt_key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+filebeat_apt_repo: "deb https://artifacts.elastic.co/packages/{{ filebeat_version }}/apt stable main"
 filebeat_output_logstash_enabled: true
 filebeat_output_logstash_hosts:
   - "localhost:5044"

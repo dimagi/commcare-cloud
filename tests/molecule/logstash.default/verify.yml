@@ -1,0 +1,103 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Assert services are active
+      ansible.builtin.command: systemctl is-active {{ item }}
+      register: svc_status
+      changed_when: false
+      failed_when: svc_status.stdout != "active"
+      loop:
+        - logstash
+        - filebeat
+
+    - name: Assert services are enabled
+      ansible.builtin.command: systemctl is-enabled {{ item }}
+      register: svc_enabled
+      changed_when: false
+      failed_when: svc_enabled.stdout != "enabled"
+      loop:
+        - logstash
+        - filebeat
+
+    - name: Assert plugins from deploy_logstash.yml are installed
+      ansible.builtin.command: /usr/share/logstash/bin/logstash-plugin list {{ item }}
+      changed_when: false
+      loop:
+        - logstash-patterns-core
+        - logstash-filter-alter
+        - logstash-output-datadog_metrics
+
+    - name: Assert java is OpenJDK 8
+      ansible.builtin.shell: >
+        test "$(readlink -f /usr/bin/java)" =
+        "/usr/lib/jvm/java-8-openjdk-$(dpkg --print-architecture)/jre/bin/java"
+      changed_when: false
+
+    - name: Assert the Elastic key is trusted
+      ansible.builtin.shell: apt-key export 46095ACC8548582C1A2699A9D27D666CD88E42B4 2>/dev/null | grep -q 'BEGIN PGP PUBLIC KEY BLOCK'
+      changed_when: false
+
+    # Set up by sansible.users_and_groups
+    - name: Assert logstash user has logstash as its primary group
+      ansible.builtin.shell: test "$(id -gn logstash)" = logstash
+      changed_when: false
+
+    - name: Assert logstash home directory is owned by logstash with mode 0750
+      ansible.builtin.shell: test "$(stat -c '%U:%G %a' /home/logstash)" = "logstash:logstash 750"
+      changed_when: false
+
+    - name: Assert sudoers includes /etc/sudoers.d once
+      ansible.builtin.shell: test "$(grep -c 'includedir /etc/sudoers.d' /etc/sudoers)" = 1
+      changed_when: false
+
+    - name: Assert sudoers is still valid
+      ansible.builtin.command: visudo -c
+      changed_when: false
+
+    - name: Assert net.core.rmem_max is persisted
+      ansible.builtin.command: grep -Fxq "net.core.rmem_max=26214400" /etc/sysctl.conf
+      changed_when: false
+
+    - name: Assert config owner and mode
+      ansible.builtin.shell: test "$(stat -c '%U:%G %a' {{ item.path }})" = "{{ item.stat }}"
+      changed_when: false
+      loop:
+        - {path: /etc/default/logstash, stat: "root:root 600"}
+        - {path: /etc/filebeat/filebeat.yml, stat: "root:root 644"}
+
+    - name: Read rendered config
+      ansible.builtin.slurp:
+        src: "{{ item }}"
+      register: configs
+      loop:
+        - /etc/default/logstash
+        - /etc/logstash/conf.d/01-inputs.conf
+        - /etc/logstash/conf.d/10-filters.conf
+        - /etc/logstash/conf.d/90-outputs.conf
+        - /etc/filebeat/filebeat.yml
+
+    # The logstash pipeline comes from commcare_logstash, and the filebeat
+    # inputs from filebeat_inputs in group_vars/all.yml.
+    - name: Assert rendered config content
+      vars:
+        ls_default: "{{ configs.results[0].content | b64decode }}"
+        ls_inputs: "{{ configs.results[1].content | b64decode }}"
+        ls_filters: "{{ configs.results[2].content | b64decode }}"
+        ls_outputs: "{{ configs.results[3].content | b64decode }}"
+        filebeat: "{{ configs.results[4].content | b64decode | from_yaml }}"
+      ansible.builtin.assert:
+        that:
+          - ls_default is search('(?m)^LS_HEAP_SIZE="[0-9]+m"$')
+          - ls_default is search('(?m)^JAVACMD=/usr/bin/java$')
+          - ls_inputs is search('port => "5044"')
+          - ls_filters is search('url_group')
+          - ls_outputs is search('#environment:molecule-test,')
+          - filebeat['filebeat.inputs'] | map(attribute='paths') | list == [
+              ['/home/cchq/www/molecule/log/molecule-timing.log'],
+              ['/home/cchq/www/molecule/log/molecule_commcare-nginx_error.log'],
+            ]
+          - filebeat['filebeat.inputs'] | map(attribute='fields') | map(attribute='type') | list == ['nginx-timing', 'nginx-error']
+          - filebeat['output.logstash'].hosts == ['localhost:5044']
+          - filebeat['logging.files'].path == '/var/log/filebeat'

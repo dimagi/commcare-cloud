@@ -4,13 +4,13 @@
 
 - name: Add Elasticsearch apt key.
   apt_key:
-    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    url: "{{ filebeat_apt_key_url }}"
     id: 46095ACC8548582C1A2699A9D27D666CD88E42B4
     state: present
 
 - name: Add Filebeat repository.
   apt_repository:
-    repo: 'deb https://artifacts.elastic.co/packages/{{ filebeat_version }}/apt stable main'
+    repo: "{{ filebeat_apt_repo }}"
     state: present
     update_cache: true
 

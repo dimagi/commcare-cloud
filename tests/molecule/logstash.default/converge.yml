@@ -1,0 +1,18 @@
+---
+# set_fact takes precedence over deploy_logstash.yml's play vars.
+- name: Use the fake keyserver and repos from prepare.yml
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Point sansible.java, logstash and filebeat at the fakes
+      when: lookup('env', 'MOLECULE_LOGSTASH_REAL_INSTALL') != '1'
+      ansible.builtin.set_fact:
+        sansible_java_apt_keyserver: file:///var/tmp/fake-keyserver
+        sansible_java_apt_repo: deb [trusted=yes] file:/var/tmp/fake-ppa ./
+        sansible_logstash_apt_key_url: http://127.0.0.1:8080/GPG-KEY-elasticsearch
+        sansible_logstash_apt_repo: deb [trusted=yes] http://127.0.0.1:8080 ./
+        filebeat_apt_key_url: http://127.0.0.1:8080/GPG-KEY-elasticsearch
+        filebeat_apt_repo: deb [trusted=yes] http://127.0.0.1:8080 ./
+
+- name: Deploy logstash and filebeat
+  ansible.builtin.import_playbook: ../../../src/commcare_cloud/ansible/deploy_logstash.yml
