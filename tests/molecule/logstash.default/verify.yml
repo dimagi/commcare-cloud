@@ -78,8 +78,7 @@
         - /etc/logstash/conf.d/90-outputs.conf
         - /etc/filebeat/filebeat.yml
 
-    # The logstash pipeline comes from commcare_logstash, and the filebeat
-    # inputs from filebeat_inputs in group_vars/all.yml.
+    # The filebeat inputs come from filebeat_inputs in group_vars/all.yml.
     - name: Assert rendered config content
       vars:
         ls_default: "{{ configs.results[0].content | b64decode }}"

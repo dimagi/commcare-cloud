@@ -11,13 +11,9 @@
       - logstash-patterns-core
       - logstash-filter-alter
       - logstash-output-datadog_metrics
-    sansible_logstash_default_config: no
   tasks:
     - import_role:
         name: logstash
-    - import_role:
-        name: commcare_logstash
-      tags: configure
     - sysctl:
         name: net.core.rmem_max
         value: '26214400'

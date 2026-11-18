@@ -3,8 +3,162 @@
 #
 
 output {
-	elasticsearch {
-		hosts => [ '{{ sansible_logstash_outputs_elasticsearch_host }}:{{ sansible_logstash_outputs_elasticsearch_port }}' ]
-		index => 'logstash-%{+YYYY.MM.dd}'
-	}
+  if "_grokparsefailure" in [tags] {
+    stdout {
+      codec => rubydebug
+    }
+  } else {
+{% if prometheus_monitoring_enabled | default(False) %}
+  if [type] == "nginx-timing" {
+      udp {
+        host => "{{ prometheus_statsd_host|default('localhost') }}"
+        port => {{ statsd_exporter_listen_udp|default(9125) }}
+        codec => plain {
+            format => "nginx_timings:%{request_time}|g|#environment:{{ env_monitoring_id }},domain:%{domain},http_method:%{http_method},status_code:%{status_code},url_group:%{url_group},group:proxy,referer_group:%{referer_group}"
+        }
+        id => "logstash-nginx-timings"
+      }
+
+      udp {
+        host => "{{ prometheus_statsd_host|default('localhost') }}"
+        port => {{ statsd_exporter_listen_udp|default(9125) }}
+        codec => plain {
+            format => "nginx_requests:1|c|#environment:{{ env_monitoring_id }},domain:%{domain},http_method:%{http_method},status_code:%{status_code},url_group:%{url_group},cache_status:%{cache_status},group:proxy,referer_group:%{referer_group},duration:%{duration}"
+        }
+        id => "logstash-nginx-requests"
+      }
+
+      udp {
+        host => "{{ prometheus_statsd_host|default('localhost') }}"
+        port => {{ statsd_exporter_listen_udp|default(9125) }}
+        codec => plain {
+            format => "nginx_apdex:%{apdex}|g|#environment:{{ env_monitoring_id }},domain:%{domain},http_method:%{http_method},status_code:%{status_code},url_group:%{url_group},group:proxy"
+        }
+        id => "logstash-nginx-apdex"
+      }
+
+      if [request_length] {
+        udp {
+          host => "{{ prometheus_statsd_host|default('localhost') }}"
+          port => {{ statsd_exporter_listen_udp|default(9125) }}
+          codec => plain {
+              format => "nginx_bytes_received:%{request_length}|c|#environment:{{ env_monitoring_id }},url_group:%{url_group}"
+          }
+          id => "logstash-nginx-request_length"
+        }
+      }
+
+      if [bytes_sent] {
+        udp {
+          host => "{{ prometheus_statsd_host|default('localhost') }}"
+          port => {{ statsd_exporter_listen_udp|default(9125) }}
+          codec => plain {
+              format => "nginx_bytes_sent:%{bytes_sent}|c|#environment:{{ env_monitoring_id }},url_group:%{url_group}"
+          }
+          id => "logstash-nginx-body_sent"
+        }
+      }
+    }
+
+    if [type] == "nginx-error" {
+      if [zone] {
+          udp {
+              host => "{{ prometheus_statsd_host|default('localhost') }}"
+              port => {{ statsd_exporter_listen_udp|default(9125) }}
+              codec => plain {
+                  format => "nginx_rate_limiting:1|c|#environment:{{ env_monitoring_id }},domain:%{domain},http_method:%{verb},zone:%{zone},group:proxy"
+              }
+              id => "logstash-nginx-error_zones"
+            }
+
+      } else {
+          udp {
+            host => "{{ prometheus_statsd_host|default('localhost') }}"
+            port => {{ statsd_exporter_listen_udp|default(8125) }}
+            codec => plain {
+                format => "nginx_error_logs:1|c|#environment:{{ env_monitoring_id }},domain:%{domain},http_method:%{verb},log_level:%{err_severity},error_type:%{err_message},group:proxy"
+            }
+            id => "logstash-nginx-error_logs"
+          }
+      }
+    }
+  }
+
+{% else %}
+
+    if [type] == "nginx-timing" {
+      udp {
+        host => "{{ datadog_statsd_host|default('localhost') }}"
+        port => {{ datadog_statsd_port|default(8125) }}
+        codec => plain {
+            format => "nginx.timings:%{request_time}|g|#environment:{{ env_monitoring_id }},domain:%{domain},http_method:%{http_method},status_code:%{status_code},url_group:%{url_group},group:proxy,referer_group:%{referer_group}"
+        }
+        id => "logstash-nginx-timings"
+      }
+
+      udp {
+        host => "{{ datadog_statsd_host|default('localhost') }}"
+        port => {{ datadog_statsd_port|default(8125) }}
+        codec => plain {
+            format => "nginx.requests:1|c|#environment:{{ env_monitoring_id }},domain:%{domain},http_method:%{http_method},status_code:%{status_code},url_group:%{url_group},cache_status:%{cache_status},group:proxy,referer_group:%{referer_group},duration:%{duration}"
+        }
+        id => "logstash-nginx-requests"
+      }
+
+      udp {
+        host => "{{ datadog_statsd_host|default('localhost') }}"
+        port => {{ datadog_statsd_port|default(8125) }}
+        codec => plain {
+            format => "nginx.apdex:%{apdex}|g|#environment:{{ env_monitoring_id }},domain:%{domain},http_method:%{http_method},status_code:%{status_code},url_group:%{url_group},group:proxy"
+        }
+        id => "logstash-nginx-apdex"
+      }
+
+      if [request_length] {
+        udp {
+          host => "{{ datadog_statsd_host|default('localhost') }}"
+          port => {{ datadog_statsd_port|default(8125) }}
+          codec => plain {
+              format => "nginx.bytes_received:%{request_length}|c|#environment:{{ env_monitoring_id }},url_group:%{url_group}"
+          }
+          id => "logstash-nginx-request_length"
+        }
+      }
+
+      if [bytes_sent] {
+        udp {
+          host => "{{ datadog_statsd_host|default('localhost') }}"
+          port => {{ datadog_statsd_port|default(8125) }}
+          codec => plain {
+              format => "nginx.bytes_sent:%{bytes_sent}|c|#environment:{{ env_monitoring_id }},url_group:%{url_group}"
+          }
+          id => "logstash-nginx-body_sent"
+        }
+      }
+    }
+
+    if [type] == "nginx-error" {
+      if [zone] {
+          udp {
+              host => "{{ datadog_statsd_host|default('localhost') }}"
+              port => {{ datadog_statsd_port|default(8125) }}
+              codec => plain {
+                  format => "nginx.rate_limiting:1|c|#environment:{{ env_monitoring_id }},domain:%{domain},http_method:%{verb},zone:%{zone},group:proxy"
+              }
+              id => "logstash-nginx-error_zones"
+            }
+
+      } else {
+          udp {
+            host => "{{ datadog_statsd_host|default('localhost') }}"
+            port => {{ datadog_statsd_port|default(8125) }}
+            codec => plain {
+                format => "nginx.error_logs:1|c|#environment:{{ env_monitoring_id }},domain:%{domain},http_method:%{verb},log_level:%{err_severity},error_type:%{err_message},group:proxy"
+            }
+            id => "logstash-nginx-error_logs"
+          }
+      }
+    }
+  }
+{% endif %}
 }

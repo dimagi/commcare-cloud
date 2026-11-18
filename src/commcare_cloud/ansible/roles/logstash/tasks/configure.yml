@@ -20,7 +20,6 @@
     - 90-outputs.conf
   notify:
     - restart logstash
-  when: sansible_logstash_default_config
 
 - name: Ensure Logstash service is started
   become: yes
