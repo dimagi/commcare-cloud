@@ -37,11 +37,11 @@
     - sansible_logstash_install_sni_fixes
 
 - name: Install 2.x Family
-  include: install/2.x.yml
+  import_tasks: install/2.x.yml
   when: sansible_logstash_family[:1] == '2'
 
 - name: Install Logstash 5.x or Above Family
-  include: install/5_or_above.yml
+  import_tasks: install/5_or_above.yml
   when: sansible_logstash_family[:1] >= '5'
 
 - name: Ensure Logstash service is enabled for SysV
