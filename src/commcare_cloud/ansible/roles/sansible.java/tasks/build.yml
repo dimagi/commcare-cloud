@@ -1,0 +1,63 @@
+---
+
+- name: Install gnupg2 for apt
+  become: yes
+  apt:
+    name: gnupg2
+    state: present
+
+- name: Download OpenJDK PGP key (works with Bionic behind a proxy)
+  become: yes
+  get_url:
+    dest: /usr/local/src/java_openjdk.asc
+    mode: 0644
+    url: "{{ sansible_java_apt_keyserver }}/pks/lookup?op=get&search=0x{{ sansible_java_apt_key_id }}"
+  retries: 2
+  delay: 10
+  register: sansible_java_pgp_result
+  until: sansible_java_pgp_result is succeeded
+
+- name: Ensures OpenJDK PGP key is known
+  become: yes
+  apt_key:
+    file: /usr/local/src/java_openjdk.asc
+    id: "{{ sansible_java_apt_key_id }}"
+    state: present
+
+- name: Add OpenJDK repo
+  become: yes
+  apt_repository:
+    repo: "{{ sansible_java_apt_repo }}"
+    state: present
+    update_cache: yes
+
+- name: "Install OpenJDK Java {{ sansible_java_version }}"
+  become: yes
+  apt:
+    name: "openjdk-{{ sansible_java_version }}-jdk"
+    state: present
+
+- name: Get DEB architecture
+  command: dpkg --print-architecture
+  register: sansible_java_deb_architecture
+  changed_when: False
+
+- name: Set OpenJDK Java as default
+  become: yes
+  alternatives:
+    name: java
+    path: "/usr/lib/jvm/java-{{ sansible_java_version }}-openjdk-{{ sansible_java_deb_architecture.stdout | lower }}\
+      {{ '/jre' if sansible_java_version < 11 else '' }}/bin/java"
+  when: sansible_java_set_as_default
+
+- name: Ensure Java CA certs installed
+  become: yes
+  apt:
+    name: ca-certificates-java
+    state: present
+
+- name: Ensure Java CA cert exists
+  become: yes
+  command: update-ca-certificates -f
+  args:
+    creates: /etc/ssl/certs/java/cacerts
