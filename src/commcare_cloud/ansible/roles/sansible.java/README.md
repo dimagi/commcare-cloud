@@ -1,32 +1,13 @@
 # java
 
-Master: [![Build Status](https://travis-ci.org/sansible/java.svg?branch=master)](https://travis-ci.org/sansible/java)
-Develop: [![Build Status](https://travis-ci.org/sansible/java.svg?branch=develop)](https://travis-ci.org/sansible/java)
-
-* [ansible.cfg](#ansible-cfg)
-* [Installation and Dependencies](#installation-and-dependencies)
-* [Tags](#tags)
-* [Examples](#examples)
-
 This roles installs OpenJDK Java, any version can be installed
 but 7 is used by default (which may not be available on all O/S releases).
 
 *NOTE:* Only x86_64 is supported.
 
-
-## Installation and Dependencies
-
-This role has no dependencies and has been tested with Ansible 2.2+.
-
-To install run `ansible-galaxy install sansible.java` or add this to your
-`roles.yml`
-
-```YAML
-- name: sansible.java
-  version: v2.1
-```
-
-and run `ansible-galaxy install -p ./roles -r roles.yml`
+Vendored from [sansible/java](https://github.com/sansible/java)
+v2.1.4. Upstream is not maintained for current ansible-core, so changes are
+made here.
 
 
 ## Tags
