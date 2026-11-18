@@ -1,0 +1,17 @@
+---
+
+allow_duplicates: yes
+dependencies: []
+
+galaxy_info:
+  description: OpenJDK Java installation role
+  license: MIT
+  min_ansible_version: 2.5
+  platforms:
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+        - bionic
+  categories:
+    - development
