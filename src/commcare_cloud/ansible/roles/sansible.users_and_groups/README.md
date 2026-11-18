@@ -1,4 +1,4 @@
-# Users and Roles
+# Users and Groups
 
 This roles manages OS users and groups.
 
@@ -40,9 +40,11 @@ Simple example for creating two users and two groups.
             - ipsum
 ```
 
-Creating a jailed SFTP user
-(cf [here](https://wiki.archlinux.org/index.php/SFTP_chroot) for a
-step-by-step guide):
+Creating an SFTP user whose keys go in an alternate authorized_keys
+directory. The role does not configure sshd: point its `AuthorizedKeysFile`
+at that directory, and to jail the user, set up an SFTP chroot (cf
+[here](https://wiki.archlinux.org/index.php/SFTP_chroot) for a step-by-step
+guide):
 
 ```YAML
 - name: Configure User Access
@@ -57,6 +59,7 @@ step-by-step guide):
         - name: sftp
           group: sftp_only
           home: /mnt/sftp_vol
+          ssh_key: ./sftp.pub
 ```
 
 In most cases you would keep the list of users in external vars file or
@@ -120,7 +123,7 @@ sansible_users_and_groups_users:
   - name: admin.user
     group: admins
   - name: alpha.user
-    group: alpha_develops
+    group: developer_group_alpha
   - name: beta.user
     group: developer_group_beta
 ```
