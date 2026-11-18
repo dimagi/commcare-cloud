@@ -19,15 +19,21 @@
       - groups
       - override_command
       - privileged
-      - cgroupns_mode
       - volumes
       - tmpfs
       - security_opts
-      - networks
       - env
     # The driver's default command, used unless override_command is false
     # (e.g. to run the image's systemd as PID 1).
     default_command: [bash, -c, "while true; do sleep 10000; done"]
+    # Run systemd as PID 1 in a privileged container with the image's own
+    # command. Docker needs the host cgroup namespace and cgroup mount for
+    # that. The containers driver schema doesn't allow cgroupns_mode, so it
+    # is set here instead of in molecule.yml.
+    systemd_args: [--cgroupns=host, --volume=/sys/fs/cgroup:/sys/fs/cgroup:rw]
+    # So containers on a shared network can resolve each other by name.
+    scenario_network: >-
+      {{ molecule_yml.scenario.name if molecule_yml.platforms | length > 1 else '' }}
   tasks:
     - name: Check platform options
       ansible.builtin.assert:
@@ -45,22 +51,15 @@
     - name: Find container engine
       ansible.builtin.include_tasks: container_engine.yml
 
-    - name: Create molecule network(s)
-      # A network is required so containers can resolve each other by name
+    - name: Create molecule network
       ansible.builtin.shell: |
-        if ! {{ container_engine }} network inspect {{ item | quote }} >/dev/null 2>&1; then
-          {{ container_engine }} network create {{ item | quote }} >/dev/null || exit $?
+        if ! {{ container_engine }} network inspect {{ scenario_network | quote }} >/dev/null 2>&1; then
+          {{ container_engine }} network create {{ scenario_network | quote }} >/dev/null || exit $?
           echo created
         fi
       register: network_result
       changed_when: network_result.stdout == 'created'
-      loop: >-
-        {{
-          molecule_yml.platforms
-          | selectattr('networks', 'defined')
-          | map(attribute='networks') | flatten
-          | map(attribute='name') | unique
-        }}
+      when: scenario_network
 
     # --stop-timeout 0: `podman rm -f` (unlike `docker rm -f`) first waits out
     # the container's stop timeout, 10s by default. The default command's
@@ -74,11 +73,11 @@
              '--hostname', item.name,
              '--stop-timeout', '0']
             + (['--privileged'] if item.privileged | default(false) else [])
-            + (['--cgroupns', item.cgroupns_mode] if item.cgroupns_mode is defined else [])
+            + (systemd_args if item.privileged | default(false) and not item.override_command | default(true) else [])
             + (item.volumes | default([]) | map('regex_replace', '^', '--volume=') | list)
             + (item.tmpfs | default([]) | map('regex_replace', '^', '--tmpfs=') | list)
             + (item.security_opts | default([]) | map('regex_replace', '^', '--security-opt=') | list)
-            + (item.networks | default([]) | map(attribute='name') | map('regex_replace', '^', '--network=') | list)
+            + (['--network=' + scenario_network] if scenario_network else [])
             + ((item.env | default({})).items() | map('join', '=') | map('regex_replace', '^', '--env=') | list)
             + [item.image]
             + (default_command if item.override_command | default(true) else [])
