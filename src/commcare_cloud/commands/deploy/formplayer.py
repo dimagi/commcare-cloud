@@ -88,6 +88,8 @@ def deploy_formplayer(environment, args):
         record_deploy_failed(environment, context)
         return rc
 
+    set_deploy_in_progress(environment)
+
     rc = commcare_cloud(
         args.env_name, 'run-shell-command', 'formplayer',
         ('supervisorctl reread; '
@@ -103,6 +105,19 @@ def deploy_formplayer(environment, args):
 
     record_deploy_success(environment, context)
     return 0
+
+
+def set_deploy_in_progress(environment):
+    """Keep health checks passing while formplayer restarts.
+
+    Formplayer restarts cause a brief disruption due to sticky users,
+    so set the deploy_in_progress flag to suppress uptime alerts.
+    The flag expires after 5 minutes.
+    """
+    rc = commcare_cloud(environment.name, 'django-manage', 'deploy_in_progress')
+    if rc != 0:
+        print(color_warning("Failed to set deploy_in_progress flag. "
+                            "Down/up alerts may fire during the restart."))
 
 
 def record_deploy_success(environment, context):
