@@ -42,7 +42,7 @@ ansible-lint-cloud = "commcare_cloud.ansible_lint:main"
 
 [dependency-groups]
 test = [
-    "ansible-lint==5.4.0",
+    "ansible-lint==26.6.0",
     "docopt",
     "molecule",
     "molecule-plugins[docker,podman]",
