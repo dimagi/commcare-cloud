@@ -1,0 +1,55 @@
+##
+# {{ ansible_managed }}
+#
+
+# This file should be overwritten in an extending role with your own filters
+
+filter {
+	if [type] == "syslog" {
+		grok {
+			match => { "rawmsg" => "(?m)%{SYSLOG5424LINE}" }
+		}
+		syslog_pri { }
+		if !("_grokparsefailure" in [tags]) {
+			mutate {
+				replace => [ "message", "%{syslog5424_msg}" ]
+				replace => [ "timestamp", "%{syslog5424_ts}" ]
+				replace => [ "priority", "%{syslog5424_pri}" ]
+				replace => [ "program", "%{syslog5424_app}" ]
+				replace => [ "facility", "%{syslog_facility}" ]
+				replace => [ "severity", "%{syslog_severity}" ]
+				replace => [ "received_at", "%{@timestamp}" ]
+			}
+			mutate {
+				remove_field => [ "rawmsg", "syslog5424_host", "syslog5424_msg", "syslog5424_ts", "syslog5424_pri", "syslog5424_app", "syslog5424_proc", "syslog5424_ver", "syslog_facility", "syslog_facility_code" , "syslog_severity", "syslog_severity_code" ]
+			}
+		}
+	}
+
+	if [type] == "nginx-access" {
+		grok {
+			match => [
+				"message", "%{IPORHOST:http_host} %{IPORHOST:clientip} \[%{HTTPDATE:httptimestamp}\] \"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})\" %{NUMBER:response} (?:%{NUMBER:bytes}|-) %{QS:referrer} %{QS:agent} %{NUMBER:request_time:float} %{NUMBER:upstream_time:float} \"(%{NUMBER:user_id:int}|-)?\" \"(%{UUID:request_id}|-)?\"",
+				"message", "%{IPORHOST:http_host} %{IPORHOST:clientip} \[%{HTTPDATE:httptimestamp}\] \"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})\" %{NUMBER:response} (?:%{NUMBER:bytes}|-) %{QS:referrer} %{QS:agent} %{NUMBER:request_time:float} %{NUMBER:upstream_time:float}",
+				"message", "%{IPORHOST:http_host} %{IPORHOST:clientip} \[%{HTTPDATE:httptimestamp}\] \"(?:%{WORD:verb} %{NOTSPACE:request}(?: HTTP/%{NUMBER:httpversion})?|%{DATA:rawrequest})\" %{NUMBER:response} (?:%{NUMBER:bytes}|-) %{QS:referrer} %{QS:agent} %{NUMBER:request_time:float}"
+			]
+			add_field => [ "received_at", "%{@timestamp}" ]
+			add_field => [ "index_name", "accesslogs" ]
+		}
+		date {
+			match => [ "httptimestamp" , "dd/MMM/YYYY:HH:mm:ss Z" ]
+		}
+		geoip {
+			source => "clientip"
+		}
+		mutate {
+			remove_field => [ "httptimestamp", "agent", "bytes", "httpversion", "message", "upstream_time", "timestamp" ]
+		}
+	}
+
+
+	if "_grokparsefailure" in [tags] {
+		drop { }
+	}
+}
+

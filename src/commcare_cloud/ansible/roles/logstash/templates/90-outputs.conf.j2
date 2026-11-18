@@ -1,0 +1,10 @@
+##
+# {{ ansible_managed }}
+#
+
+output {
+	elasticsearch {
+		hosts => [ '{{ sansible_logstash_outputs_elasticsearch_host }}:{{ sansible_logstash_outputs_elasticsearch_port }}' ]
+		index => 'logstash-%{+YYYY.MM.dd}'
+	}
+}

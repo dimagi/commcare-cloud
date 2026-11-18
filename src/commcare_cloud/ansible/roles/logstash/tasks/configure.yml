@@ -1,0 +1,29 @@
+---
+
+- name: Setup environment variables
+  become: yes
+  template:
+    src: default.j2
+    dest: /etc/default/logstash
+    backup: true
+  notify:
+    - restart logstash
+
+- name: Configure logstash
+  become: yes
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/logstash/conf.d/{{ item }}"
+  with_items:
+    - 01-inputs.conf
+    - 10-filters.conf
+    - 90-outputs.conf
+  notify:
+    - restart logstash
+  when: sansible_logstash_default_config
+
+- name: Ensure Logstash service is started
+  become: yes
+  service:
+    name: logstash
+    state: started

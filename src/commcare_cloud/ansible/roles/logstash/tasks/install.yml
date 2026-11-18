@@ -1,0 +1,60 @@
+---
+
+- name: Install apt-transport-https
+  become: yes
+  apt:
+    name: apt-transport-https
+
+- name: Install apt packages for SNI fix
+  become: yes
+  apt:
+    name:
+      - python-pip
+      - python-dev
+      - libffi-dev
+      - libssl-dev
+  when:
+    - ansible_python_version is version('2.7.9', '<')
+    - sansible_logstash_install_sni_fixes
+
+- name: Upgrade Pip for SNI fix
+  become: yes
+  pip:
+    name: pip>=18
+  when:
+    - ansible_python_version is version('2.7.9', '<')
+    - sansible_logstash_install_sni_fixes
+
+- name: Install Python packages for SNI fix
+  become: yes
+  pip:
+    name:
+      - pyopenssl>=18.0.0
+      - ndg-httpsclient>=0.5.1
+      - pyasn1>=0.4.5
+  when:
+    - ansible_python_version is version('2.7.9', '<')
+    - sansible_logstash_install_sni_fixes
+
+- name: Install 2.x Family
+  include: install/2.x.yml
+  when: sansible_logstash_family[:1] == '2'
+
+- name: Install Logstash 5.x or Above Family
+  include: install/5_or_above.yml
+  when: sansible_logstash_family[:1] >= '5'
+
+- name: Ensure Logstash service is enabled for SysV
+  become: yes
+  service:
+    enabled: yes
+    name: logstash
+  when: ansible_service_mgr != "systemd"
+
+- name: Ensure Logstash service is enabled for SystemD
+  become: yes
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    name: logstash
+  when: ansible_service_mgr == "systemd"

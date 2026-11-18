@@ -1,0 +1,10 @@
+##
+# {{ ansible_managed }}
+#
+
+input {
+	tcp {
+		port => {{ sansible_logstash_inputs_json_port }}
+		codec => json
+	}
+}

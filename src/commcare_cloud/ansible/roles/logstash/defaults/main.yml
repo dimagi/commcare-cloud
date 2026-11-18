@@ -1,0 +1,18 @@
+---
+
+sansible_logstash_default_config: yes
+sansible_logstash_family: 2.0
+sansible_logstash_group: logstash
+sansible_logstash_inputs_json_port: 5001
+sansible_logstash_install_sni_fixes: yes
+sansible_logstash_java_heap_size: "{{ (ansible_memtotal_mb / 2) | int }}"
+sansible_logstash_java_opts: ~
+sansible_logstash_java_version: 8
+sansible_logstash_outputs_elasticsearch_host: elasticsearch.elk.internal
+sansible_logstash_outputs_elasticsearch_port: 9200
+sansible_logstash_plugins:
+  - logstash-patterns-core
+  - logstash-filter-prune
+sansible_logstash_plugins_update: []
+sansible_logstash_user: logstash
+sansible_logstash_version: 1:2.0.0-1
