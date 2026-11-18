@@ -1,5 +1,7 @@
+import glob
 import os
 import shlex
+import shutil
 import subprocess
 
 import yaml
@@ -25,11 +27,17 @@ class Install(CommandBase):
         env['ANSIBLE_ROLES_PATH'] = ANSIBLE_ROLES_PATH
         env['ANSIBLE_COLLECTIONS_PATHS'] = ANSIBLE_COLLECTIONS_PATHS
         requirements_yml = os.path.join(ANSIBLE_DIR, 'requirements.yml')
+        with open(requirements_yml) as f:
+            requirements = yaml.safe_load(f)
+
+        required_names = {name for name, version in required_collections(requirements)}
+        for name in remove_unrequired_collections(ANSIBLE_COLLECTIONS_PATHS, required_names):
+            puts(color_notice(f"Removed collection {name}: not in requirements.yml"))
 
         if (
             os.path.exists(ANSIBLE_ROLES_PATH)
             and os.path.exists(ANSIBLE_COLLECTIONS_PATHS)
-            and requirements_installed(requirements_yml, env)
+            and requirements_installed(requirements, env)
         ):
             puts(color_success("✓ Ansible roles and collections are up to date."))
             return 0
@@ -51,10 +59,8 @@ class Install(CommandBase):
         return 0
 
 
-def requirements_installed(requirements_yml, env):
-    """Check if every role and collection pinned in requirements_yml is installed at its pinned version."""
-    with open(requirements_yml) as f:
-        requirements = yaml.safe_load(f)
+def requirements_installed(requirements, env):
+    """Check if every role and collection pinned in requirements is installed at its pinned version."""
     return (
         required_roles(requirements) <= installed_roles(env)
         and required_collections(requirements) <= installed_collections(env)
@@ -86,6 +92,36 @@ def required_collections(requirements):
         (collection['name'], get_version(collection))
         for collection in requirements.get('collections') or []
     }
+
+
+def remove_unrequired_collections(collections_path, required_names):
+    """Delete collections under collections_path that are not in required_names.
+
+    collections_path is the commcare-cloud collections directory, which holds
+    only collections installed from requirements.yml.
+
+    Returns the sorted names (namespace.name) of the removed collections.
+    """
+    root = os.path.join(collections_path, 'ansible_collections')
+    if not os.path.isdir(root):
+        return []
+    removed = []
+    for namespace in os.listdir(root):
+        namespace_dir = os.path.join(root, namespace)
+        if namespace.endswith('.info') or not os.path.isdir(namespace_dir):
+            continue
+        for collection in os.listdir(namespace_dir):
+            name = f"{namespace}.{collection}"
+            collection_dir = os.path.join(namespace_dir, collection)
+            if name in required_names or not os.path.isdir(collection_dir):
+                continue
+            shutil.rmtree(collection_dir)
+            for info_dir in glob.glob(os.path.join(root, glob.escape(name) + '-*.info')):
+                shutil.rmtree(info_dir)
+            removed.append(name)
+        if not os.listdir(namespace_dir):
+            os.rmdir(namespace_dir)
+    return sorted(removed)
 
 
 def get_version(requirement):
