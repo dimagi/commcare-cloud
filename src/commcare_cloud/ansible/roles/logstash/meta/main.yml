@@ -19,12 +19,3 @@ dependencies:
     sansible_java_version: "{{ sansible_logstash_java_version }}"
     tags:
       - build
-
-  - role: sansible.users_and_groups
-    sansible_users_and_groups_groups:
-      - name: "{{ sansible_logstash_group }}"
-    sansible_users_and_groups_users:
-      - name: "{{ sansible_logstash_user }}"
-        group: "{{ sansible_logstash_group }}"
-    tags:
-      - build

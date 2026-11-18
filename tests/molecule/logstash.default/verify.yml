@@ -39,9 +39,16 @@
       ansible.builtin.shell: apt-key export 46095ACC8548582C1A2699A9D27D666CD88E42B4 2>/dev/null | grep -q 'BEGIN PGP PUBLIC KEY BLOCK'
       changed_when: false
 
-    # Set up by sansible.users_and_groups
     - name: Assert logstash user has logstash as its primary group
       ansible.builtin.shell: test "$(id -gn logstash)" = logstash
+      changed_when: false
+
+    # Matches the user existing hosts have, rather than the system user
+    # the logstash package would create.
+    - name: Assert logstash user is a regular user with home and shell
+      ansible.builtin.shell: >
+        getent passwd logstash
+        | awk -F: '$3 >= 1000 && $6 == "/home/logstash" && $7 == "/bin/bash" { ok = 1 } END { exit !ok }'
       changed_when: false
 
     - name: Assert logstash home directory is owned by logstash with mode 0750

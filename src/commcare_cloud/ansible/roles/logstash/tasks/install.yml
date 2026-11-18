@@ -1,5 +1,30 @@
 ---
 
+# The logstash package creates a system user if none exists. Create a
+# regular one first, matching what hosts already have (previously set up by
+# sansible.users_and_groups), so existing hosts see no change.
+- name: Create logstash group
+  become: yes
+  group:
+    name: "{{ sansible_logstash_group }}"
+
+- name: Create logstash user
+  become: yes
+  user:
+    name: "{{ sansible_logstash_user }}"
+    group: "{{ sansible_logstash_group }}"
+    home: "/home/{{ sansible_logstash_user }}"
+    shell: /bin/bash
+
+- name: Restrict logstash home directory
+  become: yes
+  file:
+    path: "/home/{{ sansible_logstash_user }}"
+    owner: "{{ sansible_logstash_user }}"
+    group: "{{ sansible_logstash_group }}"
+    mode: "0750"
+    state: directory
+
 - name: Install apt-transport-https
   become: yes
   apt:
