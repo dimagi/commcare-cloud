@@ -1,11 +1,14 @@
 import os
+import tempfile
 
 import pytest
 import yaml
+from unmagic import fixture
 
 from commcare_cloud.manage_commcare_cloud.install import (
     parse_collections,
     parse_roles,
+    remove_unrequired_collections,
     required_collections,
     required_roles,
 )
@@ -89,3 +92,59 @@ def test_required_collections_without_version_raises():
     requirements = {'collections': [{'name': 'community.general'}]}
     with pytest.raises(ValueError):
         required_collections(requirements)
+
+
+@fixture
+def collections_dir():
+    with tempfile.TemporaryDirectory() as path:
+        yield path
+
+
+def make_collection(collections_path, name, version=None):
+    namespace, collection = name.split('.')
+    root = os.path.join(collections_path, 'ansible_collections')
+    os.makedirs(os.path.join(root, namespace, collection))
+    if version:
+        os.makedirs(os.path.join(root, f"{name}-{version}.info"))
+
+
+def list_tree(collections_path):
+    root = os.path.join(collections_path, 'ansible_collections')
+    return sorted(
+        os.path.relpath(os.path.join(dirpath, d), root)
+        for dirpath, dirnames, _ in os.walk(root)
+        for d in dirnames
+    )
+
+
+@collections_dir
+def test_remove_unrequired_collections_removes_stale_collection_and_info():
+    path = collections_dir()
+    make_collection(path, 'community.general', '7.4.0')
+    make_collection(path, 'dimagi.commcare_logstash')
+
+    removed = remove_unrequired_collections(path, {'dimagi.commcare_logstash'})
+
+    assert removed == ['community.general']
+    assert list_tree(path) == ['dimagi', 'dimagi/commcare_logstash']
+
+
+@collections_dir
+def test_remove_unrequired_collections_keeps_namespace_with_required_collection():
+    path = collections_dir()
+    make_collection(path, 'community.general', '7.4.0')
+    make_collection(path, 'community.postgresql', '3.0.0')
+
+    removed = remove_unrequired_collections(path, {'community.postgresql'})
+
+    assert removed == ['community.general']
+    assert list_tree(path) == [
+        'community',
+        'community.postgresql-3.0.0.info',
+        'community/postgresql',
+    ]
+
+
+@collections_dir
+def test_remove_unrequired_collections_without_collections_dir():
+    assert remove_unrequired_collections(collections_dir(), set()) == []
