@@ -1,0 +1,6 @@
+---
+
+- name: Build Java
+  include: build.yml
+  tags:
+    - build
