@@ -1,0 +1,8 @@
+filebeat_version: 7.x
+filebeat_output_logstash_enabled: true
+filebeat_output_logstash_hosts:
+  - "localhost:5044"
+filebeat_enable_logging: true
+filebeat_log_level: warning
+filebeat_log_dir: /var/log/filebeat
+filebeat_log_filename: filebeat.log

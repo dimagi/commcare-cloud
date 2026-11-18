@@ -1,0 +1,12 @@
+---
+- name: Configure logstash
+  become: yes
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/logstash/conf.d/{{ item }}"
+  with_items:
+    - 01-inputs.conf
+    - 10-filters.conf
+    - 90-outputs.conf
+  notify:
+    - restart logstash
