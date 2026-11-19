@@ -5,6 +5,7 @@ from configparser import ConfigParser
 from contextlib import contextmanager
 from pathlib import Path
 from unittest import TestCase
+from unittest.mock import patch
 
 import sh
 
@@ -13,6 +14,143 @@ from ..utils import set_log_level, test_context
 
 
 class TestGitSetupRelease(TestCase):
+
+    def test_seed_mirror_from_existing(self):
+        refs = self.releases / "refs"
+        ansible.run("git_setup_release", {
+            "repo": self.src_repo,
+            "version": "init",
+            "dest": str(self.releases / "one"),
+            "reference": str(refs),
+        })
+        private_repo = self.copy_src_repo("private-hq.git")
+
+        result = ansible.run("git_setup_release", {
+            "repo": private_repo,
+            "version": "init",
+            "dest": str(self.releases / "two"),
+            "reference": str(refs),
+            "seed_mirror": "mock-hq.git",
+        })
+
+        self.assertEqual(result.get("changed"), True, result)
+        assert (refs / "private-hq.git").is_dir(), listdir(refs)
+        alternates = refs / "private-hq.git/objects/info/alternates"
+        self.assertFalse(alternates.exists(), "mirror should be dissociated")
+        assert (self.releases / "two/.git").is_dir()
+
+    def test_seed_mirror_missing_falls_back(self):
+        release = self.releases / "two"
+        refs = self.releases / "refs"
+        private_repo = self.copy_src_repo("private-hq.git")
+
+        result = ansible.run("git_setup_release", {
+            "repo": private_repo,
+            "version": "init",
+            "dest": str(release),
+            "reference": str(refs),
+            "seed_mirror": "nope.git",
+        })
+
+        self.assertEqual(result.get("changed"), True, result)
+        assert (refs / "private-hq.git").is_dir(), listdir(refs)
+        assert (release / ".git").is_dir(), listdir(release)
+
+    def test_seed_mirror_clone_command(self):
+        mirrors = self.releases / "refs"
+        (mirrors / "seed.git").mkdir(parents=True)
+        hq_url = "git@github.com:example/hq.git"
+        sub_url = "https://github.com/example/sub.git"
+
+        commands = self.setup_fake_release(hq_url, sub_url, seed_mirror="seed.git")
+
+        self.assertEqual(commands[0], [
+            "git", "clone", "--mirror",
+            "--reference", mirrors / "seed.git", "--dissociate",
+            hq_url, mirrors / "hq.git",
+        ])
+        sub_clones = [c for c in commands if c[:3] == ["git", "clone", "--mirror"]
+                      and sub_url in c]
+        self.assertEqual(sub_clones, [
+            ["git", "clone", "--mirror", sub_url, mirrors / "sub.git"],
+        ])
+
+    def test_missing_seed_mirror_clone_command(self):
+        mirrors = self.releases / "refs"
+        hq_url = "git@github.com:example/hq.git"
+        sub_url = "https://github.com/example/sub.git"
+
+        commands = self.setup_fake_release(hq_url, sub_url, seed_mirror="seed.git")
+
+        self.assertEqual(commands[0], [
+            "git", "clone", "--mirror", hq_url, mirrors / "hq.git",
+        ])
+
+    def setup_fake_release(self, url, sub_url, seed_mirror):
+        """Run Release.setup with a fake run_command; return the commands"""
+        module = ansible.import_module("git_setup_release")
+        commands = []
+
+        def run_command(args, **kw):
+            commands.append(args)
+            if args[:2] == ["git", "rev-parse"]:
+                return 0, "abc123\n", ""
+            return 0, "", ""
+
+        release = module.Release(
+            self.releases / "refs", run_command, {"before": {}, "after": {}})
+        submodules = [iter([("sub", sub_url, "def456")]), iter([])]
+        with patch.object(module.Release, "iter_submodules", side_effect=submodules):
+            release.setup(self.releases / "rel", url, "abc123",
+                          self.releases / "prev", seed_mirror=seed_mirror)
+        return commands
+
+    def test_key_file_only_for_top_level(self):
+        module = ansible.import_module("git_setup_release")
+        calls = []
+
+        def run_command(args, **kw):
+            calls.append((args, kw.get("cwd"), kw.get("environ_update")))
+            if args[:2] == ["git", "rev-parse"]:
+                return 0, "abc123\n", ""
+            if args[:2] == ["git", "cat-file"]:
+                return 1, "", ""  # commit missing: force fetch
+            return 0, "", ""
+
+        mirrors = self.releases / "refs"
+        release_path = self.releases / "rel"
+        hq_url = "git@github.com:example/hq.git"
+        sub_url = "https://github.com/example/sub.git"
+        release = module.Release(
+            mirrors, run_command, {"before": {}, "after": {}},
+            key_file="/k", known_hosts_file="/kh",
+        )
+        submodules = [iter([("sub", sub_url, "def456")]), iter([])]
+        with patch.object(module.Release, "iter_submodules", side_effect=submodules):
+            release.setup(release_path, hq_url, "abc123", self.releases / "prev")
+
+        sub_targets = {sub_url, mirrors / "sub.git", release_path / "sub"}
+        remote_commands = {"clone", "remote", "fetch", "checkout"}
+        top_calls = []
+        other_calls = []
+        for args, cwd, env in calls:
+            is_sub = cwd in sub_targets or any(a in sub_targets for a in args)
+            if not is_sub and args[1] in remote_commands:
+                top_calls.append((args, env))
+            else:
+                other_calls.append((args, env))
+        self.assertEqual(
+            [args[1] for args, env in top_calls],
+            ["clone", "fetch", "clone", "checkout"],
+        )
+        self.assertTrue(any(args[1] == "clone" for args, env in other_calls))
+        for args, env in top_calls:
+            self.assertEqual(env, {"GIT_SSH_COMMAND": (
+                "ssh -i /k -o IdentitiesOnly=yes"
+                " -o UserKnownHostsFile=/kh -o StrictHostKeyChecking=yes"
+            )}, args)
+        for args, env in other_calls:
+            self.assertIsNone(env, args)
 
     @classmethod
     def setUpClass(cls):
@@ -204,6 +342,18 @@ class TestGitSetupRelease(TestCase):
         self.assertFalse(release.with_suffix(".tmp").exists())
         self.assertFalse(release.exists())
 
+    def test_known_hosts_file_requires_key_file(self):
+        release = self.releases / "rel"
+        with self.assertRaisesRegex(ansible.Fail, "required by 'known_hosts_file': key_file"):
+            ansible.run("git_setup_release", {
+                "repo": self.src_repo,
+                "version": "init",
+                "dest": str(release),
+                "reference": str(self.releases / "refs"),
+                "known_hosts_file": "/kh",
+            })
+        self.assertFalse(release.exists())
+
     def test_check_mode(self):
         release = self.releases / "rel"
         refs = self.releases / "refs"
@@ -224,6 +374,12 @@ class TestGitSetupRelease(TestCase):
         mock_hq_tbz = Path(__file__).parent / "mock-hq.git.tbz"
         with tarfile.open(mock_hq_tbz) as tarball:
             tarball.extractall(cls.repos)
+
+    def copy_src_repo(self, name):
+        path = self.repos / name
+        shutil.copytree(self.repos / "mock-hq.git", path)
+        self.addCleanup(shutil.rmtree, path)
+        return str(path)
 
     @contextmanager
     def add_commit_to_src_repo(self):
