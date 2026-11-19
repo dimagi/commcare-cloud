@@ -25,11 +25,6 @@
     mode: "0750"
     state: directory
 
-- name: Install apt-transport-https
-  become: yes
-  apt:
-    name: apt-transport-https
-
 - name: Add libtool apt package required by Logstash
   become: yes
   apt:

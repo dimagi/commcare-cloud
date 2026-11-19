@@ -46,11 +46,11 @@
               ;;
           esac
 
-    # The roles install apt-transport-https and libtool, add the Elastic apt
-    # key from a URL and the Elastic repo, install logstash (and its
-    # plugins) and filebeat, and start their services. By default, serve the
-    # real key and fake packages over HTTP from a local directory, so the
-    # roles themselves need no network. converge.yml points them at it.
+    # The roles install libtool, add the Elastic apt key from a URL and the
+    # Elastic repo, install logstash (and its plugins) and filebeat, and
+    # start their services. By default, serve the real key and fake packages
+    # over HTTP from a local directory, so the roles themselves need no
+    # network. converge.yml points them at it.
     #
     # To occasionally manually check that the roles work with the real
     # keyserver, repos and packages (NOT FOR ROUTINE/CI USE):
@@ -71,7 +71,6 @@
             state: directory
             mode: "0755"
           loop:
-            - apt-transport-https/DEBIAN
             - libtool/DEBIAN
             - logstash/DEBIAN
             - logstash/etc/logstash/conf.d
@@ -95,7 +94,6 @@
               Maintainer: Molecule Test <test@example.com>
               Description: Fake {{ item.name }} stub for molecule testing
           loop:
-            - {name: apt-transport-https}
             - {name: libtool}
             - {name: logstash, version: "{{ logstash_version }}"}
             - {name: filebeat}
@@ -156,15 +154,13 @@
             dest: "{{ fake_elastic }}/GPG-KEY-elasticsearch"
             mode: "0644"
 
-        # logstash installs apt-transport-https and libtool before it adds
-        # the Elastic repo, so they go in the fake PPA that sansible.java
-        # adds first.
+        # logstash installs libtool before it adds the Elastic repo, so it
+        # goes in the fake PPA that sansible.java adds first.
         - name: Build fake packages
           ansible.builtin.command: >
             dpkg-deb --build --root-owner-group {{ pkg_trees }}/{{ item.name }} {{ item.repo }}/{{ item.name }}.deb
           changed_when: true
           loop:
-            - {name: apt-transport-https, repo: "{{ fake_ppa }}"}
             - {name: libtool, repo: "{{ fake_ppa }}"}
             - {name: logstash, repo: "{{ fake_elastic }}"}
             - {name: filebeat, repo: "{{ fake_elastic }}"}
