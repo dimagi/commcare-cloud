@@ -6,6 +6,9 @@ After=network.target remote-fs.target zookeeper-server.service
 
 [Service]
 Environment=JMX_PORT={{ kafka_jmx_port }}
+{% if kafka_heap_opts %}
+Environment="KAFKA_HEAP_OPTS={{ kafka_heap_opts }}"
+{% endif %}
 Type=simple
 User=kafka
 Group=kafka

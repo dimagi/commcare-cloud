@@ -1,46 +1,23 @@
+formplayer_memory: 384m
 management_commands:
   celery:
 celery_processes:
   celery:
     beat: {}
-    celery_periodic:
-      concurrency: 4
-    async_restore_queue,background_queue,case_rule_queue,celery,export_download_queue,analytics_queue,case_import_queue:
+    analytics_queue,async_restore_queue,background_queue,case_import_queue,case_rule_queue,celery,celery_periodic,email_queue:
       concurrency: 1
-    email_queue,reminder_case_update_queue:
-      concurrency: 1
-    linked_domain_queue,reminder_rule_queue,repeat_record_queue,saved_exports_queue,geospatial_queue:
-      concurrency: 1
-    ucr_indicator_queue,ucr_queue:
+    export_download_queue,geospatial_queue,linked_domain_queue,reminder_case_update_queue,reminder_rule_queue,repeat_record_queue,saved_exports_queue,ucr_indicator_queue,ucr_queue:
       concurrency: 1
     flower: {}
 pillows:
   pillowtop:
-    kafka-ucr-main:
-      num_processes: 1
-    kafka-ucr-static:
-      num_processes: 1
     AppDbChangeFeedPillow:
-      num_processes: 1
-    ApplicationBlobDeletionPillow:
       num_processes: 1
     ApplicationToElasticsearchPillow:
       num_processes: 1
-    BlobDeletionPillow:
-      num_processes: 1
     CacheInvalidatePillow:
       num_processes: 1
-    CaseSearchToElasticsearchPillow:
-      num_processes: 1
-    CaseToElasticsearchPillow:
-      num_processes: 1
     DomainDbKafkaPillow:
-      num_processes: 1
-    FormSubmissionMetadataTrackerPillow:
-      num_processes: 1
-    GroupPillow:
-      num_processes: 1
-    GroupToUserPillow:
       num_processes: 1
     KafkaDomainPillow:
       num_processes: 1
@@ -48,15 +25,17 @@ pillows:
       num_processes: 1
     SqlSMSPillow:
       num_processes: 1
-    UnknownUsersPillow:
-      num_processes: 1
     UpdateUserSyncHistoryPillow:
       num_processes: 1
     UserCacheInvalidatePillow:
       num_processes: 1
     UserGroupsDbKafkaPillow:
       num_processes: 1
-    UserPillow:
+    case-pillow:
       num_processes: 1
-    XFormToElasticsearchPillow:
+    xform-pillow:
+      num_processes: 1
+    user-pillow:
+      num_processes: 1
+    group-pillow:
       num_processes: 1

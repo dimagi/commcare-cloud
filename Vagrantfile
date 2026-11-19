@@ -69,13 +69,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       host.vm.provision "shell", path: "provisioning/#{type}.sh"
 
       host.vm.provider "virtualbox" do |v, override|
-        v.memory = 768
+        v.memory = 4096
         v.cpus = 1
         override.vm.network "private_network", ip: ip
       end
 
       host.vm.provider "libvirt" do |v, override|
-        v.memory = 768
+        v.memory = 4096
         v.cpus = 1
         override.vm.network "public_network", ip: ip,
           dev: "libvirt-cchq", type: "bridge", auto_config: true

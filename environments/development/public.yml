@@ -17,6 +17,8 @@ elasticsearch_version: 6.8.23
 elasticsearch_download_sha256: 424af91f838f9e5f13e0292f97cbd6333535450291a621d761bd479dfc2dff78.
 elasticsearch_endpoint: '{{ groups.elasticsearch.0 }}'
 elasticsearch_memory: '128m'
+# Kafka's default heap is 1 GB; keep the VMs within their memory.
+kafka_heap_opts: '-Xms256m -Xmx256m'
 elasticsearch_cluster_name: 'deves'
 backup_es_s3: False
 
@@ -43,6 +45,8 @@ postgres_s3: False
 nadir_hour: 18
 
 nofile_limit: 65536
+
+formplayer_java_version: "{{ java_17_bin_path }}/java"
 
 couchdb_use_haproxy: True
 couchdb2:
