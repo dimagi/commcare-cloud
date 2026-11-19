@@ -1,7 +1,7 @@
 ---
-# logstash and filebeat depend on sansible.java, so reuse its scenario's
-# stubs. They also disable the Ubuntu archive, after installing the real
-# gnupg2 and ca-certificates.
+# logstash depends on sansible.java, so reuse its scenario's stubs. They
+# also disable the Ubuntu archive, after installing the real gnupg2 and
+# ca-certificates.
 - name: Prepare sansible.java
   ansible.builtin.import_playbook: ../sansible_java.default/prepare.yml
   vars:
