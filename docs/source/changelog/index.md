@@ -7,6 +7,11 @@ need to be applied on your environment to keep it up to date.
 
 ### Changelog
 
+#### **2026-11-19** [Upgrade nginx to 1.30.7](0102-upgrade-nginx-1.30.7.md)
+nginx is upgraded from 1.28.0 to 1.30.7, the current stable release.
+
+
+---
 #### **2026-09-15** [Hide Set-Cookie header in nginx](0101-nginx-hide-set-cookie-header.md)
 An issue was found in the nginx cache configuration
 for certain requests under apps/download in CommCare HQ.
