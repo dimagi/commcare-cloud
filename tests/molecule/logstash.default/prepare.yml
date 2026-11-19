@@ -12,7 +12,7 @@
   vars:
     fake_elastic: /var/tmp/fake-elastic
     pkg_trees: /var/tmp/fake-packages
-    # As set in deploy_logstash.yml
+    # As set in the logstash role's defaults
     logstash_version: 1:7.5.2-1
   tasks:
     # deploy_logstash.yml sets net.core.rmem_max, which the container can
@@ -80,7 +80,7 @@
 
         # The epoch sorts these fakes above any real version, so they
         # satisfy versioned Breaks of real packages. logstash has the version
-        # deploy_logstash.yml pins.
+        # the role pins.
         - name: Write fake package control files
           ansible.builtin.copy:
             dest: "{{ pkg_trees }}/{{ item.name }}/DEBIAN/control"

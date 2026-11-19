@@ -22,8 +22,8 @@ This role uses two tags: **build** and **configure**
 
 ## Variables
 
-`logstash_version` is required, e.g. `1:7.5.2-1`. It must belong to
-`logstash_family` (default `7.x`), which selects the Elastic apt repo.
+See `defaults/main.yml`. `logstash_version` must belong to
+`logstash_family`, which selects the Elastic apt repo.
 
 
 ## Example
@@ -34,15 +34,6 @@ As `deploy_logstash.yml` uses it:
 - name: Logstash
   hosts: logproxy
   become: yes
-  vars:
-    logstash_family: 7.x
-    logstash_version: 1:7.5.2-1
-    sansible_java_version: 8
-    sansible_java_apt_keyserver: https://keyserver.ubuntu.com
-    logstash_plugins:
-      - logstash-patterns-core
-      - logstash-filter-alter
-      - logstash-output-datadog_metrics
   tasks:
     - import_role:
         name: logstash

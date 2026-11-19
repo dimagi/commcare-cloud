@@ -2,15 +2,6 @@
   hosts: logproxy
   become: yes
   gather_facts: true
-  vars:
-    logstash_family: 7.x
-    sansible_java_version: 8
-    sansible_java_apt_keyserver: 'https://keyserver.ubuntu.com'
-    logstash_version: 1:7.5.2-1
-    logstash_plugins:
-      - logstash-patterns-core
-      - logstash-filter-alter
-      - logstash-output-datadog_metrics
   tasks:
     - import_role:
         name: logstash
@@ -24,8 +15,6 @@
   hosts: proxy
   become: yes
   gather_facts: true
-  vars:
-    filebeat_version: 7.x
   tasks:
     - import_role:
         name: filebeat

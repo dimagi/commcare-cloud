@@ -4,8 +4,11 @@ logstash_apt_key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
 logstash_apt_repo: "deb https://artifacts.elastic.co/packages/{{ logstash_family }}/apt stable main"
 logstash_family: "7.x"
 logstash_group: logstash
+logstash_java_apt_keyserver: https://keyserver.ubuntu.com
 logstash_java_version: 8
 logstash_plugins:
   - logstash-patterns-core
-  - logstash-filter-prune
+  - logstash-filter-alter
+  - logstash-output-datadog_metrics
 logstash_user: logstash
+logstash_version: 1:7.5.2-1

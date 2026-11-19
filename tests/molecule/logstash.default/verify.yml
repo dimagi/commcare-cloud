@@ -21,7 +21,7 @@
         - logstash
         - filebeat
 
-    - name: Assert plugins from deploy_logstash.yml are installed
+    - name: Assert the default plugins are installed
       ansible.builtin.command: /usr/share/logstash/bin/logstash-plugin list {{ item }}
       changed_when: false
       loop:

@@ -2,6 +2,7 @@
 
 dependencies:
   - role: sansible.java
+    sansible_java_apt_keyserver: "{{ logstash_java_apt_keyserver }}"
     sansible_java_version: "{{ logstash_java_version }}"
     tags:
       - build
