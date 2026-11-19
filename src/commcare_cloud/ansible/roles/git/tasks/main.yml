@@ -1,3 +1,11 @@
+# ansible-core 2.11 wrote the PPA with the old ppa.launchpad.net URL. Newer
+# versions add the ppa.launchpadcontent.net URL alongside it instead of
+# replacing it, so the PPA is configured twice.
+- name: Remove git PPA source written by older Ansible
+  apt_repository:
+    repo: "deb http://ppa.launchpad.net/git-core/ppa/ubuntu {{ ansible_distribution_release }} main"
+    state: absent
+
 - name: Add git apt repo
   apt_repository: repo='ppa:git-core/ppa' state=present
   register: add_git_repo
