@@ -1,11 +1,11 @@
 ---
 
-sansible_logstash_apt_key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-sansible_logstash_apt_repo: "deb https://artifacts.elastic.co/packages/{{ sansible_logstash_family }}/apt stable main"
-sansible_logstash_family: "7.x"
-sansible_logstash_group: logstash
-sansible_logstash_java_version: 8
-sansible_logstash_plugins:
+logstash_apt_key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+logstash_apt_repo: "deb https://artifacts.elastic.co/packages/{{ logstash_family }}/apt stable main"
+logstash_family: "7.x"
+logstash_group: logstash
+logstash_java_version: 8
+logstash_plugins:
   - logstash-patterns-core
   - logstash-filter-prune
-sansible_logstash_user: logstash
+logstash_user: logstash

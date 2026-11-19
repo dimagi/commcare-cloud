@@ -6,41 +6,41 @@
 - name: Create logstash group
   become: yes
   group:
-    name: "{{ sansible_logstash_group }}"
+    name: "{{ logstash_group }}"
 
 - name: Create logstash user
   become: yes
   user:
-    name: "{{ sansible_logstash_user }}"
-    group: "{{ sansible_logstash_group }}"
-    home: "/home/{{ sansible_logstash_user }}"
+    name: "{{ logstash_user }}"
+    group: "{{ logstash_group }}"
+    home: "/home/{{ logstash_user }}"
     shell: /bin/bash
 
 - name: Restrict logstash home directory
   become: yes
   file:
-    path: "/home/{{ sansible_logstash_user }}"
-    owner: "{{ sansible_logstash_user }}"
-    group: "{{ sansible_logstash_group }}"
+    path: "/home/{{ logstash_user }}"
+    owner: "{{ logstash_user }}"
+    group: "{{ logstash_group }}"
     mode: "0750"
     state: directory
 
 - name: Add Elastic gpg key
   become: yes
   apt_key:
-    url: "{{ sansible_logstash_apt_key_url }}"
+    url: "{{ logstash_apt_key_url }}"
     state: present
 
 - name: Install Logstash repo
   become: yes
   apt_repository:
-    repo: "{{ sansible_logstash_apt_repo }}"
+    repo: "{{ logstash_apt_repo }}"
     state: present
 
 - name: Install Logstash
   become: yes
   apt:
-    name: "logstash={{ sansible_logstash_version }}"
+    name: "logstash={{ logstash_version }}"
     state: present
   notify: restart logstash
 
@@ -50,7 +50,7 @@
   register: install_result
   args:
     chdir: "/usr/share/logstash"
-  with_items: "{{ sansible_logstash_plugins }}"
+  with_items: "{{ logstash_plugins }}"
   changed_when: "'Installation successful' in install_result.stdout"
   notify: restart logstash
 

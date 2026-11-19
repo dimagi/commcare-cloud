@@ -22,9 +22,8 @@ This role uses two tags: **build** and **configure**
 
 ## Variables
 
-`sansible_logstash_version` is required, e.g. `1:7.5.2-1`. It must belong to
-`sansible_logstash_family` (default `7.x`), which selects the Elastic apt
-repo.
+`logstash_version` is required, e.g. `1:7.5.2-1`. It must belong to
+`logstash_family` (default `7.x`), which selects the Elastic apt repo.
 
 
 ## Example
@@ -36,11 +35,11 @@ As `deploy_logstash.yml` uses it:
   hosts: logproxy
   become: yes
   vars:
-    sansible_logstash_family: 7.x
-    sansible_logstash_version: 1:7.5.2-1
+    logstash_family: 7.x
+    logstash_version: 1:7.5.2-1
     sansible_java_version: 8
     sansible_java_apt_keyserver: https://keyserver.ubuntu.com
-    sansible_logstash_plugins:
+    logstash_plugins:
       - logstash-patterns-core
       - logstash-filter-alter
       - logstash-output-datadog_metrics

@@ -3,11 +3,11 @@
   become: yes
   gather_facts: true
   vars:
-    sansible_logstash_family: 7.x
+    logstash_family: 7.x
     sansible_java_version: 8
     sansible_java_apt_keyserver: 'https://keyserver.ubuntu.com'
-    sansible_logstash_version: 1:7.5.2-1
-    sansible_logstash_plugins:
+    logstash_version: 1:7.5.2-1
+    logstash_plugins:
       - logstash-patterns-core
       - logstash-filter-alter
       - logstash-output-datadog_metrics
