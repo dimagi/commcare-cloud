@@ -17,3 +17,5 @@ elasticsearch_node_name: "{{ hostname }}"
 elasticsearch_delete_old_logs: False
 elasticsearch_log_retention_days: 3
 es_plugins_phonetic_enabled: True
+# Set to False to disable the JVM's hardware-accelerated Base64 routines (see https://dimagi.atlassian.net/browse/SAAS-20621)
+elasticsearch_base64_intrinsics_enabled: True

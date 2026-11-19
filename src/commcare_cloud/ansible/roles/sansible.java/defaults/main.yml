@@ -1,0 +1,7 @@
+---
+
+sansible_java_apt_key_id: EB9B1D8886F44E2A
+sansible_java_apt_keyserver: http://eu.pool.sks-keyservers.net
+sansible_java_apt_repo: "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu {{ ansible_distribution_release | lower }} main"
+sansible_java_set_as_default: yes
+sansible_java_version: 7

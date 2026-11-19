@@ -1,0 +1,6 @@
+---
+
+- name: Build Java
+  import_tasks: build.yml
+  tags:
+    - build
