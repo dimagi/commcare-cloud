@@ -26,13 +26,18 @@ LABELS_TO_EXPAND = [
 
 class DeployDiff:
     def __init__(self, repo, current_commit, deploy_commit, environment, new_version_details=None,
-                 generate_diff=True):
+                 generate_diff=True, compare_commits=None, private_commit_count=0):
         """
         :param repo: github.Repository.Repository object
         :param current_commit: Commit SHA of the currently deployed code
         :param deploy_commit: Commit SHA of the code being deployed
         :param new_version_details: dict of additional metadata to display in diff output.
         :param generate_diff: True if deploy diffs should be produced
+        :param compare_commits: (base, head) commit SHAs in `repo` to compare,
+            when the deployed commits themselves are not in `repo` (private repo
+            deploys). Defaults to (current_commit, deploy_commit).
+        :param private_commit_count: Number of commits being deployed that are
+            only in the private repo, and so not included in the comparison.
         """
         self.repo = repo
         self.current_commit = current_commit
@@ -40,13 +45,25 @@ class DeployDiff:
         self.environment = environment
         self.new_version_details = new_version_details
         self.generate_diff = generate_diff
+        self.compare_base, self.compare_head = compare_commits or (current_commit, deploy_commit)
+        self.private_commit_count = private_commit_count
         self.j2 = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_DIR))
         register_console_filters(self.j2)
 
     @property
+    def url_label(self):
+        if not self.private_commit_count:
+            return "Complete diff"
+        commits = "commit" if self.private_commit_count == 1 else "commits"
+        return (
+            f"Public changes only (excludes {self.private_commit_count} private {commits}; "
+            f"deployed commit {self.deploy_commit})"
+        )
+
+    @property
     def url(self):
         """Human-readable diff URL"""
-        return "{}/compare/{}...{}".format(self.repo.html_url, self.current_commit, self.deploy_commit)
+        return "{}/compare/{}...{}".format(self.repo.html_url, self.compare_base, self.compare_head)
 
     @property
     def deployed_commit_matches_latest_commit(self):
@@ -61,7 +78,7 @@ class DeployDiff:
                 self.repo.get_commit(commit).last_modified,
                 "%a, %d %b %Y %H:%M:%S GMT"
             )
-        if not (self.current_commit and self.deploy_commit):
+        if not (self.compare_base and self.compare_head):
             return {
                 "changelogs": [],
                 "error": True
@@ -69,8 +86,8 @@ class DeployDiff:
         try:
             return {
                 "changelogs": get_changelogs_in_date_range(
-                    get_commit_date(self.current_commit),
-                    get_commit_date(self.deploy_commit)
+                    get_commit_date(self.compare_base),
+                    get_commit_date(self.compare_head)
                 ),
                 "error": False
             }
@@ -132,11 +149,13 @@ class DeployDiff:
             context["errors"].append("Versions are identical. No changes since last deploy.")
             return context
 
-        if not (self.current_commit and self.deploy_commit):
+        if not (self.compare_base and self.compare_head):
             context["warnings"].append("Insufficient info to get deploy diff.")
             return context
 
         context["compare_url"] = self.url
+        if self.private_commit_count:
+            context["compare_url_label"] = self.url_label
 
         if not self.generate_diff:
             disabled_msg = "Deploy diffs disabled for this environment."
@@ -197,7 +216,7 @@ class DeployDiff:
 
     @memoized_property
     def git_comparison(self):
-        return self.repo.compare(self.current_commit, self.deploy_commit)
+        return self.repo.compare(self.compare_base, self.compare_head)
 
     def _get_pr_numbers(self):
         comparison = self.git_comparison

@@ -84,7 +84,7 @@ class SlackClient:
         else:
             diff_blocks = [{
                 "type": "section",
-                "text": {"type": "mrkdwn", "text": "Complete diff: " + context.diff.url}
+                "text": {"type": "mrkdwn", "text": f"{context.diff.url_label}: {context.diff.url}"}
             }]
             self._post_message("Deploy diff", diff_blocks, thread_ts=response["ts"])
 

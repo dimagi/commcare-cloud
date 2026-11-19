@@ -91,7 +91,7 @@
 
 {% if compare_url %}
 <br/>
-<p>Here's the complete diff on github: <a href="{{ compare_url }}">{{ compare_url }}</a></p>
+<p>{{ compare_url_label|default("Here's the complete diff on github") }}: <a href="{{ compare_url }}">{{ compare_url }}</a></p>
 {% endif %}
 </body>
 </html>
