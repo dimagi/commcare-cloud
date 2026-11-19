@@ -2,15 +2,12 @@
 
 sansible_logstash_apt_key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
 sansible_logstash_apt_repo: "deb https://artifacts.elastic.co/packages/{{ sansible_logstash_family }}/apt stable main"
-sansible_logstash_family: 2.0
+sansible_logstash_family: "7.x"
 sansible_logstash_group: logstash
-sansible_logstash_install_sni_fixes: yes
 sansible_logstash_java_heap_size: "{{ (ansible_memtotal_mb / 2) | int }}"
 sansible_logstash_java_opts: ~
 sansible_logstash_java_version: 8
 sansible_logstash_plugins:
   - logstash-patterns-core
   - logstash-filter-prune
-sansible_logstash_plugins_update: []
 sansible_logstash_user: logstash
-sansible_logstash_version: 1:2.0.0-1

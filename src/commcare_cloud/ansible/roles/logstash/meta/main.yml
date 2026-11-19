@@ -1,19 +1,5 @@
 ---
 
-galaxy_info:
-  author: sansible
-  description: "Install Logstash."
-  license: MIT
-  min_ansible_version: 2.7
-  platforms:
-    - name: Ubuntu
-      versions:
-        - trusty
-        - xenial
-        - bionic
-  galaxy_tags:
-    - development
-
 dependencies:
   - role: sansible.java
     sansible_java_version: "{{ sansible_logstash_java_version }}"

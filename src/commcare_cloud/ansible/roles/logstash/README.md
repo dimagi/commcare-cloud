@@ -1,100 +1,50 @@
 # Logstash
 
-Master: [![Build Status](https://travis-ci.org/sansible/logstash.svg?branch=master)](https://travis-ci.org/sansible/logstash)  
-Develop: [![Build Status](https://travis-ci.org/sansible/logstash.svg?branch=develop)](https://travis-ci.org/sansible/logstash)
+Installs Logstash 5.x or later from Elastic's apt repo, with the CommCare
+pipeline config, for `deploy_logstash.yml`.
 
-* [Installation and Dependencies](#installation-and-dependencies)
-* [Tags](#tags)
-* [Examples](#examples)
+Based on [sansible/logstash](https://github.com/sansible/logstash) v2.4.4,
+merged with the logstash role from
+[dimagi/commcare-logstash](https://github.com/dimagi/commcare-logstash)
+0.9.5.
 
-This roles installs Logstash for the ELK stack.
-
-For more information on Logstash please visit
-[elastic logstash](https://www.elastic.co/products/logstash).
-
-
-## Installation and Dependencies
-
-This role will install `sansible.users_and_groups` for managing `logstash`
-user and `sansible.java` for installing java.
-
-To install run `ansible-galaxy install sansible.logstash` or add this to your
-`roles.yml`
-
-```YAML
-- name: sansible.logstash
-  version: v2.1.x
-```
-
-and run `ansible-galaxy install -p ./roles -r roles.yml`
+It depends on `sansible.java`, which installs Java, and creates the
+`logstash` user and group itself.
 
 
 ## Tags
 
 This role uses two tags: **build** and **configure**
 
-* `build` - Installs Logstash and all it's dependencies.
-* `configure` - Configure and ensures that the Logstash service is running.
+* `build` - Installs Logstash and its dependencies.
+* `configure` - Configures Logstash and ensures that its service is running.
 
 
-## Examples
+## Variables
 
-To install:
+`sansible_logstash_version` is required, e.g. `1:7.5.2-1`. It must belong to
+`sansible_logstash_family` (default `7.x`), which selects the Elastic apt
+repo.
 
-```YAML
-- name: Elk Logstash
-  hosts: "{{ hosts }}"
 
-  roles:
-    - role: sansible.logstash
-```
+## Example
 
-To install 5.* version:
+As `deploy_logstash.yml` uses it:
 
 ```YAML
-- name: Elk Logstash
-  hosts: "{{ hosts }}"
-
-  roles:
-    - role: sansible.logstash
-      sansible_logstash_family: 5.x
-      sansible_logstash_version: 1:5.4.*
-```
-
-To install 6.* version:
-
-```YAML
-- name: Elk Logstash
-  hosts: "{{ hosts }}"
-
-  roles:
-    - role: sansible.logstash
-      sansible_logstash_family: 6.x
-      sansible_logstash_version: 1:6.6.*
-```
-
-
-With your own config files:
-
-
-```YAML
-- name: Elk Logstash
-  hosts: "{{ hosts }}"
-
-  roles:
-    - role: sansible.logstash
-      sansible_logstash_default_config: no
-
+- name: Logstash
+  hosts: logproxy
+  become: yes
+  vars:
+    sansible_logstash_family: 7.x
+    sansible_logstash_version: 1:7.5.2-1
+    sansible_java_version: 8
+    sansible_java_apt_keyserver: https://keyserver.ubuntu.com
+    sansible_logstash_plugins:
+      - logstash-patterns-core
+      - logstash-filter-alter
+      - logstash-output-datadog_metrics
   tasks:
-    - name: Configure logstash
-      become: yes
-      template:
-        src: "{{ item }}.j2"
-        dest: "/etc/logstash/conf.d/{{ item }}"
-      with_items:
-        - templates/01-inputs.conf
-        - templates/10-filters.conf
-        - templates/90-outputs.conf
-      notify:
-        - restart logstash
+    - import_role:
+        name: logstash
 ```
