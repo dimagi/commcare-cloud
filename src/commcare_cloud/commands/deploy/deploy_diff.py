@@ -25,7 +25,8 @@ LABELS_TO_EXPAND = [
 
 
 class DeployDiff:
-    def __init__(self, repo, current_commit, deploy_commit, environment, new_version_details=None, generate_diff=True):
+    def __init__(self, repo, current_commit, deploy_commit, environment, new_version_details=None,
+                 generate_diff=True):
         """
         :param repo: github.Repository.Repository object
         :param current_commit: Commit SHA of the currently deployed code
@@ -90,9 +91,12 @@ class DeployDiff:
                 "error": False
             }
 
-        sixweeks_ago = (datetime.now() - timedelta(days=6*7)).strftime( '%Y-%m-%d')
+        sixweeks_ago = (datetime.now() - timedelta(days=6 * 7)).strftime('%Y-%m-%d')
         created = f">{sixweeks_ago}"
-        query = f"repo:dimagi/commcare-hq is:pr is:open created:{created} label:migration-maintenance,breaking-maintenance"
+        query = (
+            f"repo:dimagi/commcare-hq is:pr is:open created:{created} "
+            "label:migration-maintenance,breaking-maintenance"
+        )
 
         try:
             return {
@@ -265,7 +269,7 @@ def get_changelogs_in_date_range(since, until, get_file_fn=None):
         CHANGELOG_INDEX = "docs/source/changelog/index.md"
         return str(repo.get_contents(CHANGELOG_INDEX).decoded_content).split("\\n")
 
-    file_content = _get_file_content_as_lines() if not get_file_fn  else get_file_fn()
+    file_content = _get_file_content_as_lines() if not get_file_fn else get_file_fn()
     search_dates = [
         (since + timedelta(day)).strftime('%Y-%m-%d')
         for day in range((until - since).days + 1)
