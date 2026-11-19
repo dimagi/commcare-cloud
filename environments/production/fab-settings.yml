@@ -6,3 +6,4 @@ acceptable_maintenance_window:
   hour_start: 2
   hour_end: 4
   timezone: US/Eastern
+private_code_repo: 'git@github.com:dimagi-commcare/private-commcare-hq.git'
