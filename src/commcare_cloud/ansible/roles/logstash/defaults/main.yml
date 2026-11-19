@@ -4,8 +4,6 @@ sansible_logstash_apt_key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearc
 sansible_logstash_apt_repo: "deb https://artifacts.elastic.co/packages/{{ sansible_logstash_family }}/apt stable main"
 sansible_logstash_family: "7.x"
 sansible_logstash_group: logstash
-sansible_logstash_java_heap_size: "{{ (ansible_memtotal_mb / 2) | int }}"
-sansible_logstash_java_opts: ~
 sansible_logstash_java_version: 8
 sansible_logstash_plugins:
   - logstash-patterns-core

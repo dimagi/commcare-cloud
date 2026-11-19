@@ -67,19 +67,15 @@
       ansible.builtin.command: grep -Fxq "net.core.rmem_max=26214400" /etc/sysctl.conf
       changed_when: false
 
-    - name: Assert config owner and mode
-      ansible.builtin.shell: test "$(stat -c '%U:%G %a' {{ item.path }})" = "{{ item.stat }}"
+    - name: Assert filebeat config owner and mode
+      ansible.builtin.shell: test "$(stat -c '%U:%G %a' /etc/filebeat/filebeat.yml)" = "root:root 644"
       changed_when: false
-      loop:
-        - {path: /etc/default/logstash, stat: "root:root 600"}
-        - {path: /etc/filebeat/filebeat.yml, stat: "root:root 644"}
 
     - name: Read rendered config
       ansible.builtin.slurp:
         src: "{{ item }}"
       register: configs
       loop:
-        - /etc/default/logstash
         - /etc/logstash/conf.d/01-inputs.conf
         - /etc/logstash/conf.d/10-filters.conf
         - /etc/logstash/conf.d/90-outputs.conf
@@ -88,15 +84,12 @@
     # The filebeat inputs come from filebeat_inputs in group_vars/all.yml.
     - name: Assert rendered config content
       vars:
-        ls_default: "{{ configs.results[0].content | b64decode }}"
-        ls_inputs: "{{ configs.results[1].content | b64decode }}"
-        ls_filters: "{{ configs.results[2].content | b64decode }}"
-        ls_outputs: "{{ configs.results[3].content | b64decode }}"
-        filebeat: "{{ configs.results[4].content | b64decode | from_yaml }}"
+        ls_inputs: "{{ configs.results[0].content | b64decode }}"
+        ls_filters: "{{ configs.results[1].content | b64decode }}"
+        ls_outputs: "{{ configs.results[2].content | b64decode }}"
+        filebeat: "{{ configs.results[3].content | b64decode | from_yaml }}"
       ansible.builtin.assert:
         that:
-          - ls_default is search('(?m)^LS_HEAP_SIZE="[0-9]+m"$')
-          - ls_default is search('(?m)^JAVACMD=/usr/bin/java$')
           - ls_inputs is search('port => "5044"')
           - ls_filters is search('url_group')
           - ls_outputs is search('#environment:molecule-test,')

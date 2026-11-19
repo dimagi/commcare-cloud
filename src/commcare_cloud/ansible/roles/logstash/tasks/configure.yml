@@ -1,14 +1,5 @@
 ---
 
-- name: Setup environment variables
-  become: yes
-  template:
-    src: default.j2
-    dest: /etc/default/logstash
-    backup: true
-  notify:
-    - restart logstash
-
 - name: Configure logstash
   become: yes
   template:

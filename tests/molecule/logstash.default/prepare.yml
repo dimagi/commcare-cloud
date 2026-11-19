@@ -113,16 +113,6 @@
             - logstash
             - filebeat
 
-        # The real package's postinst generates /etc/default/logstash, mode
-        # 0600, which the role's template then overwrites, keeping the mode.
-        - name: Write fake logstash postinst
-          ansible.builtin.copy:
-            dest: "{{ pkg_trees }}/logstash/DEBIAN/postinst"
-            mode: "0755"
-            content: |
-              #!/bin/sh
-              [ -e /etc/default/logstash ] || install -m 0600 /dev/null /etc/default/logstash
-
         # Records installed plugins, and prints what the role's tasks check
         # for to report changes.
         - name: Write fake logstash-plugin
