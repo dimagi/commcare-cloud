@@ -109,7 +109,7 @@ def record_deploy_success(environment, context):
     end = datetime.utcnow()
     diff = context.diff
     repo = diff.repo
-    create_release_tag(environment, repo, diff)
+    create_release_tag(environment, repo.full_name, diff)
     record_deploy_in_datadog(environment, diff, end - context.start_time)
     update_sentry_post_deploy(environment, "formplayer", repo, diff, context.start_time, end)
     announce_deploy_success(environment, context)

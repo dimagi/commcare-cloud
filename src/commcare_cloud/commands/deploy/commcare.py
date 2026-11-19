@@ -215,7 +215,7 @@ def record_successful_deploy(environment, context):
     end_time = datetime.utcnow()
 
     diff = context.diff
-    create_release_tag(environment, diff.repo, diff)
+    create_release_tag(environment, diff.repo.full_name, diff)
     update_sentry_post_deploy(environment, "commcarehq", diff.repo, diff, context.start_time, end_time)
     announce_deploy_success(environment, context)
     call_record_deploy_success(environment, context, end_time)
