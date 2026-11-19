@@ -11,7 +11,6 @@
   hosts: all
   vars:
     fake_elastic: /var/tmp/fake-elastic
-    fake_ppa: /var/tmp/fake-ppa
     pkg_trees: /var/tmp/fake-packages
     # As set in deploy_logstash.yml
     logstash_version: 1:7.5.2-1
@@ -46,11 +45,11 @@
               ;;
           esac
 
-    # The roles install libtool, add the Elastic apt key from a URL and the
-    # Elastic repo, install logstash (and its plugins) and filebeat, and
-    # start their services. By default, serve the real key and fake packages
-    # over HTTP from a local directory, so the roles themselves need no
-    # network. converge.yml points them at it.
+    # The roles add the Elastic apt key from a URL and the Elastic repo,
+    # install logstash (and its plugins) and filebeat, and start their
+    # services. By default, serve the real key and fake packages over HTTP
+    # from a local directory, so the roles themselves need no network.
+    # converge.yml points them at it.
     #
     # To occasionally manually check that the roles work with the real
     # keyserver, repos and packages (NOT FOR ROUTINE/CI USE):
@@ -71,7 +70,6 @@
             state: directory
             mode: "0755"
           loop:
-            - libtool/DEBIAN
             - logstash/DEBIAN
             - logstash/etc/logstash/conf.d
             - logstash/lib/systemd/system
@@ -94,7 +92,6 @@
               Maintainer: Molecule Test <test@example.com>
               Description: Fake {{ item.name }} stub for molecule testing
           loop:
-            - {name: libtool}
             - {name: logstash, version: "{{ logstash_version }}"}
             - {name: filebeat}
 
@@ -154,27 +151,21 @@
             dest: "{{ fake_elastic }}/GPG-KEY-elasticsearch"
             mode: "0644"
 
-        # logstash installs libtool before it adds the Elastic repo, so it
-        # goes in the fake PPA that sansible.java adds first.
         - name: Build fake packages
           ansible.builtin.command: >
-            dpkg-deb --build --root-owner-group {{ pkg_trees }}/{{ item.name }} {{ item.repo }}/{{ item.name }}.deb
+            dpkg-deb --build --root-owner-group {{ pkg_trees }}/{{ item }} {{ fake_elastic }}/{{ item }}.deb
           changed_when: true
           loop:
-            - {name: libtool, repo: "{{ fake_ppa }}"}
-            - {name: logstash, repo: "{{ fake_elastic }}"}
-            - {name: filebeat, repo: "{{ fake_elastic }}"}
+            - logstash
+            - filebeat
 
-        - name: Index the fake repos
+        - name: Index the fake Elastic repo
           ansible.builtin.shell: |
             apt-ftparchive packages . > Packages
             apt-ftparchive release . > Release
           args:
-            chdir: "{{ item }}"
+            chdir: "{{ fake_elastic }}"
           changed_when: true
-          loop:
-            - "{{ fake_ppa }}"
-            - "{{ fake_elastic }}"
 
         # apt_key can't fetch a file:// URL, so serve the repo over HTTP.
         - name: Serve the fake Elastic repo
