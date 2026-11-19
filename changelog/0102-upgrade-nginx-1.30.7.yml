@@ -10,12 +10,9 @@ context: |
   nginx is upgraded from 1.28.0 to 1.30.7, the current stable release.
 
 details: |
-  nginx 1.30 includes several security fixes since 1.28.0. nginx.org
-  does not publish 1.28 packages for Ubuntu 26.04.
-
-  nginx 1.29.7 changed the default for proxied requests to HTTP/1.1 with
-  keepalive connections to upstream servers. commcare-cloud now sets
-  `proxy_http_version 1.0` explicitly to keep the previous behaviour.
+  nginx 1.30.7 includes several security fixes since 1.28.0,
+  including a critical one released Nov 19, 2026.
+  Timely application is essential to protecting a deployment.
 
 update_steps: |
   To upgrade Nginx to 1.30.7 on CommCare HQ, please run the following command:
