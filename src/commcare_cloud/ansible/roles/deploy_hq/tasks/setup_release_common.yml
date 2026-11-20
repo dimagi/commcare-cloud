@@ -1,10 +1,39 @@
+- name: Check private code repo deploy key is configured
+  assert:
+    that: private_code_repo_deploy_key | default('') | length > 0
+    fail_msg: >-
+      private_code_repo_deploy_key is not set. Add the deploy key to the
+      environment's AWS secret (private_code_repo_deploy_key) before using --private-repo.
+  when: use_private_code_repo | default(false) | bool
+
+- name: Install private code repo deploy key
+  copy:
+    content: "{{ private_code_repo_deploy_key | trim }}\n"
+    dest: "{{ cchq_home }}/.ssh/private_code_repo_deploy_key"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: '0600'
+  when: use_private_code_repo | default(false) | bool
+  no_log: true
+
+- name: Install pinned GitHub known_hosts for private code repo
+  copy:
+    content: "{{ lookup('file', playbook_dir ~ '/../github_known_hosts') | regex_replace('(?m)^github\\.com', '[ssh.github.com]:443') }}\n"
+    dest: "{{ cchq_home }}/.ssh/github_known_hosts_443"
+    owner: "{{ cchq_user }}"
+    group: "{{ cchq_user }}"
+    mode: '0644'
+  when: use_private_code_repo | default(false) | bool
+
 - name: Clone source code
   git_setup_release:
     repo: "{{ commcarehq_repository }}"
     dest: "{{ code_source }}"
     version: "{{ code_version }}"
     reference: "{{ code_releases }}/.git_mirrors"
-    key_file: "{{ deploy_key | default(omit, true) }}"
+    key_file: "{{ (cchq_home ~ '/.ssh/private_code_repo_deploy_key') if (use_private_code_repo | default(false) | bool) else omit }}"
+    known_hosts_file: "{{ (cchq_home ~ '/.ssh/github_known_hosts_443') if (use_private_code_repo | default(false) | bool) else omit }}"
+    seed_mirror: "{{ 'commcare-hq.git' if (use_private_code_repo | default(false) | bool) else omit }}"
     previous_release: "{{ code_home }}"
 
 - name: Setup virtualenv

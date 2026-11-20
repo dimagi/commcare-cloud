@@ -7,3 +7,4 @@ deploy_event_url: https://api.github.com/repos/dimagi/dimagi-qa/dispatches
 generate_deploy_diffs: False
 custom_deploy_details:
   View staging branches here: https://github.com/dimagi/commcare-hq/blob/autostaging/scripts/staging.yml
+private_code_repo: 'git@github.com:dimagi-commcare/private-commcare-hq.git'

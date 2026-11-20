@@ -39,10 +39,10 @@ class DeployContext:
         return self.metadata.get(key)
 
 
-def create_release_tag(environment, repo, diff):
+def create_release_tag(environment, repo_full_name, diff):
     if not environment.fab_settings_config.tag_deploy_commits:
         return
-    remote_url = f"git@github.com:{repo.full_name}.git"
+    remote_url = f"git@github.com:{repo_full_name}.git"
     tag_name = f"{environment.release_name}-{environment.name}-deploy"
     try:
         _push_release_tag(remote_url, diff.deploy_commit, tag_name)
