@@ -1,0 +1,11 @@
+---
+
+- name: Install Logstash
+  import_tasks: install.yml
+  tags:
+    - build
+
+- name: Configure Logstash
+  import_tasks: configure.yml
+  tags:
+    - configure

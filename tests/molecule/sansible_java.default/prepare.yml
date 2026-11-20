@@ -2,6 +2,8 @@
 - name: Prepare
   hosts: all
   vars:
+    # Scenarios that import this playbook can set their own env var.
+    real_install_env: MOLECULE_SANSIBLE_JAVA_REAL_INSTALL
     key_id: EB9B1D8886F44E2A
     ppa_dir: /var/tmp/fake-ppa
     pkg_trees: /var/tmp/fake-packages
@@ -25,7 +27,7 @@
         update_cache: true
 
     - name: Stub the keyserver, PPA and packages
-      when: lookup('env', 'MOLECULE_SANSIBLE_JAVA_REAL_INSTALL') != '1'
+      when: lookup('env', real_install_env) != '1'
       block:
         - name: Get DEB architecture
           ansible.builtin.command: dpkg --print-architecture
@@ -154,7 +156,7 @@
           changed_when: true
 
     - name: Create man1 directory for openjdk's postinst
-      when: lookup('env', 'MOLECULE_SANSIBLE_JAVA_REAL_INSTALL') == '1'
+      when: lookup('env', real_install_env) == '1'
       ansible.builtin.file:
         path: /usr/share/man/man1
         state: directory

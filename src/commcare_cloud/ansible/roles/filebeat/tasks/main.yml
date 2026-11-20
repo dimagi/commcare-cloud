@@ -1,0 +1,7 @@
+---
+- import_tasks: install.yml
+  tags: install
+
+- import_tasks: configure.yml
+  tags: configure
+
