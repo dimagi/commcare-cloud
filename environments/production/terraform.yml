@@ -585,6 +585,91 @@ rds_instances:
       pg_transport.num_workers: 8
       track_io_timing: 1
 
+rds_parameter_groups:
+  - name: "pgmain1-production-pg18"
+    family: "postgres18"
+    params:
+      rds.force_ssl: 0
+      shared_preload_libraries: pg_stat_statements,pg_transport
+      log_min_duration_statement: 1000
+      pg_transport.work_mem: 131072
+      pg_transport.timing: 1
+      pg_transport.num_workers: 8
+      track_io_timing: 1
+      max_worker_processes: 40
+      # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
+      # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
+      maintenance_work_mem: 4172000kB
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
+
+  - name: "pgucr0-production-pg18"
+    family: "postgres18"
+    params:
+      rds.force_ssl: 0
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
+
+  - name: "pgshard-production-pg18"
+    family: "postgres18"
+    params:
+      rds.force_ssl: 0
+      shared_preload_libraries: pg_stat_statements
+      log_min_duration_statement: -1
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
+
+  - name: "pgsynclog2-production-pg18"
+    family: "postgres18"
+    params:
+      rds.force_ssl: 0
+      shared_preload_libraries: pg_stat_statements,pg_transport
+      pg_transport.work_mem: 131072
+      pg_transport.timing: 1
+      max_worker_processes: 40
+      pg_transport.num_workers: 8
+      track_io_timing: 1
+      work_mem: 2457kB
+      shared_buffers: 3840MB
+      effective_cache_size: 11520MB
+      maintenance_work_mem: 960MB
+      max_connections: "LEAST({DBInstanceClassMemory/9531392},5000)"
+      vacuum_cost_limit: 2000
+      autovacuum_vacuum_cost_limit: 2000
+
+  - name: "pgformplayer2-production-pg18"
+    family: "postgres18"
+    params:
+      rds.force_ssl: 0
+      shared_preload_libraries: pg_stat_statements,pg_transport
+      log_min_duration_statement: 1000
+      # This is for autovacuuming the huge TOAST table for formplayer.formplayer_sessions table.
+      # When 'commcarehq' and 'formplayer' dbs are split, this should move to formplayer db instance
+      maintenance_work_mem: 4172000kB
+      max_wal_size: 4GB
+      vacuum_cost_limit: 1000
+      autovacuum_vacuum_cost_limit: 1000
+      pg_transport.work_mem: 131072
+      pg_transport.timing: 1
+      max_worker_processes: 40
+      pg_transport.num_workers: 8
+      track_io_timing: 1
+
+  - name: "pgauditcare1-production-pg18"
+    family: "postgres18"
+    params:
+      rds.force_ssl: 0
+      shared_preload_libraries: pg_stat_statements,pg_transport
+      log_min_duration_statement: 1000
+      max_wal_size: 8GB
+      wal_buffers: 32MB
+      shared_buffers: 12GB
+      maintenance_work_mem: 4172000kB
+      vacuum_cost_limit: 1000
+      autovacuum_vacuum_cost_limit: 1000
+      pg_transport.work_mem: 262144
+      pg_transport.timing: 1
+      max_worker_processes: 40
+      pg_transport.num_workers: 8
+      track_io_timing: 1
+
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-production
     targets:

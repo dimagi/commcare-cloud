@@ -318,6 +318,13 @@ rds_instances:
     params:
       max_connections: "125"
 
+rds_parameter_groups:
+  - name: "pgmain0-india-pg18"
+    family: "postgres18"
+    params:
+      rds.force_ssl: 0
+      max_connections: "125"
+
 
 pgbouncer_nlbs:
   - name: pgformplayer_nlb-india
