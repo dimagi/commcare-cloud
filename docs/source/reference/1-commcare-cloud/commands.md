@@ -1175,6 +1175,7 @@ Deploy CommCare
 ```
 commcare-cloud <env> deploy [--resume RELEASE_NAME] [--private] [-l SUBSET] [--keep-days KEEP_DAYS] [--skip-record]
                             [--commcare-rev COMMCARE_REV] [--ignore-kafka-checkpoint-warning] [--update-config]
+                            [--prebuilt-static]
                             [{commcare,formplayer} ...]
 ```
 
@@ -1223,6 +1224,14 @@ Do not block deploy if Kafka checkpoints are unavailable.
 
 Generate new localsettings.py rather than copying from the previous
 release.
+
+###### `--prebuilt-static`
+
+Fetch the prebuilt static files artifact for the deployed commit
+from GitHub Actions instead of relying solely on the on-host
+build. Requires a GitHub token (GITHUB_TOKEN env var or
+config.py) with Actions read access on dimagi/commcare-hq.
+Falls back to the on-host build if the artifact is unavailable.
 
 ---
 

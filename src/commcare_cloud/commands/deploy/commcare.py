@@ -1,29 +1,32 @@
+import os
 import shlex
 from datetime import datetime, timedelta
 
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_error, color_notice, color_summary
+from commcare_cloud.commands.ansible.ansible_playbook import (
+    run_ansible_playbook,
+)
 from commcare_cloud.commands.ansible.run_module import (
     AnsibleContext,
     BadAnsibleResult,
     ansible_json,
     run_ansible_module,
 )
-from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
 from commcare_cloud.commands.deploy.deploy_diff import DeployDiff
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
 from commcare_cloud.commands.deploy.utils import (
-    record_deploy_start,
-    announce_deploy_success,
-    create_release_tag,
-    confirm_environment_time,
     DeployContext,
+    announce_deploy_success,
+    confirm_environment_time,
+    create_release_tag,
     record_deploy_failed,
+    record_deploy_start,
 )
-from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.const import DATE_FMT
-from commcare_cloud.github import github_repo
+from commcare_cloud.events import publish_deploy_event
+from commcare_cloud.github import get_github_credentials, github_repo
 
 
 def get_commcare_deploy_diff(environment, args):
@@ -51,6 +54,7 @@ def deploy_commcare(environment, args, unknown_args):
 
     ansible_args = []
     ansible_args.extend(["-e", f"code_version={context.diff.deploy_commit}"])
+    ansible_args.extend(get_prebuilt_static_args(args))
     if args.private and not args.keep_days:
         args.keep_days = 1
     if args.keep_days:
@@ -95,6 +99,25 @@ def deploy_commcare(environment, args, unknown_args):
         print(color_summary(environment.remote_conf.code_source))
 
     return 0
+
+
+def get_prebuilt_static_args(args):
+    """Ansible -e args enabling the prebuilt static artifact fetch, or [].
+
+    Verifies that Github token is present and sets the GITHUB_TOKEN env var. This just passes the arg to tell playbook to use the prebuilt static artifacts.The artifact itself is fetched later, by a playbook task on the control machine.
+    """
+    if not args.prebuilt_static:
+        return []
+    token = get_github_credentials(prompt_if_missing=True)
+    if not token:
+        print(color_notice(
+            "--prebuilt-static was passed but no GitHub token was provided "
+            "(GITHUB_TOKEN env var, config.py, or the prompt above). "
+            "Falling back to the on-host static build."
+        ))
+        return []
+    os.environ["GITHUB_TOKEN"] = token
+    return ["-e", "prebuilt_static=true"]
 
 
 def confirm_deploy(environment, deploy_revs, rev_diffs, args):
