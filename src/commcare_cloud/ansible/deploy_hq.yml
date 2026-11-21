@@ -46,6 +46,7 @@
 
 - name: Collect static files
   hosts: [webworkers, proxy]
+  strategy: free
   any_errors_fatal: true
   tasks:
     - import_role: {name: deploy_hq}
@@ -54,6 +55,7 @@
 
 - name: Compress static files
   hosts: proxy[0]
+  strategy: free
   any_errors_fatal: true
   tasks:
     - import_role: {name: deploy_hq}
@@ -67,6 +69,7 @@
     - pillowtop
     - proxy
     - django_manage
+  strategy: free
   any_errors_fatal: true
   tasks:
     - import_role: {name: deploy_hq}
