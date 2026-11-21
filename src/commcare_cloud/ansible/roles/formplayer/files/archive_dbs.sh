@@ -42,8 +42,6 @@ test -d ${dir} || {
     exit 1
 }
 
-echo "find ${dir} -name '*.db' -type f -m${time_suffix}"
-
 while read line
 do
     db="${line}"
