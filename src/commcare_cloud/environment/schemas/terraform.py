@@ -204,6 +204,7 @@ class RdsInstanceConfig(jsonobject.JsonObject):
     backup_retention = jsonobject.IntegerProperty(default=30)
     monitoring_interval = jsonobject.IntegerProperty(default=60)
     enable_cross_region_backup = jsonobject.BooleanProperty(default=False)
+    allow_major_version_upgrade = jsonobject.BooleanProperty(default=False)
     maintenance_window = "sat:08:27-sat:08:57"
     port = 5432
     params = jsonobject.DictProperty()

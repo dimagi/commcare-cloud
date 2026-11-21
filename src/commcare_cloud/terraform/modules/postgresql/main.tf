@@ -35,6 +35,7 @@ module "postgresql" {
 
   apply_immediately     = var.apply_immediately
   auto_minor_version_upgrade = false
+  allow_major_version_upgrade = var.rds_instance["allow_major_version_upgrade"]
 
   username = var.rds_instance["username"]
   password = var.rds_instance["password"]
