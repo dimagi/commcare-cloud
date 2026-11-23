@@ -1,8 +1,6 @@
 ---
 
-# The logstash package creates a system user if none exists. Create a
-# regular one first, matching what hosts already have (previously set up by
-# sansible.users_and_groups), so existing hosts see no change.
+# The logstash package creates a system user if none exists.
 - name: Create logstash group
   become: yes
   group:
