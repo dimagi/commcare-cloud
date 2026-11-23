@@ -78,6 +78,9 @@ class SentryClient(namedtuple("SentryClient", "api_key, org_slug, project_slug")
 
 def get_release_commits(diff):
     # https://docs.sentry.io/product/releases/setup/manual-setup-releases/
+    if not (diff.current_commit and diff.deploy_commit):
+        # e.g. the first deploy to an environment has nothing to compare against
+        return None
     comparison = diff.git_comparison
     commits = []
     for commit in comparison.commits:
