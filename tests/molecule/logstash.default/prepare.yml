@@ -1,0 +1,171 @@
+---
+# logstash depends on sansible.java, so reuse its scenario's stubs. They
+# also disable the Ubuntu archive, after installing the real gnupg2 and
+# ca-certificates.
+- name: Prepare sansible.java
+  ansible.builtin.import_playbook: ../sansible_java.default/prepare.yml
+  vars:
+    real_install_env: MOLECULE_LOGSTASH_REAL_INSTALL
+
+- name: Prepare logstash and filebeat
+  hosts: all
+  vars:
+    fake_elastic: /var/tmp/fake-elastic
+    pkg_trees: /var/tmp/fake-packages
+    # As set in the logstash role's defaults
+    logstash_version: 1:7.5.2-1
+  tasks:
+    # deploy_logstash.yml sets net.core.rmem_max, which the container can
+    # read but not write, so `sysctl -p` fails, and the live value never
+    # matches, which the sysctl module reports as changed on every run. Log
+    # reloads instead of running them, and read keys set in /etc/sysctl.conf
+    # from there, as if the reload had applied them. Other calls go to the
+    # real binary.
+    - name: Stub sysctl
+      ansible.builtin.copy:
+        dest: /usr/local/sbin/sysctl
+        mode: "0755"
+        content: |
+          #!/bin/sh
+          case "$1" in
+            -p)
+              echo "$*" >> /var/log/fake-sysctl.log
+              ;;
+            -e)
+              for key; do :; done
+              value=$(sed -n "s/^$key *= *//p" /etc/sysctl.conf | tail -1)
+              if [ -n "$value" ]; then
+                echo "$value"
+              else
+                exec /usr/sbin/sysctl "$@"
+              fi
+              ;;
+            *)
+              exec /usr/sbin/sysctl "$@"
+              ;;
+          esac
+
+    # The roles add the Elastic apt key from a URL and the Elastic repo,
+    # install logstash (and its plugins) and filebeat, and start their
+    # services. By default, serve the real key and fake packages over HTTP
+    # from a local directory, so the roles themselves need no network.
+    # converge.yml points them at it.
+    #
+    # To occasionally manually check that the roles work with the real
+    # keyserver, repos and packages (NOT FOR ROUTINE/CI USE):
+    #
+    #   MOLECULE_LOGSTASH_REAL_INSTALL=1 ./tests/molecule/run.sh logstash default
+    #
+    - name: Stub the Elastic key, repo and packages
+      when: lookup('env', 'MOLECULE_LOGSTASH_REAL_INSTALL') != '1'
+      block:
+        - name: Get DEB architecture
+          ansible.builtin.command: dpkg --print-architecture
+          register: deb_arch
+          changed_when: false
+
+        - name: Create fake package directories
+          ansible.builtin.file:
+            path: "{{ pkg_trees }}/{{ item }}"
+            state: directory
+            mode: "0755"
+          loop:
+            - logstash/DEBIAN
+            - logstash/etc/logstash/conf.d
+            - logstash/lib/systemd/system
+            - logstash/usr/share/logstash/bin
+            - filebeat/DEBIAN
+            - filebeat/etc/filebeat
+            - filebeat/lib/systemd/system
+
+        # The epoch sorts these fakes above any real version, so they
+        # satisfy versioned Breaks of real packages. logstash has the version
+        # the role pins.
+        - name: Write fake package control files
+          ansible.builtin.copy:
+            dest: "{{ pkg_trees }}/{{ item.name }}/DEBIAN/control"
+            mode: "0644"
+            content: |
+              Package: {{ item.name }}
+              Version: {{ item.version | default('99:0.0-molecule') }}
+              Architecture: {{ deb_arch.stdout }}
+              Maintainer: Molecule Test <test@example.com>
+              Description: Fake {{ item.name }} stub for molecule testing
+          loop:
+            - {name: logstash, version: "{{ logstash_version }}"}
+            - {name: filebeat}
+
+        # Give the roles' service tasks something to start and restart.
+        - name: Write fake services
+          ansible.builtin.copy:
+            dest: "{{ pkg_trees }}/{{ item }}/lib/systemd/system/{{ item }}.service"
+            mode: "0644"
+            content: |
+              [Unit]
+              Description=Fake {{ item }} for molecule testing
+
+              [Service]
+              ExecStart=/bin/sleep infinity
+
+              [Install]
+              WantedBy=multi-user.target
+          loop:
+            - logstash
+            - filebeat
+
+        # Records installed plugins, and prints what the role's tasks check
+        # for to report changes.
+        - name: Write fake logstash-plugin
+          ansible.builtin.copy:
+            dest: "{{ pkg_trees }}/logstash/usr/share/logstash/bin/logstash-plugin"
+            mode: "0755"
+            content: |
+              #!/bin/sh
+              db=/var/lib/fake-logstash-plugins
+              case "$1" in
+                list) grep -qx "$2" "$db" 2>/dev/null && echo "$2" ;;
+                install) echo "$2" >> "$db" && echo "Installation successful" ;;
+                update) echo "Updated $2" ;;
+                *) exit 1 ;;
+              esac
+
+        - name: Create fake Elastic repo directory
+          ansible.builtin.file:
+            path: "{{ fake_elastic }}"
+            state: directory
+            mode: "0755"
+
+        - name: Add the Elastic key to the fake repo
+          ansible.builtin.copy:
+            src: GPG-KEY-elasticsearch
+            dest: "{{ fake_elastic }}/GPG-KEY-elasticsearch"
+            mode: "0644"
+
+        - name: Build fake packages
+          ansible.builtin.command: >
+            dpkg-deb --build --root-owner-group {{ pkg_trees }}/{{ item }} {{ fake_elastic }}/{{ item }}.deb
+          changed_when: true
+          loop:
+            - logstash
+            - filebeat
+
+        - name: Index the fake Elastic repo
+          ansible.builtin.shell: |
+            apt-ftparchive packages . > Packages
+            apt-ftparchive release . > Release
+          args:
+            chdir: "{{ fake_elastic }}"
+          changed_when: true
+
+        # apt_key can't fetch a file:// URL, so serve the repo over HTTP.
+        - name: Serve the fake Elastic repo
+          ansible.builtin.command: >
+            systemd-run --unit=fake-elastic
+            python3 -m http.server 8080 --bind 127.0.0.1 --directory {{ fake_elastic }}
+          changed_when: true
+
+        - name: Wait for the fake Elastic repo
+          ansible.builtin.wait_for:
+            host: 127.0.0.1
+            port: 8080
+            timeout: 10

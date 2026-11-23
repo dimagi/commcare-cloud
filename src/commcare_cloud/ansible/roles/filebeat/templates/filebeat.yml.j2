@@ -1,0 +1,29 @@
+filebeat.inputs:
+{% for item in filebeat_inputs %}
+- type: log
+  paths:
+    - {{ item['path'] }}
+  fields:
+    type: {{ item['tags'] }}
+  fields_under_root: true
+{% endfor %}
+# Configure what outputs to use when sending the data collected by the beat.
+# Multiple outputs may be used.
+
+
+{% if filebeat_output_logstash_enabled %}
+output.logstash:
+    hosts: {{ filebeat_output_logstash_hosts | to_json }}
+    bulk_max_size: 1024
+{% endif %}
+
+{% if filebeat_enable_logging %}
+logging.level: {{ filebeat_log_level }}
+logging.to_files: true
+logging.files:
+  path: {{ filebeat_log_dir }}
+  name: {{ filebeat_log_filename }}
+  keepfiles: 7
+  permissions: 0644
+{% endif %}
+

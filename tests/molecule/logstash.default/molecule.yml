@@ -1,0 +1,41 @@
+---
+dependency:
+  name: shell
+  command: ''
+  enabled: false
+driver:
+  name: containers
+platforms:
+  # One instance in both groups, as in every Dimagi environment, so it runs
+  # both plays in deploy_logstash.yml and filebeat ships to the local
+  # logstash.
+  - name: instance
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    pre_build_image: true
+    groups: [logproxy, proxy]
+
+    # Let systemd run as PID 1, needed for the roles' service tasks and the
+    # fake Elastic repo server.
+    override_command: false
+    privileged: true
+    cgroupns_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    tmpfs:
+      - /run
+      - /tmp
+
+provisioner:
+  name: ansible
+  playbooks:
+    cleanup: ../lib/stub.yml
+  inventory:
+    group_vars:
+      # Converge loads group_vars next to deploy_logstash.yml, which take
+      # precedence over these.
+      all:
+        deploy_env: molecule
+        ansible_sudo_pass: ""
+        env_monitoring_id: molecule-test
+verifier:
+  name: ansible

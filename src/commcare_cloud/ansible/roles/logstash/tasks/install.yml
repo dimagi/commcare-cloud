@@ -1,0 +1,60 @@
+---
+
+# The logstash package creates a system user if none exists.
+- name: Create logstash group
+  become: yes
+  group:
+    name: "{{ logstash_group }}"
+
+- name: Create logstash user
+  become: yes
+  user:
+    name: "{{ logstash_user }}"
+    group: "{{ logstash_group }}"
+    home: "/home/{{ logstash_user }}"
+    shell: /bin/bash
+
+- name: Restrict logstash home directory
+  become: yes
+  file:
+    path: "/home/{{ logstash_user }}"
+    owner: "{{ logstash_user }}"
+    group: "{{ logstash_group }}"
+    mode: "0750"
+    state: directory
+
+- name: Add Elastic gpg key
+  become: yes
+  apt_key:
+    url: "{{ logstash_apt_key_url }}"
+    state: present
+
+- name: Install Logstash repo
+  become: yes
+  apt_repository:
+    repo: "{{ logstash_apt_repo }}"
+    state: present
+
+- name: Install Logstash
+  become: yes
+  apt:
+    name: "logstash={{ logstash_version }}"
+    state: present
+  notify: restart logstash
+
+- name: Install any required Logstash plugins
+  become: yes
+  shell: "bin/logstash-plugin list {{ item }} || bin/logstash-plugin install {{ item }}"
+  register: install_result
+  args:
+    chdir: "/usr/share/logstash"
+  with_items: "{{ logstash_plugins }}"
+  changed_when: "'Installation successful' in install_result.stdout"
+  notify: restart logstash
+
+- name: Ensure Logstash service is enabled
+  become: yes
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    name: logstash
