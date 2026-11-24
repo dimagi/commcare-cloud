@@ -5,24 +5,24 @@ import pickle
 import time
 from io import open
 
-from ansible_collections.amazon.aws.plugins.lookup import aws_secret
+from ansible_collections.amazon.aws.plugins.lookup import secretsmanager_secret
 from cryptography.fernet import Fernet, InvalidToken
 
 __metaclass__ = type
 
 
-DOCUMENTATION = aws_secret.DOCUMENTATION
-RETURN = aws_secret.RETURN
+DOCUMENTATION = secretsmanager_secret.DOCUMENTATION
+RETURN = secretsmanager_secret.RETURN
 
 LOOKUP_IN_PROGRESS_ON_ANOTHER_FORK = b'FETCHING'
 
 
-class LookupModule(aws_secret.LookupModule):
+class LookupModule(secretsmanager_secret.LookupModule):
     """
-    commcare-cloud's wrapper around aws_secret
+    commcare-cloud's wrapper around amazon.aws.secretsmanager_secret
 
-    Adds commcare-cloud specific caching to aws_secret lookup plugin for big speedup
-    Also assumes the value is json and returns the string json-decoded unlike aws_secret.
+    Adds commcare-cloud specific caching to the lookup plugin for big speedup
+    Also assumes the value is json and returns the string json-decoded unlike secretsmanager_secret.
 
     To cache even between forks of the same process/run, we use a one-time process-wide key
     to encrypt values and write them to disk in files <env_dir>/.generated/.
@@ -51,7 +51,7 @@ class LookupModule(aws_secret.LookupModule):
         if isinstance(value, Exception):
             raise value
         else:
-            # This line makes this plugin not a drop-in replacement for the built-in aws_secret plugin.
+            # This line makes this plugin not a drop-in replacement for secretsmanager_secret.
             # Doing the json decoding here (and thus assuming that the secrets are all json encoded)
             # is less elegant than doing it outside this plugin, but greatly simplified the error handling.
             return [json.loads(item) for item in value]
