@@ -92,6 +92,12 @@
   community.general.snap:
     name: [astral-uv]
     classic: true
+  # The snap store sometimes answers "no snap found" for a snap that exists,
+  # and the module then fails with "list index out of range".
+  register: install_uv
+  until: install_uv is succeeded
+  retries: 4
+  delay: 2
 
 - name: Install pip packages
   become: yes
