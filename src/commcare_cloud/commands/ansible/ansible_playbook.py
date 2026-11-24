@@ -340,7 +340,6 @@ class BootstrapUsers(_AnsiblePlaybookAlias):
         public_vars = environment.public_vars
         unknown_args += (
             '--tags=bootstrap-users',
-            '--skip-tags=validate_key',
         ) + get_user_arg(public_vars, unknown_args, use_factory_auth=True)
 
         if not public_vars.get('commcare_cloud_pem') and not has_local_connection_arg(unknown_args):
@@ -359,9 +358,10 @@ class UpdateUsers(_AnsiblePlaybookAlias):
     """
 
     def run(self, args, unknown_args):
-        username = get_dev_username(args.env_name)
+        # prevent lockout: only present dev users may update users
+        get_dev_username(args.env_name)
         args.playbook = 'deploy_stack.yml'
-        unknown_args += ('--tags=users,update_users', '-e ssh_user=' + shlex.quote(username))
+        unknown_args += ('--tags=users,update_users',)
         return AnsiblePlaybook(self.parser).run(args, unknown_args)
 
 

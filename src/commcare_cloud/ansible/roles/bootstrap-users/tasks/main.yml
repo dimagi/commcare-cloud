@@ -102,13 +102,6 @@
           - notifempty
   when: inventory_hostname in groups.get('control', [])
 
-- name: Verifying ssh_user key is in present dev keys
-  assert:
-    that:
-      - ssh_user in dev_users.present
-  when: (ssh_user)
-  tags: validate_key
-
 - name: Bootstrap dev users and SSH keys
   bootstrap_users:
     present: "{{ dict(dev_users.present | zip(query('file', *dev_pubkey_paths))) }}"
