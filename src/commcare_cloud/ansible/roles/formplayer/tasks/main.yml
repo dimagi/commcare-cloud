@@ -109,7 +109,30 @@
     - formplayer_deploy
   with_items:
     - "{{ formplayer_build_dir }}"
-    - "{{ [] if _should_update_formplayer_in_place else formplayer_release_dir }}"
+    - "{{ [] if _formplayer_update_in_place else formplayer_release_dir }}"
+
+- name: Check if the new release directory exists
+  stat:
+    path: "{{ formplayer_release_dir }}"
+  register: release_stat
+  when: ansible_check_mode and not _should_update_formplayer_in_place
+  tags:
+    - localsettings
+    - formplayer_deploy
+
+- name: Note that check mode compares against the current release
+  debug:
+    msg: >-
+      Check mode compares Formplayer against the current release
+      ({{ formplayer_current_dir }}). Applying will create a new release in
+      {{ formplayer_release_dir }} and link current to it, and will not
+      change the current release.
+  when:
+    - ansible_check_mode and not _should_update_formplayer_in_place
+    - not release_stat.stat.exists
+  tags:
+    - localsettings
+    - formplayer_deploy
 
 - name: Formplayer data dir
   file:
@@ -148,7 +171,7 @@
   register: current_stat
   tags:
     - formplayer_deploy
-  when: not _should_update_formplayer_in_place
+  when: not _formplayer_update_in_place
 
 # This task copies the respective config files from "current", if applicable
 # so that the next task prints out a nice diff instead of the full contents of the file
@@ -166,7 +189,7 @@
     - filename: logback-spring.xml
   tags:
     - formplayer_deploy
-  when: not _should_update_formplayer_in_place and current_stat.stat.exists
+  when: not _formplayer_update_in_place and current_stat.stat.exists
 
 - name: Register current formplayer release
   command: "readlink {{ formplayer_current_dir }}"
@@ -195,7 +218,7 @@
     current_formplayer_release: >-
       {{
       (("%s-%s" % (current_release_result.stdout, env_monitoring_id)) | basename)
-      if current_release_result.stdout and _should_update_formplayer_in_place
+      if current_release_result.stdout and _formplayer_update_in_place
       else formplayer_release_name
       }}
   tags:
@@ -217,7 +240,7 @@
     group: "{{ cchq_user }}"
   tags:
     - formplayer_deploy
-  when: not _should_update_formplayer_in_place
+  when: not _formplayer_update_in_place
 
 
 - name: Formplayer monit config

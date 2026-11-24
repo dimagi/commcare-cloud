@@ -11,9 +11,13 @@ formplayer_build_url: "{{
 formplayer_current_dir: "{{ formplayer_build_dir }}/current"
 formplayer_release_dir: '{{ formplayer_build_dir }}/releases/{{ release_name }}'
 formplayer_releases_base_dir: '{{ formplayer_build_dir }}/releases'
+# Check mode does not create a new release directory, so tasks that write
+# into it would fail. Check against the current release instead, which also
+# shows the config changes a new release would get.
+_formplayer_update_in_place: "{{ _should_update_formplayer_in_place or ansible_check_mode }}"
 _formplayer_target_dir: "{{
   formplayer_current_dir
-  if _should_update_formplayer_in_place
+  if _formplayer_update_in_place
   else formplayer_release_dir
 }}"
 formplayer_sensitive_data_logging: false
