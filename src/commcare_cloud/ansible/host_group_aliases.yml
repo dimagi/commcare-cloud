@@ -5,18 +5,19 @@
       add_host:
         hostname: "{{ item }}"
         groups: all_commcarehq
-      with_items: "{{ groups['all'] }}"
+      # empty after the first import in a run, when the group exists
+      with_items: "{{ [] if 'all_commcarehq' in groups else groups['all'] }}"
       changed_when: no
     - name: Create commcarehq group alias
       add_host:
         hostname: "{{ item }}"
         groups: commcarehq
       with_items:
-        - "{{ groups['webworkers']|default([]) }}"
-        - "{{ groups['celery']|default([]) }}"
-        - "{{ groups['proxy']|default([]) }}"
-        - "{{ groups['pillowtop']|default([]) }}"
-        - "{{ groups['django_manage']|default([]) }}"
+        - "{{ [] if 'commcarehq' in groups else groups['webworkers']|default([]) }}"
+        - "{{ [] if 'commcarehq' in groups else groups['celery']|default([]) }}"
+        - "{{ [] if 'commcarehq' in groups else groups['proxy']|default([]) }}"
+        - "{{ [] if 'commcarehq' in groups else groups['pillowtop']|default([]) }}"
+        - "{{ [] if 'commcarehq' in groups else groups['django_manage']|default([]) }}"
       changed_when: no
   tags:
     - always

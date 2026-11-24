@@ -102,24 +102,15 @@
           - notifempty
   when: inventory_hostname in groups.get('control', [])
 
-- name: Add users for current devs
-  user:
-    name: "{{ item }}"
-    state: present
+- name: Bootstrap dev users and SSH keys
+  bootstrap_users:
+    present: "{{ dict(dev_users.present | zip(query('file', *dev_pubkey_paths))) }}"
+    absent: "{{ dev_users.absent }}"
+    groups: ["{{ dev_group }}"]
     shell: /bin/bash
-    groups: "{{ dev_group }}"
-  with_items: '{{ dev_users.present }}'
-
-- name: Add public keys for current devs
-  authorized_key:
-    user: "{{ item }}"
-    state: present
-    key: "{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
-    exclusive: yes
-  with_items: '{{ dev_users.present }}'
-  ignore_errors: "{{ ansible_check_mode }}"
-  tags:
-    - pubkey
+    shared_user: ansible
+  vars:
+    dev_pubkey_paths: "{{ [authorized_keys_dir] | product(dev_users.present, ['.pub']) | map('join') | list }}"
 
 - name: Remove public key for cchq user
   # todo: remove after applied to all envs
@@ -130,53 +121,17 @@
     exclusive: yes
   tags: commcarehq
 
-- name: lookup ssh pubkeys from authorized_keys_dir and create ssh_pubkeys_list
-  set_fact:
-    ssh_pubkeys_list: "{{ lookup('file', authorized_keys_dir ~ item ~ '.pub') }}"
-  with_items:
-    "{{ dev_users.present }}"
-  register: ssh_pubkeys_results_list
-  tags:
-    - pubkey
+- name: Find users with password max age set
+  # shadow field 5 is max days; empty means no limit.
+  command:
+    argv: [awk, "-F:", '$5 != "" {print $1}', "/etc/shadow"]
+  register: users_pw_max_age
+  changed_when: false
+  check_mode: false
 
-- name: iterate over ssh_pubkeys_list and join into a string
-  set_fact:
-    ssh_pubkeys_string: "{{ ssh_pubkeys_results_list.results | map(attribute='ansible_facts.ssh_pubkeys_list') | list | join('\n') }}"
-  tags:
-    - pubkey
-
-- name: "Verifying ssh_user key in the ssh_pubkeys_string list"
-  assert:
-    that:
-      - 'lookup("file", authorized_keys_dir ~ ssh_user ~ ".pub") in ssh_pubkeys_string'
-  when: (ssh_user)
-  tags:
-    - validate_key
-    - pubkey
-
-- name: Authorize current devs to login as ansible
-  authorized_key:
-    user: ansible
-    state: present
-    key: "{{ ssh_pubkeys_string }}"
-    exclusive: yes
-  tags:
-    - pubkey
-
-- import_tasks: remove_users.yml
-  when: dev_users.absent
-
-- name: check users password valid time  # noqa: risky-shell-pipe
-  # risky-shell-pipe: pipe masks getent exit code, intentionally tolerates missing user
-  shell: getent shadow "{{ item }}" | cut -d':' -f5
-  register: users_pw_valid
-  loop: "{{ dev_users.present }} + ['ansible', '{{ cchq_user }}']"
-  changed_when: False
-
-- name: clear users password valid time
-  command: chage -M -1 "{{ item['item'] }}"
-  loop: "{{ users_pw_valid.results }}"
-  when: item.stdout is defined and item.stdout
+- name: Clear users password valid time
+  command: chage -M -1 "{{ item }}"
+  loop: "{{ users_pw_max_age.stdout_lines | intersect(dev_users.present + ['ansible', cchq_user]) }}"
 
 
 # This must be the last task in the file
