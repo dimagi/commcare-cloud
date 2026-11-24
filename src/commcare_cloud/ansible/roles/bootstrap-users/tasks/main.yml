@@ -57,7 +57,7 @@
     shell: /bin/bash
     group: "{{ 'ansible' if ansible_gid and 'update_users' not in ansible_run_tags else omit }}"
     groups: "sudo"
-    password: "{{ new_ansible_sudo_pass|default(ansible_sudo_pass)|password_hash('sha512', inventory_hostname|hash('sha256')[:16]) }}"
+    password: "{{ new_ansible_sudo_pass|default(ansible_sudo_pass)|password_hash('sha512', (inventory_hostname|hash('sha256'))[:16]) }}"
     uid: "{{ ansible_uid if ansible_uid and 'update_users' not in ansible_run_tags else omit }}"
     append: yes
   tags:
