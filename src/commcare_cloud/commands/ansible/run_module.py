@@ -191,8 +191,10 @@ class RunShellCommand(CommandBase):
             (Tip: put quotes around it, as it will likely contain spaces.)
             Cannot being with `sudo`; to do that use the ansible `--become` option.
         """),
-        Argument('--silence-warnings', action='store_true',
-                 help="Silence shell warnings (such as to use another module instead)."),
+        Argument('--silence-warnings', action='store_true', help="""
+            No effect. Ansible no longer warns about commands that could use
+            another module. Accepted so that existing commands keep working.
+        """),
     ) + NON_POSITIONAL_ARGUMENTS
 
     def modify_parser(self):
@@ -207,10 +209,7 @@ class RunShellCommand(CommandBase):
                 return 0  # exit code
 
         args.module = 'shell'
-        if args.silence_warnings:
-            args.module_args = 'warn=false ' + args.shell_command
-        else:
-            args.module_args = args.shell_command
+        args.module_args = args.shell_command
         args.skip_check = True
         args.quiet = True
         del args.shell_command
@@ -270,7 +269,6 @@ class Ping(CommandBase):
 
     def run(self, args, unknown_args):
         args.shell_command = 'echo "$(hostname) - $(uptime)"'
-        args.silence_warnings = False
         return RunShellCommand(self.parser).run(args, unknown_args)
 
 

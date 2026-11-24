@@ -543,7 +543,8 @@ Cannot being with `sudo`; to do that use the ansible `--become` option.
 
 ###### `--silence-warnings`
 
-Silence shell warnings (such as to use another module instead).
+No effect. Ansible no longer warns about commands that could use
+another module. Accepted so that existing commands keep working.
 
 ###### `--use-factory-auth`
 
