@@ -31,7 +31,9 @@
       fail:
         msg: "kinesis-agent install failed: {{ install_task.stderr | default('') }}"
 
-  when: (kinesis_flows | length) and git_task.changed
+  # In check mode git does not clone the repo, so there is nothing to
+  # install from. The git task's change already shows the reinstall.
+  when: (kinesis_flows | length) and git_task.changed and not ansible_check_mode
   tags: kinesis-agent
 
 - name: Install, configure kinesis-agent
