@@ -107,9 +107,7 @@
     that:
       - ssh_user in dev_users.present
   when: (ssh_user)
-  tags:
-    - validate_key
-    - pubkey
+  tags: validate_key
 
 - name: Bootstrap dev users and SSH keys
   bootstrap_users:
@@ -120,8 +118,6 @@
     shared_user: ansible
   vars:
     dev_pubkey_paths: "{{ [authorized_keys_dir] | product(dev_users.present, ['.pub']) | map('join') | list }}"
-  tags:
-    - pubkey
 
 - name: Remove public key for cchq user
   # todo: remove after applied to all envs
