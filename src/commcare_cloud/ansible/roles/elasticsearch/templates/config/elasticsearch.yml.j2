@@ -44,7 +44,10 @@ discovery.zen.ping.unicast.hosts: [
 {% if elasticsearch_version is version('7.0.0', '>=') %}
 discovery.seed_hosts: [
 {% endif %}
-{% for endpoint in groups.elasticsearch %}
+{# Sort groups.elasticsearch so the order does not depend on how Ansible orders
+   the hosts of a group made of child groups. A change in order could change
+   this file, causing Elasticsearch to restart on every node at once. #}
+{% for endpoint in groups.elasticsearch | sort %}
   {% if endpoint|ipaddr %}
     "{{ endpoint }}:{{ elasticsearch_tcp_port }}",
   {% else %}
@@ -89,7 +92,7 @@ path.repo: ["{{ elasticsearch_data_dir }}/snapshot"]
 
 {% if elasticsearch_version is version('7.0.0', '>=') %}
 cluster.initial_master_nodes:
-{% for item in groups.elasticsearch %}
+{% for item in groups.elasticsearch | sort %}
 {% if hostvars[item].elasticsearch_master is defined|default(False) %}
 {% if item|ipaddr %}
     - "{{ item }}"
