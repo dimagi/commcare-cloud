@@ -7,6 +7,7 @@
     state: present
 
 - name: Download OpenJDK PGP key (works with Bionic behind a proxy)
+  when: not ansible_check_mode
   become: yes
   get_url:
     dest: /usr/local/src/java_openjdk.asc
@@ -41,6 +42,7 @@
   command: dpkg --print-architecture
   register: sansible_java_deb_architecture
   changed_when: False
+  check_mode: no
 
 - name: Set OpenJDK Java as default
   become: yes
