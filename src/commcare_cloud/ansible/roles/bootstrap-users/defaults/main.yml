@@ -7,4 +7,3 @@ ansible_uid: 3001
 ansible_gid: 3001
 cchq_uid: 3002
 cchq_gid: 3002
-ssh_user: null
