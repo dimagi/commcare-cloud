@@ -1,6 +1,8 @@
 import shlex
 from datetime import datetime, timedelta
 
+from github.GithubException import GithubException, UnknownObjectException
+
 from commcare_cloud.alias import commcare_cloud
 from commcare_cloud.cli_utils import ask
 from commcare_cloud.colors import color_error, color_notice, color_summary
@@ -12,6 +14,7 @@ from commcare_cloud.commands.ansible.run_module import (
 )
 from commcare_cloud.commands.ansible.ansible_playbook import run_ansible_playbook
 from commcare_cloud.commands.deploy.deploy_diff import DeployDiff
+from commcare_cloud.commands.deploy.private_repo import PrivateRepoError, resolve_private_revision
 from commcare_cloud.commands.deploy.sentry import update_sentry_post_deploy
 from commcare_cloud.commands.deploy.utils import (
     record_deploy_start,
@@ -23,16 +26,23 @@ from commcare_cloud.commands.deploy.utils import (
 )
 from commcare_cloud.events import publish_deploy_event
 from commcare_cloud.const import DATE_FMT
-from commcare_cloud.github import github_repo
+from commcare_cloud.github import github_full_name, github_repo
 
 
 def get_commcare_deploy_diff(environment, args):
+    if args.private_repo and not args.commcare_rev:
+        exit(color_error("--private-repo requires --commcare-rev"))
     deploy_revs, rev_diffs = get_deploy_revs_and_diffs_from_defaults(environment, args)
-    return _get_code_diff(environment, deploy_revs, False)
+    return _get_code_diff(environment, deploy_revs, False, private_repo=args.private_repo)
 
 
 def deploy_commcare(environment, args, unknown_args):
+    if args.private_repo and not args.resume and not args.commcare_rev:
+        exit(color_error("--private-repo requires --commcare-rev"))
     deploy_revs, rev_diffs = get_deploy_revs_and_diffs_from_defaults(environment, args)
+    if args.private_repo:
+        private_repo_url = _get_private_repo_url(environment)
+        print(color_notice(f"Deploying from private repo {github_full_name(private_repo_url)}"))
     if not confirm_deploy(environment, deploy_revs, rev_diffs, args):
         print(color_notice("Aborted by user"))
         return 1
@@ -40,10 +50,18 @@ def deploy_commcare(environment, args, unknown_args):
     context = DeployContext(
         service_name="CommCare HQ",
         revision=args.commcare_rev,
-        diff=_get_code_diff(environment, deploy_revs, args.resume, skip_token_prompt=args.private),
+        diff=_get_code_diff(
+            environment,
+            deploy_revs,
+            args.resume,
+            skip_token_prompt=args.private,
+            private_repo=args.private_repo,
+        ),
         start_time=datetime.utcnow(),
         resume=args.resume
     )
+    if args.private_repo:
+        context.set_meta_value("code_repo", github_full_name(private_repo_url))
 
     should_record = not (args.skip_record or args.private)
     if should_record:
@@ -51,6 +69,11 @@ def deploy_commcare(environment, args, unknown_args):
 
     ansible_args = []
     ansible_args.extend(["-e", f"code_version={context.diff.deploy_commit}"])
+    if args.private_repo:
+        ansible_args.extend([
+            "-e", f"commcarehq_repository={private_repo_url}",
+            "-e", "use_private_code_repo=true",
+        ])
     if args.private and not args.keep_days:
         args.keep_days = 1
     if args.keep_days:
@@ -104,7 +127,7 @@ def confirm_deploy(environment, deploy_revs, rev_diffs, args):
     if args.resume:
         print(f"Resuming {args.resume} release.\n")
         # call this here to make sure we can get the 'version' to resume
-        _get_code_diff(environment, deploy_revs, args.resume)
+        _get_code_diff(environment, deploy_revs, args.resume, private_repo=args.private_repo)
         return _ask_to_deploy(environment.name, args.quiet)
 
     if rev_diffs:
@@ -122,7 +145,7 @@ def confirm_deploy(environment, deploy_revs, rev_diffs, args):
     ):
         return False
 
-    code_diff = _get_code_diff(environment, deploy_revs, args.resume)
+    code_diff = _get_code_diff(environment, deploy_revs, args.resume, private_repo=args.private_repo)
     code_diff.print_deployer_diff()
     if code_diff.deployed_commit_matches_latest_commit and not args.quiet:
         _print_same_code_warning(deploy_revs['commcare'])
@@ -138,7 +161,7 @@ def _ask_to_deploy(env_name, quiet):
 DEPLOY_DIFF = None
 
 
-def _get_code_diff(environment, deploy_revs, is_resume, skip_token_prompt=False):
+def _get_code_diff(environment, deploy_revs, is_resume, skip_token_prompt=False, private_repo=False):
     global DEPLOY_DIFF
     if DEPLOY_DIFF is not None:
         return DEPLOY_DIFF
@@ -149,25 +172,83 @@ def _get_code_diff(environment, deploy_revs, is_resume, skip_token_prompt=False)
     )
 
     deployed_version = get_deployed_version(environment)
+    deployed_base = _get_public_base_of_deployed(environment, repo, deployed_version)
     if is_resume:
         try:
             version_being_deployed = get_deployed_version(environment, from_source=True)
         except BadAnsibleResult:
             raise BadAnsibleResult("Unable to get code version for 'resume'. Try a fresh deploy.")
+    elif private_repo:
+        version_being_deployed = deploy_revs['commcare']
     else:
         version_being_deployed = repo.get_commit(deploy_revs['commcare']).sha if repo else None
+    deploy_base = version_being_deployed
+    private_commit_count = 0
 
     new_version_details = {
         'Branch deployed': ', '.join([f'{repo}: {ref}' for repo, ref in deploy_revs.items()])
     }
+    if private_repo:
+        private_repo_url = _get_private_repo_url(environment)
+        try:
+            new = resolve_private_revision(
+                private_repo_url, version_being_deployed, environment.fab_settings_config.default_branch)
+        except PrivateRepoError as e:
+            exit(color_error(str(e)))
+        version_being_deployed, deploy_base = new.sha, new.public_base
+        private_commit_count = new.private_commit_count
+        new_version_details['Branch deployed'] += f" ({github_full_name(private_repo_url)})"
     if environment.fab_settings_config.custom_deploy_details:
         new_version_details.update(environment.fab_settings_config.custom_deploy_details)
     DEPLOY_DIFF = DeployDiff(
         repo, deployed_version, version_being_deployed, environment,
         new_version_details=new_version_details,
-        generate_diff=environment.fab_settings_config.generate_deploy_diffs
+        generate_diff=environment.fab_settings_config.generate_deploy_diffs,
+        compare_commits=(deployed_base, deploy_base),
+        private_commit_count=private_commit_count,
     )
     return DEPLOY_DIFF
+
+
+def _get_public_base_of_deployed(environment, repo, sha):
+    """Return the deployed commit, or if it came from the private repo, the
+    public commit it is based on, so the deploy diff can compare public commits
+
+    Not fatal on failure, which only degrades the deploy diff (and the deployer
+    may not have access to the private repo).
+    """
+    settings = environment.fab_settings_config
+    if not settings.private_code_repo:
+        return sha
+    try:
+        repo.get_commit(sha)
+        return sha
+    except UnknownObjectException:
+        pass  # not public
+    except GithubException:
+        return sha
+    try:
+        return resolve_private_revision(settings.private_code_repo, sha, settings.default_branch).public_base
+    except PrivateRepoError as e:
+        print(color_error(f"Could not find the public base of the deployed commit: {e}"))
+        return sha
+
+
+def _get_private_repo_url(environment):
+    url = environment.fab_settings_config.private_code_repo
+    if not url:
+        exit(color_error(
+            f"--private-repo requires 'private_code_repo' to be set in "
+            f"{environment.paths.fab_settings_yml}"
+        ))
+    try:
+        github_full_name(url)
+    except ValueError:
+        exit(color_error(
+            f"private_code_repo in {environment.paths.fab_settings_yml} "
+            f"is not a GitHub URL: {url}"
+        ))
+    return url
 
 
 def _confirm_translated(environment, quiet=False):
@@ -215,7 +296,7 @@ def record_successful_deploy(environment, context):
     end_time = datetime.utcnow()
 
     diff = context.diff
-    create_release_tag(environment, diff.repo, diff)
+    create_release_tag(environment, context.get_meta_value("code_repo") or diff.repo.full_name, diff)
     update_sentry_post_deploy(environment, "commcarehq", diff.repo, diff, context.start_time, end_time)
     announce_deploy_success(environment, context)
     call_record_deploy_success(environment, context, end_time)

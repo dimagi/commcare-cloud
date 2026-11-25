@@ -1173,8 +1173,9 @@ authenticate using the pem file (or prompt for root password if there is no pem 
 Deploy CommCare
 
 ```
-commcare-cloud <env> deploy [--resume RELEASE_NAME] [--private] [-l SUBSET] [--keep-days KEEP_DAYS] [--skip-record]
-                            [--commcare-rev COMMCARE_REV] [--ignore-kafka-checkpoint-warning] [--update-config]
+commcare-cloud <env> deploy [--resume RELEASE_NAME] [--private] [--private-repo] [-l SUBSET] [--keep-days KEEP_DAYS]
+                            [--skip-record] [--commcare-rev COMMCARE_REV] [--ignore-kafka-checkpoint-warning]
+                            [--update-config]
                             [{commcare,formplayer} ...]
 ```
 
@@ -1198,6 +1199,14 @@ Use the 'list-releases' command to get valid release names.
 Set up a private release for running management commands.
 This option implies --limit=django_manage. Use --limit=all
 to set up a private release on all applicable hosts.
+
+###### `--private-repo`
+
+Deploy from the private commcare-hq repository configured as
+private_code_repo in fab-settings.yml. Requires --commcare-rev
+(except with --resume), and a GitHub SSH key with read access to
+that repository. Pass it again when using --resume on such a
+release.
 
 ###### `-l SUBSET, --limit SUBSET`
 
@@ -1231,7 +1240,7 @@ release.
 Display pull requests that would be deployed on master now.
 
 ```
-commcare-cloud <env> deploy-diff [{commcare,formplayer}]
+commcare-cloud <env> deploy-diff [--private-repo] [--commcare-rev COMMCARE_REV] [{commcare,formplayer}]
 ```
 
 ##### Positional Arguments
@@ -1239,6 +1248,18 @@ commcare-cloud <env> deploy-diff [{commcare,formplayer}]
 ###### `{commcare,formplayer}`
 
 Component to check deploy diff for. Default is 'commcare'.
+
+##### Options
+
+###### `--private-repo`
+
+Compare against the private commcare-hq repository configured as
+private_code_repo in fab-settings.yml. Requires --commcare-rev and
+a GitHub SSH key with read access to that repository.
+
+###### `--commcare-rev COMMCARE_REV`
+
+The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
 
 ---
 

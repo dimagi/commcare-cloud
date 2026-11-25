@@ -1,4 +1,5 @@
 import os
+import re
 from getpass import getpass
 from pathlib import Path
 
@@ -9,6 +10,14 @@ from commcare_cloud.colors import color_notice
 
 PROJECT_ROOT = Path(__file__).parent
 GITHUB_KNOWN_HOSTS = PROJECT_ROOT / "github_known_hosts"
+
+
+def github_full_name(git_url):
+    """Return 'owner/name' for a GitHub git URL (ssh or https)."""
+    match = re.search(r"github\.com[:/]([^/]+/[^/]+?)(?:\.git)?/?$", git_url)
+    if not match:
+        raise ValueError(f"Not a GitHub URL: {git_url}")
+    return match.group(1)
 
 
 def github_repo(repo_name, prompt_if_missing=False):

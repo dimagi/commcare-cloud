@@ -46,12 +46,6 @@ def _fake_environment(tag_deploy_commits, release_name="r1", env_name="testenv")
     return env
 
 
-def _fake_repo(full_name="dimagi/commcare-hq"):
-    repo = MagicMock()
-    repo.full_name = full_name
-    return repo
-
-
 def _fake_diff(sha="abc1234"):
     diff = MagicMock()
     diff.deploy_commit = sha
@@ -85,7 +79,7 @@ class TestCreateReleaseTag(TestCase):
              patch("sys.stdout", new_callable=StringIO) as out:
             create_release_tag(
                 _fake_environment(tag_deploy_commits=True),
-                _fake_repo(),
+                "dimagi/commcare-hq",
                 _fake_diff(),
             )
         self.assertIn("Error creating release tag", out.getvalue())
@@ -94,7 +88,7 @@ class TestCreateReleaseTag(TestCase):
         with patch("commcare_cloud.commands.deploy.utils._push_release_tag") as push:
             create_release_tag(
                 _fake_environment(tag_deploy_commits=False),
-                _fake_repo(),
+                "dimagi/commcare-hq",
                 _fake_diff(),
             )
         push.assert_not_called()

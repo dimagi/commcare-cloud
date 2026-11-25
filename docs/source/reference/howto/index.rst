@@ -7,6 +7,7 @@ Below docs contain how to instructions for special operations.
    :maxdepth: 1
 
    /reference/howto/white-label
+   /reference/howto/deploy-from-private-repo
    /reference/howto/firewall
    /reference/howto/new-machine
    /reference/howto/perf_testing

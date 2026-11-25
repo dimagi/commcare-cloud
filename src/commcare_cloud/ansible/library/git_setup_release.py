@@ -43,7 +43,19 @@ options:
         required: true
         type: str
     key_file:
-        description: Optional key file to use for remote git operations.
+        description: Optional key file to use for remote git operations
+            on the top-level repository. It is not used for submodules.
+        required: false
+        type: str
+    known_hosts_file:
+        description: Optional known_hosts file to use with I(key_file).
+            Host keys are strictly checked against this file.
+        required: false
+        type: str
+    seed_mirror:
+        description: Optional name of an existing mirror repository in
+            I(reference) used to seed the top-level repository's mirror
+            when it does not yet exist. Ignored if the seed is missing.
         required: false
         type: str
     previous_release:
@@ -66,6 +78,17 @@ EXAMPLES = """
     dest: /opt/releases/two
     reference: /opt/releases/src
     previous_release: /opt/releases/one
+
+- name: Setup release from private repository
+  git_setup_release:
+    repo: git@github.com:example/private-project.git
+    version: main
+    dest: /opt/releases/two
+    reference: /opt/releases/src
+    previous_release: /opt/releases/one
+    key_file: /home/deploy/.ssh/deploy_key
+    known_hosts_file: /home/deploy/.ssh/known_hosts_github
+    seed_mirror: project.git
 """
 
 RETURN = """
@@ -91,10 +114,13 @@ def main():
         'dest': {'type': 'str', 'required': True},
         'reference': {'type': 'str', 'required': True},
         'key_file': {'type': 'str', 'required': False, 'default': None},
+        'known_hosts_file': {'type': 'str', 'required': False, 'default': None},
+        'seed_mirror': {'type': 'str', 'required': False, 'default': None},
         'previous_release': {'type': 'str', 'required': False, 'default': None},
     }
     module = AnsibleModule(
         argument_spec=module_args,
+        required_by={'known_hosts_file': 'key_file'},
         supports_check_mode=True
     )
     params = module.params
@@ -136,9 +162,20 @@ def main():
             try:
                 signal.signal(signal.SIGHUP, handle_ssh_disconnect)
                 mirrors_path = Path(params["reference"])
-                key_file = params["key_file"]
-                release = Release(mirrors_path, module.run_command, diff, key_file)
-                release.setup(dest_tmp, params["repo"], params["version"], prev)
+                release = Release(
+                    mirrors_path,
+                    module.run_command,
+                    diff,
+                    key_file=params["key_file"],
+                    known_hosts_file=params["known_hosts_file"],
+                )
+                release.setup(
+                    dest_tmp,
+                    params["repo"],
+                    params["version"],
+                    prev,
+                    seed_mirror=params["seed_mirror"],
+                )
             except BaseException:
                 os.chdir(prev_dir)  # module.run_command does not reset cwd on error
                 dest_tmp.rename(get_fail_path(dest))
@@ -150,14 +187,22 @@ def main():
 
 class Release:
 
-    def __init__(self, mirrors_path, run_command, diff, key_file=None):
+    def __init__(self, mirrors_path, run_command, diff, key_file=None,
+                 known_hosts_file=None):
         self.mirrors_path = mirrors_path
         self.run_command = run_command
         self.diff = diff
         self.key_file = key_file
+        self.known_hosts_file = known_hosts_file
         self.seen = {}
 
-    def setup(self, release_path, repo_url, version, prev):
+    def setup(self, release_path, repo_url, version, prev, top_level=True,
+              seed_mirror=None):
+        """Clone release and recursively set up its submodules
+
+        The key file (if any) is only used for the top-level repository
+        since a deploy key is bound to a single repository.
+        """
         name = basename(repo_url.rstrip("/"))
         if not name:
             raise ValueError(f"invalid repository URL: {repo_url}")
@@ -172,26 +217,35 @@ class Release:
         if (prev / ".git").exists():
             self.diff['before'][repo_url] = self.get_version(prev)
         if not repo_mirror.exists():
-            self.run(["git", "clone", "--mirror", repo_url, repo_mirror])
+            seed = self.mirrors_path / seed_mirror if seed_mirror else None
+            if seed is not None and seed.exists():
+                seed_args = ["--reference", seed, "--dissociate"]
+            else:
+                seed_args = []
+            self.run(["git", "clone", "--mirror", *seed_args, repo_url, repo_mirror],
+                     use_key=top_level)
         else:
-            self.run(["git", "remote", "update", "--prune"], cwd=repo_mirror)
+            self.run(["git", "remote", "update", "--prune"], cwd=repo_mirror,
+                     use_key=top_level)
 
         # Ensure the requested commit is present even if its branch moved
         # mid-deploy (e.g. autostaging rebuilt between SHA resolution and
         # the mirror update), which would leave the SHA unreachable from
         # any ref and absent after `remote update`.
         if not self.has_commit(repo_mirror, version):
-            self.run(["git", "fetch", "--no-tags", "origin", version], cwd=repo_mirror)
+            self.run(["git", "fetch", "--no-tags", "origin", version], cwd=repo_mirror,
+                     use_key=top_level)
 
-        self.run(["git", "clone", "--no-checkout", "--reference", repo_mirror, repo_url, release_path])
-        self.run(["git", "checkout", version], cwd=release_path)
+        self.run(["git", "clone", "--no-checkout", "--reference", repo_mirror, repo_url, release_path],
+                 use_key=top_level)
+        self.run(["git", "checkout", version], cwd=release_path, use_key=top_level)
         self.diff['after'][repo_url] = self.get_version(release_path)
 
         # could save time by doing these in parallel
         for path, url, subversion in self.iter_submodules(release_path):
             sub_path = release_path / path
             prev_path = prev / path
-            self.setup(sub_path, url, subversion, prev_path)
+            self.setup(sub_path, url, subversion, prev_path, top_level=False)
 
     def iter_submodules(self, repo_path):
         gitmodules = repo_path / ".gitmodules"
@@ -213,10 +267,13 @@ class Release:
         return self.run(["git", "cat-file", "-e", f"{version}^{{commit}}"],
                         cwd=git_repo, check_rc=False).rc == 0
 
-    def run(self, args, **kw):
+    def run(self, args, use_key=False, **kw):
         kw.setdefault("check_rc", True)
-        if self.key_file:
-            ssh = f"ssh -i {self.key_file}"
+        if use_key and self.key_file:
+            ssh = f"ssh -i {self.key_file} -o IdentitiesOnly=yes"
+            if self.known_hosts_file:
+                ssh += (f" -o UserKnownHostsFile={self.known_hosts_file}"
+                        " -o StrictHostKeyChecking=yes")
             kw.setdefault("environ_update", {})["GIT_SSH_COMMAND"] = ssh
         return CommandResult(*self.run_command(args, **kw))
 

@@ -65,5 +65,5 @@ Attention! Predeploy Maintenance Required:
 {%- endif %}
 
 {% if compare_url -%}
-Here's the complete diff on github: {{ compare_url|highlight }}
+{{ compare_url_label|default("Here's the complete diff on github") }}: {{ compare_url|highlight }}
 {%- endif %}

@@ -40,6 +40,13 @@ class Deploy(CommandBase):
             This option implies --limit=django_manage. Use --limit=all
             to set up a private release on all applicable hosts.
         """),
+        Argument('--private-repo', action='store_true', help="""
+            Deploy from the private commcare-hq repository configured as
+            private_code_repo in fab-settings.yml. Requires --commcare-rev
+            (except with --resume), and a GitHub SSH key with read access to
+            that repository. Pass it again when using --resume on such a
+            release.
+        """),
         Argument('-l', '--limit', metavar='SUBSET', help="""
             Limit selected hosts.
         """),
@@ -73,6 +80,8 @@ class Deploy(CommandBase):
             deploy_component = ['commcare']
             if environment.meta_config.always_deploy_formplayer:
                 deploy_component.append('formplayer')
+        if args.private_repo and 'commcare' not in deploy_component:
+            exit(color_error("--private-repo only applies to the commcare component"))
 
         rc = 0
         if 'commcare' in deploy_component:
@@ -102,6 +111,14 @@ class DeployDiff(CommandBase):
         Argument('component', nargs='?', choices=['commcare', 'formplayer'], default='commcare', help="""
             Component to check deploy diff for. Default is 'commcare'.
         """),
+        Argument('--private-repo', action='store_true', help="""
+            Compare against the private commcare-hq repository configured as
+            private_code_repo in fab-settings.yml. Requires --commcare-rev and
+            a GitHub SSH key with read access to that repository.
+        """),
+        Argument('--commcare-rev', help="""
+            The name of the commcare-hq git branch, tag, or SHA-1 commit hash to deploy.
+        """, default=None),
         shared_args.QUIET_ARG,
         shared_args.BRANCH_ARG,
     )
@@ -111,6 +128,8 @@ class DeployDiff(CommandBase):
         environment = get_environment(args.env_name)
         environment.release_name = 'deploy-diff'
         if args.component == 'formplayer':
+            if args.private_repo:
+                exit(color_error("--private-repo only applies to the commcare component"))
             diff = get_formplayer_deploy_diff(environment)
         else:
             diff = get_commcare_deploy_diff(environment, args)
