@@ -1,77 +1,36 @@
 ---
-- name: Get current couchdb version (Jammy)
-  block:
-    - name: Gather packages facts
-      package_facts:
-        manager: apt
+- name: Gather packages facts
+  package_facts:
+    manager: apt
 
-    - name: Set current couchdb version
-      set_fact:
-        couchdb_version_current: "{{ ansible_facts.packages['couchdb'][0].version | regex_search('^([0-9]\\.?)+') if ansible_facts.packages['couchdb'] is defined else 'none' }}"
-  when: ansible_distribution_version == '22.04'
+- name: Set current couchdb version
+  set_fact:
+    couchdb_version_current: "{{ ansible_facts.packages['couchdb'][0].version | regex_search('^([0-9]\\.?)+') if ansible_facts.packages['couchdb'] is defined else 'none' }}"
 
 - name: Print current couchdb version
   debug:
     var: couchdb_version_current
 
-- name: Install Erlang dependencies (Jammy)
-  block:
-    - name: Download Erlang Solutions GPG key
-      get_url:
-        url: https://binaries2.erlang-solutions.com/GPG-KEY-pmanager.asc
-        dest: /tmp/erlang-solutions-gpg.asc
-        mode: '0644'
-      check_mode: false
+- name: Add couchdb apt key
+  copy:
+    src: 390EF70BB1EA12B2773962950EE62FB37A00258D.gpg
+    dest: /etc/apt/keyrings/
+    owner: root
+    group: root
+    mode: '0644'
 
-    - name: Add Erlang Solutions GPG key
-      apt_key:
-        file: /tmp/erlang-solutions-gpg.asc
-        state: present
+- name: Add couchdb apt repository
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/390EF70BB1EA12B2773962950EE62FB37A00258D.gpg] https://apache.jfrog.io/artifactory/couchdb-deb/ {{ ansible_distribution_release }} main"
+    state: present
 
-    - name: Add Erlang Solutions repository
-      apt_repository:
-        repo: "deb http://binaries2.erlang-solutions.com/ubuntu/ {{ ansible_distribution_release|lower }}-esl-erlang-{{ couchdb_erlang_version }} contrib"
-        state: present
-        filename: erlang-solutions
-      register: erlang_repo_added
+- name: pre-seed couchdb conf
+  debconf:
+    name: couchdb
+    question: couchdb/mode
+    value: none
+    vtype: select
 
-    - name: Update apt cache after adding repository
-      apt:
-        update_cache: yes
-      when: erlang_repo_added is changed
-      check_mode: false
-
-    - name: Install esl-erlang package
-      apt:
-        name: esl-erlang
-        state: present
-  when:
-   - ansible_distribution_version == '22.04'
-   - not ansible_check_mode
-
-- name: Install couchdb (Jammy)
-  block:
-    - name: Add couchdb apt key
-      copy:
-        src: 390EF70BB1EA12B2773962950EE62FB37A00258D.gpg
-        dest: /etc/apt/keyrings/
-        owner: root
-        group: root
-        mode: '0644'
-
-    - name: Add couchdb apt repository
-      apt_repository:
-        repo: "deb [signed-by=/etc/apt/keyrings/390EF70BB1EA12B2773962950EE62FB37A00258D.gpg] https://apache.jfrog.io/artifactory/couchdb-deb/ {{ ansible_distribution_release }} main"
-        state: present
-
-    - name: pre-seed couchdb conf
-      debconf:
-        name: couchdb
-        question: couchdb/mode
-        value: none
-        vtype: select
-
-    - name: Install couchdb
-      apt:
-        name: "couchdb={{ couchdb_version }}~{{ ansible_distribution_release }}"
-  when: ansible_distribution_version == '22.04'
+- name: Install couchdb package
+  apt:
+    name: "couchdb={{ couchdb_version }}~{{ ansible_distribution_release }}"
