@@ -1394,6 +1394,20 @@ then it's acceptable to do live.
 
 ---
 
+#### ``reset-couchdb-shard-map`` Command
+
+Point every CouchDB database's shard map at the environment's only couch node.
+
+```
+commcare-cloud <env> reset-couchdb-shard-map
+```
+
+For a single node restored from a volume of a multi-node cluster, where
+the shard maps still name the old nodes (BCP "Prepare Couch Cluster").
+Refuses to run if the environment has more than one couchdb2 host.
+
+---
+
 #### ``downtime`` Command
 
 Manage downtime for the selected environment.
