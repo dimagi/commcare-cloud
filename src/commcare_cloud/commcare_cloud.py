@@ -15,6 +15,7 @@ from commcare_cloud.commands.clean_releases import CleanReleases
 from commcare_cloud.commands.deploy.command import Deploy, DeployDiff
 from commcare_cloud.commands.ec2_instance_state import Ec2InstanceState
 from commcare_cloud.commands.migrations.couchdb import MigrateCouchdb
+from commcare_cloud.commands.migrations.couchdb_shard_map import ResetCouchdbShardMap
 from commcare_cloud.commands.migrations.copy_files import CopyFiles
 from commcare_cloud.commands.preindex_views import PreindexViews
 from commcare_cloud.commands.secrets import Secrets, MigrateSecrets
@@ -87,6 +88,7 @@ COMMAND_GROUPS = OrderedDict([
         PreindexViews,
         Service,
         MigrateCouchdb,
+        ResetCouchdbShardMap,
         Downtime,
         CopyFiles,
         ListDatabases,
